@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111222161515) do
+ActiveRecord::Schema.define(:version => 20120201130402) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -54,6 +54,9 @@ ActiveRecord::Schema.define(:version => 20111222161515) do
     t.tsvector "vector_fts",  :null => false
   end
 
+  add_index "busquedas", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo", :unique => true
+  add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
+
   create_table "contactos", :force => true do |t|
     t.string   "nombres",         :null => false
     t.string   "apellidos",       :null => false
@@ -67,6 +70,7 @@ ActiveRecord::Schema.define(:version => 20111222161515) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sexo_id"
   end
 
   create_table "convenios_de_administracion", :force => true do |t|
@@ -82,6 +86,9 @@ ActiveRecord::Schema.define(:version => 20111222161515) do
     t.datetime "updated_at"
   end
 
+  add_index "convenios_de_administracion", ["efector_id"], :name => "unq_convenios_de_administracion_efector_id", :unique => true
+  add_index "convenios_de_administracion", ["numero"], :name => "unq_convenios_de_administracion_numero", :unique => true
+
   create_table "convenios_de_gestion", :force => true do |t|
     t.string   "numero",                :null => false
     t.integer  "efector_id",            :null => false
@@ -94,6 +101,9 @@ ActiveRecord::Schema.define(:version => 20111222161515) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "convenios_de_gestion", ["efector_id"], :name => "unq_convenios_de_gestion_efector_id", :unique => true
+  add_index "convenios_de_gestion", ["numero"], :name => "unq_convenios_de_gestion_numero", :unique => true
 
   create_table "departamentos", :force => true do |t|
     t.string  "nombre",                :null => false
@@ -204,6 +214,10 @@ ActiveRecord::Schema.define(:version => 20111222161515) do
     t.datetime "updated_at"
   end
 
+  create_table "sexos", :force => true do |t|
+    t.string "descripcion"
+  end
+
   create_table "subgrupos_de_prestaciones", :force => true do |t|
     t.integer "grupo_de_prestaciones_id", :null => false
     t.string  "nombre",                   :null => false
@@ -238,6 +252,7 @@ ActiveRecord::Schema.define(:version => 20111222161515) do
     t.string   "last_login_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sexo_id"
   end
 
 end

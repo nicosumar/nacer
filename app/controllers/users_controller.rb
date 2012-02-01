@@ -93,6 +93,7 @@ class UsersController < ApplicationController
     # Si la grabación falla, volver al formulario para corregir los errores.
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_name, ug.id] }
     @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+    @sexo_id = params[:user][:sexo_id]
     render :action => "edit"
   end
 

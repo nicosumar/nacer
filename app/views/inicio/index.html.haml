@@ -15,7 +15,14 @@
       %li= link_to "Iniciar sesión", iniciar_sesion_path
 
 %h1
-  = "Bienvenido" + (current_user ? ", " + current_user.firstname : "")
+  - if current_user
+    - if current_user.sexo_id == 1
+      Bienvenida,
+    - else
+      Bienvenido,
+    = current_user.firstname
+  - else
+    No se ha iniciado la sesión
 %p#notice= notice
 %p
   - if current_user then
