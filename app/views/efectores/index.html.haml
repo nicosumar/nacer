@@ -1,0 +1,29 @@
+%h1 Efectores
+
+%table
+  %thead
+    %tr
+      %th CUIE
+      %th Nombre
+      %th Convenio
+      %th Administrador
+  %tbody
+    - @efectores.each do |e|
+      %tr.clickable{ :onclick => "location.href=\'#{efector_path(e)}\'", :title => "Ver detalles del efector #{e.nombre}" }
+        %td= e.cuie
+        %td= e.nombre
+        %td
+          - if e.convenio_de_gestion
+            = e.convenio_de_gestion.numero
+          - else
+            Sin convenio
+        %td
+          - if e.convenio_de_administracion
+            = e.convenio_de_administracion.administrador.nombre
+= will_paginate @efectores, :inner_window => 2, :outer_window => 0
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    - if can? :create, Efector
+      %li= link_to "Agregar un efector", new_efector_url

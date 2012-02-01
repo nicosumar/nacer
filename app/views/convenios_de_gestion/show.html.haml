@@ -1,0 +1,96 @@
+- content_for :title do
+  Convenio de gestión
+  = @convenio_de_gestion.numero
+
+%h1
+  Convenio de gestión
+  = @convenio_de_gestion.numero
+
+%p#notice= notice
+
+%p
+  El convenio de gestión
+  %span.destacado= @convenio_de_gestion.numero
+  fue celebrado entre la Unidad de Gestión del Seguro Provincial y el efector
+  %span.destacado>= " " + @convenio_de_gestion.efector.nombre
+  , el día
+  %span.destacado>= " " + @convenio_de_gestion.fecha_de_suscripcion.strftime("%d/%m/%Y")
+  , suscrito por el coordinador de la UGSP y
+  - if @convenio_de_gestion.firmante then
+    el/la referente del efector,
+    %span.destacado>=  " " + @convenio_de_gestion.firmante
+    \.
+  - else
+    el/la representante del efector.
+%p
+  - if @convenio_de_gestion.email_notificacion
+    El referente del efector declara como correo electrónico para recibir notificaciones fehacientes el siguiente:
+    %span.destacado>= " " + mail_to(@convenio_de_gestion.email_notificacion, @convenio_de_gestion.email_notificacion)
+    \.
+  - else
+    El referente del efector no ha declarado una dirección de correo electrónico para la recepción de notificaciones.
+%p
+  El convenio de gestión
+  - if @convenio_de_gestion.fecha_de_inicio.to_datetime > Time.now then
+    entrará
+  - else
+    entró
+  en vigencia el día
+  %span.destacado>= " " + @convenio_de_gestion.fecha_de_inicio.strftime("%d/%m/%Y")
+  , y se encuentra
+  - if @convenio_de_gestion.fecha_de_finalizacion.to_datetime > Time.now then
+    %span.muy_destacado ACTIVO
+    hasta el día
+  - else
+    %span.muy_destacado VENCIDO
+    desde el día 
+  %span.destacado>= " " + @convenio_de_gestion.fecha_de_finalizacion.strftime("%d/%m/%Y")
+  \.
+%h3 Prestaciones autorizadas por el convenio
+- if @convenio_de_gestion.prestaciones_autorizadas.any? then
+  %p
+    Este es el listado de prestaciones autorizadas al momento de celebrarse el convenio de gestión.
+    No representa el estado actual de las prestaciones autorizadas para este efector. Puede ver el listado de prestaciones
+    actualmente autorizadas en la
+    = link_to("página con información detallada", @convenio_de_gestion.efector, { :title => "Información detallada del efector: #{@convenio_de_gestion.efector.nombre}" })
+    para este efector.
+  %table
+    %thead
+      %tr
+        %th Código
+        %th Nombre
+    %tbody
+      - @convenio_de_gestion.prestaciones_autorizadas.each do |c|
+        %tr
+          %td= c.prestacion.codigo
+          %td= c.prestacion.nombre
+- else
+  %p Aún no se han definido prestaciones autorizadas para este convenio.
+%h3 Adendas que modifican este convenio
+- if @convenio_de_gestion.addendas.any? then
+  %table
+    %thead
+      %tr
+        %th Fecha de suscripción
+        %th Prestaciones dadas de alta
+        %th Prestaciones dadas de baja
+    %tbody
+      - @convenio_de_gestion.addendas.each do |a|
+        %tr.clickable{ :onclick => "location.href=\'#{addenda_path(a)}\'", :title => "Ver detalles de la adenda suscrita el #{a.fecha_de_suscripcion.strftime("%d/%m/%Y")}" }
+          %td= a.fecha_de_suscripcion.strftime("%d/%m/%Y")
+          - if a.prestaciones_autorizadas_alta.any? then
+            %td= a.prestaciones_autorizadas_alta.collect{ |pa| [pa.prestacion.codigo]}.join(", ")
+          - else
+            %td Ninguna
+          - if a.prestaciones_autorizadas_baja.any? then
+            %td= a.prestaciones_autorizadas_baja.collect{ |pa| [pa.prestacion.codigo]}.join(", ")
+          - else
+            %td Ninguna
+- else
+  %p Este convenio no registra adendas modificatorias.
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    %li= link_to "Modificar este convenio", edit_convenio_de_gestion_path(@convenio_de_gestion)
+    %li= link_to "Agregar una adenda al convenio", new_addenda_url(:convenio_de_gestion_id => @convenio_de_gestion.id)

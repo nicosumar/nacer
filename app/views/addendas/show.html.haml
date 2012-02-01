@@ -1,0 +1,69 @@
+- content_for :title do
+  Adenda al convenio de gestión
+  = @addenda.convenio_de_gestion.numero
+  suscrita el
+  = @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+
+%h1
+  Adenda al convenio de gestión
+  = @addenda.convenio_de_gestion.numero
+  suscrita el
+  = @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+
+%p#notice= notice
+
+%p
+  La adenda al convenio
+  %span.destacado= @addenda.convenio_de_gestion.numero
+  fue suscrita entre la Unidad de Gestión del Seguro Provincial y el efector
+  %span.destacado>= " " + @addenda.convenio_de_gestion.efector.nombre
+  , el día
+  %span.destacado>= " " + @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+  , refrendado por el coordinador de la UGSP y
+  - if @addenda.firmante then
+    el/la referente del efector,
+    %span.destacado>=  " " + @addenda.firmante
+    \.
+  - else
+    el/la representante del efector.
+%p
+  La adenda
+  - if @addenda.fecha_de_inicio.to_datetime > Time.now then
+    entrará
+  - else
+    entró
+  en vigencia el día
+  %span.destacado>= " " + @addenda.fecha_de_inicio.strftime("%d/%m/%Y") + "."
+%h3 Prestaciones dadas de alta por la adenda
+- if @addenda.prestaciones_autorizadas_alta.any? then
+  %table
+    %thead
+      %tr
+        %th Código
+        %th Nombre
+    %tbody
+      - @addenda.prestaciones_autorizadas_alta.each do |a|
+        %tr
+          %td= a.prestacion.codigo
+          %td= a.prestacion.nombre
+- else
+  %p La adenda no da de alta ninguna prestación.
+%h3 Prestaciones dadas de baja por la adenda
+- if @addenda.prestaciones_autorizadas_baja.any? then
+  %table
+    %thead
+      %tr
+        %th Código
+        %th Nombre
+    %tbody
+      - @addenda.prestaciones_autorizadas_baja.each do |b|
+        %tr
+          %td= b.prestacion.codigo
+          %td= b.prestacion.nombre
+- else
+  %p La adenda no da de baja ninguna prestación.
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    %li= link_to "Modificar esta adenda", edit_addenda_path(@addenda)

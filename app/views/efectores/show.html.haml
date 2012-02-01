@@ -1,0 +1,63 @@
+- content_for :title do
+  = @efector.nombre + " (" + @efector.cuie + ")"
+
+%h1= @efector.nombre + " (" + @efector.cuie + ")"
+
+%p#notice= notice
+
+%h2 Datos de contacto
+- if @efector.domicilio
+  %p
+    Domicilio:
+    %span.destacado= @efector.domicilio
+    - if @efector.distrito
+      %span.destacado>= ", " + @efector.distrito.nombre
+    - if @efector.departamento
+      %span.destacado>= ", " + @efector.departamento.nombre + "."
+- if @efector.telefonos
+  %p
+    Teléfonos:
+    %span.destacado= @efector.telefonos
+- if @efector.email
+  %p
+    Correo electrónico:
+    ~ mail_to "\"#{@efector.nombre}\" <#{@efector.email}>", @efector.email
+
+- if @efector.convenio_de_gestion
+  %h2 Convenio de gestión
+  %p
+    El efector ha suscrito el convenio de gestión
+    = link_to @efector.convenio_de_gestion.numero, convenio_de_gestion_path(@efector.convenio_de_gestion)
+    a partir del día
+    %span.destacado= "#{@efector.convenio_de_gestion.fecha_de_inicio.strftime("%d/%m/%Y")}."
+    - if @efector.convenio_de_administracion
+      También ha suscrito el convenio de administración
+      = link_to @efector.convenio_de_administracion.numero, convenio_de_administracion_path(@efector.convenio_de_administracion)
+      y está siendo administrado por:
+      = link_to @efector.convenio_de_administracion.administrador.nombre, efector_path(@efector.convenio_de_administracion.administrador)
+  %h2
+    Prestaciones autorizadas al
+    = Time.now.strftime("%d/%m/%Y")
+  - if @prestaciones_autorizadas.any?
+    %table
+      %thead
+        %tr
+          %th Código
+          %th Nombre
+      %tbody
+        - @prestaciones_autorizadas.each do |p|
+          %tr
+            %td= p.prestacion.codigo
+            %td= p.prestacion.nombre
+  - else
+    No hay información sobre las prestaciones autorizadas para el convenio
+    = link_to @efector.convenio_de_gestion.numero, convenio_de_gestion_path(@efector.convenio_de_gestion)
+- else
+  %p
+    %span.destacado El efector aún no ha suscrito un convenio de gestión.
+
+- content_for :sidebar do
+  - if can? :update, Efector
+    %h2 Tareas
+    %ul
+      %li= link_to "Modificar este efector", edit_efector_path(@efector)

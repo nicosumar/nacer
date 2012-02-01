@@ -1,0 +1,37 @@
+= form_for(@addenda) do |f|
+  %div.hidden_field
+    %input{ :id => "addenda_convenio_de_gestion_id", :name => "addenda[convenio_de_gestion_id]", :type => "hidden", :value => @convenio_de_gestion.id }
+  - if @addenda.errors.any?
+    #error_explanation
+      %h2= pluralize(@addenda.errors.count, "error impide").to_s + " que se guarde la información de esta adenda."
+      %ul
+        - @addenda.errors.full_messages.each do |msg|
+          %li= msg
+  %h3 Información general
+  %div.field
+    = f.label :firmante
+    %br/
+    = f.text_field :firmante
+  %div.field
+    = f.label :fecha_de_suscripcion
+    %br/
+    = f.date_select :fecha_de_suscripcion
+  %div.field
+    = f.label :fecha_de_inicio
+    %br/
+    = f.date_select :fecha_de_inicio
+  %h3 Prestaciones que se autorizan a través esta adenda
+  %div.field
+    = f.label :prestacion_autorizada_alta_ids, "Prestaciones:"
+    %br/
+    = f.select :prestacion_autorizada_alta_ids, options_for_select(@prestaciones_alta, @prestacion_autorizada_alta_ids), {}, { :multiple => true, :size => 10, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" }
+  %h3 Prestaciones que se dan de baja a través de esta adenda
+  %div.field
+    = f.label :prestacion_autorizada_baja_ids, "Prestaciones:"
+    %br/
+    = f.select :prestacion_autorizada_baja_ids, options_for_select(@prestaciones_baja, @prestacion_autorizada_baja_ids), {}, { :multiple => true, :size => 10, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" }
+  %div.actions
+    - if @addenda.new_record? then
+      = f.submit "Crear adenda"
+    - else
+      = f.submit "Actualizar datos de la adenda"

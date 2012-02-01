@@ -1,0 +1,26 @@
+- content_for :title do
+  Sistema de gestión del seguro provincial / Plan Nacer Mendoza
+
+-#- if current_user then
+  - content_for :menu do
+    %ul
+      %li.current_page_item
+        = link_to "Inicio", root_url
+  - content_for :sidebar do
+    %h2 Noticias
+-#- else
+  - content_for :sidebar do
+    %h2 Tareas
+    %ul
+      %li= link_to "Iniciar sesión", iniciar_sesion_path
+
+%h1
+  = "Bienvenido" + (current_user ? ", " + current_user.firstname : "")
+%p#notice= notice
+%p
+  - if current_user then
+    Puede comenzar a trabajar. Seleccione el módulo y operación deseados desde el menú superior.
+  - else
+    Para comenzar a trabajar, debe
+    = link_to "iniciar su sesión", iniciar_sesion_path
+    en el sistema.

@@ -1,0 +1,6 @@
+Gemfile.lock
+log/
+tmp/
+test/
+.sass-cache/
+public/assets

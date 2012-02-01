@@ -1,0 +1,230 @@
+- content_for :title do
+  - if @procesado
+    Resultado de la verificación
+  - else
+    Verificador de liquidaciones
+
+%h1
+  - if @procesado
+    Resultado de la verificación
+  - else
+    Verificador de liquidaciones
+
+- if @procesado
+  -# Efector
+  %p
+    - if @efector.nil?
+      %span.error
+        - if @cuie_efector
+          No se encontró un efector que posea el CUIE
+          %span.destacado>= " " + @cuie_efector
+          \.
+        - else
+          No se informó el CUIE del efector que presentó la facturación.
+    - else
+      Efector:
+      %span.destacado= @efector.nombre + " (" + @efector.cuie + ")."
+      -# Administrador (si existe)
+      - if @efector.convenio_de_administracion
+        %p
+          - if @administrador
+            - if @efector.convenio_de_administracion.administrador.cuie == @administrador.cuie
+              Administrador:
+              %span.destacado= @administrador.nombre + " (" + @administrador.cuie + ")."
+            - else
+              %span.error
+                Existe una inconsistencia entre el CUIE de administrador informado en la facturación (
+                %span.destacado>= @administrador.cuie
+                ) y el registrado en el sistema (
+                %span.destacado>= @efector.convenio_de_administracion.administrador.cuie + " - " + @efector.convenio_de_administracion.administrador.nombre
+                ).
+          - else
+            %span.error
+              - if @cuie_administrador
+                No se encuentra el CUIE del administrador informado en la facturación (
+                %span.destacado>= @cuie_administrador
+                ).
+              - else
+                En la facturación no se informó el CUIE del administrador registrado en el sistema (
+                %span.destacado>= @efector.convenio_de_administracion.administrador.cuie + " - " + @efector.convenio_de_administracion.administrador.nombre
+                ).
+      - else # Efector no administrado
+        - if @cuie_administrador
+          %p.error
+            El sistema no tiene registrado un administrador para este efector, pero en la facturación se ha informado un CUIE de administrador (
+            %span.destacado>= @cuie_administrador
+            ).
+      -# Fecha de facturación
+      %p
+        - if @fecha
+          Fecha de facturación:
+          %span.destacado= l(@fecha, :format => :long).capitalize
+        - else
+          %span.error
+            - if @texto_fecha
+              La fecha de facturación informada no es válida (texto analizado: «
+              %span.destacado>= @texto_fecha
+              »).
+            - else
+              No se indicó la fecha de facturación.
+      -# Periodo facturado
+      %p
+        - if @primer_dia_de_prestaciones
+          - if (@fecha - @primer_dia_de_prestaciones).to_i >= 35 && (@fecha - @primer_dia_de_prestaciones).to_i <= 60
+            Periodo de prestaciones:
+            %span.destacado= l(@primer_dia_de_prestaciones, :format => "%B de %Y").capitalize
+          - else
+            %span.error
+              Existe una inconsistencia entre el periodo de prestaciones facturado (
+              %span.destacado>= l(@primer_dia_de_prestaciones, :format => "%B de %Y").capitalize
+              ) y la fecha de facturación.
+        - else
+          %span.error
+            - if @texto_mes_de_prestaciones
+              No se pudo detectar el periodo de prestaciones (texto analizado: «
+              %span.destacado>= @texto_mes_de_prestaciones
+              »).
+            - else
+              No se indicó el periodo de las prestaciones.
+      -# Referente
+      %p
+        - if @referente
+          - if @texto_referente
+            Referente:
+            %span.destacado= @referente.mostrado
+            (informado en la facturación: «
+            %span.destacado>= @texto_referente
+            »).
+          - else
+            %span.error
+              El efector tiene como referente actual a
+              %span.destacado>= " " + @referente.mostrado
+              , pero no se encontró información sobre el referente en la facturación.
+        - else
+          %span.error
+            - if @texto_referente
+              El sistema no tiene registrado un referente actual para este efector, aunque en la facturación se informa que el referente es
+              %span.destacado>= " " + @texto_referente
+            - else
+              No se encontró información sobre el referente en la facturación, ni se ha registrado un referente en el sistema para este efector.
+      -# Convenios
+      %p
+        - if @efector.convenio_de_gestion
+          - if @texto_convenio_de_gestion
+            - if @texto_convenio_de_gestion == @efector.convenio_de_gestion.numero
+              Convenio de gestión:
+              %span.destacado= @texto_convenio_de_gestion
+            - else
+              %span.error
+                El efector ha suscrito el convenio de gestión
+                %span.destacado>= " " + @efector.convenio_de_gestion.numero
+                , pero en la facturación se informó un número de convenio erróneo (
+                %span.destacado>= @texto_convenio_de_gestion
+                ).
+          - else
+            %span.error
+              El efector posee el convenio de gestión
+              %span.destacado>= " " + @efector.convenio_de_gestion.numero
+              , pero en la facturación no fue informado correctamente.
+        - else
+          %span.error
+            - if @texto_convenio_de_gestion
+              El sistema no tiene registrado ningún convenio de gestión para este efector, aunque en la facturación se informa
+              que el número de convenio de gestión es
+              %span.destacado>= " " + @texto_convenio_de_gestion
+            - else
+              No se encontró información sobre el convenio de gestión en la facturación,
+              ni se ha registrado un convenio de gestión en el sistema para este efector.
+      %p
+        - if @efector.convenio_de_administracion
+          - if @texto_convenio_de_administracion
+            - if @texto_convenio_de_administracion == @efector.convenio_de_administracion.numero
+              Convenio de administración:
+              %span.destacado= @texto_convenio_de_administracion
+            - else
+              %span.error
+                El efector ha suscrito el convenio de administración
+                %span.destacado>= " " + @efector.convenio_de_administracion.numero
+                , pero en la facturación se informó un número de convenio erróneo (
+                %span.destacado>= @texto_convenio_de_administracion
+                ).
+          - else
+            %span.error
+              El efector posee el convenio de administración
+              %span.destacado>= " " + @efector.convenio_de_administracion.numero
+              , pero en la facturación no fue informado correctamente.
+        - else
+          %span.error
+            - if @texto_convenio_de_administracion
+              El sistema no tiene registrado ningún convenio de administración para este efector, aunque en la facturación se informa
+              que el número de convenio de administración es
+              %span.destacado>= " " + @texto_convenio_de_administracion
+      -# Detalle
+      %h2 Detalle de las prestaciones facturadas
+      - if @detalle
+        %table
+          %thead
+            %tr
+              %th Código
+              %th Cantidad
+              %th Precio unitario
+              %th Subtotal
+              %th.destacado RESULTADO
+          %tbody
+            - @detalle.each do |d|
+              %tr
+                %td= d[:codigo_informado]
+                %td= d[:cantidad]
+                %td= d[:precio_por_unidad]
+                %td= d[:subtotal]
+                %td.destacado
+                  -# RESULTADO
+                  - case
+                    - when d[:codigo].nil?
+                      %span.error No existe el código de prestación informado
+                    - when ! d[:autorizada]
+                      %span.error El efector no tiene autorizada esta prestación
+                    - when d[:cantidad].nil?
+                      %span.error No se pudo determinar la cantidad de prestaciones
+                    - when d[:precio_por_unidad].nil?
+                      %span.error La prestación no está incluida en el nomenclador
+                    - when d[:precio_unitario_informado] != d[:precio_por_unidad]
+                      %span.error
+                        El precio unitario informado es incorrecto:
+                        = d[:precio_unitario_informado]
+                    - when d[:subtotal_informado] != d[:subtotal]
+                      %span.error
+                        El subtotal informado es incorrecto:
+                        = d[:subtotal_informado]
+                    - else
+                      Verificación correcta
+      - else
+        %p.error
+          No pudo encontrarse el detalle de las prestaciones facturadas.
+      %p
+        - if @total_calculado == @total_informado
+          Total facturado:
+          %span.destacado= @total_calculado
+        - else
+          %span.error
+            El total informado (
+            %span.destacado>= @total_informado
+            ) no coincide con el total calculado (
+            %span.destacado>= @total_calculado
+            ).
+- else # @procesado == false
+  = form_tag('/verificador', :method => 'get') do
+    %p
+      Copie y pegue los datos del consolidado de la facturación en el área
+      de texto, seleccione el nomenclador a utilizar en la verificación,
+      y presione el botón procesar.
+    %div.field
+      = label_tag(:facturacion, "Facturación:")
+      %br/
+      = text_area_tag(:facturacion, nil, {:size => '80x30'})
+    %div.field
+      = label_tag(:nomenclador_id, "Nomenclador:")
+      %br/
+      = select_tag :nomenclador_id, options_for_select(@nomencladores, @nomenclador_id), { :include_blank => false }
+    %div.actions
+      = submit_tag("Procesar")

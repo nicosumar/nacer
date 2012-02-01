@@ -1,0 +1,36 @@
+#
+# Archivo de configuración del tesauro para el proyecto 'nacer'
+# El carácter ':' separa la cadena de su remplazo. Cualquier cadena de
+# remplazo precedida por el carácter '*' no será convertida al lexema
+# correspondiente.
+#
+# Docs: http://www.sai.msu.su/~megera/oddmuse/index.cgi/Thesaurus_dictionary
+
+# Departamentos
+capital : *CA
+general alvear : *GA
+godoy cruz : *GC
+guaymallén : *GL
+guaymallen : *GL
+junín : *JN
+junin : *JN
+la paz : *LP
+las heras : *LH
+lavalle : *LV
+luján de cuyo : *LJ
+lujan de cuyo : *LJ
+luján : *LJ
+lujan : *LJ
+maipú : *MP
+maipu : *MP
+malargüe : *ML
+malargue : *ML
+rivadavia : *RV
+san carlos : *SC
+san martín : *SM
+san martin : *SM
+san rafael : *SR
+santa rosa : *SS
+tunuyán : *TN
+tunuyan : *TN
+tupungato : *TP

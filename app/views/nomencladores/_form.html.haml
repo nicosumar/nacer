@@ -1,0 +1,31 @@
+= form_for(@nomenclador) do |f|
+  - if @nomenclador.errors.any?
+    #error_explanation
+      %h2= pluralize(@nomenclador.errors.count, "error impide").to_s + " que se guarde la información del nomenclador."
+      %ul
+        - @nomenclador.errors.full_messages.each do |msg|
+          %li= msg
+
+  %h3 Información general
+  %div.field
+    = f.label :nombre
+    %br/
+    = f.text_field :nombre
+  %div.field
+    = f.label :fecha_de_inicio
+    %br/
+    = f.date_select :fecha_de_inicio
+  %div.field
+    = f.label :activo
+    %br/
+    = f.check_box :activo
+  %h3 Información complementaria
+  %div.field
+    = f.label :observaciones
+    %br/
+    = f.text_area :observaciones
+  %div.actions
+    - if @nomenclador.new_record?
+      = f.submit "Crear nomenclador"
+    - else
+      = f.submit "Actualizar datos del nomenclador"

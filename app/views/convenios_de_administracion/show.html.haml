@@ -1,0 +1,47 @@
+- content_for :title do
+  Convenio de administación
+  = @convenio_de_administracion.numero
+
+%h1
+  Convenio de administración
+  = @convenio_de_administracion.numero
+
+%p#notice= notice
+
+%p
+  El convenio de administración
+  %span.destacado= @convenio_de_administracion.numero
+  fue celebrado entre la Unidad de Gestión del Seguro Provincial y el efector
+  %span.destacado>= " " + @convenio_de_administracion.efector.nombre
+  , el día
+  %span.destacado>= " " + @convenio_de_administracion.fecha_de_suscripcion.strftime("%d/%m/%Y")
+  , suscrito por el coordinador de la UGSP y
+  - if @convenio_de_administracion.firmante then
+    el/la referente del efector,
+    %span.destacado>=  " " + @convenio_de_administracion.firmante
+  - else
+    el/la representante del efector
+  \, y designando como administrador al efector
+  %span.destacado>= " " + @convenio_de_administracion.administrador.nombre
+%p
+  El convenio de administración
+  - if @convenio_de_administracion.fecha_de_inicio.to_datetime > Time.now then
+    entrará
+  - else
+    entró
+  en vigencia el día
+  %span.destacado>= " " + @convenio_de_administracion.fecha_de_inicio.strftime("%d/%m/%Y")
+  , y se encuentra
+  - if @convenio_de_administracion.fecha_de_finalizacion.to_datetime > Time.now then
+    %span.muy_destacado ACTIVO
+    hasta el día
+  - else
+    %span.muy_destacado VENCIDO
+    desde el día 
+  %span.destacado>= " " + @convenio_de_administracion.fecha_de_finalizacion.strftime("%d/%m/%Y")
+  \.
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    %li= link_to "Modificar este convenio", edit_convenio_de_administracion_path(@convenio_de_administracion)

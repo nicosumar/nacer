@@ -1,0 +1,31 @@
+- content_for :title do
+  Usuarios
+
+%h1 Usuarios
+
+- if defined?(notice) and not notice.blank? then
+  %p#notice= notice
+
+%table
+  %thead
+    %tr
+      %th Usuario
+      %th Grupos
+      %th Último ingreso
+  %tbody
+    - @users.each do |u|
+      %tr.clickable{ :onclick => "location.href=\'#{edit_user_path(u)}\'", :title => "Modificar la cuenta de #{u.login}" }
+        %td= u.login + " (" + u.firstname + " " + u.lastname + ")"
+        %td= u.user_groups.collect{ |ug| [ug.user_group_name]}.join(", ").capitalize
+        %td
+          - if u.last_login_at.nil? then
+            No registra ningún ingreso
+          - else
+            = u.last_login_at.strftime("%d/%m/%Y")
+            - if not u.last_login_ip.nil? then
+              = " (" + u.last_login_ip + ")"
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    %li= link_to "Agregar un usuario", new_user_url

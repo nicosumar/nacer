@@ -1,0 +1,57 @@
+= form_for(@convenio_de_gestion) do |f|
+  - if @convenio_de_gestion.errors.any?
+    #error_explanation
+      %h2= pluralize(@convenio_de_gestion.errors.count, "error impide").to_s + " que se guarde la información de este convenio de gestión."
+      %ul
+        - @convenio_de_gestion.errors.full_messages.each do |msg|
+          %li= msg
+  %h3 Información general
+  %div.field
+    = f.label :numero
+    %br/
+    - if @convenio_de_gestion.new_record? then
+      = f.text_field :numero
+    - else
+      = f.text_field :numero, { :disabled => true }
+  %div.field
+    = f.label :efector
+    %br/
+    - if @convenio_de_gestion.new_record? then
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true }
+    - else
+      = f.select :efector_id, options_for_select(@efectores, @convenio_de_gestion.efector_id), {}, { :disabled => true }
+  %div.field
+    = f.label :firmante
+    %br/
+    = f.text_field :firmante
+  %div.field
+    = f.label :email_notificacion
+    %br/
+    = f.text_field :email_notificacion
+  %div.field
+    = f.label :fecha_de_suscripcion
+    %br/
+    = f.date_select :fecha_de_suscripcion
+  %div.field
+    = f.label :fecha_de_inicio
+    %br/
+    = f.date_select :fecha_de_inicio
+  %div.field
+    = f.label :fecha_de_finalizacion
+    %br/
+    = f.date_select :fecha_de_finalizacion
+  %h3 Prestaciones autorizadas
+  %div.field
+    = f.label :prestacion_autorizada_ids, "Prestaciones:"
+    %br/
+    = f.select :prestacion_autorizada_ids, options_for_select(@prestaciones, @prestacion_autorizada_ids), {}, { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" }
+  %h3 Información complementaria
+  %div.field
+    = f.label :observaciones
+    %br/
+    = f.text_area :observaciones
+  %div.actions
+    - if @convenio_de_gestion.new_record? then
+      = f.submit "Crear convenio de gestión"
+    - else
+      = f.submit "Actualizar datos del convenio"

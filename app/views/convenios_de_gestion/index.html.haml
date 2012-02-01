@@ -1,0 +1,25 @@
+%h1 Convenios de gestión
+
+%p#notice= notice
+
+%table
+  %thead
+    %tr
+      %th Convenio
+      %th Efector
+      %th Inicio
+      %th Finalización
+  %tbody
+    - @convenios_de_gestion.each do |c|
+      %tr.clickable{ :onclick => "location.href=\'#{convenio_de_gestion_path(c)}\'", :title => "Ver detalles del convenio #{c.numero}" }
+        %td= c.numero
+        %td= c.efector.nombre
+        %td= c.fecha_de_inicio.strftime("%d/%m/%Y")
+        %td= c.fecha_de_finalizacion.strftime("%d/%m/%Y")
+= will_paginate @convenios_de_gestion, :inner_window => 2, :outer_window => 0
+
+- content_for :sidebar do
+  - if can? :create, ConvenioDeGestion
+    %h2 Tareas
+    %ul
+      %li= link_to "Agregar un convenio", new_convenio_de_gestion_url

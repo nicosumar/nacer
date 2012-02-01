@@ -1,0 +1,23 @@
+%h1 Nomencladores
+
+%p#notice= notice
+
+%table
+  %thead
+    %tr
+      %th Nomenclador
+      %th Fecha de inicio
+      %th Estado
+  %tbody
+    - @nomencladores.each do |n|
+      %tr.clickable{ :onclick => "location.href=\'#{nomenclador_path(n)}\'", :title => "Ver detalles del nomenclador #{n.nombre}" }
+        %td= n.nombre
+        %td= n.fecha_de_inicio
+        %td= (n.activo ? "Activo" : "Inactivo")
+= will_paginate @nomencladores, :inner_window => 2, :outer_window => 0
+
+- content_for :sidebar do
+  - if can? :create, Nomenclador
+    %h2 Tareas
+    %ul
+      %li= link_to "Crear nomenclador", new_nomenclador_url

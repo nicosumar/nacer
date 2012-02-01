@@ -1,0 +1,10 @@
+- content_for :title do
+  Modificar datos de la adenda
+
+%h1
+  Modificar datos de la adenda al convenio 
+  = @addenda.convenio_de_gestion.numero
+  suscrita el
+  = @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+
+= render 'form'

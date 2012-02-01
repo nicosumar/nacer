@@ -1,0 +1,55 @@
+= form_for(@convenio_de_administracion) do |f|
+  - if @convenio_de_administracion.errors.any?
+    #error_explanation
+      %h2= pluralize(@convenio_de_administracion.errors.count, "error impide").to_s + " que se guarde la información de este convenio de administración."
+      %ul
+        - @convenio_de_administracion.errors.full_messages.each do |msg|
+          %li= msg
+  %h3 Información general
+  %div.field
+    = f.label :numero
+    %br/
+    - if @convenio_de_administracion.new_record?
+      = f.text_field :numero
+    - else
+      = f.text_field :numero, { :disabled => true }
+  %div.field
+    = f.label :efector
+    %br/
+    - if @convenio_de_administracion.new_record?
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true }
+    - else
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), {}, { :disabled => true }
+  %div.field
+    = f.label :administrador
+    %br/
+    - if @convenio_de_administracion.new_record?
+      = f.select :administrador_id, options_for_select(@administradores, @administrador_id), { :include_blank => true }
+    - else
+      = f.select :administrador_id, options_for_select(@administradores, @administrador_id), {}, { :disabled => true }
+  %div.field
+    = f.label :firmante
+    %br/
+    = f.text_field :firmante
+  %div.field
+    = f.label :fecha_de_suscripcion
+    %br/
+    = f.date_select :fecha_de_suscripcion
+  %div.field
+    = f.label :fecha_de_inicio
+    %br/
+    = f.date_select :fecha_de_inicio
+  %div.field
+    = f.label :fecha_de_finalizacion
+    %br/
+    = f.date_select :fecha_de_finalizacion
+  %h3 Información complementaria
+  %div.field
+    = f.label :observaciones
+    %br/
+    = f.text_area :observaciones
+  %div.actions
+    - if @convenio_de_administracion.new_record? then
+      = f.submit "Crear convenio de administración"
+    - else
+      = f.submit "Actualizar datos del convenio"

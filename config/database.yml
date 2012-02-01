@@ -1,0 +1,18 @@
+# Utilizamos el motor PostgreSQL
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: nacer
+  username: nacer_adm
+
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: nacer_dev
+  username: nacer_adm
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: nacer_test
+  username: nacer_adm

@@ -1,0 +1,42 @@
+= form_for(@user) do |f|
+  - if @user.errors.any?
+    #error_explanation
+      %h2= pluralize(@user.errors.count, "error impide").to_s + " que se guarde la información del usuario."
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+
+  %div.field
+    = f.label :firstname
+    %br/
+    = f.text_field :firstname
+  %div.field
+    = f.label :lastname
+    %br/
+    = f.text_field :lastname
+  %div.field
+    = f.label :login
+    %br/
+    = f.text_field :login
+  %div.field
+    = f.label :email
+    %br/
+    = f.text_field :email
+  %div.field
+    = f.label :password
+    %br/
+    = f.password_field :password
+  %div.field
+    = f.label :password_confirmation
+    %br/
+    = f.password_field :password_confirmation
+  - if current_user.in_group? :administradores then
+    %div.field
+      = f.label "Grupos"
+      %br/
+      = f.select :user_group_ids, options_for_select(@user_groups, @user_group_ids), {}, { :multiple => true, :size => 5, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" }
+  %div.actions
+    - if @user.persisted?
+      = f.submit "Actualizar los datos del usuario"
+    - else
+      = f.submit "Crear usuario"
