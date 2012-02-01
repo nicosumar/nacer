@@ -87,8 +87,18 @@ class VerificadorController < ApplicationController
         @total_calculado = 0.0
         @detalle.each do |d|
           begin
-            @total_calculado += d[:subtotal]
-            rescue TypeError # Si el subtotal es nil
+            # Sólo cuando el precio informado de la prestación es correcto
+            # se suma el subtotal de esa línea al total calculado
+            if d[:precio_unitario_informado] == d[:precio_por_unidad]
+              # Si el subtotal informado difiere del calculado (por un error
+              # de multiplicación) se suma al total el menor de los dos.
+              if d[:subtotal_informado] < d[:subtotal]
+                @total_calculado += d[:subtotal_informado]
+              else
+                @total_calculado += d[:subtotal]
+              end
+            end
+            rescue TypeError # Si el subtotal de alguna línea es nil
           end
         end
       end
