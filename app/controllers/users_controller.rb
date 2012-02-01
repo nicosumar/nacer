@@ -8,6 +8,8 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+    @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+    @sexo_id = nil
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_name, ug.id] }
     @user_group_ids = []
   end
@@ -26,6 +28,8 @@ class UsersController < ApplicationController
       # El usuario sólo puede modificar su propia información
       @user = current_user
     end
+    @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+    @sexo_id = @user.sexo_id
   end
 
   def create
@@ -43,6 +47,7 @@ class UsersController < ApplicationController
 
     # Si la grabación falla, volver al formulario para corregir los errores.
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_name, ug.id] }
+    @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
     render :action => "new"
   end
 
@@ -87,6 +92,7 @@ class UsersController < ApplicationController
 
     # Si la grabación falla, volver al formulario para corregir los errores.
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_name, ug.id] }
+    @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
     render :action => "edit"
   end
 

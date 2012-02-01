@@ -15,6 +15,10 @@
     %br/
     = f.text_field :lastname
   %div.field
+    = f.label :sexo_id
+    %br/
+    = f.select :sexo_id, options_for_select(@sexos, @sexo_id), {:include_blank => true}
+  %div.field
     = f.label :login
     %br/
     = f.text_field :login

@@ -7,6 +7,9 @@ load 'db/Provincias_seed.rb'
 load 'db/Departamentos_seed.rb'
 load 'db/Distritos_seed.rb'
 
+# Sexo masculino/femenino
+load 'db/Sexos_seed.rb'
+
 # Datos iniciales para usuarios y grupos
 load 'db/UserGroups_seed.rb'
 load 'db/Users_seed.rb'

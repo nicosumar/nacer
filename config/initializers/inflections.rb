@@ -160,5 +160,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("unidades_maximas", "unidades máximas")
 #  inflect.human("nomenclador_id", "nomenclador")
   inflect.human("titulo", "título")
+  inflect.human("numero", "número")
+  inflect.human("descripcion", "descripción")
 
 end

@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  belongs_to :sexo
   has_and_belongs_to_many :user_groups
   validates_presence_of :firstname, :lastname
 
