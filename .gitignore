@@ -4,3 +4,4 @@ tmp/
 test/
 .sass-cache/
 public/assets
+*.swp
