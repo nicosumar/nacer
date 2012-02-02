@@ -94,8 +94,9 @@
   %p Este convenio no registra adendas modificatorias.
 
 - content_for :sidebar do
-  - if can? :update, @convenio_de_gestion
-    %h2 Tareas
-      %ul
-        %li= link_to "Modificar este convenio", edit_convenio_de_gestion_path(@convenio_de_gestion)
-        %li= link_to "Agregar una adenda al convenio", new_addenda_url(:convenio_de_gestion_id => @convenio_de_gestion.id)
+  %h2 Tareas
+  %ul
+    - if can? :update, @convenio_de_gestion
+      %li= link_to "Modificar este convenio", edit_convenio_de_gestion_path(@convenio_de_gestion)
+    - if can? :create, Addenda
+      %li= link_to "Agregar una adenda al convenio", new_addenda_url(:convenio_de_gestion_id => @convenio_de_gestion.id)

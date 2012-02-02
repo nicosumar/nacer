@@ -10,7 +10,7 @@ class EfectoresController < ApplicationController
   end
 
   def show
-    @efector = Efector.find(params[:id], :include => [:distrito, :departamento, :convenio_de_gestion, :convenio_de_administracion, :prestaciones_autorizadas])
+    @efector = Efector.find(params[:id], :include => [:distrito, :departamento, :convenio_de_gestion, :convenio_de_administracion, :prestaciones_autorizadas, {:referentes => :contacto}])
     if @efector.prestaciones_autorizadas.any?
       @prestaciones_autorizadas = PrestacionAutorizada.find(PrestacionAutorizada.autorizadas_antes_del_dia(@efector.id, (Time.now.to_date + 1)).collect{ |p| p.id }, :include => :prestacion)
     else

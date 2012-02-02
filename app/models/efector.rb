@@ -8,6 +8,7 @@ class Efector < ActiveRecord::Base
   has_one :convenio_de_administracion
   has_many :prestaciones_autorizadas
   has_many :asignaciones_de_nomenclador
+  has_many :referentes
 
   validates_presence_of :cuie, :nombre
   validates_uniqueness_of :cuie

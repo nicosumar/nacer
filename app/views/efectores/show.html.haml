@@ -35,10 +35,10 @@
       = link_to @efector.convenio_de_administracion.numero, convenio_de_administracion_path(@efector.convenio_de_administracion)
       y está siendo administrado por:
       = link_to @efector.convenio_de_administracion.administrador.nombre, efector_path(@efector.convenio_de_administracion.administrador)
-  %h2
-    Prestaciones autorizadas al
-    = Time.now.strftime("%d/%m/%Y")
   - if @prestaciones_autorizadas.any?
+    %h2
+      Prestaciones autorizadas al
+      = Time.now.strftime("%d/%m/%Y")
     %table
       %thead
         %tr
@@ -56,8 +56,30 @@
   %p
     %span.destacado El efector aún no ha suscrito un convenio de gestión.
 
+- if @efector.referentes.any?
+  %h2 Referentes
+  %table
+    %thead
+      %tr
+        %th Referente
+        %th Inicio
+        %th Fin
+        %th Observaciones
+    %tbody
+      - @efector.referentes.each do |r|
+        %tr.clickable{ :onclick => "location.href=\'#{edit_referente_path(r)}\'", :title => "Modificar datos del referente" }
+          %td= r.contacto.mostrado
+          %td= r.fecha_de_inicio.strftime("%d/%m/%Y")
+          - if r.fecha_de_finalizacion
+            %td= r.fecha_de_finalizacion.strftime("%d/%m/%Y")
+          - else
+            %td ACTUAL
+          %td= r.observaciones
+
 - content_for :sidebar do
-  - if can? :update, Efector
-    %h2 Tareas
-    %ul
+  %h2 Tareas
+  %ul
+    - if can? :update, Efector
       %li= link_to "Modificar este efector", edit_efector_path(@efector)
+    - if can? :create, Referente
+      %li= link_to "Agregar un referente", new_referente_url(:efector_id => @efector.id)

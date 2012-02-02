@@ -2,7 +2,6 @@ class ConvenioDeGestion < ActiveRecord::Base
   belongs_to :efector
   has_many :prestaciones_autorizadas, :as => :autorizante_al_alta
   has_many :addendas
-  has_many :referentes
 
   validates_presence_of :numero, :efector_id, :fecha_de_inicio, :fecha_de_finalizacion
   validates_uniqueness_of :efector_id, :numero

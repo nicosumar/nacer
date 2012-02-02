@@ -19,6 +19,7 @@ Nacer::Application.routes.draw do
   resources :nomencladores, :except => :destroy # Prohibir el borrado hasta analizarlo más en detalle
   resources :busqueda, :only => :index
   resources :verificador, :only => :index
+  resources :referentes, :except => [:index, :show, :destroy]
 
   root :to => 'inicio#index'
 
