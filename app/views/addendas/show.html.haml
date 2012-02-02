@@ -34,8 +34,8 @@
     entró
   en vigencia el día
   %span.destacado>= " " + @addenda.fecha_de_inicio.strftime("%d/%m/%Y") + "."
-%h3 Prestaciones dadas de alta por la adenda
 - if @addenda.prestaciones_autorizadas_alta.any? then
+  %h3 Prestaciones dadas de alta por la adenda
   %table
     %thead
       %tr
@@ -46,10 +46,8 @@
         %tr
           %td= a.prestacion.codigo
           %td= a.prestacion.nombre
-- else
-  %p La adenda no da de alta ninguna prestación.
-%h3 Prestaciones dadas de baja por la adenda
 - if @addenda.prestaciones_autorizadas_baja.any? then
+  %h3 Prestaciones dadas de baja por la adenda
   %table
     %thead
       %tr
@@ -60,8 +58,13 @@
         %tr
           %td= b.prestacion.codigo
           %td= b.prestacion.nombre
-- else
-  %p La adenda no da de baja ninguna prestación.
+
+- if @addenda.observaciones
+  %h3 Información complementaria
+  %p
+    - @addenda.observaciones.split("\n").each do |l|
+      = l
+      %br/
 
 - content_for :sidebar do
   %h2 Tareas

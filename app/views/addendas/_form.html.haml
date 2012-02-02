@@ -30,6 +30,11 @@
     = f.label :prestacion_autorizada_baja_ids, "Prestaciones:"
     %br/
     = f.select :prestacion_autorizada_baja_ids, options_for_select(@prestaciones_baja, @prestacion_autorizada_baja_ids), {}, { :multiple => true, :size => 10, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" }
+  %h3 Información complementaria
+  %div.field
+    = f.label :observaciones
+    %br/
+    = f.text_area :observaciones
   %div.actions
     - if @addenda.new_record? then
       = f.submit "Crear adenda"

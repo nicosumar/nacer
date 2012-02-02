@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120201130402) do
+ActiveRecord::Schema.define(:version => 20120202134002) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20120201130402) do
     t.date     "fecha_de_inicio",        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "observaciones"
   end
 
   create_table "areas_de_prestacion", :force => true do |t|
@@ -208,7 +209,7 @@ ActiveRecord::Schema.define(:version => 20120201130402) do
     t.integer  "efector_id",            :null => false
     t.integer  "contacto_id",           :null => false
     t.text     "observaciones"
-    t.date     "fecha_de_inicio"
+    t.date     "fecha_de_inicio",       :null => false
     t.date     "fecha_de_finalizacion"
     t.datetime "created_at"
     t.datetime "updated_at"

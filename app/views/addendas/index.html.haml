@@ -3,14 +3,12 @@
 %table
   %thead
     %tr
-      %th Suscripción
       %th Convenio
       %th Efector
       %th Inicio
   %tbody
     - @addendas.each do |a|
       %tr.clickable{ :onclick => "location.href=\'#{addenda_path(a)}\'", :title => "Ver detalles de la adenda al convenio #{a.convenio_de_gestion.numero} suscrita el #{a.fecha_de_suscripcion.strftime("%d/%m/%Y")}" }
-        %td= a.fecha_de_suscripcion.strftime("%d/%m/%Y")
         %td= a.convenio_de_gestion.numero
         %td= a.convenio_de_gestion.efector.nombre
         %td= a.fecha_de_inicio.strftime("%d/%m/%Y")
