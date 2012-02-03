@@ -1,0 +1,50 @@
+- content_for :title do
+  = @contacto.mostrado
+
+%h1= @contacto.mostrado
+
+%p#notice= notice
+
+%h2 Datos de contacto
+- if @contacto.apellidos
+  %p
+    Nombre:
+    %span.destacado= @contacto.nombres + " " + @contacto.apellidos
+- if @contacto.dni
+  %p
+    Documento nacional de identidad:
+    %span.destacado= @contacto.dni
+- if @contacto.domicilio
+  %p
+    Domicilio:
+    - @contacto.domicilio.split("\n").each do |l|
+      %span.destacado= l
+      %br/
+- if @contacto.email
+  %p
+    Correo electrónico:
+    ~ mail_to "\"#{@contacto.mostrado}\" <#{@contacto.email}>", @contacto.email
+- if @contacto.email_adicional
+  %p
+    Correo electrónico adicional:
+    ~ mail_to "\"#{@contacto.mostrado}\" <#{@contacto.email_adicional}>", @contacto.email_adicional
+- if @contacto.telefono
+  %p
+    Teléfono fijo:
+    %span.destacado= @contacto.telefono
+- if @contacto.telefono_movil
+  %p
+    Teléfono celular:
+    %span.destacado= @contacto.telefono_movil
+- if @contacto.observaciones
+  %h2 Información complementaria
+  %p
+    - @contacto.observaciones.split("\n").each do |l|
+      %span.destacado= l
+      %br/
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    - if can? :update, @contacto
+      %li= link_to "Modificar este contacto", edit_contacto_path(@contacto)

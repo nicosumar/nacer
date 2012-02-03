@@ -20,6 +20,7 @@ Nacer::Application.routes.draw do
   resources :busqueda, :only => :index
   resources :verificador, :only => :index
   resources :referentes, :except => [:index, :show, :destroy]
+  resources :contactos, :except => :destroy
 
   root :to => 'inicio#index'
 

@@ -12,35 +12,37 @@
           #logo
             %h1 Sistema de gestión del seguro provincial
             %p Plan Nacer Mendoza
-          - if current_user then
+          - if current_user
             #session
               %a{:href => cerrar_sesion_path, :title => "Cerrar sesión"}
                 = image_tag "cerrar_sesion.png", :alt => "Cerrar sesión"
               %p
                 Usuario:
                 %span{:class => "username"}= link_to current_user.firstname + " " + current_user.lastname, edit_user_path(current_user), { :title => "Modificar información de mi cuenta" }
-        - if current_user then
+        - if current_user
           #menu
             %ul
               %li= link_to "Inicio", root_url
-              - if can? :read, ConvenioDeGestion then
+              - if can? :read, ConvenioDeGestion
                 %li
                   %p Convenios
                   %ul
-                    - if can? :read, Efector then
+                    - if can? :read, Efector
                       %li= link_to "Efectores", efectores_url
-                    - if can? :read, ConvenioDeGestion then
+                    - if can? :read, ConvenioDeGestion
                       %li= link_to "Convenios de gestión", convenios_de_gestion_url
-                    - if can? :read, ConvenioDeAdministracion then
+                    - if can? :read, ConvenioDeAdministracion
                       %li= link_to "Convenios de administración", convenios_de_administracion_url
-                    - if can? :read, Addenda then
+                    - if can? :read, Addenda
                       %li= link_to "Adendas", addendas_url
-              - if current_user.in_group?(:facturación) then
-                %li
-                  %p Herramientas
-                  %ul
+              %li
+                %p Herramientas
+                %ul
+                  - if can? :read, Contacto
+                    %li= link_to "Agenda de contactos", contactos_url
+                  - if current_user.in_group?(:facturación)
                     %li= link_to "Verificador de liquidaciones", verificador_index_path
-              - if current_user.in_group?(:administradores) then
+              - if current_user.in_group?(:administradores)
                 %li
                   %p Administración
                   %ul
@@ -52,7 +54,7 @@
               #content
                 = yield
               #sidebar
-                - if current_user then
+                - if current_user
                   #search
                     %h2 Búsqueda
                     %form{:method => 'get', :action => '/busqueda/'}
@@ -72,7 +74,11 @@
           %p.primero
             Copyleft 2011,
             = mail_to '"Santiago Bosio" <santiago.bosio@gmail.com>', "Santiago Bosio", :title => "Enviar un mensaje al autor"
-            = "- Ing. Técn. en Informática de Sistemas."
+            \- Ing. Técn. en Informática de Sistemas.
+          %p
+            Código fuente disponible en
+            %a{ :href => "http://github.com/sbosio/nacer", :onclick => "this.target='_blank'" } 
+              GitHub
           %p.licencia
             %a{:rel => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/deed.es", :onclick => "this.target='_blank'"}
               = image_tag "cc_by_sa.png", :alt => "Licencia Creative Commons BY-SA", :title => "Distribuido bajo una licencia Creative Commons Atribución-CompartirIgual 3.0 Unported"

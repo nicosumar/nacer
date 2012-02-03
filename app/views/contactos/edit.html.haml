@@ -1,0 +1,9 @@
+- content_for :title do
+  Modificar datos de contacto de
+  = @contacto.apellidos ? @contacto.nombres + " " + @contacto.apellidos : @contacto.mostrado
+
+%h1
+  Modificar datos de contacto de
+  = @contacto.apellidos ? @contacto.nombres + " " + @contacto.apellidos : @contacto.mostrado
+
+= render 'form'

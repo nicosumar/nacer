@@ -1,0 +1,59 @@
+= form_for(@contacto) do |f|
+  - if @contacto.errors.any?
+    #error_explanation
+      %h2= pluralize(@contacto.errors.count, "error impide").to_s + " que se guarde la información de este contacto."
+      %ul
+        - @contacto.errors.full_messages.each do |msg|
+          %li= msg
+  %h3 Datos de identificación
+  %div.field
+    = f.label :nombres
+    %br/
+    = f.text_field :nombres
+  %div.field
+    = f.label :apellidos
+    %br/
+    = f.text_field :apellidos
+  %div.field
+    = f.label :mostrado
+    %br/
+    = f.text_field :mostrado
+  %div.field
+    = f.label :sexo_id
+    %br/
+    = f.select :sexo_id, options_for_select(@sexos, @sexo_id), {:include_blank => true}
+  %div.field
+    = f.label :dni
+    %br/
+    = f.number_field :dni
+  %h3 Información de contacto
+  %div.field
+    = f.label :domicilio
+    %br/
+    = f.text_area :domicilio
+  %div.field
+    = f.label :email
+    %br/
+    = f.text_field :email
+  %div.field
+    = f.label :email_adicional
+    %br/
+    = f.text_field :email_adicional
+  %div.field
+    = f.label :telefono
+    %br/
+    = f.text_field :telefono
+  %div.field
+    = f.label :telefono_movil
+    %br/
+    = f.text_field :telefono_movil
+  %h3 Información complementaria
+  %div.field
+    = f.label :observaciones
+    %br/
+    = f.text_area :observaciones
+  %div.actions
+    - if @contacto.new_record? then
+      = f.submit "Crear contacto"
+    - else
+      = f.submit "Actualizar los datos del contacto"
