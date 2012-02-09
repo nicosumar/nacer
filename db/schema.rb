@@ -59,8 +59,8 @@ ActiveRecord::Schema.define(:version => 20120202134002) do
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
 
   create_table "contactos", :force => true do |t|
-    t.string   "nombres",         :null => false
-    t.string   "apellidos",       :null => false
+    t.string   "nombres"
+    t.string   "apellidos"
     t.string   "mostrado",        :null => false
     t.string   "dni"
     t.text     "domicilio"

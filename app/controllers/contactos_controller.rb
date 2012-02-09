@@ -19,7 +19,7 @@ class ContactosController < ApplicationController
 
   def new
     if can? :create, Contacto then
-      @efector = Efector.new
+      @contacto = Contacto.new
       @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
       @sexo_id = nil
     else
