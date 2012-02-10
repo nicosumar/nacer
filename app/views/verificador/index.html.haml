@@ -69,7 +69,7 @@
               No se indicó la fecha de facturación.
       -# Periodo facturado
       %p
-        - if @primer_dia_de_prestaciones
+        - if @primer_dia_de_prestaciones && @fecha
           - if (@fecha - @primer_dia_de_prestaciones).to_i >= 35 && (@fecha - @primer_dia_de_prestaciones).to_i <= 60
             Periodo de prestaciones:
             %span.destacado= l(@primer_dia_de_prestaciones, :format => "%B de %Y").capitalize
