@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120202134002) do
+ActiveRecord::Schema.define(:version => 20120210041102) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -20,6 +20,95 @@ ActiveRecord::Schema.define(:version => 20120202134002) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "observaciones"
+  end
+
+  create_table "afiliados", :id => false, :force => true do |t|
+    t.integer  "afiliado_id",                          :null => false
+    t.string   "clave_de_beneficiario"
+    t.string   "apellido"
+    t.string   "nombre"
+    t.string   "tipo_de_documento"
+    t.string   "clase_de_documento"
+    t.string   "numero_de_documento"
+    t.string   "sexo"
+    t.string   "provincia"
+    t.string   "localidad"
+    t.integer  "categoria_de_afiliados_id"
+    t.date     "fecha_de_nacimiento"
+    t.string   "se_declara_indigena"
+    t.integer  "lengua_originaria_id"
+    t.integer  "tribu_originaria_id"
+    t.string   "tipo_de_documento_de_la_madre"
+    t.string   "numero_de_documento_de_la_madre"
+    t.string   "apellido_de_la_madre"
+    t.string   "nombre_de_la_madre"
+    t.string   "tipo_de_documento_del_padre"
+    t.string   "numero_de_documento_del_padre"
+    t.string   "apellido_del_padre"
+    t.string   "nombre_del_padre"
+    t.string   "tipo_de_documento_del_tutor"
+    t.string   "numero_de_documento_del_tutor"
+    t.string   "apellido_del_tutor"
+    t.string   "nombre_del_tutor"
+    t.integer  "tipo_de_relacion_id"
+    t.date     "fecha_de_inscripcion"
+    t.date     "fecha_de_alta_efectiva"
+    t.date     "fecha_de_diagnostico_del_embarazo"
+    t.integer  "semanas_de_embarazo"
+    t.date     "fecha_probable_de_parto"
+    t.date     "fecha_efectiva_de_parto"
+    t.string   "activo"
+    t.string   "accion_pendiente_de_confirmar"
+    t.string   "domicilio_calle"
+    t.string   "domicilio_numero"
+    t.string   "domicilio_manzana"
+    t.string   "domicilio_piso"
+    t.string   "domicilio_depto"
+    t.string   "domicilio_entre_calle_1"
+    t.string   "domicilio_entre_calle_2"
+    t.string   "domicilio_barrio_o_paraje"
+    t.string   "domicilio_municipio"
+    t.string   "domicilio_departamento_o_partido"
+    t.string   "domicilio_localidad"
+    t.string   "domicilio_provincia"
+    t.string   "domicilio_codigo_postal"
+    t.string   "telefono"
+    t.string   "lugar_de_atencion_habitual"
+    t.date     "fecha_de_envio_de_los_datos"
+    t.date     "fecha_de_alta"
+    t.integer  "pendiente_de_enviar"
+    t.string   "codigo_provincia_uad"
+    t.string   "codigo_uad"
+    t.string   "codigo_ci_uad"
+    t.integer  "motivo_de_la_baja"
+    t.string   "mensaje_de_la_baja"
+    t.integer  "proceso_de_baja_automatica_id"
+    t.integer  "pendiente_de_enviar_a_nacion"
+    t.datetime "fecha_y_hora_de_carga"
+    t.string   "usuario_que_carga"
+    t.string   "menor_convive_con_tutor"
+    t.date     "fecha_de_baja_efectiva"
+    t.date     "fecha_de_alta_uec"
+    t.string   "auditoria"
+    t.string   "cuie_del_efector_asignado"
+    t.string   "cuie_del_lugar_de_atencion_habitual"
+    t.string   "clave_del_benef_que_provoca_baja"
+    t.string   "usuario_de_creacion"
+    t.date     "fecha_de_creacion"
+    t.integer  "persona_id"
+    t.string   "confirmacion_del_numero_de_documento"
+    t.integer  "score_de_riesgo"
+    t.string   "alfabetizacion"
+    t.integer  "alfabetizacion_anios_ultimo_nivel"
+    t.string   "alfabetizacion_de_la_madre"
+    t.integer  "alfab_madre_anios_ultimo_nivel"
+    t.string   "alfabetizacion_del_padre"
+    t.integer  "alfab_padre_anios_ultimo_nivel"
+    t.string   "alfabetizacion_del_tutor"
+    t.integer  "alfab_tutor_anios_ultimo_nivel"
+    t.string   "activo_r"
+    t.integer  "motivo_baja_r"
+    t.string   "mensaje_baja_r"
   end
 
   create_table "areas_de_prestacion", :force => true do |t|
@@ -57,6 +146,15 @@ ActiveRecord::Schema.define(:version => 20120202134002) do
 
   add_index "busquedas", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo", :unique => true
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
+
+  create_table "categorias_de_afiliados", :force => true do |t|
+    t.string "nombre"
+  end
+
+  create_table "categorias_de_afiliados_prestaciones", :id => false, :force => true do |t|
+    t.integer "categoria_de_afiliado_id"
+    t.integer "prestacion_id"
+  end
 
   create_table "contactos", :force => true do |t|
     t.string   "nombres"
@@ -172,6 +270,14 @@ ActiveRecord::Schema.define(:version => 20120202134002) do
     t.date     "fecha_de_inicio",                    :null => false
     t.boolean  "activo",          :default => false, :null => false
     t.text     "observaciones"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "periodos_de_actividad", :force => true do |t|
+    t.integer  "afiliado_id"
+    t.date     "fecha_de_inicio"
+    t.date     "fecha_de_finalizacion"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

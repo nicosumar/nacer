@@ -3,6 +3,7 @@ class Prestacion < ActiveRecord::Base
   belongs_to :grupo_de_prestaciones
   belongs_to :subgrupo_de_prestaciones
   belongs_to :unidad_de_medida
+  has_and_belongs_to_many :categorias_de_afiliados
 
   validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id, :codigo, :nombre, :unidad_de_medida_id
 

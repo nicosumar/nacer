@@ -5,3 +5,4 @@ test/
 .sass-cache/
 public/assets
 *.swp
+vendor/data

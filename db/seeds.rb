@@ -34,3 +34,7 @@ load 'db/PrestacionesAutorizadas_seed.rb'
 load 'db/Nomencladores_seed.rb'
 load 'db/AsignacionesDePrecios_seed.rb'
 load 'db/AsignacionesDeNomenclador_seed.rb'
+
+# Afiliados
+load 'db/CategoriasDeAfiliados_seed.rb'
+load 'db/Afiliados_seed.rb'

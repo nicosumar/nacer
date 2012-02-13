@@ -208,14 +208,12 @@ img.aligncenter {
 #menu li p:hover {
   color: $item_seleccionado;
   cursor: default;
-  font-weight: bold;
   margin-top: -1px;
   border: 2px solid $item_seleccionado;
 }
 
 #menu li a:hover {
   color: $item_seleccionado;
-  font-weight: bold;
   margin-top: -1px;
   border: 2px solid $item_seleccionado; }
 
