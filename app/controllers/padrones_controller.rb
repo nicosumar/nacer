@@ -56,8 +56,7 @@ class PadronesController < ApplicationController
               if afiliado.update_attributes(atr_afiliado)
                 # Actualizar el periodo de actividad de este beneficiario
                 begin
-                  periodo = PeriodoDeActividad.find(:all,
-                    :condition => "afiliado_id = #{afiliado.afiliado_id} AND fecha_de_finalizacion IS NULL").first
+                  periodo = PeriodoDeActividad.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
                 rescue
                 end
                 if afiliado.activo == "S"

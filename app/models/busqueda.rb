@@ -5,6 +5,7 @@ class Busqueda < ActiveRecord::Base
     Busqueda.find_by_sql("
       SELECT * FROM busquedas
         WHERE '#{tsquery}'::tsquery @@ vector_fts
+        AND modelo_type != 'Afiliado'
         ORDER BY ts_rank(vector_fts, '#{tsquery}'::tsquery) DESC;")
   end
 
