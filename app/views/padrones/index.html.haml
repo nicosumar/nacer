@@ -22,8 +22,8 @@
 - else # @procesado == false
   = form_tag('/padrones', :method => 'get') do
     %p
-      Seleccione el tipo de proceso, escriba la fecha del padrón
-      con el formato AAAA-MM, y presione el botón procesar.
+      Seleccione el tipo de proceso, complete los datos requeridos y
+      presione el botón procesar.
     %div.field
       = label_tag(:proceso_id, "Proceso:")
       %br/
@@ -32,5 +32,9 @@
       = label_tag(:año_y_mes, "Año y mes del padrón (AAAA-MM):")
       %br/
       = text_field_tag :año_y_mes
+    %div.field
+      = label_tag(:nomenclador_id, "Nomenclador:")
+      %br/
+      = select_tag :nomenclador_id, options_for_select(@nomencladores, @nomenclador_id), { :include_blank => true }
     %div.actions
       = submit_tag("Procesar")
