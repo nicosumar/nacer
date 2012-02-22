@@ -79,7 +79,8 @@ class PadronesController < ApplicationController
       rechazadas.each do |prestacion|
         archivo_salida.puts "\t" + efectores_segun_cuie[prestacion[:efector]] +
                             "\t" + prestacion[:nro_foja].to_s +
-                            "\t" + prestacion[:fecha_prestacion].strftime("%d/%m/%Y") +
+                            "\t" + (prestacion[:fecha_prestacion] && prestacion[:fecha_prestacion].is_a?(Date) ?
+                                    prestacion[:fecha_prestacion].strftime("%d/%m/%Y") : "") +
                             "\t" + (prestacion[:apellido_afiliado] ? prestacion[:apellido_afiliado] : prestacion[:nombre]) +
                             "\t" + (prestacion[:nombre_afiliado] ? prestacion[:nombre_afiliado] : "") +
                             "\t" + prestacion[:documento] +
@@ -157,6 +158,9 @@ class PadronesController < ApplicationController
     origen.each do |linea|
       prestacion = parsear_prestacion(linea)
       case
+        when !(prestacion[:fecha_prestacion] && prestacion[:fecha_prestacion].is_a?(Date))
+          # Rechazar la prestación si el formato de la fecha es incorrecto
+          prestacion.merge! :estado => :rechazada, :mensaje => "La fecha de la prestación no tiene un formato correcto."
         when (prestacion[:fecha_prestacion] < primero_del_mes || prestacion[:fecha_prestacion] >= primero_del_mes_siguiente)
           # Rechazar la prestación si no está dentro del periodo facturado
           prestacion.merge! :estado => :rechazada, :mensaje => "La fecha de la prestación no se encuentra dentro del mes facturado."

@@ -35,100 +35,74 @@ class Afiliado < ActiveRecord::Base
     afiliados = Afiliado.where("numero_de_documento = '#{documento}' OR
                                 numero_de_documento_de_la_madre = '#{documento}' OR
                                 numero_de_documento_del_padre = '#{documento}' OR
-                                numero_de_documento_del_tutor = '#{documento}'")
-    nivel_coincidencia = 0
+                                numero_de_documento_del_tutor = '#{documento}'", :order => "afiliado_id ASC")
+
+    # Procesar los nombres de todos los afiliados encontrados relacionados con el número de documento,
+    # y mantener la/s mejor/es coincidencia/s, descartando el resto.
+    nivel_maximo = 1
     afiliados.each do |afiliado|
+      nivel_actual = 0
       apellido_afiliado = self.transformar_nombre(afiliado.apellido)
       nombre_afiliado = self.transformar_nombre(afiliado.nombre)
       nombre_y_apellido = self.transformar_nombre(nombre_y_apellido)
+
+      # Verificar apellidos
       case
         when (apellido_afiliado.split(" ").all? { |apellido| nombre_y_apellido.index(apellido) })
           # Coinciden todos los apellidos
-          case
-            when (nombre_afiliado.split(" ").all? { |nombre| nombre_y_apellido.index(nombre) })
-              # Coinciden todos los nombres
-              if afiliado.clase_de_documento == clase
-                if nivel_coincidencia < 8
-                  nivel_coincidencia = 8
-                  encontrados = [afiliado]
-                else
-                  encontrados << afiliado
-                end
-              else
-                if nivel_coincidencia < 7
-                  nivel_coincidencia = 7
-                  encontrados = [afiliado]
-                elsif nivel_coincidencia == 7
-                  encontrados << afiliado
-                end
-              end
-            when nivel_coincidencia < 7 && (nombre_afiliado.split(" ").any? { |nombre| nombre_y_apellido.index(nombre) })
-              # Coincide algún nombre
-              if afiliado.clase_de_documento == clase
-                if nivel_coincidencia < 6
-                  nivel_coincidencia = 6
-                  encontrados = [afiliado]
-                elsif nivel_coincidencia == 6
-                  encontrados << afiliado
-                end
-              else
-                if nivel_coincidencia < 5
-                  nivel_coincidencia = 5
-                  encontrados = [afiliado]
-                elsif nivel_coincidencia == 5
-                  encontrados << afiliado
-                end
-              end
-          end
-        when nivel_coincidencia < 5 && (apellido_afiliado.split(" ").any? { |apellido| nombre_y_apellido.index(apellido) })
+          nivel_actual = 8
+        when (apellido_afiliado.split(" ").any? { |apellido| nombre_y_apellido.index(apellido) })
           # Coincide algún apellido
-          case
-            when (nombre_afiliado.split(" ").all? { |nombre| nombre_y_apellido.index(nombre) })
-              # Coinciden todos los nombres
-              if afiliado.clase_de_documento == clase
-                if nivel_coincidencia < 4
-                  nivel_coincidencia = 4
-                  encontrados = [afiliado]
-                elsif nivel_coincidencia == 4
-                  encontrados << afiliado
-                end
-              else
-                if nivel_coincidencia < 3
-                  nivel_coincidencia = 3
-                  encontrados = [afiliado]
-                elsif nivel_coincidencia == 3
-                  encontrados << afiliado
-                end
-              end
-            when nivel_coincidencia < 3 && (nombre_afiliado.split(" ").any? { |nombre| nombre_y_apellido.index(nombre) })
-              # Coincide algún nombre
-              if afiliado.clase_de_documento == clase
-                if nivel_coincidencia < 2
-                  nivel_coincidencia = 2
-                  encontrados = [afiliado]
-                elsif nivel_coincidencia == 2
-                  encontrados << afiliado
-                end
-              else
-                if nivel_coincidencia < 1
-                  nivel_coincidencia = 1
-                  encontrados = [afiliado]
-                elsif nivel_coincidencia == 1
-                  encontrados << afiliado
-                end
-              end
+          nivel_actual = 4
+        else
+          # No coincide ningún apellido, procedemos a verificar si algún apellido registrado tiene una distancia
+          # de Levenshtein menor o igual que 2 con alguno de los informados
+          if (nombre_y_apellido.split(" ").any? { |nom_ape| (
+              apellido_afiliado.split(" ").any? { |apellido| Text::Levenshtein.distance(nom_ape, apellido) <= 2 }) })
+            nivel_actual = 2
+          else
+            nivel_actual = 1
           end
+      end
+
+      # Verificar nombres
+      case
+        when (nombre_afiliado.split(" ").all? { |nombre| nombre_y_apellido.index(nombre) })
+          # Coinciden todos los nombres
+          nivel_actual *= 7
+        when (nombre_afiliado.split(" ").any? { |nombre| nombre_y_apellido.index(nombre) })
+          # Coincide algún nombre
+          nivel_actual *= 3
+        else
+          # No coincide ningún nombre, procedemos a verificar si algún nombre registrado tiene una distancia de Levenshtein
+          # menor o igual que 2 con alguno de los informados
+          if (nombre_y_apellido.split(" ").any? { |nom_ape| (
+              nombre_afiliado.split(" ").any? { |nombre| Text::Levenshtein.distance(nom_ape, nombre) <= 2 }) })
+            nivel_actual *= 1
+          else
+            nivel_actual *= 0
+          end
+      end
+
+      if nivel_actual > nivel_maximo
+        nivel_maximo = nivel_actual
+        encontrados = [afiliado]
+      elsif nivel_actual == nivel_maximo
+        encontrados << afiliado
       end
     end
 
-    
-    # Intentar individualizar a un único afiliado eliminando los duplicados
+    # Intercambiar los beneficiarios marcados como duplicados (que están dados de baja) por los registros originales
     encontrados.each_with_index do |afiliado, i|
-      if afiliado.mensaje_de_la_baja && (clave = afiliado.mensaje_de_la_baja.downcase.match(/.*dupl.*([0-9]{16})/))
+      if afiliado.mensaje_de_la_baja && afiliado.mensaje_de_la_baja.downcase.match(/dupl/)
+        if (clave = afiliado.mensaje_de_la_baja.match(/[0-9]{16}/))
+          encontrados << Afiliado.where("clave_de_beneficiario = '#{clave}'").first
+        end
         encontrados.delete_at i
-        encontrados << Afiliado.where("clave_de_beneficiario = '#{clave[1]}'").first
       end
     end
+
+    # Eliminar los registros duplicados
     if encontrados.size > 0
       sin_duplicados = [encontrados[0]]
       encontrados.each_with_index do |afiliado, i|
@@ -141,13 +115,14 @@ class Afiliado < ActiveRecord::Base
     end
 
     # Devolver el o los afiliados si se encontró alguno
+    return [sin_duplicados.last] if sin_duplicados.size > 1
     return sin_duplicados if sin_duplicados.size > 0
 
     ### TODO: ¿probar otros métodos para tratar de encontrar el afiliado?  (por ejemplo: buscar por nombre,
     ###       y luego verificar si el documento está mal ingresado)
 
     # Devolver 'nil' si no se encontró ningún afiliado que corresponda aproximadamente con los parámetros
-    return nil unless sin_duplicados.size > 0
+    return nil
   end
 
   # Indica si el afiliado estaba inscripto para la fecha del parámetro, o al día de hoy si
