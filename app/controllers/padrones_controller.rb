@@ -36,6 +36,7 @@ class PadronesController < ApplicationController
     Efector.find(:all).each do |efector|
       efectores_segun_cuie.merge! efector.cuie => efector.nombre
     end
+    archivo_sumas = File.new("vendor/data/SUMAS.csv", "w")
     @resultado.each do |hash_administrador|
       aceptadas_por_efector = {}
       suma_aceptadas = 0.0
@@ -57,7 +58,7 @@ class PadronesController < ApplicationController
                             "\t" + prestacion[:numero_documento] +
                             "\t" + prestacion[:historia_clinica] +
                             "\t" + prestacion[:codigo] +
-                            "\t" + prestacion[:monto].to_s.gsub(".", ",") +
+                            "\t" + ("%.2f" % prestacion[:monto]).gsub(".", ",") +
                             "\t" + prestacion[:mes_padron] +
                             "\t" + prestacion[:clave_beneficiario]
         if aceptadas_por_efector.has_key? prestacion[:efector] 
@@ -72,10 +73,10 @@ class PadronesController < ApplicationController
         listado_de_prestaciones.merge! prestacion[:codigo] => prestacion[:monto] unless listado_de_prestaciones.has_key? prestacion[:codigo]
         suma_aceptadas += prestacion[:monto]
       end
-      archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{suma_aceptadas.to_s.gsub(".", ",")}"
+      archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{("%.2f" % suma_aceptadas).gsub(".", ",")}"
       archivo_salida.puts
       archivo_salida.puts "Rechazadas:"
-      archivo_salida.puts "\tEfector\tFolio\tFecha\tApellidos\tNombres\tDocumento\tH. clínica\tCódigo prest.\tMonto\tMes padrón\tClave beneficiario"
+      archivo_salida.puts "\tEfector\tFolio\tFecha\tApellidos\tNombres\tDocumento\tH. clínica\tCódigo prest.\tMonto\tMotivo de rechazo\tClave beneficiario"
       rechazadas.each do |prestacion|
         archivo_salida.puts "\t" + efectores_segun_cuie[prestacion[:efector]] +
                             "\t" + prestacion[:nro_foja].to_s +
@@ -86,7 +87,7 @@ class PadronesController < ApplicationController
                             "\t" + prestacion[:documento] +
                             "\t" + prestacion[:historia_clinica] +
                             "\t" + prestacion[:codigo] +
-                            "\t" + prestacion[:monto].to_s.gsub(".", ",") +
+                            "\t" + ("%.02f" % prestacion[:monto]).gsub(".", ",") +
                             "\t" + prestacion[:mensaje] +
                             "\t" + (prestacion[:clave_beneficiario] ? prestacion[:clave_beneficiario] : "")
         if rechazadas_por_efector.has_key? prestacion[:efector]
@@ -101,9 +102,9 @@ class PadronesController < ApplicationController
         listado_de_prestaciones.merge! prestacion[:codigo] => prestacion[:monto] unless listado_de_prestaciones.has_key? prestacion[:codigo]
         suma_rechazadas += prestacion[:monto]
       end
-      archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{suma_rechazadas.to_s.gsub(".", ",")}"
+      archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{("%.02f" % suma_rechazadas).gsub(".", ",")}"
       archivo_salida.puts
-      archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{(suma_aceptadas + suma_rechazadas).to_s.gsub(".", ",")}"
+      archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{("%.02f" % (suma_aceptadas + suma_rechazadas)).gsub(".", ",")}"
       archivo_salida.puts
       archivo_salida.puts "Aceptadas:"
       archivo_salida.puts "S/nomenclador\t\t" + 
@@ -111,12 +112,15 @@ class PadronesController < ApplicationController
       archivo_salida.puts "Prestación\tValor\t" + 
                           (aceptadas_por_efector.collect { |hash_efector| "Cantidad\tTotal" }).join("\t")
       (listado_de_prestaciones.collect { |prest| prest[0]}).sort.each do |prestacion|
-        archivo_salida.puts prestacion + "\t" + listado_de_prestaciones[prestacion].to_s.gsub(".", ",") + "\t" +
+        archivo_salida.puts prestacion + "\t" + ("%.02f" % listado_de_prestaciones[prestacion]).gsub(".", ",") + "\t" +
                             (aceptadas_por_efector.collect { |efector| (efector[1].has_key?(prestacion) ?
                                                              efector[1][prestacion][1].to_s + "\t" +
-                                                             (efector[1][prestacion][0] * efector[1][prestacion][1]).to_s.gsub(".", ",") :
+                                                             ("%.02f" % (efector[1][prestacion][0] * efector[1][prestacion][1])).gsub(".", ",") :
                                                              "0\t0,00") }).join("\t")
       end
+      archivo_salida.puts "\t\t\t" +
+        (aceptadas_por_efector.collect { |efector| ("%.02f" % ((efector[1].values.collect { |prest| prest[0] * prest[1] }).sum)).gsub(".", ",") }).join("\t\t") +
+        "\t" + ("%.02f" % ((aceptadas_por_efector.collect { |efector| (efector[1].values.collect { |prest| prest[0] * prest[1] }).sum }).sum)).gsub(".", ",")
       archivo_salida.puts
       archivo_salida.puts
       archivo_salida.puts
@@ -132,8 +136,15 @@ class PadronesController < ApplicationController
                                                               (efector[1][prestacion][0] * efector[1][prestacion][1]).to_s.gsub(".", ",") :
                                                               "0\t0,00") }).join("\t")
       end
+      archivo_salida.puts "\t\t\t" +
+        (rechazadas_por_efector.collect { |efector| ("%.02f" % ((efector[1].values.collect { |prest| prest[0] * prest[1] }).sum)).gsub(".", ",") }).join("\t\t") +
+        "\t" + ("%.02f" % ((rechazadas_por_efector.collect { |efector| (efector[1].values.collect { |prest| prest[0] * prest[1] }).sum }).sum)).gsub(".", ",")
       archivo_salida.close
+
+      # Registrar el total en el archivo de salida SUMAS.csv
+      archivo_sumas.puts "#{hash_administrador[0]} - #{administrador}\t#{("%.02f" % (suma_aceptadas + suma_rechazadas)).gsub(".", ",")}"
     end
+    archivo_sumas.close
   end
 
   def cruzar_facturacion
@@ -143,6 +154,7 @@ class PadronesController < ApplicationController
       primero_del_mes = Date.new(año.to_i, mes.to_i, 1)
       primero_del_mes_siguiente = Date.new((mes == "12" ? año.to_i + 1 : año.to_i), (mes == "12" ? 1 : mes.to_i + 1), 1)
       origen = File.new("vendor/data/Facturación_#{params[:año_y_mes]}.txt", "r")
+#      resultado = File.new("vendor/data/ResultadoDelCruce_#{params[:año_y_mes]}.txt", "w")  # BORRAME
       nomenclador = Nomenclador.find(params[:nomenclador_id], :include => {:asignaciones_de_precios => :prestacion})
       asignaciones_de_precios = {}
       nomenclador.asignaciones_de_precios.each do |asignacion|
@@ -207,8 +219,11 @@ class PadronesController < ApplicationController
 
       # Almacenar el resultado en el hash
       guardar_resultado(prestacion)
+#      resultado.puts((prestacion.collect {|d| d[0].to_s + " => " + d[1].to_s }).join(" | ")) # BORRAME
+#      resultado.flush
     end   # origen.each
     origen.close
+#    resultado.close
 
   end   # def cruzar_facturacion
 

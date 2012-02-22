@@ -163,7 +163,7 @@ class Afiliado < ActiveRecord::Base
         return fecha.strftime("%Y-%m")
       end
     end
-    return (fecha.month == 12 ? (fecha.year + 1).to_s + "-01" : fecha.year.to_s + "-" + fecha.month.to_s)
+    return (fecha.month == 12 ? (fecha.year + 1).to_s + "-01" : fecha.year.to_s + "-" + (fecha.month + 1).to_s)
   end
 
   # Devuelve un Array con los códigos de categoría válidos para el afiliado en la fecha especificada.
