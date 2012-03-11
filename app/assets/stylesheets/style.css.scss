@@ -238,7 +238,7 @@ img.aligncenter {
 /* Page */
 
 #page {
-	width: 960px;
+  width: 960px;
 }
 
 /* Content */
@@ -265,7 +265,8 @@ table th {
   border-bottom: 2px solid #FFFFFF;
   border-top: 1px solid transparent;
   color: white;
-  padding: 8px; }
+  padding: 8px;
+  text-align: center; }
 
 table tr {
   font-size: 12px; }
@@ -275,7 +276,13 @@ table td {
   border-bottom: 2px solid #FFFFFF;
   border-top: 1px solid transparent;
   color: $azul_nacer;
-  padding: 8px; }
+  padding: 8px;
+  &.centrado {
+    text-align: center; }
+  &.izquierda {
+    text-align: left; }
+  &.derecha {
+    text-align: right; } }
 
 table tr:hover td {
   background: none repeat scroll 0 0 #D0DAFD; }
