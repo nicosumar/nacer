@@ -43,4 +43,11 @@ class ApplicationController < ActionController::Base
     session[:return_to] = nil
   end
 
+private
+ 
+  def parametro_fecha(hash, clave)
+    atributo = clave.to_s
+    return Date.new(hash[atributo + '(1i)'].to_i, hash[atributo + '(2i)'].to_i, hash[atributo + '(3i)'].to_i)   
+  end
+
 end
