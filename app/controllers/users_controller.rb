@@ -60,7 +60,7 @@ class UsersController < ApplicationController
       @user = User.find(params[:id], :include => :user_groups)
     elsif not (params[:id].to_s == current_user.id.to_s)
       # Rechazar un intento fraguado de editar la información de otros usuarios
-      redirect_to root_url, :notice => "No está autorizado para modificar la información de otros usuarios."
+      redirect_to root_url, :notice => "No está autorizado para modificar la información de otros usuarios. Este incidente será reportado al administrador del sistema."
       return
     else
       # El usuario sólo puede modificar su propia información

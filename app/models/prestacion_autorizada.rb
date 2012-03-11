@@ -1,9 +1,15 @@
 class PrestacionAutorizada < ActiveRecord::Base
+  # No se declara ningún atributo protegido ya que este modelo se modifica indirectamente
+  # a través de las adendas y convenios de gestión
+  attr_protected nil
+
+  # Asociaciones
   belongs_to :efector
   belongs_to :prestacion
   belongs_to :autorizante_al_alta, :polymorphic => true
   belongs_to :autorizante_de_la_baja, :polymorphic => true
 
+  # Validaciones
   validates_presence_of :efector_id, :prestacion_id, :fecha_de_inicio
 
   # Devuelve las prestaciones autorizadas para el ID del efector que se pasa como parámetro
