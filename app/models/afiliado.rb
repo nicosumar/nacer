@@ -1,4 +1,5 @@
 class Afiliado < ActiveRecord::Base
+  # TODO: seguridad, probablemente ninguna ya que no está asociado a ningún formulario aún
   set_primary_key "afiliado_id"
 
   belongs_to :categoria_de_afiliado
@@ -21,12 +22,14 @@ class Afiliado < ActiveRecord::Base
       normalizado.gsub!(/[ÍÏÌÎ1]/, "I")
       normalizado.gsub!(/[ÓÖÒÔ0]/, "O")
       normalizado.gsub!(/[ÚÜÙÛ]/, "U")
+      normalizado.gsub!("Ç", "C")
+      normalizado.gsub!(/  /, " ")
     end
     return normalizado
   end
 
   # Busca un afiliado por su número de documento y nombre, devolviendo todos los posibles candidatos.
-  def self.busqueda_por_aproximacion(documento, nombre_y_apellido, clase = "P")
+  def self.busqueda_por_aproximacion(documento, nombre_y_apellido)
     return nil if !(documento && nombre_y_apellido)
 
     encontrados = []
@@ -48,10 +51,10 @@ class Afiliado < ActiveRecord::Base
 
       # Verificar apellidos
       case
-        when (apellido_afiliado.split(" ").all? { |apellido| nombre_y_apellido.index(apellido) })
-          # Coinciden todos los apellidos
-          nivel_actual = 8
-        when (apellido_afiliado.split(" ").any? { |apellido| nombre_y_apellido.index(apellido) })
+#        when (apellido_afiliado.split(" ").all? { |apellido| nombre_y_apellido.index(apellido) })
+#          # Coinciden todos los apellidos
+#          nivel_actual = 8
+        when (apellido_afiliado.split(" ").any? { |apellido| (nombre_y_apellido.split(" ").any? { |nomape| nomape == apellido }) })
           # Coincide algún apellido
           nivel_actual = 4
         else
@@ -67,20 +70,20 @@ class Afiliado < ActiveRecord::Base
 
       # Verificar nombres
       case
-        when (nombre_afiliado.split(" ").all? { |nombre| nombre_y_apellido.index(nombre) })
+        when (nombre_afiliado.split(" ").all? { |nombre| (nombre_y_apellido.split(" ").any? { |nomape| nomape == nombre }) })
           # Coinciden todos los nombres
-          nivel_actual *= 7
-        when (nombre_afiliado.split(" ").any? { |nombre| nombre_y_apellido.index(nombre) })
+          nivel_actual *= 16
+        when (nombre_afiliado.split(" ").any? { |nombre| (nombre_y_apellido.split(" ").any? { |nomape| nomape == nombre }) })
           # Coincide algún nombre
-          nivel_actual *= 3
+          nivel_actual *= 8
         else
           # No coincide ningún nombre, procedemos a verificar si algún nombre registrado tiene una distancia de Levenshtein
           # menor o igual que 2 con alguno de los informados
           if (nombre_y_apellido.split(" ").any? { |nom_ape| (
               nombre_afiliado.split(" ").any? { |nombre| Text::Levenshtein.distance(nom_ape, nombre) <= 2 }) })
-            nivel_actual *= 1
+            nivel_actual *= 4
           else
-            nivel_actual *= 0
+            nivel_actual *= 1
           end
       end
 
@@ -92,37 +95,21 @@ class Afiliado < ActiveRecord::Base
       end
     end
 
-    # Intercambiar los beneficiarios marcados como duplicados (que están dados de baja) por los registros originales
-    encontrados.each_with_index do |afiliado, i|
-      if afiliado.mensaje_de_la_baja && afiliado.mensaje_de_la_baja.downcase.match(/dupl/)
-        if (clave = afiliado.mensaje_de_la_baja.match(/[0-9]{16}/))
-          encontrados << Afiliado.where("clave_de_beneficiario = '#{clave}'").first
-        end
-        encontrados.delete_at i
+    # Eliminar los registros marcados como duplicados (que están dados de baja)
+    sin_duplicados = []
+    encontrados.each do |afiliado|
+      if !afiliado.mensaje_de_la_baja || !afiliado.mensaje_de_la_baja.downcase.match(/dupl/)
+        sin_duplicados << afiliado
       end
     end
 
-    # Eliminar los registros duplicados
-    if encontrados.size > 0
-      sin_duplicados = [encontrados[0]]
-      encontrados.each_with_index do |afiliado, i|
-        if i > 0 && !((encontrados.collect {|e| e.afiliado_id})[0..(i-1)].member? afiliado.afiliado_id)
-          sin_duplicados << afiliado
-        end
-      end
-    else
-      sin_duplicados = []
-    end
-
-    # Devolver el o los afiliados si se encontró alguno
-    return [sin_duplicados.last] if sin_duplicados.size > 1
-    return sin_duplicados if sin_duplicados.size > 0
+    return [sin_duplicados, nivel_maximo] if sin_duplicados.size > 0
 
     ### TODO: ¿probar otros métodos para tratar de encontrar el afiliado?  (por ejemplo: buscar por nombre,
     ###       y luego verificar si el documento está mal ingresado)
 
     # Devolver 'nil' si no se encontró ningún afiliado que corresponda aproximadamente con los parámetros
-    return nil
+    return [nil, 0]
   end
 
   # Indica si el afiliado estaba inscripto para la fecha del parámetro, o al día de hoy si

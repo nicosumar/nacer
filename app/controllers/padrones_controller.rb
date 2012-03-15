@@ -37,6 +37,9 @@ class PadronesController < ApplicationController
       efectores_segun_cuie.merge! efector.cuie => efector.nombre
     end
     archivo_sumas = File.new("vendor/data/SUMAS.csv", "w")
+    suma_total_aceptadas = 0
+    suma_total_rechazadas = 0
+    archivo_sumas.puts "Administrador / Efector autoadministrado\tMonto total entregado\tMonto rechazado\tMonto aceptado para liquidar"
     @resultado.each do |hash_administrador|
       aceptadas_por_efector = {}
       suma_aceptadas = 0.0
@@ -52,10 +55,11 @@ class PadronesController < ApplicationController
       aceptadas.each do |prestacion|
         archivo_salida.puts "\t" + efectores_segun_cuie[prestacion[:efector]] +
                             "\t" + prestacion[:nro_foja].to_s +
-                            "\t" + prestacion[:fecha_prestacion].strftime("%d/%m/%Y") +
-                            "\t" + prestacion[:apellido_afiliado] +
-                            "\t" + prestacion[:nombre_afiliado] +
-                            "\t" + prestacion[:numero_documento] +
+                            "\t" + (prestacion[:fecha_prestacion] && prestacion[:fecha_prestacion].is_a?(Date) ?
+                                    prestacion[:fecha_prestacion].strftime("%d/%m/%Y") : "") +
+                            "\t" + (prestacion[:apellido_afiliado] ? prestacion[:apellido_afiliado] : prestacion[:nombre]) +
+                            "\t" + (prestacion[:nombre_afiliado] ? prestacion[:nombre_afiliado] : "") +
+                            "\t" + prestacion[:documento] +
                             "\t" + prestacion[:historia_clinica] +
                             "\t" + prestacion[:codigo] +
                             "\t" + ("%.2f" % prestacion[:monto]).gsub(".", ",") +
@@ -142,8 +146,12 @@ class PadronesController < ApplicationController
       archivo_salida.close
 
       # Registrar el total en el archivo de salida SUMAS.csv
-      archivo_sumas.puts "#{hash_administrador[0]} - #{administrador}\t#{("%.02f" % (suma_aceptadas + suma_rechazadas)).gsub(".", ",")}"
+      archivo_sumas.puts "#{hash_administrador[0]} - #{administrador}\t#{("%.02f" % (suma_aceptadas + suma_rechazadas)).gsub(".", ",")}\t#{("%.02f" % suma_rechazadas).gsub(".", ",")}\t#{("%.02f" % suma_aceptadas).gsub(".", ",")}"
+      suma_total_aceptadas += suma_aceptadas
+      suma_total_rechazadas += suma_rechazadas
     end
+    archivo_sumas.puts
+    archivo_sumas.puts "TOTALES\t#{("%.02f" % (suma_total_aceptadas + suma_total_rechazadas)).gsub(".", ",")}\t#{("%.02f" % suma_total_rechazadas).gsub(".", ",")}\t#{("%.02f" % suma_total_aceptadas).gsub(".", ",")}"
     archivo_sumas.close
   end
 
@@ -162,13 +170,14 @@ class PadronesController < ApplicationController
       end
     rescue
       @errores_presentes = true
-      @errores << "La fecha indicada es incorrecta, no se seleccionó el nomenclador, o no se encontró el archivo de la facturación."
+      @errores << "La fecha indicada es incorrecta, no se seleccionó un nomenclador, o no se encontró el archivo de la facturación."
       return
     end
 
     # Procesar el archivo de prestaciones facturadas
-    origen.each do |linea|
+    origen.each_with_index do |linea, i|
       prestacion = parsear_prestacion(linea)
+      afiliado = nil
       case
         when !(prestacion[:fecha_prestacion] && prestacion[:fecha_prestacion].is_a?(Date))
           # Rechazar la prestación si el formato de la fecha es incorrecto
@@ -181,21 +190,59 @@ class PadronesController < ApplicationController
           prestacion.merge! :estado => :rechazada, :mensaje => "El código de la prestación no existe para el nomenclador seleccionado."
           puts prestacion
         when (asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion == 0.0 &&
-             asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
+          asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
           # Rechazar la prestación porque no coincide el monto indicado
           prestacion.merge! :estado => :rechazada, :mensaje => "El monto de la prestación no coincide con el del nomenclador seleccionado."
-        when (afiliados = Afiliado.busqueda_por_aproximacion(prestacion[:documento], prestacion[:nombre], prestacion[:clase]))
-          if afiliados.size > 1
-            # Se encontraron varios beneficiarios que cumplen los criterios de búsqueda
-            prestacion.merge!(:estado => :rechazada,
-                             :mensaje => "No se pudo individualizar al beneficiario entre: " +
-                                         (afiliados.collect {|a| a.clave_de_beneficiario}).join(", ") + ".")
-          else
+        else
+          afiliados, nivel_coincidencia = Afiliado.busqueda_por_aproximacion(prestacion[:documento], prestacion[:nombre])
+          if afiliados && afiliados.size > 1
+            # Se encontraron varios beneficiarios que cumplen los criterios de búsqueda, se mantiene el beneficiario que posee ese documento
+            # propio, y (preferentemente) que esté activo, ya que existen dos casos posibles: si el documento de la prestación es propio,
+            # manteniendo alguno de los registros devueltos con documento propio existen mejores probabilidades de seleccionar el registro
+            # correcto, en caso contrario, con un documento ajeno, indica con altas probabilidades que se trata de un RN anotado con el documento
+            # de la madre, y la prestación se le paga a ella.
+            afiliados_con_documento_propio = []
+            afiliados.each do |afiliado|
+              if afiliado.clase_de_documento.upcase == "P"
+                afiliados_con_documento_propio << afiliado
+              end
+            end
+            if afiliados_con_documento_propio.size == 0
+              # Ninguno de los beneficiarios tenía documento propio, rechazar la prestación porque no está inscripto
+              prestacion.merge! :estado => :rechazada, :mensaje => "No se encuentra al beneficiario."
+            elsif afiliados_con_documento_propio.size > 1
+              # Altamente improbable, dos registros con el mismo documento propio pero sin marcación de duplicados, mantener el que esté
+              # activo, y si no hay ninguno activo, mantener el primero (igual será rechazado por no estar activo).
+              afiliado_activo = nil
+              afiliados_con_documento_propio.each do |afiliado|
+                if afiliado.activo?(prestacion[:fecha_prestacion])
+                  afiliado_activo = afiliado
+                  break
+                end
+              end
+              if afiliado_activo
+                afiliado = afiliado_activo
+              else
+                afiliado = afiliados_con_documento_propio.first
+              end
+            else
+              # Un único afiliado posee ese documento propio, mantenerlo
+              afiliado = afiliados_con_documento_propio.first
+            end
+          elsif afiliados && afiliados.size == 1
             # Se encontró un único beneficiario
-            afiliado = afiliados[0]
-            prestacion.merge! :clave_beneficiario => afiliado.clave_de_beneficiario, :apellido_afiliado => afiliado.apellido,
-                              :nombre_afiliado => afiliado.nombre, :tipo_documento => afiliado.tipo_de_documento,
-                              :clase_documento => afiliado.clase_de_documento, :numero_documento => afiliado.numero_de_documento
+            afiliado = afiliados.first
+          else
+            # No se encontró al beneficiario
+            prestacion.merge! :estado => :rechazada, :mensaje => "No se encuentra al beneficiario."
+          end
+          if afiliado
+            prestacion.merge! :clave_beneficiario => afiliado.clave_de_beneficiario
+            if nivel_coincidencia >= 8
+              # En caso de tener una buena coincidencia (supuestamente) cambiamos los datos del DNI, nombres, etc. por los registrados
+              prestacion.merge! :apellido_afiliado => afiliado.apellido, :nombre_afiliado => afiliado.nombre, :tipo => afiliado.tipo_de_documento,
+                :clase => afiliado.clase_de_documento, :documento => afiliado.numero_de_documento
+            end
             case
               when !(afiliado.inscripto?(prestacion[:fecha_prestacion]))
                 # Rechazar la prestación porque la fecha de inscripción es posterior a la de prestación
@@ -205,25 +252,26 @@ class PadronesController < ApplicationController
                 prestacion.merge! :estado => :rechazada, :mensaje => "El beneficiario no está activo."
               when !(afiliado.categorias(prestacion[:fecha_prestacion]).any? {|c| (CategoriaDeAfiliado.find(c).prestaciones.collect {|p| p.codigo}).member? prestacion[:codigo]})
                 # Rechazar la prestación porque la categoría del beneficiario no condice con la prestación para la fecha en que se realizó
-                prestacion.merge! :estado => :rechazada, :mensaje => "La categoría del beneficiario no condice con la prestación.",
-                                  :categorias => afiliado.categorias
+                prestacion.merge! :estado => :rechazada, :mensaje => "La categoría del beneficiario no condice con la prestación.", :categorias => afiliado.categorias
               else
                 # Prestación aceptada para el pago
                 prestacion.merge! :estado => :aceptada, :mes_padron => afiliado.padron_activo(prestacion[:fecha_prestacion])
             end
           end
-        else
-          # No se encontró al beneficiario
-          prestacion.merge! :estado => :rechazada, :mensaje => "No se encuentra al beneficiario."
+      end
+
+      # Modificar el código de prestación si el precio de la misma puede ser variable, haciéndolo único
+      if asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion != 0.0
+        prestacion[:codigo] += " (" + i.to_s + ")"
       end
 
       # Almacenar el resultado en el hash
       guardar_resultado(prestacion)
 #      resultado.puts((prestacion.collect {|d| d[0].to_s + " => " + d[1].to_s }).join(" | ")) # BORRAME
-#      resultado.flush
+#      resultado.flush # BORRAME
     end   # origen.each
     origen.close
-#    resultado.close
+#    resultado.close #BORRAME
 
   end   # def cruzar_facturacion
 
