@@ -1,6 +1,10 @@
+- content_for :title do
+  Convenios de gestión
+
 %h1 Convenios de gestión
 
-%p#notice= notice
+- if notice
+  %p#notice= notice
 
 %table
   %thead

@@ -71,8 +71,13 @@ class AddendasController < ApplicationController
     end
 
     # Crear las variables requeridas para generar el formulario
-    @addenda = Addenda.find(params[:id], :include => [{:convenio_de_gestion => :efector},
-      {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion}])
+    begin
+      @addenda = Addenda.find(params[:id], :include => [{:convenio_de_gestion => :efector},
+        {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion}])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to(root_url,
+        :notice => "Petición no válida. El incidente será reportado al administrador del sistema.")
+    end
     @convenio_de_gestion = @addenda.convenio_de_gestion
     @prestaciones_alta = Prestacion.no_autorizadas_antes_del_dia(@convenio_de_gestion.efector.id,
       @addenda.fecha_de_inicio).collect{ |p| [p.codigo + " - " + p.nombre_corto, p.id] }

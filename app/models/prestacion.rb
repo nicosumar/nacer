@@ -4,6 +4,8 @@ class Prestacion < ActiveRecord::Base
   belongs_to :subgrupo_de_prestaciones
   belongs_to :unidad_de_medida
   has_and_belongs_to_many :categorias_de_afiliados
+  has_many :datos_adicionales_por_prestacion
+  has_many :datos_adicionales, :through => :datos_adicionales_por_prestacion
 
   validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id, :codigo, :nombre, :unidad_de_medida_id
 

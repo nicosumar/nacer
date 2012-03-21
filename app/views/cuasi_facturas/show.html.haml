@@ -1,0 +1,84 @@
+- content_for :title do
+  Cuasi-factura del efector
+  = @cuasi_factura.efector.nombre
+
+%h1
+  Cuasi-factura del efector
+  = @cuasi_factura.efector.nombre
+
+%p#notice= notice
+
+- if @cuasi_factura.renglones_de_cuasi_facturas.any?
+  %h3 Detalle de la cuasi-factura presentada
+  %table
+    %thead
+      %tr.centrado
+        %th Código
+        %th Cantidad informada
+        - if @cuasi_factura.registros_de_prestaciones.any?
+          %th Cantidad digitalizada
+        %th Monto informado
+        %th Subtotal informado
+        - if @cuasi_factura.registros_de_prestaciones.any?
+          %th.destacado Resultado
+    %tbody
+      - @cuasi_factura.renglones_de_cuasi_facturas.each do |r|
+        %tr
+          %td.izquierda= r.codigo_de_prestacion_informado
+          %td.derecha= r.cantidad_informada
+          - if @cuasi_factura.registros_de_prestaciones.any?
+            %td.derecha= r.cantidad_digitalizada
+          %td.derecha= ("$ %.2f" % r.monto_informado).gsub(".", ",")
+          %td.derecha= (r.subtotal_informado ? ("$ %.2f" % r.subtotal_informado).gsub(".", ",") : nil)
+          - if @cuasi_factura.registros_de_prestaciones.any?
+            %td.izquierda.destacado
+              - diferencia = ((r.cantidad_informada || 0) - (r.cantidad_digitalizada || 0))
+              - if diferencia < 0
+                %span.error
+                  = "Se " + (diferencia.abs > 1 ? "han" : "ha") + " digitalizado " + diferencia.abs.to_s
+                  = (diferencia.abs > 1 ? "prestaciones" : "prestación")
+                  - if !r.cantidad_informada || r.cantidad_informada == 0
+                    = "que no se " + (diferencia.abs > 1 ? "han" : "ha") + " informado."
+                  - else
+                    = "más que las informadas."
+              - elsif diferencia > 0
+                %span.error
+                  = "Se " + (diferencia > 1 ? "han" : "ha") + " informado " + diferencia.to_s
+                  = (diferencia > 1 ? "prestaciones" : "prestación") + " más que las digitalizadas."
+              - else
+                Verificación correcta
+  %br/
+%h2 Información general de la cuasi-factura
+%p
+  Liquidación:
+  %span.destacado= link_to(@liquidacion.mes_de_prestaciones.to_s + "/" + @liquidacion.año_de_prestaciones.to_s + " - " + @liquidacion.efector.nombre, @liquidacion)
+%p
+  Expediente:
+  %span.destacado= @liquidacion.numero_de_expediente
+%p
+  Nomenclador utilizado:
+  %span.destacado= @cuasi_factura.nomenclador.nombre
+%p
+  Fecha de presentación:
+  %span.destacado= @cuasi_factura.fecha_de_presentacion.strftime("%d/%m/%Y")
+%p
+  Número de liquidación:
+  %span.destacado= @cuasi_factura.numero_de_liquidacion
+
+- if not @cuasi_factura.observaciones.empty?
+  %h3 Información complementaria
+  %p
+    - @cuasi_factura.observaciones.split("\n").each do |l|
+      = l
+      %br/
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    - if can? :update, CuasiFactura
+      %li= link_to "Modificar esta cuasi-factura", edit_cuasi_factura_path(@cuasi_factura)
+    - if can?(:create, RenglonDeCuasiFactura) && !@cuasi_factura.renglones_de_cuasi_facturas.any?
+      %li= link_to "Importar detalle de la cuasi-factura", importar_detalle_url(:cuasi_factura_id => @cuasi_factura.id)
+    - else
+      - if can?(:create, RegistroDePrestacion) && !@cuasi_factura.registros_de_prestaciones.any?
+        %li= link_to "Importar digitalización de prestaciones", importar_registros_de_prestaciones_url(:cuasi_factura_id => @cuasi_factura.id)

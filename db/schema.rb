@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120210041102) do
+ActiveRecord::Schema.define(:version => 20120316193327) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(:version => 20120210041102) do
     t.string   "sexo"
     t.string   "provincia"
     t.string   "localidad"
-    t.integer  "categoria_de_afiliados_id"
+    t.integer  "categoria_de_afiliado_id"
     t.date     "fecha_de_nacimiento"
     t.string   "se_declara_indigena"
     t.integer  "lengua_originaria_id"
@@ -111,6 +111,8 @@ ActiveRecord::Schema.define(:version => 20120210041102) do
     t.string   "mensaje_baja_r"
   end
 
+  add_index "afiliados", ["afiliado_id"], :name => "index_afiliados_on_afiliado_id", :unique => true
+
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
   end
@@ -154,6 +156,14 @@ ActiveRecord::Schema.define(:version => 20120210041102) do
   create_table "categorias_de_afiliados_prestaciones", :id => false, :force => true do |t|
     t.integer "categoria_de_afiliado_id"
     t.integer "prestacion_id"
+  end
+
+  create_table "clases_de_documentos", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo_para_prestaciones"
+    t.string   "codigo_para_inscripciones"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "contactos", :force => true do |t|
@@ -203,6 +213,36 @@ ActiveRecord::Schema.define(:version => 20120210041102) do
 
   add_index "convenios_de_gestion", ["efector_id"], :name => "unq_convenios_de_gestion_efector_id", :unique => true
   add_index "convenios_de_gestion", ["numero"], :name => "unq_convenios_de_gestion_numero", :unique => true
+
+  create_table "cuasi_facturas", :force => true do |t|
+    t.integer  "liquidacion_id",        :null => false
+    t.integer  "efector_id",            :null => false
+    t.integer  "nomenclador_id",        :null => false
+    t.date     "fecha_de_presentacion", :null => false
+    t.string   "numero_de_liquidacion", :null => false
+    t.text     "observaciones"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "datos_adicionales", :force => true do |t|
+    t.string   "nombre",                 :null => false
+    t.string   "tipo_postgres",          :null => false
+    t.string   "tipo_ruby",              :null => false
+    t.boolean  "enumerable"
+    t.string   "clase_para_enumeracion"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "datos_adicionales_por_prestacion", :force => true do |t|
+    t.integer  "dato_adicional_id"
+    t.integer  "prestacion_id"
+    t.boolean  "obligatorio"
+    t.string   "metodo_de_validacion"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "departamentos", :force => true do |t|
     t.string  "nombre",                :null => false
@@ -254,6 +294,10 @@ ActiveRecord::Schema.define(:version => 20120210041102) do
     t.datetime "updated_at"
   end
 
+  create_table "estados_de_las_prestaciones", :force => true do |t|
+    t.string "nombre"
+  end
+
   create_table "grupos_de_efectores", :force => true do |t|
     t.string  "nombre",                        :null => false
     t.string  "tipo_de_efector",               :null => false
@@ -265,11 +309,53 @@ ActiveRecord::Schema.define(:version => 20120210041102) do
     t.string "nombre", :null => false
   end
 
+  create_table "liquidaciones", :force => true do |t|
+    t.integer  "efector_id",                                                :null => false
+    t.integer  "mes_de_prestaciones",                                       :null => false
+    t.integer  "año_de_prestaciones",                                      :null => false
+    t.date     "fecha_de_recepcion",                                        :null => false
+    t.string   "numero_de_expediente",                                      :null => false
+    t.date     "fecha_de_notificacion"
+    t.date     "fecha_de_transferencia"
+    t.date     "fecha_de_orden_de_pago"
+    t.decimal  "total_facturado",            :precision => 15, :scale => 4
+    t.decimal  "total_de_bajas_algebraicas", :precision => 15, :scale => 4
+    t.decimal  "total_de_bajas_formales",    :precision => 15, :scale => 4
+    t.decimal  "total_de_bajas_tecnicas",    :precision => 15, :scale => 4
+    t.decimal  "total_a_procesar",           :precision => 15, :scale => 4
+    t.decimal  "total_de_rechazos",          :precision => 15, :scale => 4
+    t.decimal  "total_de_aceptaciones",      :precision => 15, :scale => 4
+    t.decimal  "debitos_ugsp",               :precision => 15, :scale => 4
+    t.decimal  "debitos_ace",                :precision => 15, :scale => 4
+    t.decimal  "total_a_liquidar",           :precision => 15, :scale => 4
+    t.text     "observaciones"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "motivos_de_rechazos", :force => true do |t|
+    t.string   "nombre"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "nomencladores", :force => true do |t|
     t.string   "nombre",                             :null => false
     t.date     "fecha_de_inicio",                    :null => false
     t.boolean  "activo",          :default => false, :null => false
     t.text     "observaciones"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "percentiles_peso_edad", :force => true do |t|
+    t.string "nombre",                   :null => false
+    t.string "codigo_para_prestaciones", :null => false
+  end
+
+  create_table "percentiles_peso_talla", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo_para_prestaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -321,13 +407,71 @@ ActiveRecord::Schema.define(:version => 20120210041102) do
     t.datetime "updated_at"
   end
 
+  create_table "registros_de_datos_adicionales", :force => true do |t|
+    t.integer  "registro_de_prestacion_id", :null => false
+    t.integer  "dato_adicional_id",         :null => false
+    t.text     "valor"
+    t.text     "observaciones"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "registros_de_prestaciones", :force => true do |t|
+    t.date     "fecha_de_prestacion",                       :null => false
+    t.string   "apellido",                                  :null => false
+    t.string   "nombre",                                    :null => false
+    t.integer  "clase_de_documento_id",      :default => 1
+    t.integer  "tipo_de_documento_id",       :default => 1
+    t.integer  "numero_de_documento",                       :null => false
+    t.integer  "prestacion_id",                             :null => false
+    t.integer  "cantidad",                   :default => 1
+    t.string   "historia_clinica"
+    t.integer  "estado_de_la_prestacion_id"
+    t.integer  "motivo_de_rechazo_id"
+    t.integer  "cuasi_factura_id"
+    t.integer  "nomenclador_id",                            :null => false
+    t.integer  "afiliado_id"
+    t.text     "observaciones"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "renglones_de_cuasi_facturas", :force => true do |t|
+    t.integer  "cuasi_factura_id",                                     :null => false
+    t.integer  "prestacion_id",                                        :null => false
+    t.integer  "cantidad_informada"
+    t.decimal  "monto_informado",       :precision => 15, :scale => 4
+    t.decimal  "subtotal_informado",    :precision => 15, :scale => 4
+    t.decimal  "total_informado",       :precision => 15, :scale => 4
+    t.integer  "cantidad_digitalizada"
+    t.integer  "cantidad_aceptada"
+    t.text     "observaciones"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "sexos", :force => true do |t|
     t.string "descripcion"
+  end
+
+  create_table "si_no", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo_para_prestaciones"
+    t.boolean  "valor_bool"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "subgrupos_de_prestaciones", :force => true do |t|
     t.integer "grupo_de_prestaciones_id", :null => false
     t.string  "nombre",                   :null => false
+  end
+
+  create_table "tipos_de_documentos", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "unidades_de_medida", :force => true do |t|

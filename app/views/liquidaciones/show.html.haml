@@ -1,0 +1,43 @@
+- content_for :title do
+  = @liquidacion.efector.nombre + ". Liquidación " + @liquidacion.año_de_prestaciones.to_s + "/" + @liquidacion.mes_de_prestaciones.to_s
+
+%h1
+  = @liquidacion.efector.nombre
+  %br/
+  = " Liquidación " + @liquidacion.año_de_prestaciones.to_s + "/" + @liquidacion.mes_de_prestaciones.to_s
+
+%p#notice= notice
+
+%h3 Información de la liquidación
+
+%p
+  Fecha de recepción:
+  %span.destacado= @liquidacion.fecha_de_recepcion
+%p
+  Número de expediente:
+  %span.destacado= @liquidacion.numero_de_expediente
+
+%h3 Cuasi-facturas incluidas en la liquidación
+- if @liquidacion.cuasi_facturas.any? then
+  %table
+    %thead
+      %tr
+        %th Efector
+        %th Fecha de presentación
+        %th Número de liquidación
+    %tbody
+      - @liquidacion.cuasi_facturas.each do |c|
+        %tr.clickable{ :onclick => "location.href=\'#{cuasi_factura_path(c)}\'", :title => "Ver detalles de la cuasi-factura" }
+          %td= c.efector.nombre
+          %td= c.fecha_de_presentacion.strftime("%d/%m/%Y")
+          %td= c.numero_de_liquidacion
+- else
+  %p Aún no se han incluido cuasi-facturas en esta liquidación.
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    - if can? :update, @liquidacion
+      %li= link_to "Modificar esta liquidación", edit_liquidacion_path(@liquidacion)
+    - if can? :create, CuasiFactura
+      %li= link_to "Agregar una cuasi-factura a la liquidación", new_cuasi_factura_url(:liquidacion_id => @liquidacion.id)

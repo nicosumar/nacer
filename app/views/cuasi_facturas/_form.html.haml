@@ -1,0 +1,42 @@
+= form_for(@cuasi_factura) do |f|
+  %div.hidden_field
+    %input{ :id => "cuasi_factura_liquidacion_id", :name => "cuasi_factura[liquidacion_id]", :type => "hidden", :value => @liquidacion.id }
+  - if @cuasi_factura.errors.any?
+    #error_explanation
+      %h2= pluralize(@cuasi_factura.errors.count, "error impide").to_s + " que se guarde la información de esta cuasi-factura."
+      %ul
+        - @cuasi_factura.errors.full_messages.each do |msg|
+          %li= msg
+  %h3 Información general
+  %div.field
+    = f.label :efector
+    %br/
+    - if @cuasi_factura.new_record?
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true }
+    - else
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), {}, { :disabled => true }
+  %div.field
+    = f.label :nomenclador
+    %br/
+    - if @cuasi_factura.new_record?
+      = f.select :nomenclador_id, options_for_select(@nomencladores, @nomenclador_id), { :include_blank => true }
+    - else
+      = f.select :nomenclador_id, options_for_select(@nomencladores, @nomenclador_id), {}, { :disabled => true }
+  %div.field
+    = f.label :fecha_de_presentacion
+    %br/
+    = f.date_select :fecha_de_presentacion
+  %div.field
+    = f.label :numero_de_liquidacion
+    %br/
+    = f.text_field :numero_de_liquidacion
+  %h3 Información complementaria
+  %div.field
+    = f.label :observaciones
+    %br/
+    = f.text_area :observaciones
+  %div.actions
+    - if @cuasi_factura.new_record? then
+      = f.submit "Crear cuasi-factura"
+    - else
+      = f.submit "Actualizar datos de la cuasi-factura"

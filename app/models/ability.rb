@@ -21,11 +21,17 @@ class Ability
       can :manage, Contacto
       can :manage, Nomenclador
       can :manage, Prestacion
+      can :manage, Liquidacion
+      can :manage, CuasiFactura
+      can :manage, RenglonDeCuasiFactura
+      can :manage, RegistroDePrestacion
+      can :manage, RegistroDeDatoAdicional
     end
 
     if user.in_group? :convenios then
       can :read, :all
       can :manage, Addenda
+      can :manage, Contacto
       can :manage, ConvenioDeAdministracion
       can :manage, ConvenioDeGestion
       can :manage, Referente

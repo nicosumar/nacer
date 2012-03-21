@@ -1,0 +1,47 @@
+= form_for(@liquidacion) do |f|
+  - if @liquidacion.errors.any?
+    #error_explanation
+      %h2= pluralize(@liquidacion.errors.count, "error impide").to_s + " que se guarde la información de esta liquidación."
+      %ul
+        - @liquidacion.errors.full_messages.each do |msg|
+          %li= msg
+  %h3 Información general
+  %div.field
+    = f.label :efector
+    %br/
+    - if @liquidacion.new_record? then
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true }
+    - else
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), {}, { :disabled => true }
+  %div.field
+    = f.label :mes_de_prestaciones
+    %br/
+    - if @liquidacion.new_record? then
+      = f.select :mes_de_prestaciones, options_for_select(@meses_de_prestaciones, @mes_de_prestaciones), { :include_blank => false }
+    - else
+      = f.select :mes_de_prestaciones, options_for_select(@meses_de_prestaciones, @mes_de_prestaciones), {}, { :disabled => true }
+  %div.field
+    = f.label :año_de_prestaciones
+    %br/
+    - if @liquidacion.new_record? then
+      = f.select :año_de_prestaciones, options_for_select(@años_de_prestaciones, @año_de_prestaciones), { :include_blank => false }
+    - else
+      = f.select :año_de_prestaciones, options_for_select(@años_de_prestaciones, @año_de_prestaciones), {}, { :disabled => true }
+  %div.field
+    = f.label :fecha_de_recepcion
+    %br/
+    = f.date_select :fecha_de_recepcion
+  %div.field
+    = f.label :numero_de_expediente
+    %br/
+    = f.text_field :numero_de_expediente
+  %h3 Información complementaria
+  %div.field
+    = f.label :observaciones
+    %br/
+    = f.text_area :observaciones
+  %div.actions
+    - if @liquidacion.new_record? then
+      = f.submit "Crear liquidación"
+    - else
+      = f.submit "Actualizar datos de la liquidación"

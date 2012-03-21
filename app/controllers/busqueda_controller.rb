@@ -5,7 +5,7 @@ class BusquedaController < ApplicationController
     # Verificar que se pasaron los términos requeridos para la búsqueda
     if !params[:terminos] || params[:terminos].empty?
       redirect_to(root_url,
-        :notice => "Debe ingresar algún término de búsqueda."
+        :notice => "Debe ingresar algún término de búsqueda.")
     end
 
     indices = []

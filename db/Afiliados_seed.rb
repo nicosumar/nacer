@@ -88,4 +88,7 @@ class ModificarAfiliados < ActiveRecord::Migration
       AFTER INSERT OR UPDATE OR DELETE ON afiliados
       FOR EACH ROW EXECUTE PROCEDURE afiliados_fts_trigger();
   "
+  execute "
+    CREATE UNIQUE INDEX ON afiliados (afiliado_id);
+  "
 end

@@ -1,0 +1,34 @@
+- content_for :title do
+  Cuasi-facturas
+
+%h1 Cuasi-facturas
+
+- if notice
+  %p#notice= notice
+
+- if @cuasi_facturas && @cuasi_facturas.size > 0
+  %table
+    %thead
+      %tr
+        %th Efector
+        %th Número
+        %th Mes y año
+        %th Administrador
+        %th Fecha de presentación
+    %tbody
+      - @cuasi_facturas.each do |c|
+        %tr.clickable{ :onclick => "location.href=\'#{cuasi_factura_path(c)}\'", :title => "Ver detalles de la cuasi-factura" }
+          %td= c.efector.nombre
+          %td= c.numero_de_liquidacion
+          %td= c.liquidacion.mes_de_prestaciones.to_s + "/" + c.liquidacion.año_de_prestaciones.to_s
+          %td= c.liquidacion.efector.nombre
+          %td= c.fecha_de_presentacion.strftime("%d/%m/%Y")
+  = will_paginate @cuasi_facturas, :inner_window => 2, :outer_window => 0
+- else
+  No existen cuasi-facturas registradas.
+
+- content_for :sidebar do
+  %h2 Tareas
+  %ul
+    - if can? :create, CuasiFactura
+      %li= link_to "Agregar una cuasi-factura", new_cuasi_factura_url

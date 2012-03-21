@@ -69,4 +69,5 @@
 - content_for :sidebar do
   %h2 Tareas
   %ul
-    %li= link_to "Modificar esta adenda", edit_addenda_path(@addenda)
+    - if can? :update, Addenda
+      %li= link_to "Modificar esta adenda", edit_addenda_path(@addenda)

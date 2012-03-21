@@ -35,6 +35,14 @@
                       %li= link_to "Convenios de administración", convenios_de_administracion_url
                     - if can? :read, Addenda
                       %li= link_to "Adendas", addendas_url
+              - if current_user.in_group?(:facturación)
+                %li
+                  %p Facturación
+                  %ul
+                    - if can? :read, Liquidacion
+                      %li= link_to "Liquidaciones", liquidaciones_url
+                    - if can? :read, CuasiFactura
+                      %li= link_to "Cuasi-facturas", cuasi_facturas_url
               %li
                 %p Herramientas
                 %ul

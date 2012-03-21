@@ -1,0 +1,128 @@
+- content_for :title do
+  - if @detalle
+    Verificación preliminar de los datos a importar en la cuasi-factura
+  - else
+    Importar detalle de la cuasi-factura
+
+%h1
+  - if @detalle
+    Verificación preliminar de los datos a importar en la cuasi-factura
+  - else
+    Importar detalle de la cuasi-factura
+
+- if @detalle
+  -# Detalle de la verificación preliminar
+  %h2 Análisis preliminar de las prestaciones facturadas
+  - if @detalle.size > 0
+    %p
+      El siguiente detalle
+      %span.destacado.error>= " aún no ha sido importado al sistema"
+      \. Si los datos se han detectado correctamente (coinciden con los
+      informados en el consolidado de la cuasi-factura), presione el botón
+      %span.destacado Importar
+      para guardar la información. Si el sistema no detectó correctamente la
+      información, vuelva a la página anterior utilizando el botón provisto
+      por su navegador, para corregir los datos y reintentar la operación.
+    %table
+      %thead
+        %tr
+          %th Código
+          %th Cantidad
+          %th Precio unitario
+          %th Subtotal
+          %th.destacado Resultado preliminar
+      %tbody
+        - @detalle.each do |d|
+          %tr
+            %td.centrado= d[:codigo_de_prestacion_informado]
+            %td.derecha= d[:cantidad]
+            %td.derecha= ("$ %.2f" % d[:precio_unitario_informado]).gsub('.', ',')
+            %td.derecha= ("$ %.2f" % d[:subtotal_informado]).gsub('.', ',')
+            %td.destacado
+              -# RESULTADO
+              - case
+                - when d[:prestacion_id].nil?
+                  %span.error Código de prestación inexistente
+                - when !d[:autorizada]
+                  %span.error Prestación no autorizada
+                - when !d[:cantidad] || d[:cantidad] < 1
+                  %span.error Error de formato en la cantidad
+                - when !d[:precio_por_unidad] || d[:precio_por_unidad] <= 0.0
+                  %span.error La prestación no existe en el nomenclador
+                - when d[:precio_unitario_informado] != d[:precio_por_unidad]
+                  %span.error
+                    Precio unitario incorrecto (según nomenclador:
+                    %span.destacado>= (" $ %.2f" % d[:precio_por_unidad]).gsub(".", ",")
+                    )
+                - when d[:subtotal_informado] != d[:subtotal]
+                  %span.error
+                    Subtotal mal calculado (debería ser
+                    %span.destacado>= (" $ %.2f" % d[:subtotal]).gsub(".", ",")
+                    )
+                - else
+                  Verificación correcta
+    %br/
+    %p
+      - if @total_informado == @total_calculado
+        Total informado:
+        %span.destacado= ("$ %.2f" % @total_informado).gsub(".", ",")
+      - else
+        %span.error
+          Existe un error en el total informado (
+          %span.destacado>= ("$ %.2f" % @total_informado).gsub(".", ",")
+          ), debería ser:
+          %span.destacado= ("$ %.2f" % @total_calculado).gsub(".", ",")
+    %br/
+    = form_tag('/importar_detalle', :method => 'post') do
+      %div.hidden_field
+        %input{ :id => "cuasi_factura_id", :name => "cuasi_factura_id", :type => "hidden", :value => @cuasi_factura.id }
+        %input{ :id => "detalle", :name => "detalle", :type => "hidden", :value => @detalle_importacion }
+        %input{ :id => "total_informado", :name => "total_informado", :type => "hidden", :value => @total_informado }
+      %div.actions
+        = submit_tag("Importar")
+  - else
+    No se indicó ningún detalle, o ninguna línea del detalle tiene el formato correcto.
+- else # Mostrar el formulario para importar los datos
+  %h2 Datos para importar
+  = form_tag('/importar_detalle', :method => 'post') do
+    %div.hidden_field
+      %input{ :id => "cuasi_factura_id", :name => "cuasi_factura_id", :type => "hidden", :value => @cuasi_factura.id }
+    %p
+      Copie y pegue los renglones del detalle de la cuasi-factura en el área
+      de texto, ingrese el monto total informado en la factura y presione el botón
+      %span.destacado Verificar
+      para obtener una vista preliminar de los datos que se importarán al sistema.
+    %div.field
+      = label_tag(:detalle, "Detalle:")
+      %br/
+      = text_area_tag(:detalle, nil, {:size => '80x20'})
+    %div.field
+      = label_tag(:total_informado, "Total informado:")
+      %br/
+      = text_field_tag(:total_informado)
+    %div.actions
+      = submit_tag("Verificar")
+
+%br/
+%h2
+  Información general registrada en el sistema
+%p
+  Efector:
+  %span.destacado= @efector.nombre + " (" + @efector.cuie + ")"
+- if @efector.cuie != @liquidacion.efector.cuie
+  %p
+    Administrado por:
+    %span.destacado= @liquidacion.efector.nombre + " (" + @liquidacion.efector.cuie + ")"
+%p
+  Número de liquidación:
+  %span.destacado= @cuasi_factura.numero_de_liquidacion
+%p
+  Periodo facturado:
+  %span.destacado= @liquidacion.mes_de_prestaciones.to_s + "/" + @liquidacion.año_de_prestaciones.to_s
+%p
+  Nomenclador utilizado:
+  %span.destacado= @cuasi_factura.nomenclador.nombre
+%p
+  Fecha de presentación:
+  %span.destacado= @cuasi_factura.fecha_de_presentacion.strftime("%d/%m/%Y")
+

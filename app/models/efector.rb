@@ -55,6 +55,30 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
+  def self.del_administrador_sin_liquidar(administrador_id, liquidacion_id)
+    Efector.find_by_sql("
+      SELECT *
+        FROM efectores
+        WHERE integrante = TRUE
+          AND EXISTS (
+            SELECT *
+              FROM convenios_de_gestion
+              WHERE convenios_de_gestion.efector_id = efectores.id)
+          AND (
+            EXISTS (
+              SELECT *
+                FROM convenios_de_administracion
+                WHERE convenios_de_administracion.administrador_id = '#{administrador_id}'
+                  AND convenios_de_administracion.efector_id = efectores.id)
+            OR efectores.id = '#{administrador_id}')
+          AND NOT EXISTS (
+            SELECT *
+              FROM cuasi_facturas
+              WHERE liquidacion_id = '#{liquidacion_id}'
+                AND cuasi_facturas.efector_id = efectores.id)
+        ORDER BY nombre;")
+  end
+
   def self.que_son_administrados
     Efector.find_by_sql("
       SELECT *
@@ -79,5 +103,27 @@ class Efector < ActiveRecord::Base
             FROM convenios_de_administracion
             WHERE convenios_de_administracion.administrador_id = efectores.id) DESC,
           nombre;")
+  end
+
+  def self.administradores_y_autoadministrados
+    Efector.find_by_sql("
+      SELECT *
+        FROM efectores
+        WHERE (integrante = TRUE) AND
+          EXISTS (
+            SELECT *
+              FROM convenios_de_administracion
+              WHERE convenios_de_administracion.administrador_id = efectores.id
+          ) OR (
+          NOT EXISTS (
+            SELECT *
+              FROM convenios_de_administracion
+              WHERE convenios_de_administracion.efector_id = efectores.id
+          ) AND (
+            EXISTS (
+              SELECT *
+                FROM convenios_de_gestion
+                WHERE convenios_de_gestion.efector_id = efectores.id
+          ))) ORDER BY nombre;")
   end
 end
