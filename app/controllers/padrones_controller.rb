@@ -39,13 +39,18 @@ class PadronesController < ApplicationController
     archivo_sumas = File.new("vendor/data/SUMAS.csv", "w")
     suma_total_aceptadas = 0
     suma_total_rechazadas = 0
-    archivo_sumas.puts "Administrador / Efector autoadministrado\tMonto total entregado\tMonto rechazado\tMonto aceptado para liquidar"
+    archivo_sumas.puts "CUIE\tEfector\tMonto total entregado\tMonto rechazado\tMonto aceptado para liquidar"
+    archivo_sumas.puts
+    aceptadas_por_prestacion = {}
+    rechazadas_por_prestacion = {}
+    general_de_prestaciones = {}
     @resultado.each do |hash_administrador|
       aceptadas_por_efector = {}
       suma_aceptadas = 0.0
       rechazadas_por_efector = {}
       suma_rechazadas = 0.0
       listado_de_prestaciones = {}
+      listado_de_efectores = {}
       administrador = efectores_segun_cuie[hash_administrador[0]]
       archivo_salida = File.new("vendor/data/#{hash_administrador[0]} - #{administrador}.csv", "w")
       aceptadas = (hash_administrador[1].collect { |hash_efector| hash_efector[1][:aceptada]}).flatten
@@ -75,7 +80,18 @@ class PadronesController < ApplicationController
           aceptadas_por_efector.merge! prestacion[:efector] => { prestacion[:codigo] => [prestacion[:monto], 1]}
         end
         listado_de_prestaciones.merge! prestacion[:codigo] => prestacion[:monto] unless listado_de_prestaciones.has_key? prestacion[:codigo]
+        listado_de_efectores.merge! prestacion[:efector] => efectores_segun_cuie[prestacion[:efector]] unless listado_de_efectores.has_key? prestacion[:efector]
         suma_aceptadas += prestacion[:monto]
+        if aceptadas_por_prestacion.has_key? prestacion[:codigo] 
+          if aceptadas_por_prestacion[prestacion[:codigo]].has_key? hash_administrador[0] 
+            aceptadas_por_prestacion[prestacion[:codigo]][hash_administrador[0]][1] += 1
+          else
+            aceptadas_por_prestacion[prestacion[:codigo]].merge! hash_administrador[0] => [prestacion[:monto], 1]
+          end
+        else
+          aceptadas_por_prestacion.merge! prestacion[:codigo] => { hash_administrador[0] => [prestacion[:monto], 1]}
+        end
+        general_de_prestaciones.merge! prestacion[:codigo] => prestacion[:monto] unless general_de_prestaciones.has_key? prestacion[:codigo]
       end
       archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{("%.2f" % suma_aceptadas).gsub(".", ",")}"
       archivo_salida.puts
@@ -104,7 +120,18 @@ class PadronesController < ApplicationController
           rechazadas_por_efector.merge! prestacion[:efector] => { prestacion[:codigo] => [prestacion[:monto], 1]}
         end
         listado_de_prestaciones.merge! prestacion[:codigo] => prestacion[:monto] unless listado_de_prestaciones.has_key? prestacion[:codigo]
+        listado_de_efectores.merge! prestacion[:efector] => efectores_segun_cuie[prestacion[:efector]] unless listado_de_efectores.has_key? prestacion[:efector]
         suma_rechazadas += prestacion[:monto]
+        if rechazadas_por_prestacion.has_key? prestacion[:codigo]
+          if rechazadas_por_prestacion[prestacion[:codigo]].has_key? hash_administrador[0]
+            rechazadas_por_prestacion[prestacion[:codigo]][hash_administrador[0]][1] += 1
+          else
+            rechazadas_por_prestacion[prestacion[:codigo]].merge! hash_administrador[0] => [prestacion[:monto], 1]
+          end
+        else
+          rechazadas_por_prestacion.merge! prestacion[:codigo] => { hash_administrador[0] => [prestacion[:monto], 1]}
+        end
+        general_de_prestaciones.merge! prestacion[:codigo] => prestacion[:monto] unless general_de_prestaciones.has_key? prestacion[:codigo]
       end
       archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{("%.02f" % suma_rechazadas).gsub(".", ",")}"
       archivo_salida.puts
@@ -145,13 +172,28 @@ class PadronesController < ApplicationController
         "\t" + ("%.02f" % ((rechazadas_por_efector.collect { |efector| (efector[1].values.collect { |prest| prest[0] * prest[1] }).sum }).sum)).gsub(".", ",")
       archivo_salida.close
 
-      # Registrar el total en el archivo de salida SUMAS.csv
-      archivo_sumas.puts "#{hash_administrador[0]} - #{administrador}\t#{("%.02f" % (suma_aceptadas + suma_rechazadas)).gsub(".", ",")}\t#{("%.02f" % suma_rechazadas).gsub(".", ",")}\t#{("%.02f" % suma_aceptadas).gsub(".", ",")}"
+      # Registrar totales por efector en el archivo de salida SUMAS.csv
+      archivo_sumas.puts "#{hash_administrador[0]} - #{administrador}"
+      (listado_de_efectores.collect {|efector| efector[0]}).sort.each do |efector|
+        if aceptadas_por_efector[efector]
+          acep = (aceptadas_por_efector[efector].collect { |prestacion| (prestacion[1][0]).to_f * (prestacion[1][1]).to_f }).sum
+        else
+          acep = 0.0
+        end
+        if rechazadas_por_efector[efector]
+          rech = (rechazadas_por_efector[efector].collect { |prestacion| (prestacion[1][0]).to_f * (prestacion[1][1]).to_f }).sum
+        else
+          rech = 0.0
+        end
+        archivo_sumas.puts "#{efector}\t#{listado_de_efectores[efector]}\t#{("%.02f" % (acep + rech)).gsub(".", ",")}\t#{("%.02f" % rech).gsub(".", ",")}\t#{("%.02f" % acep).gsub(".", ",")}"
+      end
+      archivo_sumas.puts "Subtotal (#{administrador})\t\t#{("%.02f" % (suma_aceptadas + suma_rechazadas)).gsub(".", ",")}\t#{("%.02f" % suma_rechazadas).gsub(".", ",")}\t#{("%.02f" % suma_aceptadas).gsub(".", ",")}\n"
+      archivo_sumas.puts
       suma_total_aceptadas += suma_aceptadas
       suma_total_rechazadas += suma_rechazadas
     end
     archivo_sumas.puts
-    archivo_sumas.puts "TOTALES\t#{("%.02f" % (suma_total_aceptadas + suma_total_rechazadas)).gsub(".", ",")}\t#{("%.02f" % suma_total_rechazadas).gsub(".", ",")}\t#{("%.02f" % suma_total_aceptadas).gsub(".", ",")}"
+    archivo_sumas.puts "TOTALES\t\t#{("%.02f" % (suma_total_aceptadas + suma_total_rechazadas)).gsub(".", ",")}\t#{("%.02f" % suma_total_rechazadas).gsub(".", ",")}\t#{("%.02f" % suma_total_aceptadas).gsub(".", ",")}"
     archivo_sumas.close
   end
 
