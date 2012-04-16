@@ -5,7 +5,7 @@ class CreateLiquidaciones < ActiveRecord::Migration
       t.integer :mes_de_prestaciones, :null => false
       t.integer :año_de_prestaciones, :null => false
       t.date :fecha_de_recepcion, :null => false
-      t.string :numero_de_expediente, :null => false
+      t.string :numero_de_expediente, :null => false, :unique => true
       t.date :fecha_de_notificacion
       t.date :fecha_de_transferencia
       t.date :fecha_de_orden_de_pago

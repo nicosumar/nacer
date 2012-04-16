@@ -4,8 +4,6 @@ class CreateClasesDeDocumentos < ActiveRecord::Migration
       t.string :nombre
       t.string :codigo_para_prestaciones
       t.string :codigo_para_inscripciones
-
-      t.timestamps
     end
   end
 end

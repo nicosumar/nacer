@@ -5,7 +5,7 @@ class CuasiFacturasController < ApplicationController
     # Verificar los permisos del usuario
     if can? :read, CuasiFactura
       @cuasi_facturas = CuasiFactura.paginate(:page => params[:page], :per_page => 10,
-        :include => [{:liquidacion => :efector}, :efector, :nomenclador], :order => "fecha_de_presentacion DESC")
+        :include => [{:liquidacion => :efector}, :efector, :nomenclador], :order => "updated_at DESC")
     else
       redirect_to(root_url,
         :notice => "No está autorizado para realizar esta operación. El incidente será reportado al administrador del sistema.")
@@ -1093,7 +1093,6 @@ private
 
   def a_documento(cadena)
     # Intentar encontrar una concordancia con el formato de número de documento
-    documento = nil
     concordancia = /.*?([[:digit:]]+).*/i.match(cadena.strip.gsub(".", ""))
     return (concordancia ? concordancia[1].to_i : nil)
   end
@@ -1172,18 +1171,23 @@ private
     # TODO: Agregar validaciones para el perímetro cefálico (mín. y máx.)
     perimetro = cadena.strip.gsub(",", ".").to_f
 
+    # Convertir a escala en centímetros si fue ingresado en milímetros
+    perimetro = perimetro / 100.0 if perimetro > 100.0 && perimetro < 700.0
+
     return (perimetro > 10.0 && perimetro < 70.0 ? perimetro.to_i : nil)
   end
 
   def a_percentil_pe(cadena)
     # TODO: Mejorar estos procesos. Incorporar curvas de la OMS.
-    valor_pe = cadena.strip
+    valor_pe = cadena.strip.upcase
+    return nil if (valor_pe.empty? || valor_pe == "-")
+
     case
-      when /.*desn.*/i.match(valor_pe) || /.*?<.*?10.*/i.match(valor_pe) || (1..9) === valor_pe.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*desn.*/i.match(valor_pe) || /.*bp.*/i.match(valor_pe) || /.*?<.*?10.*/i.match(valor_pe) || (1..9) === ((valor_pe.split("-"))[0] ? (valor_pe.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 1
-      when /.*?10.*?90.*/i.match(valor_pe) || valor_pe.strip == "N" || (10..90) === valor_pe.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*?10.*?90.*/i.match(valor_pe) || valor_pe == "N" || (10..90) === ((valor_pe.split("-"))[0] ? (valor_pe.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 2
-      when /.*obes.*/i.match(valor_pe) || /.*sobre.*/i.match(valor_pe) || /.*?>.*?90.*/i.match(valor_pe) || (91..100) === valor_pe.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*obes.*/i.match(valor_pe) || /.*sobre.*/i.match(valor_pe) || /.*?>.*?90.*/i.match(valor_pe) || (91..100) === ((valor_pe.split("-"))[0] ? (valor_pe.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 3
       else
         return nil
@@ -1192,13 +1196,15 @@ private
 
   def a_percentil_te(cadena)
     # TODO: Mejorar estos procesos. Incorporar curvas de la OMS.
-    valor_te = cadena.strip
+    valor_te = cadena.strip.upcase
+    return nil if (valor_te.empty? || valor_te == "-")
+
     case
-      when /.*desn.*/i.match(valor_te) || /.*-3.*/i.match(valor_te) || (1..2) === valor_te.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*desn.*/i.match(valor_te) || /.*bp.*/i.match(valor_te) || /.*-3.*/i.match(valor_te) || (1..2) === ((valor_te.split("-"))[0] ? (valor_te.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 1
-      when /.*?3.*?97.*/i.match(valor_te) || valor_te.strip == "N" || (3..97) === valor_te.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*?3.*?97.*/i.match(valor_te) || valor_te == "N" || (3..97) === ((valor_te.split("-"))[0] ? (valor_te.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 2
-      when /.*obes.*/i.match(valor_te) || /.*sobre.*/i.match(valor_te) || /.*?[>+].*?97.*/i.match(valor_te) || (98..100) === valor_te.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*obes.*/i.match(valor_te) || /.*sobre.*/i.match(valor_te) || /.*?[>+].*?97.*/i.match(valor_te) || (98..100) === ((valor_te.split("-"))[0] ? (valor_te.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 3
       else
         return nil
@@ -1207,13 +1213,15 @@ private
 
   def a_percentil_pce(cadena)
     # TODO: Mejorar estos procesos. Incorporar curvas de la OMS.
-    valor_pce = cadena.strip
+    valor_pce = cadena.strip.upcase
+    return nil if (valor_pce.empty? || valor_pce == "-")
+
     case
-      when /.*-.*?2.*?DS.*?+.*?2.*?DS.*/i.match(valor_pce) || valor_pce.strip == "N" || (3..97) === valor_pce.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*-.*?2.*?DS.*?+.*?2.*?DS.*/i.match(valor_pce) || valor_pce == "N" || (3..97) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 2
-      when /.*?-.*?2.*?DS.*/i.match(valor_pce) || (1..2) === valor_pce.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*?-.*?2.*?DS.*/i.match(valor_pce) || (1..2) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 1
-      when /.*?+.*?2.*?DS.*/i.match(valor_pce) || (98..100) === valor_pce.gsub(/[[:alpha:]]+/, "").to_i.abs
+      when /.*?+.*?2.*?DS.*/i.match(valor_pce) || (98..100) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 3
       else
         return nil
@@ -1222,13 +1230,15 @@ private
 
   def a_percentil_pt(cadena)
     # TODO: Mejorar estos procesos. Incorporar curvas de la OMS.
-    valor_pt = cadena.strip
+    valor_pt = cadena.strip.upcase
+    return nil if (valor_pt.empty? || valor_pt == "-")
+
     case
-      when /.*?-.*?10.*?+.*?10.*/i.match(valor_pt) || valor_pt.strip == "N" || (1..10) === valor_pt.gsub(/[[:alpha:]]+/, "").to_i || (-10..-1) === valor_pt.gsub(/[[:alpha:]]+/, "").to_i
+      when /.*?-.*?10.*?+.*?10.*/i.match(valor_pt) || valor_pt == "N" || (1..10) === ((valor_pt.split("-"))[0] ? (valor_pt.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i : nil) || (-10..-1) === valor_pt.gsub(/[[:alpha:]]+/, "").to_i
         return 2
-      when /.*desn.*/i.match(valor_pt) || /.*?-.*?10.*/i.match(valor_pt) || valor_pt.gsub(/[[:alpha:]]+/, "").to_i < -10
+      when /.*desn.*/i.match(valor_pt) || /.*bp.*/i.match(valor_pt) || /.*?-.*?10.*/i.match(valor_pt) || valor_pt.gsub(/[^[:digit:]]+/, "").to_i < -10
         return 1
-      when /.*obes.*/i.match(valor_pt) || /.*sobre.*/i.match(valor_pt) || /.*?10.*/i.match(valor_pt) || valor_pt.gsub(/[[:alpha:]]+/, "").to_i > 10
+      when /.*obes.*/i.match(valor_pt) || /.*sobre.*/i.match(valor_pt) || /.*?10.*/i.match(valor_pt) || valor_pt.gsub(/[^[:digit:]]+/, "").to_i > 10
         return 3
       else
         return nil

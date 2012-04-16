@@ -10,4 +10,5 @@ class Liquidacion < ActiveRecord::Base
 
   # Validaciones
   validates_presence_of :efector_id, :mes_de_prestaciones, :año_de_prestaciones, :fecha_de_recepcion, :numero_de_expediente
+  validates_uniqueness_of :numero_de_expediente
 end
