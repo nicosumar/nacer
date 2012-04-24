@@ -56,9 +56,10 @@ class PadronesController < ApplicationController
       aceptadas = (hash_administrador[1].collect { |hash_efector| hash_efector[1][:aceptada]}).flatten
       rechazadas = (hash_administrador[1].collect { |hash_efector| hash_efector[1][:rechazada]}).flatten
       archivo_salida.puts "Aceptadas:"
-      archivo_salida.puts "\tEfector\tFolio\tFecha\tApellidos\tNombres\tDocumento\tH. clínica\tCódigo prest.\tMonto\tMes padrón\tClave beneficiario"
+      archivo_salida.puts "CUIE\tEfector\tFolio\tFecha\tApellidos\tNombres\tDocumento\tH. clínica\tCódigo prest.\tMonto\tMes padrón\tClave beneficiario"
       aceptadas.each do |prestacion|
-        archivo_salida.puts "\t" + efectores_segun_cuie[prestacion[:efector]] +
+        archivo_salida.puts prestacion[:efector] +
+                            "\t" + efectores_segun_cuie[prestacion[:efector]] +
                             "\t" + prestacion[:nro_foja].to_s +
                             "\t" + (prestacion[:fecha_prestacion] && prestacion[:fecha_prestacion].is_a?(Date) ?
                                     prestacion[:fecha_prestacion].strftime("%d/%m/%Y") : "") +
@@ -96,10 +97,10 @@ class PadronesController < ApplicationController
       archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{("%.2f" % suma_aceptadas).gsub(".", ",")}"
       archivo_salida.puts
       archivo_salida.puts "Rechazadas:"
-      archivo_salida.puts "\tEfector\tFolio\tFecha\tApellidos\tNombres\tDocumento\tH. clínica\tCódigo prest.\tMonto\tMotivo de rechazo\tClave beneficiario"
+      archivo_salida.puts "CUIE\tEfector\tFolio\tFecha\tApellidos\tNombres\tDocumento\tH. clínica\tCódigo prest.\tMonto\tMotivo de rechazo\tClave beneficiario"
       rechazadas.each do |prestacion|
-        archivo_salida.puts "\t" + efectores_segun_cuie[prestacion[:efector]] +
-                            "\t" + prestacion[:nro_foja].to_s +
+        archivo_salida.puts prestacion[:efector] +
+                            "\t" + efectores_segun_cuie[prestacion[:efector]] +
                             "\t" + (prestacion[:fecha_prestacion] && prestacion[:fecha_prestacion].is_a?(Date) ?
                                     prestacion[:fecha_prestacion].strftime("%d/%m/%Y") : "") +
                             "\t" + (prestacion[:apellido_afiliado] ? prestacion[:apellido_afiliado] : prestacion[:nombre]) +
@@ -394,7 +395,7 @@ class PadronesController < ApplicationController
     begin
       año, mes = params[:año_y_mes].split("-")
       primero_del_mes = Date.new(año.to_i, mes.to_i, 1)
-      origen = File.new("vendor/data/#{params[:año_y_mes]}.txt", "r")
+      origen = File.new("vendor/data/#{params[:año_y_mes]}.txt.diff", "r")
     rescue
       @errores_presentes = true
       @errores << "La fecha indicada del padrón es incorrecta, o no se subió el archivo a la carpeta correcta del servidor."

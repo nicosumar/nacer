@@ -5,10 +5,12 @@ class Afiliado < ActiveRecord::Base
   belongs_to :categoria_de_afiliado
   has_many :periodos_de_actividad
 
-  validates_presence_of :clave_de_beneficiario, :apellido, :nombre, :tipo_de_documento
-  validates_presence_of :clase_de_documento, :numero_de_documento, :categoria_de_afiliado_id
-  validates_numericality_of :numero_de_documento, :integer => true
-  validates_uniqueness_of :clave_de_beneficiario
+# La carga del padrón se hace en un proceso batch y las verificaciones ya son realizadas
+# por el sistema de gestión
+#  validates_presence_of :clave_de_beneficiario, :apellido, :nombre, :tipo_de_documento
+#  validates_presence_of :clase_de_documento, :numero_de_documento, :categoria_de_afiliado_id
+#  validates_numericality_of :numero_de_documento, :integer => true
+#  validates_uniqueness_of :clave_de_beneficiario
 
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)

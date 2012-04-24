@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120316193327) do
+ActiveRecord::Schema.define(:version => 20120424083506) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -159,11 +159,9 @@ ActiveRecord::Schema.define(:version => 20120316193327) do
   end
 
   create_table "clases_de_documentos", :force => true do |t|
-    t.string   "nombre"
-    t.string   "codigo_para_prestaciones"
-    t.string   "codigo_para_inscripciones"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "nombre"
+    t.string "codigo_para_prestaciones"
+    t.string "codigo_para_inscripciones"
   end
 
   create_table "contactos", :force => true do |t|
@@ -215,11 +213,12 @@ ActiveRecord::Schema.define(:version => 20120316193327) do
   add_index "convenios_de_gestion", ["numero"], :name => "unq_convenios_de_gestion_numero", :unique => true
 
   create_table "cuasi_facturas", :force => true do |t|
-    t.integer  "liquidacion_id",        :null => false
-    t.integer  "efector_id",            :null => false
-    t.integer  "nomenclador_id",        :null => false
-    t.date     "fecha_de_presentacion", :null => false
-    t.string   "numero_de_liquidacion", :null => false
+    t.integer  "liquidacion_id",                                       :null => false
+    t.integer  "efector_id",                                           :null => false
+    t.integer  "nomenclador_id",                                       :null => false
+    t.date     "fecha_de_presentacion",                                :null => false
+    t.string   "numero_de_liquidacion",                                :null => false
+    t.decimal  "total_informado",       :precision => 15, :scale => 4
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -348,6 +347,11 @@ ActiveRecord::Schema.define(:version => 20120316193327) do
     t.datetime "updated_at"
   end
 
+  create_table "percentiles_pc_edad", :force => true do |t|
+    t.string "nombre"
+    t.string "codigo_para_prestaciones"
+  end
+
   create_table "percentiles_peso_edad", :force => true do |t|
     t.string "nombre",                   :null => false
     t.string "codigo_para_prestaciones", :null => false
@@ -358,6 +362,11 @@ ActiveRecord::Schema.define(:version => 20120316193327) do
     t.string   "codigo_para_prestaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "percentiles_talla_edad", :force => true do |t|
+    t.string "nombre"
+    t.string "codigo_para_prestaciones"
   end
 
   create_table "periodos_de_actividad", :force => true do |t|
@@ -417,19 +426,20 @@ ActiveRecord::Schema.define(:version => 20120316193327) do
   end
 
   create_table "registros_de_prestaciones", :force => true do |t|
-    t.date     "fecha_de_prestacion",                       :null => false
-    t.string   "apellido",                                  :null => false
-    t.string   "nombre",                                    :null => false
-    t.integer  "clase_de_documento_id",      :default => 1
-    t.integer  "tipo_de_documento_id",       :default => 1
-    t.integer  "numero_de_documento",                       :null => false
-    t.integer  "prestacion_id",                             :null => false
-    t.integer  "cantidad",                   :default => 1
+    t.date     "fecha_de_prestacion"
+    t.string   "apellido"
+    t.string   "nombre"
+    t.integer  "clase_de_documento_id",          :default => 1
+    t.integer  "tipo_de_documento_id",           :default => 1
+    t.integer  "numero_de_documento"
+    t.string   "codigo_de_prestacion_informado"
+    t.integer  "prestacion_id"
+    t.integer  "cantidad",                       :default => 1
     t.string   "historia_clinica"
     t.integer  "estado_de_la_prestacion_id"
     t.integer  "motivo_de_rechazo_id"
     t.integer  "cuasi_factura_id"
-    t.integer  "nomenclador_id",                            :null => false
+    t.integer  "nomenclador_id"
     t.integer  "afiliado_id"
     t.text     "observaciones"
     t.datetime "created_at"
@@ -437,12 +447,12 @@ ActiveRecord::Schema.define(:version => 20120316193327) do
   end
 
   create_table "renglones_de_cuasi_facturas", :force => true do |t|
-    t.integer  "cuasi_factura_id",                                     :null => false
-    t.integer  "prestacion_id",                                        :null => false
+    t.integer  "cuasi_factura_id",                                              :null => false
+    t.string   "codigo_de_prestacion_informado"
+    t.integer  "prestacion_id"
     t.integer  "cantidad_informada"
-    t.decimal  "monto_informado",       :precision => 15, :scale => 4
-    t.decimal  "subtotal_informado",    :precision => 15, :scale => 4
-    t.decimal  "total_informado",       :precision => 15, :scale => 4
+    t.decimal  "monto_informado",                :precision => 15, :scale => 4
+    t.decimal  "subtotal_informado",             :precision => 15, :scale => 4
     t.integer  "cantidad_digitalizada"
     t.integer  "cantidad_aceptada"
     t.text     "observaciones"
@@ -468,10 +478,8 @@ ActiveRecord::Schema.define(:version => 20120316193327) do
   end
 
   create_table "tipos_de_documentos", :force => true do |t|
-    t.string   "nombre"
-    t.string   "codigo"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "nombre"
+    t.string "codigo"
   end
 
   create_table "unidades_de_medida", :force => true do |t|

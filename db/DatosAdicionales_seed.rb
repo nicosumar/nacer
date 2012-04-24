@@ -36,7 +36,7 @@ DatoAdicional.create([
           :tipo_postgres => "int4",
           :tipo_ruby => "Integer",
           :enumerable => true,
-          :clase_para_enumeracion => "PercentilPerimetroCefalicoEdad" },
+          :clase_para_enumeracion => "PercentilPcEdad" },
         { #:id => 8,
           :nombre => "Percentil IMC/Edad",
           :tipo_postgres => "int4",

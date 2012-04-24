@@ -157,6 +157,14 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("si·_no·", "si_no")
   inflect.irregular("SiNo", "Si·No·")
   inflect.irregular("Si·No·", "SiNo")
+  inflect.irregular("percentil_pc_edad", "percentiles·_pc·_edad·")
+  inflect.irregular("percentil·_pc·_edad·", "percentiles_pc_edad")
+  inflect.irregular("PercentilPcEdad", "Percentiles·Pc·Edad·")
+  inflect.irregular("Percentil·Pc·Edad·", "PercentilesPcEdad")
+  inflect.irregular("percentil_talla_edad", "percentiles·_talla·_edad·")
+  inflect.irregular("percentil·_talla·_edad·", "percentiles_talla_edad")
+  inflect.irregular("PercentilTallaEdad", "Percentiles·Talla·Edad·")
+  inflect.irregular("Percentil·Talla·Edad·", "PercentilesTallaEdad")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
