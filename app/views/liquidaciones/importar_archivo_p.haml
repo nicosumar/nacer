@@ -1,0 +1,106 @@
+- content_for :title do
+  - if @detalle
+    Verificación preliminar de la importación del archivo 'P'
+  - else
+    Importar archivo 'P'
+
+%h1
+  - if @detalle
+    Verificación preliminar de la importación del archivo 'P'
+  - else
+    Importar archivo 'P'
+
+- if @detalle
+  %h2 Análisis preliminar de la digitalización
+  - if @detalle.size > 0
+    %p
+      El siguiente detalle
+      %span.destacado.error>= " aún no ha sido importado al sistema"
+      \. Si los datos del archivo 'P' se han detectado correctamente
+      (coinciden con los consolidados presentados), presione el botón
+      %span.destacado Importar
+      para guardar la información. Si el sistema no detectó correctamente la
+      información, vuelva a la página anterior utilizando el botón provisto
+      por su navegador, para corregir los datos y reintentar la operación.
+
+    - @resumen.keys.each do |efector|
+      %h3
+        Cuasi-factura del efector
+        %span.destacado= efector
+      %table
+        %thead
+          %tr.centrado
+            %th Código
+            %th Cantidad informada
+            %th Monto
+            %th.destacado Subtotal
+        %tbody
+          - @resumen[efector].keys.each do |prestacion|
+            %tr
+              %td.izquierda= prestacion
+              %td.derecha= @resumen[efector][prestacion][1].to_i || 0
+              %td.derecha= @resumen[efector][prestacion][0].to_f || 0.0
+              %td.derecha.destacado
+                = @resumen[efector][prestacion][0].to_f * @resumen[efector][prestacion][1].to_f
+      %br/
+    = form_tag('/importar_archivo_p', :method => 'post') do
+      %div.hidden_field
+        %input{ :id => "liquidacion_id", :name => "liquidacion_id", :type => "hidden", :value => @liquidacion.id }
+        %input{ :id => "nomenclador_id", :name => "nomenclador_id", :type => "hidden", :value => @nomenclador_id }
+        %input{ :id => "detalle_p", :name => "detalle_p", :type => "hidden", :value => @importacion_p }
+      %div.actions
+        = submit_tag("Importar")
+
+    %h2 Detalle de las prestaciones analizadas
+    %table
+      %thead
+        %tr
+          %th Fecha
+          %th Beneficiario
+          %th Documento
+          %th Historia clínica
+          %th Prestación
+      %tbody
+        - @detalle.each do |d|
+          %tr
+            %td.centrado= d[:fecha_de_prestacion]
+            %td.izquierda
+              = "#{d[:apellido]}, #{d[:nombre]}" + (d[:afiliado_id] ? " (" + d[:afiliado_id].to_s + ")" : "")
+            %td.derecha= d[:numero_de_documento]
+            %td.centrado= d[:historia_clinica]
+            %td.derecha= d[:codigo_de_prestacion_informado]
+  - else
+    No se indicó ningún detalle, o ninguna línea del detalle tiene el formato correcto.
+- else # Mostrar el formulario para importar los datos
+  %h2 Datos para importar
+  = form_tag('/importar_archivo_p', :method => 'post') do
+    %div.hidden_field
+      %input{ :id => "liquidacion_id", :name => "liquidacion_id", :type => "hidden", :value => @liquidacion.id }
+    %p
+      Copie y pegue el contenido del archivo 'P' completo  en el área
+      de texto, seleccione el nomenclador con el cual se va a realizar la verificación,
+      y presione el botón
+      %span.destacado Verificar
+      para obtener una vista preliminar de los datos que se importarán al sistema.
+    %div.field
+      = label_tag(:detalle_p, "Contenido del archivo:")
+      %br/
+      = text_area_tag(:detalle_p, nil, {:size => '80x20'})
+    %div.field
+      = label_tag(:nomenclador_id, "Nomenclador:")
+      %br/
+      = select_tag :nomenclador_id, options_for_select(@nomencladores, @nomenclador_id), { :include_blank => true }
+    %div.actions
+      = submit_tag("Verificar")
+%br/
+%h2
+  Información general registrada en el sistema
+%p
+  Administrador:
+  %span.destacado= @efector.nombre + " (" + @efector.cuie + ")"
+%p
+  Fecha de recepción:
+  %span.destacado= @liquidacion.fecha_de_recepcion
+%p
+  Número de expediente:
+  %span.destacado= @liquidacion.numero_de_expediente

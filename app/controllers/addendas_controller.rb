@@ -112,10 +112,11 @@ class AddendasController < ApplicationController
 
     # Obtener el convenio de gestión asociado
     begin
-      @convenio_de_gestion = ConvenioDeGestion.find(params[:convenio_de_gestion_id])
+      @convenio_de_gestion = ConvenioDeGestion.find(params[:addenda][:convenio_de_gestion_id])
     rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :notice => "Petición no válida. El incidente será reportado al administrador del sistema.")
+      return
     end
 
     # Verificar que las prestaciones autorizadas a dar de alta o de baja coincidan con las opciones válidas del formulario

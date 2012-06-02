@@ -65,7 +65,7 @@
   Número de liquidación:
   %span.destacado= @cuasi_factura.numero_de_liquidacion
 
-- if not @cuasi_factura.observaciones.empty?
+- if @cuasi_factura.observaciones && !@cuasi_factura.observaciones.empty?
   %h3 Información complementaria
   %p
     - @cuasi_factura.observaciones.split("\n").each do |l|

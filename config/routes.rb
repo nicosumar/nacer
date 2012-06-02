@@ -27,6 +27,7 @@ Nacer::Application.routes.draw do
   resources :renglones_de_cuasi_facturas, :except => [:index, :show, :destroy]
   match "importar_detalle" => "cuasi_facturas#importar_detalle"
   match "importar_registros_de_prestaciones" => "cuasi_facturas#importar_registros_de_prestaciones"
+  match "importar_archivo_p" => "liquidaciones#importar_archivo_p"
 
   root :to => 'inicio#index'
 

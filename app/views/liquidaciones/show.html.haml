@@ -41,3 +41,5 @@
       %li= link_to "Modificar esta liquidación", edit_liquidacion_path(@liquidacion)
     - if can? :create, CuasiFactura
       %li= link_to "Agregar una cuasi-factura a la liquidación", new_cuasi_factura_url(:liquidacion_id => @liquidacion.id)
+    - if can?(:create, RegistroDePrestacion) && !@liquidacion.cuasi_facturas.any?
+      %li= link_to "Importar archivo 'P'", importar_archivo_p_url(:liquidacion_id => @liquidacion.id)

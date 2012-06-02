@@ -7,5 +7,9 @@ CategoriaDeAfiliado.create([
         { #:id => 3,
           :nombre => "Niño menor de 1 año" },
         { #:id => 4,
-          :nombre => "Niño de 1 a 6 años" }
+          :nombre => "Niño de 1 a 6 años" },
+        { #:id => 5,
+          :nombre => "Menor de 20 años" },
+        { #:id => 6,
+          :nombre => "20 años o más" }
 ])

@@ -39,7 +39,10 @@ class VerificadorController < ApplicationController
       # Buscar el referente (director/encargado) del efector
       concordancia = /director.*?encargado.*?[^[:alpha:]]*?([[:alnum:]]+.*?)[\t\r\n]/i.match(params[:facturacion])
       if concordancia then @texto_referente = concordancia[1] end
-      if @efector then @referente = Contacto.find(Referente.actual_del_efector(@efector.id)[:contacto_id]) end
+      if @efector && (referente = Referente.actual_del_efector(@efector.id))
+        @referente = Contacto.find(referente[:contacto_id])
+      end
+
       # Determinar el mes facturado
       concordancia = /mes.*?prestaciones.*?[^[:alpha:]]*?([[:alpha:]]+).*?([[:digit:]]+)/i.match(params[:facturacion])
       if concordancia
@@ -61,7 +64,7 @@ class VerificadorController < ApplicationController
         end
         año = concordancia[2].to_i
         begin
-          @primer_dia_de_prestaciones = Date.new(año, mes, 1)
+          @primer_dia_de_prestaciones = Date.new((año > 2000 ? año : Date.today.year), mes, 1)
           rescue ArgumentError
         end
       end

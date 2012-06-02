@@ -301,6 +301,7 @@ class PadronesController < ApplicationController
                 # Rechazar la prestación porque el beneficiario aparece como activo para la fecha de prestación
                 prestacion.merge! :estado => :rechazada, :mensaje => "El beneficiario no está activo."
               when !(afiliado.categorias(prestacion[:fecha_prestacion]).any? {|c| (CategoriaDeAfiliado.find(c).prestaciones.collect {|p| p.codigo}).member? prestacion[:codigo]})
+                # TODO: Cambiar todo el esquema de validación de categorías por otro que tenga en cuenta otras propiedades del usuario (edad, sexo, etc.)
                 # Rechazar la prestación porque la categoría del beneficiario no condice con la prestación para la fecha en que se realizó
                 prestacion.merge! :estado => :rechazada, :mensaje => "La categoría del beneficiario no condice con la prestación.", :categorias => afiliado.categorias
               else
@@ -362,6 +363,7 @@ class PadronesController < ApplicationController
               :monto => valor(campos[10], :decimal) }
   end
 
+  # TODO: cambiar esta función cavernícola por las otras más inteligentes "a_..." en el ApplicationController
   def valor(texto, tipo)
 
     texto.strip!
@@ -370,11 +372,12 @@ class PadronesController < ApplicationController
       case
         when tipo == :texto
           return "" if texto == "NULL"
-          return texto.gsub(/  /, " ")
+          return texto.gsub(/  /, " ").upcase
         when tipo == :entero
           return 0 if texto == "NULL"
           return texto.to_i
         when tipo == :fecha
+          # TODO: Añadir verificaciones para otros formatos de fecha
           return nil if texto == "NULL"
           año, mes, dia = texto.split("-")
           return Date.new(año.to_i, mes.to_i, dia.to_i)
