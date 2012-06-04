@@ -488,6 +488,11 @@ private
     fecha, nombre, clase, tipo, numero, hc, prestacion, nacimiento, control, peso, talla, peso_edad, peso_talla = 
       linea.chomp.strip.split("\t")
 
+    # Obtener el código de prestación informado
+    prestacion_id, codigo = a_prestacion(prestacion || "")
+    # Regresar nil si no se encontró un código (¿línea vacía?)
+    return nil if !codigo
+
     # Convertir cada campo a su tipo de datos correspondiente
     fecha_de_prestacion = a_fecha(fecha || "")
     clase_de_documento_id = a_clase(clase || "")
@@ -505,8 +510,6 @@ private
       apellido, nombre = separar_nombre(nombre ? nombre.upcase : "")
       afiliado_id = nil
     end
-
-    prestacion_id, codigo = a_prestacion(prestacion || "")
     fecha_de_nacimiento = a_fecha(nacimiento || "")
     numero_de_control = a_control(control || "")
     peso_actual = a_peso(peso || "")
@@ -594,6 +597,11 @@ private
     fecha, nombre, clase, tipo, numero, hc, prestacion, nacimiento, control, peso, talla, perimetro, peso_edad, perimetro_edad = 
       linea.chomp.strip.split("\t")
 
+    # Obtener el código de prestación informado
+    prestacion_id, codigo = a_prestacion(prestacion || "")
+    # Regresar nil si no se encontró un código (¿línea vacía?)
+    return nil if !codigo
+
     # Convertir cada campo a su tipo de datos correspondiente
     fecha_de_prestacion = a_fecha(fecha || "")
     clase_de_documento_id = a_clase(clase || "")
@@ -612,7 +620,6 @@ private
       afiliado_id = nil
     end
 
-    prestacion_id, codigo = a_prestacion(prestacion || "")
     fecha_de_nacimiento = a_fecha(nacimiento || "")
     numero_de_control = a_control(control || "")
     peso_actual = a_peso(peso || "")
@@ -673,6 +680,11 @@ private
     # Separar los campos y analizarlos
     fecha, nombre, clase, tipo, numero, hc, prestacion = linea.chomp.strip.split("\t")
 
+    # Obtener el código de prestación informado
+    prestacion_id, codigo = a_prestacion(prestacion || "")
+    # Regresar nil si no se encontró un código (¿línea vacía?)
+    return nil if !codigo
+
     # Convertir cada campo a su tipo de datos correspondiente
     fecha_de_prestacion = a_fecha(fecha || "")
     clase_de_documento_id = a_clase(clase || "")
@@ -690,8 +702,6 @@ private
       apellido, nombre = separar_nombre(nombre ? nombre.upcase : "")
       afiliado_id = nil
     end
-
-    prestacion_id, codigo = a_prestacion(prestacion || "")
 
     return { :fecha_de_prestacion => fecha_de_prestacion, :clase_de_documento_id => clase_de_documento_id,
       :tipo_de_documento_id => tipo_de_documento_id, :numero_de_documento => numero_de_documento,
@@ -750,6 +760,11 @@ private
     # Separar los campos y analizarlos
     fecha, nombre, clase, tipo, numero, np, hc, ni, prestacion = linea.chomp.strip.split("\t")
 
+    # Obtener el código de prestación informado
+    prestacion_id, codigo = a_prestacion(prestacion || "")
+    # Regresar nil si no se encontró un código (¿línea vacía?)
+    return nil if !codigo
+
     # Convertir cada campo a su tipo de datos correspondiente
     fecha_de_prestacion = a_fecha(fecha || "")
     clase_de_documento_id = a_clase(clase || "")
@@ -768,7 +783,6 @@ private
       afiliado_id = nil
     end
 
-    prestacion_id, codigo = a_prestacion(prestacion || "")
     numero_de_pedido = (np ? np.strip.upcase : nil)
     numero_de_informe = (ni ? ni.strip.upcase : nil)
 
@@ -830,6 +844,11 @@ private
     # Separar los campos y analizarlos
     fecha, nombre, clase, tipo, numero, hc, fum, fpp, prestacion = linea.chomp.strip.split("\t")
 
+    # Obtener el código de prestación informado
+    prestacion_id, codigo = a_prestacion(prestacion || "")
+    # Regresar nil si no se encontró un código (¿línea vacía?)
+    return nil if !codigo
+
     # Convertir cada campo a su tipo de datos correspondiente
     fecha_de_prestacion = a_fecha(fecha || "")
     clase_de_documento_id = a_clase(clase || "")
@@ -849,7 +868,6 @@ private
       afiliado_id = nil
     end
 
-    prestacion_id, codigo = a_prestacion(prestacion || "")
     if prestacion_id
       # Verificar si la prestación paga adicional por prestación (cantidad variable)
       begin
@@ -938,6 +956,11 @@ private
     # Separar los campos y analizarlos
     fecha, nombre, clase, tipo, numero, hc, prestacion, fparto, apgar, peso, vdrl, consejeria = linea.chomp.strip.split("\t")
 
+    # Obtener el código de prestación informado
+    prestacion_id, codigo = a_prestacion(prestacion || "")
+    # Regresar nil si no se encontró un código (¿línea vacía?)
+    return nil if !codigo
+
     # Convertir cada campo a su tipo de datos correspondiente
     fecha_de_prestacion = a_fecha(fecha || "")
     clase_de_documento_id = a_clase(clase || "")
@@ -956,7 +979,6 @@ private
       afiliado_id = nil
     end
 
-    prestacion_id, codigo = a_prestacion(prestacion || "")
     fecha_de_parto = a_fecha(fparto || "")
     apgar_5 = a_apgar(apgar || "")
     peso_recien_nacido = a_peso_rn(peso || "")
@@ -1025,6 +1047,11 @@ private
     # Separar los campos y analizarlos
     fecha, nombre, clase, tipo, numero, hc, prestacion, cant, fparto, apgar, peso = linea.chomp.strip.split("\t")
 
+    # Obtener el código de prestación informado
+    prestacion_id, codigo = a_prestacion(prestacion || "")
+    # Regresar nil si no se encontró un código (¿línea vacía?)
+    return nil if !codigo
+
     # Convertir cada campo a su tipo de datos correspondiente
     fecha_de_prestacion = a_fecha(fecha || "")
     clase_de_documento_id = a_clase(clase || "")
@@ -1043,7 +1070,6 @@ private
       afiliado_id = nil
     end
 
-    prestacion_id, codigo = a_prestacion(prestacion || "")
     cantidad = a_cantidad(cant || "")
     fecha_de_parto = a_fecha(fparto || "")
     apgar_5 = a_apgar(apgar || "")

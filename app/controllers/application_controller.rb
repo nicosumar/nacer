@@ -63,6 +63,9 @@ private
       rescue ArgumentError
       end
     end
+    if cadena && !cadena.empty? && !fecha
+      logger.warn "a_fecha: ADVERTENCIA, no pude determinar el formato de fecha de la cadena '#{cadena}'."
+    end
     return fecha
   end
 
@@ -71,6 +74,9 @@ private
     begin
       clase_de_documento = ClaseDeDocumento.where("codigo_para_prestaciones = ?", cadena.strip.upcase).first
     rescue
+    end
+    if cadena && !cadena.empty? && !clase_de_documento
+      logger.warn "a_clase: ADVERTENCIA, no pude determinar la clase de documento desde la cadena '#{cadena}'."
     end
     return (clase_de_documento ? clase_de_documento.id : nil)
   end
@@ -81,18 +87,27 @@ private
       tipo_de_documento = TipoDeDocumento.where("codigo = ?", cadena.strip.upcase.gsub(".", "")).first
     rescue
     end
+    if cadena && !cadena.empty? && !tipo_de_documento
+      logger.warn "a_tipo: ADVERTENCIA, no pude determinar el tipo de documento desde la cadena '#{cadena}'."
+    end
     return (tipo_de_documento ? tipo_de_documento.id : nil)
   end
 
   def a_documento(cadena)
     # Intentar encontrar una concordancia con el formato de número de documento
     concordancia = /.*?([[:digit:]]+).*/i.match(cadena.strip.gsub(".", ""))
+    if cadena && !cadena.empty? && !concordancia
+      logger.warn "a_documento: ADVERTENCIA, no pude determinar el número de documento desde la cadena '#{cadena}'."
+    end
     return (concordancia ? concordancia[1].to_i : nil)
   end
 
   def a_cantidad(cadena)
     # Intentar encontrar una concordancia con el formato de la cantidad
     cantidad = cadena.strip.to_i.abs
+    if cadena && !cadena.empty? && !((1..2) === cantidad)
+      logger.warn "a_cantidad: ADVERTENCIA, no pude determinar la cantidad de días de internación desde la cadena '#{cadena}'."
+    end
     return ((1..2) === cantidad ? cantidad : nil)
   end
 
@@ -110,16 +125,34 @@ private
 
   def a_prestacion(cadena)
     prestacion = nil
+
+    # La cadena de entrada se transforma realizando las siguientes modificaciones antes de buscarla en el listado
+    # de prestaciones de la base de datos:
+    # - Se eliminan espacios innecesarios al principio y final de la cadena (strip).
+    # - Se pasan todas las letras a mayúsculas (upcase).
+    # - Se reemplazan (si hubieran) los guiones por espacios. Ejemplo: 'MEM-01' -> 'MEM 01'.
+    # - Se eliminan los espacios duplicados, triplicados, etc. reemplazándolos por un único espacio.
+    # - Se separan en distintos bloques las letras y los números. Ejemplo: 'LMI43LB047' -> 'LMI 43 LB 047'.
     codigo_de_prestacion = cadena.strip.upcase.gsub("-", " ").gsub(/[ ]+/, " ").gsub(/([[:alpha:]]+)([[:digit:]]+)/i,
       '\1 \2').gsub(/([[:digit:]]+)([[:alpha:]]+)/i, '\1 \2')
-      begin
-        if codigo_de_prestacion.match(/[ ]*\(.*\)/)
-          prestacion = Prestacion.where("codigo = ?", codigo_de_prestacion.gsub(/[ ]*\(.*\)/, "")).first
-        else
-          prestacion = Prestacion.where("codigo = ?", codigo_de_prestacion).first
-        end
-      rescue
+
+    # Regresar nulos si se pasó un código de prestación en blanco (probablemente una línea en blanco en la
+    # digitalización).
+    return [nil, nil] if codigo_de_prestacion.empty?
+
+    begin
+      # Eliminar el sufijo de unicidad que se añade a las prestaciones que pagan adicionales por prestación.
+      # Por ejemplo, la 'TMI 71'.
+      if codigo_de_prestacion.match(/[ ]*\(.*\)/)
+        prestacion = Prestacion.where("codigo = ?", codigo_de_prestacion.gsub(/[ ]*\(.*\)/, "")).first
+      else
+        prestacion = Prestacion.where("codigo = ?", codigo_de_prestacion).first
       end
+    rescue
+    end
+    if cadena && !cadena.empty? && !prestacion
+      logger.warn "a_prestacion: ADVERTENCIA, no pude determinar el código de prestación desde la cadena '#{cadena}'."
+    end
     return [(prestacion ? prestacion.id : nil), codigo_de_prestacion]
   end
 
@@ -127,46 +160,53 @@ private
     # TODO: Agregar validaciones en el número de controles
     controles = nil
     concordancia = /.*?([[:digit:]]+).*?/i.match(cadena.strip)
+    if cadena && !cadena.empty? && !concordancia
+      logger.warn "a_control: ADVERTENCIA, no pude determinar el número de control desde la cadena '#{cadena}'."
+    end
     return (concordancia ? concordancia[1].to_i : nil)
   end
 
   def a_peso(cadena)
     # TODO: Agregar validaciones para el peso (mín. y máx.)
     peso = cadena.strip.gsub(",", ".").to_f
-
     # Convertir a escala en kilogramos si evidentemente fue ingresado en gramos
     peso = peso / 1000.0 if peso >= 500.0
-
+    if cadena && !cadena.empty? && !(peso >= 0.5 && peso < 100.0)
+      logger.warn "a_peso: ADVERTENCIA, no pude determinar el peso desde la cadena '#{cadena}'."
+    end
     return (peso >= 0.5 && peso < 100.0 ? peso : nil)
   end
 
   def a_peso_rn(cadena)
     # TODO: Agregar validaciones para el peso (mín. y máx.)
     peso = cadena.strip.gsub(",", ".").to_f
-
     # Convertir a escala en kilogramos si evidentemente fue ingresado en gramos
     peso = peso / 1000.0 if peso >= 500.0
-
+    if cadena && !cadena.empty? && !(peso >= 0.5 && peso < 10.0)
+      logger.warn "a_peso_rn: ADVERTENCIA, no pude determinar el peso del RN desde la cadena '#{cadena}'."
+    end
     return (peso >= 0.5 && peso < 10.0 ? peso : nil)
   end
 
   def a_talla(cadena)
     # TODO: Agregar validaciones para la talla (mín. y máx.)
     talla = cadena.strip.gsub(",", ".").to_f
-
     # Convertir a escala en centímetros si evidentemente fue ingresado en metros
     talla = talla * 100.0 if talla > 0.0 && talla < 2.0
-
+    if cadena && !cadena.empty? && !(talla > 10.0 && talla < 200.0)
+      logger.warn "a_talla: ADVERTENCIA, no pude determinar la talla desde la cadena '#{cadena}'."
+    end
     return (talla > 10.0 && talla < 200.0 ? talla.to_i : nil)
   end
 
   def a_perimetro(cadena)
     # TODO: Agregar validaciones para el perímetro cefálico (mín. y máx.)
     perimetro = cadena.strip.gsub(",", ".").to_f
-
     # Convertir a escala en centímetros si fue ingresado en milímetros
     perimetro = perimetro / 100.0 if perimetro > 100.0 && perimetro < 700.0
-
+    if cadena && !cadena.empty? && !(perimetro > 10.0 && perimetro < 70.0)
+      logger.warn "a_perimetro: ADVERTENCIA, no pude determinar el perímetro cefálico desde la cadena '#{cadena}'."
+    end
     return (perimetro > 10.0 && perimetro < 70.0 ? perimetro.to_i : nil)
   end
 
@@ -174,7 +214,6 @@ private
     # TODO: Mejorar estos procesos. Incorporar curvas de la OMS.
     valor_pe = cadena.strip.upcase
     return nil if (valor_pe.empty? || valor_pe == "-")
-
     case
       when /.*desn.*/i.match(valor_pe) || /.*bp.*/i.match(valor_pe) || /.*?<.*?10.*/i.match(valor_pe) || (1..9) === ((valor_pe.split("-"))[0] ? (valor_pe.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 1
@@ -183,6 +222,7 @@ private
       when /.*obes.*/i.match(valor_pe) || /.*sobre.*/i.match(valor_pe) || /.*?>.*?90.*/i.match(valor_pe) || (91..100) === ((valor_pe.split("-"))[0] ? (valor_pe.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 3
       else
+        logger.warn "a_percentil_pe: ADVERTENCIA, no pude determinar el percentil P/E desde la cadena '#{cadena}'."
         return nil
     end
   end
@@ -191,7 +231,6 @@ private
     # TODO: Mejorar estos procesos. Incorporar curvas de la OMS.
     valor_te = cadena.strip.upcase
     return nil if (valor_te.empty? || valor_te == "-")
-
     case
       when /.*desn.*/i.match(valor_te) || /.*bp.*/i.match(valor_te) || /.*-3.*/i.match(valor_te) || (1..2) === ((valor_te.split("-"))[0] ? (valor_te.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 1
@@ -200,6 +239,7 @@ private
       when /.*obes.*/i.match(valor_te) || /.*sobre.*/i.match(valor_te) || /.*?[>+].*?97.*/i.match(valor_te) || (98..100) === ((valor_te.split("-"))[0] ? (valor_te.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 3
       else
+        logger.warn "a_percentil_te: ADVERTENCIA, no pude determinar el percentil T/E desde la cadena '#{cadena}'."
         return nil
     end
   end
@@ -208,15 +248,15 @@ private
     # TODO: Mejorar estos procesos. Incorporar curvas de la OMS.
     valor_pce = cadena.strip.upcase
     return nil if (valor_pce.empty? || valor_pce == "-")
-
     case
-      when /.*-.*?2.*?DS.*?+.*?2.*?DS.*/i.match(valor_pce) || valor_pce == "N" || (3..97) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
+      when /.*-.*?2.*?2.*/i.match(valor_pce) || valor_pce == "N" || (3..97) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 2
-      when /.*?-.*?2.*?DS.*/i.match(valor_pce) || (1..2) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
+      when /.*?-.*?2.*/i.match(valor_pce) || (1..2) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 1
-      when /.*?+.*?2.*?DS.*/i.match(valor_pce) || (98..100) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
+      when /.*2.*/i.match(valor_pce) || (98..100) === ((valor_pce.split("-"))[0] ? (valor_pce.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i.abs : nil)
         return 3
       else
+        logger.warn "a_percentil_pce: ADVERTENCIA, no pude determinar el percentil PC/E desde la cadena '#{cadena}'."
         return nil
     end
   end
@@ -225,7 +265,6 @@ private
     # TODO: Mejorar estos procesos. Incorporar curvas de la OMS.
     valor_pt = cadena.strip.upcase
     return nil if (valor_pt.empty? || valor_pt == "-")
-
     case
       when /.*?-.*?10.*?+.*?10.*/i.match(valor_pt) || valor_pt == "N" || (1..10) === ((valor_pt.split("-"))[0] ? (valor_pt.split("-"))[0].gsub(/[^[:digit:]]+/, "").to_i : nil) || (-10..-1) === valor_pt.gsub(/[[:alpha:]]+/, "").to_i
         return 2
@@ -234,6 +273,7 @@ private
       when /.*obes.*/i.match(valor_pt) || /.*sobre.*/i.match(valor_pt) || /.*?10.*/i.match(valor_pt) || valor_pt.gsub(/[^[:digit:]]+/, "").to_i > 10
         return 3
       else
+        logger.warn "a_percentil_pt: ADVERTENCIA, no pude determinar el percentil P/T desde la cadena '#{cadena}'."
         return nil
     end
   end
@@ -245,7 +285,9 @@ private
     else
       apgar = cadena.strip.to_i
     end
-
+    if cadena && !cadena.empty? && !((1..10) === apgar)
+      logger.warn "a_apgar: ADVERTENCIA, no pude determinar el Apgar de 5' desde la cadena '#{cadena}'."
+    end
     return ((1..10) === apgar ? apgar : nil)
   end
 
@@ -256,7 +298,9 @@ private
       when cadena.strip.upcase.match(/N/) || cadena.strip.upcase == "FALSO"
         return 2
     end
-
+    if cadena && !cadena.empty?
+      logger.warn "a_si_no: ADVERTENCIA, no pude determinar el valor Sí/No desde la cadena '#{cadena}'."
+    end
     return nil
   end
 
@@ -267,7 +311,10 @@ private
       if cuie
         efector_id = (Efector.find_by_cuie(cuie)).id
       end
-      rescue
+    rescue
+    end
+    if cadena && !cadena.empty? && !efector_id
+      logger.warn "a_efector: ADVERTENCIA, no pude determinar el efector con el CUIE '#{cadena}'."
     end
     return efector_id
   end
@@ -275,8 +322,10 @@ private
   def a_precio(cadena)
     # TODO: Agregar validaciones
     precio = cadena.strip.gsub(",", ".").to_f
-
-    return (precio > 0 && precio < 100000.0 ? precio : nil)
+    if cadena && !cadena.empty? && !(precio > 0.0 && precio < 100000.0)
+      logger.warn "a_precio: ADVERTENCIA, no pude determinar el precio desde la cadena '#{cadena}'."
+    end
+    return (precio > 0.0 && precio < 100000.0 ? precio : nil)
   end
 
 end
