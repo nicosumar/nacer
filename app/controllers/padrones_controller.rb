@@ -212,7 +212,6 @@ class PadronesController < ApplicationController
       primero_del_mes = Date.new(año.to_i, mes.to_i, 1)
       primero_del_mes_siguiente = Date.new((mes == "12" ? año.to_i + 1 : año.to_i), (mes == "12" ? 1 : mes.to_i + 1), 1)
       origen = File.new("vendor/data/Facturación_#{params[:año_y_mes]}.txt", "r")
-#      resultado = File.new("vendor/data/ResultadoDelCruce_#{params[:año_y_mes]}.txt", "w")  # BORRAME
       nomenclador = Nomenclador.find(params[:nomenclador_id], :include => {:asignaciones_de_precios => :prestacion})
       asignaciones_de_precios = {}
       nomenclador.asignaciones_de_precios.each do |asignacion|
@@ -232,17 +231,23 @@ class PadronesController < ApplicationController
         when !(prestacion[:fecha_prestacion] && prestacion[:fecha_prestacion].is_a?(Date))
           # Rechazar la prestación si el formato de la fecha es incorrecto
           prestacion.merge! :estado => :rechazada, :mensaje => "La fecha de la prestación no tiene un formato correcto."
-        when (prestacion[:fecha_prestacion] < primero_del_mes || prestacion[:fecha_prestacion] >= primero_del_mes_siguiente)
-          # Rechazar la prestación si no está dentro del periodo facturado
-          prestacion.merge! :estado => :rechazada, :mensaje => "La fecha de la prestación no se encuentra dentro del mes facturado."
+          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+        when prestacion[:fecha_prestacion] >= primero_del_mes_siguiente
+          # Rechazar la prestación si es posterior al periodo analizado
+          prestacion.merge! :estado => :rechazada, :mensaje => "La fecha de la prestación es posterior al mes facturado."
+          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+        when prestacion[:fecha_prestacion] < (primero_del_mes - 5.months)
+          prestacion.merge! :estado => :rechazada, :mensaje => "La prestación no puede pagarse porque se venció el periodo de pago."
+          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
         when !(asignaciones_de_precios.has_key?(prestacion[:codigo]))
           # Rechazar la prestación porque no se encontró el código de la prestación en el nomenclador
           prestacion.merge! :estado => :rechazada, :mensaje => "El código de la prestación no existe para el nomenclador seleccionado."
-          puts prestacion
+          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
         when (asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion == 0.0 &&
           asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
           # Rechazar la prestación porque no coincide el monto indicado
           prestacion.merge! :estado => :rechazada, :mensaje => "El monto de la prestación no coincide con el del nomenclador seleccionado."
+          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
         else
           afiliados, nivel_coincidencia = Afiliado.busqueda_por_aproximacion(prestacion[:documento], prestacion[:nombre])
           if afiliados && afiliados.size > 1
@@ -251,6 +256,7 @@ class PadronesController < ApplicationController
             # manteniendo alguno de los registros devueltos con documento propio existen mejores probabilidades de seleccionar el registro
             # correcto, en caso contrario, con un documento ajeno, indica con altas probabilidades que se trata de un RN anotado con el documento
             # de la madre, y la prestación se le paga a ella.
+            logger.warn "cruzar_facturacion: ADVERTENCIA, coincidencia múltiple de nivel #{nivel_coincidencia} entre los afiliados: #{(afiliados.collect {|a| a.afiliado_id}).inspect}."
             afiliados_con_documento_propio = []
             afiliados.each do |afiliado|
               if afiliado.clase_de_documento.upcase == "P"
@@ -297,13 +303,14 @@ class PadronesController < ApplicationController
               when !(afiliado.inscripto?(prestacion[:fecha_prestacion]))
                 # Rechazar la prestación porque la fecha de inscripción es posterior a la de prestación
                 prestacion.merge! :estado => :rechazada, :mensaje => "La fecha de inscripción es posterior a la fecha de prestación."
+                logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
               when !(afiliado.activo?(prestacion[:fecha_prestacion]))
-                # Rechazar la prestación porque el beneficiario aparece como activo para la fecha de prestación
+                # Rechazar la prestación porque el beneficiario aparece como inactivo para la fecha de prestación
                 prestacion.merge! :estado => :rechazada, :mensaje => "El beneficiario no está activo."
-              when !(afiliado.categorias(prestacion[:fecha_prestacion]).any? {|c| (CategoriaDeAfiliado.find(c).prestaciones.collect {|p| p.codigo}).member? prestacion[:codigo]})
+#              when !(afiliado.categorias(prestacion[:fecha_prestacion]).any? {|c| (CategoriaDeAfiliado.find(c).prestaciones.collect {|p| p.codigo}).member? prestacion[:codigo]})
                 # TODO: Cambiar todo el esquema de validación de categorías por otro que tenga en cuenta otras propiedades del usuario (edad, sexo, etc.)
                 # Rechazar la prestación porque la categoría del beneficiario no condice con la prestación para la fecha en que se realizó
-                prestacion.merge! :estado => :rechazada, :mensaje => "La categoría del beneficiario no condice con la prestación.", :categorias => afiliado.categorias
+#                prestacion.merge! :estado => :rechazada, :mensaje => "La categoría del beneficiario no condice con la prestación.", :categorias => afiliado.categorias
               else
                 # Prestación aceptada para el pago
                 prestacion.merge! :estado => :aceptada, :mes_padron => afiliado.padron_activo(prestacion[:fecha_prestacion])
@@ -318,11 +325,8 @@ class PadronesController < ApplicationController
 
       # Almacenar el resultado en el hash
       guardar_resultado(prestacion)
-#      resultado.puts((prestacion.collect {|d| d[0].to_s + " => " + d[1].to_s }).join(" | ")) # BORRAME
-#      resultado.flush # BORRAME
     end   # origen.each
     origen.close
-#    resultado.close #BORRAME
 
   end   # def cruzar_facturacion
 
