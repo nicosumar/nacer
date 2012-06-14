@@ -293,9 +293,9 @@ private
 
   def a_si_no(cadena)
     case
-      when cadena.strip.upcase.match(/S/) || cadena.strip.upcase == "VERDADERO"
+      when cadena.strip.upcase.match(/S/) || cadena.strip.upcase == "VERDADERO" || cadena.strip.match(/\+/)
         return 1
-      when cadena.strip.upcase.match(/N/) || cadena.strip.upcase == "FALSO"
+      when cadena.strip.upcase.match(/N/) || cadena.strip.upcase == "FALSO" || cadena.strip.match(/-/)
         return 2
     end
     if cadena && !cadena.empty?
