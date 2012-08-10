@@ -30,6 +30,30 @@ class Afiliado < ActiveRecord::Base
     return normalizado
   end
 
+  def self.busqueda_por_documento(doc = nil)
+
+    # Verificar el parámetro
+    documento = doc.to_s.strip
+    if !documento || documento.blank?
+      return nil
+    end
+
+    # Buscar el número de documento en cualquiera de los campos de documentos
+    afiliados = Afiliado.where("(numero_de_documento = ? OR
+                                numero_de_documento_de_la_madre = ? OR
+                                numero_de_documento_del_padre = ? OR
+                                numero_de_documento_del_tutor = ?) AND
+                                (mensaje_de_la_baja IS NULL OR
+                                mensaje_de_la_baja NOT ILIKE '%dupl%')",
+                                documento, documento, documento,
+                                documento)
+
+    # Devolver 'nil' si no se encontró el número de documento
+    return nil if afiliados.size < 1
+
+    return afiliados
+  end
+
   # Busca un afiliado por su número de documento y nombre, devolviendo todos los posibles candidatos.
   def self.busqueda_por_aproximacion(documento, nombre_y_apellido)
     return nil if !(documento && nombre_y_apellido)
@@ -37,10 +61,12 @@ class Afiliado < ActiveRecord::Base
     encontrados = []
 
     # Primero intentamos encontrarlo por número de documento
-    afiliados = Afiliado.where("numero_de_documento = '#{documento}' OR
-                                numero_de_documento_de_la_madre = '#{documento}' OR
-                                numero_de_documento_del_padre = '#{documento}' OR
-                                numero_de_documento_del_tutor = '#{documento}'", :order => "afiliado_id ASC")
+    afiliados = Afiliado.where("numero_de_documento = ? OR
+                                numero_de_documento_de_la_madre = ? OR
+                                numero_de_documento_del_padre = ? OR
+                                numero_de_documento_del_tutor = ?", documento,
+                                documento, documento, documento,
+                                :order => "afiliado_id ASC")
 
     # Procesar los nombres de todos los afiliados encontrados relacionados con el número de documento,
     # y mantener la/s mejor/es coincidencia/s, descartando el resto.

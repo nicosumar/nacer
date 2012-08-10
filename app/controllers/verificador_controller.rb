@@ -80,7 +80,7 @@ class VerificadorController < ApplicationController
         @convenio_de_administracion = @efector.convenio_de_administracion
       end
       # Buscar el detalle de las prestaciones facturadas
-      concordancia = /valor.*?\n(.*[[:alpha:]]+.*?\t.*?[[:digit:]]+.*?\t.*?[[:digit:]]+.*?\t[[:digit:]]+.*?)[\r\n]/mi.match(params[:facturacion])
+      concordancia = /valor.*?\n(.*[[:alpha:]]+.*?\t.*?[[:digit:]]+.*?\t.*?[[:digit:]]+.*?\t.*?[[:digit:]]+.*?)[\r\n]/mi.match(params[:facturacion])
       if concordancia
         @detalle = []
         concordancia[1].gsub(/\r/, '').split("\n").each do |linea|
