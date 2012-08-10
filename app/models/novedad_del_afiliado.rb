@@ -41,7 +41,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     # de las novedades cuya resolución está pendiente
     novedades = NovedadDelAfiliado.where("(numero_de_documento = ? OR
       numero_de_documento_de_la_madre = ? OR numero_de_documento_del_padre = ? OR
-      numero_de_documento_del_tutor = ?) AND estado_de_la_novedad_id IN [1, 2, 3]",
+      numero_de_documento_del_tutor = ?) AND estado_de_la_novedad_id IN (1, 2, 3)",
       documento, documento, documento, documento)
 
     # Devolver 'nil' si no se encontró el número de documento

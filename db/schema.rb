@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120424083506) do
+ActiveRecord::Schema.define(:version => 20120809163341) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "observaciones"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "afiliados", :id => false, :force => true do |t|
@@ -109,6 +111,11 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.string   "activo_r"
     t.integer  "motivo_baja_r"
     t.string   "mensaje_baja_r"
+    t.string   "e_mail"
+    t.string   "numero_de_celular"
+    t.date     "fecha_de_ultima_menstruacion"
+    t.string   "observaciones_generales"
+    t.string   "discapacidad"
   end
 
   add_index "afiliados", ["afiliado_id"], :name => "index_afiliados_on_afiliado_id", :unique => true
@@ -158,6 +165,16 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.integer "prestacion_id"
   end
 
+  create_table "centros_de_inscripcion", :force => true do |t|
+    t.string   "nombre",              :null => false
+    t.string   "codigo_para_gestion", :null => false
+    t.integer  "efector_id",          :null => false
+    t.string   "created_by"
+    t.string   "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "clases_de_documentos", :force => true do |t|
     t.string "nombre"
     t.string "codigo_para_prestaciones"
@@ -178,6 +195,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sexo_id"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "convenios_de_administracion", :force => true do |t|
@@ -191,6 +210,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   add_index "convenios_de_administracion", ["efector_id"], :name => "unq_convenios_de_administracion_efector_id", :unique => true
@@ -207,6 +228,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   add_index "convenios_de_gestion", ["efector_id"], :name => "unq_convenios_de_gestion_efector_id", :unique => true
@@ -222,6 +245,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "datos_adicionales", :force => true do |t|
@@ -254,6 +279,11 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
   create_table "dependencias_administrativas", :force => true do |t|
     t.string "nombre",              :null => false
     t.string "tipo_de_dependencia"
+  end
+
+  create_table "discapacidades", :force => true do |t|
+    t.string "nombre"
+    t.string "codigo_para_gestion"
   end
 
   create_table "distritos", :force => true do |t|
@@ -291,6 +321,12 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
+  end
+
+  create_table "estados_de_las_novedades", :force => true do |t|
+    t.string "nombre"
   end
 
   create_table "estados_de_las_prestaciones", :force => true do |t|
@@ -306,6 +342,10 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
 
   create_table "grupos_de_prestaciones", :force => true do |t|
     t.string "nombre", :null => false
+  end
+
+  create_table "lenguas_originarias", :force => true do |t|
+    t.string "nombre"
   end
 
   create_table "liquidaciones", :force => true do |t|
@@ -330,12 +370,19 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "niveles_de_instruccion", :force => true do |t|
+    t.string "nombre"
+    t.string "codigo_para_gestion"
   end
 
   create_table "nomencladores", :force => true do |t|
@@ -345,6 +392,79 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "novedades_de_los_afiliados", :force => true do |t|
+    t.integer  "centro_de_inscripcion_id",             :null => false
+    t.integer  "tipo_de_novedad_id",                   :null => false
+    t.integer  "estado_de_la_novedad_id",              :null => false
+    t.string   "clave_de_beneficiario",                :null => false
+    t.string   "apellido"
+    t.string   "nombre"
+    t.integer  "tipo_de_documento_id"
+    t.integer  "clase_de_documento_id"
+    t.string   "numero_de_documento"
+    t.integer  "sexo_id"
+    t.integer  "categoria_de_afiliado_id"
+    t.date     "fecha_de_nacimiento"
+    t.integer  "pais_de_nacimiento_id"
+    t.boolean  "se_declara_indigena"
+    t.integer  "lengua_originaria_id"
+    t.integer  "tribu_originaria_id"
+    t.integer  "tipo_de_documento_de_la_madre_id"
+    t.string   "numero_de_documento_de_la_madre"
+    t.string   "apellido_de_la_madre"
+    t.string   "nombre_de_la_madre"
+    t.integer  "tipo_de_documento_del_padre_id"
+    t.string   "numero_de_documento_del_padre"
+    t.string   "apellido_del_padre"
+    t.string   "nombre_del_padre"
+    t.integer  "tipo_de_documento_del_tutor_id"
+    t.string   "numero_de_documento_del_tutor"
+    t.string   "apellido_del_tutor"
+    t.string   "nombre_del_tutor"
+    t.date     "fecha_de_diagnostico_del_embarazo"
+    t.integer  "semanas_de_embarazo"
+    t.date     "fecha_probable_de_parto"
+    t.date     "fecha_efectiva_de_parto"
+    t.string   "domicilio_calle"
+    t.string   "domicilio_numero"
+    t.string   "domicilio_manzana"
+    t.string   "domicilio_piso"
+    t.string   "domicilio_depto"
+    t.string   "domicilio_entre_calle_1"
+    t.string   "domicilio_entre_calle_2"
+    t.string   "domicilio_barrio_o_paraje"
+    t.integer  "domicilio_provincia_id"
+    t.integer  "domicilio_departamento_id"
+    t.integer  "domicilio_distrito_id"
+    t.string   "domicilio_codigo_postal"
+    t.string   "telefono"
+    t.integer  "efector_id"
+    t.date     "fecha_de_la_novedad",                  :null => false
+    t.string   "score_de_riesgo"
+    t.integer  "alfabetizacion_id"
+    t.integer  "años_en_el_ultimo_nivel"
+    t.integer  "alfabetizacion_de_la_madre_id"
+    t.integer  "años_en_el_ultimo_nivel_de_la_madre"
+    t.integer  "alfabetizacion_del_padre_id"
+    t.integer  "años_en_el_ultimo_nivel_del_padre"
+    t.integer  "alfabetizacion_del_tutor_id"
+    t.integer  "años_en_el_ultimo_nivel_del_tutor"
+    t.string   "e_mail"
+    t.string   "numero_de_celular"
+    t.date     "fecha_de_ultima_menstruacion"
+    t.text     "observaciones_generales"
+    t.integer  "discapacidad_id"
+    t.string   "created_by"
+    t.string   "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "paises", :force => true do |t|
+    t.integer "bioestadistica_id"
+    t.string  "nombre"
   end
 
   create_table "percentiles_pc_edad", :force => true do |t|
@@ -399,6 +519,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.string   "autorizante_de_la_baja_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "provincias", :force => true do |t|
@@ -414,6 +536,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.date     "fecha_de_finalizacion"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "registros_de_datos_adicionales", :force => true do |t|
@@ -423,6 +547,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "registros_de_prestaciones", :force => true do |t|
@@ -444,6 +570,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "renglones_de_cuasi_facturas", :force => true do |t|
@@ -458,6 +586,8 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "created_by"
+    t.string   "updated_by"
   end
 
   create_table "sexos", :force => true do |t|
@@ -480,6 +610,19 @@ ActiveRecord::Schema.define(:version => 20120424083506) do
   create_table "tipos_de_documentos", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
+  end
+
+  create_table "tipos_de_novedades", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo_para_gestion"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tribus_originarias", :force => true do |t|
+    t.string   "nombre"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "unidades_de_medida", :force => true do |t|

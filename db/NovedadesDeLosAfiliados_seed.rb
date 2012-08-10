@@ -52,11 +52,6 @@ class ModificarNovedadesDeLosAfiliados < ActiveRecord::Migration
   "
   execute "
     ALTER TABLE novedades_de_los_afiliados
-      ADD CONSTRAINT fk_novedades_tribus_originarias
-      FOREIGN KEY (tribu_originaria_id) REFERENCES tribus_originarias (id);
-  "
-  execute "
-    ALTER TABLE novedades_de_los_afiliados
       ADD CONSTRAINT fk_novedades_tt_dd_madre
       FOREIGN KEY (tipo_de_documento_de_la_madre_id) REFERENCES tipos_de_documentos (id);
   "
