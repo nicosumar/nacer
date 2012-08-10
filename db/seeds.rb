@@ -38,3 +38,14 @@ load 'db/AsignacionesDeNomenclador_seed.rb'
 # Afiliados
 load 'db/CategoriasDeAfiliados_seed.rb'
 load 'db/Afiliados_seed.rb'
+
+# Datos iniciales para el módulo de inscripciones
+load 'db/TiposDeNovedades_seed.rb'
+load 'db/CentrosDeInscripcion_seed.rb'
+load 'db/EstadosDeLasNovedades_seed.rb'
+load 'db/LenguasOriginarias_seed.rb'
+load 'db/TribusOriginarias_seed.rb'
+load 'db/TiposDeRelaciones_seed.rb'
+load 'db/NivelesDeInstruccion_seed.rb'
+load 'db/Discapacidades_seed.rb'
+load 'db/NovedadesDeLosAfiliados_seed.rb'
