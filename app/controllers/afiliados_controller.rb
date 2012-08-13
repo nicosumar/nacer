@@ -1,15 +1,37 @@
-class VerificadorController < ApplicationController
+class AfiliadosController < ApplicationController
   before_filter :user_required
 
-  def busqueda
-    if not current_user.in_group?(:inscripción)
+  def index
+    # Verificar si el usuario tiene el acceso permitido
+    if cannot? :read, Afiliado
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación. Se ha notificado al administrador del sistema." 
       return
     end
 
+    # Verificar si ya se envió algún patrón de búsqueda de beneficiario
+    if params[:commit]
+      if !params[:patron_de_busqueda] || params[:patron_de_busqueda].empty?
+        @patron_de_busqueda = nil
+        render :action => "index", :notice => "Debe ingresar algún criterio de búsqueda."
+      end
+    else
+      @patron_de_busqueda = nil
+    end
+  end
+
+  def busqueda
     if params[:numero_de_documento]
       @procesado = true
-      # TODO: Cambiar desde aquí, hay que buscar los afiliados por número de documento
+
+      # Buscar los afiliados que posean el mismo número de documento ingresado en la búsqueda
+      @afiliados = Afiliado.busqueda_por_documento(params[:numero_de_documento])
+
+      # Buscar las novedades pendientes que posean el mismo número de documento ingresado
+      @novedades = NovedadDelAfiliado.busqueda_por_documento(params[:numero_de_documento])
+
+      # Eliminar los afiliados que estén en las novedades
+
+### 
       concordancia = /efector.*?(M[[:digit:]]+).*?\t*?/i.match(params[:facturacion])
       if concordancia
         @cuie_efector = concordancia[1].upcase

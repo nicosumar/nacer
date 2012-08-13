@@ -9,32 +9,35 @@ class Ability
     end
 
     if user.in_group? :operaciones then
-      can :read, :all
-      can :manage, Efector
       can :manage, Contacto
+      can :manage, Efector
+      can :read, Referente
+      can :read, Afiliado
+      can :manage, NovedadDelAfiliado
     end
 
     if user.in_group? :facturación then
-      can :read, :all
-      can :manage, AsignacionDeNomenclador
-      can :manage, AsignacionDePrecios
+      can :read, Efector
+      can :read, Referente
+      can :read, ConvenioDeAdministracion
+      can :read, ConvenioDeGestion
       can :manage, Contacto
-      can :manage, Nomenclador
-      can :manage, Prestacion
       can :manage, Liquidacion
       can :manage, CuasiFactura
-      can :manage, RenglonDeCuasiFactura
-      can :manage, RegistroDePrestacion
-      can :manage, RegistroDeDatoAdicional
     end
 
     if user.in_group? :convenios then
-      can :read, :all
+      can :read, Efector
       can :manage, Addenda
       can :manage, Contacto
       can :manage, ConvenioDeAdministracion
       can :manage, ConvenioDeGestion
       can :manage, Referente
+    end
+
+    if user.in_group? :inscripción then
+      can :read, Afiliado
+      can :manage, NovedadDelAfiliado
     end
 
   end

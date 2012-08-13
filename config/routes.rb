@@ -22,7 +22,7 @@ Nacer::Application.routes.draw do
   match "importar_registros_de_prestaciones" => "cuasi_facturas#importar_registros_de_prestaciones"
   match "importar_archivo_p" => "liquidaciones#importar_archivo_p"
   resources :novedades_de_los_afiliados, :except => :destroy
-  match "inscripciones" => "inscripciones#busqueda"
+  resources :afiliados, :only => [:index, :show]
 
   root :to => 'inicio#index'
 

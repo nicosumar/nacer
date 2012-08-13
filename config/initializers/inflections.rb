@@ -189,6 +189,14 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("nivel·_de·_instruccion·", "niveles_de_instruccion")
   inflect.irregular("NivelDeInstruccion", "Niveles·De·Instruccion·")
   inflect.irregular("Nivel·De·Instruccion·", "NivelesDeInstruccion")
+  inflect.irregular("busqueda_de_afiliado", "busquedas·_de·_afiliados·")
+  inflect.irregular("busqueda·_de·_afiliado·", "busquedas_de_afiliados")
+  inflect.irregular("BusquedaDeAfiliado", "Busquedas·De·Afiliados·")
+  inflect.irregular("Busqueda·De·Afiliado·", "BusquedasDeAfiliados")
+  inflect.irregular("resultado_de_la_busqueda", "resultados·_de·_la·_busqueda·")
+  inflect.irregular("resultado·_de·_la·_busqueda·", "resultados_de_la_busqueda")
+  inflect.irregular("ResultadoDeLaBusqueda", "Resultados·De·La·Busqueda·")
+  inflect.irregular("Resultado·De·La·Busqueda·", "ResultadosDeLaBusqueda")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

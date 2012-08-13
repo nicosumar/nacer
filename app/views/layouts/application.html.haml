@@ -23,6 +23,16 @@
           #menu
             %ul
               %li= link_to "Inicio", root_url
+              - if can? :read, Afiliado
+                %li
+                  %p Beneficiarios
+                  %ul
+                    - if can? :create, NovedadDelAfiliado
+                      %li= link_to "Inscripciones", afiliados_url
+                    - else
+                      %li= link_to "Búsqueda", afiliados_url
+                    - if can? :read, NovedadDelAfiliado
+                      %li= link_to "Novedades", novedades_de_los_afiliados_url
               - if can? :read, ConvenioDeGestion
                 %li
                   %p Convenios
@@ -83,7 +93,7 @@
           %p.primero
             Copyleft 2011,
             = mail_to '"Santiago Bosio" <santiago.bosio@gmail.com>', "Santiago Bosio", :title => "Enviar un mensaje al autor"
-            \- Ing. Técn. en Informática de Sistemas.
+            \- Ing. Téc. en Informática de Sistemas.
           %p
             Código fuente disponible en
             %a{ :href => "http://github.com/sbosio/nacer", :onclick => "this.target='_blank'" } 

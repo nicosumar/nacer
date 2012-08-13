@@ -8,15 +8,20 @@ class BusquedaController < ApplicationController
         :notice => "Debe ingresar algún término de búsqueda.")
     end
 
+    # Preparar los resultados de la búsqueda en la vista temporal (no buscar afiliados)
+    Busqueda.busqueda_fts(params[:terminos], :excepto => :afiliados)
+
+    # Eliminar los resultados a cuyos modelos el usuario no tiene acceso
     indices = []
-    Busqueda.busqueda_fts(params[:terminos]).each do |b|
-      if can? :read, eval(b.modelo_type)
-        indices << b.id
+    ResultadoDeLaBusqueda.find(:all).each do |r|
+      if can? :read, eval(r.modelo_type)
+        indices << r.id
       end
     end
+
     @registros_coincidentes = indices.size
     if @registros_coincidentes > 0
-      @resultados_de_busqueda = Busqueda.where('id IN (?)', indices).paginate(:page => params[:page], :per_page => 10)
+      @resultados_de_busqueda = ResultadoDeLaBusqueda.where('id IN (?)', indices).order('orden ASC').paginate(:page => params[:page], :per_page => 10)
     end
   end
 

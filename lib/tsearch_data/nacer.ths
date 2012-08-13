@@ -4150,7 +4150,6 @@ capelozza : *capelloza *capellozza *capelozza
 caperon : *caberos *cabezon *cameron *campero *caperon *caterin
 capi : *cali *cami *campi *capi *capo *cari *copi
 capilla : *cacilia *camilia *camilla *camiola *caoella *capella *capelli *capello *capilla *carillo *casella *casilda *casilla *casiola *catillo *caviola *cevilla *cipolla *cubilla *papilla
-capital : *CA
 capital : *capital *crsital
 capmany : *capmany *capuano
 capo : *cafo *caipo *cajo *camo *campo *cano *caño *capi *capo *caro *cato *cayo *coapo *copo
@@ -4662,7 +4661,7 @@ ccamargo : *camaargo *camargo *ccamargo *chamarro
 ccamila : *camila *camilia *camilla *camiola *ccamila
 ccelan : *ccelan *celan
 cceleste : *cceleste *celeste *celestes *celñeste *cesleste
-ccruz : *ccruz *cruz
+ccruz : *ccruz *crus *cruz
 ceara : *cara *ceara *cerra *cetra *chara *clara *keara
 cebada : *cebada *celada
 ceballes : *caballer *caballes *caballos *ceballes *ceballos *ceballoz *cevallos *seballes *zeballes
@@ -8333,7 +8332,6 @@ gendro : *genaro *gendro *genero *lendro
 gene : *gene *genem *genen *gener *genes *geni *gine
 genem : *gene *genem *genen *gener *genes
 genen : *gene *genem *genen *gener *genes
-general alvear : *GA
 gener : *gene *genem *genen *gener *genero *genes *giner
 genero : *genaro *gendro *gener *genero
 genes : *gene *genem *genen *gener *genes *lenes *renes
@@ -8672,8 +8670,8 @@ gnappa : *genappa *gnappa
 goda : *goda *gosa *goya
 goddoy : *goddoy *goddy *godoy
 goddy : *goddoy *goddy *godoy
-godoy cruz : *GC
-godoy : *gadoy *goddoy *goddy *godoy *godoz *gosoy
+godoi : *godoi *goddoy *godoz *godoy
+godoy : *gadoy *goddoy *goddy *godoi *godoy *godoz *gosoy
 godoz : *godoy *godoz
 goel : *gael *goel
 gofre : *cofre *fofre *gofre *jofre *yofre
@@ -8982,8 +8980,8 @@ guayardo : *guahardo *guajaldo *guajarado *guajardo *guajarro *guajuardo *guatar
 guaycochea : *goycochea *guaycochea
 guaygua : *guayama *guaygua *huaygua
 guaylupo : *guaalupe *guadlupe *guaylupo
-guaymallen : *GL
-guaymallén : *GL
+guaymallen : *guaymallen *guaymallén
+guaymallén : *guaymallén *guaymallen
 guaymas : *guaimas *guayama *guaymas *gubimas
 guazo : *guazo *guzzo *suazo
 gubimas : *galimas *guaimas *guaymas *gubimas *guimas
@@ -10456,8 +10454,8 @@ juna : *jana *jena *jina *juana *juena *juna
 junco : *janco *junco *juncos *runco
 juncos : *junco *juncos *uncos
 junes : *funes *jones *juanes *junes *tunes *yunes
-junin : *JN
-junín : *JN
+junin : *junin *junín
+junín : *junín *junin
 junior : *junior *junnior
 junnior : *junior *junnior
 jure : *jaure *jure *juri *juru *jury
@@ -10772,7 +10770,6 @@ laourdes : *laordes *laourdes *laurdes *lourdes
 lapagiia : *lapagiia *lapaglia
 lapaglia : *lapagiia *lapaglia
 lapalla : *lafalla *lamilla *lapalla *lasella
-la paz : *LP
 lapira : *laira *lapira
 laporte : *laborde *lacoste *laferte *laporte *latorre *lazarte
 lappena : *lappena *laspina
@@ -10821,7 +10818,6 @@ larruez : *larrue *larruez
 lartigo : *larrizo *lartigo
 lascano : *labiano *lascano *lazcano *lescano *lezcano
 lasella : *casella *lafalla *lamilla *lapalla *lasella *lorella
-las heras : *LH
 lasly : *basly *lasly *lesly
 lasmin : *jasmin *lasmin *sasmin *xasmin *yasmin
 laspada : *laspada *laspina *lespada *lespade
@@ -10883,7 +10879,6 @@ lautoro : *lantero *lauraro *lautaro *lautavo *lautero *lautoro *lautro
 lautraro : *latutaro *lauataro *lauraro *lautaaro *lautario *lautaro *lautaro0 *lautaroi *lautarro *lautraro
 lautro : *lauaro *lauro *lautaro *lautero *lautoro *lautro
 lavado : *lauado *lavado
-lavalle : *LV
 lavarez : *alavarez *lavarez *lavayen *lazarec
 lavayen : *labayen *lavarez *lavayen
 laviña : *javiña *laviña
@@ -11576,10 +11571,6 @@ luiza : *cuiza *leiza *liza *luisa *luiz *luiza *luza
 luizaga : *luicana *luisana *luizaga
 luiz : *leiz *luaz *luis *luiz *luiza
 lujan : *bujan *cujan *luan *lucan *lujan *luján *lujano *lusan
-lujan de cuyo : *LJ
-luján de cuyo : *LJ
-lujan : *LJ
-luján : *LJ
 luján : *lujan *luján
 lujano : *lojano *luano *lucano *lujan *lujano
 luka : *luba *luca *luda *luka *lukas *lula *luma *luna *lupa *luua *luza
@@ -11853,8 +11844,8 @@ mainardi : *magnaldi *mainardi *meinardo *minardi
 maineri : *maieril *mainara *maineri *marceri *meineri
 main : *madin *maia *maian *maien *mail *main *maio *mair *maiz *maon *marin *masin
 maio : *maia *maico *mail *maimo *main *maio *mair *maiz *majo *malio *mario *maso *mato *mayo *mazo
-maipu : *MP
-maipú : *MP
+maipu : *maipu *maipú
+maipú : *maipu *maipú
 maiquez : *maiquez *manquez *marques *marquez *mosquez
 maira : *baira *daira *haira *jaira *kaira *laira *mahira *maia *maiara *maida *maila *mair *maira *mairam *mairan *maire *maita *maiza *mara *marra *maura *mayra *mira *moira *naira *saira *taira *vaira *yaira *zaira
 mairam : *maira *mairam *mairan
@@ -11902,8 +11893,8 @@ malani : *alani *calani *malani *malania *malanie *mamani *manani *melani *milan
 malania : *malanca *malani *malania *malanie *malizia *matalia *melania *melanic *melanie *melanio *melaniz *milanie *milenia
 malanie : *malanca *malani *malania *malanie *masante *melania *melanic *melanie *melanio *melaniz *melenie *melinie *milanie
 malara : *calara *maiara *malara *mayara
-malargue : *ML
-malargüe : *ML
+malargue : *malargue *malargüe
+malargüe : *malargüe *malargue
 malbenda : *malbenda *maluenda *malvenda
 malbran : *malaman *malbran *maltrat *maturan
 malcalla : *malacalza *malcalla *mancilla
@@ -16373,7 +16364,7 @@ rita : *reta *rica *riga *rina *ripa *rita *ritta *riva *ruta
 ritos : *britos *rilos *rios *ritos
 ritta : *retta *rita *ritta
 riufros : *riufros *riveros
-rivadavia : *RV
+rivadavia : *ribadavia *ribadabia *rivadavia
 rivademeira : *rivademeira *rivadeneira *rivadineira
 rivadeneira : *rivademeira *rivadeneira *rivadineira
 rivadera : *rivadera *rivadero *rivaiñera
@@ -17044,8 +17035,7 @@ sanavera : *saavecra *saavedra *sanavera *sayavedra
 sanbay : *sambay *sanbay *sangay
 sanbrano : *sambrana *sambrano *sanbrano
 sancanello : *sancanello *santangello *santangelo *santarelli *zancanella
-san carlos : *SC
-sancehz : *sancehz *sanchez
+sancehz : *sancehz *sanchez *sánchez
 sanche : *sanche *sanches *sanchez *sanchi *sancho
 sanches : *sanche *sanches *sanchez *sánchez
 sanchez : *sachez *sancehz *sanche *sanches *sanchez *sánchez *sanhez *snchez *zanchez
@@ -17095,13 +17085,10 @@ sanko : *danko *janko *sanko *santo *yanko
 sanles : *sales *salles *sandes *sanles
 sanmarco : *sammarco *sanmarco
 sanmartano : *samartano *sammartano *sanmartano
-san martin : *SM
-san martín : *SM
 sanmira : *samira *samirah *sanddra *sanmira *santina *saraira *shamira *soneira
 sanna : *danna *ganna *hanna *janna *manna *osanna *panna *sana *sania *sanna *sanra *santa *sauna
 sanoguera : *sanoguera *zanoguera
 sanonas : *salinas *sanonas
-san rafael : *SR
 sanra : *saira *sana *sandra *sania *sanna *sanra *santa *sara *sarra *sayra *senra
 sansaloni : *sansaloni *sanseloni *sansolini
 sanseloni : *sansaloni *sanseloni *sansolini *staneloni
@@ -17122,7 +17109,6 @@ santangello : *sancanello *santangello *santangelo
 santangelo : *sancanello *santangello *santangelo
 santanpreu : *santacreu *santanpreu
 santarelli : *cantarella *sancanello *santaella *santarelli *yancarelli
-santa rosa : *SS
 santarossa : *santarossa *santarrosa
 santarrosa : *santarossa *santarrosa
 santa : *sana *sania *sanna *sanra *sant *santa *santi *santo *santoa *santu
@@ -18697,11 +18683,10 @@ tunes : *funes *junes *tines *tunes *yunes
 tuniri : *tumiri *tuniri
 tunque : *tonque *tunque *tunqui
 tunqui : *tunque *tunqui *tuqui
-tunuyan : *TN
-tunuyán : *TN
+tunuyan : *tunullan *tunullán *tunuyan *tunuyán
+tunuyán : *tunullan *tunullán *tunuyan *tunuyán
 tupac : *tupa *tupac
 tupa : *topa *tula *tupa *tupac
-tupungato : *TP
 tuqui : *puqui *taqui *tunqui *tuqui *zuqui
 turano : *tirano *turano *zurano
 turca : *turca *turco

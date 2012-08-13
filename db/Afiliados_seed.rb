@@ -14,7 +14,7 @@ class ModificarAfiliados < ActiveRecord::Migration
           UPDATE busquedas SET
             titulo = NEW.apellido || ', '::text || NEW.nombre || ' ('::text || NEW.numero_de_documento || ')'::text,
             texto =
-              'Beneficiario: '::text || NEW.clave_de_beneficiario ||
+              'Beneficiario: '::text || NEW.clave_de_beneficiario || '. ' ||
               COALESCE('Apellido: '::text || NEW.apellido || '. ', '') ||
               COALESCE('Nombre: '::text || NEW.nombre || '. ', '') ||
               COALESCE('Número de documento: '::text || NEW.numero_de_documento || '. ', '') ||
@@ -29,7 +29,7 @@ class ModificarAfiliados < ActiveRecord::Migration
               COALESCE('Apellido del tutor: '::text || NEW.apellido_del_tutor || '. ', '') ||
               COALESCE('Nombre del tutor: '::text || NEW.nombre_del_tutor || '. ', ''),
             vector_fts =
-              setweight(to_tsvector('public.es_ar', 'Beneficiario: '::text || NEW.clave_de_beneficiario), 'A') ||
+              setweight(to_tsvector('public.es_ar', 'Beneficiario: '::text || NEW.clave_de_beneficiario || '. '), 'A') ||
               setweight(to_tsvector('public.es_ar', COALESCE('Apellido: '::text || NEW.apellido || '. ', '')), 'A') ||
               setweight(to_tsvector('public.es_ar', COALESCE('Nombre: '::text || NEW.nombre || '. ', '')), 'A') ||
               setweight(to_tsvector('public.es_ar', COALESCE('Número de documento: '::text || NEW.numero_de_documento || '. ', '')), 'A') ||
@@ -50,7 +50,7 @@ class ModificarAfiliados < ActiveRecord::Migration
             'Afiliado',
             NEW.afiliado_id,
             NEW.apellido || ', '::text || NEW.nombre || ' ('::text || NEW.numero_de_documento || ')'::text,
-            'Beneficiario: '::text || NEW.clave_de_beneficiario ||
+            'Beneficiario: '::text || NEW.clave_de_beneficiario || '. ' ||
               COALESCE('Apellido: '::text || NEW.apellido || '. ', '') ||
               COALESCE('Nombre: '::text || NEW.nombre || '. ', '') ||
               COALESCE('Número de documento: '::text || NEW.numero_de_documento || '. ', '') ||
@@ -64,7 +64,7 @@ class ModificarAfiliados < ActiveRecord::Migration
               COALESCE('Número de documento del tutor: '::text || NEW.numero_de_documento_del_tutor || '. ', '') ||
               COALESCE('Apellido del tutor: '::text || NEW.apellido_del_tutor || '. ', '') ||
               COALESCE('Nombre del tutor: '::text || NEW.nombre_del_tutor || '. ', ''),
-            setweight(to_tsvector('public.es_ar', 'Beneficiario: '::text || NEW.clave_de_beneficiario), 'A') ||
+            setweight(to_tsvector('public.es_ar', 'Beneficiario: '::text || NEW.clave_de_beneficiario || '. '), 'A') ||
               setweight(to_tsvector('public.es_ar', COALESCE('Apellido: '::text || NEW.apellido || '. ', '')), 'A') ||
               setweight(to_tsvector('public.es_ar', COALESCE('Nombre: '::text || NEW.nombre || '. ', '')), 'A') ||
               setweight(to_tsvector('public.es_ar', COALESCE('Número de documento: '::text || NEW.numero_de_documento || '. ', '')), 'A') ||

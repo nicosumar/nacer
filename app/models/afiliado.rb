@@ -12,6 +12,16 @@ class Afiliado < ActiveRecord::Base
 #  validates_numericality_of :numero_de_documento, :integer => true
 #  validates_uniqueness_of :clave_de_beneficiario
 
+  # Devuelve todos los registros coincidentes de la tabla de 'Afiliados'
+  def self.busqueda_fts(terminos)
+    busqueda_de_afiliados = Busqueda.busqueda_afiliados(terminos)
+    if busqueda_de_afiliados.size > 0
+      Afiliado.find(busqueda_de_afiliados.collect{ |b| b.modelo_id })
+    else
+      return []
+    end
+  end
+
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)
     return nil unless nombre
