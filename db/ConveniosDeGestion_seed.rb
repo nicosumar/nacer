@@ -39,10 +39,10 @@ class ModificarConveniosDeGestion < ActiveRecord::Migration
               COALESCE('Firmante: '::text || NEW.firmante || '. ', '') ||
               COALESCE('Observaciones: '::text || NEW.observaciones, ''),
             vector_fts =
-              setweight(to_tsvector('public.es_ar', COALESCE('Convenio de gestión número '::text || NEW.numero || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Efector: '::text || nombre_efector || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Firmante: '::text || NEW.firmante || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D')
+              setweight(to_tsvector('public.indices_fts', COALESCE('Convenio de gestión número '::text || NEW.numero || '. ', '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Efector: '::text || nombre_efector || '. ', '')), 'B') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Firmante: '::text || NEW.firmante || '. ', '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D')
             WHERE modelo_type = 'ConvenioDeGestion' AND modelo_id = NEW.id;
           RETURN NEW;
         ELSIF (TG_OP = 'INSERT') THEN
@@ -55,10 +55,10 @@ class ModificarConveniosDeGestion < ActiveRecord::Migration
               COALESCE('Efector: '::text || nombre_efector || '. ', '') ||
               COALESCE('Firmante: '::text || NEW.firmante || '. ', '') ||
               COALESCE('Observaciones: '::text || NEW.observaciones, ''),
-            setweight(to_tsvector('public.es_ar', COALESCE('Convenio de gestión número '::text || NEW.numero || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Efector: '::text || nombre_efector || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Firmante: '::text || NEW.firmante || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D'));
+            setweight(to_tsvector('public.indices_fts', COALESCE('Convenio de gestión número '::text || NEW.numero || '. ', '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Efector: '::text || nombre_efector || '. ', '')), 'B') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Firmante: '::text || NEW.firmante || '. ', '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D'));
         END IF;
         RETURN NULL;
       END;

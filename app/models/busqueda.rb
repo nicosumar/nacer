@@ -56,8 +56,8 @@ class Busqueda < ActiveRecord::Base
 private
   # Devuelve una cadena 'tsquery' válida para búsquedas de texto completo en PostgreSQL de acuerdo con los términos pasados
   def self.texto_a_consulta_fts(terminos)
-    terminos_sql = sanitize_sql_for_conditions(['?', terminos])
-    lexemas = connection.execute("SELECT lexemes FROM ts_debug('public.es_ar', #{terminos_sql});")
+    terminos_sql = sanitize_sql_for_conditions(['?', terminos.downcase])
+    lexemas = connection.execute("SELECT lexemes FROM ts_debug('public.terminos_fts', #{terminos_sql});")
     tsquery = []
     lexemas.column_values(0).each do |l|
       if !l.blank? && l.to_s != "{}"

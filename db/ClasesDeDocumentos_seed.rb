@@ -5,15 +5,15 @@ ClaseDeDocumento.create([
           :codigo_para_prestaciones => "R",
           :codigo_para_inscripciones => "P" },
         { #:id => 2,
-          :nombre => "Ajeno: Documento de la madre",
+          :nombre => "Ajeno (de la madre)",
           :codigo_para_prestaciones => "M",
           :codigo_para_inscripciones => "A" },
         { #:id => 3,
-          :nombre => "Ajeno: Documento del padre",
+          :nombre => "Ajeno (del padre)",
           :codigo_para_prestaciones => "P",
           :codigo_para_inscripciones => "A" },
         { #:id => 4,
-          :nombre => "Ajeno: Documento del tutor legal",
+          :nombre => "Ajeno: (del tutor/a)",
           :codigo_para_prestaciones => "T",
           :codigo_para_inscripciones => "A" }
 ])

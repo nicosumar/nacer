@@ -2,41 +2,36 @@ class CreateAfiliados < ActiveRecord::Migration
   def change
     create_table :afiliados, :id => false do |t|
       t.integer :afiliado_id, :null => false, :unique => true
-      t.string :clave_de_beneficiario
+      t.string :clave_de_beneficiario, :null => false, :unique => true
       t.string :apellido
       t.string :nombre
-      t.string :tipo_de_documento
-      t.string :clase_de_documento
+      t.references :tipo_de_documento
+      t.references :clase_de_documento
       t.string :numero_de_documento
-      t.string :sexo
-      t.string :provincia
-      t.string :localidad
+      t.references :sexo_id
       t.references :categoria_de_afiliado
       t.date :fecha_de_nacimiento
-      t.string :se_declara_indigena
-      t.integer :lengua_originaria_id
-      t.integer :tribu_originaria_id
-      t.string :tipo_de_documento_de_la_madre
+      t.boolean :se_declara_indigena
+      t.references :lengua_originaria
+      t.references :tribu_originaria
+      t.integer :tipo_de_documento_de_la_madre_id
       t.string :numero_de_documento_de_la_madre
       t.string :apellido_de_la_madre
       t.string :nombre_de_la_madre
-      t.string :tipo_de_documento_del_padre
+      t.integer :tipo_de_documento_del_padre_id
       t.string :numero_de_documento_del_padre
       t.string :apellido_del_padre
       t.string :nombre_del_padre
-      t.string :tipo_de_documento_del_tutor
+      t.integer :tipo_de_documento_del_tutor_id
       t.string :numero_de_documento_del_tutor
       t.string :apellido_del_tutor
       t.string :nombre_del_tutor
-      t.integer :tipo_de_relacion_id
       t.date :fecha_de_inscripcion
-      t.date :fecha_de_alta_efectiva
       t.date :fecha_de_diagnostico_del_embarazo
       t.integer :semanas_de_embarazo
       t.date :fecha_probable_de_parto
       t.date :fecha_efectiva_de_parto
       t.string :activo
-      t.string :accion_pendiente_de_confirmar
       t.string :domicilio_calle
       t.string :domicilio_numero
       t.string :domicilio_manzana
@@ -51,30 +46,19 @@ class CreateAfiliados < ActiveRecord::Migration
       t.string :domicilio_provincia
       t.string :domicilio_codigo_postal
       t.string :telefono
-      t.string :lugar_de_atencion_habitual
-      t.date :fecha_de_envio_de_los_datos
-      t.date :fecha_de_alta
-      t.integer :pendiente_de_enviar
-      t.string :codigo_provincia_uad
       t.string :codigo_uad
       t.string :codigo_ci_uad
       t.integer :motivo_de_la_baja
       t.string :mensaje_de_la_baja
       t.integer :proceso_de_baja_automatica_id
-      t.integer :pendiente_de_enviar_a_nacion
       t.datetime :fecha_y_hora_de_carga
       t.string :usuario_que_carga
-      t.string :menor_convive_con_tutor
-      t.date :fecha_de_baja_efectiva
-      t.date :fecha_de_alta_uec
-      t.string :auditoria
       t.string :cuie_del_efector_asignado
       t.string :cuie_del_lugar_de_atencion_habitual
       t.string :clave_del_benef_que_provoca_baja
       t.string :usuario_de_creacion
       t.date :fecha_de_creacion
       t.integer :persona_id
-      t.string :confirmacion_del_numero_de_documento
       t.integer :score_de_riesgo
       t.string :alfabetizacion
       t.integer :alfabetizacion_anios_ultimo_nivel
@@ -84,9 +68,11 @@ class CreateAfiliados < ActiveRecord::Migration
       t.integer :alfab_padre_anios_ultimo_nivel
       t.string :alfabetizacion_del_tutor
       t.integer :alfab_tutor_anios_ultimo_nivel
-      t.string :activo_r
-      t.integer :motivo_baja_r
-      t.string :mensaje_baja_r
+      t.string :e_mail
+      t.string :numero_de_celular
+      t.date :fecha_de_ultima_menstruacion
+      t.string :observaciones_generales
+      t.string :discapacidad
     end
   end
 end

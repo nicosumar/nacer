@@ -1,0 +1,81 @@
+- content_for :title do
+  - if @procesado
+    Resultado de la búsqueda en el padrón
+  - else
+    Padrón de beneficiarios
+
+%h1
+  - if @procesado
+    Resultado de la búsqueda en el padrón
+  - else
+    Padrón de beneficiarios
+
+- if @procesado
+  -# La búsqueda ya fue procesada
+  - if @afiliados.size = 0 && @novedades.size = 0
+    %p
+      -# No hay registros asociados con ese número de documento, proponer la carga de un nuevo beneficiario
+      El número de documento ingresado no pudo localizarse en la base de datos de beneficiarios del programa.
+      Deberá proceder a solicitar el alta del beneficiario para que las prestaciones facturadas puedan
+      liquidarse.
+    %br/
+    %br/
+    = form_tag('/novedades_de_los_afiliados/new', :method => 'get') do
+      %div.hidden_field
+        %input{ :id => "tipo_de_novedad_id", :name => "novedad_del_afiliado[tipo_de_novedad_id]", :type => "hidden", :value => 1}
+      %div.hidden_field
+        %input{ :id => "numero_de_documento", :name => "novedad_del_afiliado[numero_de_documento]", :type => "hidden", :value => @documento}
+      %div.actions
+        = submit_tag("Buscar")
+
+      %h2 Detalle de las prestaciones facturadas
+      - if @detalle
+        %table
+          %thead
+            %tr
+              %th Código
+              %th Cantidad
+              %th Precio unitario
+              %th Subtotal
+              %th.destacado RESULTADO
+          %tbody
+            - @detalle.each do |d|
+              %tr
+                %td= d[:codigo_informado]
+                %td= d[:cantidad]
+                %td= d[:precio_por_unidad]
+                %td= d[:subtotal]
+                %td.destacado
+                  -# RESULTADO
+                  - case
+                    - when d[:codigo].nil?
+                      %span.error No existe el código de prestación informado
+                    - when ! d[:autorizada]
+                      %span.error El efector no tiene autorizada esta prestación
+                    - when d[:cantidad].nil?
+                      %span.error No se pudo determinar la cantidad de prestaciones
+                    - when d[:precio_por_unidad].nil?
+                      %span.error La prestación no está incluida en el nomenclador
+                    - when d[:precio_unitario_informado] != d[:precio_por_unidad]
+                      %span.error
+                        El precio unitario informado es incorrecto:
+                        = d[:precio_unitario_informado]
+                    - when d[:subtotal_informado] != d[:subtotal]
+                      %span.error
+                        El subtotal informado es incorrecto:
+                        = d[:subtotal_informado]
+                    - else
+                      Verificación correcta
+      - else
+        %p.error
+          No pudo encontrarse el detalle de las prestaciones facturadas.
+- else # @procesado == false
+  = form_tag('/afiliados', :method => 'get') do
+    %p
+      
+    %div.field
+      = label_tag(:patron_de_busqueda, "Buscar beneficiario:")
+      %br/
+      = text_field_tag(:patron_de_busqueda, nil)
+    %div.actions
+      = submit_tag("Buscar")

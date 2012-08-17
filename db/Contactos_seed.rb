@@ -23,15 +23,15 @@ class ModificarContactos < ActiveRecord::Migration
               COALESCE('Celular: '::text || NEW.telefono_movil || '. ', '') ||
               COALESCE('Observaciones: '::text || NEW.observaciones, ''),
             vector_fts =
-              setweight(to_tsvector('public.es_ar',
+              setweight(to_tsvector('public.indices_fts',
                 'Datos de contacto para '::text || COALESCE(NEW.nombres || ' '::text ||  NEW.apellidos || ' ('::text || NEW.mostrado || ')'::text,
                 NEW.mostrado, '')), 'A') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('DNI: '::text || NEW.dni || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Teléfono: '::text || NEW.telefono || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('E-mail: '::text || NEW.email || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Domicilio: '::text || NEW.domicilio || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Celular: '::text || NEW.telefono_movil || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D')
+              setweight(to_tsvector('public.indices_fts', COALESCE('DNI: '::text || NEW.dni || '. ', '')), 'B') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Teléfono: '::text || NEW.telefono || '. ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('E-mail: '::text || NEW.email || '. ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Domicilio: '::text || NEW.domicilio || '. ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Celular: '::text || NEW.telefono_movil || '. ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D')
             WHERE modelo_type = 'Contacto' AND modelo_id = NEW.id;
           RETURN NEW;
         ELSIF (TG_OP = 'INSERT') THEN
@@ -46,14 +46,14 @@ class ModificarContactos < ActiveRecord::Migration
               COALESCE('Domicilio: '::text || NEW.domicilio || '. ', '') ||
               COALESCE('Celular: '::text || NEW.telefono_movil || '. ', '') ||
               COALESCE('Observaciones: '::text || NEW.observaciones, ''),
-            setweight(to_tsvector('public.es_ar',
+            setweight(to_tsvector('public.indices_fts',
               'Datos de contacto para '::text || COALESCE(NEW.nombres || ' '::text || NEW.apellidos || ' ('::text || NEW.mostrado || ')'::text,
               NEW.mostrado, '')), 'A') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Teléfono: '::text || NEW.telefono || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('E-mail: '::text || NEW.email || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Domicilio: '::text || NEW.domicilio || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Celular: '::text || NEW.telefono_movil || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.es_ar', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D'));
+              setweight(to_tsvector('public.indices_fts', COALESCE('Teléfono: '::text || NEW.telefono || '. ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('E-mail: '::text || NEW.email || '. ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Domicilio: '::text || NEW.domicilio || '. ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Celular: '::text || NEW.telefono_movil || '. ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D'));
         END IF;
         RETURN NULL;
       END;

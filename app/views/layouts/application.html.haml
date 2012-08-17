@@ -27,10 +27,7 @@
                 %li
                   %p Beneficiarios
                   %ul
-                    - if can? :create, NovedadDelAfiliado
-                      %li= link_to "Inscripciones", afiliados_url
-                    - else
-                      %li= link_to "Búsqueda", afiliados_url
+                    %li= link_to "Padrón", afiliados_url
                     - if can? :read, NovedadDelAfiliado
                       %li= link_to "Novedades", novedades_de_los_afiliados_url
               - if can? :read, ConvenioDeGestion
