@@ -17,68 +17,134 @@ class ModificarAfiliados < ActiveRecord::Migration
           SELECT codigo INTO tipo_de_documento_del_tutor FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_tutor_id;
           -- Actualizar el registro asociado en la tabla de búsquedas
           UPDATE busquedas SET
-            titulo = NEW.apellido || ', ' || NEW.nombre || ' (' || NEW.numero_de_documento || ')',
+            titulo =
+              COALESCE(NEW.apellido || ', ', '') ||
+              COALESCE(NEW.nombre, '') ||
+              ' (' || COALESCE(NEW.numero_de_documento, '') || ')',
             texto =
-              COALESCE('Nombre del beneficiario: ' || NEW.nombre || ' ' || NEW.apellido || ', ', '') ||
-              COALESCE('clave ''' || NEW.clave_de_beneficiario || ''', ' ||
-              COALESCE('documento ' || COALESCE(clase_de_documento || ' ', '') || COALESCE(tipo_de_documento || ' ', '') || NEW.numero_de_documento || '. ', '.') ||
-              COALESCE('Datos de la madre: ' || NEW.nombre_de_la_madre || ' ' || NEW.apellido_de_la_madre) ||
-              COALESCE(', ' || COALESCE(tipo_de_documento_de_la_madre || ' ', '') || NEW.numero_de_documento_de_la_madre, '') ||
-              COALESCE('Datos del padre: ' || NEW.nombre_del_padre || ' ' || NEW.apellido_del_padre) ||
-              COALESCE(', ' || COALESCE(tipo_de_documento_de_la_madre || ' ', '') || NEW.numero_de_documento_de_la_madre, '') ||
-              COALESCE('Datos del tutor: ' || NEW.nombre_del_tutor || ' ' || NEW.apellido_del_tutor || ', ') ||
+              'Beneficiario: ' ||
+              COALESCE(NEW.nombre || ' ', '') ||
+              COALESCE(NEW.apellido, '') ||
+              ', clave ''' ||
+              COALESCE(NEW.clave_de_beneficiario, '') ||
+              ''', documento ' ||
+              COALESCE(clase_de_documento || ' ', '') ||
+              COALESCE(tipo_de_documento || ' ', '') ||
+              COALESCE(NEW.numero_de_documento, '') ||
+              '. Madre: ' ||
+              COALESCE(NEW.nombre_de_la_madre || ' ', '') ||
+              COALESCE(NEW.apellido_de_la_madre, '') ||
+              ', documento ' ||
+              COALESCE(tipo_de_documento_de_la_madre || ' ', '') ||
+              COALESCE(NEW.numero_de_documento_de_la_madre, '') ||
+              '. Padre: ' ||
+              COALESCE(NEW.nombre_del_padre || ' ', '') ||
+              COALESCE(NEW.apellido_del_padre, '') ||
+              ', documento ' ||
+              COALESCE(tipo_de_documento_del_padre || ' ', '') ||
+              COALESCE(NEW.numero_de_documento_del_padre, '') ||
+              '. Tutor: ' ||
+              COALESCE(NEW.nombre_del_tutor || ' ', '') ||
+              COALESCE(NEW.apellido_del_tutor, '') ||
+              ', documento ' ||
               COALESCE(tipo_de_documento_del_tutor || ' ', '') ||
-              COALESCE(NEW.numero_de_documento_del_tutor || '. ', ''),
+              COALESCE(NEW.numero_de_documento_del_tutor, '') || '.',
             vector_fts =
-              setweight(to_tsvector('public.indices_fts', COALESCE('Apellido: '::text || NEW.apellido || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', 'Clave: '::text || NEW.clave_de_beneficiario || '. '), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Nombre: '::text || NEW.nombre || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Número de documento: '::text || NEW.numero_de_documento || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Fecha de nacimiento: '::text || NEW.fecha_de_nacimiento || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Número de documento de la madre: '::text || NEW.numero_de_documento_de_la_madre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Apellido de la madre: '::text || NEW.apellido_de_la_madre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Nombre de la madre: '::text || NEW.nombre_de_la_madre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Número de documento del padre: '::text || NEW.numero_de_documento_del_padre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Apellido del padre: '::text || NEW.apellido_del_padre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Nombre del padre: '::text || NEW.nombre_del_padre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Número de documento del tutor: '::text || NEW.numero_de_documento_del_tutor || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Apellido del tutor: '::text || NEW.apellido_del_tutor || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Nombre del tutor: '::text || NEW.nombre_del_tutor || '. ', '')), 'B')
+              setweight(to_tsvector('public.indices_fts', 'Beneficiario: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre || ' ', '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', ', clave '''), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.clave_de_beneficiario, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', ''', documento '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(clase_de_documento || ' ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento || ' ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', '. Madre: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre_de_la_madre || ' ', '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido_de_la_madre, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', ', documento '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento_de_la_madre || ' ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_de_la_madre, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', '. Padre: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre_del_padre || ' ', '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido_del_padre, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', ', documento '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento_del_padre || ' ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_del_padre, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', '. Tutor: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre_del_tutor || ' ', '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido_del_tutor, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', ', documento '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento_del_tutor || ' ', '')), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_del_tutor, '')), 'C')
             WHERE modelo_type = 'Afiliado' AND modelo_id = NEW.afiliado_id;
           RETURN NEW;
         ELSIF (TG_OP = 'INSERT') THEN
+          SELECT LOWER(nombre) INTO clase_de_documento FROM clases_de_documentos WHERE id = NEW.clase_de_documento_id;
+          SELECT codigo INTO tipo_de_documento FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_id;
+          SELECT codigo INTO tipo_de_documento_de_la_madre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_de_la_madre_id;
+          SELECT codigo INTO tipo_de_documento_del_padre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_padre_id;
+          SELECT codigo INTO tipo_de_documento_del_tutor FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_tutor_id;
           INSERT INTO busquedas (modelo_type, modelo_id, titulo, texto, vector_fts) VALUES (
             'Afiliado',
             NEW.afiliado_id,
-            NEW.apellido || ', '::text || NEW.nombre || ' ('::text || NEW.numero_de_documento || ')'::text,
-            'Beneficiario: '::text || NEW.clave_de_beneficiario || '. ' ||
-              COALESCE('Apellido: '::text || NEW.apellido || '. ', '') ||
-              COALESCE('Nombre: '::text || NEW.nombre || '. ', '') ||
-              COALESCE('Número de documento: '::text || NEW.numero_de_documento || '. ', '') ||
-              COALESCE('Fecha de nacimiento: '::text || NEW.fecha_de_nacimiento || '. ', '') ||
-              COALESCE('Número de documento de la madre: '::text || NEW.numero_de_documento_de_la_madre || '. ', '') ||
-              COALESCE('Apellido de la madre: '::text || NEW.apellido_de_la_madre || '. ', '') ||
-              COALESCE('Nombre de la madre: '::text || NEW.nombre_de_la_madre || '. ', '') ||
-              COALESCE('Número de documento del padre: '::text || NEW.numero_de_documento_del_padre || '. ', '') ||
-              COALESCE('Apellido del padre: '::text || NEW.apellido_del_padre || '. ', '') ||
-              COALESCE('Nombre del padre: '::text || NEW.nombre_del_padre || '. ', '') ||
-              COALESCE('Número de documento del tutor: '::text || NEW.numero_de_documento_del_tutor || '. ', '') ||
-              COALESCE('Apellido del tutor: '::text || NEW.apellido_del_tutor || '. ', '') ||
-              COALESCE('Nombre del tutor: '::text || NEW.nombre_del_tutor || '. ', ''),
-            setweight(to_tsvector('public.indices_fts', 'Beneficiario: '::text || NEW.clave_de_beneficiario || '. '), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Apellido: '::text || NEW.apellido || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Nombre: '::text || NEW.nombre || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Número de documento: '::text || NEW.numero_de_documento || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Fecha de nacimiento: '::text || NEW.fecha_de_nacimiento || '. ', '')), 'D') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Número de documento de la madre: '::text || NEW.numero_de_documento_de_la_madre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Apellido de la madre: '::text || NEW.apellido_de_la_madre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Nombre de la madre: '::text || NEW.nombre_de_la_madre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Número de documento del padre: '::text || NEW.numero_de_documento_del_padre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Apellido del padre: '::text || NEW.apellido_del_padre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Nombre del padre: '::text || NEW.nombre_del_padre || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Número de documento del tutor: '::text || NEW.numero_de_documento_del_tutor || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Apellido del tutor: '::text || NEW.apellido_del_tutor || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Nombre del tutor: '::text || NEW.nombre_del_tutor || '. ', '')), 'B'));
+            COALESCE(NEW.apellido || ', ', '') ||
+            COALESCE(NEW.nombre, '') ||
+            ' (' || COALESCE(NEW.numero_de_documento, '') || ')',
+            'Beneficiario: ' ||
+            COALESCE(NEW.nombre || ' ', '') ||
+            COALESCE(NEW.apellido, '') ||
+            ', clave ''' ||
+            COALESCE(NEW.clave_de_beneficiario, '') ||
+            ''', documento ' ||
+            COALESCE(clase_de_documento || ' ', '') ||
+            COALESCE(tipo_de_documento || ' ', '') ||
+            COALESCE(NEW.numero_de_documento, '') ||
+            '. Madre: ' ||
+            COALESCE(NEW.nombre_de_la_madre || ' ', '') ||
+            COALESCE(NEW.apellido_de_la_madre, '') ||
+            ', documento ' ||
+            COALESCE(tipo_de_documento_de_la_madre || ' ', '') ||
+            COALESCE(NEW.numero_de_documento_de_la_madre, '') ||
+            '. Padre: ' ||
+            COALESCE(NEW.nombre_del_padre || ' ', '') ||
+            COALESCE(NEW.apellido_del_padre, '') ||
+            ', documento ' ||
+            COALESCE(tipo_de_documento_del_padre || ' ', '') ||
+            COALESCE(NEW.numero_de_documento_del_padre, '') ||
+            '. Tutor: ' ||
+            COALESCE(NEW.nombre_del_tutor || ' ', '') ||
+            COALESCE(NEW.apellido_del_tutor, '') ||
+            ', documento ' ||
+            COALESCE(tipo_de_documento_del_tutor || ' ', '') ||
+            COALESCE(NEW.numero_de_documento_del_tutor, '') || '.',
+            setweight(to_tsvector('public.indices_fts', 'Beneficiario: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre || ' ', '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', ', clave '''), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.clave_de_beneficiario, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', ''', documento '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(clase_de_documento || ' ', '')), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento || ' ', '')), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', '. Madre: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre_de_la_madre || ' ', '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido_de_la_madre, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', ', documento '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento_de_la_madre || ' ', '')), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_de_la_madre, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', '. Padre: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre_del_padre || ' ', '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido_del_padre, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', ', documento '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento_del_padre || ' ', '')), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_del_padre, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', '. Tutor: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre_del_tutor || ' ', '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido_del_tutor, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', ', documento '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento_del_tutor || ' ', '')), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_del_tutor, '')), 'C'));
         END IF;
         RETURN NULL;
       END;
