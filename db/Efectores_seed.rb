@@ -47,7 +47,7 @@ class ModificarEfector < ActiveRecord::Migration
           -- Actualizar el registro asociado en la tabla de búsquedas
           SELECT nombre INTO departamento FROM departamentos WHERE id = NEW.departamento_id;
           SELECT nombre INTO distrito FROM distritos WHERE id = NEW.distrito_id;
-          SELECT nombre INTO area_de_prestacion FROM areas_de_prestacion WHERE id = NEW.area_de_prestacion_id;
+          SELECT LOWER(nombre) INTO area_de_prestacion FROM areas_de_prestacion WHERE id = NEW.area_de_prestacion_id;
           SELECT numero INTO convenio_de_gestion FROM convenios_de_gestion WHERE efector_id = NEW.id;
           SELECT numero INTO convenio_de_administracion FROM convenios_de_administracion WHERE efector_id = NEW.id;
           SELECT efectores.nombre INTO administrador FROM efectores LEFT JOIN convenios_de_administracion
@@ -55,37 +55,62 @@ class ModificarEfector < ActiveRecord::Migration
           UPDATE busquedas SET
             titulo = NEW.nombre,
             texto =
-              COALESCE('Efector: '::text || NEW.nombre || '. ', '') ||
-              COALESCE('CUIE: '::text || NEW.cuie || '. ', '') ||
-              COALESCE('Convenio de gestión '::text || convenio_de_gestion || '. ', '') ||
-              COALESCE('Convenio de administración '::text || convenio_de_administracion || '. ', '') ||
-              COALESCE('Administrador: '::text || administrador || '. ', '') ||
-              COALESCE('Domicilio: '::text || NEW.domicilio || ', ' || distrito || ' - ' || departamento || '. ', '') ||
-              COALESCE('Teléfonos: '::text || NEW.telefonos || '. ', '') ||
-              COALESCE('E-mail: '::text || NEW.email || '. ', '') ||
-              COALESCE('Área de prestación: '::text || area_de_prestacion || '. ', '') ||
-              COALESCE('Código SISSA: '::text || NEW.efector_sissa_id || '. ', '') ||
-              COALESCE('Observaciones: '::text || NEW.observaciones, ''),
+              'Efector: ' ||
+              COALESCE(NEW.nombre, '') ||
+              ', CUIE: ' ||
+              COALESCE(NEW.cuie, '') ||
+              ', código SISSA: ' ||
+              COALESCE(NEW.efector_sissa_id, '') ||
+              ', convenio de gestión: ' ||
+              COALESCE(convenio_de_gestion, '') ||
+              ', convenio de administración: ' ||
+              COALESCE(convenio_de_administracion, '') ||
+              ', administrador: ' ||
+              COALESCE(administrador, '') ||
+              ', domicilio: ' ||
+              COALESCE(NEW.domicilio || ', ', '') ||
+              COALESCE(distrito || ' - ', '') ||
+              COALESCE(departamento, '') ||
+              ', teléfonos: ' ||
+              COALESCE(NEW.telefonos, '') ||
+              ', e-mail: ' ||
+              COALESCE(NEW.email, '') ||
+              ', área: ' ||
+              COALESCE(area_de_prestacion, '') ||
+              ', ' ||
+              COALESCE(NEW.observaciones, '') ||
+              '.',
             vector_fts =
-              setweight(to_tsvector('public.indices_fts', COALESCE('Efector: '::text || NEW.nombre || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('CUIE: '::text || NEW.cuie || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Convenio de gestión '::text || convenio_de_gestion || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Convenio de administración '::text || 
-                convenio_de_administracion || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Administrador: '::text || administrador || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Domicilio: '::text || NEW.domicilio || ', ' || distrito || ' - ' ||
-                departamento || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Teléfonos: '::text || NEW.telefonos || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('E-mail: '::text || NEW.email || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Área de prestación: '::text || area_de_prestacion || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Código SISSA: '::text || NEW.efector_sissa_id || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D')
+              setweight(to_tsvector('public.indices_fts', 'Efector: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', ', CUIE: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.cuie, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', ', código SISSA: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.efector_sissa_id, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', ', convenio de gestión: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(convenio_de_gestion, '')), 'B') ||
+              setweight(to_tsvector('public.indices_fts', ', convenio de administración: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(convenio_de_administracion, '')), 'B') ||
+              setweight(to_tsvector('public.indices_fts', ', administrador: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(administrador, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', ', domicilio: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.domicilio || ', ', '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(distrito || ' - ', '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(departamento, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', ', teléfonos: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.telefonos, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', ', e-mail: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.email, '')), 'B') ||
+              setweight(to_tsvector('public.indices_fts', ', área: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(area_de_prestacion, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', ', '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.observaciones, '')), 'A')
             WHERE modelo_type = 'Efector' AND modelo_id = NEW.id;
           RETURN NEW;
         ELSIF (TG_OP = 'INSERT') THEN
           SELECT nombre INTO departamento FROM departamentos WHERE id = NEW.departamento_id;
           SELECT nombre INTO distrito FROM distritos WHERE id = NEW.distrito_id;
-          SELECT nombre INTO area_de_prestacion FROM areas_de_prestacion WHERE id = NEW.area_de_prestacion_id;
+          SELECT LOWER(nombre) INTO area_de_prestacion FROM areas_de_prestacion WHERE id = NEW.area_de_prestacion_id;
           SELECT numero INTO convenio_de_gestion FROM convenios_de_gestion WHERE efector_id = NEW.id;
           SELECT numero INTO convenio_de_administracion FROM convenios_de_administracion WHERE efector_id = NEW.id;
           SELECT efectores.nombre INTO administrador FROM efectores LEFT JOIN convenios_de_administracion
@@ -94,30 +119,55 @@ class ModificarEfector < ActiveRecord::Migration
             'Efector',
             NEW.id,
             NEW.nombre,
-            COALESCE('Efector: '::text || NEW.nombre || '. ', '') ||
-              COALESCE('CUIE: '::text || NEW.cuie || '. ', '') ||
-              COALESCE('Convenio de gestión '::text || convenio_de_gestion || '. ', '') ||
-              COALESCE('Convenio de administración '::text || convenio_de_administracion || '. ', '') ||
-              COALESCE('Administrador: '::text || administrador || '. ', '') ||
-              COALESCE('Domicilio: '::text || NEW.domicilio || ', ' || distrito || ' - ' || departamento || '. ', '') ||
-              COALESCE('Teléfonos: '::text || NEW.telefonos || '. ', '') ||
-              COALESCE('E-mail: '::text || NEW.email || '. ', '') ||
-              COALESCE('Área de prestación: '::text || area_de_prestacion || '. ', '') ||
-              COALESCE('Código SISSA: '::text || NEW.efector_sissa_id || '. ', '') ||
-              COALESCE('Observaciones: '::text || NEW.observaciones, ''),
-            setweight(to_tsvector('public.indices_fts', COALESCE('Efector: '::text || NEW.nombre || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('CUIE: '::text || NEW.cuie || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Convenio de gestión '::text || convenio_de_gestion || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Convenio de administración '::text || 
-                convenio_de_administracion || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Administrador: '::text || administrador || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Domicilio: '::text || NEW.domicilio || ', ' || distrito || ' - ' ||
-                departamento || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Teléfonos: '::text || NEW.telefonos || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('E-mail: '::text || NEW.email || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Área de prestación: '::text || area_de_prestacion || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Código SISSA: '::text || NEW.efector_sissa_id || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D'));
+            'Efector: ' ||
+            COALESCE(NEW.nombre, '') ||
+            ', CUIE: ' ||
+            COALESCE(NEW.cuie, '') ||
+            ', código SISSA: ' ||
+            COALESCE(NEW.efector_sissa_id, '') ||
+            ', convenio de gestión: ' ||
+            COALESCE(convenio_de_gestion, '') ||
+            ', convenio de administración: ' ||
+            COALESCE(convenio_de_administracion, '') ||
+            ', administrador: ' ||
+            COALESCE(administrador, '') ||
+            ', domicilio: ' ||
+            COALESCE(NEW.domicilio || ', ', '') ||
+            COALESCE(distrito || ' - ', '') ||
+            COALESCE(departamento, '') ||
+            ', teléfonos: ' ||
+            COALESCE(NEW.telefonos, '') ||
+            ', e-mail: ' ||
+            COALESCE(NEW.email, '') ||
+            ', área: ' ||
+            COALESCE(area_de_prestacion, '') ||
+            ', ' ||
+            COALESCE(NEW.observaciones, '') ||
+            '.',
+            setweight(to_tsvector('public.indices_fts', 'Efector: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', ', CUIE: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.cuie, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', ', código SISSA: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.efector_sissa_id, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', ', convenio de gestión: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(convenio_de_gestion, '')), 'B') ||
+            setweight(to_tsvector('public.indices_fts', ', convenio de administración: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(convenio_de_administracion, '')), 'B') ||
+            setweight(to_tsvector('public.indices_fts', ', administrador: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(administrador, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', ', domicilio: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.domicilio || ', ', '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(distrito || ' - ', '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(departamento, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', ', teléfonos: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.telefonos, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', ', e-mail: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.email, '')), 'B') ||
+            setweight(to_tsvector('public.indices_fts', ', área: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(area_de_prestacion, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', ', '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.observaciones, '')), 'A'));
         END IF;
         RETURN NULL;
       END;

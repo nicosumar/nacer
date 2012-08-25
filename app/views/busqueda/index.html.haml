@@ -2,7 +2,9 @@
 - if @registros_coincidentes > 0
   La búsqueda devolvió
   = @registros_coincidentes
-  registros coincidentes
+  registros coincidentes en
+  = ("%.3f" % @tiempo_de_busqueda).gsub('.', ',')
+  segundos
   #resultados
     - @resultados_de_busqueda.each do |r|
       %p

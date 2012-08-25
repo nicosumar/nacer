@@ -5,12 +5,6 @@
 # compartidos de PostgreSQL (este directorio varía de acuerdo a la instalación).
 class ConfiguracionFTS < ActiveRecord::Migration
   execute "
-    CREATE TEXT SEARCH CONFIGURATION public.indices_fts ( COPY = pg_catalog.spanish );
-  "
-  execute "
-    CREATE TEXT SEARCH CONFIGURATION public.terminos_fts ( COPY = pg_catalog.spanish );
-  "
-  execute "
     CREATE EXTENSION unaccent;
   "
   execute "
@@ -18,6 +12,12 @@ class ConfiguracionFTS < ActiveRecord::Migration
   "
   execute "
     ALTER TEXT SEARCH DICTIONARY xsyn (RULES='nacer_xsyn', KEEPORIG=true, MATCHSYNONYMS=true);
+  "
+  execute "
+    CREATE TEXT SEARCH CONFIGURATION public.indices_fts ( COPY = pg_catalog.spanish );
+  "
+  execute "
+    CREATE TEXT SEARCH CONFIGURATION public.terminos_fts ( COPY = pg_catalog.spanish );
   "
   execute "
     CREATE TEXT SEARCH DICTIONARY es_ar_hunspell (
@@ -34,13 +34,13 @@ class ConfiguracionFTS < ActiveRecord::Migration
   "
   execute "
     ALTER TEXT SEARCH CONFIGURATION indices_fts
-      ALTER MAPPING FOR asciiword, word, asciihword, hword, hword_asciipart, hword_part, int
+      ALTER MAPPING FOR asciiword, word, asciihword, hword, hword_asciipart, hword_part, int, uint
         WITH unaccent, nacer_tesauro, es_ar_hunspell, simple;
   "
   execute "
     ALTER TEXT SEARCH CONFIGURATION terminos_fts
-      ALTER MAPPING FOR asciiword, word, asciihword, hword, hword_asciipart, hword_part, int
-        WITH unaccent, xsyn, nacer_tesauro, es_ar_hunspell, simple;
+      ALTER MAPPING FOR asciiword, word, asciihword, hword, hword_asciipart, hword_part, int, uint
+        WITH xsyn, nacer_tesauro, es_ar_hunspell, simple;
   "
   execute "
     SET default_text_search_config = 'public.indices_fts';

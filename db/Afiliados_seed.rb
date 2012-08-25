@@ -3,6 +3,12 @@ class ModificarAfiliados < ActiveRecord::Migration
   # Funciones y disparadores para mantener los datos para las búsquedas de texto completo (FTS)
   execute "
     CREATE OR REPLACE FUNCTION afiliados_fts_trigger() RETURNS trigger AS $$
+      DECLARE
+        clase_de_documento text;
+        tipo_de_documento text;
+        tipo_de_documento_de_la_madre text;
+        tipo_de_documento_del_padre text;
+        tipo_de_documento_del_tutor text;
       BEGIN
         -- Actualizar la tabla de búsquedas con los datos insertados, actualizados o eliminados.
         IF (TG_OP = 'DELETE') THEN

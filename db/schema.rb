@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120809163341) do
+ActiveRecord::Schema.define(:version => 20120824095905) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -25,42 +25,40 @@ ActiveRecord::Schema.define(:version => 20120809163341) do
   end
 
   create_table "afiliados", :id => false, :force => true do |t|
-    t.integer  "afiliado_id",                          :null => false
-    t.string   "clave_de_beneficiario"
+    t.integer  "afiliado_id",                         :null => false
+    t.string   "clave_de_beneficiario",               :null => false
     t.string   "apellido"
     t.string   "nombre"
-    t.string   "tipo_de_documento"
-    t.string   "clase_de_documento"
+    t.integer  "tipo_de_documento_id"
+    t.integer  "clase_de_documento_id"
     t.string   "numero_de_documento"
-    t.string   "sexo"
-    t.string   "provincia"
-    t.string   "localidad"
+    t.integer  "sexo_id_id"
     t.integer  "categoria_de_afiliado_id"
     t.date     "fecha_de_nacimiento"
-    t.string   "se_declara_indigena"
+    t.integer  "pais_de_nacimiento_id"
+    t.integer  "provincia_de_nacimiento_id"
+    t.integer  "departamento_de_nacimiento_id"
+    t.boolean  "se_declara_indigena"
     t.integer  "lengua_originaria_id"
     t.integer  "tribu_originaria_id"
-    t.string   "tipo_de_documento_de_la_madre"
+    t.integer  "tipo_de_documento_de_la_madre_id"
     t.string   "numero_de_documento_de_la_madre"
     t.string   "apellido_de_la_madre"
     t.string   "nombre_de_la_madre"
-    t.string   "tipo_de_documento_del_padre"
+    t.integer  "tipo_de_documento_del_padre_id"
     t.string   "numero_de_documento_del_padre"
     t.string   "apellido_del_padre"
     t.string   "nombre_del_padre"
-    t.string   "tipo_de_documento_del_tutor"
+    t.integer  "tipo_de_documento_del_tutor_id"
     t.string   "numero_de_documento_del_tutor"
     t.string   "apellido_del_tutor"
     t.string   "nombre_del_tutor"
-    t.integer  "tipo_de_relacion_id"
     t.date     "fecha_de_inscripcion"
-    t.date     "fecha_de_alta_efectiva"
     t.date     "fecha_de_diagnostico_del_embarazo"
     t.integer  "semanas_de_embarazo"
     t.date     "fecha_probable_de_parto"
     t.date     "fecha_efectiva_de_parto"
     t.string   "activo"
-    t.string   "accion_pendiente_de_confirmar"
     t.string   "domicilio_calle"
     t.string   "domicilio_numero"
     t.string   "domicilio_manzana"
@@ -75,30 +73,19 @@ ActiveRecord::Schema.define(:version => 20120809163341) do
     t.string   "domicilio_provincia"
     t.string   "domicilio_codigo_postal"
     t.string   "telefono"
-    t.string   "lugar_de_atencion_habitual"
-    t.date     "fecha_de_envio_de_los_datos"
-    t.date     "fecha_de_alta"
-    t.integer  "pendiente_de_enviar"
-    t.string   "codigo_provincia_uad"
     t.string   "codigo_uad"
     t.string   "codigo_ci_uad"
-    t.integer  "motivo_de_la_baja"
+    t.integer  "motivo_de_la_baja_id"
     t.string   "mensaje_de_la_baja"
     t.integer  "proceso_de_baja_automatica_id"
-    t.integer  "pendiente_de_enviar_a_nacion"
     t.datetime "fecha_y_hora_de_carga"
     t.string   "usuario_que_carga"
-    t.string   "menor_convive_con_tutor"
-    t.date     "fecha_de_baja_efectiva"
-    t.date     "fecha_de_alta_uec"
-    t.string   "auditoria"
     t.string   "cuie_del_efector_asignado"
     t.string   "cuie_del_lugar_de_atencion_habitual"
     t.string   "clave_del_benef_que_provoca_baja"
     t.string   "usuario_de_creacion"
     t.date     "fecha_de_creacion"
     t.integer  "persona_id"
-    t.string   "confirmacion_del_numero_de_documento"
     t.integer  "score_de_riesgo"
     t.string   "alfabetizacion"
     t.integer  "alfabetizacion_anios_ultimo_nivel"
@@ -108,17 +95,12 @@ ActiveRecord::Schema.define(:version => 20120809163341) do
     t.integer  "alfab_padre_anios_ultimo_nivel"
     t.string   "alfabetizacion_del_tutor"
     t.integer  "alfab_tutor_anios_ultimo_nivel"
-    t.string   "activo_r"
-    t.integer  "motivo_baja_r"
-    t.string   "mensaje_baja_r"
     t.string   "e_mail"
     t.string   "numero_de_celular"
     t.date     "fecha_de_ultima_menstruacion"
     t.string   "observaciones_generales"
     t.string   "discapacidad"
   end
-
-  add_index "afiliados", ["afiliado_id"], :name => "index_afiliados_on_afiliado_id", :unique => true
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"

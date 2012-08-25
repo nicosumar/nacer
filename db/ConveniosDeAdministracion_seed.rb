@@ -41,17 +41,28 @@ class ModificarConveniosDeAdministracion < ActiveRecord::Migration
           UPDATE busquedas SET
             titulo = 'Convenio de administración ' || NEW.numero,
             texto =
-              COALESCE('Convenio de administración número '::text || NEW.numero || '. ', '') ||
-              COALESCE('Efector: '::text || nombre_efector || '. ', '') ||
-              COALESCE('Administrador: '::text || nombre_administrador || '. ', '') ||
-              COALESCE('Firmante: '::text || NEW.firmante || '. ', '') ||
-              COALESCE('Observaciones: '::text || NEW.observaciones, ''),
+              'Convenio de administración número ' ||
+              COALESCE(NEW.numero, '') ||
+              ', efector administrado: ' ||
+              COALESCE(nombre_efector, '') ||
+              ', administrador: ' ||
+              COALESCE(nombre_administrador, '') ||
+              ', firmante: ' ||
+              COALESCE(NEW.firmante, '') ||
+              ', ' ||
+              COALESCE(NEW.observaciones, '') ||
+              '.',
             vector_fts =
-              setweight(to_tsvector('public.indices_fts', COALESCE('Convenio de administración número '::text || NEW.numero || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Efector: '::text || nombre_efector || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Administrador: '::text || nombre_administrador || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Firmante: '::text || NEW.firmante || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D')
+              setweight(to_tsvector('public.indices_fts', 'Convenio de administración número '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', ', efector administrado: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(nombre_efector, '')), 'B') ||
+              setweight(to_tsvector('public.indices_fts', ', administrador: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(nombre_administrador, '')), 'B') ||
+              setweight(to_tsvector('public.indices_fts', ', firmante: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.firmante, '')), 'C') ||
+              setweight(to_tsvector('public.indices_fts', ', '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.observaciones, '')), 'B')
             WHERE modelo_type = 'ConvenioDeAdministracion' AND modelo_id = NEW.id;
           RETURN NEW;
         ELSIF (TG_OP = 'INSERT') THEN
@@ -61,16 +72,27 @@ class ModificarConveniosDeAdministracion < ActiveRecord::Migration
             'ConvenioDeAdministracion',
             NEW.id,
             'Convenio de administración ' || NEW.numero,
-            COALESCE('Convenio de administración número '::text || NEW.numero || '. ', '') ||
-              COALESCE('Efector: '::text || nombre_efector || '. ', '') ||
-              COALESCE('Administrador: '::text || nombre_administrador || '. ', '') ||
-              COALESCE('Firmante: '::text || NEW.firmante || '. ', '') ||
-              COALESCE('Observaciones: '::text || NEW.observaciones, ''),
-            setweight(to_tsvector('public.indices_fts', COALESCE('Convenio de administración número '::text || NEW.numero || '. ', '')), 'A') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Efector: '::text || nombre_efector || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Administrador: '::text || nombre_administrador || '. ', '')), 'B') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Firmante: '::text || NEW.firmante || '. ', '')), 'C') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE('Observaciones: '::text || NEW.observaciones, '')), 'D'));
+            'Convenio de administración número ' ||
+            COALESCE(NEW.numero, '') ||
+            ', efector administrado: ' ||
+            COALESCE(nombre_efector, '') ||
+            ', administrador: ' ||
+            COALESCE(nombre_administrador, '') ||
+            ', firmante: ' ||
+            COALESCE(NEW.firmante, '') ||
+            ', ' ||
+            COALESCE(NEW.observaciones, '') ||
+            '.',
+            setweight(to_tsvector('public.indices_fts', 'Convenio de administración número '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', ', efector administrado: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(nombre_efector, '')), 'B') ||
+            setweight(to_tsvector('public.indices_fts', ', administrador: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(nombre_administrador, '')), 'B') ||
+            setweight(to_tsvector('public.indices_fts', ', firmante: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.firmante, '')), 'C') ||
+            setweight(to_tsvector('public.indices_fts', ', '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.observaciones, '')), 'B'));
         END IF;
         RETURN NULL;
       END;

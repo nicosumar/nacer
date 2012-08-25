@@ -35,9 +35,4 @@ class ModificaRegistrosDePrestacionesr < ActiveRecord::Migration
       ADD CONSTRAINT fk_regpp_nomencladores
       FOREIGN KEY (nomenclador_id) REFERENCES nomencladores (id);
   "
-  execute "
-    ALTER TABLE registros_de_prestaciones
-      ADD CONSTRAINT fk_regpp_afiliados
-      FOREIGN KEY (afiliado_id) REFERENCES afiliados (afiliado_id);
-  "
 end
