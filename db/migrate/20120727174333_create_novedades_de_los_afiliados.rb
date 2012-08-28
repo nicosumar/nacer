@@ -9,7 +9,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       # Identificadores
       t.string :clave_de_beneficiario, :null => false, :unique => true
 
-      # Datos personales, nivel de alfabetización y discapacidad
+      # Datos personales
       t.string :apellido
       t.string :nombre
       t.references :clase_de_documento
@@ -41,7 +41,6 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.string :domicilio_entre_calle_2
       t.string :telefono
       t.string :otro_telefono
-      t.integer :domicilio_provincia_id
       t.integer :domicilio_departamento_id
       t.integer :domicilio_distrito_id
       t.string :domicilio_localidad
@@ -50,7 +49,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.text :observaciones
 
       # Lugar de atención habitual
-      t.string :cuie_del_lugar_de_atencion_habitual
+      t.integer :lugar_de_atencion_habitual_id
 
       # Datos del adulto responsable del menor (para menores de 14 años)
       t.string :apellido_de_la_madre

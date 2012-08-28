@@ -126,4 +126,16 @@ class Efector < ActiveRecord::Base
                 WHERE convenios_de_gestion.efector_id = efectores.id
           ))) ORDER BY nombre;")
   end
+
+  # Devuelve el id asociado con el CUIE pasado
+  def self.id_del_cuie(codigo)
+    if !codigo || codigo.strip.empty?
+      return nil
+    end
+
+    # Buscar el código en la tabla y devolver su ID (si existe)
+    efector = self.find_by_cuie(codigo.strip.upcase)
+    return efector.id if efector
+  end
+
 end

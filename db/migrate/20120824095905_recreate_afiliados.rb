@@ -10,7 +10,7 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.integer :afiliado_id, :null => false, :unique => true
       t.string :clave_de_beneficiario, :null => false, :unique => true
 
-      # Datos personales, nivel de alfabetización y discapacidad
+      # Datos personales
       t.string :apellido
       t.string :nombre
       t.references :clase_de_documento
@@ -42,7 +42,6 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.string :domicilio_entre_calle_2
       t.string :telefono
       t.string :otro_telefono
-      t.integer :domicilio_provincia_id
       t.integer :domicilio_departamento_id
       t.integer :domicilio_distrito_id
       t.string :domicilio_localidad

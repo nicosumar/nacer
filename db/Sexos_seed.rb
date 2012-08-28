@@ -15,9 +15,12 @@ end
 # Datos precargados al inicializar el sistema
 Sexo.create([
         { #:id => 1,
-          :descripcion => "Femenino" },
+          :descripcion => "Femenino",
+          :codigo => "F" },
         { #:id => 2,
-          :descripcion => "Masculino" },
+          :descripcion => "Masculino",
+          :codigo => "M" },
         { #:id => 1,
-          :descripcion => "Indeterminado" }
+          :descripcion => "Indeterminado",
+          :codigo => nil }
 ])

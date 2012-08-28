@@ -6,17 +6,17 @@ end
 Discapacidad.create([
         { #:id => 1,
           :nombre => "Visual",
-          :codigo_para_gestion => "V" },
+          :codigo => "V" },
         { #:id => 2,
           :nombre => "Auditiva",
-          :codigo_para_gestion => "A" },
+          :codigo => "A" },
         { #:id => 3,
           :nombre => "Motriz",
-          :codigo_para_gestion => "Z" },
+          :codigo => "Z" },
         { #:id => 4,
           :nombre => "Mental",
-          :codigo_para_gestion => "M" },
+          :codigo => "M" },
         { #:id => 5,
           :nombre => "Otra",
-          :codigo_para_gestion => "O" }
+          :codigo => "O" }
 ])

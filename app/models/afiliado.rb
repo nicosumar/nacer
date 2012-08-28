@@ -12,16 +12,6 @@ class Afiliado < ActiveRecord::Base
 #  validates_numericality_of :numero_de_documento, :integer => true
 #  validates_uniqueness_of :clave_de_beneficiario
 
-  # Devuelve todos los registros coincidentes de la tabla de 'Afiliados'
-  def self.busqueda_fts(terminos)
-    busqueda_de_afiliados = Busqueda.busqueda_afiliados(terminos)
-    if busqueda_de_afiliados.size > 0
-      Afiliado.find(busqueda_de_afiliados.collect{ |b| b.modelo_id })
-    else
-      return []
-    end
-  end
-
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)
     return nil unless nombre
@@ -157,7 +147,7 @@ class Afiliado < ActiveRecord::Base
   end
 
   # Indica si el afiliado estaba activo en el padrón correspondiente al mes y año de la fecha indicada, o
-  # en el padrón del mes siguiente.
+  # en alguno de los padrones de los tres meses siguientes (lapso ventana para la carga de la ficha de inscripción).
   # Si no se pasa una fecha, indica si figura como activo
   def activo?(fecha = nil)
     # Devuelve 'true' si no se especifica una fecha y el campo 'activo' es 'S'
@@ -166,8 +156,9 @@ class Afiliado < ActiveRecord::Base
     # Obtener los periodos de actividad de este afiliado
     periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
     periodos.each do |p|
-      # Desplazamos el inicio del periodo de actividad un mes antes para hacer la verificacion
-      inicio = Date.new((p.fecha_de_inicio - 1).year, (p.fecha_de_inicio - 1).month, 1)
+      # Tomamos como fecha de inicio del periodo la que sea mayor entre la inscripción y la fecha de inicio del periodo
+      # desplazada dos meses antes (lapso ventana para la carga de la ficha de inscripción).
+      inicio = self.max(p.fecha_de_inicio - 2.months, fecha_de_inscripcion)
       if ( fecha >= inicio && (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion))
         return true
       end
@@ -176,132 +167,163 @@ class Afiliado < ActiveRecord::Base
   end
 
   # Devuelve el mes y año del padrón donde aparece activo si el afiliado estaba activo en esa fecha
-  # Esto puede ser el año y mes correspondiente a la fecha, si estaba activo en ese momento, o bien
-  # el mes siguiente, si el afiliado se activó ese mes.
+  # Esto puede ser el año y mes correspondiente al inicio del periodo de actividad, si estaba activo
+  # en ese momento, o bien alguno de los dos meses siguientes (lapso ventana para la carga de la
+  # ficha de inscripción).
+
   def padron_activo(fecha = Date.today)
     return nil unless activo?(fecha)
 
     # Obtener los periodos de actividad de este afiliado
     periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
     periodos.each do |p|
-      if ( fecha >= p.fecha_de_inicio && (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion))
-        return fecha.strftime("%Y-%m")
+      if (fecha >= self.max(p.fecha_de_inicio - 2.months, fecha_de_inscripcion)) &&
+         (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion)
+        return p.fecha_de_inicio.strftime("%Y-%m")
       end
     end
-    return (fecha.month == 12 ? (fecha.year + 1).to_s + "-01" : fecha.year.to_s + "-" + (fecha.month + 1).to_s)
   end
 
   # Devuelve un Array con los códigos de categoría válidos para el afiliado en la fecha especificada.
-  def categorias(fecha = Date.today)
-    case
-      when categoria_de_afiliado_id == 1 # Embarazadas
-        # Si no hay FPP o FEP se devuelve la misma categoría
-        return [1] unless (fecha_probable_de_parto || fecha_efectiva_de_parto)
-        case
-          when (fpp = fecha_probable_de_parto) # Afiliada con FPP especificada
-            case
-              when (fecha - fpp).to_i < -45
-                # Si la fecha es anterior a la FPP en más de 45 días, sólo se habilita la categoría 1
-                return [1]
-              when (fecha - fpp).to_i >= -45 && (fecha - fpp) <= 45
-                # Si la fecha se encuentra entre 45 días antes y 45 días después de la FPP se habilitan las categorías 1 y 2
-                return [1, 2]
-              else
-                # Si la fecha excede en más de 45 días la FPP, sólo se habilita la categoría 2
-                return [2]
-            end
-          when (fep = fecha_efectiva_de_parto)
-            case
-              when (fecha - fep).to_i < -7
-                # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
-                return [1]
-              when (fecha - fep).to_i >= -7 && (fecha - fep) <= 7
-                # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
-                return [1, 2]
-              else
-                # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
-                return [2]
-            end
-        end
+  # -- OBSOLETO --
+  #def categorias(fecha = Date.today)
+  #  case
+  #    when categoria_de_afiliado_id == 1 # Embarazadas
+  #      # Si no hay FPP o FEP se devuelve la misma categoría
+  #      return [1] unless (fecha_probable_de_parto || fecha_efectiva_de_parto)
+  #      case
+  #        when (fpp = fecha_probable_de_parto) # Afiliada con FPP especificada
+  #          case
+  #            when (fecha - fpp).to_i < -45
+  #              # Si la fecha es anterior a la FPP en más de 45 días, sólo se habilita la categoría 1
+  #              return [1]
+  #            when (fecha - fpp).to_i >= -45 && (fecha - fpp) <= 45
+  #              # Si la fecha se encuentra entre 45 días antes y 45 días después de la FPP se habilitan las categorías 1 y 2
+  #              return [1, 2]
+  #            else
+  #              # Si la fecha excede en más de 45 días la FPP, sólo se habilita la categoría 2
+  #              return [2]
+  #          end
+  #        when (fep = fecha_efectiva_de_parto)
+  #          case
+  #            when (fecha - fep).to_i < -7
+  #              # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
+  #              return [1]
+  #            when (fecha - fep).to_i >= -7 && (fecha - fep) <= 7
+  #              # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
+  #              return [1, 2]
+  #            else
+  #              # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
+  #              return [2]
+  #          end
+  #      end
+  #
+  #    when categoria_de_afiliado_id == 2 # Puérperas
+  #      # Si no hay FEP se devuelve la misma categoría
+  #      return [2] unless fecha_efectiva_de_parto
+  #      case
+  #        when (fecha - fecha_efectiva_de_parto).to_i < -7
+  #          # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
+  #          return [1]
+  #        when (fecha - fecha_efectiva_de_parto).to_i >= -7 && (fecha - fecha_efectiva_de_parto) <= 7
+  #          # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
+  #          return [1, 2]
+  #        else
+  #          # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
+  #          return [2]
+  #      end
+  #
+  #    when (categoria_de_afiliado_id == 3 || categoria_de_afiliado_id == 4) # Niños
+  #      # Si no hay fecha de nacimiento se devuelve la misma categoría
+  #      return [categoria_de_afiliado_id] unless fecha_de_nacimiento
+  #      case
+  #        when (fecha - fecha_de_nacimiento).to_i < 335
+  #          # Si la fecha es anterior a la fecha en que el niño cumple 11 meses (335 días), sólo se habilita la categoría 3
+  #          return [3]
+  #        when (fecha - fecha_de_nacimiento).to_i >= 335 && (fecha - fecha_de_nacimiento) <= 395
+  #          # Si la fecha se encuentra eentre los 11 y 13 meses de edad, se habilitan las categorías 3 y 4
+  #          return [3, 4]
+  #        else
+  #          # Si a la fecha el niño excede los 13 meses de edad, sólo se habilita la categoría 4
+  #          return [4]
+  #      end
+  #    else # Categoria mal definida
+  #      return nil
+  #  end
+  #end
 
-      when categoria_de_afiliado_id == 2 # Puérperas
-        # Si no hay FEP se devuelve la misma categoría
-        return [2] unless fecha_efectiva_de_parto
-        case
-          when (fecha - fecha_efectiva_de_parto).to_i < -7
-            # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
-            return [1]
-          when (fecha - fecha_efectiva_de_parto).to_i >= -7 && (fecha - fecha_efectiva_de_parto) <= 7
-            # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
-            return [1, 2]
-          else
-            # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
-            return [2]
-        end
-
-      when (categoria_de_afiliado_id == 3 || categoria_de_afiliado_id == 4) # Niños
-        # Si no hay fecha de nacimiento se devuelve la misma categoría
-        return [categoria_de_afiliado_id] unless fecha_de_nacimiento
-        case
-          when (fecha - fecha_de_nacimiento).to_i < 335
-            # Si la fecha es anterior a la fecha en que el niño cumple 11 meses (335 días), sólo se habilita la categoría 3
-            return [3]
-          when (fecha - fecha_de_nacimiento).to_i >= 335 && (fecha - fecha_de_nacimiento) <= 395
-            # Si la fecha se encuentra eentre los 11 y 13 meses de edad, se habilitan las categorías 3 y 4
-            return [3, 4]
-          else
-            # Si a la fecha el niño excede los 13 meses de edad, sólo se habilita la categoría 4
-            return [4]
-        end
-      else # Categoria mal definida
-        return nil
-    end
-  end
-
-  # Función para importar datos desde el archivo de texto generado desde la tabla del SQL Server
+  # Función para convertir un registro de afiliado exportado a texto desde la tabla SMIAfiliados del SQL Server
+  # en un Hash etiquetado con los símbolos apropiados para facilitar su utilización.
   def self.attr_hash_desde_texto(texto, separador = "\t")
     campos = texto.split(separador)
-    if campos.size != 86
-      raise ArgumentError, "El texto no contiene la cantidad correcta de campos (86), ¿quizás equivocó el separador?"
+
+    # La tabla ahora tiene 91 campos -- Versión del sistema de Gestión 4.6
+    if campos.size != 91
+      raise ArgumentError, "El texto no contiene la cantidad correcta de campos (91), ¿quizás equivocó el separador?"
       return nil
     end
+
+    # Crear el Hash asociado al registro
     attr_hash = {
+
       :afiliado_id => self.valor(campos[0], :entero),
       :clave_de_beneficiario => self.valor(campos[1], :texto),
       :apellido => self.valor(campos[2], :texto),
       :nombre => self.valor(campos[3], :texto),
-      :tipo_de_documento => self.valor(campos[4], :texto),
-      :clase_de_documento => self.valor(campos[5], :texto),
+      :tipo_de_documento_id => TipoDeDocumento.id_del_codigo(self.valor(campos[4], :texto)),
+      :clase_de_documento => ClaseDeDocumento.id_del_codigo(self.valor(campos[5], :texto)),
       :numero_de_documento => self.valor(campos[6], :texto),
-      :sexo => self.valor(campos[7], :texto),
-      :provincia => self.valor(campos[8], :texto),
-      :localidad => self.valor(campos[9], :texto),
+      :sexo_id => Sexo.id_del_codigo(self.valor(campos[7], :texto)),
+
+      # Los campos 'provincia' y 'localidad' de la tabla SMIAfiliados del sistema de gestión
+      # parecen estar para registrar la provincia y localidad de nacimiento del beneficiario.
+      # La provincia nunca ha utilizado estos campos y sólo contienen nulos.
+      # Como en la nueva ficha esos datos ya no se registran, pero sí hay un lugar para registrar
+      # el país de nacimiento, dato que no tiene un campo asociado en la tabla SMIAfiliados de la versión 4.6
+      # del sistema de gestión, aquí usamos el campo 'provincia' para guardar el código asociado al país
+      # (sabiendo que es un parche horrible, pero si en una versión futura del sistema de gestión se incorpora
+      # el campo a la tabla SMIAfiliados, se moverá al lugar que corresponde.
+      # El campo 'localidad' no se importa, ya que no tiene sentido.
+
+      :pais_de_nacimiento_id => self.valor(campos[8], :entero),
+
+      #:localidad => self.valor(campos[9], :texto),
+
       :categoria_de_afiliado_id => self.valor(campos[10], :entero),
       :fecha_de_nacimiento => self.valor(campos[11], :fecha),
-      :se_declara_indigena => self.valor(campos[12], :texto),
+      :se_declara_indigena => SiNo.valor_bool_del_codigo(self.valor(campos[12], :texto)),
       :lengua_originaria_id => self.valor(campos[13], :entero),
       :tribu_originaria_id => self.valor(campos[14], :entero),
-      :tipo_de_documento_de_la_madre => self.valor(campos[15], :texto),
+      :tipo_de_documento_de_la_madre_id => TipoDeDocumento.id_del_codigo(self.valor(campos[15], :texto)),
       :numero_de_documento_de_la_madre => self.valor(campos[16], :texto),
       :apellido_de_la_madre => self.valor(campos[17], :texto),
       :nombre_de_la_madre => self.valor(campos[18], :texto),
-      :tipo_de_documento_del_padre => self.valor(campos[19], :texto),
+      :tipo_de_documento_del_padre_id => TipoDeDocumento.id_del_codigo(self.valor(campos[19], :texto)),
       :numero_de_documento_del_padre => self.valor(campos[20], :texto),
       :apellido_del_padre => self.valor(campos[21], :texto),
       :nombre_del_padre => self.valor(campos[22], :texto),
-      :tipo_de_documento_del_tutor => self.valor(campos[23], :texto),
+      :tipo_de_documento_del_tutor_id => TipoDeDocumento.id_del_codigo(self.valor(campos[23], :texto)),
       :numero_de_documento_del_tutor => self.valor(campos[24], :texto),
       :apellido_del_tutor => self.valor(campos[25], :texto),
       :nombre_del_tutor => self.valor(campos[26], :texto),
-      :tipo_de_relacion_id => self.valor(campos[27], :texto),
+
+      # El tipo de relación no se utilizó nunca
+      #:tipo_de_relacion_id => self.valor(campos[27], :entero),
+
       :fecha_de_inscripcion => self.valor(campos[28], :fecha),
-      :fecha_de_alta_efectiva => self.valor(campos[29], :fecha),
+
+      # La fecha de alta efectiva tampoco se utiliza.
+      #:fecha_de_alta_efectiva => self.valor(campos[29], :fecha),
+
       :fecha_de_diagnostico_del_embarazo => self.valor(campos[30], :fecha),
       :semanas_de_embarazo => self.valor(campos[31], :entero),
       :fecha_probable_de_parto => self.valor(campos[32], :fecha),
       :fecha_efectiva_de_parto => self.valor(campos[33], :fecha),
       :activo => self.valor(campos[34], :texto),
-      :accion_pendiente_de_confirmar => self.valor(campos[35], :texto),
+
+      # El campo de acción pendiente de confirmar no sé siquiera para qué sirve.
+      #:accion_pendiente_de_confirmar => self.valor(campos[35], :texto),
+
       :domicilio_calle => self.valor(campos[36], :texto),
       :domicilio_numero => self.valor(campos[37], :texto),
       :domicilio_manzana => self.valor(campos[38], :texto),
@@ -310,49 +332,87 @@ class Afiliado < ActiveRecord::Base
       :domicilio_entre_calle_1 => self.valor(campos[41], :texto),
       :domicilio_entre_calle_2 => self.valor(campos[42], :texto),
       :domicilio_barrio_o_paraje => self.valor(campos[43], :texto),
-      :domicilio_municipio => self.valor(campos[44], :texto),
-      :domicilio_departamento_o_partido => self.valor(campos[45], :texto),
+
+      # En la provincia, existe un único municipio por departamento, por lo que no
+      # tiene sentido registrar aparte el municipio.
+      #:domicilio_municipio => self.valor(campos[44], :texto),
+
+      :domicilio_departamento_id => Departamento.id_del_nombre(self.valor(campos[45], :texto)),
       :domicilio_localidad => self.valor(campos[46], :texto),
-      :domicilio_provincia => self.valor(campos[47], :texto),
+
+      # Como sólo pueden inscribirse beneficiarios con residencia habitual en la provincia,
+      # el único código válido para el campo es el asociado con esta provincia.
+      #:domicilio_provincia => self.valor(campos[47], :texto),
+
       :domicilio_codigo_postal => self.valor(campos[48], :texto),
       :telefono => self.valor(campos[49], :texto),
-      :lugar_de_atencion_habitual => self.valor(campos[50], :texto),
-      :fecha_de_envio_de_los_datos => self.valor(campos[51], :fecha),
-      :fecha_de_alta => self.valor(campos[52], :fecha),
-      :pendiente_de_enviar => self.valor(campos[53], :entero),
-      :codigo_provincia_uad => self.valor(campos[54], :texto),
-      :codigo_uad => self.valor(campos[55], :texto),
-      :codigo_ci_uad => self.valor(campos[56], :texto),
+
+      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
+      # utilidad definida para los centros de inscripción o la UGSP.
+      #:lugar_de_atencion_habitual => self.valor(campos[50], :texto),
+      #:fecha_de_envio_de_los_datos => self.valor(campos[51], :fecha),
+      #:fecha_de_alta => self.valor(campos[52], :fecha),
+      #:pendiente_de_enviar => self.valor(campos[53], :entero),
+      #:codigo_provincia_uad => self.valor(campos[54], :texto),
+      #:codigo_uad => self.valor(campos[55], :texto),
+      #:codigo_ci_uad => self.valor(campos[56], :texto),
+
       :motivo_de_la_baja => self.valor(campos[57], :entero),
       :mensaje_de_la_baja => self.valor(campos[58], :texto),
-      :proceso_de_baja_automatica_id => self.valor(campos[59], :entero),
-      :pendiente_de_enviar_a_nacion => self.valor(campos[60], :entero),
+
+      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
+      # utilidad definida para los centros de inscripción o la UGSP.
+      #:proceso_de_baja_automatica_id => self.valor(campos[59], :entero),
+      #:pendiente_de_enviar_a_nacion => self.valor(campos[60], :entero),
+
       :fecha_y_hora_de_carga => self.valor(campos[61], :fecha_hora),
       :usuario_que_carga => self.valor(campos[62], :texto),
-      :menor_convive_con_tutor => self.valor(campos[63], :texto),
-      :fecha_de_baja_efectiva => self.valor(campos[64], :fecha),
-      :fecha_de_alta_uec => self.valor(campos[65], :fecha),
-      :auditoria => self.valor(campos[66], :texto),
-      :cuie_del_efector_asignado => self.valor(campos[67], :texto),
-      :cuie_del_lugar_de_atencion_habitual => self.valor(campos[68], :texto),
-      :clave_del_benef_que_provoca_baja => self.valor(campos[69], :texto),
-      :usuario_de_creacion => self.valor(campos[70], :texto),
-      :fecha_de_creacion => self.valor(campos[71], :fecha),
-      :persona_id => self.valor(campos[72], :entero),
-      :confirmacion_del_numero_de_documento => self.valor(campos[73], :texto),
+
+      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
+      # utilidad definida para los centros de inscripción o la UGSP.
+      #:menor_convive_con_tutor => self.valor(campos[63], :texto),
+      #:fecha_de_baja_efectiva => self.valor(campos[64], :fecha),
+      #:fecha_de_alta_uec => self.valor(campos[65], :fecha),
+      #:auditoria => self.valor(campos[66], :texto),
+      #:cuie_del_efector_asignado => self.valor(campos[67], :texto),
+
+      :lugar_de_atencion_habitual_id => Efector.id_del_cuie(self.valor(campos[68], :texto)),
+
+      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
+      # utilidad definida para los centros de inscripción o la UGSP.
+      #:clave_del_benef_que_provoca_baja => self.valor(campos[69], :texto),
+      #:usuario_de_creacion => self.valor(campos[70], :texto),
+      #:fecha_de_creacion => self.valor(campos[71], :fecha),
+      #:persona_id => self.valor(campos[72], :entero),
+      #:confirmacion_del_numero_de_documento => self.valor(campos[73], :texto),
+
       :score_de_riesgo => self.valor(campos[74], :entero),
-      :alfabetizacion => self.valor(campos[75], :texto),
-      :alfabetizacion_anios_ultimo_nivel => self.valor(campos[76], :entero),
-      :alfabetizacion_de_la_madre => self.valor(campos[77], :texto),
-      :alfab_madre_anios_ultimo_nivel => self.valor(campos[78], :entero),
-      :alfabetizacion_del_padre => self.valor(campos[79], :texto),
-      :alfab_padre_anios_ultimo_nivel => self.valor(campos[80], :entero),
-      :alfabetizacion_del_tutor => self.valor(campos[81], :texto),
-      :alfab_tutor_anios_ultimo_nivel => self.valor(campos[82], :entero),
-      :activo_r => self.valor(campos[83], :texto),
-      :motivo_baja_r => self.valor(campos[84], :entero),
-      :mensaje_baja_r => self.valor(campos[85], :texto)
+      :alfabetizacion_del_beneficiario_id => Alfabetizacion.id_del_codigo(self.valor(campos[75], :texto)),
+      :alfab_beneficiario_años_ultimo_nivel => self.valor(campos[76], :entero),
+      :alfabetizacion_de_la_madre_id => Alfabetizacion.id_del_codigo(self.valor(campos[77], :texto)),
+      :alfab_madre_años_ultimo_nivel => self.valor(campos[78], :entero),
+      :alfabetizacion_del_padre_id => Alfabetizacion.id_del_codigo(self.valor(campos[79], :texto)),
+      :alfab_padre_años_ultimo_nivel => self.valor(campos[80], :entero),
+      :alfabetizacion_del_tutor_id => Alfabetizacion.id_del_codigo(self.valor(campos[81], :texto)),
+      :alfab_tutor_años_ultimo_nivel => self.valor(campos[82], :entero),
+
+      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
+      # utilidad definida para los centros de inscripción o la UGSP.
+      #:activo_r => self.valor(campos[83], :texto),
+      #:motivo_baja_r => self.valor(campos[84], :entero),
+      #:mensaje_baja_r => self.valor(campos[85], :texto),
+
+      :e_mail => self.valor(campos[86], :texto),
+      :numero_de_celular => self.valor(campos[87], :texto),
+      :fecha_de_ultima_menstruacion => self.valor(campos[88], :fecha),
+      :observaciones_generales => self.valor(campos[89], :texto),
+      :discapacidad => Discapacidad.id_del_codigo(self.valor(campos[90], :texto))
     }
+  end
+
+private
+  def self.max(a, b)
+    a > b ? a : b
   end
 
   def self.valor(texto, tipo)

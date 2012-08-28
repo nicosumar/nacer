@@ -17,8 +17,8 @@ TipoDeDocumento.create([
           :codigo => "C09" },
         { #:id => 6,
           :nombre => "Pasaporte argentino",
-          :codigo => "PA" },
+          :codigo => "PAS" },
         { #:id => 7,
           :nombre => "Otro",
-          :codigo => "OT" }
+          :codigo => "OTRO" }
 ])

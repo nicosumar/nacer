@@ -2,7 +2,7 @@ class CreateDiscapacidades < ActiveRecord::Migration
   def change
     create_table :discapacidades do |t|
       t.string :nombre
-      t.string :codigo_para_gestion
+      t.string :codigo
     end
   end
 end
