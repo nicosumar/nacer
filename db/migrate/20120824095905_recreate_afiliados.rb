@@ -86,7 +86,6 @@ class RecreateAfiliados < ActiveRecord::Migration
       # Fecha y centro inscriptor
       t.date :fecha_de_inscripcion
       t.references :centro_de_inscripcion
-      t.string :nombre_del_agente_inscriptor
 
       # Observaciones generales
       t.text :observaciones_generales
