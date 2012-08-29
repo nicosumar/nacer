@@ -147,7 +147,7 @@ class Afiliado < ActiveRecord::Base
   end
 
   # Indica si el afiliado estaba activo en el padrón correspondiente al mes y año de la fecha indicada, o
-  # en alguno de los padrones de los tres meses siguientes (lapso ventana para la carga de la ficha de inscripción).
+  # en alguno de los padrones de los dos meses siguientes (lapso ventana para la carga de la ficha de inscripción).
   # Si no se pasa una fecha, indica si figura como activo
   def activo?(fecha = nil)
     # Devuelve 'true' si no se especifica una fecha y el campo 'activo' es 'S'
@@ -266,64 +266,33 @@ class Afiliado < ActiveRecord::Base
     # Crear el Hash asociado al registro
     attr_hash = {
 
+      # Identificadores
       :afiliado_id => self.valor(campos[0], :entero),
       :clave_de_beneficiario => self.valor(campos[1], :texto),
+
+      # Datos personales
       :apellido => self.valor(campos[2], :texto),
       :nombre => self.valor(campos[3], :texto),
-      :tipo_de_documento_id => TipoDeDocumento.id_del_codigo(self.valor(campos[4], :texto)),
       :clase_de_documento => ClaseDeDocumento.id_del_codigo(self.valor(campos[5], :texto)),
+      :tipo_de_documento_id => TipoDeDocumento.id_del_codigo(self.valor(campos[4], :texto)),
       :numero_de_documento => self.valor(campos[6], :texto),
-      :sexo_id => Sexo.id_del_codigo(self.valor(campos[7], :texto)),
+      :numero_de_celular => self.valor(campos[87], :texto),
+      :e_mail => self.valor(campos[86], :texto),
 
-      # Los campos 'provincia' y 'localidad' de la tabla SMIAfiliados del sistema de gestión
-      # parecen estar para registrar la provincia y localidad de nacimiento del beneficiario.
-      # La provincia nunca ha utilizado estos campos y sólo contienen nulos.
-      # Como en la nueva ficha esos datos ya no se registran, pero sí hay un lugar para registrar
-      # el país de nacimiento, dato que no tiene un campo asociado en la tabla SMIAfiliados de la versión 4.6
-      # del sistema de gestión, aquí usamos el campo 'provincia' para guardar el código asociado al país
-      # (sabiendo que es un parche horrible, pero si en una versión futura del sistema de gestión se incorpora
-      # el campo a la tabla SMIAfiliados, se moverá al lugar que corresponde.
-      # El campo 'localidad' no se importa, ya que no tiene sentido.
-
-      :pais_de_nacimiento_id => self.valor(campos[8], :entero),
-
-      #:localidad => self.valor(campos[9], :texto),
-
+      # Mantenemos la categoría del afiliado por razones de compatibilidad con sistemas anteriores
       :categoria_de_afiliado_id => self.valor(campos[10], :entero),
+
+      # Datos de nacimiento, sexo, origen y estudios
+      :sexo_id => Sexo.id_del_codigo(self.valor(campos[7], :texto)),
       :fecha_de_nacimiento => self.valor(campos[11], :fecha),
+      :pais_de_nacimiento_id => self.valor(campos[8], :entero),
       :se_declara_indigena => SiNo.valor_bool_del_codigo(self.valor(campos[12], :texto)),
       :lengua_originaria_id => self.valor(campos[13], :entero),
       :tribu_originaria_id => self.valor(campos[14], :entero),
-      :tipo_de_documento_de_la_madre_id => TipoDeDocumento.id_del_codigo(self.valor(campos[15], :texto)),
-      :numero_de_documento_de_la_madre => self.valor(campos[16], :texto),
-      :apellido_de_la_madre => self.valor(campos[17], :texto),
-      :nombre_de_la_madre => self.valor(campos[18], :texto),
-      :tipo_de_documento_del_padre_id => TipoDeDocumento.id_del_codigo(self.valor(campos[19], :texto)),
-      :numero_de_documento_del_padre => self.valor(campos[20], :texto),
-      :apellido_del_padre => self.valor(campos[21], :texto),
-      :nombre_del_padre => self.valor(campos[22], :texto),
-      :tipo_de_documento_del_tutor_id => TipoDeDocumento.id_del_codigo(self.valor(campos[23], :texto)),
-      :numero_de_documento_del_tutor => self.valor(campos[24], :texto),
-      :apellido_del_tutor => self.valor(campos[25], :texto),
-      :nombre_del_tutor => self.valor(campos[26], :texto),
+      :alfabetizacion_del_beneficiario_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[75], :texto)),
+      :alfab_beneficiario_años_ultimo_nivel => self.valor(campos[76], :entero),
 
-      # El tipo de relación no se utilizó nunca
-      #:tipo_de_relacion_id => self.valor(campos[27], :entero),
-
-      :fecha_de_inscripcion => self.valor(campos[28], :fecha),
-
-      # La fecha de alta efectiva tampoco se utiliza.
-      #:fecha_de_alta_efectiva => self.valor(campos[29], :fecha),
-
-      :fecha_de_diagnostico_del_embarazo => self.valor(campos[30], :fecha),
-      :semanas_de_embarazo => self.valor(campos[31], :entero),
-      :fecha_probable_de_parto => self.valor(campos[32], :fecha),
-      :fecha_efectiva_de_parto => self.valor(campos[33], :fecha),
-      :activo => self.valor(campos[34], :texto),
-
-      # El campo de acción pendiente de confirmar no sé siquiera para qué sirve.
-      #:accion_pendiente_de_confirmar => self.valor(campos[35], :texto),
-
+      # Datos de residencia, vías de comunicación y lugar habitual de atención
       :domicilio_calle => self.valor(campos[36], :texto),
       :domicilio_numero => self.valor(campos[37], :texto),
       :domicilio_manzana => self.valor(campos[38], :texto),
@@ -331,82 +300,108 @@ class Afiliado < ActiveRecord::Base
       :domicilio_depto => self.valor(campos[40], :texto),
       :domicilio_entre_calle_1 => self.valor(campos[41], :texto),
       :domicilio_entre_calle_2 => self.valor(campos[42], :texto),
-      :domicilio_barrio_o_paraje => self.valor(campos[43], :texto),
-
-      # En la provincia, existe un único municipio por departamento, por lo que no
-      # tiene sentido registrar aparte el municipio.
-      #:domicilio_municipio => self.valor(campos[44], :texto),
-
-      :domicilio_departamento_id => Departamento.id_del_nombre(self.valor(campos[45], :texto)),
-      :domicilio_localidad => self.valor(campos[46], :texto),
-
-      # Como sólo pueden inscribirse beneficiarios con residencia habitual en la provincia,
-      # el único código válido para el campo es el asociado con esta provincia.
-      #:domicilio_provincia => self.valor(campos[47], :texto),
-
-      :domicilio_codigo_postal => self.valor(campos[48], :texto),
       :telefono => self.valor(campos[49], :texto),
+      :otro_telefono => self.valor(campos[50], :texto),
+      :domicilio_departamento_id => Departamento.id_del_nombre(self.valor(campos[45], :texto)),
+      :domicilio_distrito_id => Distrito.id_del_nombre(self.valor(campos[45], :texto), self.valor(campos[46], :texto)),
+      :domicilio_barrio_o_paraje => self.valor(campos[43], :texto),
+      :domicilio_codigo_postal => self.valor(campos[48], :texto),
 
-      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
-      # utilidad definida para los centros de inscripción o la UGSP.
-      #:lugar_de_atencion_habitual => self.valor(campos[50], :texto),
+      # Lugar de atención habitual
+      :lugar_de_atencion_habitual_id => Efector.id_del_cuie(self.valor(campos[68], :texto)),
+
+      # Datos del adulto responsable del menor (para menores de 15 años)
+      :apellido_de_la_madre => self.valor(campos[17], :texto),
+      :nombre_de_la_madre => self.valor(campos[18], :texto),
+      :tipo_de_documento_de_la_madre_id => TipoDeDocumento.id_del_codigo(self.valor(campos[15], :texto)),
+      :numero_de_documento_de_la_madre => self.valor(campos[16], :texto),
+      :alfabetizacion_de_la_madre_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[77], :texto)),
+      :alfab_madre_años_ultimo_nivel => self.valor(campos[78], :entero),
+      :apellido_del_padre => self.valor(campos[21], :texto),
+      :nombre_del_padre => self.valor(campos[22], :texto),
+      :tipo_de_documento_del_padre_id => TipoDeDocumento.id_del_codigo(self.valor(campos[19], :texto)),
+      :numero_de_documento_del_padre => self.valor(campos[20], :texto),
+      :alfabetizacion_del_padre_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[79], :texto)),
+      :alfab_padre_años_ultimo_nivel => self.valor(campos[80], :entero),
+      :apellido_del_tutor => self.valor(campos[25], :texto),
+      :nombre_del_tutor => self.valor(campos[26], :texto),
+      :tipo_de_documento_del_tutor_id => TipoDeDocumento.id_del_codigo(self.valor(campos[23], :texto)),
+      :numero_de_documento_del_tutor => self.valor(campos[24], :texto),
+      :alfabetizacion_del_tutor_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[81], :texto)),
+      :alfab_tutor_años_ultimo_nivel => self.valor(campos[82], :entero),
+
+      # Datos del embarazo y parto (para embarazadas)
+      :fecha_de_ultima_menstruacion => self.valor(campos[88], :fecha),
+      :fecha_de_diagnostico_del_embarazo => self.valor(campos[30], :fecha),
+      :semanas_de_embarazo => self.valor(campos[31], :entero),
+      :fecha_probable_de_parto => self.valor(campos[32], :fecha),
+      :fecha_efectiva_de_parto => self.valor(campos[33], :fecha),
+
+      # Score de riesgo cardiovascular del programa Remediar+Redes
+      :score_de_riesgo => self.valor(campos[74], :entero),
+
+      # Discapacidad
+      :discapacidad => Discapacidad.id_del_codigo(self.valor(campos[90], :texto))
+
+      # Fecha y centro inscriptor
+      :fecha_de_inscripcion => self.valor(campos[28], :fecha),
+      :centro_de_inscripcion_id => CentroDeInscripcion.id_del_codigo(self.valor(campos[56], :texto)),
+
+      # Observaciones generales
+      :observaciones_generales => self.valor(campos[89], :texto),
+
+      # Estado de la inscripción al programa
+      :activo => SiNo.valor_bool_del_codigo(self.valor(campos[34], :texto)),
+      :motivo_de_la_baja => self.valor(campos[57], :entero),
+      :mensaje_de_la_baja => self.valor(campos[58], :texto),
+
+      # Datos relacionados con la carga del registro
+      :fecha_y_hora_de_carga => self.valor(campos[61], :fecha_hora),
+      :usuario_que_carga => self.valor(campos[62], :texto),
+
+      # A continuación se ubican los campos cuyos datos no se convierten ya que no tienen un uso definido,
+      # o bien su utilidad es nula para los procesos modelados en el sistema.
+      # Los campos 'provincia' y 'localidad' de la tabla SMIAfiliados del sistema de gestión
+      # registrarían la provincia y localidad de nacimiento del beneficiario, pero no se han utilizado nunca.
+      # Como en la nueva ficha esos datos ya no se registran, pero sí hay un lugar para registrar
+      # el país de nacimiento, dato que no tiene un campo asociado en la tabla SMIAfiliados de la versión 4.6
+      # del sistema de gestión, aquí hemos usado el campo 'provincia' para guardar el código asociado al país
+      # (sabiendo que es un parche horrible, pero si en una versión futura del sistema de gestión se incorpora
+      # el campo a la tabla SMIAfiliados, se moverá al lugar que corresponde.
+      # En la provincia de Mendoza, existe un único municipio por departamento, por lo que no tiene sentido
+      # registrar # aparte el municipio.
+      # El campo que originalmente se utilizaba para indicar en forma textual el lugar de atención
+      # habitual nunca se utilizó (siempre tuvo nulos), y lo reutilizamos para guardar el valor
+      # de 'Otro teléfono' que figura en la ficha nueva de inscripción, hasta tanto se incorpore el
+      # nuevo campo a la tabla SMIAfiliados.
+      #
+      # CAMPOS NO UTILIZADOS
+      #:localidad => self.valor(campos[9], :texto),
+      #:tipo_de_relacion_id => self.valor(campos[27], :entero),
+      #:fecha_de_alta_efectiva => self.valor(campos[29], :fecha),
+      #:accion_pendiente_de_confirmar => self.valor(campos[35], :texto),
+      #:domicilio_municipio => self.valor(campos[44], :texto),
+      #:domicilio_provincia => self.valor(campos[47], :texto),
       #:fecha_de_envio_de_los_datos => self.valor(campos[51], :fecha),
       #:fecha_de_alta => self.valor(campos[52], :fecha),
       #:pendiente_de_enviar => self.valor(campos[53], :entero),
       #:codigo_provincia_uad => self.valor(campos[54], :texto),
       #:codigo_uad => self.valor(campos[55], :texto),
-      #:codigo_ci_uad => self.valor(campos[56], :texto),
-
-      :motivo_de_la_baja => self.valor(campos[57], :entero),
-      :mensaje_de_la_baja => self.valor(campos[58], :texto),
-
-      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
-      # utilidad definida para los centros de inscripción o la UGSP.
       #:proceso_de_baja_automatica_id => self.valor(campos[59], :entero),
       #:pendiente_de_enviar_a_nacion => self.valor(campos[60], :entero),
-
-      :fecha_y_hora_de_carga => self.valor(campos[61], :fecha_hora),
-      :usuario_que_carga => self.valor(campos[62], :texto),
-
-      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
-      # utilidad definida para los centros de inscripción o la UGSP.
       #:menor_convive_con_tutor => self.valor(campos[63], :texto),
       #:fecha_de_baja_efectiva => self.valor(campos[64], :fecha),
       #:fecha_de_alta_uec => self.valor(campos[65], :fecha),
       #:auditoria => self.valor(campos[66], :texto),
       #:cuie_del_efector_asignado => self.valor(campos[67], :texto),
-
-      :lugar_de_atencion_habitual_id => Efector.id_del_cuie(self.valor(campos[68], :texto)),
-
-      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
-      # utilidad definida para los centros de inscripción o la UGSP.
       #:clave_del_benef_que_provoca_baja => self.valor(campos[69], :texto),
       #:usuario_de_creacion => self.valor(campos[70], :texto),
       #:fecha_de_creacion => self.valor(campos[71], :fecha),
       #:persona_id => self.valor(campos[72], :entero),
       #:confirmacion_del_numero_de_documento => self.valor(campos[73], :texto),
-
-      :score_de_riesgo => self.valor(campos[74], :entero),
-      :alfabetizacion_del_beneficiario_id => Alfabetizacion.id_del_codigo(self.valor(campos[75], :texto)),
-      :alfab_beneficiario_años_ultimo_nivel => self.valor(campos[76], :entero),
-      :alfabetizacion_de_la_madre_id => Alfabetizacion.id_del_codigo(self.valor(campos[77], :texto)),
-      :alfab_madre_años_ultimo_nivel => self.valor(campos[78], :entero),
-      :alfabetizacion_del_padre_id => Alfabetizacion.id_del_codigo(self.valor(campos[79], :texto)),
-      :alfab_padre_años_ultimo_nivel => self.valor(campos[80], :entero),
-      :alfabetizacion_del_tutor_id => Alfabetizacion.id_del_codigo(self.valor(campos[81], :texto)),
-      :alfab_tutor_años_ultimo_nivel => self.valor(campos[82], :entero),
-
-      # Los campos siguientes no tiene sentido importarlos, ya que no tienen una
-      # utilidad definida para los centros de inscripción o la UGSP.
       #:activo_r => self.valor(campos[83], :texto),
       #:motivo_baja_r => self.valor(campos[84], :entero),
       #:mensaje_baja_r => self.valor(campos[85], :texto),
-
-      :e_mail => self.valor(campos[86], :texto),
-      :numero_de_celular => self.valor(campos[87], :texto),
-      :fecha_de_ultima_menstruacion => self.valor(campos[88], :fecha),
-      :observaciones_generales => self.valor(campos[89], :texto),
-      :discapacidad => Discapacidad.id_del_codigo(self.valor(campos[90], :texto))
     }
   end
 

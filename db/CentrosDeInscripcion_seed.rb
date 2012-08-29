@@ -11,7 +11,7 @@ end
 CentroDeInscripcion.create([
   { #:id => 1,
     :nombre => "UGSP",
-    :codigo_para_gestion => "00000",
+    :codigo_para_gestion => "00001",
     :created_by => "sbosio",
     :efector_id => 391 }
 ])

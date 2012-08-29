@@ -13,6 +13,23 @@ class Departamento < ActiveRecord::Base
   end
 
   def self.de_esta_provincia
-    Departamento.where(:provincia_id => Provincia.find_by_nombre("Mendoza").id)
+    Departamento.where(:provincia_id => Parametro.valor_del_parametro(:id_de_esta_provincia))
   end
+
+  # Devuelve el id asociado con el nombre pasado
+  def self.id_del_nombre(nombre)
+    if !nombre || nombre.strip.empty?
+      return nil
+    end
+
+    # Buscar el nombre en la tabla y devolver su ID (si existe)
+    departamento = self.where("nombre ILIKE ? AND provincia_id = ?",
+      nombre.strip, Parametro.valor_del_parametro(:id_de_esta_provincia))
+    if departamento.size == 1
+      return departamento.first.id
+    else
+      return nil
+    end
+  end
+
 end

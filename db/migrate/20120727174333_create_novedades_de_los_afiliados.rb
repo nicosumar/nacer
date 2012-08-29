@@ -43,7 +43,6 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.string :otro_telefono
       t.integer :domicilio_departamento_id
       t.integer :domicilio_distrito_id
-      t.string :domicilio_localidad
       t.string :domicilio_barrio_o_paraje
       t.string :domicilio_codigo_postal
       t.text :observaciones
@@ -51,7 +50,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       # Lugar de atención habitual
       t.integer :lugar_de_atencion_habitual_id
 
-      # Datos del adulto responsable del menor (para menores de 14 años)
+      # Datos del adulto responsable del menor (para menores de 15 años)
       t.string :apellido_de_la_madre
       t.string :nombre_de_la_madre
       t.integer :tipo_de_documento_de_la_madre_id
