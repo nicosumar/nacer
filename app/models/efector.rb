@@ -127,14 +127,14 @@ class Efector < ActiveRecord::Base
           ))) ORDER BY nombre;")
   end
 
-  # Devuelve el id asociado con el código pasado
+  # Devuelve el id asociado con el CUIE pasado
   def self.id_del_cuie(codigo)
     if !codigo || codigo.strip.empty?
       return nil
     end
 
     # Buscar el código en la tabla y devolver su ID (si existe)
-    efector = self.find_by_cuie(codigo.strip)
+    efector = self.find_by_cuie(codigo.strip.upcase)
 
     if efector
       return efector.id

@@ -10,7 +10,7 @@ class TipoDeDocumento < ActiveRecord::Base
     tipo_de_documento = self.find_by_codigo(codigo.strip.upcase)
 
     if tipo_de_documento
-      return si_no.id
+      return tipo_de_documento.id
     else
       logger.warn "ADVERTENCIA: No se encontró el tipo de documento '#{codigo.strip.upcase}'."
       # TODO: Esto es horrible, eliminarlo una vez que se hayan consolidado los códigos
