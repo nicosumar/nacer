@@ -7,8 +7,14 @@ class NivelDeInstruccion < ActiveRecord::Base
     end
 
     # Buscar el código en la tabla y devolver su ID (si existe)
-    nivel_de_instruccion = self.find_by_codigo(codigo.strip.upcase)
-    return nivel_de_instruccion.id if nivel_de_instruccion
+    nivel_de_instruccion = self.find_by_codigo(codigo.strip)
+
+    if nivel_de_instruccion
+      return nivel_de_instruccion.id
+    else
+      logger.warn "ADVERTENCIA: No se encontró el nivel de instrucción '#{codigo.strip}'."
+      return nil
+    end
   end
 
 end

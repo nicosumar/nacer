@@ -24,6 +24,7 @@ class Distrito < ActiveRecord::Base
     if distrito.size == 1
       return distrito.first.id
     else
+      logger.warn "ADVERTENCIA: No se encontró el distrito '#{nombre_distrito.strip}' en el departamento '#{nombre_departamento.strip}'."
       return nil
     end
   end

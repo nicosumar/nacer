@@ -345,7 +345,10 @@ class Afiliado < ActiveRecord::Base
 
       # Fecha y centro inscriptor
       :fecha_de_inscripcion => self.valor(campos[28], :fecha),
-      :centro_de_inscripcion_id => CentroDeInscripcion.id_del_codigo(self.valor(campos[56], :texto)),
+      # El código de centro de inscripción que se almacena en el campo 'CodigoCIAltaDatos' fue corrompido por
+      # un error en el sistema de inscripción que implementó el Ing. Luis Esteves, por lo que no puede utilizarse
+      # ese dato para determinar el CI correcto, sino que se extrae de la clave del beneficiario.
+      :centro_de_inscripcion_id => CentroDeInscripcion.id_del_codigo(self.valor(campos[1][5..9], :texto)),
 
       # Observaciones generales
       :observaciones_generales => self.valor(campos[89], :texto),
@@ -387,6 +390,7 @@ class Afiliado < ActiveRecord::Base
       #:pendiente_de_enviar => self.valor(campos[53], :entero),
       #:codigo_provincia_uad => self.valor(campos[54], :texto),
       #:codigo_uad => self.valor(campos[55], :texto),
+      #:centro_de_inscripcion_id => CentroDeInscripcion.id_del_codigo(self.valor(campos[56], :texto)),
       #:proceso_de_baja_automatica_id => self.valor(campos[59], :entero),
       #:pendiente_de_enviar_a_nacion => self.valor(campos[60], :entero),
       #:menor_convive_con_tutor => self.valor(campos[63], :texto),

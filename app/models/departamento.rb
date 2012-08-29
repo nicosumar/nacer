@@ -28,6 +28,7 @@ class Departamento < ActiveRecord::Base
     if departamento.size == 1
       return departamento.first.id
     else
+      logger.warn "ADVERTENCIA: No se pudo encontrar el departamento '#{nombre}'."
       return nil
     end
   end

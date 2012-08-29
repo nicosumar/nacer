@@ -7,8 +7,13 @@ class ClaseDeDocumento < ActiveRecord::Base
     end
 
     # Buscar el código en la tabla y devolver su ID (si existe)
-    clase_de_documento = self.find_by_codigo(codigo.strip.upcase)
-    return clase_de_documento.id if clase_de_documento
+    clase_de_documento = self.find_by_codigo(codigo.strip)
+
+    if clase_de_documento
+      return clase_de_documento.id
+    else
+      logger.warn "ADVERTENCIA: No se encontró la clase de documento '#{codigo.strip}'."
+      return nil
   end
 
 end
