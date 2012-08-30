@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120824095905) do
+ActiveRecord::Schema.define(:version => 20120829085528) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -25,81 +25,71 @@ ActiveRecord::Schema.define(:version => 20120824095905) do
   end
 
   create_table "afiliados", :id => false, :force => true do |t|
-    t.integer  "afiliado_id",                         :null => false
-    t.string   "clave_de_beneficiario",               :null => false
+    t.integer  "afiliado_id",                           :null => false
+    t.string   "clave_de_beneficiario",                 :null => false
     t.string   "apellido"
     t.string   "nombre"
-    t.integer  "tipo_de_documento_id"
     t.integer  "clase_de_documento_id"
+    t.integer  "tipo_de_documento_id"
     t.string   "numero_de_documento"
-    t.integer  "sexo_id_id"
+    t.string   "numero_de_celular"
+    t.string   "e_mail"
     t.integer  "categoria_de_afiliado_id"
+    t.integer  "sexo_id"
     t.date     "fecha_de_nacimiento"
     t.integer  "pais_de_nacimiento_id"
-    t.integer  "provincia_de_nacimiento_id"
-    t.integer  "departamento_de_nacimiento_id"
     t.boolean  "se_declara_indigena"
     t.integer  "lengua_originaria_id"
     t.integer  "tribu_originaria_id"
-    t.integer  "tipo_de_documento_de_la_madre_id"
-    t.string   "numero_de_documento_de_la_madre"
+    t.integer  "alfabetizacion_del_beneficiario_id"
+    t.integer  "alfab_beneficiario_años_ultimo_nivel"
+    t.string   "domicilio_calle"
+    t.string   "domicilio_numero"
+    t.string   "domicilio_piso"
+    t.string   "domicilio_depto"
+    t.string   "domicilio_manzana"
+    t.string   "domicilio_entre_calle_1"
+    t.string   "domicilio_entre_calle_2"
+    t.string   "telefono"
+    t.string   "otro_telefono"
+    t.integer  "domicilio_departamento_id"
+    t.integer  "domicilio_distrito_id"
+    t.string   "domicilio_barrio_o_paraje"
+    t.string   "domicilio_codigo_postal"
+    t.integer  "lugar_de_atencion_habitual_id"
     t.string   "apellido_de_la_madre"
     t.string   "nombre_de_la_madre"
-    t.integer  "tipo_de_documento_del_padre_id"
-    t.string   "numero_de_documento_del_padre"
+    t.integer  "tipo_de_documento_de_la_madre_id"
+    t.string   "numero_de_documento_de_la_madre"
+    t.integer  "alfabetizacion_de_la_madre_id"
+    t.integer  "alfab_madre_años_ultimo_nivel"
     t.string   "apellido_del_padre"
     t.string   "nombre_del_padre"
-    t.integer  "tipo_de_documento_del_tutor_id"
-    t.string   "numero_de_documento_del_tutor"
+    t.integer  "tipo_de_documento_del_padre_id"
+    t.string   "numero_de_documento_del_padre"
+    t.integer  "alfabetizacion_del_padre_id"
+    t.integer  "alfab_padre_años_ultimo_nivel"
     t.string   "apellido_del_tutor"
     t.string   "nombre_del_tutor"
-    t.date     "fecha_de_inscripcion"
+    t.integer  "tipo_de_documento_del_tutor_id"
+    t.string   "numero_de_documento_del_tutor"
+    t.integer  "alfabetizacion_del_tutor_id"
+    t.integer  "alfab_tutor_años_ultimo_nivel"
+    t.date     "fecha_de_la_ultima_menstruacion"
     t.date     "fecha_de_diagnostico_del_embarazo"
     t.integer  "semanas_de_embarazo"
     t.date     "fecha_probable_de_parto"
     t.date     "fecha_efectiva_de_parto"
-    t.string   "activo"
-    t.string   "domicilio_calle"
-    t.string   "domicilio_numero"
-    t.string   "domicilio_manzana"
-    t.string   "domicilio_piso"
-    t.string   "domicilio_depto"
-    t.string   "domicilio_entre_calle_1"
-    t.string   "domicilio_entre_calle_2"
-    t.string   "domicilio_barrio_o_paraje"
-    t.string   "domicilio_municipio"
-    t.string   "domicilio_departamento_o_partido"
-    t.string   "domicilio_localidad"
-    t.string   "domicilio_provincia"
-    t.string   "domicilio_codigo_postal"
-    t.string   "telefono"
-    t.string   "codigo_uad"
-    t.string   "codigo_ci_uad"
+    t.integer  "score_de_riesgo"
+    t.string   "discapacidad"
+    t.date     "fecha_de_inscripcion"
+    t.integer  "centro_de_inscripcion_id"
+    t.text     "observaciones_generales"
+    t.boolean  "activo"
     t.integer  "motivo_de_la_baja_id"
     t.string   "mensaje_de_la_baja"
-    t.integer  "proceso_de_baja_automatica_id"
     t.datetime "fecha_y_hora_de_carga"
     t.string   "usuario_que_carga"
-    t.string   "cuie_del_efector_asignado"
-    t.string   "cuie_del_lugar_de_atencion_habitual"
-    t.string   "clave_del_benef_que_provoca_baja"
-    t.string   "usuario_de_creacion"
-    t.date     "fecha_de_creacion"
-    t.integer  "persona_id"
-    t.integer  "score_de_riesgo"
-    t.string   "alfabetizacion"
-    t.integer  "alfabetizacion_anios_ultimo_nivel"
-    t.string   "alfabetizacion_de_la_madre"
-    t.integer  "alfab_madre_anios_ultimo_nivel"
-    t.string   "alfabetizacion_del_padre"
-    t.integer  "alfab_padre_anios_ultimo_nivel"
-    t.string   "alfabetizacion_del_tutor"
-    t.integer  "alfab_tutor_anios_ultimo_nivel"
-    t.string   "e_mail"
-    t.string   "numero_de_celular"
-    t.date     "fecha_de_ultima_menstruacion"
-    t.string   "observaciones_generales"
-    t.string   "discapacidad"
   end
 
   create_table "areas_de_prestacion", :force => true do |t|
@@ -148,9 +138,9 @@ ActiveRecord::Schema.define(:version => 20120824095905) do
   end
 
   create_table "centros_de_inscripcion", :force => true do |t|
-    t.string   "nombre",              :null => false
-    t.string   "codigo_para_gestion", :null => false
-    t.integer  "efector_id",          :null => false
+    t.string   "nombre",     :null => false
+    t.string   "codigo",     :null => false
+    t.integer  "efector_id", :null => false
     t.string   "created_by"
     t.string   "updated_by"
     t.datetime "created_at"
@@ -159,8 +149,7 @@ ActiveRecord::Schema.define(:version => 20120824095905) do
 
   create_table "clases_de_documentos", :force => true do |t|
     t.string "nombre"
-    t.string "codigo_para_prestaciones"
-    t.string "codigo_para_inscripciones"
+    t.string "codigo"
   end
 
   create_table "contactos", :force => true do |t|
@@ -265,7 +254,7 @@ ActiveRecord::Schema.define(:version => 20120824095905) do
 
   create_table "discapacidades", :force => true do |t|
     t.string "nombre"
-    t.string "codigo_para_gestion"
+    t.string "codigo"
   end
 
   create_table "distritos", :force => true do |t|
@@ -364,7 +353,7 @@ ActiveRecord::Schema.define(:version => 20120824095905) do
 
   create_table "niveles_de_instruccion", :force => true do |t|
     t.string "nombre"
-    t.string "codigo_para_gestion"
+    t.string "codigo"
   end
 
   create_table "nomencladores", :force => true do |t|
@@ -377,67 +366,68 @@ ActiveRecord::Schema.define(:version => 20120824095905) do
   end
 
   create_table "novedades_de_los_afiliados", :force => true do |t|
-    t.integer  "centro_de_inscripcion_id",             :null => false
-    t.integer  "tipo_de_novedad_id",                   :null => false
-    t.integer  "estado_de_la_novedad_id",              :null => false
-    t.string   "clave_de_beneficiario",                :null => false
+    t.integer  "tipo_de_novedad_id",                    :null => false
+    t.integer  "estado_de_la_novedad_id",               :null => false
+    t.string   "clave_de_beneficiario",                 :null => false
     t.string   "apellido"
     t.string   "nombre"
-    t.integer  "tipo_de_documento_id"
     t.integer  "clase_de_documento_id"
+    t.integer  "tipo_de_documento_id"
     t.string   "numero_de_documento"
-    t.integer  "sexo_id"
+    t.string   "numero_de_celular"
+    t.string   "e_mail"
     t.integer  "categoria_de_afiliado_id"
+    t.integer  "sexo_id"
     t.date     "fecha_de_nacimiento"
     t.integer  "pais_de_nacimiento_id"
     t.boolean  "se_declara_indigena"
     t.integer  "lengua_originaria_id"
     t.integer  "tribu_originaria_id"
-    t.integer  "tipo_de_documento_de_la_madre_id"
-    t.string   "numero_de_documento_de_la_madre"
+    t.integer  "alfabetizacion_del_beneficiario_id"
+    t.integer  "alfab_beneficiario_años_ultimo_nivel"
+    t.string   "domicilio_calle"
+    t.string   "domicilio_numero"
+    t.string   "domicilio_piso"
+    t.string   "domicilio_depto"
+    t.string   "domicilio_manzana"
+    t.string   "domicilio_entre_calle_1"
+    t.string   "domicilio_entre_calle_2"
+    t.string   "telefono"
+    t.string   "otro_telefono"
+    t.integer  "domicilio_departamento_id"
+    t.integer  "domicilio_distrito_id"
+    t.string   "domicilio_barrio_o_paraje"
+    t.string   "domicilio_codigo_postal"
+    t.text     "observaciones"
+    t.integer  "lugar_de_atencion_habitual_id"
     t.string   "apellido_de_la_madre"
     t.string   "nombre_de_la_madre"
-    t.integer  "tipo_de_documento_del_padre_id"
-    t.string   "numero_de_documento_del_padre"
+    t.integer  "tipo_de_documento_de_la_madre_id"
+    t.string   "numero_de_documento_de_la_madre"
+    t.integer  "alfabetizacion_de_la_madre_id"
+    t.integer  "alfab_madre_años_ultimo_nivel"
     t.string   "apellido_del_padre"
     t.string   "nombre_del_padre"
-    t.integer  "tipo_de_documento_del_tutor_id"
-    t.string   "numero_de_documento_del_tutor"
+    t.integer  "tipo_de_documento_del_padre_id"
+    t.string   "numero_de_documento_del_padre"
+    t.integer  "alfabetizacion_del_padre_id"
+    t.integer  "alfab_padre_años_ultimo_nivel"
     t.string   "apellido_del_tutor"
     t.string   "nombre_del_tutor"
+    t.integer  "tipo_de_documento_del_tutor_id"
+    t.string   "numero_de_documento_del_tutor"
+    t.integer  "alfabetizacion_del_tutor_id"
+    t.date     "fecha_de_la_ultima_menstruacion"
     t.date     "fecha_de_diagnostico_del_embarazo"
     t.integer  "semanas_de_embarazo"
     t.date     "fecha_probable_de_parto"
     t.date     "fecha_efectiva_de_parto"
-    t.string   "domicilio_calle"
-    t.string   "domicilio_numero"
-    t.string   "domicilio_manzana"
-    t.string   "domicilio_piso"
-    t.string   "domicilio_depto"
-    t.string   "domicilio_entre_calle_1"
-    t.string   "domicilio_entre_calle_2"
-    t.string   "domicilio_barrio_o_paraje"
-    t.integer  "domicilio_provincia_id"
-    t.integer  "domicilio_departamento_id"
-    t.integer  "domicilio_distrito_id"
-    t.string   "domicilio_codigo_postal"
-    t.string   "telefono"
-    t.integer  "efector_id"
-    t.date     "fecha_de_la_novedad",                  :null => false
-    t.string   "score_de_riesgo"
-    t.integer  "alfabetizacion_id"
-    t.integer  "años_en_el_ultimo_nivel"
-    t.integer  "alfabetizacion_de_la_madre_id"
-    t.integer  "años_en_el_ultimo_nivel_de_la_madre"
-    t.integer  "alfabetizacion_del_padre_id"
-    t.integer  "años_en_el_ultimo_nivel_del_padre"
-    t.integer  "alfabetizacion_del_tutor_id"
-    t.integer  "años_en_el_ultimo_nivel_del_tutor"
-    t.string   "e_mail"
-    t.string   "numero_de_celular"
-    t.date     "fecha_de_ultima_menstruacion"
+    t.integer  "score_de_riesgo"
+    t.string   "discapacidad"
+    t.date     "fecha_de_inscripcion"
+    t.integer  "centro_de_inscripcion_id"
+    t.string   "nombre_del_agente_inscriptor"
     t.text     "observaciones_generales"
-    t.integer  "discapacidad_id"
     t.string   "created_by"
     t.string   "updated_by"
     t.datetime "created_at"
@@ -445,8 +435,17 @@ ActiveRecord::Schema.define(:version => 20120824095905) do
   end
 
   create_table "paises", :force => true do |t|
-    t.integer "bioestadistica_id"
+    t.integer "pais_bio_id"
     t.string  "nombre"
+  end
+
+  create_table "parametros", :force => true do |t|
+    t.string   "nombre"
+    t.string   "tipo_postgres"
+    t.string   "tipo_ruby"
+    t.text     "valor"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "percentiles_pc_edad", :force => true do |t|
@@ -574,11 +573,12 @@ ActiveRecord::Schema.define(:version => 20120824095905) do
 
   create_table "sexos", :force => true do |t|
     t.string "descripcion"
+    t.string "codigo"
   end
 
   create_table "si_no", :force => true do |t|
     t.string   "nombre"
-    t.string   "codigo_para_prestaciones"
+    t.string   "codigo"
     t.boolean  "valor_bool"
     t.datetime "created_at"
     t.datetime "updated_at"

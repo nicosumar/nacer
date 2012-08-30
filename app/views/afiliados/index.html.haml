@@ -12,7 +12,7 @@
 
 - if @procesado
   -# La búsqueda ya fue procesada
-  - if @afiliados.size = 0 && @novedades.size = 0
+  - if @afiliados.size == 0 && @novedades.size == 0
     %p
       -# No hay registros asociados con ese número de documento, proponer la carga de un nuevo beneficiario
       El número de documento ingresado no pudo localizarse en la base de datos de beneficiarios del programa.

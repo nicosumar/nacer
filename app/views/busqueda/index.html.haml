@@ -9,7 +9,7 @@
     - @resultados_de_busqueda.each do |r|
       %p
         .titulo= link_to r.titulo, eval(r.modelo_type.underscore + "_path(" + r.modelo_id.to_s + ")")
-        = r.texto
+        = sanitize r.texto
     = will_paginate @resultados_de_busqueda, :inner_window => 2, :outer_window => 0
 - else
   Los criterios de búsqueda no encontraron ningún resultado.

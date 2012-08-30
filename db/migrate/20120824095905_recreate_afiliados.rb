@@ -91,7 +91,7 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.text :observaciones_generales
 
       # Estado de la inscripción al programa
-      t.string :activo
+      t.boolean :activo
       t.integer :motivo_de_la_baja_id
       t.string :mensaje_de_la_baja
 

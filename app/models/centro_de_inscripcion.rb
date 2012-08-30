@@ -58,6 +58,7 @@ class CentroDeInscripcion < ActiveRecord::Base
           logger.warn "ADVERTENCIA: No se encontró el centro de inscripción '#{codigo.strip}'."
           return nil
       end
+    end
   end
 
 end

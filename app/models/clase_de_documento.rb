@@ -14,6 +14,7 @@ class ClaseDeDocumento < ActiveRecord::Base
     else
       logger.warn "ADVERTENCIA: No se encontró la clase de documento '#{codigo.strip}'."
       return nil
+    end
   end
 
 end

@@ -273,7 +273,7 @@ class Afiliado < ActiveRecord::Base
       # Datos personales
       :apellido => self.valor(campos[2], :texto),
       :nombre => self.valor(campos[3], :texto),
-      :clase_de_documento => ClaseDeDocumento.id_del_codigo(self.valor(campos[5], :texto)),
+      :clase_de_documento_id => ClaseDeDocumento.id_del_codigo(self.valor(campos[5], :texto)),
       :tipo_de_documento_id => TipoDeDocumento.id_del_codigo(self.valor(campos[4], :texto)),
       :numero_de_documento => self.valor(campos[6], :texto),
       :numero_de_celular => self.valor(campos[87], :texto),
@@ -287,8 +287,8 @@ class Afiliado < ActiveRecord::Base
       :fecha_de_nacimiento => self.valor(campos[11], :fecha),
       :pais_de_nacimiento_id => self.valor(campos[8], :entero),
       :se_declara_indigena => SiNo.valor_bool_del_codigo(self.valor(campos[12], :texto)),
-      :lengua_originaria_id => self.valor(campos[13], :entero),
-      :tribu_originaria_id => self.valor(campos[14], :entero),
+      :lengua_originaria_id => (self.valor(campos[13], :entero) == 0 ? nil : self.valor(campos[13], :entero)),
+      :tribu_originaria_id => (self.valor(campos[14], :entero) == 0 ? nil : self.valor(campos[14], :entero)),
       :alfabetizacion_del_beneficiario_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[75], :texto)),
       :alfab_beneficiario_años_ultimo_nivel => self.valor(campos[76], :entero),
 
@@ -333,7 +333,7 @@ class Afiliado < ActiveRecord::Base
       # Datos del embarazo y parto (para embarazadas)
       :fecha_de_ultima_menstruacion => self.valor(campos[88], :fecha),
       :fecha_de_diagnostico_del_embarazo => self.valor(campos[30], :fecha),
-      :semanas_de_embarazo => self.valor(campos[31], :entero),
+      :semanas_de_embarazo => (self.valor(campos[31], :entero) == 0 ? nil : self.valor(campos[31], :entero)),
       :fecha_probable_de_parto => self.valor(campos[32], :fecha),
       :fecha_efectiva_de_parto => self.valor(campos[33], :fecha),
 
@@ -341,7 +341,7 @@ class Afiliado < ActiveRecord::Base
       :score_de_riesgo => self.valor(campos[74], :entero),
 
       # Discapacidad
-      :discapacidad => Discapacidad.id_del_codigo(self.valor(campos[90], :texto))
+      :discapacidad => Discapacidad.id_del_codigo(self.valor(campos[90], :texto)),
 
       # Fecha y centro inscriptor
       :fecha_de_inscripcion => self.valor(campos[28], :fecha),
@@ -360,7 +360,7 @@ class Afiliado < ActiveRecord::Base
 
       # Datos relacionados con la carga del registro
       :fecha_y_hora_de_carga => self.valor(campos[61], :fecha_hora),
-      :usuario_que_carga => self.valor(campos[62], :texto),
+      :usuario_que_carga => self.valor(campos[62], :texto)
 
       # A continuación se ubican los campos cuyos datos no se convierten ya que no tienen un uso definido,
       # o bien su utilidad es nula para los procesos modelados en el sistema.
@@ -415,6 +415,8 @@ private
   end
 
   def self.valor(texto, tipo)
+
+    return nil unless texto
 
     texto.strip!
     return nil if texto == "NULL" || texto == ""

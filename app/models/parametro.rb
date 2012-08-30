@@ -1,7 +1,7 @@
 class Parametro < ActiveRecord::Base
 
   # Devuelve el valor asociado con el nombre del parámetro indicado
-  def valor_del_parametro(parametro)
+  def self.valor_del_parametro(parametro)
     parametro = self.find_by_nombre(parametro.to_s.camelize)
     return nil if !parametro
 

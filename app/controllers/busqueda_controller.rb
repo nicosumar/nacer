@@ -14,9 +14,9 @@ class BusquedaController < ApplicationController
 
     # Eliminar los resultados a cuyos modelos el usuario no tiene acceso
     indices = []
-    ResultadoDeLaBusqueda.find(:all).each do |r|
-      if can? :read, eval(r.modelo_type)
-        indices << r.id
+    ObjetoEncontrado.find(:all).each do |o|
+      if can? :read, eval(o.modelo_type)
+        indices << o.id
       end
     end
 

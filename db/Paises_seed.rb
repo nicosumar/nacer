@@ -5,6 +5,6 @@ end
 # Datos precargados al inicializar el sistema
 Pais.create([
         { #:id => 1,
-          :nombre => "Ignorado"
+          :nombre => "Ignorado",
           :pais_bio_id => 999 }
 ])

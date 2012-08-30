@@ -11,9 +11,6 @@ class ConfiguracionFTS < ActiveRecord::Migration
     CREATE EXTENSION dict_xsyn;
   "
   execute "
-    ALTER TEXT SEARCH DICTIONARY xsyn (RULES='nacer_xsyn', KEEPORIG=true, MATCHSYNONYMS=true);
-  "
-  execute "
     CREATE TEXT SEARCH CONFIGURATION public.indices_fts ( COPY = pg_catalog.spanish );
   "
   execute "
@@ -44,6 +41,9 @@ class ConfiguracionFTS < ActiveRecord::Migration
   "
   execute "
     SET default_text_search_config = 'public.indices_fts';
+  "
+  execute "
+    ALTER TEXT SEARCH DICTIONARY xsyn (RULES='nacer_xsyn',KEEPORIG='true',MATCHSYNONYMS='true');
   "
 
   # Creación de índices en la tabla de búsquedas

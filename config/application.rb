@@ -44,5 +44,9 @@ module Nacer
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # Allow <span class> tags by default
+    config.action_view.sanitized_allowed_tags = 'span'
+    config.action_view.sanitized_allowed_attributes = 'class'
   end
 end
