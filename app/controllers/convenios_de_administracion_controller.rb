@@ -3,7 +3,7 @@ class ConveniosDeAdministracionController < ApplicationController
 
   def index
     if can? :read, ConvenioDeAdministracion
-      @convenios_de_administracion = ConvenioDeAdministracion.paginate(:page => params[:page], :per_page => 10, :include => [:efector, :administrador], :order => "numero")
+      @convenios_de_administracion = ConvenioDeAdministracion.paginate(:page => params[:page], :per_page => 20, :include => [:efector, :administrador], :order => "numero")
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
     end

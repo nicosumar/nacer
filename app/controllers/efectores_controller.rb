@@ -3,7 +3,7 @@ class EfectoresController < ApplicationController
 
   def index
     if can? :read, Efector
-      @efectores = Efector.paginate(:page => params[:page], :per_page => 10, :include => [:convenio_de_gestion, :convenio_de_administracion], :order => :cuie)
+      @efectores = Efector.paginate(:page => params[:page], :per_page => 20, :include => [:convenio_de_gestion, :convenio_de_administracion], :order => :cuie)
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
     end

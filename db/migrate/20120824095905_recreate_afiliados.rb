@@ -81,7 +81,7 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.integer :score_de_riesgo
 
       # Discapacidad
-      t.string :discapacidad
+      t.references :discapacidad
 
       # Fecha y centro inscriptor
       t.date :fecha_de_inscripcion

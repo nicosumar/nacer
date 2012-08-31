@@ -3,7 +3,7 @@ class ContactosController < ApplicationController
 
   def index
     if can? :read, Contacto
-      @contactos = Contacto.paginate(:page => params[:page], :per_page => 10, :order => [:apellidos, :nombres, :mostrado])
+      @contactos = Contacto.paginate(:page => params[:page], :per_page => 20, :order => [:apellidos, :nombres, :mostrado])
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
     end

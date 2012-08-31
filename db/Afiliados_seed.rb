@@ -37,6 +37,10 @@ class ModificarAfiliados < ActiveRecord::Migration
               COALESCE(clase_de_documento || ' ', '') ||
               COALESCE(tipo_de_documento || ' ', '') ||
               COALESCE(NEW.numero_de_documento, '') ||
+              ', fecha de nacimiento: ' ||
+              COALESCE(to_char(NEW.fecha_de_nacimiento, 'DD/MM/YYYY'), '') ||
+              ', fecha de inscripción: ' ||
+              COALESCE(to_char(NEW.fecha_de_inscripcion, 'DD/MM/YYYY'), '') ||
               '. Madre: ' ||
               COALESCE(NEW.nombre_de_la_madre || ' ', '') ||
               COALESCE(NEW.apellido_de_la_madre, '') ||
@@ -65,6 +69,10 @@ class ModificarAfiliados < ActiveRecord::Migration
               setweight(to_tsvector('public.indices_fts', COALESCE(clase_de_documento || ' ', '')), 'D') ||
               setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento || ' ', '')), 'D') ||
               setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', ', fecha de nacimiento: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(to_char(NEW.fecha_de_nacimiento, 'DD/MM/YYYY'), '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', ', fecha de inscripción: '), 'D') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(to_char(NEW.fecha_de_inscripcion, 'DD/MM/YYYY'), '')), 'B') ||
               setweight(to_tsvector('public.indices_fts', '. Madre: '), 'D') ||
               setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre_de_la_madre || ' ', '')), 'C') ||
               setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido_de_la_madre, '')), 'C') ||
@@ -106,6 +114,10 @@ class ModificarAfiliados < ActiveRecord::Migration
             COALESCE(clase_de_documento || ' ', '') ||
             COALESCE(tipo_de_documento || ' ', '') ||
             COALESCE(NEW.numero_de_documento, '') ||
+            ', fecha de nacimiento: ' ||
+            COALESCE(to_char(NEW.fecha_de_nacimiento, 'DD/MM/YYYY'), '') ||
+            ', fecha de inscripción: ' ||
+            COALESCE(to_char(NEW.fecha_de_inscripcion, 'DD/MM/YYYY'), '') ||
             '. Madre: ' ||
             COALESCE(NEW.nombre_de_la_madre || ' ', '') ||
             COALESCE(NEW.apellido_de_la_madre, '') ||
@@ -133,6 +145,10 @@ class ModificarAfiliados < ActiveRecord::Migration
             setweight(to_tsvector('public.indices_fts', COALESCE(clase_de_documento || ' ', '')), 'D') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento || ' ', '')), 'D') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', ', fecha de nacimiento: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(to_char(NEW.fecha_de_nacimiento, 'DD/MM/YYYY'), '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', ', fecha de inscripción: '), 'D') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(to_char(NEW.fecha_de_inscripcion, 'DD/MM/YYYY'), '')), 'B') ||
             setweight(to_tsvector('public.indices_fts', '. Madre: '), 'D') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(NEW.nombre_de_la_madre || ' ', '')), 'C') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(NEW.apellido_de_la_madre, '')), 'C') ||

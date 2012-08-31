@@ -22,7 +22,7 @@ class BusquedaController < ApplicationController
 
     @registros_coincidentes = indices.size
     if @registros_coincidentes > 0
-      @resultados_de_busqueda = ResultadoDeLaBusqueda.where('id IN (?)', indices).order('orden ASC').paginate(:page => params[:page], :per_page => 10)
+      @resultados_de_busqueda = ResultadoDeLaBusqueda.where('id IN (?)', indices).order('orden ASC').paginate(:page => params[:page], :per_page => 20)
     end
     fin = Time.now()
     @tiempo_de_busqueda = fin - inicio

@@ -3,7 +3,7 @@ class LiquidacionesController < ApplicationController
 
   def index
     if can? :read, Liquidacion then
-      @liquidaciones = Liquidacion.paginate(:page => params[:page], :per_page => 10, :include => [:efector, {:cuasi_facturas => :efector}],
+      @liquidaciones = Liquidacion.paginate(:page => params[:page], :per_page => 20, :include => [:efector, {:cuasi_facturas => :efector}],
         :order => "updated_at DESC")
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 

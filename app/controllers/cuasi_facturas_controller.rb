@@ -4,7 +4,7 @@ class CuasiFacturasController < ApplicationController
   def index
     # Verificar los permisos del usuario
     if can? :read, CuasiFactura
-      @cuasi_facturas = CuasiFactura.paginate(:page => params[:page], :per_page => 10,
+      @cuasi_facturas = CuasiFactura.paginate(:page => params[:page], :per_page => 20,
         :include => [{:liquidacion => :efector}, :efector, :nomenclador], :order => "updated_at DESC")
     else
       redirect_to(root_url,

@@ -1,0 +1,24 @@
+- content_for :title do
+  Beneficiario:
+  = @afiliado.nombre + " " + @afiliado.apellido
+
+%h1= Beneficiarios
+
+#busqueda_afiliado
+  = form_tag('/afiliados', :method => 'get') do
+    %div.field
+      = label_tag(:patron_de_busqueda, "Buscar beneficiario:")
+      = text_field_tag(:patron_de_busqueda, nil)
+    %div.actions
+      = submit_tag("Buscar")
+
+@afiliado.nombre + " " + @afiliado.apellido
+
+- if notice
+  %p#notice= notice
+
+%h2 Datos de la inscripción del beneficiario
+%p
+  Apellido:
+  %span.destacado= @afiliado.apellidos
+

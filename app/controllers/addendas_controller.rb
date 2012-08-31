@@ -4,7 +4,7 @@ class AddendasController < ApplicationController
   def index
     # Verificar los permisos del usuario
     if can? :read, Addenda
-      @addendas = Addenda.paginate(:page => params[:page], :per_page => 10,
+      @addendas = Addenda.paginate(:page => params[:page], :per_page => 20,
         :include => {:convenio_de_gestion => :efector}, :order => "fecha_de_suscripcion")
     else
       redirect_to(root_url,

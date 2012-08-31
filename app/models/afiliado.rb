@@ -1,9 +1,33 @@
 class Afiliado < ActiveRecord::Base
-  # TODO: seguridad, probablemente ninguna ya que no está asociado a ningún formulario aún
   set_primary_key "afiliado_id"
+  # El modelo no está asignado a ningún formulario editable por el usuario.
+  # Los datos se actualizan por un proceso.
+  # Los atributos no se protegen porque se asignan masivamente en dicho proceso.
+  attr_protected nil
 
-  belongs_to :categoria_de_afiliado
+  # Asociaciones con otros modelos
+  belongs_to :clase_de_documento
+  belongs_to :tipo_de_documento
+  #belongs_to :categoria_de_afiliado    # --OBSOLETO--
+  belongs_to :sexo
   has_many :periodos_de_actividad
+  belongs_to :pais_de_nacimiento, :class_name => "Pais"
+  belongs_to :lengua_originaria
+  belongs_to :tribu_originaria
+  belongs_to :alfabetizacion_del_beneficiario, :class_name => "NivelDeInstruccion"
+  belongs_to :domicilio_departamento, :class_name => "Departamento"
+  belongs_to :domicilio_distrito, :class_name => "Distrito"
+  belongs_to :lugar_de_atencion_habitual, :class_name => "Efector"
+  belongs_to :tipo_de_documento_de_la_madre, :class_name => "TipoDeDocumento"
+  belongs_to :tipo_de_documento_de_la_madre, :class_name => "TipoDeDocumento"
+  belongs_to :alfabetizacion_de_la_madre, :class_name => "NivelDeInstruccion"
+  belongs_to :tipo_de_documento_del_padre, :class_name => "TipoDeDocumento"
+  belongs_to :alfabetizacion_del_padre, :class_name => "NivelDeInstruccion"
+  belongs_to :tipo_de_documento_del_tutor, :class_name => "TipoDeDocumento"
+  belongs_to :alfabetizacion_del_tutor, :class_name => "NivelDeInstruccion"
+  belongs_to :discapacidad
+  belongs_to :centro_de_inscripcion
+  
 
 # La carga del padrón se hace en un proceso batch y las verificaciones ya son realizadas
 # por el sistema de gestión
@@ -73,9 +97,9 @@ class Afiliado < ActiveRecord::Base
     nivel_maximo = 1
     afiliados.each do |afiliado|
       nivel_actual = 0
-      apellido_afiliado = self.transformar_nombre(afiliado.apellido)
-      nombre_afiliado = self.transformar_nombre(afiliado.nombre)
-      nombre_y_apellido = self.transformar_nombre(nombre_y_apellido)
+      apellido_afiliado = (self.transformar_nombre(afiliado.apellido) || "")
+      nombre_afiliado = (self.transformar_nombre(afiliado.nombre) || "")
+      nombre_y_apellido = (self.transformar_nombre(nombre_y_apellido) || "")
 
       # Verificar apellidos
       case
@@ -158,7 +182,7 @@ class Afiliado < ActiveRecord::Base
     periodos.each do |p|
       # Tomamos como fecha de inicio del periodo la que sea mayor entre la inscripción y la fecha de inicio del periodo
       # desplazada dos meses antes (lapso ventana para la carga de la ficha de inscripción).
-      inicio = self.max(p.fecha_de_inicio - 2.months, fecha_de_inscripcion)
+      inicio = [p.fecha_de_inicio - 2.months, fecha_de_inscripcion].max
       if ( fecha >= inicio && (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion))
         return true
       end
@@ -177,7 +201,7 @@ class Afiliado < ActiveRecord::Base
     # Obtener los periodos de actividad de este afiliado
     periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
     periodos.each do |p|
-      if (fecha >= self.max(p.fecha_de_inicio - 2.months, fecha_de_inscripcion)) &&
+      if (fecha >= [p.fecha_de_inicio - 2.months, fecha_de_inscripcion].max) &&
          (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion)
         return p.fecha_de_inicio.strftime("%Y-%m")
       end
@@ -341,7 +365,7 @@ class Afiliado < ActiveRecord::Base
       :score_de_riesgo => self.valor(campos[74], :entero),
 
       # Discapacidad
-      :discapacidad => Discapacidad.id_del_codigo(self.valor(campos[90], :texto)),
+      :discapacidad_id => Discapacidad.id_del_codigo(self.valor(campos[90], :texto)),
 
       # Fecha y centro inscriptor
       :fecha_de_inscripcion => self.valor(campos[28], :fecha),
@@ -410,10 +434,6 @@ class Afiliado < ActiveRecord::Base
   end
 
 private
-  def self.max(a, b)
-    a > b ? a : b
-  end
-
   def self.valor(texto, tipo)
 
     return nil unless texto
