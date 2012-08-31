@@ -10,7 +10,7 @@ $item_seleccionado: #005db7;
 body {
   margin: 0;
   padding: 0;
-  background: #f6f6f6;
+  background: #808080;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   color: $azul_nacer; }
@@ -56,7 +56,7 @@ img.aligncenter {
 #wrapper {
   width: 960px;
   margin: 0px auto;
-  background: url(/assets/fondo_azul.png) no-repeat center top; }
+  background: url(/assets/fondo_azul.png) repeat center top; }
 
 #wrapper-bgbtm { }
 
@@ -64,8 +64,8 @@ img.aligncenter {
 
 #header {
   width: 960px;
-  height: 100px;
-  background: url(/assets/logo_nacer.png) no-repeat 10px;
+  height: 221px;
+  background: url(/assets/cabecera.jpg) no-repeat 0px;
   position: relative; }
 
 /* Logo */
@@ -104,7 +104,7 @@ img.aligncenter {
 /* Session info */
 #session { 
   position: absolute;
-  bottom: 8px;
+  bottom: -40px;
   right: 10px;
   margin: 0px;
   p {
@@ -134,7 +134,7 @@ img.aligncenter {
 
 #search form {
   height: 50px;
-  padding-left: 20px; }
+  padding-left: 5px; }
 
 #search fieldset {
   margin: 0;
@@ -166,7 +166,7 @@ img.aligncenter {
 #menu {
   width: 690px;
   height: 40px;
-  margin: 20px 0px 0px 10px;
+  margin: 20px 0px 0px 38px;
   padding: 0px; }
 
 #menu ul {
@@ -177,7 +177,7 @@ img.aligncenter {
 #menu li {
   font-size: 14px;
   list-style: none;
-  background-color: white;
+  background-color: #0089CB;
   float: left;
   margin: 2px 4px 0px 0px;
   -moz-box-shadow: -2px 2px 4px #777777;
@@ -190,11 +190,11 @@ img.aligncenter {
 #menu li a {
   display: block;
   margin: 0px;
-  padding: 5px 10px;
-  border: 1px solid $azul_nacer;
+  padding: 5px 20px;
+  border: 0px solid #0089CB;
   text-decoration: none;
   font-weight: normal;
-  color: $azul_nacer; }
+  color: #ffffff; }
 
 #menu li p {
   display: block;
@@ -202,23 +202,23 @@ img.aligncenter {
   padding: 5px 10px;
   line-height: normal;
   font-weight: normal;
-  border: 1px solid $azul_nacer;
-  color: $azul_nacer; }
+  border: 0px solid $azul_nacer;
+  color: #ffffff; }
 
 #menu li p:hover {
-  color: $item_seleccionado;
+  color: #8CC2E9;
   cursor: default;
   margin-top: -1px;
-  border: 2px solid $item_seleccionado;
+  border: 0px solid $item_seleccionado;
 }
 
 #menu li a:hover {
-  color: $item_seleccionado;
+  color: #ffffff;
   margin-top: -1px;
-  border: 2px solid $item_seleccionado; }
+  border: 0px solid $item_seleccionado; }
 
 #menu li ul {
-  background-color: transparent;
+  background-color: #ffffff;
   visibility: hidden;
   position: absolute;
   padding: 0px;
@@ -232,7 +232,7 @@ img.aligncenter {
   float: none; }
 
 #menu li ul li a {
-  background-color: white; }
+  background-color: #0089CB; }
 
 
 /* Page */
@@ -246,7 +246,7 @@ img.aligncenter {
 #content {
   float: left;
   width: 690px;
-  padding: 20px 0px 0px 10px;
+  padding: 20px 0px 0px 40px;
   .destacado {
     font-style: italic;
     font-weight: bold; }
@@ -365,9 +365,9 @@ table tr.clickable {
 
 #sidebar {
   float: right;
-  width: 210px;
-  font-size: 13px;
-  padding-top: 20px; } // Cambiar al agregar el formulario de búsqueda
+  width: 150px;
+  font-size: 11px;
+  padding-top: 90px; } // Cambiar al agregar el formulario de búsqueda
 
 #sidebar h2 {
   height: 29px;
@@ -429,18 +429,19 @@ table tr.clickable {
 #footer {
 /*  background: image-url("footer.png") no-repeat center top; */
   width: 960px;
-  height: 75px;
+  height: 200px;
   margin: 20px 0px 10px 0px;
   font-family: Arial, Helvetica, sans-serif; }
 
 #footer p {
   float: none;
+  background: #000000;
   margin: 0px;
   padding: 0px;
   line-height: normal;
   text-align: center;
   font-size: 10px;
-  color: $azul_nacer;
+  color: #ffffff;
   &.primero {
     padding-top: 8px; }
   &.licencia {
@@ -448,7 +449,7 @@ table tr.clickable {
 
 
 #footer a {
-  color: $azul_nacer;
+  color: #00A9E9;
   font-weight: bold; }
 
 #rails-logo {
@@ -456,8 +457,9 @@ table tr.clickable {
   margin-right: 10px; }
 
 #msalud-logo {
-  float: left;
-  margin-left: 10px; }
+  float: centre;
+  margin-left: 0px; }
+  
 
 div {
   &.field, &.actions {

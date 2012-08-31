@@ -10,8 +10,8 @@
       #wrapper-bgbtm
         #header
           #logo
-            %h1 Sistema de gestión del seguro provincial
-            %p Plan Nacer Mendoza
+            %h1 
+            %p 
           - if current_user
             #session
               %a{:href => cerrar_sesion_path, :title => "Cerrar sesión"}
@@ -57,6 +57,7 @@
                     %li= link_to "Usuarios", users_url
                     %li= link_to "Grupos", user_groups_url
                     %li= link_to "Padrones", padrones_url
+                    
         #page
           #page-bgtop
             #page-bgbtm
@@ -78,8 +79,8 @@
             %a{ :href => "http://rubyonrails.org/", :onclick => "this.target='_blank'" } 
               = image_tag "rails.png", :alt => "Ruby on Rails"
           #msalud-logo
-            %a{ :href => "http://www.salud.mendoza.gov.ar/", :onclick => "this.target='_blank'" } 
-              = image_tag "msalud-logo.png", :alt => "Ministerio de Salud - Gobierno de Mendoza"
+            %a{  } 
+              = image_tag "footer.png"
           %p.primero
             Copyleft 2011,
             = mail_to '"Santiago Bosio" <santiago.bosio@gmail.com>', "Santiago Bosio", :title => "Enviar un mensaje al autor"
@@ -91,3 +92,6 @@
           %p.licencia
             %a{:rel => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/deed.es", :onclick => "this.target='_blank'"}
               = image_tag "cc_by_sa.png", :alt => "Licencia Creative Commons BY-SA", :title => "Distribuido bajo una licencia Creative Commons Atribución-CompartirIgual 3.0 Unported"
+              %p.licencia
+              %p.licencia
+              
