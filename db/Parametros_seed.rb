@@ -9,5 +9,15 @@ Parametro.create([
     :nombre => "CodigoDeUadDelSistema",
     :tipo_postgres => "text",
     :tipo_ruby => "String",
-    :valor => "006" }
+    :valor => "006" },
+  { #:id => 3,
+    :nombre => "EdadLimiteParaExigirAdultoResponsable",
+    :tipo_postgres => "int4",
+    :tipo_ruby => "Integer",
+    :valor => "15" },
+  { #:id => 4,
+    :nombre => "EdadMinimaParaRegistrarEmbarazada",
+    :tipo_postgres => "int4",
+    :tipo_ruby => "Integer",
+    :valor => "10" }
 ])

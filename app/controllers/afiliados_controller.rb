@@ -42,18 +42,19 @@ class AfiliadosController < ApplicationController
       return
     end
 
-    # Obtener la cuasi-factura solicitada
+    # Obtener el beneficiario solicitado
     begin
-      @cuasi_factura = CuasiFactura.find(params[:id], :include => [{:liquidacion => :efector}, :efector, :nomenclador,
-        {:renglones_de_cuasi_facturas => :prestacion}, :registros_de_prestaciones])
+      @afiliado = Afiliado.find(params[:id], :include => [:clase_de_documento, :tipo_de_documento, :sexo,
+        :pais_de_nacimiento, :lengua_originaria, :tribu_originaria, :alfabetizacion_del_beneficiario,
+        :domicilio_departamento, :domicilio_distrito, :lugar_de_atencion_habitual, :tipo_de_documento_de_la_madre,
+        :alfabetizacion_de_la_madre, :tipo_de_documento_del_padre, :alfabetizacion_del_padre,
+        :tipo_de_documento_del_tutor, :alfabetizacion_del_tutor, :discapacidad, :centro_de_inscripcion])
     rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
-        :notice => "La cuasi-factura solicitada no existe. El incidente será reportado al administrador del sistema.")
+        :notice => "El beneficiario solicitado no existe. El incidente será reportado al administrador del sistema.")
       return
     end
 
-    # Obtener la liquidacion asociada con la cuasi-factura
-    @liquidacion = @cuasi_factura.liquidacion
   end
 
 end

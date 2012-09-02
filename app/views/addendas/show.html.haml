@@ -62,8 +62,8 @@
 - if @addenda.observaciones
   %h3 Información complementaria
   %p
-    - @addenda.observaciones.split("\n").each do |l|
-      = l
+    - @addenda.observaciones.split("\n").each do |linea|
+      = linea
       %br/
 
 - content_for :sidebar do

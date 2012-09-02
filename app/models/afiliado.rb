@@ -1,9 +1,21 @@
 class Afiliado < ActiveRecord::Base
+
+  # Cambiar la clave primaria. La clave no es creada por este sistema, sino por el
+  # sistema de gestión del padrón. Aunque podría haberse utilizado "id" como
+  # identificador, se hizo así para no olvidarse de este hecho.
   set_primary_key "afiliado_id"
+
   # El modelo no está asignado a ningún formulario editable por el usuario.
   # Los datos se actualizan por un proceso.
   # Los atributos no se protegen porque se asignan masivamente en dicho proceso.
   attr_protected nil
+
+  # La carga del padrón se hace en un proceso batch y las verificaciones ya son realizadas
+  # por el sistema de gestión
+  #validates_presence_of :clave_de_beneficiario, :apellido, :nombre, :tipo_de_documento
+  #validates_presence_of :clase_de_documento, :numero_de_documento, :categoria_de_afiliado_id
+  #validates_numericality_of :numero_de_documento, :integer => true
+  #validates_uniqueness_of :clave_de_beneficiario
 
   # Asociaciones con otros modelos
   belongs_to :clase_de_documento
@@ -27,32 +39,223 @@ class Afiliado < ActiveRecord::Base
   belongs_to :alfabetizacion_del_tutor, :class_name => "NivelDeInstruccion"
   belongs_to :discapacidad
   belongs_to :centro_de_inscripcion
+
+  #
+  # Métodos disponibles en las instancias
+  #
   
+  # edad_en_años
+  # Devuelve la edad en años cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
+  # indica una fecha.
+  def edad_en_años (fecha_de_calculo = Date.today)
 
-# La carga del padrón se hace en un proceso batch y las verificaciones ya son realizadas
-# por el sistema de gestión
-#  validates_presence_of :clave_de_beneficiario, :apellido, :nombre, :tipo_de_documento
-#  validates_presence_of :clase_de_documento, :numero_de_documento, :categoria_de_afiliado_id
-#  validates_numericality_of :numero_de_documento, :integer => true
-#  validates_uniqueness_of :clave_de_beneficiario
+    # Calculamos la diferencia entre los años de ambas fechas
+    diferencia_en_años = (fecha_de_calculo.year - fecha_de_nacimiento.year)
 
-  # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
-  def self.transformar_nombre(nombre)
-    return nil unless nombre
-    normalizado = nombre.upcase
+    # Calculamos la diferencia entre los meses de ambas fechas
+    diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
 
-    normalizado.gsub!(/[\,\.\'\`\^\~\-\"\/\\\º\ª\!\·\$\%\&\(\)\=\+\*\-\_\;\:\<\>\|\@\#\[\]\{\}]/, "")
-    if normalizado.match(/[ÁÉÍÓÚÄËÏÖÜÀÈÌÒÂÊÎÔÛ014]/)
-      normalizado.gsub!(/[ÁÄÀÂ4]/, "A")
-      normalizado.gsub!(/[ÉËÈÊ]/, "E")
-      normalizado.gsub!(/[ÍÏÌÎ1]/, "I")
-      normalizado.gsub!(/[ÓÖÒÔ0]/, "O")
-      normalizado.gsub!(/[ÚÜÙÛ]/, "U")
-      normalizado.gsub!("Ç", "C")
-      normalizado.gsub!(/  /, " ")
-    end
-    return normalizado
+    # Calculamos la diferencia en días y ajustamos la diferencia en meses en forma acorde
+    diferencia_en_dias = (fecha_de_calculo.day) - (fecha_de_nacimiento.day)
+    if diferencia_en_dias < 0 then diferencia_en_meses -= 1 end
+
+    # Ajustamos la diferencia en años en forma acorde
+    if diferencia_en_meses < 0 then diferencia_en_años -= 1 end
+
+    # Devolver la cantidad de años
+    return diferencia_en_años
+
   end
+
+  # inscripto?
+  # Indica si el afiliado estaba inscripto para la fecha del parámetro, o al día de hoy si
+  # no se indica una fecha
+  #
+  def inscripto?(fecha = Date.today)
+    fecha_de_inscripcion <= fecha
+  end
+
+  # activo?
+  # Indica si el afiliado estaba activo en el padrón correspondiente al mes y año de la fecha indicada, o
+  # en alguno de los padrones de los dos meses siguientes (lapso ventana para la carga de la ficha de inscripción).
+  # Si no se pasa una fecha, indica si figura actualmente como beneficiario activo
+  #
+  def activo?(fecha = nil)
+
+    # Devuelve 'true' si no se especifica una fecha y el campo 'activo' es 'S'
+    return (activo.upcase == "S") unless fecha
+
+    # Obtener los periodos de actividad de este afiliado
+    periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
+    periodos.each do |p|
+      # Tomamos como fecha de inicio del periodo la que sea mayor entre la inscripción y la fecha de inicio del periodo
+      # desplazada dos meses antes (lapso ventana para la carga de la ficha de inscripción).
+      inicio = [p.fecha_de_inicio - 2.months, fecha_de_inscripcion].max
+      if ( fecha >= inicio && (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion))
+        return true
+      end
+    end
+    return false
+
+  end
+
+  # Devuelve el mes y año del padrón donde aparece activo si el afiliado estaba activo en esa fecha
+  # Esto puede ser el año y mes correspondiente al inicio del periodo de actividad, si estaba activo
+  # en ese momento, o bien alguno de los dos meses siguientes (lapso ventana para la carga de la
+  # ficha de inscripción).
+  #
+  def padron_activo(fecha = Date.today)
+
+    # Devolver nil si el beneficiario no estaba activo para esa fecha.
+    return nil unless activo?(fecha)
+
+    # Buscar el periodo en que estuvo activo el beneficiario para esa fecha, y devolver el año y mes
+    # inicial de dicho periodo
+    periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
+    periodos.each do |p|
+      if (fecha >= [p.fecha_de_inicio - 2.months, fecha_de_inscripcion].max) &&
+         (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion)
+        return p.fecha_de_inicio.strftime("%Y-%m")
+      end
+    end
+
+  end
+
+  # menor?
+  # Indica si el beneficiario tenía para la fecha indicada (o al día de hoy si no se indica una fecha)
+  # una edad donde es exigible que se registren los datos del adulto responsable.
+  #
+  def menor?(fecha_de_calculo = Date.today)
+    (edad_en_años || 0) < Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable)
+  end
+
+  # embarazada?
+  # Indica si la beneficiaria cursaba para la fecha indicada (o al día de hoy si no se indica una fecha)
+  # un embarazo.
+  #
+  def embarazada?(fecha = Date.today)
+
+    # Verificar que la beneficiaria sea de sexo femenino y su edad mayor que el mínimo establecido
+    if (sexo_id == 1 &&
+      edad_en_años >= Parametro.valor_del_parametro(:edad_minima_para_registrar_embarazada) &&
+      fecha_probable_de_parto)
+      if ((fecha_probable_de_parto - 40.weeks)..(fecha_probable_de_parto + 45.days)) === fecha
+        return true
+      end
+    end
+
+    return false
+
+  end
+
+  # semanas_de_gestacion_segun_fum
+  # Indica las semanas de gestación cumplidas según la fecha de la última menstruación, para la fecha
+  # indicada como parámetro (o para el día de hoy si no se indica la fecha)
+  #
+  def semanas_de_gestacion_segun_fum(fecha = Date.today)
+
+    # Devolver nil si no existe FUM o la fecha está fuera del periodo de embarazo, parto o puerperio
+    if (!fecha_de_la_ultima_menstruacion ||
+      fecha < fecha_de_la_ultima_menstruacion ||
+      fecha > (fecha_de_la_ultima_menstruacion + 40.weeks + 45.days))
+      return nil
+    end
+
+    # Calcular la cantidad de semanas
+    return ((fecha - fecha_de_la_ultima_menstruacion) / 7).to_i
+
+  end
+
+  # semanas_de_gestacion_segun_fpp
+  # Indica las semanas de gestación cumplidas según la fecha probable de parto, para la fecha
+  # indicada como parámetro (o para el día de hoy si no se indica la fecha)
+  #
+  def semanas_de_gestacion_segun_fpp(fecha = Date.today)
+
+    # Devolver nil si no existe FPP o la fecha está fuera del periodo de embarazo, parto o puerperio
+    if (!fecha_probable_de_parto ||
+      fecha < (fecha_probable_de_parto - 40.weeks) ||
+      fecha > (fecha_probable_de_parto + 45.days))
+      return nil
+    end
+
+    # Calcular la cantidad de semanas
+    fum = (fecha_probable_de_parto - 40.weeks)
+    return ((fecha - fum) / 7).to_i
+
+  end
+
+  # Devuelve un Array con los códigos de categoría válidos para el afiliado en la fecha especificada.
+  # -- OBSOLETO --
+  #def categorias(fecha = Date.today)
+  #  case
+  #    when categoria_de_afiliado_id == 1 # Embarazadas
+  #      # Si no hay FPP o FEP se devuelve la misma categoría
+  #      return [1] unless (fecha_probable_de_parto || fecha_efectiva_de_parto)
+  #      case
+  #        when (fpp = fecha_probable_de_parto) # Afiliada con FPP especificada
+  #          case
+  #            when (fecha - fpp).to_i < -45
+  #              # Si la fecha es anterior a la FPP en más de 45 días, sólo se habilita la categoría 1
+  #              return [1]
+  #            when (fecha - fpp).to_i >= -45 && (fecha - fpp) <= 45
+  #              # Si la fecha se encuentra entre 45 días antes y 45 días después de la FPP se habilitan las categorías 1 y 2
+  #              return [1, 2]
+  #            else
+  #              # Si la fecha excede en más de 45 días la FPP, sólo se habilita la categoría 2
+  #              return [2]
+  #          end
+  #        when (fep = fecha_efectiva_de_parto)
+  #          case
+  #            when (fecha - fep).to_i < -7
+  #              # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
+  #              return [1]
+  #            when (fecha - fep).to_i >= -7 && (fecha - fep) <= 7
+  #              # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
+  #              return [1, 2]
+  #            else
+  #              # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
+  #              return [2]
+  #          end
+  #      end
+  #
+  #    when categoria_de_afiliado_id == 2 # Puérperas
+  #      # Si no hay FEP se devuelve la misma categoría
+  #      return [2] unless fecha_efectiva_de_parto
+  #      case
+  #        when (fecha - fecha_efectiva_de_parto).to_i < -7
+  #          # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
+  #          return [1]
+  #        when (fecha - fecha_efectiva_de_parto).to_i >= -7 && (fecha - fecha_efectiva_de_parto) <= 7
+  #          # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
+  #          return [1, 2]
+  #        else
+  #          # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
+  #          return [2]
+  #      end
+  #
+  #    when (categoria_de_afiliado_id == 3 || categoria_de_afiliado_id == 4) # Niños
+  #      # Si no hay fecha de nacimiento se devuelve la misma categoría
+  #      return [categoria_de_afiliado_id] unless fecha_de_nacimiento
+  #      case
+  #        when (fecha - fecha_de_nacimiento).to_i < 335
+  #          # Si la fecha es anterior a la fecha en que el niño cumple 11 meses (335 días), sólo se habilita la categoría 3
+  #          return [3]
+  #        when (fecha - fecha_de_nacimiento).to_i >= 335 && (fecha - fecha_de_nacimiento) <= 395
+  #          # Si la fecha se encuentra eentre los 11 y 13 meses de edad, se habilitan las categorías 3 y 4
+  #          return [3, 4]
+  #        else
+  #          # Si a la fecha el niño excede los 13 meses de edad, sólo se habilita la categoría 4
+  #          return [4]
+  #      end
+  #    else # Categoria mal definida
+  #      return nil
+  #  end
+  #end
+
+  #
+  # Métodos de clase para búsquedas
+  #
 
   def self.busqueda_por_documento(doc = nil)
 
@@ -66,9 +269,7 @@ class Afiliado < ActiveRecord::Base
     afiliados = Afiliado.where("(numero_de_documento = ? OR
                                 numero_de_documento_de_la_madre = ? OR
                                 numero_de_documento_del_padre = ? OR
-                                numero_de_documento_del_tutor = ?) AND
-                                (mensaje_de_la_baja IS NULL OR
-                                mensaje_de_la_baja NOT ILIKE '%dupl%')",
+                                numero_de_documento_del_tutor = ?))",
                                 documento, documento, documento,
                                 documento)
 
@@ -164,118 +365,6 @@ class Afiliado < ActiveRecord::Base
     return [nil, 0]
   end
 
-  # Indica si el afiliado estaba inscripto para la fecha del parámetro, o al día de hoy si
-  # no se indica una fecha
-  def inscripto?(fecha = Date.today)
-    return true if (fecha_de_inscripcion <= fecha)
-  end
-
-  # Indica si el afiliado estaba activo en el padrón correspondiente al mes y año de la fecha indicada, o
-  # en alguno de los padrones de los dos meses siguientes (lapso ventana para la carga de la ficha de inscripción).
-  # Si no se pasa una fecha, indica si figura como activo
-  def activo?(fecha = nil)
-    # Devuelve 'true' si no se especifica una fecha y el campo 'activo' es 'S'
-    return (activo.upcase == "S") unless fecha
-
-    # Obtener los periodos de actividad de este afiliado
-    periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
-    periodos.each do |p|
-      # Tomamos como fecha de inicio del periodo la que sea mayor entre la inscripción y la fecha de inicio del periodo
-      # desplazada dos meses antes (lapso ventana para la carga de la ficha de inscripción).
-      inicio = [p.fecha_de_inicio - 2.months, fecha_de_inscripcion].max
-      if ( fecha >= inicio && (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion))
-        return true
-      end
-    end
-    return false
-  end
-
-  # Devuelve el mes y año del padrón donde aparece activo si el afiliado estaba activo en esa fecha
-  # Esto puede ser el año y mes correspondiente al inicio del periodo de actividad, si estaba activo
-  # en ese momento, o bien alguno de los dos meses siguientes (lapso ventana para la carga de la
-  # ficha de inscripción).
-
-  def padron_activo(fecha = Date.today)
-    return nil unless activo?(fecha)
-
-    # Obtener los periodos de actividad de este afiliado
-    periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
-    periodos.each do |p|
-      if (fecha >= [p.fecha_de_inicio - 2.months, fecha_de_inscripcion].max) &&
-         (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion)
-        return p.fecha_de_inicio.strftime("%Y-%m")
-      end
-    end
-  end
-
-  # Devuelve un Array con los códigos de categoría válidos para el afiliado en la fecha especificada.
-  # -- OBSOLETO --
-  #def categorias(fecha = Date.today)
-  #  case
-  #    when categoria_de_afiliado_id == 1 # Embarazadas
-  #      # Si no hay FPP o FEP se devuelve la misma categoría
-  #      return [1] unless (fecha_probable_de_parto || fecha_efectiva_de_parto)
-  #      case
-  #        when (fpp = fecha_probable_de_parto) # Afiliada con FPP especificada
-  #          case
-  #            when (fecha - fpp).to_i < -45
-  #              # Si la fecha es anterior a la FPP en más de 45 días, sólo se habilita la categoría 1
-  #              return [1]
-  #            when (fecha - fpp).to_i >= -45 && (fecha - fpp) <= 45
-  #              # Si la fecha se encuentra entre 45 días antes y 45 días después de la FPP se habilitan las categorías 1 y 2
-  #              return [1, 2]
-  #            else
-  #              # Si la fecha excede en más de 45 días la FPP, sólo se habilita la categoría 2
-  #              return [2]
-  #          end
-  #        when (fep = fecha_efectiva_de_parto)
-  #          case
-  #            when (fecha - fep).to_i < -7
-  #              # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
-  #              return [1]
-  #            when (fecha - fep).to_i >= -7 && (fecha - fep) <= 7
-  #              # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
-  #              return [1, 2]
-  #            else
-  #              # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
-  #              return [2]
-  #          end
-  #      end
-  #
-  #    when categoria_de_afiliado_id == 2 # Puérperas
-  #      # Si no hay FEP se devuelve la misma categoría
-  #      return [2] unless fecha_efectiva_de_parto
-  #      case
-  #        when (fecha - fecha_efectiva_de_parto).to_i < -7
-  #          # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
-  #          return [1]
-  #        when (fecha - fecha_efectiva_de_parto).to_i >= -7 && (fecha - fecha_efectiva_de_parto) <= 7
-  #          # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
-  #          return [1, 2]
-  #        else
-  #          # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
-  #          return [2]
-  #      end
-  #
-  #    when (categoria_de_afiliado_id == 3 || categoria_de_afiliado_id == 4) # Niños
-  #      # Si no hay fecha de nacimiento se devuelve la misma categoría
-  #      return [categoria_de_afiliado_id] unless fecha_de_nacimiento
-  #      case
-  #        when (fecha - fecha_de_nacimiento).to_i < 335
-  #          # Si la fecha es anterior a la fecha en que el niño cumple 11 meses (335 días), sólo se habilita la categoría 3
-  #          return [3]
-  #        when (fecha - fecha_de_nacimiento).to_i >= 335 && (fecha - fecha_de_nacimiento) <= 395
-  #          # Si la fecha se encuentra eentre los 11 y 13 meses de edad, se habilitan las categorías 3 y 4
-  #          return [3, 4]
-  #        else
-  #          # Si a la fecha el niño excede los 13 meses de edad, sólo se habilita la categoría 4
-  #          return [4]
-  #      end
-  #    else # Categoria mal definida
-  #      return nil
-  #  end
-  #end
-
   # Función para convertir un registro de afiliado exportado a texto desde la tabla SMIAfiliados del SQL Server
   # en un Hash etiquetado con los símbolos apropiados para facilitar su utilización.
   def self.attr_hash_desde_texto(texto, separador = "\t")
@@ -316,7 +405,7 @@ class Afiliado < ActiveRecord::Base
       :alfabetizacion_del_beneficiario_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[75], :texto)),
       :alfab_beneficiario_años_ultimo_nivel => self.valor(campos[76], :entero),
 
-      # Datos de residencia, vías de comunicación y lugar habitual de atención
+      # Datos de domicilio
       :domicilio_calle => self.valor(campos[36], :texto),
       :domicilio_numero => self.valor(campos[37], :texto),
       :domicilio_manzana => self.valor(campos[38], :texto),
@@ -434,6 +523,24 @@ class Afiliado < ActiveRecord::Base
   end
 
 private
+  # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
+  def self.transformar_nombre(nombre)
+    return nil unless nombre
+    normalizado = nombre.upcase
+
+    normalizado.gsub!(/[\,\.\'\`\^\~\-\"\/\\\º\ª\!\·\$\%\&\(\)\=\+\*\-\_\;\:\<\>\|\@\#\[\]\{\}]/, "")
+    if normalizado.match(/[ÁÉÍÓÚÄËÏÖÜÀÈÌÒÂÊÎÔÛ014]/)
+      normalizado.gsub!(/[ÁÄÀÂ4]/, "A")
+      normalizado.gsub!(/[ÉËÈÊ]/, "E")
+      normalizado.gsub!(/[ÍÏÌÎ1]/, "I")
+      normalizado.gsub!(/[ÓÖÒÔ0]/, "O")
+      normalizado.gsub!(/[ÚÜÙÛ]/, "U")
+      normalizado.gsub!("Ç", "C")
+      normalizado.gsub!(/  /, " ")
+    end
+    return normalizado
+  end
+
   def self.valor(texto, tipo)
 
     return nil unless texto
@@ -449,12 +556,12 @@ private
           return texto.to_i
         when tipo == :fecha
           año, mes, dia = texto.split(" ")[0].split("-")
-          return nil if año == "1899"
+          return nil if (año == "1899" || año == "1900")
           return Date.new(año.to_i, mes.to_i, dia.to_i)
         when tipo == :fecha_hora
           año, mes, dia = texto.split(" ")[0].split("-")
           horas, minutos, segundos = texto.split(" ")[1].split(":")
-          return nil if año == "1899"
+          return nil if (año == "1899" || año == "1900")
           return DateTime.new(año.to_i, mes.to_i, dia.to_i, horas.to_i, minutos.to_i, segundos.to_i)
         else
           return nil

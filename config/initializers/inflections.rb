@@ -241,6 +241,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("grupo_bio_id", "código identificador de grupo (Bioestadística)")
   inflect.human("convenio_de_gestion", "convenio de gestión")
   inflect.human("convenio_de_gestion_id", "convenio de gestión")
+  inflect.human("convenio_de_administracion", "convenio de administración")
+  inflect.human("convenio_de_administracion_id", "convenio de administración")
   inflect.human("cuie", "CUIE")
   inflect.human("efector_sissa_id", "código identificador del efector (SISSA)")
   inflect.human("efector_bio_id", "código identificador del efector (Bioestadística)")
