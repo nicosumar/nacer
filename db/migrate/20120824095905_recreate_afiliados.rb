@@ -7,8 +7,8 @@ class RecreateAfiliados < ActiveRecord::Migration
     create_table :afiliados, :id => false do |t|
 
       # Identificadores
-      t.integer :afiliado_id, :null => false, :unique => true
-      t.string :clave_de_beneficiario, :null => false, :unique => true
+      t.integer :afiliado_id, :null => false
+      t.string :clave_de_beneficiario, :null => false
 
       # Datos personales
       t.string :apellido
@@ -99,5 +99,9 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.datetime :fecha_y_hora_de_carga
       t.string :usuario_que_carga
     end
+
+    add_index(:afiliados, :id, :unique => true)
+    add_index(:afiliados, :clave_de_beneficiario, :unique => true)
+
   end
 end

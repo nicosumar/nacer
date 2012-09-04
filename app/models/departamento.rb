@@ -33,4 +33,20 @@ class Departamento < ActiveRecord::Base
     end
   end
 
+  # ordenados_por_frecuencia
+  # Devuelve un vector con los elementos de la tabla asociada ordenados de acuerdo con la frecuencia
+  # de uso del ID del elemento en la columna de la tabla pasados como parámetros
+  def self.ordenados_por_frecuencia(tabla, columna)
+    Departamento.find_by_sql("
+      SELECT departamentos.id, departamentos.nombre, count(departamentos.id) AS \"frecuencia\"
+        FROM
+          departamentos
+          LEFT JOIN #{tabla.to_s}
+            ON (departamentos.id = #{tabla.to_s}.#{columna.to_s})
+        WHERE provincia_id = #{Parametro.valor_del_parametro(:id_de_esta_provincia)}
+        GROUP BY departamentos.id, departamentos.nombre
+        ORDER BY \"frecuencia\" DESC, departamentos.nombre ASC;
+    ")
+  end
+
 end

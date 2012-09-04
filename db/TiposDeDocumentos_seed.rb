@@ -10,10 +10,10 @@ TipoDeDocumento.create([
           :nombre => "Libreta cívica",
           :codigo => "LC" },
         { #:id => 4,
-          :nombre => "CI: Policía Federal",
+          :nombre => "CI de la Policía Federal",
           :codigo => "PF" },
         { #:id => 5,
-          :nombre => "CI: Provincia de Mendoza",  # Otras provincias deberían cambiar por el código suyo
+          :nombre => "CI de la Provincia de Mendoza",  # Otras provincias deberían cambiar por el código suyo
           :codigo => "C09" },
         { #:id => 6,
           :nombre => "Pasaporte argentino",

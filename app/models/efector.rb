@@ -144,4 +144,22 @@ class Efector < ActiveRecord::Base
     end
   end
 
+  # ordenados_por_frecuencia
+  # Devuelve un vector con los elementos de la tabla asociada ordenados de acuerdo con la frecuencia
+  # de uso del ID del elemento en la columna de la tabla pasados como parámetros
+  def self.ordenados_por_frecuencia(tabla, columna)
+    Efector.find_by_sql("
+      SELECT
+        efectores.id, SUBSTRING(efectores.nombre FROM 1 FOR 80) AS \"nombre\",
+        count(efectores.id) AS \"frecuencia\"
+        FROM
+          efectores
+          LEFT JOIN #{tabla.to_s}
+            ON (efectores.id = #{tabla.to_s}.#{columna.to_s})
+        WHERE integrante
+        GROUP BY efectores.id, efectores.nombre
+        ORDER BY \"frecuencia\" DESC, efectores.nombre ASC;
+    ")
+  end
+
 end

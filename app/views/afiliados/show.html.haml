@@ -203,7 +203,7 @@
     - else
       %span.field_empty No se indicó el lugar de atención habitual.
 
-  - if @afiliado.menor?
+  - if @afiliado.menor?(@afiliado.fecha_de_inscripcion)
     %h3 Datos del adulto responsable
     - if @afiliado.apellido_de_la_madre || @afiliado.nombre_de_la_madre
       %h4 Madre

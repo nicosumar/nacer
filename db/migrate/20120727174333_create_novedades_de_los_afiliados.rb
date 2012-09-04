@@ -31,7 +31,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.integer :alfabetizacion_del_beneficiario_id
       t.integer :alfab_beneficiario_años_ultimo_nivel
 
-      # Datos de residencia, vías de comunicación y lugar habitual de atención
+      # Datos de domicilio
       t.string :domicilio_calle
       t.string :domicilio_numero
       t.string :domicilio_piso
@@ -68,6 +68,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.integer :tipo_de_documento_del_tutor_id
       t.string :numero_de_documento_del_tutor
       t.integer :alfabetizacion_del_tutor_id
+      t.integer :alfab_tutor_años_ultimo_nivel
 
       # Datos del embarazo y parto (para embarazadas)
       t.date :fecha_de_la_ultima_menstruacion
@@ -80,7 +81,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.integer :score_de_riesgo
 
       # Discapacidad
-      t.string :discapacidad
+      t.references :discapacidad
 
       # Fecha y centro inscriptor
       t.date :fecha_de_inscripcion

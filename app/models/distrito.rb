@@ -29,4 +29,20 @@ class Distrito < ActiveRecord::Base
     end
   end
 
+  # ordenados_por_frecuencia
+  # Devuelve un vector con los elementos de la tabla asociada ordenados de acuerdo con la frecuencia
+  # de uso del ID del elemento en la columna de la tabla pasados como parámetros
+  def self.ordenados_por_frecuencia(tabla, columna, departamento_id)
+    Distrito.find_by_sql("
+      SELECT distritos.id, distritos.nombre, count(distritos.id) AS \"frecuencia\"
+        FROM
+          distritos
+          LEFT JOIN #{tabla.to_s}
+            ON (distritos.id = #{tabla.to_s}.#{columna.to_s})
+        WHERE departamento_id = '#{departamento_id}'
+        GROUP BY distritos.id, distritos.nombre
+        ORDER BY \"frecuencia\" DESC, distritos.nombre ASC;
+    ")
+  end
+
 end
