@@ -15,16 +15,27 @@
           - if current_user
             #session
               %a{:href => cerrar_sesion_path, :title => "Cerrar sesión"}
-                = image_tag "cerrar_sesion.png", :alt => "Cerrar sesión"
+                = image_tag "cerrar_sesion.jpg", :alt => "Cerrar sesión"
               %p
-                Usuario:
+                
                 %span{:class => "username"}= link_to current_user.firstname + " " + current_user.lastname, edit_user_path(current_user), { :title => "Modificar información de mi cuenta" }
         - if current_user
+           
+
+              
+           
+              
+            
+           
           #menu
+             
             %ul
-              %li= link_to "Inicio", root_url
+              
               - if can? :read, ConvenioDeGestion
                 %li
+              %li= link_to "Beneficiarios", root_url
+              - if can? :read, ConvenioDeGestion
+                %li  
                   %p Convenios
                   %ul
                     - if can? :read, Efector
@@ -57,6 +68,23 @@
                     %li= link_to "Usuarios", users_url
                     %li= link_to "Grupos", user_groups_url
                     %li= link_to "Padrones", padrones_url
+              
+            
+              
+              - if current_user.in_group?(:administradores)  
+                %li 
+                  #lupa
+                    = image_tag "lupa.png", :alt => "Ruby on Rails"
+              
+              
+              - if current_user.in_group?(:administradores)  
+                %li 
+                  #search 
+                    %form{:method => 'get', :action => '/busqueda/'} 
+                      %fieldset
+                        %input{:type => 'text', :name => 'terminos', :id => 'busqueda', :size => '15', :value => ''}/
+                        %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}/    
+                    
                     
         #page
           #page-bgtop
@@ -64,13 +92,7 @@
               #content
                 = yield
               #sidebar
-                - if current_user
-                  #search
-                    %h2 Búsqueda
-                    %form{:method => 'get', :action => '/busqueda/'}
-                      %fieldset
-                        %input{:type => 'text', :name => 'terminos', :id => 'busqueda', :size => '15', :value => ''}/
-                        %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}/
+                
                 = yield :sidebar
               %div{:style => "clear: both;"}
                 &nbsp;
@@ -92,6 +114,6 @@
           %p.licencia
             %a{:rel => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/deed.es", :onclick => "this.target='_blank'"}
               = image_tag "cc_by_sa.png", :alt => "Licencia Creative Commons BY-SA", :title => "Distribuido bajo una licencia Creative Commons Atribución-CompartirIgual 3.0 Unported"
-              %p.licencia
-              %p.licencia
+            %p.licencia
+            %p.licencia
               

@@ -64,8 +64,8 @@ img.aligncenter {
 
 #header {
   width: 960px;
-  height: 221px;
-  background: url(/assets/cabecera.jpg) no-repeat 0px;
+  height: 159px;
+  background: url(/assets/cabecera.png) no-repeat 0px;
   position: relative; }
 
 /* Logo */
@@ -104,7 +104,7 @@ img.aligncenter {
 /* Session info */
 #session { 
   position: absolute;
-  bottom: -40px;
+  bottom: -28px;
   right: 10px;
   margin: 0px;
   p {
@@ -119,22 +119,38 @@ img.aligncenter {
     a {
       float: none;
       padding-top: 0px;
-      color: $azul_nacer;
+      color: #ffffff;
       &:hover {
         color: $item_seleccionado; } } }
   a {
     float: right;
     padding-top: 3px; } }
 
+
+
+
+
+
+/*lupa*/
+
+#lupa {
+  float: right;
+  margin-left: 10px; 
+  margin-right: 10px; 
+  margin-top: 5px; }
+  
+
+
 /* Search */
 
 #search {
-  height: 110px;
+  height: 0px;
   padding: 0; }
+  
 
 #search form {
-  height: 50px;
-  padding-left: 5px; }
+  height: 100px;
+  padding-left: 0px; }
 
 #search fieldset {
   margin: 0;
@@ -164,10 +180,11 @@ img.aligncenter {
 /* Menu */
 
 #menu {
-  width: 690px;
-  height: 40px;
-  margin: 20px 0px 0px 38px;
-  padding: 0px; }
+  width: 952px;
+  height: 26px;
+  margin: 3px 0px 0px 0px;
+  padding: 4px; 
+  background-color: #000000;}
 
 #menu ul {
   margin-top: 0px;
@@ -175,14 +192,13 @@ img.aligncenter {
   line-height: normal; }
 
 #menu li {
-  font-size: 14px;
+  font-size: 12px;
   list-style: none;
-  background-color: #0089CB;
+  background-color: #000000;
   float: left;
-  margin: 2px 4px 0px 0px;
-  -moz-box-shadow: -2px 2px 4px #777777;
-  -webkit-box-shadow: -2px 2px 4px #777777;
-  box-shadow: -2px 2px 4px #777777;
+  margin: 0px 0px 0px 0px;
+  
+ 
   color: $azul_nacer; }
 
 .rojo { background-color: red; }
@@ -233,6 +249,8 @@ img.aligncenter {
 
 #menu li ul li a {
   background-color: #0089CB; }
+  
+  
 
 
 /* Page */
@@ -244,8 +262,8 @@ img.aligncenter {
 /* Content */
 
 #content {
-  float: left;
-  width: 690px;
+  float: right;
+  width: 765px;
   padding: 20px 0px 0px 40px;
   .destacado {
     font-style: italic;
@@ -258,6 +276,7 @@ table {
   border-collapse: collapse;
   font-family: Arial, Helvetica, sans-serif;
   text-align: left; }
+  
 
 table th {
   background: none repeat scroll 0 0 $azul_nacer;
@@ -364,10 +383,10 @@ table tr.clickable {
 /* Sidebar */
 
 #sidebar {
-  float: right;
-  width: 150px;
+  float: left;
+  width: 160px;
   font-size: 11px;
-  padding-top: 90px; } // Cambiar al agregar el formulario de búsqueda
+  padding-top: 0px; } // Cambiar al agregar el formulario de búsqueda
 
 #sidebar h2 {
   height: 29px;
@@ -455,6 +474,8 @@ table tr.clickable {
 #rails-logo {
   float: right;
   margin-right: 10px; }
+  
+
 
 #msalud-logo {
   float: centre;
@@ -470,6 +491,9 @@ div {
     margin: 0px;
     padding: 0px;
     display: inline; } }
+    
+  
+  
 
 #notice {
   color: green; }
