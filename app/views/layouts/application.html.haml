@@ -17,17 +17,52 @@
               %a{:href => cerrar_sesion_path, :title => "Cerrar sesión"}
                 = image_tag "cerrar_sesion.jpg", :alt => "Cerrar sesión"
               %p
-                
                 %span{:class => "username"}= link_to current_user.firstname + " " + current_user.lastname, edit_user_path(current_user), { :title => "Modificar información de mi cuenta" }
         - if current_user
-           
+          -# NUEVO MENÚ
+          %ul{:id => "newmenu"}
+            - if can? :read, ConvenioDeGestion
+              %li
+                %a.drop{:href => "#"} Convenios
+                %div.dropdown_4columns
+                  %div.col_4
+                    %h2 No se que poner
+                  %div.col_1
+                    %h3 Efectores
+                    %ul
+                      %li= link_to "Ver listado", efectores_url
+                      - if can? :create, Efector
+                        %li= link_to "Agregar un efector", new_efector_url
+                  %div.col_1
+                    %h3 Convenios de gestión
+                    %ul
+                      %li= link_to "Ver listado", convenios_de_gestion_url
+                      - if can? :create, ConvenioDeGestion
+                        %li= link_to "Agregar un convenio", new_convenio_de_gestion_url
+                  %div.col_1
+                    %h3 Convenios de administración
+                    %ul
+                      %li= link_to "Ver listado", convenios_de_administracion_url
+                      - if can? :create, ConvenioDeAdministracion
+                        %li= link_to "Agregar un convenio", new_convenio_de_administracion_url
+                  %div.col_1
+                    %h3 Adendas
+                    %ul
+                      %li= link_to "Ver listado", addendas_url
+                      - if can? :create, Addenda
+                        %li= link_to "Agregar una adenda", new_addenda_url
+              %li 
+                #search 
+                  %form{:method => 'get', :action => '/busqueda/'} 
+                    %fieldset
+                      %input{:type => 'text', :name => 'terminos', :id => 'busqueda', :size => '15', :value => ''}/
+                      %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}/    
+              %li 
+                #lupa
+                  = image_tag "lupa.png", :alt => "Ruby on Rails"
 
-              
-           
-              
-            
-           
-          #menu
+          -# VIEJO MENÚ
+          -#menu
              
             %ul
               
@@ -72,9 +107,6 @@
             
               
               - if current_user.in_group?(:administradores)  
-                %li 
-                  #lupa
-                    = image_tag "lupa.png", :alt => "Ruby on Rails"
               
               
               - if current_user.in_group?(:administradores)  
@@ -84,6 +116,8 @@
                       %fieldset
                         %input{:type => 'text', :name => 'terminos', :id => 'busqueda', :size => '15', :value => ''}/
                         %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}/    
+
+        
                     
                     
         #page
