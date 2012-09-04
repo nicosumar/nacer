@@ -1,0 +1,24 @@
+- content_for :title do
+  - case
+    - when @novedad.tipo_de_novedad_id == 1
+      Nueva solicitud de alta de beneficiario
+    - when @novedad.tipo_de_novedad_id == 2
+      Nueva solicitud de baja
+    - when @novedad.tipo_de_novedad_id == 3
+      Nueva solicitud de modificación de datos
+
+%h1 Beneficiarios
+
+- if notice
+  %p#notice= notice
+
+%h2
+  - case
+    - when @novedad.tipo_de_novedad_id == 1
+      Nueva solicitud de alta de beneficiario
+    - when @novedad.tipo_de_novedad_id == 2
+      Nueva solicitud de baja
+    - when @novedad.tipo_de_novedad_id == 3
+      Nueva solicitud de modificación de datos
+
+= render "form"
