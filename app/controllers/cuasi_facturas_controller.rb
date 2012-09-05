@@ -1,5 +1,6 @@
 class CuasiFacturasController < ApplicationController
   before_filter :user_required
+  helper_method :resultado_verificacion
 
   def index
     # Verificar los permisos del usuario
@@ -1083,4 +1084,50 @@ private
       :apgar_5 => apgar_5 }
   end
 
+  def resultado_verificacion(codigo_informado, informada, digitalizada, monto_informado, subtotal_informado)
+    codigo = nil
+    precio_por_unidad = nil
+    adicional_por_prestacion = nil
+    subtotal = nil
+    autorizada = false
+    error = false
+
+    # Buscar el código de la prestación
+    prestacion = Prestacion.find_by_codigo(codigo_informado)
+    if prestacion
+      codigo = prestacion.codigo
+      ids_prestaciones_autorizadas = PrestacionAutorizada.autorizadas_antes_del_dia(@cuasi_factura.efector_id, (Date.new(@cuasi_factura.liquidacion.año_de_prestaciones, @cuasi_factura.liquidacion.mes_de_prestaciones, 1) + 1)).collect {|p| p.prestacion_id}
+      autorizada = true if ids_prestaciones_autorizadas.member?(prestacion.id)
+      if autorizada
+        asignacion_de_precios = AsignacionDePrecios.where(:nomenclador_id => @cuasi_factura.nomenclador_id, :prestacion_id => prestacion.id).first
+        if asignacion_de_precios
+          precio_por_unidad = asignacion_de_precios.precio_por_unidad
+          adicional_por_prestacion = asignacion_de_precios.adicional_por_prestacion
+        end
+      end
+    end
+
+    case
+      when !codigo
+        error = true
+        mensaje = "El código de la prestación no existe."
+      when !autorizada
+        error = true
+        mensaje = "La prestación no está autorizada."
+      when !precio_por_unidad
+        error = true
+        mensaje = "La prestación no está incluida en el nomenclador."
+      when !adicional_por_prestacion && (precio_por_unidad != (monto_informado || 0.0))
+        error = true
+        mensaje = "El precio unitario informado no es correcto."
+    end
+    
+    diferencia = ((informada || 0) - (digitalizada || 0))
+    if diferencia != 0
+      error = true
+      mensaje += "\nDiferencia algebraica."
+    end
+
+    return [error, error ? mensaje : "Verificación correcta"]
+  end
 end

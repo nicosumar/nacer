@@ -32,21 +32,12 @@
           %td.derecha= (r.subtotal_informado ? ("$ %.2f" % r.subtotal_informado).gsub(".", ",") : nil)
           - if @cuasi_factura.registros_de_prestaciones.any?
             %td.izquierda.destacado
-              - diferencia = ((r.cantidad_informada || 0) - (r.cantidad_digitalizada || 0))
-              - if diferencia < 0
-                %span.error
-                  = "Se " + (diferencia.abs > 1 ? "han" : "ha") + " digitalizado " + diferencia.abs.to_s
-                  = (diferencia.abs > 1 ? "prestaciones" : "prestación")
-                  - if !r.cantidad_informada || r.cantidad_informada == 0
-                    = "que no se " + (diferencia.abs > 1 ? "han" : "ha") + " informado."
-                  - else
-                    = "más que las informadas."
-              - elsif diferencia > 0
-                %span.error
-                  = "Se " + (diferencia > 1 ? "han" : "ha") + " informado " + diferencia.to_s
-                  = (diferencia > 1 ? "prestaciones" : "prestación") + " más que las digitalizadas."
+              - resultado = resultado_verificacion(r.codigo_de_prestacion_informado, r.cantidad_informada, |
+                            r.cantidad_digitalizada, r.monto_informado, r.subtotal_informado) |
+              - if resultado[0]
+                %span.error= resultado[1]
               - else
-                Verificación correcta
+                = resultado[1]
   %br/
 %h2 Información general de la cuasi-factura
 %p
