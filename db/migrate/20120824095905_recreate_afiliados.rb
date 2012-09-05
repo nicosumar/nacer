@@ -100,7 +100,7 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.string :usuario_que_carga
     end
 
-    add_index(:afiliados, :id, :unique => true)
+    add_index(:afiliados, :afiliado_id, :unique => true)
     add_index(:afiliados, :clave_de_beneficiario, :unique => true)
 
   end

@@ -10,7 +10,7 @@ class UsersController < ApplicationController
     @user = User.new
     @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
     @sexo_id = nil
-    @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_name, ug.id] }
+    @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
     @user_group_ids = []
   end
 
@@ -19,7 +19,7 @@ class UsersController < ApplicationController
       # Permitir la edición de cualquier usuario sólo a los administradores
       @user = User.find(params[:id], :include => :user_groups)
       # Los administradores pueden definir la pertenencia a los grupos de usuarios
-      @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_name, ug.id] }
+      @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
       @user_group_ids = @user.user_groups.collect{ |ug| [ug.id] }
     elsif not (params[:id].to_s == current_user.id.to_s)
       # Rechazar un intento fraguado de editar la información de otros usuarios
@@ -46,7 +46,7 @@ class UsersController < ApplicationController
     end
 
     # Si la grabación falla, volver al formulario para corregir los errores.
-    @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_name, ug.id] }
+    @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
     @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
     render :action => "new"
   end
@@ -91,7 +91,7 @@ class UsersController < ApplicationController
     end
 
     # Si la grabación falla, volver al formulario para corregir los errores.
-    @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_name, ug.id] }
+    @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
     @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
     @sexo_id = params[:user][:sexo_id]
     render :action => "edit"

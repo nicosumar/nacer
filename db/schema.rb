@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120831180552) do
+ActiveRecord::Schema.define(:version => 20120905154143) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(:version => 20120831180552) do
     t.date     "fecha_probable_de_parto"
     t.date     "fecha_efectiva_de_parto"
     t.integer  "score_de_riesgo"
-    t.string   "discapacidad"
+    t.integer  "discapacidad_id"
     t.date     "fecha_de_inscripcion"
     t.integer  "centro_de_inscripcion_id"
     t.text     "observaciones_generales"
@@ -91,6 +91,9 @@ ActiveRecord::Schema.define(:version => 20120831180552) do
     t.datetime "fecha_y_hora_de_carga"
     t.string   "usuario_que_carga"
   end
+
+  add_index "afiliados", ["afiliado_id"], :name => "index_afiliados_on_afiliado_id", :unique => true
+  add_index "afiliados", ["clave_de_beneficiario"], :name => "index_afiliados_on_clave_de_beneficiario", :unique => true
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
@@ -140,11 +143,15 @@ ActiveRecord::Schema.define(:version => 20120831180552) do
   create_table "centros_de_inscripcion", :force => true do |t|
     t.string   "nombre",     :null => false
     t.string   "codigo",     :null => false
-    t.integer  "efector_id", :null => false
     t.string   "created_by"
     t.string   "updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "centros_de_inscripcion_unidades_de_alta_de_datos", :id => false, :force => true do |t|
+    t.integer "centro_de_inscripcion_id"
+    t.integer "unidad_de_alta_de_datos_id"
   end
 
   create_table "clases_de_documentos", :force => true do |t|
@@ -417,14 +424,15 @@ ActiveRecord::Schema.define(:version => 20120831180552) do
     t.integer  "tipo_de_documento_del_tutor_id"
     t.string   "numero_de_documento_del_tutor"
     t.integer  "alfabetizacion_del_tutor_id"
+    t.integer  "alfab_tutor_años_ultimo_nivel"
     t.date     "fecha_de_la_ultima_menstruacion"
     t.date     "fecha_de_diagnostico_del_embarazo"
     t.integer  "semanas_de_embarazo"
     t.date     "fecha_probable_de_parto"
     t.date     "fecha_efectiva_de_parto"
     t.integer  "score_de_riesgo"
-    t.string   "discapacidad"
-    t.date     "fecha_de_inscripcion"
+    t.integer  "discapacidad_id"
+    t.date     "fecha_de_la_novedad"
     t.integer  "centro_de_inscripcion_id"
     t.string   "nombre_del_agente_inscriptor"
     t.text     "observaciones_generales"
@@ -607,6 +615,23 @@ ActiveRecord::Schema.define(:version => 20120831180552) do
     t.datetime "updated_at"
   end
 
+  create_table "unidades_de_alta_de_datos", :force => true do |t|
+    t.string   "nombre"
+    t.boolean  "inscripcion"
+    t.boolean  "facturacion"
+    t.boolean  "activa"
+    t.string   "schema_search_path"
+    t.string   "created_by"
+    t.string   "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "unidades_de_alta_de_datos_users", :id => false, :force => true do |t|
+    t.integer "unidad_de_alta_de_datos_id"
+    t.integer "user_id"
+  end
+
   create_table "unidades_de_medida", :force => true do |t|
     t.string "nombre", :null => false
   end
@@ -615,6 +640,7 @@ ActiveRecord::Schema.define(:version => 20120831180552) do
     t.string   "user_group_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "user_group_description"
   end
 
   create_table "user_groups_users", :id => false, :force => true do |t|

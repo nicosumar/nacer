@@ -36,6 +36,10 @@ class UserSessionsController < ApplicationController
         :notice => "No está autorizado para acceder a esta página. El incidente será reportado al administrador del sistema."
       return
     end
+
+    # Obtener las UADs a las que pertenece el usuario
+    @unidades = current_user.unidades_de_alta_de_datos.collect{ |i| [i.nombre, i.id] }
+    @unidad_de_alta_de_datos_id = nil
   end
 
   def destroy

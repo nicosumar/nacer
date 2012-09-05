@@ -1,6 +1,7 @@
 Nacer::Application.routes.draw do
 
   match "iniciar_sesion" => "user_sessions#new"
+  match "seleccionar_uad" => "user_sessions#seleccionar_uad"
   match "cerrar_sesion" => "user_sessions#destroy"
 
   resources :users, :except => [:show, :destroy]

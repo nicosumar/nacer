@@ -3,6 +3,7 @@ class CreatePaises < ActiveRecord::Migration
     create_table :paises do |t|
       t.integer :pais_bio_id
       t.string :nombre
+      t.string :nombre_largo
     end
   end
 end

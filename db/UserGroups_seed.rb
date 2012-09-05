@@ -10,5 +10,6 @@ end
 # Datos precargados al inicializar el sistema
 UserGroup.create([
   { #:id => 1,
-    :user_group_name => 'Administradores' }
+    :user_group_name => 'administradores',
+    :user_group_description => 'Administradores del sistema' }
 ])

@@ -1,0 +1,16 @@
+%h3 Unidades de alta de datos
+%p
+  Usted está habilitado para operar en distintas unidades de alta de datos.
+  Por favor, seleccione del listado la unidad con la que va a operar durante esta sesión.
+%p
+  Puede cambiar luego de unidad de alta de datos utilizando el menú de usuario.
+
+#busqueda_afiliado
+  = form_tag('/seleccionar_uad', :method => 'get') do
+    %div.field
+      = label_tag(:unidades, "Unidades de alta de datos habilitadas:")
+      = select_tag(:unidades, options_for_select(@unidades, nil), {:include_blank => true})
+    %div.actions
+      = submit_tag("Seleccionar")
+
+
