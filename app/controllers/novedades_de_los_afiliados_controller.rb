@@ -79,6 +79,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
           :codigo_postal => i.codigo_postal}}
         @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados,
           :lugar_de_atencion_habitual_id).collect{ |i| [i.nombre, i.id]}
+        @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
         
 
       when params[:tipo_de_novedad_id] == "4" # Reinscripción

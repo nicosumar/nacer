@@ -152,7 +152,7 @@
     %span.field_value= f.select :alfabetizacion_de_la_madre_id, |
       options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_de_la_madre_id), |
       { :include_blank => true} |
-  %div.field
+  #alfab_madre.field
     %span.field_name= f.label :alfab_madre_años_ultimo_nivel
     %span.field_value= f.number_field :alfab_madre_años_ultimo_nivel, :size => 3
   %h4 Datos del padre
@@ -174,7 +174,7 @@
     %span.field_value= f.select :alfabetizacion_del_padre_id, |
       options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_padre_id), |
       { :include_blank => true} |
-  %div.field
+  #alfab_padre.field
     %span.field_name= f.label :alfab_padre_años_ultimo_nivel
     %span.field_value= f.number_field :alfab_padre_años_ultimo_nivel, :size => 3
   %h4 Datos de la tutora o tutor
@@ -196,7 +196,7 @@
     %span.field_value= f.select :alfabetizacion_del_tutor_id, |
       options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_tutor_id), |
       { :include_blank => true} |
-  %div.field
+  #alfab_tutor.field
     %span.field_name= f.label :alfab_tutor_años_ultimo_nivel
     %span.field_value= f.number_field :alfab_tutor_años_ultimo_nivel, :size => 3
 
@@ -210,6 +210,30 @@
       %span.field_name= f.label :fecha_de_diagnostico_del_embarazo
       %span.field_value= f.date_select :fecha_de_diagnostico_del_embarazo, |
         {:start_year => Date.today.year - 1, :end_year => Date.today.year, :include_blank => true} |
+    %div.field
+      %span.field_name= f.label :semanas_de_embarazo
+      %span.field_value= f.number_field :semanas_de_embarazo, :size => 3
+    %div.field
+      %span.field_name= f.label :fecha_probable_de_parto
+      %span.field_value= f.date_select :fecha_probable_de_parto, |
+        {:start_year => Date.today.year - 1, :end_year => Date.today.year + 1, :include_blank => true} |
+
+  %h3 Remediar+Redes
+  %div.field
+    %span.field_name= f.label :score_de_riesgo
+    %span.field_value= f.number_field :score_de_riesgo, :size => 3
+
+  %h3 Discapacidad
+  %div.field
+    %span.field_name= f.label :discapacidad_id
+    %span.field_value= f.select :discapacidad_id, |
+      options_for_select(@discapacidades, @novedad.discapacidad_id), {:include_blank => true} |
+
+  %h3 Fecha y centro inscriptor
+  %div.field
+    %span.field_name= f.label :fecha_de_la_novedad
+    %span.field_value= f.date_select :fecha_de_la_novedad, |
+      {:start_year => Date.today.year - 1, :end_year => Date.today.year, :include_blank => true} |
 
   %div.actions
     = f.submit "Verificar solicitud"

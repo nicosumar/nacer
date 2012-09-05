@@ -197,6 +197,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("resultado·_de·_la·_busqueda·", "resultados_de_la_busqueda")
   inflect.irregular("ResultadoDeLaBusqueda", "Resultados·De·La·Busqueda·")
   inflect.irregular("Resultado·De·La·Busqueda·", "ResultadosDeLaBusqueda")
+  inflect.irregular("unidad_de_alta_de_datos", "unidades·_de·_alta·_de·_datos·")
+  inflect.irregular("unidad·_de·_alta·_de·_datos·", "unidades_de_altas_de_datos")
+  inflect.irregular("UnidadDeAltaDeDatos", "Unidades·De·Alta·De·Datos·")
+  inflect.irregular("Unidad·De·Alta·De·Datos·", "UnidadesDeAltaDeDatos")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

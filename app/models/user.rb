@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   belongs_to :sexo
   has_and_belongs_to_many :user_groups
+  has_and_belongs_to_many :unidades_de_alta_de_datos
   validates_presence_of :firstname, :lastname
 
   acts_as_authentic do | c |

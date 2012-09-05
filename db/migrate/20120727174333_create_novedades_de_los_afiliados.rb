@@ -84,7 +84,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.references :discapacidad
 
       # Fecha y centro inscriptor
-      t.date :fecha_de_inscripcion
+      t.date :fecha_de_la_novedad
       t.references :centro_de_inscripcion
       t.string :nombre_del_agente_inscriptor
 

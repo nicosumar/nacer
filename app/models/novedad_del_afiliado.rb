@@ -16,7 +16,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_accessible :numero_de_documento_del_tutor, :alfabetizacion_del_tutor_id, :alfab_tutor_años_ultimo_nivel
   attr_accessible :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo, :semanas_de_embarazo
   attr_accessible :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo, :discapacidad_id
-  attr_accessible :nombre_del_agente_inscriptor, :observaciones_generales
+  attr_accessible :fecha_de_la_novedad, :nombre_del_agente_inscriptor, :observaciones_generales
 
   # La clave de beneficiario sólo puede registrarse al grabar la novedad
   attr_readonly :clave_de_beneficiario
@@ -56,7 +56,6 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     # Definir los atributos que no se pueden asignar masivamente
     self.clave_de_beneficiario = afiliado.clave_de_beneficiario
-    self.fecha_de_inscripcion = afiliado.fecha_de_inscripcion
     return true
   end
 

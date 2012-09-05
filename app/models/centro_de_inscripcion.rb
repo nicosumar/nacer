@@ -1,5 +1,8 @@
 class CentroDeInscripcion < ActiveRecord::Base
 
+  # Asociaciones
+  has_and_belongs_to_many :unidades_de_alta_de_datos
+
   # Devuelve el id asociado con el código pasado
   def self.id_del_codigo(codigo)
     if !codigo || codigo.strip.empty?
