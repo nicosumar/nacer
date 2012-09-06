@@ -28,8 +28,4 @@
             = e.convenio_de_administracion.administrador.nombre
 = will_paginate @efectores, :inner_window => 2, :outer_window => 0
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :create, Efector
-      %li= link_to "Agregar un efector", new_efector_url
+

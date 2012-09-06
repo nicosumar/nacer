@@ -1,6 +1,8 @@
 - content_for :title do
   Convenios de gestión
 
+
+
 %h1 Convenios de gestión
 
 - if notice
@@ -22,8 +24,3 @@
         %td= c.fecha_de_finalizacion.strftime("%d/%m/%Y")
 = will_paginate @convenios_de_gestion, :inner_window => 2, :outer_window => 0
 
-- content_for :sidebar do
-  - if can? :create, ConvenioDeGestion
-    %h2 Tareas
-    %ul
-      %li= link_to "Agregar un convenio", new_convenio_de_gestion_url
