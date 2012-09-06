@@ -2,6 +2,7 @@ class CreateUnidadesDeAltaDeDatos < ActiveRecord::Migration
   def change
     create_table :unidades_de_alta_de_datos do |t|
       t.string :nombre
+      t.string :codigo
       t.boolean :inscripcion
       t.boolean :facturacion
       t.boolean :activa

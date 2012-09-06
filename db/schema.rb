@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120905154143) do
+ActiveRecord::Schema.define(:version => 20120906093203) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -150,8 +150,12 @@ ActiveRecord::Schema.define(:version => 20120905154143) do
   end
 
   create_table "centros_de_inscripcion_unidades_de_alta_de_datos", :id => false, :force => true do |t|
-    t.integer "centro_de_inscripcion_id"
-    t.integer "unidad_de_alta_de_datos_id"
+    t.integer  "centro_de_inscripcion_id"
+    t.integer  "unidad_de_alta_de_datos_id"
+    t.string   "created_by"
+    t.string   "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "clases_de_documentos", :force => true do |t|
@@ -445,6 +449,7 @@ ActiveRecord::Schema.define(:version => 20120905154143) do
   create_table "paises", :force => true do |t|
     t.integer "pais_bio_id"
     t.string  "nombre"
+    t.string  "nombre_largo"
   end
 
   create_table "parametros", :force => true do |t|
@@ -628,8 +633,12 @@ ActiveRecord::Schema.define(:version => 20120905154143) do
   end
 
   create_table "unidades_de_alta_de_datos_users", :id => false, :force => true do |t|
-    t.integer "unidad_de_alta_de_datos_id"
-    t.integer "user_id"
+    t.integer  "unidad_de_alta_de_datos_id"
+    t.integer  "user_id"
+    t.string   "created_by"
+    t.string   "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "unidades_de_medida", :force => true do |t|

@@ -11,17 +11,21 @@ class UserSessionsController < ApplicationController
       case
         when current_user.unidades_de_alta_de_datos.size == 0
           # El usuario fue creado, pero no ha sido asignado a ninguna UAD todavía
-          self.destroy
+          @user_session.destroy
           redirect_to root_url, :notice => 'No puede iniciar la sesión ya que no ha sido asignado a ninguna UAD del sistema.'
           return
         when current_user.unidades_de_alta_de_datos.size == 1
           # El usuario sólo tiene asignada una única UAD, por lo cual se selecciona automáticamente
-          establecer_uad(current_user.unidades_de_alta_de_datos.first)
+          if !establecer_uad(current_user.unidades_de_alta_de_datos.first)
+            @user_session.destroy
+            redirect_to root_url,
+              :notice => "No está autorizado para acceder a esta página. El incidente será reportado al administrador del sistema."
+          end
           redirect_to_stored 'Ha iniciado correctamente la sesión.'
         when current_user.unidades_de_alta_de_datos.size > 1
           # Presentar la página para selección de la UAD con la que va a trabajar el usuario
-          render :action => "seleccionar_uad"
-        else
+          redirect_to seleccionar_uad_url
+          return
       end
     else
       render :action => "new"
@@ -30,16 +34,38 @@ class UserSessionsController < ApplicationController
 
   # Permite al usuario seleccionar la UAD con la que va a trabajar
   def seleccionar_uad
-    # Verificar 
-    if current_user.unidades_de_alta_de_datos.size < 2
+    @user_session = UserSession.find
+
+    # Verificar que el usuario realmente posea más de una UAD habilitada
+    if !current_user || current_user.unidades_de_alta_de_datos.size < 2
+      @user_session.destroy
       redirect_to root_url,
         :notice => "No está autorizado para acceder a esta página. El incidente será reportado al administrador del sistema."
       return
     end
 
-    # Obtener las UADs a las que pertenece el usuario
-    @unidades = current_user.unidades_de_alta_de_datos.collect{ |i| [i.nombre, i.id] }
-    @unidad_de_alta_de_datos_id = nil
+    if params[:unidad_de_alta_de_datos_id]
+      # Verificar que el ID de la UAD pasada en el parámetro pertenezca a una de las que posee habilitadas el usuario
+      if !(current_user.unidades_de_alta_de_datos.collect{ |uad| uad.id }.member?(params[:unidad_de_alta_de_datos_id].to_i))
+        @user_session.destroy
+        redirect_to root_url,
+          :notice => "No está autorizado para acceder a esta página. El incidente será reportado al administrador del sistema."
+        return
+      end
+
+      # Intentar establecer la UAD seleccionada en el formulario
+      if !establecer_uad(UnidadDeAltaDeDatos.find(params[:unidad_de_alta_de_datos_id].to_i))
+        @user_session.destroy
+        redirect_to root_url,
+          :notice => "No está autorizado para acceder a esta página. El incidente será reportado al administrador del sistema."
+        return
+      end
+      redirect_to_stored 'Ha iniciado correctamente la sesión.'
+      return
+    else
+      # Obtener las UADs a las que pertenece el usuario
+      @unidades_de_alta_de_datos = current_user.unidades_de_alta_de_datos.collect{ |i| [i.nombre, i.id] }
+    end
   end
 
   def destroy

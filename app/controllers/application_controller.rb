@@ -3,6 +3,32 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :user_required, :admin_required, :current_user
 
+  # establecer_uad
+  # Cambia la ruta de búsqueda de esquemas de PostgreSQL para que el usuario acceda prioritariamente
+  # a las tablas asociadas con la UAD en la que está habilitado a operar.
+  def establecer_uad(uad)
+    return false unless uad
+
+    # Algunos recomiendan limpiar la caché antes de cambiar la ruta de búsqueda
+    # de esquemas (parece que por un bug ya corregido, pero no lastima a nadie hacerlo).
+    ActiveRecord::Base.connection.clear_cache!
+
+    # Ejecutamos en un bloque con recuperación por si se produce un error
+    begin
+      # Cambiamos la ruta de búsqueda sobre la conexión ActiveRecord
+      # También recomiendan ejecutar el comando SET sobre la conexión para estar
+      # seguros. Además si esto falla, puede ser que hayamos olvidado crear el
+      # esquema correspondiente a una unidad de alta de datos a la cual hemos
+      # asignado usuarios.
+      ActiveRecord::Base.connection.schema_search_path = uad.schema_search_path
+      ActiveRecord::Base.connection.execute("SET search_path TO #{uad.schema_search_path};")
+    rescue
+      return false
+    end
+
+    return true
+  end
+
   def current_user_session
     return @current_user_session if defined?(@current_user_session)
     @current_user_session = UserSession.find

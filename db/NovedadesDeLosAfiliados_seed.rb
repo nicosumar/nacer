@@ -67,11 +67,6 @@ class ModificarNovedadesDeLosAfiliados < ActiveRecord::Migration
   "
   execute "
     ALTER TABLE novedades_de_los_afiliados
-      ADD CONSTRAINT fk_novedades_provincias_domicilio
-      FOREIGN KEY (domicilio_provincia_id) REFERENCES provincias (id);
-  "
-  execute "
-    ALTER TABLE novedades_de_los_afiliados
       ADD CONSTRAINT fk_novedades_departamentos_domicilio
       FOREIGN KEY (domicilio_departamento_id) REFERENCES departamentos (id);
   "
@@ -82,27 +77,22 @@ class ModificarNovedadesDeLosAfiliados < ActiveRecord::Migration
   "
   execute "
     ALTER TABLE novedades_de_los_afiliados
-      ADD CONSTRAINT fk_novedades_efectores
-      FOREIGN KEY (efector_id) REFERENCES efectores (id);
+      ADD CONSTRAINT fk_novedades_nn_ii_afiliado
+      FOREIGN KEY (alfabetizacion_del_beneficiario_id) REFERENCES niveles_de_instruccion (id);
   "
   execute "
     ALTER TABLE novedades_de_los_afiliados
-      ADD CONSTRAINT fk_novedades_nn_dd_ii_afiliado
-      FOREIGN KEY (alfabetizacion_id) REFERENCES niveles_de_instruccion (id);
-  "
-  execute "
-    ALTER TABLE novedades_de_los_afiliados
-      ADD CONSTRAINT fk_novedades_nn_dd_ii_madre
+      ADD CONSTRAINT fk_novedades_nn_ii_madre
       FOREIGN KEY (alfabetizacion_de_la_madre_id) REFERENCES niveles_de_instruccion (id);
   "
   execute "
     ALTER TABLE novedades_de_los_afiliados
-      ADD CONSTRAINT fk_novedades_nn_dd_ii_padre
+      ADD CONSTRAINT fk_novedades_nn_ii_padre
       FOREIGN KEY (alfabetizacion_del_padre_id) REFERENCES niveles_de_instruccion (id);
   "
   execute "
     ALTER TABLE novedades_de_los_afiliados
-      ADD CONSTRAINT fk_novedades_nn_dd_ii_tutor
+      ADD CONSTRAINT fk_novedades_nn_ii_tutor
       FOREIGN KEY (alfabetizacion_del_tutor_id) REFERENCES niveles_de_instruccion (id);
   "
   execute "
