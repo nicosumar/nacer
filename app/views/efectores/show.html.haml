@@ -1,9 +1,19 @@
+.infobox-ok=(notice)
+
+
 - content_for :title do
   = @efector.nombre + " (" + @efector.cuie + ")"
 
 %h1= @efector.nombre + " (" + @efector.cuie + ")"
 
-%p#notice= notice
+%ul{:id => "submenu"}
+  - if can? :update, Efector
+    %li= link_to "Modificar este efector", edit_efector_path(@efector), :class => "drop"
+    - if can? :create, Referente
+      %li= link_to "Agregar un referente", new_referente_url(:efector_id => @efector.id), :class => "drop"
+
+
+
 
 %h2 Datos de contacto
 - if @efector.domicilio
@@ -76,10 +86,4 @@
             %td ACTUAL
           %td= r.observaciones
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :update, Efector
-      %li= link_to "Modificar este efector", edit_efector_path(@efector)
-    - if can? :create, Referente
-      %li= link_to "Agregar un referente", new_referente_url(:efector_id => @efector.id)
+

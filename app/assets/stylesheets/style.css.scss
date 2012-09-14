@@ -499,26 +499,61 @@ div {
   
   
 
+
+
+
+  
+  
+  
 #notice {
   color: green; 
-  width: 650px;
-  border: 2px solid red;
-  padding: 7px;
-  padding-bottom: 0;
-  margin-bottom: 10px;
-  background-color: #f0f0f0;
-  h2 {
-    text-align: left;
-    font-weight: bold;
-    padding: 5px 5px 5px 15px;
-    font-size: 13px;
-    margin: -7px;
-    margin-bottom: 0px;
-    background-color: #c00;
-    color: #fff; }
-  ul li {
-    font-size: 13px;
-    list-style: square; } }
+  width: 505px;
+  border: 0px solid #98c700;
+  
+  background-color: #effeb9; 
+  
+  text-align: left;
+  font-weight: bold;
+  padding: 10px 0px 10px 10px;
+  font-size: 13px;
+  margin-bottom: 0px;
+  
+  
+}
+  
+#noticeok {
+  width:  455px;
+  border: 0px solid #98c700;
+  text-align: left;
+  font-weight: bold;
+  padding: 30px 0px 10px 60px;
+  padding-bottom: 20;
+  margin-bottom: 0px;
+  font-size: 15px;
+  margin-bottom: 0px;
+  
+  background: #effeb9 url(../images/notification.png) no-repeat top center;
+  
+}
+  
+    
+   
+       
+     
+   
+    
+   
+   
+   
+   
+             /*error*/
+
+#errors {
+  float: right;
+  margin-left: 1px; 
+  margin-right: 0px; 
+  margin-top: 10px; }
+  
     
 .field_with_errors {
   padding: 2px;
@@ -545,6 +580,44 @@ div {
   ul li {
     font-size: 13px;
     list-style: square; } }
+    
+/* INFOBOXES ------------------------------------------------------------*/
+
+.infobox-advertencia,
+.infobox-ok,
+.infobox-error {
+  width:  455px;
+  border: 1px solid;
+  margin: 10px 0px;
+  padding: 15px 10px 15px 50px;
+  background-repeat: no-repeat;
+  background-position: 10px center; 
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+.infobox-advertencia {
+  color: #9F6000;
+  background-color: #ffe9ad;
+  background-image: url(/assets/info-yellow.png);
+}
+.infobox-ok {
+  color: #4F8A10;
+  background-color: #effeb9;
+  background-image: url(/assets/info-green.png);
+}
+.infobox-error {
+  color: #D8000C;
+  background-color: #fccac1;
+  background-image: url(/assets/info-red.png);
+}    
+    
+    
+    
+    
+    
+    
 
 /* NUEVO MENÚ */
 

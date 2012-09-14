@@ -1,9 +1,15 @@
+.infobox-ok=(notice)
+
 - content_for :title do
   Liquidaciones
 
 %h1 Liquidaciones
 
-%p#notice= notice
+%ul{:id => "submenu"}
+  - if can? :create, Liquidacion
+    %li= link_to "Agregar una liquidación", new_liquidacion_url, :class => "drop"
+    
+%p    
 
 - if @liquidaciones && @liquidaciones.size > 0
   %table
@@ -24,8 +30,3 @@
 - else
   %p No se ha registrado ninguna liquidación.
 
-- content_for :sidebar do
-  - if can? :create, Liquidacion
-    %h2 Tareas
-    %ul
-      %li= link_to "Agregar una liquidación", new_liquidacion_url

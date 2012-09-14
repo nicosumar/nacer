@@ -23,7 +23,10 @@
     = current_user.firstname
   - else
     No se ha iniciado la sesión
-%p#notice= notice
+
+
+.infobox-ok=(notice)
+
 %p
   - if current_user then
     Puede comenzar a trabajar. Seleccione el módulo y operación deseados desde el menú superior.

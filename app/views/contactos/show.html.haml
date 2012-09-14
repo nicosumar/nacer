@@ -1,10 +1,14 @@
+.infobox-ok=(notice)
+
 - content_for :title do
   = @contacto.mostrado
 
 %h1= @contacto.mostrado
 
-%p#notice= notice
-
+%ul{:id => "submenu"}
+  - if can? :update, @contacto
+    %li= link_to "Modificar este contacto", edit_contacto_path(@contacto), :class => "drop"
+    
 %h2 Datos de contacto
 - if @contacto.apellidos
   %p
@@ -43,8 +47,4 @@
       %span.destacado= l
       %br/
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :update, @contacto
-      %li= link_to "Modificar este contacto", edit_contacto_path(@contacto)
+

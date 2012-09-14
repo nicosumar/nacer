@@ -1,6 +1,14 @@
+.infobox-ok=(notice)
+
 %h1 Contactos
 
-%p#notice= notice
+%ul{:id => "submenu"}
+  - if can? :create, Contacto
+    %li= link_to "Agregar un contacto", new_contacto_url, :class => "drop"
+
+
+
+%p
 
 %table
   %thead
@@ -16,8 +24,4 @@
         %td= (c.telefono || "") + (c.telefono_movil || "")
 = will_paginate @contactos, :inner_window => 2, :outer_window => 0
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :create, Contacto
-      %li= link_to "Agregar un contacto", new_contacto_url
+

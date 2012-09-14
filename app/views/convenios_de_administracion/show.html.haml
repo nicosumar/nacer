@@ -1,3 +1,6 @@
+.infobox-ok=(notice)
+
+
 - content_for :title do
   Convenio de administación
   = @convenio_de_administracion.numero
@@ -5,9 +8,13 @@
 %h1
   Convenio de administración
   = @convenio_de_administracion.numero
+  
+%ul{:id => "submenu"}
+  %li= link_to "Modificar este Convenio", edit_convenio_de_administracion_path(@convenio_de_administracion), :class => "drop"
+    
 
-%p#notice= notice
 
+%p
 %p
   El convenio de administración
   %span.destacado= @convenio_de_administracion.numero
@@ -41,7 +48,4 @@
   %span.destacado>= " " + @convenio_de_administracion.fecha_de_finalizacion.strftime("%d/%m/%Y")
   \.
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    %li= link_to "Modificar este convenio", edit_convenio_de_administracion_path(@convenio_de_administracion)
+

@@ -1,16 +1,24 @@
+.infobox-ok=(notice)
+
 - content_for :title do
   Adenda al convenio de gestión
   = @addenda.convenio_de_gestion.numero
   suscrita el
   = @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+  
+
 
 %h1
   Adenda al convenio de gestión
   = @addenda.convenio_de_gestion.numero
   suscrita el
   = @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
-
-%p#notice= notice
+  
+%ul{:id => "submenu"}
+  - if can? :update, Addenda
+    %li= link_to "Modificar esta adenda", edit_addenda_path(@addenda), :class => "drop"    
+    
+%p
 
 %p
   La adenda al convenio
@@ -66,8 +74,4 @@
       = l
       %br/
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :update, Addenda
-      %li= link_to "Modificar esta adenda", edit_addenda_path(@addenda)
+

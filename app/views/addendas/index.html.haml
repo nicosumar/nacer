@@ -1,5 +1,8 @@
 %h1 Adendas
-
+%ul{:id => "submenu"}
+  - if can? :create, Addenda
+    %li= link_to "Agregar una adenda", new_addenda_url, :class => "drop"
+%p    
 %table
   %thead
     %tr
@@ -14,8 +17,3 @@
         %td= a.fecha_de_inicio.strftime("%d/%m/%Y")
 = will_paginate @addendas, :inner_window => 2, :outer_window => 0
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :create, Addenda
-      %li= link_to "Agregar una adenda", new_addenda_url
