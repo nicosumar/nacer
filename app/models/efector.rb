@@ -10,6 +10,8 @@ class Efector < ActiveRecord::Base
   has_many :asignaciones_de_nomenclador
   has_many :referentes
 
+  default_scope where(:integrante => true)
+
   validates_presence_of :cuie, :nombre
   validates_uniqueness_of :cuie
 

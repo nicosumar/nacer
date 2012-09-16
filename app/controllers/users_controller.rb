@@ -8,25 +8,25 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-    @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+    @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = nil
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
     @user_group_ids = []
     @unidade_de_alta_de_datos = 
       UnidadDeAltaDeDatos.find(:all).collect{ |uad| [uad.nombre, uad.id] }
-    @unidades_de_alta_de_datos_ids = []
+    @unidad_de_alta_de_datos_ids = []
   end
 
   def edit
-    if current_user.in_group? :administradores then
+    if current_user.in_group? :administradores
       # Permitir la edición de cualquier usuario sólo a los administradores
       @user = User.find(params[:id], :include => :user_groups)
       # Los administradores pueden definir la pertenencia a los grupos de usuarios
       @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
       @user_group_ids = @user.user_groups.collect{ |ug| [ug.id] }
-      @nidades_de_alta_de_datos =
-        UnidadDeAltaDeDatos.find(:all).collect{ |uad| [uad.nombre, uad.id] }
-      @unidades_de_alta_de_datos_ids = @user.unidades_de_alta_de_datos.collect{ |uad| [uad.id] }
+      # Los administradores pueden definir la pertenencia a las UADs
+      @unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find(:all).collect{ |uad| [uad.nombre, uad.id] }
+      @unidad_de_alta_de_datos_ids = @user.unidades_de_alta_de_datos.collect{ |uad| [uad.id] }
     elsif not (params[:id].to_s == current_user.id.to_s)
       # Rechazar un intento fraguado de editar la información de otros usuarios
       redirect_to root_url,
@@ -35,22 +35,22 @@ class UsersController < ApplicationController
       # El usuario sólo puede modificar su propia información
       @user = current_user
     end
-    @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+    @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = @user.sexo_id
   end
 
   def create
     # Guardar los grupos de pertenencia seleccionados
     @user_group_ids = params[:user][:user_group_ids] || []
-    @unidades_de_alta_de_datos_ids = params[:user][:unidades_de_alta_de_datos_ids] || []
+    @unidad_de_alta_de_datos_ids = params[:user][:unidad_de_alta_de_datos_ids] || []
     params[:user].delete :user_group_ids
-    params[:user].delete :unidades_de_alta_de_datos_ids
+    params[:user].delete :unidad_de_alta_de_datos_ids
     @user = User.new(params[:user])
     if @user.save
       @user_group_ids.each do |i|
         @user.user_groups << UserGroup.find(i)
       end
-      @unidades_de_alta_de_datos_ids.each do |i|
+      @unidad_de_alta_de_datos_ids.each do |i|
         @user.unidades_de_alta_de_datos << UnidadDeAltaDeDatos.find(i)
       end
       redirect_to users_url, :notice => 'El usuario se creó satisfactoriamente.'
@@ -61,16 +61,16 @@ class UsersController < ApplicationController
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
     @unidades_de_alta_de_datos =
       UnidadDeAltaDeDatos.find(:all).collect{ |uad| [uad.nombre, uad.id] }
-    @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+    @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     render :action => "new"
   end
 
   def update
     # Guardar los grupos de pertenencia seleccionados
     @user_group_ids = params[:user][:user_group_ids] || []
-    @unidades_de_alta_de_datos_ids = params[:user][:unidades_de_alta_de_datos_ids] || []
+    @unidad_de_alta_de_datos_ids = params[:user][:unidad_de_alta_de_datos_ids] || []
     params[:user].delete :user_group_ids
-    params[:user].delete :unidades_de_alta_de_datos_ids
+    params[:user].delete :unidad_de_alta_de_datos_ids
     if current_user.in_group? :administradores then
       # Permitir la edición de cualquier usuario sólo a los administradores
       @user = User.find(params[:id], :include => :user_groups)
@@ -101,7 +101,7 @@ class UsersController < ApplicationController
         @user_group_ids.each do |i|
           @user.user_groups << UserGroup.find(i)
         end
-        @unidades_de_alta_de_datos_ids.each do |i|
+        @unidad_de_alta_de_datos_ids.each do |i|
           @user.unidades_de_alta_de_datos << UnidadDeAltaDeDatos.find(i)
         end
         redirect_to users_url, :notice => 'La información del usuario se actualizó correctamente.'
@@ -115,7 +115,7 @@ class UsersController < ApplicationController
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
     @unidades_de_alta_de_datos =
       UnidadDeAltaDeDatos.find(:all).collect{ |uad| [uad.nombre, uad.id] }
-    @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+    @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = params[:user][:sexo_id]
     render :action => "edit"
   end

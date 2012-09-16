@@ -266,14 +266,20 @@
           %span.field_name Años cursados en el mayor nivel:
           %span.field_value= @afiliado.alfab_tutor_años_ultimo_nivel
 
-  - if @afiliado.embarazada?
+  - fecha_de_calculo = @afiliado.fecha_de_la_ultima_novedad || @afiliado.fecha_de_diagnostico_del_embarazo |
+    || @afiliado.fecha_de_inscripcion |
+  - if @afiliado.embarazada?(fecha_de_calculo)
     %h3 Datos del embarazo
     %div.field_content
       %span.field_name Fecha de la última menstruación:
       - if @afiliado.fecha_de_la_ultima_menstruacion
         %span.field_value
           = @afiliado.fecha_de_la_ultima_menstruacion
-          = "(según FUM cursa la semana " + ((@afiliado.semanas_de_gestacion_segun_fum() + 1).to_s || "???") + ")"
+          - if @afiliado.semanas_de_gestacion_segun_fum()
+            - if @afiliado.semanas_de_gestacion_segun_fum() > 40
+              = "(según FUM cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fum() - 40).to_s + " del puerperio)."
+            - else
+              = "(según FUM cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fum() + 1).to_s + " del embarazo)."
       - else
         %span.field_empty No se indicó la fecha de la última menstruación.
     %div.field_content
@@ -293,7 +299,11 @@
       - if @afiliado.fecha_probable_de_parto
         %span.field_value
           = @afiliado.fecha_probable_de_parto.strftime("%d/%m/%Y")
-          = "(según FPP cursa la semana " + ((@afiliado.semanas_de_gestacion_segun_fpp() + 1).to_s || "???") + ")"
+          - if @afiliado.semanas_de_gestacion_segun_fpp()
+            - if @afiliado.semanas_de_gestacion_segun_fpp() > 40
+              = "(según FPP cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fpp() - 40).to_s + " del puerperio)."
+            - else
+              = "(según FPP cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fpp() + 1).to_s + " del embarazo)."
       - else
         %span.field_empty No se indicó la fecha probable de parto.
 
@@ -333,8 +343,8 @@
   %h3 Última modificación de los datos
   %div.field_content
     %span.field_name Carga de la última modificación:
-    - if @afiliado.fecha_y_hora_de_carga
-      %span.field_value= @afiliado.fecha_y_hora_de_carga.strftime("%d/%m/%Y %H:%M:%S")
+    - if @afiliado.fecha_de_carga
+      %span.field_value= @afiliado.fecha_de_carga.strftime("%d/%m/%Y")
     - else
       %span.field_empty No se registró la fecha y hora de carga.
   %div.field_content

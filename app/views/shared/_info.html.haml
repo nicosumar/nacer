@@ -1,0 +1,18 @@
+- if info
+  #info
+    - case
+      - when info[:tipo] == :error
+        %span.error
+          %h2= info[:titulo]
+          - if info[:mensaje]
+            %p= info[:mensaje]
+      - when info[:tipo] == :advertencia
+        %span.advertencia
+          %h2= info[:titulo]
+          - if info[:mensaje]
+            %p= info[:mensaje]
+      - else
+        %span.ok
+          %h2= info[:titulo]
+          - if info[:mensaje]
+            %p= info[:mensaje]

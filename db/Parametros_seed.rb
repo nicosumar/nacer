@@ -9,7 +9,7 @@ Parametro.create([
     :nombre => "EdadLimiteParaExigirAdultoResponsable",
     :tipo_postgres => "int4",
     :tipo_ruby => "Integer",
-    :valor => "15" },
+    :valor => "10" },
   { #:id => 3,
     :nombre => "EdadMinimaParaRegistrarEmbarazada",
     :tipo_postgres => "int4",

@@ -56,7 +56,14 @@ class Busqueda < ActiveRecord::Base
                 ORDER BY ts_rank(vector_fts, \'#{tsquery}\'::tsquery) DESC) AS subconsulta;
       "
     else
-      # Si no quedaron modelos que buscar, modificar la vista para que no devuelva nada
+      # Si no quedaron modelos que buscar, modificar las vistas para que no devuelvan nada
+      connection.execute "
+        CREATE OR REPLACE TEMPORARY VIEW objetos_encontrados AS
+          SELECT id, modelo_type
+            FROM busquedas
+            WHERE
+              false;
+      "
       connection.execute "
         CREATE OR REPLACE TEMPORARY VIEW resultados_de_la_busqueda AS
           SELECT row_number() OVER () AS orden, *

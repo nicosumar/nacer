@@ -50,7 +50,8 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       # Lugar de atención habitual
       t.integer :lugar_de_atencion_habitual_id
 
-      # Datos del adulto responsable del menor (para menores de 15 años)
+      # Datos del adulto responsable del menor (para menores)
+      t.boolean :es_menor
       t.string :apellido_de_la_madre
       t.string :nombre_de_la_madre
       t.integer :tipo_de_documento_de_la_madre_id
@@ -71,6 +72,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.integer :alfab_tutor_años_ultimo_nivel
 
       # Datos del embarazo y parto (para embarazadas)
+      t.boolean :esta_embarazada
       t.date :fecha_de_la_ultima_menstruacion
       t.date :fecha_de_diagnostico_del_embarazo
       t.integer :semanas_de_embarazo

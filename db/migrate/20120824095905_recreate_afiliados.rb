@@ -85,6 +85,8 @@ class RecreateAfiliados < ActiveRecord::Migration
 
       # Fecha y centro inscriptor
       t.date :fecha_de_inscripcion
+      t.date :fecha_de_la_ultima_novedad
+      t.references :unidad_de_alta_de_datos
       t.references :centro_de_inscripcion
 
       # Observaciones generales
@@ -96,7 +98,7 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.string :mensaje_de_la_baja
 
       # Datos relacionados con la carga del registro
-      t.datetime :fecha_y_hora_de_carga
+      t.date :fecha_de_carga
       t.string :usuario_que_carga
     end
 

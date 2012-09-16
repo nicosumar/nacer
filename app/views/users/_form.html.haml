@@ -34,7 +34,7 @@
     = f.label :password_confirmation
     %br/
     = f.password_field :password_confirmation
-  - if current_user.in_group? :administradores then
+  - if current_user.in_group? :administradores
     %div.field
       = f.label "Grupos"
       %br/
@@ -44,8 +44,8 @@
     %div.field
       = f.label "Unidades de alta de datos"
       %br/
-      = f.select :unidades_de_alta_de_datos_ids, |
-        options_for_select(@unidades_de_alta_de_datos, @unidades_de_alta_de_datos_ids), {}, |
+      = f.select :unidad_de_alta_de_datos_ids, |
+        options_for_select(@unidades_de_alta_de_datos, @unidad_de_alta_de_datos_ids), {}, |
         { :multiple => true, :size => 5, |
         :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
   %div.actions

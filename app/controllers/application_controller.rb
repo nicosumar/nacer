@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
-  helper_method :user_required, :admin_required, :current_user
+  helper_method :user_required, :admin_required, :current_user, :uad_actual
 
   # establecer_uad
   # Cambia la ruta de búsqueda de esquemas de PostgreSQL para que el usuario acceda prioritariamente
@@ -27,6 +27,14 @@ class ApplicationController < ActionController::Base
     end
 
     return true
+  end
+
+  # uad_actual
+  # Devuelve la UnidadDeAltaDeDatos con la que se está trabajando actualmente.
+  def uad_actual
+    # Cada UAD trabaja con un 'schema_search_path' distinto, por lo que usamos ese dato para ver
+    # cuál UAD está seleccionada actualmente
+    UnidadDeAltaDeDatos.find_by_schema_search_path(ActiveRecord::Base.connection.schema_search_path)
   end
 
   def current_user_session

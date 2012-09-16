@@ -12,14 +12,14 @@ class UserSessionsController < ApplicationController
         when current_user.unidades_de_alta_de_datos.size == 0
           # El usuario fue creado, pero no ha sido asignado a ninguna UAD todavía
           @user_session.destroy
-          redirect_to root_url, :notice => 'No puede iniciar la sesión ya que no ha sido asignado a ninguna UAD del sistema.'
+          redirect_to root_url, :notice => 'No puede iniciar la sesión ya que no ha sido asignado a ninguna UAD activa del sistema.'
           return
         when current_user.unidades_de_alta_de_datos.size == 1
           # El usuario sólo tiene asignada una única UAD, por lo cual se selecciona automáticamente
           if !establecer_uad(current_user.unidades_de_alta_de_datos.first)
             @user_session.destroy
             redirect_to root_url,
-              :notice => "No está autorizado para acceder a esta página. El incidente será reportado al administrador del sistema."
+              :notice => "Se produjo un error al intentar iniciar la sesión, ya hemos sido notificados y resolveremos el problema a la brevedad."
           end
           redirect_to_stored 'Ha iniciado correctamente la sesión.'
         when current_user.unidades_de_alta_de_datos.size > 1
@@ -34,6 +34,11 @@ class UserSessionsController < ApplicationController
 
   # Permite al usuario seleccionar la UAD con la que va a trabajar
   def seleccionar_uad
+    if !current_user
+      redirect_to root_url, :notice => "Debe iniciar la sesión antes de intentar acceder a esta página."
+      return
+    end
+
     @user_session = UserSession.find
 
     # Verificar que el usuario realmente posea más de una UAD habilitada
@@ -57,7 +62,7 @@ class UserSessionsController < ApplicationController
       if !establecer_uad(UnidadDeAltaDeDatos.find(params[:unidad_de_alta_de_datos_id].to_i))
         @user_session.destroy
         redirect_to root_url,
-          :notice => "No está autorizado para acceder a esta página. El incidente será reportado al administrador del sistema."
+          :notice => "Se produjo un error al intentar iniciar la sesión, ya hemos sido notificados y resolveremos el problema a la brevedad."
         return
       end
       redirect_to_stored 'Ha iniciado correctamente la sesión.'

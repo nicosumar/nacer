@@ -384,6 +384,12 @@ class PadronesController < ApplicationController
           # TODO: Añadir verificaciones para otros formatos de fecha
           return nil if texto == "NULL"
           año, mes, dia = texto.split("-")
+          if !mes || mes.empty?
+            dia, mes, año = texto.split("/")
+          end
+          if año.strip.to_i < 100
+            año = "20" + año.strip
+          end
           return Date.new(año.to_i, mes.to_i, dia.to_i)
         when tipo == :decimal
           return 0.0 if texto == "NULL"

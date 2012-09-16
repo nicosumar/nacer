@@ -21,6 +21,7 @@ class BusquedaController < ApplicationController
     end
 
     @registros_coincidentes = indices.size
+
     if @registros_coincidentes > 0
       @resultados_de_busqueda = ResultadoDeLaBusqueda.where('id IN (?)', indices).order('orden ASC').paginate(:page => params[:page], :per_page => 20)
     end

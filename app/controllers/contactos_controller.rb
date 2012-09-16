@@ -20,7 +20,7 @@ class ContactosController < ApplicationController
   def new
     if can? :create, Contacto then
       @contacto = Contacto.new
-      @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+      @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
       @sexo_id = nil
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
@@ -30,7 +30,7 @@ class ContactosController < ApplicationController
   def edit
     @contacto = Contacto.find(params[:id])
     if can? :update, @contacto
-      @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+      @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
       @sexo_id = @contacto.sexo_id
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
@@ -49,7 +49,7 @@ class ContactosController < ApplicationController
       redirect_to contactos_url, :notice => 'El contacto se creó exitosamente.'
     else
       # Si la grabación falla volver a mostrar el formulario con los errores
-      @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+      @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
       @sexo_id = params[:contacto][:sexo_id]
       render :action => "new"
     end
@@ -62,7 +62,7 @@ class ContactosController < ApplicationController
         redirect_to contacto_path(@contacto)
       else
         # Si la grabación falla volver a mostrar el formulario con los errores
-        @sexos = Sexo.find(:all).collect{ |s| [s.descripcion, s.id] }
+        @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
         @sexo_id = params[:contacto][:sexo_id]
         render :action => "edit"
       end

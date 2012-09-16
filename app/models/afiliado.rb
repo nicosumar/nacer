@@ -6,16 +6,12 @@ class Afiliado < ActiveRecord::Base
   set_primary_key "afiliado_id"
 
   # El modelo no está asignado a ningún formulario editable por el usuario.
-  # Los datos se actualizan por un proceso.
+  # Los datos se actualizan por un proceso batch.
   # Los atributos no se protegen porque se asignan masivamente en dicho proceso.
   attr_protected nil
 
-  # La carga del padrón se hace en un proceso batch y las verificaciones ya son realizadas
-  # por el sistema de gestión
-  #validates_presence_of :clave_de_beneficiario, :apellido, :nombre, :tipo_de_documento
-  #validates_presence_of :clase_de_documento, :numero_de_documento, :categoria_de_afiliado_id
-  #validates_numericality_of :numero_de_documento, :integer => true
-  #validates_uniqueness_of :clave_de_beneficiario
+  # Las verificaciones ya son realizadas por el sistema de gestión.
+  # validate_...
 
   # Asociaciones con otros modelos
   belongs_to :clase_de_documento
@@ -39,6 +35,7 @@ class Afiliado < ActiveRecord::Base
   belongs_to :alfabetizacion_del_tutor, :class_name => "NivelDeInstruccion"
   belongs_to :discapacidad
   belongs_to :centro_de_inscripcion
+  belongs_to :unidad_de_alta_de_datos
 
   #
   # Métodos disponibles en las instancias
@@ -456,12 +453,13 @@ class Afiliado < ActiveRecord::Base
       # Discapacidad
       :discapacidad_id => Discapacidad.id_del_codigo(self.valor(campos[90], :texto)),
 
-      # Fecha y centro inscriptor
+      # Fecha de inscripción / modificación, centro inscriptor y unidad de alta de datos
       :fecha_de_inscripcion => self.valor(campos[28], :fecha),
-      # El código de centro de inscripción que se almacena en el campo 'CodigoCIAltaDatos' fue corrompido por
-      # un error en el sistema de inscripción que implementó el Ing. Luis Esteves, por lo que no puede utilizarse
-      # ese dato para determinar el CI correcto, sino que se extrae de la clave del beneficiario.
-      :centro_de_inscripcion_id => CentroDeInscripcion.id_del_codigo(self.valor(campos[1][5..9], :texto)),
+      # Aprovechamos el campo sin utilizar de "FechaAltaEfectiva" de la tabla SMIAfiliados para almacenar la
+      # fecha de la última modificación realizada al registro del beneficiario.
+      :fecha_de_la_ultima_novedad => self.valor(campos[29], :fecha),
+      :unidad_de_alta_de_datos_id => UnidadDeAltaDeDatos.id_del_codigo(self.valor(campos[55], :texto)),
+      :centro_de_inscripcion_id => CentroDeInscripcion.id_del_codigo(self.valor(campos[56], :texto)),
 
       # Observaciones generales
       :observaciones_generales => self.valor(campos[89], :texto),
@@ -472,7 +470,7 @@ class Afiliado < ActiveRecord::Base
       :mensaje_de_la_baja => self.valor(campos[58], :texto),
 
       # Datos relacionados con la carga del registro
-      :fecha_y_hora_de_carga => self.valor(campos[61], :fecha_hora),
+      :fecha_de_carga => self.valor(campos[61], :fecha),
       :usuario_que_carga => self.valor(campos[62], :texto)
 
       # A continuación se ubican los campos cuyos datos no se convierten ya que no tienen un uso definido,
@@ -494,7 +492,6 @@ class Afiliado < ActiveRecord::Base
       # CAMPOS NO UTILIZADOS
       #:localidad => self.valor(campos[9], :texto),
       #:tipo_de_relacion_id => self.valor(campos[27], :entero),
-      #:fecha_de_alta_efectiva => self.valor(campos[29], :fecha),
       #:accion_pendiente_de_confirmar => self.valor(campos[35], :texto),
       #:domicilio_municipio => self.valor(campos[44], :texto),
       #:domicilio_provincia => self.valor(campos[47], :texto),
@@ -502,8 +499,6 @@ class Afiliado < ActiveRecord::Base
       #:fecha_de_alta => self.valor(campos[52], :fecha),
       #:pendiente_de_enviar => self.valor(campos[53], :entero),
       #:codigo_provincia_uad => self.valor(campos[54], :texto),
-      #:codigo_uad => self.valor(campos[55], :texto),
-      #:centro_de_inscripcion_id => CentroDeInscripcion.id_del_codigo(self.valor(campos[56], :texto)),
       #:proceso_de_baja_automatica_id => self.valor(campos[59], :entero),
       #:pendiente_de_enviar_a_nacion => self.valor(campos[60], :entero),
       #:menor_convive_con_tutor => self.valor(campos[63], :texto),
