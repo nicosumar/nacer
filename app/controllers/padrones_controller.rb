@@ -319,7 +319,8 @@ class PadronesController < ApplicationController
       end
 
       # Modificar el código de prestación si el precio de la misma puede ser variable, haciéndolo único
-      if asignaciones_de_precios[prestacion[:codigo]] && asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion != 0.0
+      if prestacion[:codigo] && asignaciones_de_precios[prestacion[:codigo]] &&
+        asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion != 0.0
         prestacion[:codigo] += " (" + i.to_s + ")"
       end
 

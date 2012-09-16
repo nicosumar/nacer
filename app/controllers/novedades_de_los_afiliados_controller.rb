@@ -94,7 +94,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       when params[:tipo_de_novedad_id] == "4" # Reinscripción
       else # Tipo de novedad desconocida. ¿Petición fraguada?
         redirect_to(root_url,
-          :notice => "No está autorizado para realizar esta operación. El incidente será reportado al administrador del sistema.")
+          :info => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+            :mensaje => "Se informará al administrador del sistema sobre este incidente."})
         return
     end
 
@@ -104,7 +105,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Verificar los permisos del usuario
     if cannot? :update, NovedadDelAfiliado
       redirect_to(root_url,
-        :notice => "No está autorizado para realizar esta operación. El incidente será reportado al administrador del sistema.")
+        :info => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."})
       return
     end
   end
@@ -113,7 +115,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Verificar los permisos del usuario
     if cannot? :create, NovedadDelAfiliado
       redirect_to(root_url,
-        :notice => "No está autorizado para realizar esta operación. El incidente será reportado al administrador del sistema.")
+        :info => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."})
       return
     end
 
@@ -122,11 +125,11 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     params[:novedad_del_afiliado].delete :tipo_de_novedad_id
 
     case
-      when tipo_de_novedad_id == 1 # ALTA
+      when tipo_de_novedad_id == "1" # ALTA
 
-      when tipo_de_novedad_id == 2 # BAJA
+      when tipo_de_novedad_id == "2" # BAJA
 
-      when tipo_de_novedad_id == 3 # MODIFICACIÓN
+      when tipo_de_novedad_id == "3" # MODIFICACIÓN
         # Verificar que se haya pasado el ID del afiliado que se modificará
         if !params[:afiliado_id]
           redirect_to(root_url,
@@ -140,19 +143,24 @@ class NovedadesDeLosAfiliadosController < ApplicationController
           @afiliado = Afiliado.find(params[:afiliado_id])
         rescue ActiveRecord::RecordNotFound
           redirect_to(root_url,
-            :notice => "No está autorizado para realizar esta operación. El incidente será reportado al administrador del sistema.")
+            :info => {:tipo => :error, :titulo => "La petición no es válida",
+              :mensaje => "Se informará al administrador del sistema sobre este incidente."})
           return
         end
 
         # Eliminamos el parámetro de la clave de beneficiario (igual no se puede cambiar)
         params[:novedad_del_afiliado].delete :clave_de_beneficiario
-        # Crear una novedad vacía
-        @novedad = NovedadDelAfiliado.new(params[:novedad_del_afiliado])
 
-      when tipo_de_novedad_id == 4 # REINSCRIPCIÓN
+        # Creamos una nueva novedad y copiamos los datos del afiliado, actualizándolos con los parámetros
+        @novedad = NovedadDelAfiliado.new
+        @novedad.copiar_atributos_del_afiliado(@afiliado)
+        @novedad.attributes = params[:novedad_del_afiliado]
+        @novedad.tipo_de_novedad_id = 3
+
+      when tipo_de_novedad_id == "4" # REINSCRIPCIÓN
       else # ???
     end
-    if !@novedad.save
+    if !@novedad.valid?
         # Crear objetos para rellenar las colecciones de las listas de selección
         @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
         @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
@@ -175,6 +183,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
         @centros_de_inscripcion = uad_actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
       render :action => "new"
+    else
+      
     end
   end
 
@@ -182,7 +192,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Verificar los permisos del usuario
     if cannot? :update, NovedadDelAfiliado
       redirect_to(root_url,
-        :notice => "No está autorizado para realizar esta operación. El incidente será reportado al administrador del sistema.")
+        :info => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."})
       return
     end
   end

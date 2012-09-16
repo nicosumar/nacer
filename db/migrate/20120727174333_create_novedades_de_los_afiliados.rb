@@ -24,6 +24,7 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       # Datos de nacimiento, sexo, origen y estudios
       t.references :sexo
       t.date :fecha_de_nacimiento
+      t.boolean :es_menor
       t.integer :pais_de_nacimiento_id
       t.boolean :se_declara_indigena
       t.references :lengua_originaria
@@ -51,7 +52,6 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.integer :lugar_de_atencion_habitual_id
 
       # Datos del adulto responsable del menor (para menores)
-      t.boolean :es_menor
       t.string :apellido_de_la_madre
       t.string :nombre_de_la_madre
       t.integer :tipo_de_documento_de_la_madre_id

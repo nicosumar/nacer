@@ -4,7 +4,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :apellido, :nombre, :clase_de_documento_id, :tipo_de_documento_id, :numero_de_documento
-  attr_accessible :numero_de_celular, :e_mail, :categoria_de_afiliado_id, :sexo_id, :fecha_de_nacimiento
+  attr_accessible :numero_de_celular, :e_mail, :categoria_de_afiliado_id, :sexo_id, :fecha_de_nacimiento, :es_menor
   attr_accessible :pais_de_nacimiento_id, :se_declara_indigena, :lengua_originaria_id, :tribu_originaria_id
   attr_accessible :alfabetizacion_del_beneficiario_id, :alfab_beneficiario_años_ultimo_nivel
   attr_accessible :domicilio_calle, :domicilio_numero, :domicilio_piso, :domicilio_depto, :domicilio_manzana
@@ -17,9 +17,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_accessible :numero_de_documento_del_padre, :alfabetizacion_del_padre_id, :alfab_padre_años_ultimo_nivel
   attr_accessible :apellido_del_tutor, :nombre_del_tutor, :tipo_de_documento_del_tutor_id
   attr_accessible :numero_de_documento_del_tutor, :alfabetizacion_del_tutor_id, :alfab_tutor_años_ultimo_nivel
-  attr_accessible :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo, :semanas_de_embarazo
+  attr_accessible :esta_embarazada, :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo, :semanas_de_embarazo
   attr_accessible :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo, :discapacidad_id
-  attr_accessible :fecha_de_la_novedad, :nombre_del_agente_inscriptor, :observaciones_generales
+  attr_accessible :fecha_de_la_novedad, :centro_de_inscripcion_id, :nombre_del_agente_inscriptor, :observaciones_generales
 
   # La clave de beneficiario sólo puede registrarse al grabar la novedad
   attr_readonly :clave_de_beneficiario
@@ -54,15 +54,25 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # copiar_atributos_del_afiliado
   # Copia los valores de los atributos del afiliado a esta novedad
   def copiar_atributos_del_afiliado(afiliado)
-    return  if (!afiliado || !afiliado.kind_of?(Afiliado))
+    return false if (!afiliado || !afiliado.kind_of?(Afiliado))
 
     # Copiar todos los atributos que se pueden asignar masivamente
-    self.attributes = afiliado.attributes
+    atributos_del_afiliado = afiliado.attributes
+    atributos_del_afiliado.delete "afiliado_id"
+    atributos_del_afiliado.delete "clave_de_beneficiario"
+    atributos_del_afiliado.delete "activo"
+    atributos_del_afiliado.delete "mensaje_de_la_baja"
+    atributos_del_afiliado.delete "motivo_de_la_baja_id"
+    atributos_del_afiliado.delete "unidad_de_alta_de_datos_id"
+    atributos_del_afiliado.delete "fecha_de_inscripcion"
+    atributos_del_afiliado.delete "fecha_de_carga"
+    atributos_del_afiliado.delete "usuario_que_carga"
+    atributos_del_afiliado.delete "fecha_de_la_ultima_novedad"
+    self.attributes = atributos_del_afiliado
 
     # Definir los atributos que no se pueden asignar masivamente
     self.clave_de_beneficiario = afiliado.clave_de_beneficiario
     self.es_menor = afiliado.menor?(afiliado.fecha_de_la_ultima_novedad || afiliado.fecha_de_inscripcion)
-    puts afiliado.inspect
     self.esta_embarazada = afiliado.embarazada?(afiliado.fecha_de_la_ultima_novedad ||
       afiliado.fecha_de_diagnostico_del_embarazo || afiliado.fecha_de_inscripcion)
     return true
@@ -201,41 +211,47 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # Verifica que si alguno de los campos de tipo de documento está establecido en DNI,
   # el valor del campo de número respectivo contenga un número y esté en el intervalo esperable.
   def verificar_intervalo_dni
+
+    error_dni = false
+
     # Documento del beneficiario
-    if tipo_de_documento_id == 1 # DNI
+    if tipo_de_documento_id == 1 && !numero_de_documento.strip.empty?
       nro_dni = numero_de_documento.strip.to_i
-      if !((50000..99999999) == nro_dni)
+      if nro_dni < 50000 || nro_dni > 99999999
         errors.add(:numero_de_documento, 'no se encuentra en el intervalo esperado (recuerde no ingresar separadores como puntos o espacios al ingresar el número de DNI).')
-        return false
+        error_dni = true
       end
     end
 
     # Documento de la madre
-    if tipo_de_documento_de_la_madre_id == 1 # DNI
+    if tipo_de_documento_de_la_madre_id == 1 && !numero_de_documento_de_la_madre.strip.empty?
       nro_dni = numero_de_documento_de_la_madre.strip.to_i
-      if !((50000..99999999) == nro_dni)
+      if nro_dni < 50000 || nro_dni > 99999999
         errors.add(:numero_de_documento_de_la_madre, 'no se encuentra en el intervalo esperado (recuerde no ingresar separadores como puntos o espacios al ingresar el número de DNI).')
-        return false
+        error_dni = true
       end
     end
 
     # Documento del padre
-    if tipo_de_documento_del_padre_id == 1 # DNI
+    if tipo_de_documento_del_padre_id == 1 && !numero_de_documento_del_padre.strip.empty?
       nro_dni = numero_de_documento_del_padre.strip.to_i
-      if !((50000..99999999) == nro_dni)
+      if nro_dni < 50000 || nro_dni > 99999999
         errors.add(:numero_de_documento_del_padre, 'no se encuentra en el intervalo esperado (recuerde no ingresar separadores como puntos o espacios al ingresar el número de DNI).')
-        return false
+        error_dni = true
       end
     end
 
     # Documento del tutor
-    if tipo_de_documento_del_tutor_id == 1 # DNI
+    if tipo_de_documento_del_tutor_id == 1 && !numero_de_documento_del_padre.strip.empty?
       nro_dni = numero_de_documento_del_tutor.strip.to_i
-      if !((50000..99999999) == nro_dni)
+      if nro_dni < 50000 || nro_dni > 99999999
         errors.add(:numero_de_documento_del_tutor, 'no se encuentra en el intervalo esperado (recuerde no ingresar separadores como puntos o espacios al ingresar el número de DNI).')
-        return false
+        error_dni = true
       end
     end
+
+    return !error_dni
+
   end
 
   # Verifica que los datos estén completos para el tipo de novedad ingresado
