@@ -2,9 +2,11 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks
 
+  attr_accessor :advertencias
+
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :apellido, :nombre, :clase_de_documento_id, :tipo_de_documento_id, :numero_de_documento
-  attr_accessible :numero_de_celular, :e_mail, :categoria_de_afiliado_id, :sexo_id, :fecha_de_nacimiento, :es_menor
+  attr_accessible :numero_de_celular, :e_mail, :sexo_id, :fecha_de_nacimiento, :es_menor
   attr_accessible :pais_de_nacimiento_id, :se_declara_indigena, :lengua_originaria_id, :tribu_originaria_id
   attr_accessible :alfabetizacion_del_beneficiario_id, :alfab_beneficiario_años_ultimo_nivel
   attr_accessible :domicilio_calle, :domicilio_numero, :domicilio_piso, :domicilio_depto, :domicilio_manzana
@@ -17,9 +19,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_accessible :numero_de_documento_del_padre, :alfabetizacion_del_padre_id, :alfab_padre_años_ultimo_nivel
   attr_accessible :apellido_del_tutor, :nombre_del_tutor, :tipo_de_documento_del_tutor_id
   attr_accessible :numero_de_documento_del_tutor, :alfabetizacion_del_tutor_id, :alfab_tutor_años_ultimo_nivel
-  attr_accessible :esta_embarazada, :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo, :semanas_de_embarazo
-  attr_accessible :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo, :discapacidad_id
-  attr_accessible :fecha_de_la_novedad, :centro_de_inscripcion_id, :nombre_del_agente_inscriptor, :observaciones_generales
+  attr_accessible :esta_embarazada, :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo
+  attr_accessible :semanas_de_embarazo, :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo
+  attr_accessible :discapacidad_id, :fecha_de_la_novedad, :centro_de_inscripcion_id, :nombre_del_agente_inscriptor
+  attr_accessible :observaciones_generales
 
   # La clave de beneficiario sólo puede registrarse al grabar la novedad
   attr_readonly :clave_de_beneficiario
@@ -43,23 +46,31 @@ class NovedadDelAfiliado < ActiveRecord::Base
   belongs_to :tipo_de_documento_del_tutor, :class_name => "TipoDeDocumento"
   belongs_to :alfabetizacion_del_tutor, :class_name => "NivelDeInstruccion"
   belongs_to :discapacidad
+  belongs_to :centro_de_inscripcion
 
   # Validaciones
-  validates_presence_of :tipo_de_novedad_id, :estado_de_la_novedad_id, :clave_de_beneficiario
-  validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
+  validate :generar_advertencias
   validate :verificar_fechas
   validate :verificar_intervalo_dni
-  validate :generar_advertencias
+  validates_presence_of :tipo_de_novedad_id, :clave_de_beneficiario
+  validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
+
+  # Objeto para guardar las advertencias
+  @advertencias
 
   # copiar_atributos_del_afiliado
   # Copia los valores de los atributos del afiliado a esta novedad
+  #
   def copiar_atributos_del_afiliado(afiliado)
+    # Verificar que se pasó un afiliado válido
     return false if (!afiliado || !afiliado.kind_of?(Afiliado))
 
-    # Copiar todos los atributos que se pueden asignar masivamente
+    # Obtener los atributos del afiliado, eliminar los que no se pueden asignar masivamente y los que
+    # no forman parte de las novedades, y copiar los valores de los atributos restantes en esta novedad
     atributos_del_afiliado = afiliado.attributes
     atributos_del_afiliado.delete "afiliado_id"
     atributos_del_afiliado.delete "clave_de_beneficiario"
+    atributos_del_afiliado.delete "categoria_de_afiliado_id"
     atributos_del_afiliado.delete "activo"
     atributos_del_afiliado.delete "mensaje_de_la_baja"
     atributos_del_afiliado.delete "motivo_de_la_baja_id"
@@ -208,7 +219,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   end
 
   # verificar_intervalo_dni
-  # Verifica que si alguno de los campos de tipo de documento está establecido en DNI,
+  # Verifica que, si alguno de los campos de tipo de documento está establecido en DNI,
   # el valor del campo de número respectivo contenga un número y esté en el intervalo esperable.
   def verificar_intervalo_dni
 
@@ -218,7 +229,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if tipo_de_documento_id == 1 && !numero_de_documento.strip.empty?
       nro_dni = numero_de_documento.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
-        errors.add(:numero_de_documento, 'no se encuentra en el intervalo esperado (recuerde no ingresar separadores como puntos o espacios al ingresar el número de DNI).')
+        errors.add(
+          :numero_de_documento,
+          'no se encuentra en el intervalo esperado (no ingrese separadores como puntos o espacios en el número de DNI).'
+        )
         error_dni = true
       end
     end
@@ -227,7 +241,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if tipo_de_documento_de_la_madre_id == 1 && !numero_de_documento_de_la_madre.strip.empty?
       nro_dni = numero_de_documento_de_la_madre.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
-        errors.add(:numero_de_documento_de_la_madre, 'no se encuentra en el intervalo esperado (recuerde no ingresar separadores como puntos o espacios al ingresar el número de DNI).')
+        errors.add(
+          :numero_de_documento_de_la_madre,
+          'no se encuentra en el intervalo esperado (no ingrese separadores como puntos o espacios en el número de DNI).'
+        )
         error_dni = true
       end
     end
@@ -236,16 +253,22 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if tipo_de_documento_del_padre_id == 1 && !numero_de_documento_del_padre.strip.empty?
       nro_dni = numero_de_documento_del_padre.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
-        errors.add(:numero_de_documento_del_padre, 'no se encuentra en el intervalo esperado (recuerde no ingresar separadores como puntos o espacios al ingresar el número de DNI).')
+        errors.add(
+          :numero_de_documento_del_padre,
+          'no se encuentra en el intervalo esperado (no ingrese separadores como puntos o espacios en el número de DNI).'
+        )
         error_dni = true
       end
     end
 
     # Documento del tutor
-    if tipo_de_documento_del_tutor_id == 1 && !numero_de_documento_del_padre.strip.empty?
+    if tipo_de_documento_del_tutor_id == 1 && !numero_de_documento_del_tutor.strip.empty?
       nro_dni = numero_de_documento_del_tutor.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
-        errors.add(:numero_de_documento_del_tutor, 'no se encuentra en el intervalo esperado (recuerde no ingresar separadores como puntos o espacios al ingresar el número de DNI).')
+        errors.add(
+          :numero_de_documento_del_tutor,
+          'no se encuentra en el intervalo esperado (no ingrese separadores como puntos o espacios en el número de DNI).'
+        )
         error_dni = true
       end
     end
@@ -256,10 +279,11 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
   # Verifica que los datos estén completos para el tipo de novedad ingresado
   def generar_advertencias
+    # Eliminar las advertencias anteriores (si hubiera alguna)
+    @advertencias = []
+
     # No verificamos advertencias si hay errores presentes
     return true if errors.count > 0
-
-    @advertencias = []
 
     # Advertencias de campos vacíos que generan un registro incompleto:
     if apellido.empty?
@@ -284,7 +308,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       @advertencias << "No se ingresó la fecha de nacimiento del beneficiario."
     end
     if domicilio_calle.empty? && domicilio_manzana.empty?
-      @advertencias << "No se ingresó calle ni manzana en el domicilio."
+      @advertencias << "No se ingresó el nombre de la calle ni de la manzana en el domicilio."
     end
     if !(domicilio_calle.empty? && domicilio_manzana.empty?) && domicilio_numero.empty?
       @advertencias << "No se ingresó el número de puerta o casa en el domicilio."
@@ -313,4 +337,49 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     return true
   end
+
+  # pendiente?
+  # Indica si la novedad está pendiente (aún no ha sido informada, ni anulada).
+  def pendiente?
+    return ((1..2) === estado_de_la_novedad_id)
+  end
+
+  # categorizar
+  # Devuelve la categoría de beneficiario (ahora es obsoleto, pero se mantiene aún por
+  # compatibilidad).
+  def categorizar
+    edad = self.edad_en_años(fecha_de_la_novedad || Date.today)
+
+    return 1 if edad < 1
+    return 2 if edad < 6
+    return 3 if sexo_id == 1 && esta_embarazada
+    return 5 if edad < 20
+    return 6 if sexo_id == 1 && edad < 64
+
+    return nil
+  end
+  
+  # edad_en_años
+  # Devuelve la edad en años cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
+  # indica una fecha.
+  def edad_en_años (fecha_de_calculo = Date.today)
+
+    # Calculamos la diferencia entre los años de ambas fechas
+    diferencia_en_años = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+
+    # Calculamos la diferencia entre los meses de ambas fechas
+    diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
+
+    # Calculamos la diferencia en días y ajustamos la diferencia en meses en forma acorde
+    diferencia_en_dias = (fecha_de_calculo.day) - (fecha_de_nacimiento.day)
+    if diferencia_en_dias < 0 then diferencia_en_meses -= 1 end
+
+    # Ajustamos la diferencia en años en forma acorde
+    if diferencia_en_meses < 0 then diferencia_en_años -= 1 end
+
+    # Devolver la cantidad de años
+    return diferencia_en_años
+
+  end
+
 end

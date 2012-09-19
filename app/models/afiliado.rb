@@ -182,6 +182,30 @@ class Afiliado < ActiveRecord::Base
 
   end
 
+  # novedad_pendiente?
+  # Indica si el afiliado cuenta con alguna novedad ingresada que aún esté pendiente.
+  def novedad_pendiente?
+    novedad_pendiente = NovedadDelAfiliado.where(
+      :clave_de_beneficiario => clave_de_beneficiario,
+      :estado_de_la_novedad_id => [1,2]
+    )
+
+    return (novedad_pendiente.size > 0 ? true : false)
+  end
+
+  # novedad_pendiente
+  # Devuelve la novedad pendiente que tiene este afiliado
+  def novedad_pendiente
+    novedad_pendiente = NovedadDelAfiliado.where(
+      :clave_de_beneficiario => clave_de_beneficiario,
+      :estado_de_la_novedad_id => [1,2]
+    )
+
+    return novedad_pendiente.first if novedad_pendiente.size > 0
+
+    return nil
+  end
+
   # Devuelve un Array con los códigos de categoría válidos para el afiliado en la fecha especificada.
   # -- OBSOLETO --
   #def categorias(fecha = Date.today)

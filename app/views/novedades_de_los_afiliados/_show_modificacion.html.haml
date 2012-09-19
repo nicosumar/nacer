@@ -1,0 +1,859 @@
+#estado
+  - if @afiliado.activo
+    %span.active
+      - if @afiliado.sexo_id == 1
+        Beneficiaria activa
+      - else
+        Beneficiario activo
+  - else
+    %span.inactive
+      - if @afiliado.sexo_id == 1
+        Beneficiaria inactiva
+      - else
+        Beneficiario inactivo
+    %span.motive
+      Motivo:
+      - if @afiliado.mensaje_de_la_baja
+        = @afiliado.mensaje_de_la_baja
+      - else
+        No se ha podido determinar el motivo.
+
+#datos
+
+  %h3 Clave única de beneficiario
+
+  %div.field_content
+    %span.field_value= @afiliado.clave_de_beneficiario
+
+  %h3 Datos personales
+
+  %div.field_content
+    %span.field_name Apellido/s:
+    - if @afiliado.apellido != @novedad.apellido
+      - if @novedad.apellido
+        %span.field_modified= @novedad.apellido
+      - else
+        %span.field_deleted Se eliminó el apellido ingresado
+      - if @afiliado.apellido
+        %span.field_old_value= "(era: '" + @afiliado.apellido + "')"
+    - else
+      - if @novedad.apellido
+        %span.field_value= @novedad.apellido
+      - else
+        %span.field_empty No se ingresó el apellido
+  %div.field_content
+    %span.field_name Nombre/s:
+    - if @afiliado.nombre != @novedad.nombre
+      - if @novedad.nombre
+        %span.field_modified= @novedad.nombre
+      - else
+        %span.field_deleted Se eliminó el nombre ingresado
+      - if @afiliado.nombre
+        %span.field_old_value= "(era: '" + @afiliado.nombre + "')"
+    - else
+      - if @novedad.nombre
+        %span.field_value= @novedad.nombre
+      - else
+        %span.field_empty No se ingresó el nombre
+  %div.field_content
+    %span.field_name Clase de documento:
+    - if @afiliado.clase_de_documento_id != @novedad.clase_de_documento_id
+      - if @novedad.clase_de_documento_id
+        %span.field_modified= @novedad.clase_de_documento.nombre
+      - else
+        %span.field_deleted Se eliminó la clase de documento seleccionada
+      - if @afiliado.clase_de_documento_id
+        %span.field_old_value= "(era: '" + @afiliado.clase_de_documento_id + "')"
+    - else
+      - if @novedad.clase_de_documento_id
+        %span.field_value= @novedad.clase_de_documento.nombre
+      - else
+        %span.field_empty No se seleccionó la clase de documento
+  %div.field_content
+    %span.field_name Tipo de documento:
+    - if @afiliado.tipo_de_documento_id != @novedad.tipo_de_documento_id
+      - if @novedad.tipo_de_documento_id
+        %span.field_modified= @novedad.tipo_de_documento.nombre
+      - else
+        %span.field_deleted Se eliminó el tipo de documento seleccionado
+      - if @afiliado.tipo_de_documento_id
+        %span.field_old_value= "(era: '" + @afiliado.tipo_de_documento_id + "')"
+    - else
+      - if @novedad.tipo_de_documento_id
+        %span.field_value= @novedad.tipo_de_documento.nombre
+      - else
+        %span.field_empty No se seleccionó el tipo de documento
+  %div.field_content
+    %span.field_name Número de documento:
+    - if @afiliado.numero_de_documento != @novedad.numero_de_documento
+      - if @novedad.numero_de_documento
+        %span.field_modified= @novedad.numero_de_documento
+      - else
+        %span.field_deleted Se eliminó el número de documento ingresado
+      - if @afiliado.numero_de_documento
+        %span.field_old_value= "(era: '" + @afiliado.numero_de_documento + "')"
+    - else
+      - if @novedad.numero_de_documento
+        %span.field_value= @novedad.numero_de_documento
+      - else
+        %span.field_empty No se ingresó el número de documento
+  %div.field_content
+    %span.field_name Número de celular:
+    - if @afiliado.numero_de_celular != @novedad.numero_de_celular
+      - if @novedad.numero_de_celular
+        %span.field_modified= @novedad.numero_de_celular
+      - else
+        %span.field_deleted Se eliminó el número de celular ingresado
+      - if @afiliado.numero_de_celular
+        %span.field_old_value= "(era: '" + @afiliado.numero_de_celular + "')"
+    - else
+      - if @novedad.numero_de_celular
+        %span.field_value= @novedad.numero_de_celular
+      - else
+        %span.field_empty No se ingresó el número de celular
+  %div.field_content
+    %span.field_name Dirección de correo electrónico:
+    - if @afiliado.e_mail != @novedad.e_mail
+      - if @novedad.e_mail
+        %span.field_modified= @novedad.e_mail
+      - else
+        %span.field_deleted Se eliminó la dirección de correo electrónico ingresada
+      - if @afiliado.e_mail
+        %span.field_old_value= "(era: '" + @afiliado.e_mail + "')"
+    - else
+      - if @novedad.e_mail
+        %span.field_value= @novedad.e_mail
+      - else
+        %span.field_empty No se ingresó la dirección de correo electrónico
+
+  %h3 Datos de nacimiento, sexo, origen y estudios
+
+  %div.field_content
+    %span.field_name Sexo:
+    - if @afiliado.sexo_id != @novedad.sexo_id
+      - if @novedad.sexo_id
+        %span.field_modified= @novedad.sexo.nombre
+      - else
+        %span.field_deleted Se eliminó el sexo seleccionado
+      - if @afiliado.sexo_id
+        %span.field_old_value= "(era: '" + @afiliado.sexo.nombre + "')"
+    - else
+      - if @novedad.sexo_id
+        %span.field_value= @novedad.sexo.nombre
+      - else
+        %span.field_empty No se seleccionó el sexo
+  %div.field_content
+    %span.field_name Fecha de nacimiento:
+    - if @afiliado.fecha_de_nacimiento != @novedad.fecha_de_nacimiento
+      - if @novedad.fecha_de_nacimiento
+        %span.field_modified= @novedad.fecha_de_nacimiento.strftime("%d/%m/%Y")
+      - else
+        %span.field_deleted Se eliminó la fecha de nacimiento ingresada
+      - if @afiliado.fecha_de_nacimiento
+        %span.field_old_value= "(era: '" + @afiliado.fecha_de_nacimiento.strftime("%d/%m/%Y") + "')"
+    - else
+      - if @novedad.fecha_de_nacimiento
+        %span.field_value= @novedad.fecha_de_nacimiento.strftime("%d/%m/%Y")
+      - else
+        %span.field_empty No se ingresó la fecha de nacimiento
+  %div.field_content
+    %span.field_name País de origen:
+    - if @afiliado.pais_de_nacimiento_id != @novedad.pais_de_nacimiento_id
+      - if @novedad.pais_de_nacimiento_id
+        %span.field_modified= @novedad.pais_de_nacimiento.nombre
+      - else
+        %span.field_deleted Se eliminó el país de origen seleccionado
+      - if @afiliado.pais_de_nacimiento_id
+        %span.field_old_value= "(era: '" + @afiliado.pais_de_nacimiento.nombre + "')"
+    - else
+      - if @novedad.pais_de_nacimiento_id
+        %span.field_value= @novedad.pais_de_nacimiento.nombre
+      - else
+        %span.field_empty No se ingresó el país de origen
+  %div.field_content
+    %span.field_name Se declara indígena:
+    - if @afiliado.se_declara_indigena != @novedad.se_declara_indigena
+      - if @novedad.se_declara_indigena
+        %span.field_modified Sí
+      - else
+        %span.field_modified No
+      %span.field_old_value= "(era: '" + (@afiliado.se_declara_indigena ? "Sí" : "No") + "')"
+    - else
+      - if @novedad.se_declara_indigena
+        %span.field_value Sí
+      - else
+        %span.field_value No
+  - if @novedad.se_declara_indigena
+    %div.field_content
+      %span.field_name Lengua originaria:
+      - if @afiliado.lengua_originaria_id != @novedad.lengua_originaria_id
+        - if @novedad.lengua_originaria_id
+          %span.field_modified= @novedad.lengua_originaria.nombre
+        - else
+          %span.field_deleted Se eliminó la lengua originaria seleccionada
+        - if @afiliado.lengua_originaria_id
+          %span.field_old_value= "(era: '" + @afiliado.lengua_originaria.nombre + "')"
+      - else
+        - if @novedad.lengua_originaria_id
+          %span.field_value= @afiliado.lengua_originaria.nombre
+        - else
+          %span.field_empty No se seleccionó la lengua originaria
+    %div.field_content
+      %span.field_name Tribu originaria:
+      - if @afiliado.tribu_originaria_id != @novedad.tribu_originaria_id
+        - if @novedad.tribu_originaria_id
+          %span.field_modified= @novedad.tribu_originaria.nombre
+        - else
+          %span.field_deleted Se eliminó la tribu originaria seleccionada
+        - if @afiliado.tribu_originaria_id
+          %span.field_old_value= "(era: '" + @afiliado.tribu_originaria.nombre + "')"
+      - else
+        - if @novedad.tribu_originaria_id
+          %span.field_value= @afiliado.tribu_originaria.nombre
+        - else
+          %span.field_empty No se seleccionó la tribu originaria
+  %div.field_content
+    %span.field_name Estudios:
+    - if @afiliado.alfabetizacion_del_beneficiario_id != @novedad.alfabetizacion_del_beneficiario_id
+      - if @novedad.alfabetizacion_del_beneficiario_id
+        %span.field_modified= @novedad.alfabetizacion_del_beneficiario.nombre
+      - else
+        %span.field_deleted Se eliminó el nivel de estudios seleccionado
+      - if @afiliado.alfabetizacion_del_beneficiario_id
+        %span.field_old_value= "(era: '" + @afiliado.alfabetizacion_del_beneficiario.nombre + "')"
+    - else
+      - if @novedad.alfabetizacion_del_beneficiario_id
+        %span.field_value= @novedad.alfabetizacion_del_beneficiario.nombre
+      - else
+        %span.field_empty No se ingresó el nivel de estudios
+  %div.field_content
+    %span.field_name Años cursados en el mayor nivel:
+    - if @afiliado.alfab_beneficiario_años_ultimo_nivel != @novedad.alfab_beneficiario_años_ultimo_nivel
+      - if @novedad.alfab_beneficiario_años_ultimo_nivel
+        %span.field_modified= @novedad.alfab_beneficiario_años_ultimo_nivel
+      - else
+        %span.field_deleted Se eliminó la cantidad de años cursados ingresada
+      - if @afiliado.alfab_beneficiario_años_ultimo_nivel
+        %span.field_old_value= "(era: '" + @afiliado.alfab_beneficiario_años_ultimo_nivel + "')"
+    - else
+      - if @novedad.alfab_beneficiario_años_ultimo_nivel
+        %span.field_value= @novedad.alfab_beneficiario_años_ultimo_nivel
+      - else
+        %span.field_empty No se ingresó la cantidad de años cursados
+
+  %h3 Datos de domicilio
+
+  %div.field_content
+    %span.field_name Calle:
+    - if @afiliado.domicilio_calle != @novedad.domicilio_calle
+      - if @novedad.domicilio_calle
+        %span.field_modified= @novedad.domicilio_calle
+      - else
+        %span.field_deleted Se eliminó la calle ingresada
+      - if @afiliado.domicilio_calle
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_calle + "')"
+    - else
+      - if @novedad.domicilio_calle
+        %span.field_value= @novedad.domicilio_calle
+      - else
+        %span.field_empty No se ingresó la calle
+  %div.field_content
+    %span.field_name Número de puerta o casa:
+    - if @afiliado.domicilio_numero != @novedad.domicilio_numero
+      - if @novedad.domicilio_numero
+        %span.field_modified= @novedad.domicilio_numero
+      - else
+        %span.field_deleted Se eliminó el número de puerta/casa ingresado
+      - if @afiliado.domicilio_numero
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_numero + "')"
+    - else
+      - if @novedad.domicilio_numero
+        %span.field_value= @novedad.domicilio_numero
+      - else
+        %span.field_empty No se ingresó el número de puerta/casa
+  %div.field_content
+    %span.field_name Piso:
+    - if @afiliado.domicilio_piso != @novedad.domicilio_piso
+      - if @novedad.domicilio_piso
+        %span.field_modified= @novedad.domicilio_piso
+      - else
+        %span.field_deleted Se eliminó el piso ingresado
+      - if @afiliado.domicilio_piso
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_piso + "')"
+    - else
+      - if @novedad.domicilio_piso
+        %span.field_value= @novedad.domicilio_piso
+      - else
+        %span.field_empty No se ingresó el piso
+  %div.field_content
+    %span.field_name Número de departamento:
+    - if @afiliado.domicilio_depto != @novedad.domicilio_depto
+      - if @novedad.domicilio_depto
+        %span.field_modified= @novedad.domicilio_depto
+      - else
+        %span.field_deleted Se eliminó el número de departamento ingresado
+      - if @afiliado.domicilio_depto
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_depto + "')"
+    - else
+      - if @novedad.domicilio_depto
+        %span.field_value= @novedad.domicilio_depto
+      - else
+        %span.field_empty No se ingresó el número de departamento
+  %div.field_content
+    %span.field_name Manzana:
+    - if @afiliado.domicilio_manzana != @novedad.domicilio_manzana
+      - if @novedad.domicilio_manzana
+        %span.field_modified= @novedad.domicilio_manzana
+      - else
+        %span.field_deleted Se eliminó la manzana ingresada
+      - if @afiliado.domicilio_manzana
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_manzana + "')"
+    - else
+      - if @novedad.domicilio_manzana
+        %span.field_value= @novedad.domicilio_manzana
+      - else
+        %span.field_empty No se ingresó la manzana
+  %div.field_content
+    %span.field_name Entre calle:
+    - if @afiliado.domicilio_entre_calle_1 != @novedad.domicilio_entre_calle_1
+      - if @novedad.domicilio_entre_calle_1
+        %span.field_modified= @novedad.domicilio_entre_calle_1
+      - else
+        %span.field_deleted Se eliminó el nombre de calle ingresado
+      - if @afiliado.domicilio_entre_calle_1
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_entre_calle_1 + "')"
+    - else
+      - if @novedad.domicilio_entre_calle_1
+        %span.field_value= @novedad.domicilio_entre_calle_1
+      - else
+        %span.field_empty No se ingresó el nombre de calle
+  %div.field_content
+    %span.field_name Y calle:
+    - if @afiliado.domicilio_entre_calle_2 != @novedad.domicilio_entre_calle_2
+      - if @novedad.domicilio_entre_calle_2
+        %span.field_modified= @novedad.domicilio_entre_calle_2
+      - else
+        %span.field_deleted Se eliminó el nombre de calle ingresado
+      - if @afiliado.domicilio_entre_calle_2
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_entre_calle_2 + "')"
+    - else
+      - if @novedad.domicilio_entre_calle_2
+        %span.field_value= @novedad.domicilio_entre_calle_2
+      - else
+        %span.field_empty No se ingresó el nombre de calle
+  %div.field_content
+    %span.field_name Teléfono:
+    - if @afiliado.telefono != @novedad.telefono
+      - if @novedad.telefono
+        %span.field_modified= @novedad.telefono
+      - else
+        %span.field_deleted Se eliminó el número de teléfono ingresado
+      - if @afiliado.telefono
+        %span.field_old_value= "(era: '" + @afiliado.telefono + "')"
+    - else
+      - if @novedad.telefono
+        %span.field_value= @novedad.telefono
+      - else
+        %span.field_empty No se ingresó el número de teléfono
+  %div.field_content
+    %span.field_name Otro teléfono:
+    - if @afiliado.otro_telefono != @novedad.otro_telefono
+      - if @novedad.otro_telefono
+        %span.field_modified= @novedad.otro_telefono
+      - else
+        %span.field_deleted Se eliminó el número de teléfono ingresado
+      - if @afiliado.otro_telefono
+        %span.field_old_value= "(era: '" + @afiliado.otro_telefono + "')"
+    - else
+      - if @novedad.otro_telefono
+        %span.field_value= @novedad.otro_telefono
+      - else
+        %span.field_empty No se ingresó el número de teléfono
+  %div.field_content
+    %span.field_name Departamento:
+    - if @afiliado.domicilio_departamento_id != @novedad.domicilio_departamento_id
+      - if @novedad.domicilio_departamento_id
+        %span.field_modified= @novedad.domicilio_departamento.nombre
+      - else
+        %span.field_deleted Se eliminó el departamento seleccionado
+      - if @afiliado.domicilio_departamento_id
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_departamento.nombre + "')"
+    - else
+      - if @novedad.domicilio_departamento_id
+        %span.field_value= @novedad.domicilio_departamento.nombre
+      - else
+        %span.field_empty No se seleccionó el departamento
+  %div.field_content
+    %span.field_name Distrito:
+    - if @afiliado.domicilio_distrito_id != @novedad.domicilio_distrito_id
+      - if @novedad.domicilio_distrito_id
+        %span.field_modified= @novedad.domicilio_distrito.nombre
+      - else
+        %span.field_deleted Se eliminó el distrito seleccionado
+      - if @afiliado.domicilio_distrito_id
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_distrito.nombre + "')"
+    - else
+      - if @novedad.domicilio_distrito_id
+        %span.field_value= @novedad.domicilio_distrito.nombre
+      - else
+        %span.field_empty No se seleccionó el distrito
+  %div.field_content
+    %span.field_name Barrio o paraje:
+    - if @afiliado.domicilio_barrio_o_paraje != @novedad.domicilio_barrio_o_paraje
+      - if @novedad.domicilio_barrio_o_paraje
+        %span.field_modified= @novedad.domicilio_barrio_o_paraje
+      - else
+        %span.field_deleted Se eliminó el barrio/paraje ingresado
+      - if @afiliado.domicilio_barrio_o_paraje
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_barrio_o_paraje + "')"
+    - else
+      - if @novedad.domicilio_barrio_o_paraje
+        %span.field_value= @novedad.domicilio_barrio_o_paraje
+      - else
+        %span.field_empty No se ingresó el barrio/paraje
+  %div.field_content
+    %span.field_name Código postal:
+    - if @afiliado.domicilio_codigo_postal != @novedad.domicilio_codigo_postal
+      - if @novedad.domicilio_codigo_postal
+        %span.field_modified= @novedad.domicilio_codigo_postal
+      - else
+        %span.field_deleted Se eliminó el código postal ingresado
+      - if @afiliado.domicilio_codigo_postal
+        %span.field_old_value= "(era: '" + @afiliado.domicilio_codigo_postal + "')"
+    - else
+      - if @novedad.domicilio_codigo_postal
+        %span.field_value= @novedad.domicilio_codigo_postal
+      - else
+        %span.field_empty No se ingresó el código postal
+
+  %h4 Observaciones
+
+  %div.field_content
+    - if @novedad.observaciones
+      %span.field_value
+        - @novedad.observaciones.split("\n").each do |linea|
+          = linea
+    - else
+      %span.field_empty No se han ingresado observaciones para el domicilio
+  
+
+  %h3 Lugar de atención habitual
+
+  %div.field_content
+    - if @afiliado.lugar_de_atencion_habitual_id != @novedad.lugar_de_atencion_habitual_id
+      - if @novedad.lugar_de_atencion_habitual_id
+        %span.field_modified= @novedad.lugar_de_atencion_habitual.nombre
+      - else
+        %span.field_deleted Se eliminó el lugar de atención habitual seleccionado
+      - if @afiliado.lugar_de_atencion_habitual_id
+        %span.field_old_value= "(era: '" + @afiliado.lugar_de_atencion_habitual.nombre + "')"
+    - else
+      - if @novedad.lugar_de_atencion_habitual_id
+        %span.field_value= @novedad.lugar_de_atencion_habitual.nombre
+      - else
+        %span.field_empty No se seleccionó el lugar de atención habitual
+
+  - if @novedad.es_menor
+
+    %h3 Datos del adulto responsable
+
+    %h4 Madre
+
+    %div.field_content
+      %span.field_name Apellido/s:
+      - if @afiliado.apellido_de_la_madre != @novedad.apellido_de_la_madre
+        - if @novedad.apellido_de_la_madre
+          %span.field_modified= @novedad.apellido_de_la_madre
+        - else
+          %span.field_deleted Se eliminó el apellido ingresado
+        - if @afiliado.apellido_de_la_madre
+          %span.field_old_value= "(era: '" + @afiliado.apellido_de_la_madre + "')"
+      - else
+        - if @novedad.apellido_de_la_madre
+          %span.field_value= @novedad.apellido_de_la_madre
+        - else
+          %span.field_empty No se ingresó el apellido
+    %div.field_content
+      %span.field_name Nombre/s:
+      - if @afiliado.nombre_de_la_madre != @novedad.nombre_de_la_madre
+        - if @novedad.nombre_de_la_madre
+          %span.field_modified= @novedad.nombre_de_la_madre
+        - else
+          %span.field_deleted Se eliminó el nombre ingresado
+        - if @afiliado.nombre_de_la_madre
+          %span.field_old_value= "(era: '" + @afiliado.nombre_de_la_madre + "')"
+      - else
+        - if @novedad.nombre_de_la_madre
+          %span.field_value= @novedad.nombre_de_la_madre
+        - else
+          %span.field_empty No se ingresó el nombre
+    %div.field_content
+      %span.field_name Tipo de documento:
+      - if @afiliado.tipo_de_documento_de_la_madre_id != @novedad.tipo_de_documento_de_la_madre_id
+        - if @novedad.tipo_de_documento_de_la_madre_id
+          %span.field_modified= @novedad.tipo_de_documento_de_la_madre.nombre
+        - else
+          %span.field_deleted Se eliminó el tipo de documento seleccionado
+        - if @afiliado.tipo_de_documento_de_la_madre_id
+          %span.field_old_value= "(era: '" + @afiliado.tipo_de_documento_de_la_madre.nombre + "')"
+      - else
+        - if @novedad.tipo_de_documento_de_la_madre_id
+          %span.field_value= @novedad.tipo_de_documento_de_la_madre.nombre
+        - else
+          %span.field_empty No se seleccionó el tipo de documento
+    %div.field_content
+      %span.field_name Número de documento:
+      - if @afiliado.numero_de_documento_de_la_madre != @novedad.numero_de_documento_de_la_madre
+        - if @novedad.numero_de_documento_de_la_madre
+          %span.field_modified= @novedad.numero_de_documento_de_la_madre
+        - else
+          %span.field_deleted Se eliminó el número de documento ingresado
+        - if @afiliado.numero_de_documento_de_la_madre
+          %span.field_old_value= "(era: '" + @afiliado.numero_de_documento_de_la_madre + "')"
+      - else
+        - if @novedad.numero_de_documento_de_la_madre
+          %span.field_value= @novedad.numero_de_documento_de_la_madre
+        - else
+          %span.field_empty No se ingresó el número de documento
+    %div.field_content
+      %span.field_name Estudios:
+      - if @afiliado.alfabetizacion_de_la_madre_id != @novedad.alfabetizacion_de_la_madre_id
+        - if @novedad.alfabetizacion_de_la_madre_id
+          %span.field_modified= @novedad.alfabetizacion_de_la_madre.nombre
+        - else
+          %span.field_deleted Se eliminó el nivel de estudios seleccionado
+        - if @afiliado.alfabetizacion_de_la_madre_id
+          %span.field_old_value= "(era: '" + @afiliado.alfabetizacion_de_la_madre.nombre + "')"
+      - else
+        - if @novedad.alfabetizacion_de_la_madre_id
+          %span.field_value= @novedad.alfabetizacion_de_la_madre.nombre
+        - else
+          %span.field_empty No se ingresó el nivel de estudios
+    %div.field_content
+      %span.field_name Años cursados en el mayor nivel:
+      - if @afiliado.alfab_madre_años_ultimo_nivel != @novedad.alfab_madre_años_ultimo_nivel
+        - if @novedad.alfab_madre_años_ultimo_nivel
+          %span.field_modified= @novedad.alfab_madre_años_ultimo_nivel
+        - else
+          %span.field_deleted Se eliminó la cantidad de años cursados ingresada
+        - if @afiliado.alfab_madre_años_ultimo_nivel
+          %span.field_old_value= "(era: '" + @afiliado.alfab_madre_años_ultimo_nivel + "')"
+      - else
+        - if @novedad.alfab_madre_años_ultimo_nivel
+          %span.field_value= @novedad.alfab_madre_años_ultimo_nivel
+        - else
+          %span.field_empty No se ingresó la cantidad de años cursados
+
+    %h4 Padre
+
+    %div.field_content
+      %span.field_name Apellido/s:
+      - if @afiliado.apellido_del_padre != @novedad.apellido_del_padre
+        - if @novedad.apellido_del_padre
+          %span.field_modified= @novedad.apellido_del_padre
+        - else
+          %span.field_deleted Se eliminó el apellido ingresado
+        - if @afiliado.apellido_del_padre
+          %span.field_old_value= "(era: '" + @afiliado.apellido_del_padre + "')"
+      - else
+        - if @novedad.apellido_del_padre
+          %span.field_value= @novedad.apellido_del_padre
+        - else
+          %span.field_empty No se ingresó el apellido
+    %div.field_content
+      %span.field_name Nombre/s:
+      - if @afiliado.nombre_del_padre != @novedad.nombre_del_padre
+        - if @novedad.nombre_del_padre
+          %span.field_modified= @novedad.nombre_del_padre
+        - else
+          %span.field_deleted Se eliminó el nombre ingresado
+        - if @afiliado.nombre_del_padre
+          %span.field_old_value= "(era: '" + @afiliado.nombre_del_padre + "')"
+      - else
+        - if @novedad.nombre_del_padre
+          %span.field_value= @novedad.nombre_del_padre
+        - else
+          %span.field_empty No se ingresó el nombre
+    %div.field_content
+      %span.field_name Tipo de documento:
+      - if @afiliado.tipo_de_documento_del_padre_id != @novedad.tipo_de_documento_del_padre_id
+        - if @novedad.tipo_de_documento_del_padre_id
+          %span.field_modified= @novedad.tipo_de_documento_del_padre.nombre
+        - else
+          %span.field_deleted Se eliminó el tipo de documento seleccionado
+        - if @afiliado.tipo_de_documento_del_padre_id
+          %span.field_old_value= "(era: '" + @afiliado.tipo_de_documento_del_padre.nombre + "')"
+      - else
+        - if @novedad.tipo_de_documento_del_padre_id
+          %span.field_value= @novedad.tipo_de_documento_del_padre.nombre
+        - else
+          %span.field_empty No se seleccionó el tipo de documento
+    %div.field_content
+      %span.field_name Número de documento:
+      - if @afiliado.numero_de_documento_del_padre != @novedad.numero_de_documento_del_padre
+        - if @novedad.numero_de_documento_del_padre
+          %span.field_modified= @novedad.numero_de_documento_del_padre
+        - else
+          %span.field_deleted Se eliminó el número de documento ingresado
+        - if @afiliado.numero_de_documento_del_padre
+          %span.field_old_value= "(era: '" + @afiliado.numero_de_documento_del_padre + "')"
+      - else
+        - if @novedad.numero_de_documento_del_padre
+          %span.field_value= @novedad.numero_de_documento_del_padre
+        - else
+          %span.field_empty No se ingresó el número de documento
+    %div.field_content
+      %span.field_name Estudios:
+      - if @afiliado.alfabetizacion_del_padre_id != @novedad.alfabetizacion_del_padre_id
+        - if @novedad.alfabetizacion_del_padre_id
+          %span.field_modified= @novedad.alfabetizacion_del_padre.nombre
+        - else
+          %span.field_deleted Se eliminó el nivel de estudios seleccionado
+        - if @afiliado.alfabetizacion_del_padre_id
+          %span.field_old_value= "(era: '" + @afiliado.alfabetizacion_del_padre.nombre + "')"
+      - else
+        - if @novedad.alfabetizacion_del_padre_id
+          %span.field_value= @novedad.alfabetizacion_del_padre.nombre
+        - else
+          %span.field_empty No se ingresó el nivel de estudios
+    %div.field_content
+      %span.field_name Años cursados en el mayor nivel:
+      - if @afiliado.alfab_padre_años_ultimo_nivel != @novedad.alfab_padre_años_ultimo_nivel
+        - if @novedad.alfab_padre_años_ultimo_nivel
+          %span.field_modified= @novedad.alfab_padre_años_ultimo_nivel
+        - else
+          %span.field_deleted Se eliminó la cantidad de años cursados ingresada
+        - if @afiliado.alfab_padre_años_ultimo_nivel
+          %span.field_old_value= "(era: '" + @afiliado.alfab_padre_años_ultimo_nivel + "')"
+      - else
+        - if @novedad.alfab_padre_años_ultimo_nivel
+          %span.field_value= @novedad.alfab_padre_años_ultimo_nivel
+        - else
+          %span.field_empty No se ingresó la cantidad de años cursados
+
+    %h4 Tutor
+
+    %div.field_content
+      %span.field_name Apellido/s:
+      - if @afiliado.apellido_del_tutor != @novedad.apellido_del_tutor
+        - if @novedad.apellido_del_tutor
+          %span.field_modified= @novedad.apellido_del_tutor
+        - else
+          %span.field_deleted Se eliminó el apellido ingresado
+        - if @afiliado.apellido_del_tutor
+          %span.field_old_value= "(era: '" + @afiliado.apellido_del_tutor + "')"
+      - else
+        - if @novedad.apellido_del_tutor
+          %span.field_value= @novedad.apellido_del_tutor
+        - else
+          %span.field_empty No se ingresó el apellido
+    %div.field_content
+      %span.field_name Nombre/s:
+      - if @afiliado.nombre_del_tutor != @novedad.nombre_del_tutor
+        - if @novedad.nombre_del_tutor
+          %span.field_modified= @novedad.nombre_del_tutor
+        - else
+          %span.field_deleted Se eliminó el nombre ingresado
+        - if @afiliado.nombre_del_tutor
+          %span.field_old_value= "(era: '" + @afiliado.nombre_del_tutor + "')"
+      - else
+        - if @novedad.nombre_del_tutor
+          %span.field_value= @novedad.nombre_del_tutor
+        - else
+          %span.field_empty No se ingresó el nombre
+    %div.field_content
+      %span.field_name Tipo de documento:
+      - if @afiliado.tipo_de_documento_del_tutor_id != @novedad.tipo_de_documento_del_tutor_id
+        - if @novedad.tipo_de_documento_del_tutor_id
+          %span.field_modified= @novedad.tipo_de_documento_del_tutor.nombre
+        - else
+          %span.field_deleted Se eliminó el tipo de documento seleccionado
+        - if @afiliado.tipo_de_documento_del_tutor_id
+          %span.field_old_value= "(era: '" + @afiliado.tipo_de_documento_del_tutor.nombre + "')"
+      - else
+        - if @novedad.tipo_de_documento_del_tutor_id
+          %span.field_value= @novedad.tipo_de_documento_del_tutor.nombre
+        - else
+          %span.field_empty No se seleccionó el tipo de documento
+    %div.field_content
+      %span.field_name Número de documento:
+      - if @afiliado.numero_de_documento_del_tutor != @novedad.numero_de_documento_del_tutor
+        - if @novedad.numero_de_documento_del_tutor
+          %span.field_modified= @novedad.numero_de_documento_del_tutor
+        - else
+          %span.field_deleted Se eliminó el número de documento ingresado
+        - if @afiliado.numero_de_documento_del_tutor
+          %span.field_old_value= "(era: '" + @afiliado.numero_de_documento_del_tutor + "')"
+      - else
+        - if @novedad.numero_de_documento_del_tutor
+          %span.field_value= @novedad.numero_de_documento_del_tutor
+        - else
+          %span.field_empty No se ingresó el número de documento
+    %div.field_content
+      %span.field_name Estudios:
+      - if @afiliado.alfabetizacion_del_tutor_id != @novedad.alfabetizacion_del_tutor_id
+        - if @novedad.alfabetizacion_del_tutor_id
+          %span.field_modified= @novedad.alfabetizacion_del_tutor.nombre
+        - else
+          %span.field_deleted Se eliminó el nivel de estudios seleccionado
+        - if @afiliado.alfabetizacion_del_tutor_id
+          %span.field_old_value= "(era: '" + @afiliado.alfabetizacion_del_tutor.nombre + "')"
+      - else
+        - if @novedad.alfabetizacion_del_tutor_id
+          %span.field_value= @novedad.alfabetizacion_del_tutor.nombre
+        - else
+          %span.field_empty No se ingresó el nivel de estudios
+    %div.field_content
+      %span.field_name Años cursados en el mayor nivel:
+      - if @afiliado.alfab_tutor_años_ultimo_nivel != @novedad.alfab_tutor_años_ultimo_nivel
+        - if @novedad.alfab_tutor_años_ultimo_nivel
+          %span.field_modified= @novedad.alfab_tutor_años_ultimo_nivel
+        - else
+          %span.field_deleted Se eliminó la cantidad de años cursados ingresada
+        - if @afiliado.alfab_tutor_años_ultimo_nivel
+          %span.field_old_value= "(era: '" + @afiliado.alfab_tutor_años_ultimo_nivel + "')"
+      - else
+        - if @novedad.alfab_tutor_años_ultimo_nivel
+          %span.field_value= @novedad.alfab_tutor_años_ultimo_nivel
+        - else
+          %span.field_empty No se ingresó la cantidad de años cursados
+
+  - if @novedad.esta_embarazada
+
+    %h3 Datos del embarazo
+
+    %div.field_content
+      %span.field_name Fecha de la última menstruación:
+      - if @afiliado.fecha_de_la_ultima_menstruacion != @novedad.fecha_de_la_ultima_menstruacion
+        - if @novedad.fecha_de_la_ultima_menstruacion
+          %span.field_modified= @novedad.fecha_de_la_ultima_menstruacion.strftime("%d/%m/%Y")
+        - else
+          %span.field_deleted Se eliminó la fecha de la última menstruación ingresada
+        - if @afiliado.fecha_de_la_ultima_menstruacion
+          %span.field_old_value= "(era: '" + @afiliado.fecha_de_la_ultima_menstruacion.strftime("%d/%m/%Y") + "')"
+      - else
+        - if @novedad.fecha_de_la_ultima_menstruacion
+          %span.field_value= @novedad.fecha_de_la_ultima_menstruacion.strftime("%d/%m/%Y")
+        - else
+          %span.field_empty No se ingresó la fecha de la última menstruación
+    %div.field_content
+      %span.field_name Fecha de diagnóstico del embarazo:
+      - if @afiliado.fecha_de_diagnostico_del_embarazo != @novedad.fecha_de_diagnostico_del_embarazo
+        - if @novedad.fecha_de_diagnostico_del_embarazo
+          %span.field_modified= @novedad.fecha_de_diagnostico_del_embarazo.strftime("%d/%m/%Y")
+        - else
+          %span.field_deleted Se eliminó la fecha de diagnóstico ingresada
+        - if @afiliado.fecha_de_diagnostico_del_embarazo
+          %span.field_old_value= "(era: '" + @afiliado.fecha_de_diagnostico_del_embarazo.strftime("%d/%m/%Y") + "')"
+      - else
+        - if @novedad.fecha_de_diagnostico_del_embarazo
+          %span.field_value= @novedad.fecha_de_diagnostico_del_embarazo.strftime("%d/%m/%Y")
+        - else
+          %span.field_empty No se ingresó la fecha de diagnóstico
+    %div.field_content
+      %span.field_name Semanas de curso del embarazo al diagnóstico:
+      - if @afiliado.semanas_de_embarazo != @novedad.semanas_de_embarazo
+        - if @novedad.semanas_de_embarazo
+          %span.field_modified= @novedad.semanas_de_embarazo
+        - else
+          %span.field_deleted Se eliminó la cantidad de semanas de embarazo ingresada
+        - if @afiliado.semanas_de_embarazo
+          %span.field_old_value= "(era: '" + @afiliado.semanas_de_embarazo + "')"
+      - else
+        - if @novedad.semanas_de_embarazo
+          %span.field_value= @novedad.semanas_de_embarazo
+        - else
+          %span.field_empty No se ingresó la cantidad de semanas de embarazo
+    %div.field_content
+      %span.field_name Fecha probable de parto:
+      - if @afiliado.fecha_probable_de_parto != @novedad.fecha_probable_de_parto
+        - if @novedad.fecha_probable_de_parto
+          %span.field_modified= @novedad.fecha_probable_de_parto.strftime("%d/%m/%Y")
+        - else
+          %span.field_deleted Se eliminó la fecha probable de parto ingresada
+        - if @afiliado.fecha_probable_de_parto
+          %span.field_old_value= "(era: '" + @afiliado.fecha_probable_de_parto.strftime("%d/%m/%Y") + "')"
+      - else
+        - if @novedad.fecha_probable_de_parto
+          %span.field_value= @novedad.fecha_probable_de_parto.strftime("%d/%m/%Y")
+        - else
+          %span.field_empty No se ingresó la fecha probable de parto
+
+  %h3 Remediar+Redes
+
+  %div.field_content
+    %span.field_name Score de riesgo cardiovascular:
+    - if @afiliado.score_de_riesgo != @novedad.score_de_riesgo
+      - if @novedad.score_de_riesgo
+        %span.field_modified= @novedad.score_de_riesgo
+      - else
+        %span.field_deleted Se eliminó el score de riesgo ingresado
+      - if @afiliado.score_de_riesgo
+        %span.field_old_value= "(era: '" + @afiliado.score_de_riesgo + "')"
+    - else
+      - if @novedad.score_de_riesgo
+        %span.field_value= @novedad.score_de_riesgo
+      - else
+        %span.field_empty No se ingresó el score de riesgo
+
+  %h3 Discapacidad
+
+  %div.field_content
+    - if @afiliado.discapacidad_id != @novedad.discapacidad_id
+      - if @novedad.discapacidad_id
+        %span.field_modified= @novedad.discapacidad.nombre
+      - else
+        %span.field_deleted Se eliminó la discapacidad seleccionada
+      - if @afiliado.discapacidad_id
+        %span.field_old_value= "(era: '" + @afiliado.discapacidad.nombre + "')"
+    - else
+      - if @novedad.discapacidad_id
+        %span.field_value= @novedad.discapacidad.nombre
+      - else
+        %span.field_empty No se indicó una discapacidad
+
+  %h3 Fecha y centro inscriptor
+
+  %div.field_content
+    %span.field_name Fecha de inscripción o modificación:
+    - if @novedad.fecha_de_la_novedad
+      %span.field_value= @novedad.fecha_de_la_novedad.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha de inscripción/modificación
+  %div.field_content
+    %span.field_name Centro de inscripción:
+    - if @novedad.centro_de_inscripcion_id
+      %span.field_value= @novedad.centro_de_inscripcion.nombre
+    - else
+      %span.field_empty No se indicó el centro de inscripción
+  %div.field_content
+    %span.field_name Nombre del agente inscriptor:
+    - if @novedad.nombre_del_agente_inscriptor
+      %span.field_value= @novedad.nombre_del_agente_inscriptor
+    - else
+      %span.field_empty No se indicó el nombre del agente inscriptor
+
+  %h3 Observaciones generales
+
+  %div.field_content
+    - if @novedad.observaciones_generales
+      %span.field_value
+        - @novedad.observaciones_generales.split("\n").each do |linea|
+          = linea
+    - else
+      %span.field_empty No se han ingresado observaciones
+  
+  %h3 Última modificación de los datos
+
+  %div.field_content
+    %span.field_name Fecha de modificación de esta solicitud:
+    - if @novedad.updated_at
+      %span.field_value= @novedad.updated_at.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se registró la fecha de la última modificación
+  %div.field_content
+    %span.field_name Usuario que modificó esta solicitud:
+    - if @novedad.updated_by
+      %span.field_value= @novedad.updated_by
+    - else
+      %span.field_empty No se registró el usuario que realizó la última modificación

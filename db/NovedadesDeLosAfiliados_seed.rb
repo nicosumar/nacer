@@ -100,4 +100,79 @@ class ModificarNovedadesDeLosAfiliados < ActiveRecord::Migration
       ADD CONSTRAINT fk_novedades_discapacidades
       FOREIGN KEY (discapacidad_id) REFERENCES discapacidades (id);
   "
+
+  # Funciones y disparadores para modificar los datos que se insertan/modifican en la tabla
+  execute "
+    CREATE OR REPLACE FUNCTION modificar_novedad() RETURNS trigger AS $$
+      DECLARE
+        new_apellido varchar;
+        new_nombre varchar;
+        new_numero_de_documento varchar;
+        new_domicilio_calle varchar;
+        new_domicilio_numero varchar;
+        new_domicilio_piso varchar;
+        new_domicilio_depto varchar;
+        new_domicilio_manzana varchar;
+        new_domicilio_entre_calle_1 varchar;
+        new_domicilio_entre_calle_2 varchar;
+        new_domicilio_barrio_o_paraje varchar;
+        new_domicilio_codigo_postal varchar;
+        new_apellido_de_la_madre varchar;
+        new_nombre_de_la_madre varchar;
+        new_apellido_del_padre varchar;
+        new_nombre_del_padre varchar;
+        new_apellido_del_tutor varchar;
+        new_nombre_del_tutor varchar;
+        new_nombre_del_agente_inscriptor varchar;
+      BEGIN
+        -- Modificar todos los campos tipo varchar del registro
+        SELECT UPPER(NEW.apellido) INTO new_apellido;
+        SELECT UPPER(NEW.nombre) INTO new_nombre;
+        SELECT UPPER(NEW.numero_de_documento) INTO new_numero_de_documento;
+        SELECT UPPER(NEW.domicilio_calle) INTO new_domicilio_calle;
+        SELECT UPPER(NEW.domicilio_numero) INTO new_domicilio_numero;
+        SELECT UPPER(NEW.domicilio_piso) INTO new_domicilio_piso;
+        SELECT UPPER(NEW.domicilio_depto) INTO new_domicilio_depto;
+        SELECT UPPER(NEW.domicilio_manzana) INTO new_domicilio_manzana;
+        SELECT UPPER(NEW.domicilio_entre_calle_1) INTO new_domicilio_entre_calle_1;
+        SELECT UPPER(NEW.domicilio_entre_calle_2) INTO new_domicilio_entre_calle_2;
+        SELECT UPPER(NEW.domicilio_barrio_o_paraje) INTO new_domicilio_barrio_o_paraje;
+        SELECT UPPER(NEW.domicilio_codigo_postal) INTO new_domicilio_codigo_postal;
+        SELECT UPPER(NEW.apellido_de_la_madre) INTO new_apellido_de_la_madre;
+        SELECT UPPER(NEW.nombre_de_la_madre) INTO new_nombre_de_la_madre;
+        SELECT UPPER(NEW.apellido_del_padre) INTO new_apellido_del_padre;
+        SELECT UPPER(NEW.nombre_del_padre) INTO new_nombre_del_padre;
+        SELECT UPPER(NEW.apellido_del_tutor) INTO new_apellido_del_tutor;
+        SELECT UPPER(NEW.nombre_del_tutor) INTO new_nombre_del_tutor;
+        SELECT UPPER(NEW.nombre_del_agente_inscriptor) INTO new_nombre_del_agente_inscriptor;
+        NEW.apellido = new_apellido;
+        NEW.nombre = new_nombre;
+        NEW.numero_de_documento = new_numero_de_documento;
+        NEW.domicilio_calle = new_domicilio_calle;
+        NEW.domicilio_numero = new_domicilio_numero;
+        NEW.domicilio_piso = new_domicilio_piso;
+        NEW.domicilio_depto = new_domicilio_depto;
+        NEW.domicilio_manzana = new_domicilio_manzana;
+        NEW.domicilio_entre_calle_1 = new_domicilio_entre_calle_1;
+        NEW.domicilio_entre_calle_2 = new_domicilio_entre_calle_2;
+        NEW.domicilio_barrio_o_paraje = new_domicilio_barrio_o_paraje;
+        NEW.domicilio_codigo_postal = new_domicilio_codigo_postal;
+        NEW.apellido_de_la_madre = new_apellido_de_la_madre;
+        NEW.nombre_de_la_madre = new_nombre_de_la_madre;
+        NEW.apellido_del_padre = new_apellido_del_padre;
+        NEW.nombre_del_padre = new_nombre_del_padre;
+        NEW.apellido_del_tutor = new_apellido_del_tutor;
+        NEW.nombre_del_tutor = new_nombre_del_tutor;
+        NEW.nombre_del_agente_inscriptor = new_nombre_del_agente_inscriptor;
+
+        -- Devolver el registro modificado
+        RETURN NEW;
+      END;
+    $$ LANGUAGE plpgsql;
+  "
+  execute "
+    CREATE TRIGGER trg_modificar_novedad_del_afiliado
+      BEFORE INSERT OR UPDATE ON novedades_de_los_afiliados
+      FOR EACH ROW EXECUTE PROCEDURE modificar_novedad();
+  "
 end

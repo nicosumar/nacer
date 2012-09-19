@@ -39,10 +39,11 @@
   %div.field
     %span.field_name= f.label :tipo_de_documento_id
     %span.field_value= f.select :tipo_de_documento_id, |
-      options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_id) |
+      options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_id), |
+      {:include_blank => true} |
   %div.field
     %span.field_name= f.label :numero_de_documento
-    %span.field_value= f.text_field :numero_de_documento
+    %span.field_value= f.text_field :numero_de_documento, :style => "text-transform: uppercase;"
   %div.field
     %span.field_name= f.label :numero_de_celular
     %span.field_value= f.text_field :numero_de_celular
@@ -53,22 +54,26 @@
   %h3 Datos de nacimiento, sexo, origen y estudios
   %div.field
     %span.field_name= f.label :sexo_id
-    %span.field_value= f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id)
+    %span.field_value= f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id), |
+      {:inculde_blank => true} |
   %div.field
     %span.field_name= f.label :fecha_de_nacimiento
     - if @novedad.tipo_de_novedad_id == 1
       %span.field_value= f.date_select :fecha_de_nacimiento, |
-        {:start_year => Date.today.year - 65, :end_year => Date.today.year} |
+        {:start_year => Date.today.year - 65, :end_year => Date.today.year, |
+        :include_blank => true}
     - else
       %span.field_value= f.date_select :fecha_de_nacimiento, |
-        {:start_year => 1936, :end_year => Date.today.year} |
+        {:start_year => 1936, :end_year => Date.today.year, |
+        :include_blank => true} |
   %div.field
     %span.field_name= f.label :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los "+ Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años."
     %span.field_value= f.check_box :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los "+ Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años."
   %div.field
     %span.field_name= f.label :pais_de_nacimiento_id
     %span.field_value= f.select :pais_de_nacimiento_id, |
-      options_for_select(@paises, @novedad.pais_de_nacimiento_id), { :include_blank => true} |
+      options_for_select(@paises, @novedad.pais_de_nacimiento_id), |
+      {:include_blank => true} |
   %div.field
     %span.field_name= f.label :se_declara_indigena
     %span.field_value= f.check_box :se_declara_indigena
@@ -76,16 +81,18 @@
     %div.field
       %span.field_name= f.label :lengua_originaria_id
       %span.field_value= f.select :lengua_originaria_id, |
-        options_for_select(@lenguas_originarias, @novedad.lengua_originaria_id), { :include_blank => true} |
+        options_for_select(@lenguas_originarias, @novedad.lengua_originaria_id), |
+        {:include_blank => true} |
     %div.field
       %span.field_name= f.label :tribu_originaria_id
       %span.field_value= f.select :tribu_originaria_id, |
-        options_for_select(@tribus_originarias, @novedad.tribu_originaria_id), { :include_blank => true} |
+        options_for_select(@tribus_originarias, @novedad.tribu_originaria_id), |
+        {:include_blank => true} |
   %div.field
     %span.field_name= f.label :alfabetizacion_del_beneficiario_id
     %span.field_value= f.select :alfabetizacion_del_beneficiario_id, |
       options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_beneficiario_id), |
-      { :include_blank => true} |
+      {:include_blank => true} |
   #alfab_benef.field
     %span.field_name= f.label :alfab_beneficiario_años_ultimo_nivel
     %span.field_value= f.number_field :alfab_beneficiario_años_ultimo_nivel, :size => 3
@@ -121,11 +128,13 @@
   %div.field
     %span.field_name= f.label :domicilio_departamento_id
     %span.field_value= f.select :domicilio_departamento_id, |
-      options_for_select(@departamentos, @novedad.domicilio_departamento_id), { :include_blank => true} |
+      options_for_select(@departamentos, @novedad.domicilio_departamento_id), |
+      {:include_blank => true} |
   #select_distritos.field
     %span.field_name= f.label :domicilio_distrito_id
     %span.field_value= f.select :domicilio_distrito_id, |
-      options_for_select(@distritos, @novedad.domicilio_distrito_id), { :include_blank => true} |
+      options_for_select(@distritos, @novedad.domicilio_distrito_id), |
+      {:include_blank => true} |
   %div.field
     %span.field_name= f.label :domicilio_barrio_o_paraje
     %span.field_value= f.text_field :domicilio_barrio_o_paraje, :style => "text-transform: uppercase;"
@@ -134,11 +143,12 @@
     %span.field_value= f.text_field :domicilio_codigo_postal, :style => "text-transform: uppercase;"
   %h4 Observaciones
   %div.field
-    %span.field_value= f.text_area :observaciones, :size => "70x8", :style => "text-transform: uppercase;"
+    %span.field_value= f.text_area :observaciones, :size => "70x8"
   %h3 Lugar de atención habitual
   %div.field
     %span.field_value= f.select :lugar_de_atencion_habitual_id, |
-      options_for_select(@efectores, @novedad.lugar_de_atencion_habitual_id), { :include_blank => true} |
+      options_for_select(@efectores, @novedad.lugar_de_atencion_habitual_id), |
+      {:include_blank => true} |
 
   #es_menor
     %h3 Datos del adulto responsable
@@ -152,7 +162,8 @@
     %div.field
       %span.field_name= f.label :tipo_de_documento_de_la_madre_id
       %span.field_value= f.select :tipo_de_documento_de_la_madre_id, |
-        options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_de_la_madre_id) |
+        options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_de_la_madre_id), |
+        {:include_blank => true} |
     %div.field
       %span.field_name= f.label :numero_de_documento_de_la_madre
       %span.field_value= f.text_field :numero_de_documento_de_la_madre, :style => "text-transform: uppercase;"
@@ -160,7 +171,7 @@
       %span.field_name= f.label :alfabetizacion_de_la_madre_id
       %span.field_value= f.select :alfabetizacion_de_la_madre_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_de_la_madre_id), |
-        { :include_blank => true} |
+        {:include_blank => true} |
     #alfab_madre.field
       %span.field_name= f.label :alfab_madre_años_ultimo_nivel
       %span.field_value= f.number_field :alfab_madre_años_ultimo_nivel, :size => 3
@@ -174,7 +185,8 @@
     %div.field
       %span.field_name= f.label :tipo_de_documento_del_padre_id
       %span.field_value= f.select :tipo_de_documento_del_padre_id, |
-        options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_del_padre_id) |
+        options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_del_padre_id), |
+        {:include_blank => true} |
     %div.field
       %span.field_name= f.label :numero_de_documento_del_padre
       %span.field_value= f.text_field :numero_de_documento_del_padre, :style => "text-transform: uppercase;"
@@ -182,7 +194,7 @@
       %span.field_name= f.label :alfabetizacion_del_padre_id
       %span.field_value= f.select :alfabetizacion_del_padre_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_padre_id), |
-        { :include_blank => true} |
+        {:include_blank => true} |
     #alfab_padre.field
       %span.field_name= f.label :alfab_padre_años_ultimo_nivel
       %span.field_value= f.number_field :alfab_padre_años_ultimo_nivel, :size => 3
@@ -196,15 +208,17 @@
     %div.field
       %span.field_name= f.label :tipo_de_documento_del_tutor_id
       %span.field_value= f.select :tipo_de_documento_del_tutor_id, |
-        options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_del_tutor_id) |
+        options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_del_tutor_id), |
+        {:include_blank => true} |
     %div.field
       %span.field_name= f.label :numero_de_documento_del_tutor
-      %span.field_value= f.text_field :numero_de_documento_del_tutor, :style => "text-transform: uppercase;"
+      %span.field_value= f.text_field :numero_de_documento_del_tutor, |
+        :style => "text-transform: uppercase;" |
     %div.field
       %span.field_name= f.label :alfabetizacion_del_tutor_id
       %span.field_value= f.select :alfabetizacion_del_tutor_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_tutor_id), |
-        { :include_blank => true} |
+        {:include_blank => true} |
     #alfab_tutor.field
       %span.field_name= f.label :alfab_tutor_años_ultimo_nivel
       %span.field_value= f.number_field :alfab_tutor_años_ultimo_nivel, :size => 3
@@ -219,7 +233,8 @@
         %span.field_name= f.label :fecha_de_la_ultima_menstruacion
         - if @novedad.tipo_de_novedad_id == 1
           %span.field_value= f.date_select :fecha_de_la_ultima_menstruacion, |
-            {:start_year => Date.today.year - 1, :end_year => Date.today.year, :include_blank => true} |
+            {:start_year => Date.today.year - 1, :end_year => Date.today.year, |
+            :include_blank => true} |
         - else
           %span.field_value= f.date_select :fecha_de_la_ultima_menstruacion, |
             {:start_year => 2001, :end_year => Date.today.year, :include_blank => true} |
@@ -238,7 +253,8 @@
         %span.field_name= f.label :fecha_probable_de_parto
         - if @novedad.tipo_de_novedad_id == 1
           %span.field_value= f.date_select :fecha_probable_de_parto, |
-            {:start_year => Date.today.year - 1, :end_year => Date.today.year + 1, :include_blank => true} |
+            {:start_year => Date.today.year - 1, :end_year => Date.today.year + 1, |
+            :include_blank => true} |
         - else
           %span.field_value= f.date_select :fecha_probable_de_parto, |
             {:start_year => 2001, :end_year => Date.today.year + 1, :include_blank => true} |
@@ -272,4 +288,7 @@
     %span.field_value= f.text_area :observaciones_generales, :size => "70x8", :style => "text-transform: uppercase;"
 
   %div.actions
-    = f.submit "Verificar solicitud"
+    - if @novedad.persisted?
+      = f.submit "Actualizar solicitud"
+    - else
+      = f.submit "Guardar solicitud"

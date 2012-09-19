@@ -16,10 +16,13 @@
   %p#notice= notice
 
 %h2= @afiliado.nombre + " " + @afiliado.apellido + " (" + @afiliado.numero_de_documento + ")"
-- if can? :update, @afiliado
+- if !@afiliado.novedad_pendiente? && can?(:update, @afiliado)
   #action_links
-    = link_to "Modificar los datos", new_novedad_del_afiliado_path(:afiliado_id => @afiliado.id, :tipo_de_novedad_id => 3)
-    = link_to "Solicitar baja", new_novedad_del_afiliado_path(:afiliado_id => @afiliado.id, :tipo_de_novedad_id => 2)
+    = link_to("Solicitar modificación de datos", new_novedad_del_afiliado_path(:afiliado_id => @afiliado.id, :tipo_de_novedad_id => 3))
+    = link_to("Solicitar la baja", new_novedad_del_afiliado_path(:afiliado_id => @afiliado.id, :tipo_de_novedad_id => 2))
+- else
+  #action_links
+    = link_to "Ver la solicitud pendiente", novedad_del_afiliado_path(@afiliado.novedad_pendiente)
 
 #estado
   - if @afiliado.activo
