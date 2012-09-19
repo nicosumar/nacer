@@ -391,9 +391,12 @@ class Afiliado < ActiveRecord::Base
   def self.attr_hash_desde_texto(texto, separador = "\t")
     campos = texto.split(separador)
 
-    # La tabla ahora tiene 91 campos -- Versión del sistema de Gestión 4.6
-    if campos.size != 91
-      raise ArgumentError, "El texto no contiene la cantidad correcta de campos (91), ¿quizás equivocó el separador?"
+    # Contrastar la cantidad de campos con la versión del sistema registrada en los parámetros, para evitar errores
+    # de importación
+    version_del_sistema = Parametro.valor_del_parametro(:version_del_sistema_de_gestion)
+    if (version_del_sistema == "4.6" && campos.size != 91 ||
+        version_del_sistema == "4.7" && campos.size != 92)
+      raise ArgumentError, "El texto no contiene la cantidad correcta de campos, ¿quizás equivocó el separador?"
       return nil
     end
 
@@ -419,7 +422,14 @@ class Afiliado < ActiveRecord::Base
       # Datos de nacimiento, sexo, origen y estudios
       :sexo_id => Sexo.id_del_codigo(self.valor(campos[7], :texto)),
       :fecha_de_nacimiento => self.valor(campos[11], :fecha),
-      :pais_de_nacimiento_id => self.valor(campos[8], :entero),
+      if version_del_sistema == "4.6"
+        # En la versión 4.6 del sistema de gestión, el país de origen no tenía definido un lugar en
+        # la tabla de afiliados, y se utilizó el campo de 'localidad' (de nacimiento) para guardarlo.
+        :pais_de_nacimiento_id => Pais.id_del_nombre(self.valor(campos[9], :texto)),
+      else
+        # En la versión 4.7 se agrega el campo 'AfiPais' al final de la tabla (campo nº 92).
+        :pais_de_nacimiento_id => Pais.id_del_nombre(self.valor(campos[91], :texto)),
+      end
       :se_declara_indigena => SiNo.valor_bool_del_codigo(self.valor(campos[12], :texto)),
       :lengua_originaria_id => (self.valor(campos[13], :entero) == 0 ? nil : self.valor(campos[13], :entero)),
       :tribu_originaria_id => (self.valor(campos[14], :entero) == 0 ? nil : self.valor(campos[14], :entero)),
@@ -514,7 +524,7 @@ class Afiliado < ActiveRecord::Base
       # nuevo campo a la tabla SMIAfiliados.
       #
       # CAMPOS NO UTILIZADOS
-      #:localidad => self.valor(campos[9], :texto),
+      #:provincia => self.valor(campos[8], :texto),
       #:tipo_de_relacion_id => self.valor(campos[27], :entero),
       #:accion_pendiente_de_confirmar => self.valor(campos[35], :texto),
       #:domicilio_municipio => self.valor(campos[44], :texto),

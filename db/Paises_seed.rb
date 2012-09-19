@@ -292,7 +292,7 @@ Pais.create([
     :nombre_largo => "República Portuguesa" },
   { :nombre => "Qatar",
     :nombre_largo => "Estado de Qatar" },
-  { :nombre => "Reino Unido de Gran Bretaña e Irlanda del Norte",
+  { :nombre => "Reino Unido (G. Bretaña e Irlanda N)",
     :nombre_largo => "Reino Unido de Gran Bretaña e Irlanda del Norte" },
   { :nombre => "República Centroafricana",
     :nombre_largo => "República Centroafricana" },

@@ -1,5 +1,21 @@
 class Pais < ActiveRecord::Base
 
+  # id_del_nombre
+  # Devuelve el id asociado con el código pasado
+  def self.id_del_nombre(nombre)
+    if !nombre || nombre.strip.empty?
+      return nil
+    end
+
+    # Buscar el nombre en la tabla y devolver su ID
+    pais = self.where("UPPER(nombre) = ?", nombre.strip.upcase)
+    if pais.size == 1
+      return pais.first.id
+    else
+      return nil
+    end
+  end
+
   # ordenados_por_frecuencia
   # Devuelve un vector con los elementos de la tabla asociada ordenados de acuerdo con la frecuencia
   # de uso del ID del elemento en la columna de la tabla pasados como parámetros

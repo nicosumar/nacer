@@ -14,5 +14,10 @@ Parametro.create([
     :nombre => "EdadMinimaParaRegistrarEmbarazada",
     :tipo_postgres => "int4",
     :tipo_ruby => "Integer",
-    :valor => "10" }
+    :valor => "10" },
+  { #:id => 4,
+    :nombre => "VersionDelSistemaDeGestion",
+    :tipo_postgres => "text",
+    :tipo_ruby => "String",
+    :valor => "4.6" }
 ])
