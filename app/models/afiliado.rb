@@ -201,7 +201,7 @@ class Afiliado < ActiveRecord::Base
       :estado_de_la_novedad_id => [1,2]
     )
 
-    return novedad_pendiente.first if novedad_pendiente.size > 0
+    return novedad_pendiente.first if novedad_pendiente.size == 1
 
     return nil
   end
@@ -422,14 +422,13 @@ class Afiliado < ActiveRecord::Base
       # Datos de nacimiento, sexo, origen y estudios
       :sexo_id => Sexo.id_del_codigo(self.valor(campos[7], :texto)),
       :fecha_de_nacimiento => self.valor(campos[11], :fecha),
-      if version_del_sistema == "4.6"
-        # En la versión 4.6 del sistema de gestión, el país de origen no tenía definido un lugar en
-        # la tabla de afiliados, y se utilizó el campo de 'localidad' (de nacimiento) para guardarlo.
-        :pais_de_nacimiento_id => Pais.id_del_nombre(self.valor(campos[9], :texto)),
-      else
-        # En la versión 4.7 se agrega el campo 'AfiPais' al final de la tabla (campo nº 92).
-        :pais_de_nacimiento_id => Pais.id_del_nombre(self.valor(campos[91], :texto)),
-      end
+      :pais_de_nacimiento_id => (
+        version_del_sistema == "4.6" ?
+          # En la versión 4.6 del sistema de gestión, el país de origen no tenía definido un lugar en
+          # la tabla de afiliados, y se utilizó el campo de 'localidad' (de nacimiento) para guardarlo.
+          Pais.id_del_nombre(self.valor(campos[9], :texto)) :
+          # En la versión 4.7 se agrega el campo 'AfiPais' al final de la tabla (campo nº 92).
+          Pais.id_del_nombre(self.valor(campos[91], :texto))),
       :se_declara_indigena => SiNo.valor_bool_del_codigo(self.valor(campos[12], :texto)),
       :lengua_originaria_id => (self.valor(campos[13], :entero) == 0 ? nil : self.valor(campos[13], :entero)),
       :tribu_originaria_id => (self.valor(campos[14], :entero) == 0 ? nil : self.valor(campos[14], :entero)),

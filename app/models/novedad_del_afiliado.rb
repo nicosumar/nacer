@@ -51,7 +51,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # Validaciones
   validate :generar_advertencias
   validate :verificar_fechas
-  validate :verificar_intervalo_dni
+  validate :verificar_documentos_de_identidad
   validates_presence_of :tipo_de_novedad_id, :clave_de_beneficiario
   validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
 
@@ -218,12 +218,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
   end
 
-  # verificar_intervalo_dni
-  # Verifica que, si alguno de los campos de tipo de documento está establecido en DNI,
-  # el valor del campo de número respectivo contenga un número y esté en el intervalo esperable.
-  def verificar_intervalo_dni
+  # verificar_documentos_de_identidad
+  # Realiza la verificación de los números de documentos para evitar la carga de errores y duplicados.
+  def verificar_documentos_de_identidad
 
     error_dni = false
+
+    # VERIFICACION DE INTERVALOS VÁLIDOS
 
     # Documento del beneficiario
     if tipo_de_documento_id == 1 && !numero_de_documento.strip.empty?
@@ -270,6 +271,33 @@ class NovedadDelAfiliado < ActiveRecord::Base
           'no se encuentra en el intervalo esperado (no ingrese separadores como puntos o espacios en el número de DNI).'
         )
         error_dni = true
+      end
+    end
+
+    # DUPLICADOS
+    if clase_de_documento_id == 1
+      # Sólo verificamos cuando el documento es propio
+      afiliados_con_este_documento = Afiliado.where(
+        :clase_de_documento_id => 1,
+        :tipo_de_documento_id => tipo_de_documento,
+        :numero_de_documento => numero_de_documento)
+
+      if afiliados_con_este_documento.size > 0
+        # Verificamos si existe otra clave de beneficiario asociada a este documento propio
+        # que no esté marcado ya como duplicado
+        afiliados_con_este_documento.each do |afiliado|
+          if (afiliado.clave_de_beneficiario != clave_de_beneficiario &&
+              !([14,80,81,82,83,84,85,86,87,88,89,203].member? afiliado.motivo_de_la_baja_id)) # TODO: 
+            errors.add(
+              :numero_de_documento,
+              (
+                "ya ha sido asignado a otro beneficiario: " +
+                afiliado.apellido + ", " + afiliado.nombre + " (" + afiliado.clave_de_beneficiario + ")."
+              )
+            )
+            error_dni = true
+          end
+        end
       end
     end
 

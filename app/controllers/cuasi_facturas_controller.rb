@@ -1123,9 +1123,9 @@ private
     end
     
     diferencia = ((informada || 0) - (digitalizada || 0))
-    if diferencia != 0
+    if !error && diferencia != 0
       error = true
-      mensaje += "\nDiferencia algebraica."
+      mensaje = "\nDiferencia algebraica."
     end
 
     return [error, error ? mensaje : "Verificación correcta"]
