@@ -390,7 +390,7 @@ table tr.clickable {
   float: left;
   width: 150px;
   font-size: 11px;
-  padding-top: 0px; } // Cambiar al agregar el formulario de búsqueda
+  padding-top: 38px; } // Cambiar al agregar el formulario de búsqueda
 
 #sidebar h2 {
   height: 29px;
@@ -588,10 +588,10 @@ div {
 .infobox-error {
   width:  455px;
   border: 1px solid;
-  margin: 10px 0px;
+  margin: 20px 20px;
   padding: 15px 10px 15px 50px;
   background-repeat: no-repeat;
-  background-position: 10px center; 
+  background-position: 10px center;
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -600,7 +600,7 @@ div {
 .infobox-advertencia {
   color: #9F6000;
   background-color: #ffe9ad;
-  background-image: url(/assets/info-yellow.png);
+  background-image: url(/assets/info-yellow.png); 
 }
 .infobox-ok {
   color: #4F8A10;
