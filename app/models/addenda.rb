@@ -1,4 +1,7 @@
 class Addenda < ActiveRecord::Base
+  # NULLificar los campos de texto en blanco
+  nilify_blanks
+
   # Seguridad de asignaciones masivas
   attr_readonly :convenio_de_gestion_id, :fecha_de_inicio
   attr_accessible :firmante, :fecha_de_suscripcion, :observaciones

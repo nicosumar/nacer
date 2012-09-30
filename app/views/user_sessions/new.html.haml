@@ -1,8 +1,11 @@
 - content_for :title do
-  Iniciar sesión
+  Iniciar la sesión
 
-%p#notice= notice
+#content-body
+  %h1.first-header Iniciar la sesión
 
-%h2 Iniciar sesión
+  = render :partial => "shared/info", :locals => { :registro => @user_session }
 
-= render 'form'
+  %h2 Ingrese sus credenciales de acceso
+
+  = render :partial => 'user_sessions/form'

@@ -10,83 +10,134 @@
       #wrapper-bgbtm
         #header
           #logo
-            %h1 Sistema de gestión del seguro provincial
-            %p Plan Nacer Mendoza
-          - if current_user
-            #session
-              %a{:href => cerrar_sesion_path, :title => "Cerrar sesión"}
-                = image_tag "cerrar_sesion.png", :alt => "Cerrar sesión"
-              %p
-                Usuario:
-                %span{:class => "username"}= link_to current_user.firstname + " " + current_user.lastname, edit_user_path(current_user), { :title => "Modificar información de mi cuenta" }
+
         - if current_user
-          #menu
-            %ul
-              %li= link_to "Inicio", root_url
-              - if can? :read, Afiliado
-                %li
-                  %p Beneficiarios
-                  %ul
-                    %li= link_to "Padrón", afiliados_url
-                    - if can? :read, NovedadDelAfiliado
-                      %li= link_to "Novedades", novedades_de_los_afiliados_url
-              - if can? :read, ConvenioDeGestion
-                %li
-                  %p Convenios
-                  %ul
-                    - if can? :read, Efector
-                      %li= link_to "Efectores", efectores_url
-                    - if can? :read, ConvenioDeGestion
-                      %li= link_to "Convenios de gestión", convenios_de_gestion_url
-                    - if can? :read, ConvenioDeAdministracion
-                      %li= link_to "Convenios de administración", convenios_de_administracion_url
-                    - if can? :read, Addenda
-                      %li= link_to "Adendas", addendas_url
-              - if current_user.in_group?(:facturación)
-                %li
-                  %p Facturación
-                  %ul
-                    - if can? :read, Liquidacion
-                      %li= link_to "Liquidaciones", liquidaciones_url
-                    - if can? :read, CuasiFactura
-                      %li= link_to "Cuasi-facturas", cuasi_facturas_url
+          #search 
+            %form{:method => 'get', :action => '/busqueda/'} 
+              %fieldset
+                %input{ |
+                  :type => 'text', :name => 'terminos', :id => 'busqueda', |
+                  :size => '15', :placeholder => 'Buscar', :value => ''} |
+                %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}
+          #lupa
+            = image_tag "lupa.png", :alt => "Buscar"
+          
+          -# NUEVO MENÚ
+          %ul{:id => "newmenu"}
+            - if can? :read, Afiliado
               %li
-                %p Herramientas
-                %ul
-                  - if can? :read, Contacto
-                    %li= link_to "Agenda de contactos", contactos_url
-                  - if current_user.in_group?(:facturación)
-                    %li= link_to "Verificador de liquidaciones", verificador_index_path
-              - if current_user.in_group?(:administradores)
-                %li
-                  %p Administración
+                %a.drop{:href => "#"} BENEFICIARIOS
+                %div.dropdown_2columns
+                  %div.col_2
+                    %h2 
+                  %div.col_1
+                    %h3 PADRÓN
+                    %ul
+                      %li= link_to "Buscar beneficiario", afiliados_url
+                      - if can? :create, NovedadDelAfiliado
+                        %li= link_to "Solicitar alta de beneficiario", new_novedad_del_afiliado_path, {:tipo_de_novedad_id => 1}
+
+              %li
+                %a.drop{:href => "#"} CONVENIOS
+                %div.dropdown_4columns
+                  %div.col_1
+                    %h3 EFECTORES
+                    %ul
+                      %li= link_to "Ver listado", efectores_url
+                      - if can? :create, Efector
+                        %li= link_to "Agregar un efector", new_efector_url
+                  %div.col_1
+                    %h3 CONVENIOS DE GESTION
+                    %ul
+                      %li= link_to "Ver listado", convenios_de_gestion_url
+                      - if can? :create, ConvenioDeGestion
+                        %li= link_to "Agregar un convenio", new_convenio_de_gestion_url
+                  %div.col_1
+                    %h3 CONVENIOS DE ADMINISTRACION
+                    %ul
+                      %li= link_to "Ver listado", convenios_de_administracion_url
+                      - if can? :create, ConvenioDeAdministracion
+                        %li= link_to "Agregar un convenio", new_convenio_de_administracion_url
+                  %div.col_1
+                    %h3 ADENDAS
+                    %ul
+                      %li= link_to "Ver listado", addendas_url
+                      - if can? :create, Addenda
+                        %li= link_to "Agregar una adenda", new_addenda_url
+              
+              %li
+                %a.drop{:href => "#"} FACTURACION
+                %div.dropdown_4columns
+                  %div.col_4
+                    
+                  %div.col_1
+                    %h3 LIQUIDACIONES
+                    %ul
+                      %li= link_to "Ver listado", liquidaciones_url
+                      - if can? :create, Liquidacion
+                        %li= link_to "Agregar una Liquidación", new_liquidacion_url
+                  
+            
+              %li
+                %a.drop{:href => "#"} HERRAMIENTAS
+                %div.dropdown_4columns
+                  %div.col_1
+                    %h3 CONTACTO
+                    %ul
+                      %li= link_to "Agenda de contactos", contactos_url
+                      - if can? :create, Contacto
+                        %li= link_to "Agregar un contacto", new_contacto_url            
+            
+                  %div.col_1
+                    %h3 VERIFICADOR DE LIQUIDACIONES
+                    %ul
+                      %li= link_to "Ingresar al Verificador", verificador_index_path
+              
+              
+            - if can? :read, ConvenioDeGestion  
+              %li
+                %a.drop{:href => "#"} ADMINISTRACION
+                %div.dropdown_4columns
+                  %div.col_1
+                    %h3 USUARIOS
+                    %ul
+                      %li= link_to "Ver Usuarios", users_url
+                      - if can? :create, Contacto
+                        %li= link_to "Agregar un usuario", new_user_url            
+            
+                  %div.col_1
+                    %h3 GRUPOS
+                    %ul
+                      %li= link_to "Ver Grupos", user_groups_url                       
+                      - if can? :create, Contacto
+                        %li= link_to "Agregar un grupo", new_user_url
+                        
+                  %div.col_1
+                    %h3 PADRONES
+                    %ul
+                      %li= link_to "Ver Padrones", padrones_url                       
+                            
+            %li.menu_right
+              %a.drop{:href => "#"} MI CUENTA
+              %div.dropdown_2columns
+                %div.col_2
+                  %h2= (current_user.firstname + " " + current_user.lastname).upcase
+                %div.col_1
+                  %h3 CUENTA
                   %ul
-                    %li= link_to "Usuarios", users_url
-                    %li= link_to "Grupos", user_groups_url
-                    %li= link_to "Padrones", padrones_url
+                    %li= link_to "Modificar mis datos", edit_user_path(current_user)
+                %div.col_1
+                  %h3 SESIÓN
+                  %ul
+                    %li= link_to "Cerrar la sesión", cerrar_sesion_path            
+
         #page
-          #page-bgtop
-            #page-bgbtm
-              #content
-                = yield
-              #sidebar
-                - if current_user
-                  #search
-                    %h2 Búsqueda
-                    %form{:method => 'get', :action => '/busqueda/'}
-                      %fieldset
-                        %input{:type => 'text', :name => 'terminos', :id => 'busqueda', :size => '15', :value => ''}/
-                        %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}/
-                = yield :sidebar
-              %div{:style => "clear: both;"}
-                &nbsp;
+          = yield
+
         #footer
-          #rails-logo
-            %a{ :href => "http://rubyonrails.org/", :onclick => "this.target='_blank'" } 
-              = image_tag "rails.png", :alt => "Ruby on Rails"
-          #msalud-logo
-            %a{ :href => "http://www.salud.mendoza.gov.ar/", :onclick => "this.target='_blank'" } 
-              = image_tag "msalud-logo.png", :alt => "Ministerio de Salud - Gobierno de Mendoza"
+          
+          #pie 
+            = image_tag "footer.png"
           %p.primero
             Copyleft 2011,
             = mail_to '"Santiago Bosio" <santiago.bosio@gmail.com>', "Santiago Bosio", :title => "Enviar un mensaje al autor"
@@ -98,3 +149,6 @@
           %p.licencia
             %a{:rel => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/deed.es", :onclick => "this.target='_blank'"}
               = image_tag "cc_by_sa.png", :alt => "Licencia Creative Commons BY-SA", :title => "Distribuido bajo una licencia Creative Commons Atribución-CompartirIgual 3.0 Unported"
+            %p.licencia
+            %p.licencia
+              

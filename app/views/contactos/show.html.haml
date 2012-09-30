@@ -1,50 +1,86 @@
 - content_for :title do
-  = @contacto.mostrado
+  Detalle del contacto
 
-%h1= @contacto.mostrado
+#content-header
+  %h1 Detalle del contacto
+  - if can? :update, @contacto
+    #action-links
+      = link_to "Modificar el contacto", edit_contacto_path(@contacto)
 
-%p#notice= notice
+#content-body
+  %h2.first-header Información del contacto registrado
 
-%h2 Datos de contacto
-- if @contacto.apellidos
-  %p
-    Nombre:
-    %span.destacado= @contacto.nombres + " " + @contacto.apellidos
-- if @contacto.dni
-  %p
-    Documento nacional de identidad:
-    %span.destacado= @contacto.dni
-- if @contacto.domicilio
-  %p
-    Domicilio:
-    - @contacto.domicilio.split("\n").each do |l|
-      %span.destacado= l
-      %br/
-- if @contacto.email
-  %p
-    Correo electrónico:
-    ~ mail_to "\"#{@contacto.mostrado}\" <#{@contacto.email}>", @contacto.email
-- if @contacto.email_adicional
-  %p
-    Correo electrónico adicional:
-    ~ mail_to "\"#{@contacto.mostrado}\" <#{@contacto.email_adicional}>", @contacto.email_adicional
-- if @contacto.telefono
-  %p
-    Teléfono fijo:
-    %span.destacado= @contacto.telefono
-- if @contacto.telefono_movil
-  %p
-    Teléfono celular:
-    %span.destacado= @contacto.telefono_movil
-- if @contacto.observaciones
-  %h2 Información complementaria
-  %p
-    - @contacto.observaciones.split("\n").each do |l|
-      %span.destacado= l
-      %br/
+  %h3 Datos personales
+  %div.field_content
+    %span.field_name Apellidos
+    - if !@contacto.apellidos.blank?
+      %span.field_value= @contacto.apellidos
+    - else
+      %span.field_empty No se ingresó el apellido
+  %div.field_content
+    %span.field_name Nombres
+    - if !@contacto.nombres.blank?
+      %span.field_value= @contacto.nombres
+    - else
+      %span.field_empty No se ingresó el nombre
+  %div.field_content
+    %span.field_name Nombre mostrado
+    %span.field_value= @contacto.mostrado
+  %div.field_content
+    %span.field_name Sexo
+    - if @contacto.sexo_id
+      %span.field_value= @contacto.sexo.nombre
+    - else
+      %span.field_empty No se indicó el sexo
+  %div.field_content
+    %span.field_name Número de documento
+    - if !@contacto.dni.blank?
+      %span.field_value= @contacto.dni
+    - else
+      %span.field_empty No se ingresó el número de documento
+  %div.field_content
+    %span.field_name Dirección de correo electrónico
+    - if !@contacto.email.blank?
+      %span.field_value= mail_to "\"#{@contacto.mostrado}\" <#{@contacto.email}>", @contacto.email
+    - else
+      %span.field_empty No se ingresó la dirección de correo electrónico
+  %div.field_content
+    %span.field_name Dirección de correo electrónico adicional
+    - if !@contacto.email_adicional.blank?
+      %span.field_value= mail_to "\"#{@contacto.mostrado}\" <#{@contacto.email_adicional}>", @contacto.email_adicional
+    - else
+      %span.field_empty No se ingresó una dirección de correo electrónico adicional
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :update, @contacto
-      %li= link_to "Modificar este contacto", edit_contacto_path(@contacto)
+  %h3 Domicilio
+  %div.field_content
+    - if !@contacto.domicilio.blank?
+      %div.field_value
+        - @contacto.domicilio.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se ingresó el domicilio
+
+  %h3 Teléfonos
+  %div.field_content
+    %span.field_name Teléfono fijo
+    - if !@contacto.telefono.blank?
+      %span.field_value= @contacto.telefono
+    - else
+      %span.field_empty No se ingresó el número de teléfono fijo
+  %div.field_content
+    %span.field_name Teléfono celular
+    - if !@contacto.telefono_movil.blank?
+      %span.field_value= @contacto.telefono_movil
+    - else
+      %span.field_empty No se ingresó el número de teléfono celular
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@contacto.observaciones.blank?
+      %div.field_value
+        - @contacto.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se ingresaron observaciones

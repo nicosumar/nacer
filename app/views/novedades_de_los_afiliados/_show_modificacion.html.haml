@@ -1,27 +1,28 @@
-#estado
-  - if @afiliado.activo
-    %span.active
-      - if @afiliado.sexo_id == 1
-        Beneficiaria activa
-      - else
-        Beneficiario activo
-  - else
-    %span.inactive
-      - if @afiliado.sexo_id == 1
-        Beneficiaria inactiva
-      - else
-        Beneficiario inactivo
-    %span.motive
-      Motivo:
-      - if @afiliado.mensaje_de_la_baja
-        = @afiliado.mensaje_de_la_baja
-      - else
-        No se ha podido determinar el motivo.
-
 #datos
 
-  %h3 Clave única de beneficiario
+  %h3 Tipo de solicitud
+  %div.field_content
+    %span.field_value
+      - case
+        - when @novedad.tipo_de_novedad_id == 1
+          Solicitud de alta de beneficiario
+        - when @novedad.tipo_de_novedad_id == 2
+          Solicitud de baja de beneficiario
+        - when @novedad.tipo_de_novedad_id == 3
+          Solicitud de modificación de datos
 
+  %h3 Estado de la solicitud
+  %div.field_content
+    %span.field_value= @novedad.estado_de_la_novedad.nombre
+  - if @novedad.advertencias && @novedad.advertencias.size > 0
+    %p
+      Los siguientes problemas impiden que esta solicitud sea notificada:
+      %br/
+      - @novedad.advertencias.each do |adv|
+        = "- " + adv
+        %br/
+
+  %h3 Clave única de beneficiario
   %div.field_content
     %span.field_value= @afiliado.clave_de_beneficiario
 
@@ -842,7 +843,8 @@
           = linea
     - else
       %span.field_empty No se han ingresado observaciones
-  
+
+-#  
   %h3 Última modificación de los datos
 
   %div.field_content
@@ -853,7 +855,7 @@
       %span.field_empty No se registró la fecha de la última modificación
   %div.field_content
     %span.field_name Usuario que modificó esta solicitud:
-    - if @novedad.updated_by
+    - if @novedad.updater_id
       %span.field_value= @novedad.updated_by
     - else
       %span.field_empty No se registró el usuario que realizó la última modificación

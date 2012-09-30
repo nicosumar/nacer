@@ -1,33 +1,19 @@
 - content_for :title do
-  Sistema de gestión del seguro provincial / Plan Nacer Mendoza
+  Sistema de gestión del seguro provincial / Programa Sumar Mendoza
 
--#- if current_user then
-  - content_for :menu do
-    %ul
-      %li.current_page_item
-        = link_to "Inicio", root_url
-  - content_for :sidebar do
-    %h2 Noticias
--#- else
-  - content_for :sidebar do
-    %h2 Tareas
-    %ul
-      %li= link_to "Iniciar sesión", iniciar_sesion_path
+#content-header
+  %h1 Inicio
 
-%h1
-  - if current_user
+= render :partial => "shared/info"
+
+#content-body
+
+  %h2.first-header
     - if current_user.sexo_id == 1
       Bienvenida,
     - else
       Bienvenido,
     = current_user.firstname
-  - else
-    No se ha iniciado la sesión
-%p#notice= notice
-%p
-  - if current_user then
+
+  %p
     Puede comenzar a trabajar. Seleccione el módulo y operación deseados desde el menú superior.
-  - else
-    Para comenzar a trabajar, debe
-    = link_to "iniciar su sesión", iniciar_sesion_path
-    en el sistema.

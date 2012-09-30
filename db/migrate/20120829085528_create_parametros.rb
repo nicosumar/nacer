@@ -6,6 +6,8 @@ class CreateParametros < ActiveRecord::Migration
       t.string :tipo_ruby
       t.text :valor
       t.timestamps
+      t.integer :creator_id
+      t.integer :updater_id
     end
   end
 end

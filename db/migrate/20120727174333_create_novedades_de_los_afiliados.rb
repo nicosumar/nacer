@@ -94,9 +94,9 @@ class CreateNovedadesDeLosAfiliados < ActiveRecord::Migration
       t.text :observaciones_generales
 
       # Datos relacionados con la carga del registro
-      t.string :created_by
-      t.string :updated_by
       t.timestamps
+      t.integer :creator_id
+      t.integer :updater_id
     end
   end
 end

@@ -8,145 +8,148 @@
     %input{ :id => "novedad_del_afiliado_tipo_de_novedad_id", |
       :name => "novedad_del_afiliado[tipo_de_novedad_id]", |
       :type => "hidden", :value => @novedad.tipo_de_novedad_id } |
-  - if @novedad.errors.any?
-    #error_explanation
-      %h2= pluralize(@novedad.errors.count, "error impide").to_s + |
-        " que se guarde la información de esta solicitud." |
-      %ul
-        - @novedad.errors.full_messages.each do |msg|
-          %li= msg
+
+  %h3 Tipo de solicitud
+  %div.field_content
+    %span.field_value
+      - case
+        - when @novedad.tipo_de_novedad_id == 1
+          Solicitud de alta de beneficiario
+        - when @novedad.tipo_de_novedad_id == 2
+          Solicitud de baja de beneficiario
+        - when @novedad.tipo_de_novedad_id == 3
+          Solicitud de modificación de datos
 
   %h3 Clave única de beneficiario
   %div.field
-    %span.field_value= f.number_field :clave_de_beneficiario, :readonly => "readonly"
+    = f.number_field :clave_de_beneficiario, :readonly => "readonly"
 
   %h3 Datos personales
   %div.field
-    %span.field_name= f.label :apellido
-    %span.field_value= f.text_field :apellido, :style => "text-transform: uppercase;"
+    = f.label :apellido
+    = f.text_field :apellido, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :nombre
-    %span.field_value= f.text_field :nombre, :style => "text-transform: uppercase;"
+    = f.label :nombre
+    = f.text_field :nombre, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :clase_de_documento_id
-    %span.field_value
-      - if @afiliado && @afiliado.clase_de_documento_id == 1
-        = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id), |
-          {}, { :disabled => "disabled" } |
-      - else
-        = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @clase_de_documento_id), |
-          :include_blank => true |
+    = f.label :clase_de_documento_id
+    - if @afiliado && @afiliado.clase_de_documento_id == 1
+      = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id), |
+        {}, { :disabled => "disabled" } |
+    - else
+      = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id), |
+        :include_blank => true |
   %div.field
-    %span.field_name= f.label :tipo_de_documento_id
-    %span.field_value= f.select :tipo_de_documento_id, |
+    = f.label :tipo_de_documento_id
+    = f.select :tipo_de_documento_id, |
       options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_id), |
       {:include_blank => true} |
   %div.field
-    %span.field_name= f.label :numero_de_documento
-    %span.field_value= f.text_field :numero_de_documento, :style => "text-transform: uppercase;"
+    = f.label :numero_de_documento
+    = f.text_field :numero_de_documento, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :numero_de_celular
-    %span.field_value= f.text_field :numero_de_celular
+    = f.label :numero_de_celular
+    = f.text_field :numero_de_celular
   %div.field
-    %span.field_name= f.label :e_mail
-    %span.field_value= f.text_field :e_mail
+    = f.label :e_mail
+    = f.text_field :e_mail
 
   %h3 Datos de nacimiento, sexo, origen y estudios
   %div.field
-    %span.field_name= f.label :sexo_id
-    %span.field_value= f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id), |
+    = f.label :sexo_id
+    = f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id), |
       {:inculde_blank => true} |
   %div.field
-    %span.field_name= f.label :fecha_de_nacimiento
+    = f.label :fecha_de_nacimiento
     - if @novedad.tipo_de_novedad_id == 1
-      %span.field_value= f.date_select :fecha_de_nacimiento, |
+      = f.date_select :fecha_de_nacimiento, |
         {:start_year => Date.today.year - 65, :end_year => Date.today.year, |
         :include_blank => true}
     - else
-      %span.field_value= f.date_select :fecha_de_nacimiento, |
+      = f.date_select :fecha_de_nacimiento, |
         {:start_year => 1936, :end_year => Date.today.year, |
         :include_blank => true} |
   %div.field
-    %span.field_name= f.label :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los "+ Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años."
-    %span.field_value= f.check_box :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los "+ Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años."
+    = f.label :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los "+ Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años."
+    = f.check_box :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los "+ Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años."
   %div.field
-    %span.field_name= f.label :pais_de_nacimiento_id
-    %span.field_value= f.select :pais_de_nacimiento_id, |
+    = f.label :pais_de_nacimiento_id
+    = f.select :pais_de_nacimiento_id, |
       options_for_select(@paises, @novedad.pais_de_nacimiento_id), |
       {:include_blank => true} |
   %div.field
-    %span.field_name= f.label :se_declara_indigena
-    %span.field_value= f.check_box :se_declara_indigena
+    = f.label :se_declara_indigena
+    = f.check_box :se_declara_indigena
   #originarios
     %div.field
-      %span.field_name= f.label :lengua_originaria_id
-      %span.field_value= f.select :lengua_originaria_id, |
+      = f.label :lengua_originaria_id
+      = f.select :lengua_originaria_id, |
         options_for_select(@lenguas_originarias, @novedad.lengua_originaria_id), |
         {:include_blank => true} |
     %div.field
-      %span.field_name= f.label :tribu_originaria_id
-      %span.field_value= f.select :tribu_originaria_id, |
+      = f.label :tribu_originaria_id
+      = f.select :tribu_originaria_id, |
         options_for_select(@tribus_originarias, @novedad.tribu_originaria_id), |
         {:include_blank => true} |
   %div.field
-    %span.field_name= f.label :alfabetizacion_del_beneficiario_id
-    %span.field_value= f.select :alfabetizacion_del_beneficiario_id, |
+    = f.label :alfabetizacion_del_beneficiario_id
+    = f.select :alfabetizacion_del_beneficiario_id, |
       options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_beneficiario_id), |
       {:include_blank => true} |
   #alfab_benef.field
-    %span.field_name= f.label :alfab_beneficiario_años_ultimo_nivel
-    %span.field_value= f.number_field :alfab_beneficiario_años_ultimo_nivel, :size => 3
+    = f.label :alfab_beneficiario_años_ultimo_nivel
+    = f.number_field :alfab_beneficiario_años_ultimo_nivel, :size => 3
 
   %h3 Datos de domicilio
   %div.field
-    %span.field_name= f.label :domicilio_calle
-    %span.field_value= f.text_field :domicilio_calle, :style => "text-transform: uppercase;"
+    = f.label :domicilio_calle
+    = f.text_field :domicilio_calle, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :domicilio_numero
-    %span.field_value= f.text_field :domicilio_numero, :style => "text-transform: uppercase;"
+    = f.label :domicilio_numero
+    = f.text_field :domicilio_numero, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :domicilio_piso
-    %span.field_value= f.text_field :domicilio_piso, :style => "text-transform: uppercase;"
+    = f.label :domicilio_piso
+    = f.text_field :domicilio_piso, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :domicilio_depto
-    %span.field_value= f.text_field :domicilio_depto, :style => "text-transform: uppercase;"
+    = f.label :domicilio_depto
+    = f.text_field :domicilio_depto, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :domicilio_manzana
-    %span.field_value= f.text_field :domicilio_manzana, :style => "text-transform: uppercase;"
+    = f.label :domicilio_manzana
+    = f.text_field :domicilio_manzana, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :domicilio_entre_calle_1
-    %span.field_value= f.text_field :domicilio_entre_calle_1, :style => "text-transform: uppercase;"
+    = f.label :domicilio_entre_calle_1
+    = f.text_field :domicilio_entre_calle_1, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :domicilio_entre_calle_2
-    %span.field_value= f.text_field :domicilio_entre_calle_2, :style => "text-transform: uppercase;"
+    = f.label :domicilio_entre_calle_2
+    = f.text_field :domicilio_entre_calle_2, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :telefono
-    %span.field_value= f.text_field :telefono, :style => "text-transform: uppercase;"
+    = f.label :telefono
+    = f.text_field :telefono, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :otro_telefono
-    %span.field_value= f.text_field :otro_telefono, :style => "text-transform: uppercase;"
+    = f.label :otro_telefono
+    = f.text_field :otro_telefono, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :domicilio_departamento_id
-    %span.field_value= f.select :domicilio_departamento_id, |
+    = f.label :domicilio_departamento_id
+    = f.select :domicilio_departamento_id, |
       options_for_select(@departamentos, @novedad.domicilio_departamento_id), |
       {:include_blank => true} |
   #select_distritos.field
-    %span.field_name= f.label :domicilio_distrito_id
-    %span.field_value= f.select :domicilio_distrito_id, |
+    = f.label :domicilio_distrito_id
+    = f.select :domicilio_distrito_id, |
       options_for_select(@distritos, @novedad.domicilio_distrito_id), |
       {:include_blank => true} |
   %div.field
-    %span.field_name= f.label :domicilio_barrio_o_paraje
-    %span.field_value= f.text_field :domicilio_barrio_o_paraje, :style => "text-transform: uppercase;"
+    = f.label :domicilio_barrio_o_paraje
+    = f.text_field :domicilio_barrio_o_paraje, :style => "text-transform: uppercase;"
   %div.field
-    %span.field_name= f.label :domicilio_codigo_postal
-    %span.field_value= f.text_field :domicilio_codigo_postal, :style => "text-transform: uppercase;"
+    = f.label :domicilio_codigo_postal
+    = f.text_field :domicilio_codigo_postal, :style => "text-transform: uppercase;"
   %h4 Observaciones
   %div.field
-    %span.field_value= f.text_area :observaciones, :size => "70x8"
+    = f.text_area :observaciones, :size => "70x8"
   %h3 Lugar de atención habitual
   %div.field
-    %span.field_value= f.select :lugar_de_atencion_habitual_id, |
+    = f.select :lugar_de_atencion_habitual_id, |
       options_for_select(@efectores, @novedad.lugar_de_atencion_habitual_id), |
       {:include_blank => true} |
 
@@ -154,141 +157,141 @@
     %h3 Datos del adulto responsable
     %h4 Datos de la madre
     %div.field
-      %span.field_name= f.label :apellido_de_la_madre
-      %span.field_value= f.text_field :apellido_de_la_madre, :style => "text-transform: uppercase;"
+      = f.label :apellido_de_la_madre
+      = f.text_field :apellido_de_la_madre, :style => "text-transform: uppercase;"
     %div.field
-      %span.field_name= f.label :nombre_de_la_madre
-      %span.field_value= f.text_field :nombre_de_la_madre, :style => "text-transform: uppercase;"
+      = f.label :nombre_de_la_madre
+      = f.text_field :nombre_de_la_madre, :style => "text-transform: uppercase;"
     %div.field
-      %span.field_name= f.label :tipo_de_documento_de_la_madre_id
-      %span.field_value= f.select :tipo_de_documento_de_la_madre_id, |
+      = f.label :tipo_de_documento_de_la_madre_id
+      = f.select :tipo_de_documento_de_la_madre_id, |
         options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_de_la_madre_id), |
         {:include_blank => true} |
     %div.field
-      %span.field_name= f.label :numero_de_documento_de_la_madre
-      %span.field_value= f.text_field :numero_de_documento_de_la_madre, :style => "text-transform: uppercase;"
+      = f.label :numero_de_documento_de_la_madre
+      = f.text_field :numero_de_documento_de_la_madre, :style => "text-transform: uppercase;"
     %div.field
-      %span.field_name= f.label :alfabetizacion_de_la_madre_id
-      %span.field_value= f.select :alfabetizacion_de_la_madre_id, |
+      = f.label :alfabetizacion_de_la_madre_id
+      = f.select :alfabetizacion_de_la_madre_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_de_la_madre_id), |
         {:include_blank => true} |
     #alfab_madre.field
-      %span.field_name= f.label :alfab_madre_años_ultimo_nivel
-      %span.field_value= f.number_field :alfab_madre_años_ultimo_nivel, :size => 3
+      = f.label :alfab_madre_años_ultimo_nivel
+      = f.number_field :alfab_madre_años_ultimo_nivel, :size => 3
     %h4 Datos del padre
     %div.field
-      %span.field_name= f.label :apellido_del_padre
-      %span.field_value= f.text_field :apellido_del_padre, :style => "text-transform: uppercase;"
+      = f.label :apellido_del_padre
+      = f.text_field :apellido_del_padre, :style => "text-transform: uppercase;"
     %div.field
-      %span.field_name= f.label :nombre_del_padre
-      %span.field_value= f.text_field :nombre_del_padre, :style => "text-transform: uppercase;"
+      = f.label :nombre_del_padre
+      = f.text_field :nombre_del_padre, :style => "text-transform: uppercase;"
     %div.field
-      %span.field_name= f.label :tipo_de_documento_del_padre_id
-      %span.field_value= f.select :tipo_de_documento_del_padre_id, |
+      = f.label :tipo_de_documento_del_padre_id
+      = f.select :tipo_de_documento_del_padre_id, |
         options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_del_padre_id), |
         {:include_blank => true} |
     %div.field
-      %span.field_name= f.label :numero_de_documento_del_padre
-      %span.field_value= f.text_field :numero_de_documento_del_padre, :style => "text-transform: uppercase;"
+      = f.label :numero_de_documento_del_padre
+      = f.text_field :numero_de_documento_del_padre, :style => "text-transform: uppercase;"
     %div.field
-      %span.field_name= f.label :alfabetizacion_del_padre_id
-      %span.field_value= f.select :alfabetizacion_del_padre_id, |
+      = f.label :alfabetizacion_del_padre_id
+      = f.select :alfabetizacion_del_padre_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_padre_id), |
         {:include_blank => true} |
     #alfab_padre.field
-      %span.field_name= f.label :alfab_padre_años_ultimo_nivel
-      %span.field_value= f.number_field :alfab_padre_años_ultimo_nivel, :size => 3
+      = f.label :alfab_padre_años_ultimo_nivel
+      = f.number_field :alfab_padre_años_ultimo_nivel, :size => 3
     %h4 Datos de la tutora o tutor
     %div.field
-      %span.field_name= f.label :apellido_del_tutor
-      %span.field_value= f.text_field :apellido_del_tutor, :style => "text-transform: uppercase;"
+      = f.label :apellido_del_tutor
+      = f.text_field :apellido_del_tutor, :style => "text-transform: uppercase;"
     %div.field
-      %span.field_name= f.label :nombre_del_tutor
-      %span.field_value= f.text_field :nombre_del_tutor, :style => "text-transform: uppercase;"
+      = f.label :nombre_del_tutor
+      = f.text_field :nombre_del_tutor, :style => "text-transform: uppercase;"
     %div.field
-      %span.field_name= f.label :tipo_de_documento_del_tutor_id
-      %span.field_value= f.select :tipo_de_documento_del_tutor_id, |
+      = f.label :tipo_de_documento_del_tutor_id
+      = f.select :tipo_de_documento_del_tutor_id, |
         options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_del_tutor_id), |
         {:include_blank => true} |
     %div.field
-      %span.field_name= f.label :numero_de_documento_del_tutor
-      %span.field_value= f.text_field :numero_de_documento_del_tutor, |
+      = f.label :numero_de_documento_del_tutor
+      = f.text_field :numero_de_documento_del_tutor, |
         :style => "text-transform: uppercase;" |
     %div.field
-      %span.field_name= f.label :alfabetizacion_del_tutor_id
-      %span.field_value= f.select :alfabetizacion_del_tutor_id, |
+      = f.label :alfabetizacion_del_tutor_id
+      = f.select :alfabetizacion_del_tutor_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_tutor_id), |
         {:include_blank => true} |
     #alfab_tutor.field
-      %span.field_name= f.label :alfab_tutor_años_ultimo_nivel
-      %span.field_value= f.number_field :alfab_tutor_años_ultimo_nivel, :size => 3
+      = f.label :alfab_tutor_años_ultimo_nivel
+      = f.number_field :alfab_tutor_años_ultimo_nivel, :size => 3
 
   #embarazo
     %h3 Datos del embarazo
     %div.field
-      %span.field_name= f.label :esta_embarazada, :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo."
-      %span.field_value= f.check_box :esta_embarazada, :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo."
+      = f.label :esta_embarazada, :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo."
+      = f.check_box :esta_embarazada, :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo."
     #esta_embarazada
       %div.field
-        %span.field_name= f.label :fecha_de_la_ultima_menstruacion
+        = f.label :fecha_de_la_ultima_menstruacion
         - if @novedad.tipo_de_novedad_id == 1
-          %span.field_value= f.date_select :fecha_de_la_ultima_menstruacion, |
+          = f.date_select :fecha_de_la_ultima_menstruacion, |
             {:start_year => Date.today.year - 1, :end_year => Date.today.year, |
             :include_blank => true} |
         - else
-          %span.field_value= f.date_select :fecha_de_la_ultima_menstruacion, |
+          = f.date_select :fecha_de_la_ultima_menstruacion, |
             {:start_year => 2001, :end_year => Date.today.year, :include_blank => true} |
       %div.field
-        %span.field_name= f.label :fecha_de_diagnostico_del_embarazo
+        = f.label :fecha_de_diagnostico_del_embarazo
         - if @novedad.tipo_de_novedad_id == 1
-          %span.field_value= f.date_select :fecha_de_diagnostico_del_embarazo, |
+          = f.date_select :fecha_de_diagnostico_del_embarazo, |
             {:start_year => Date.today.year - 1, :end_year => Date.today.year, :include_blank => true} |
         - else
-          %span.field_value= f.date_select :fecha_de_diagnostico_del_embarazo, |
+          = f.date_select :fecha_de_diagnostico_del_embarazo, |
             {:start_year => 2001, :end_year => Date.today.year, :include_blank => true} |
       %div.field
-        %span.field_name= f.label :semanas_de_embarazo
-        %span.field_value= f.number_field :semanas_de_embarazo, :size => 3
+        = f.label :semanas_de_embarazo
+        = f.number_field :semanas_de_embarazo, :size => 3
       %div.field
-        %span.field_name= f.label :fecha_probable_de_parto
+        = f.label :fecha_probable_de_parto
         - if @novedad.tipo_de_novedad_id == 1
-          %span.field_value= f.date_select :fecha_probable_de_parto, |
+          = f.date_select :fecha_probable_de_parto, |
             {:start_year => Date.today.year - 1, :end_year => Date.today.year + 1, |
             :include_blank => true} |
         - else
-          %span.field_value= f.date_select :fecha_probable_de_parto, |
+          = f.date_select :fecha_probable_de_parto, |
             {:start_year => 2001, :end_year => Date.today.year + 1, :include_blank => true} |
 
   %h3 Remediar+Redes
   %div.field
-    %span.field_name= f.label :score_de_riesgo
-    %span.field_value= f.number_field :score_de_riesgo, :size => 3
+    = f.label :score_de_riesgo
+    = f.number_field :score_de_riesgo, :size => 3
 
   %h3 Discapacidad
   %div.field
-    %span.field_name= f.label :discapacidad_id
-    %span.field_value= f.select :discapacidad_id, |
+    = f.label :discapacidad_id
+    = f.select :discapacidad_id, |
       options_for_select(@discapacidades, @novedad.discapacidad_id), {:include_blank => true} |
 
   %h3 Fecha y centro inscriptor
   %div.field
-    %span.field_name= f.label :fecha_de_la_novedad
-    %span.field_value= f.date_select :fecha_de_la_novedad, |
+    = f.label :fecha_de_la_novedad
+    = f.date_select :fecha_de_la_novedad, |
       {:start_year => Date.today.year - 1, :end_year => Date.today.year, :include_blank => true} |
   %div.field
-    %span.field_name= f.label :centro_de_inscripcion_id
-    %span.field_value= f.select :centro_de_inscripcion_id, |
+    = f.label :centro_de_inscripcion_id
+    = f.select :centro_de_inscripcion_id, |
       options_for_select(@centros_de_inscripcion, @novedad.centro_de_inscripcion_id), {:include_blank => true} |
   %div.field
-    %span.field_name= f.label :nonmbre_del_agente_inscriptor
-    %span.field_value= f.text_field :nombre_del_agente_inscriptor, :style => "text-transform: uppercase;"
+    = f.label :nonmbre_del_agente_inscriptor
+    = f.text_field :nombre_del_agente_inscriptor, :style => "text-transform: uppercase;"
 
   %h3 Observaciones generales
   %div.field
-    %span.field_value= f.text_area :observaciones_generales, :size => "70x8", :style => "text-transform: uppercase;"
+    = f.text_area :observaciones_generales, :size => "70x8", :style => "text-transform: uppercase;"
 
   %div.actions
-    - if @novedad.persisted?
-      = f.submit "Actualizar solicitud"
+    - if @novedad.new_record?
+      = f.submit "Crear la solicitud"
     - else
-      = f.submit "Guardar solicitud"
+      = f.submit "Modificar la solicitud"

@@ -1,36 +1,40 @@
 - content_for :title do
-  Beneficiarios
+  Padrón de beneficiarios
 
-%h1 Beneficiarios
+#content-header
+  %h1 Padrón de beneficiarios
 
-#busqueda_afiliado
-  = form_tag('/afiliados', :method => 'get') do
-    %div.field
-      = label_tag(:patron_de_busqueda, "Buscar beneficiario:")
-      = text_field_tag(:patron_de_busqueda, nil)
-    %div.actions
+  #busqueda-afiliado
+    = form_tag('/afiliados', :method => 'get') do
+      = text_field_tag(:patron_de_busqueda, nil, {:placeholder => "Buscar beneficiario"})
       = submit_tag("Buscar")
 
-%p#notice= notice
+  - if can? :create, NovedadDelAfiliado
+    #action-links
+      = link_to "Solicitar alta de beneficiario", new_novedad_del_afiliado_path(:tipo_de_novedad_id => 1)
 
-- if @afiliados_encontrados
-  -# La búsqueda ya fue procesada
-  %h2 Resultado de la búsqueda
-  - if @afiliados_encontrados > 0
-    -# Se encontraron registros
-    La búsqueda devolvió
-    = @afiliados_encontrados
-    registros coincidentes en
-    = ("%.2f" % @tiempo_de_busqueda).gsub('.', ',')
-    segundos
+#content-body
+  - if @afiliados_encontrados
+    -# La búsqueda ya fue procesada
+    %h2.first-header Resultado de la búsqueda
+    - if @afiliados_encontrados > 0
+      -# Se encontraron registros
+      La búsqueda devolvió
+      = @afiliados_encontrados
+      registros coincidentes en
+      = ("%.2f" % @tiempo_de_busqueda).gsub('.', ',')
+      segundos
 
-    #resultados
-      - @afiliados.each do |a|
-        %p
-          .titulo= link_to a.titulo, eval(a.modelo_type.underscore + "_path(" + a.modelo_id.to_s + ")")
-          = sanitize a.texto
-      = will_paginate @afiliados, :inner_window => 2, :outer_window => 0
+      #resultados
+        - @afiliados.each do |a|
+          %p
+            %span.titulo= link_to a.titulo, eval(a.modelo_type.underscore + "_path(" + a.modelo_id.to_s + ")")
+            %br/
+            = sanitize a.texto
+        = will_paginate @afiliados, :inner_window => 2, :outer_window => 0
 
+    - else
+      -# No hay registros asociados con esta búsqueda
+      No se encontraron beneficiarios que coincidan con los criterios de búsqueda ingresados.
   - else
-    -# No hay registros asociados con esta búsqueda
-    No se encontraron beneficiarios que coincidan con los criterios de búsqueda ingresados.
+    %p

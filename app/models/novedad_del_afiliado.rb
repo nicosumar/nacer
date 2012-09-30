@@ -28,6 +28,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_readonly :clave_de_beneficiario
 
   # Asociaciones
+  belongs_to :tipo_de_novedad
+  belongs_to :estado_de_la_novedad
   belongs_to :clase_de_documento
   belongs_to :tipo_de_documento
   #belongs_to :categoria_de_afiliado_id     #-- OBSOLETO
@@ -227,7 +229,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     # VERIFICACION DE INTERVALOS VÁLIDOS
 
     # Documento del beneficiario
-    if tipo_de_documento_id == 1 && !numero_de_documento.strip.empty?
+    if tipo_de_documento_id == 1 && !numero_de_documento.blank?
       nro_dni = numero_de_documento.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
         errors.add(
@@ -239,7 +241,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Documento de la madre
-    if tipo_de_documento_de_la_madre_id == 1 && !numero_de_documento_de_la_madre.strip.empty?
+    if tipo_de_documento_de_la_madre_id == 1 && !numero_de_documento_de_la_madre.blank?
       nro_dni = numero_de_documento_de_la_madre.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
         errors.add(
@@ -251,7 +253,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Documento del padre
-    if tipo_de_documento_del_padre_id == 1 && !numero_de_documento_del_padre.strip.empty?
+    if tipo_de_documento_del_padre_id == 1 && !numero_de_documento_del_padre.blank?
       nro_dni = numero_de_documento_del_padre.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
         errors.add(
@@ -263,7 +265,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Documento del tutor
-    if tipo_de_documento_del_tutor_id == 1 && !numero_de_documento_del_tutor.strip.empty?
+    if tipo_de_documento_del_tutor_id == 1 && !numero_de_documento_del_tutor.blank?
       nro_dni = numero_de_documento_del_tutor.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
         errors.add(
@@ -314,10 +316,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
     return true if errors.count > 0
 
     # Advertencias de campos vacíos que generan un registro incompleto:
-    if apellido.empty?
+    if apellido.blank?
       @advertencias << "No se ingresó el apellido del beneficiario."
     end
-    if nombre.empty?
+    if nombre.blank?
       @advertencias << "No se ingresó el nombre del beneficiario."
     end
     if !clase_de_documento_id
@@ -326,7 +328,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if !tipo_de_documento_id
       @advertencias << "No se seleccionó el tipo de documento del beneficiario."
     end
-    if numero_de_documento.empty?
+    if numero_de_documento.blank?
       @advertencias << "No se ingresó el número de documento."
     end
     if !sexo_id
@@ -335,13 +337,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if !fecha_de_nacimiento
       @advertencias << "No se ingresó la fecha de nacimiento del beneficiario."
     end
-    if domicilio_calle.empty? && domicilio_manzana.empty?
+    if domicilio_calle.blank? && domicilio_manzana.blank?
       @advertencias << "No se ingresó el nombre de la calle ni de la manzana en el domicilio."
     end
-    if !(domicilio_calle.empty? && domicilio_manzana.empty?) && domicilio_numero.empty?
-      @advertencias << "No se ingresó el número de puerta o casa en el domicilio."
-    end
-    if !(domicilio_calle.empty? && domicilio_manzana.empty?) && domicilio_numero.empty?
+    if !(domicilio_calle.blank? && domicilio_manzana.blank?) && domicilio_numero.blank?
       @advertencias << "No se ingresó el número de puerta o casa en el domicilio."
     end
     if !domicilio_departamento_id
@@ -351,12 +350,12 @@ class NovedadDelAfiliado < ActiveRecord::Base
       @advertencias << "No se seleccionó el lugar de atención habitual del beneficiario."
     end
     if es_menor &&
-      (apellido_de_la_madre.empty? || nombre_de_la_madre.empty? ||
-      !tipo_de_documento_de_la_madre_id || numero_de_documento_de_la_madre.empty?) &&
-      (apellido_del_padre.empty? || nombre_del_padre.empty? ||
-      !tipo_de_documento_del_padre_id || numero_de_documento_del_padre.empty?) &&
-      (apellido_del_tutor.empty? || nombre_del_tutor.empty? ||
-      !tipo_de_documento_del_tutor_id || numero_de_documento_del_tutor.empty?)
+      (apellido_de_la_madre.blank? || nombre_de_la_madre.blank? ||
+      !tipo_de_documento_de_la_madre_id || numero_de_documento_de_la_madre.blank?) &&
+      (apellido_del_padre.blank? || nombre_del_padre.blank? ||
+      !tipo_de_documento_del_padre_id || numero_de_documento_del_padre.blank?) &&
+      (apellido_del_tutor.blank? || nombre_del_tutor.blank? ||
+      !tipo_de_documento_del_tutor_id || numero_de_documento_del_tutor.blank?)
       @advertencias << "El beneficiario es menor de edad y no se completó la información de alguno de los adultos responsables (apellido, nombre, tipo y número de documento)."
     end
     if esta_embarazada && !fecha_probable_de_parto

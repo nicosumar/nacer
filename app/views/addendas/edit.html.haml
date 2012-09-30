@@ -1,10 +1,12 @@
 - content_for :title do
-  Modificar datos de la adenda
+  Modificación de la adenda
 
-%h1
-  Modificar datos de la adenda al convenio 
-  = @addenda.convenio_de_gestion.numero
-  suscrita el
-  = @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+#content-header
+  %h1 Modificación de la adenda
 
-= render 'form'
+= render :partial => "/shared/info", :locals => { :registro => @addenda }
+
+#content-body
+  %h2.first-header Información de la adenda que se modificará
+
+  = render 'form'

@@ -206,6 +206,18 @@ class Afiliado < ActiveRecord::Base
     return nil
   end
 
+  def nombre_completo
+
+    nombre_completo = nombre + " " + apellido
+
+    if nombre_completo.size > 35
+      nombre_completo = nombre_completo[0..31] + "..."
+    end
+
+    return nombre_completo
+
+  end
+
   # Devuelve un Array con los códigos de categoría válidos para el afiliado en la fecha especificada.
   # -- OBSOLETO --
   #def categorias(fecha = Date.today)

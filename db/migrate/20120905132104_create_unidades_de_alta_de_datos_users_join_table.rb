@@ -3,9 +3,10 @@ class CreateUnidadesDeAltaDeDatosUsersJoinTable < ActiveRecord::Migration
     create_table :unidades_de_alta_de_datos_users, :id => false do |t|
       t.references :unidad_de_alta_de_datos
       t.references :user
-      t.string :created_by
-      t.string :updated_by
+      t.boolean :predeterminada
       t.timestamps
+      t.integer :creator_id
+      t.integer :updater_id
     end
   end
 end

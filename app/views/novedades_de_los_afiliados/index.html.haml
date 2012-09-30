@@ -1,0 +1,37 @@
+- content_for :title do
+  Solicitudes de cambios al padrón
+
+#content-header
+  %h1 Solicitudes de cambios al padrón
+
+#content-body
+  %h2.first-header Listado de solicitudes registradas
+
+  %table
+    %thead
+      %tr
+        %th Tipo
+        %th Estado
+        %th Beneficiario
+        %th Última modificación
+    %tbody
+      - @novedades.each do |n|
+        %tr.clickable{ :onclick => "location.href=\'#{novedad_del_afiliado_path(n)}\'", :title => "Ver detalles de la solicitud" }
+          %td= n.tipo_de_novedad.nombre
+          %td
+            - case
+              - when n.estado_de_la_novedad_id == 1
+                Incompleta
+              - when n.estado_de_la_novedad_id == 2
+                Pendiente
+              - when n.estado_de_la_novedad_id == 3
+                Notificada
+              - when n.estado_de_la_novedad_id == 4
+                Aprobada
+              - when n.estado_de_la_novedad_id == 5
+                Rechazada
+              - when (6..7) === n.estado_de_la_novedad_id
+                Anulada
+          %td= n.apellido.to_s + ", " + n.nombre.to_s
+          %td= n.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+  = will_paginate @novedades, :inner_window => 2, :outer_window => 0

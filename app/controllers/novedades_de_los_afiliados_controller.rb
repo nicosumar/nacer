@@ -6,13 +6,20 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     if cannot? :read, NovedadDelAfiliado
       redirect_to(
         root_url,
-        :info => {
+        :flash => {
           :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
       return
     end
+
+    @novedades = NovedadDelAfiliado.paginate(
+      :page => params[:page], :per_page => 20,
+      :include => :tipo_de_novedad,
+      :order => "updated_at DESC"
+    )
+
   end
 
   def show
@@ -20,7 +27,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     if cannot? :read, NovedadDelAfiliado
       redirect_to(
         root_url,
-        :info => {
+        :flash => {
           :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -33,11 +40,13 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad = NovedadDelAfiliado.find(
         params[:id],
         :include => [
-          :clase_de_documento, :tipo_de_documento, :sexo, :pais_de_nacimiento, :lengua_originaria,
-          :tribu_originaria, :alfabetizacion_del_beneficiario, :domicilio_departamento,
-          :domicilio_distrito, :lugar_de_atencion_habitual, :tipo_de_documento_de_la_madre,
+          :estado_de_la_novedad, :clase_de_documento, :tipo_de_documento, :sexo,
+          :pais_de_nacimiento, :lengua_originaria, :tribu_originaria,
+          :alfabetizacion_del_beneficiario, :domicilio_departamento, :domicilio_distrito,
+          :lugar_de_atencion_habitual, :tipo_de_documento_de_la_madre,
           :alfabetizacion_de_la_madre, :tipo_de_documento_del_padre, :alfabetizacion_del_padre,
-          :tipo_de_documento_del_tutor, :alfabetizacion_del_tutor, :discapacidad, :centro_de_inscripcion
+          :tipo_de_documento_del_tutor, :alfabetizacion_del_tutor, :discapacidad,
+          :centro_de_inscripcion
         ]
       )
       if @novedad.tipo_de_novedad_id == 3
@@ -55,7 +64,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       redirect_to(
         root_url,
-        :info => {
+        :flash => {
           :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -63,22 +72,32 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       return
     end
 
+    # Generar las advertencias si la novedad está incompleta
+    if @novedad.estado_de_la_novedad_id == 1
+      @novedad.generar_advertencias
+    end
   end
 
   def new
     # Verificar los permisos del usuario
     if cannot? :create, NovedadDelAfiliado
-      redirect_to(root_url,
-        :info => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to(
+        root_url,
+        :flash => {
+          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."})
       return
     end
 
     # Verificar que se haya indicado el tipo de novedad
     if !params[:tipo_de_novedad_id]
-      redirect_to(root_url,
-        :info => {:tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+      redirect_to(
+        root_url,
+        :flash => {
+          :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
       return
     end
 
@@ -92,9 +111,13 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       when params[:tipo_de_novedad_id] == "3" # Modificación
         # Verificar que se haya pasado el ID del afiliado que se modificará
         if !params[:afiliado_id]
-          redirect_to(root_url,
-            :info => {:tipo => :error, :titulo => "La petición no es válida",
-              :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+          redirect_to(
+            root_url,
+            :flash => {
+              :tipo => :error, :titulo => "La petición no es válida",
+              :mensaje => "Se informará al administrador del sistema sobre este incidente."
+            }
+          )
           return
         end
 
@@ -102,9 +125,13 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         begin
           @afiliado = Afiliado.find(params[:afiliado_id])
         rescue ActiveRecord::RecordNotFound
-          redirect_to(root_url,
-            :info => {:tipo => :error, :titulo => "La petición no es válida",
-              :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+          redirect_to(
+            root_url,
+            :flash => {
+              :tipo => :error, :titulo => "La petición no es válida",
+              :mensaje => "Se informará al administrador del sistema sobre este incidente."
+            }
+          )
           return
         end
 
@@ -112,7 +139,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         if @afiliado.novedad_pendiente?
           redirect_to(
             root_url,
-            :info => {
+            :flash => {
               :tipo => :error, :titulo => "La petición no es válida",
               :mensaje => "Se informará al administrador del sistema sobre este incidente."
             }
@@ -148,9 +175,13 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
       when params[:tipo_de_novedad_id] == "4" # Reinscripción
       else # Tipo de novedad desconocida. ¿Petición fraguada?
-        redirect_to(root_url,
-          :info => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
-            :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+        redirect_to(
+          root_url,
+          :flash => {
+            :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+            :mensaje => "Se informará al administrador del sistema sobre este incidente."
+          }
+        )
         return
     end
 
@@ -161,7 +192,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     if cannot? :update, NovedadDelAfiliado
       redirect_to(
         root_url,
-        :info => {
+        :flash => {
           :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -171,14 +202,30 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
     # Buscar la novedad
     begin
+
       @novedad = NovedadDelAfiliado.find(params[:id])
+
+      # Verificar que la novedad esté pendiente
+      if !@novedad.pendiente?
+        redirect_to(
+          root_url,
+          :flash => {
+            :tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre este incidente."
+          }
+        )
+        return
+      end
+
+      # Buscar el afiliado asociado a esta novedad si es una modificación de datos
       if @novedad.tipo_de_novedad_id == 3
         @afiliado = Afiliado.find_by_clave_de_beneficiario(@novedad.clave_de_beneficiario)
       end
+
     rescue ActiveRecord::RecordNotFound
       redirect_to(
         root_url,
-        :info => {
+        :flash => {
           :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -215,7 +262,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     if cannot? :create, NovedadDelAfiliado
       redirect_to(
         root_url,
-        :info => {
+        :flash => {
           :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -237,7 +284,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         if !params[:afiliado_id]
           redirect_to(
             root_url,
-            :info => {
+            :flash => {
               :tipo => :error, :titulo => "La petición no es válida",
               :mensaje => "Se informará al administrador del sistema sobre este incidente."
             }
@@ -249,9 +296,13 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         begin
           @afiliado = Afiliado.find(params[:afiliado_id])
         rescue ActiveRecord::RecordNotFound
-          redirect_to(root_url,
-            :info => {:tipo => :error, :titulo => "La petición no es válida",
-              :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+          redirect_to(
+            root_url,
+            :flash => {
+              :tipo => :error, :titulo => "La petición no es válida",
+              :mensaje => "Se informará al administrador del sistema sobre este incidente."
+            }
+          )
           return
         end
 
@@ -303,10 +354,12 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       if @novedad.advertencias && @novedad.advertencias.size > 0
         # A la solicitud le faltan datos esenciales. Guardarla, pero marcándola como incompleta.
         @novedad.estado_de_la_novedad_id = 1
+        @novedad.creator_id = current_user.id
+        @novedad.updater_id = current_user.id
         @novedad.save
         redirect_to(
           novedad_del_afiliado_path(@novedad),
-          :info => {
+          :flash => {
             :tipo => :advertencia,
             :titulo => "Se guardó la solicitud, pero faltan datos esenciales",
             :mensaje => @novedad.advertencias
@@ -318,7 +371,10 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @novedad.save
         redirect_to(
           novedad_del_afiliado_path(@novedad),
-          :info => {:tipo => :ok, :titulo => "La solicitud se guardó correctamente"}
+          :flash => {
+            :tipo => :ok,
+            :titulo => "La solicitud se guardó correctamente"
+          }
         )
       end
     end
@@ -329,7 +385,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     if cannot? :update, NovedadDelAfiliado
       redirect_to(
         root_url,
-        :info => {
+        :flash => {
           :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -346,7 +402,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       redirect_to(
         root_url,
-        :info => {
+        :flash => {
           :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -404,9 +460,9 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @novedad.save
         redirect_to(
           novedad_del_afiliado_path(@novedad),
-          :info => {
+          :flash => {
             :tipo => :advertencia,
-            :titulo => "Se guardó la solicitud, pero faltan datos esenciales",
+            :titulo => "La modificación se guardó correctamente, pero la solicitud no está completa",
             :mensaje => @novedad.advertencias
           }
         )
@@ -416,13 +472,73 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @novedad.save
         redirect_to(
           novedad_del_afiliado_path(@novedad),
-          :info => {:tipo => :ok, :titulo => "La solicitud se guardó correctamente"}
+          :flash => {
+            :tipo => :ok,
+            :titulo => "La modificación de la solicitud se guardó correctamente"
+          }
         )
       end
     end
   end
 
-#  def destroy
-#  end
+ def destroy
+    # Verificar los permisos del usuario
+    if cannot? :update, NovedadDelAfiliado
+      redirect_to(
+        root_url,
+        :flash => {
+          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Buscar la novedad
+    begin
+
+      @novedad = NovedadDelAfiliado.find(params[:id])
+
+      # Verificar que la novedad esté pendiente
+      if !@novedad.pendiente?
+        redirect_to(
+          root_url,
+          :flash => {
+            :tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre este incidente."
+          }
+        )
+        return
+      end
+
+      # Buscar el afiliado asociado a esta novedad si es una modificación de datos
+      if @novedad.tipo_de_novedad_id == 3
+        @afiliado = Afiliado.find_by_clave_de_beneficiario(@novedad.clave_de_beneficiario)
+      end
+
+    rescue ActiveRecord::RecordNotFound
+      redirect_to(
+        root_url,
+        :flash => {
+          :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Cambiar el estado de la novedad por el que corresponde a la anulación por el usuario
+    @novedad.estado_de_la_novedad_id = 6
+    @novedad.save(:validate => false)
+
+    redirect_to(
+      novedad_del_afiliado_path(@novedad),
+      :flash => {
+        :tipo => :advertencia, :titulo => "La solicitud fue anulada",
+        :mensaje => "Esta solicitud no podrá ser modificada ni notificada."
+      }
+    )
+
+ end
 
 end

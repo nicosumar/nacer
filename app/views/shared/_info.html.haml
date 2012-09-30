@@ -1,18 +1,38 @@
-- if info
-  #info
-    - case
-      - when info[:tipo] == :error
-        %span.error
-          %h2= info[:titulo]
-          - if info[:mensaje]
-            %p= info[:mensaje]
-      - when info[:tipo] == :advertencia
-        %span.advertencia
-          %h2= info[:titulo]
-          - if info[:mensaje]
-            %p= info[:mensaje]
-      - else
-        %span.ok
-          %h2= info[:titulo]
-          - if info[:mensaje]
-            %p= info[:mensaje]
+- if defined?(registro) && registro.errors.any?
+  #info.infobox-error
+    %h2= pluralize(registro.errors.count, "error impide").to_s + " llevar a cabo la operación solicitada"
+    %ul
+      - registro.errors.full_messages.each do |msg|
+        %li= msg
+- elsif flash[:tipo]
+  - case
+    - when flash[:tipo] == :error
+      #info.infobox-error
+        %h2= flash[:titulo]
+        - if flash[:mensaje]
+          - if flash[:mensaje].is_a? String
+            %p= flash[:mensaje]
+          - elsif flash[:mensaje].is_a? Array
+            %ul
+              - flash[:mensaje].each do |msj|
+                %li= msj
+    - when flash[:tipo] == :advertencia
+      #info.infobox-advertencia
+        %h2= flash[:titulo]
+        - if flash[:mensaje]
+          - if flash[:mensaje].is_a? String
+            %p= flash[:mensaje]
+          - elsif flash[:mensaje].is_a? Array
+            %ul
+              - flash[:mensaje].each do |msj|
+                %li= msj
+    - else
+      #info.infobox-ok
+        %h2= flash[:titulo]
+        - if flash[:mensaje]
+          - if flash[:mensaje].is_a? String
+            %p= flash[:mensaje]
+          - elsif flash[:mensaje].is_a? Array
+            %ul
+              - flash[:mensaje].each do |msj|
+                %li= msj

@@ -2,10 +2,19 @@ class ConveniosDeGestionController < ApplicationController
   before_filter :user_required
 
   def index
-    if can? :read, ConvenioDeGestion then
-      @convenios_de_gestion = ConvenioDeGestion.paginate(:page => params[:page], :per_page => 20, :include => :efector, :order => "numero")
+    if can? :read, ConvenioDeGestion
+      @convenios_de_gestion = ConvenioDeGestion.paginate(
+        :page => params[:page], :per_page => 20,
+        :include => :efector, :order => "updated_at DESC"
+      )
     else
-      redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
+      redirect_to(
+        root_url,
+        :flash => {
+          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
     end
   end
 

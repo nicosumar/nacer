@@ -1,4 +1,4 @@
-class CreateContactos < ActiveRecord::Migration
+lass CreateContactos < ActiveRecord::Migration
   def change
     create_table :contactos do |t|
       t.string :nombres
@@ -11,7 +11,6 @@ class CreateContactos < ActiveRecord::Migration
       t.string :telefono
       t.string :telefono_movil
       t.text :observaciones
-
       t.timestamps
     end
   end

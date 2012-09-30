@@ -1,10 +1,12 @@
 - content_for :title do
-  Modificar solicitud
+  Modificación de la solicitud
 
-%h1 Beneficiarios
+#content-header
+  %h1 Modificación de la solicitud
 
-= render "shared/info"
+= render :partial => "shared/info", :locals => { :registro => @novedad }
 
-%h2 Modificar solicitud
+#content-body
+  %h2.first-header Información de la solicitud que se modificará
 
-= render "form"
+  = render "form"

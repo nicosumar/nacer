@@ -1,73 +1,71 @@
 - content_for :title do
-  Adenda al convenio de gestión
-  = @addenda.convenio_de_gestion.numero
-  suscrita el
-  = @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+  Detalle de la adenda
 
-%h1
-  Adenda al convenio de gestión
-  = @addenda.convenio_de_gestion.numero
-  suscrita el
-  = @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+#content-header
+  %h1 Detalle de la adenda
+  - if can? :update, @addenda
+    #action-links
+      = link_to "Modificar la adenda", edit_addenda_path(@addenda)
 
-%p#notice= notice
+= render :partial => "shared/info", :locals => { :registro => @addenda }
 
-%p
-  La adenda al convenio
-  %span.destacado= @addenda.convenio_de_gestion.numero
-  fue suscrita entre la Unidad de Gestión del Seguro Provincial y el efector
-  %span.destacado>= " " + @addenda.convenio_de_gestion.efector.nombre
-  , el día
-  %span.destacado>= " " + @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
-  , refrendado por el coordinador de la UGSP y
-  - if @addenda.firmante then
-    el/la referente del efector,
-    %span.destacado>=  " " + @addenda.firmante
-    \.
-  - else
-    el/la representante del efector.
-%p
-  La adenda
-  - if @addenda.fecha_de_inicio.to_datetime > Time.now then
-    entrará
-  - else
-    entró
-  en vigencia el día
-  %span.destacado>= " " + @addenda.fecha_de_inicio.strftime("%d/%m/%Y") + "."
-- if @addenda.prestaciones_autorizadas_alta.any? then
-  %h3 Prestaciones dadas de alta por la adenda
-  %table
-    %thead
-      %tr
-        %th Código
-        %th Nombre
-    %tbody
-      - @addenda.prestaciones_autorizadas_alta.each do |a|
+#content-body
+  %h2.first-header Información de la adenda registrada
+
+  %h3 Información general
+  %div.field_content
+    %span.field_name Adenda al convenio de gestión
+    %span.field_value= @addenda.convenio_de_gestion.numero
+  %div.field_content
+    %span.field_name El convenio pertenece al efector
+    %span.field_value= @addenda.convenio_de_gestion.efector.nombre
+  %div.field_content
+    %span.field_name Firmante
+    - if !@addenda.firmante.blank?
+      %span.field_value= @addenda.firmante
+    - else
+      %span.field_empty No se ingresó el firmante
+  %div.field_content
+    %span.field_name Fecha de suscripción
+    - if @addenda.fecha_de_suscripcion
+      %span.field_value= @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha de suscripción
+  %div.field_content
+    %span.field_name Fecha de entrada en vigencia
+    %span.field_value= @addenda.fecha_de_inicio.strftime("%d/%m/%Y")
+
+  - if @addenda.prestaciones_autorizadas_alta.any? then
+    %h3 Prestaciones dadas de alta por la adenda
+    %table
+      %thead
         %tr
-          %td= a.prestacion.codigo
-          %td= a.prestacion.nombre
-- if @addenda.prestaciones_autorizadas_baja.any? then
-  %h3 Prestaciones dadas de baja por la adenda
-  %table
-    %thead
-      %tr
-        %th Código
-        %th Nombre
-    %tbody
-      - @addenda.prestaciones_autorizadas_baja.each do |b|
+          %th Código
+          %th Nombre
+      %tbody
+        - @addenda.prestaciones_autorizadas_alta.each do |a|
+          %tr
+            %td= a.prestacion.codigo
+            %td= a.prestacion.nombre
+
+  - if @addenda.prestaciones_autorizadas_baja.any? then
+    %h3 Prestaciones dadas de baja por la adenda
+    %table
+      %thead
         %tr
-          %td= b.prestacion.codigo
-          %td= b.prestacion.nombre
+          %th Código
+          %th Nombre
+      %tbody
+        - @addenda.prestaciones_autorizadas_baja.each do |b|
+          %tr
+            %td= b.prestacion.codigo
+            %td= b.prestacion.nombre
 
-- if @addenda.observaciones
-  %h3 Información complementaria
-  %p
-    - @addenda.observaciones.split("\n").each do |linea|
-      = linea
-      %br/
-
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :update, Addenda
-      %li= link_to "Modificar esta adenda", edit_addenda_path(@addenda)
+  %h3 Observaciones
+  %div.field_content
+    - if !@addenda.observaciones.blank?
+      %div.field_value
+        - @addenda.observaciones.split("\n").each do |linea|
+          %p= linea
+    - else
+      %span.field_empty No se ingresaron observaciones

@@ -13,7 +13,8 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem 'authlogic'
+#gem 'authlogic'
+gem 'devise'
 gem 'mongrel'
 gem 'haml'
 gem 'cancan'

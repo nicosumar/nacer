@@ -1,8 +1,12 @@
 - content_for :title do
-  Nueva adenda
+  Creación de una nueva adenda
 
-%h1
-  Nueva adenda para el convenio
-  = @convenio_de_gestion.numero
+#content-header
+  %h1 Creación de una nueva adenda
 
-= render 'form'
+= render :partial => "shared/info", :locals => { :registro => @addenda }
+
+#content-body
+  %h2.first-header Información de la adenda que se creará
+
+  = render 'form'

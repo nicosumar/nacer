@@ -1,11 +1,11 @@
 class User < ActiveRecord::Base
   belongs_to :sexo
   has_and_belongs_to_many :user_groups
-  has_and_belongs_to_many :unidades_de_alta_de_datos
+  has_many :unidades_de_alta_de_datos_users
+  has_many :unidades_de_alta_de_datos, :through => :unidades_de_alta_de_datos_users
   validates_presence_of :firstname, :lastname
 
-  acts_as_authentic do | c |
-#    c.logged_in_timeout = 15.minutes
+  acts_as_authentic do |a|
   end
 
   def in_group?(group)

@@ -227,7 +227,7 @@ es:
       not_active: Su cuenta está desactivada
       not_confirmed: Su cuenta no está confirmada
       not_approved: Su cuenta no ha sido aprobada
-      no_authentication_details: Debe introducir sus datos de identificación.
+      no_authentication_details: Debe introducir sus credenciales de acceso.
     models:
       user_session: Sesión de usuario
     attributes:

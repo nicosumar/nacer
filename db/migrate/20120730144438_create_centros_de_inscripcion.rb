@@ -3,9 +3,9 @@ class CreateCentrosDeInscripcion < ActiveRecord::Migration
     create_table :centros_de_inscripcion do |t|
       t.string :nombre, :null => false
       t.string :codigo, :null => false
-      t.string :created_by
-      t.string :updated_by
       t.timestamps
+      t.integer :creator_id
+      t.integer :updater_id
     end
   end
 end

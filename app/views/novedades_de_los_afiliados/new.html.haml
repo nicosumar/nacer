@@ -1,23 +1,12 @@
 - content_for :title do
-  - case
-    - when @novedad.tipo_de_novedad_id == 1
-      Nueva solicitud de alta de beneficiario
-    - when @novedad.tipo_de_novedad_id == 2
-      Nueva solicitud de baja
-    - when @novedad.tipo_de_novedad_id == 3
-      Nueva solicitud de modificación de datos
+  Creación de una nueva solicitud
 
-%h1 Beneficiarios
+#content-header
+  %h1 Creación de una nueva solicitud
 
-= render "shared/info"
+= render :partial => "shared/info", :locals => { :registro => @novedad }
 
-%h2
-  - case
-    - when @novedad.tipo_de_novedad_id == 1
-      Nueva solicitud de alta de beneficiario
-    - when @novedad.tipo_de_novedad_id == 2
-      Nueva solicitud de baja
-    - when @novedad.tipo_de_novedad_id == 3
-      Nueva solicitud de modificación de datos
+#content-body
+  %h2.first-header Información de la solicitud que se creará
 
-= render "form"
+  = render "form"

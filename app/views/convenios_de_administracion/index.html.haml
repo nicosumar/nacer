@@ -1,6 +1,6 @@
 %h1 Convenios de administración
 
-%p#notice= notice
+.infobox-ok=(notice)
 
 %table
   %thead
@@ -20,8 +20,3 @@
         %td= c.fecha_de_finalizacion.strftime("%d/%m/%Y")
 = will_paginate @convenios_de_administracion, :inner_window => 2, :outer_window => 0
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :create, ConvenioDeAdministracion
-      %li= link_to "Agregar un convenio", new_convenio_de_administracion_url

@@ -3,6 +3,19 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :user_required, :admin_required, :current_user, :uad_actual
 
+  def current_user_session
+    return @current_user_session if defined?(@current_user_session)
+    @current_user_session = UserSession.find
+    puts @current_user_session
+    return @current_user_session
+  end
+
+  def current_user
+    return @current_user if defined?(@current_user)
+    @current_user = current_user_session && current_user_session.record
+  end
+
+
   # establecer_uad
   # Cambia la ruta de búsqueda de esquemas de PostgreSQL para que el usuario acceda prioritariamente
   # a las tablas asociadas con la UAD en la que está habilitado a operar.
@@ -37,16 +50,6 @@ class ApplicationController < ActionController::Base
     UnidadDeAltaDeDatos.find_by_schema_search_path(ActiveRecord::Base.connection.schema_search_path)
   end
 
-  def current_user_session
-    return @current_user_session if defined?(@current_user_session)
-    @current_user_session = UserSession.find
-  end
-
-  def current_user
-    return @current_user if defined?(@current_user)
-    @current_user = current_user_session && current_user_session.record
-  end
-
   def user_required
     unless current_user
       store_location
@@ -72,18 +75,17 @@ class ApplicationController < ActionController::Base
     session[:return_to] = request.url
   end
 
-  def redirect_to_stored(notice)
-    redirect_to (session[:return_to] || root_url), :notice => notice
+  def redirect_to_stored(info)
+    redirect_to((session[:return_to] || root_url), :flash => info)
     session[:return_to] = nil
   end
 
-private
- 
   def parametro_fecha(hash, clave)
     atributo = clave.to_s
     return Date.new(hash[atributo + '(1i)'].to_i, hash[atributo + '(2i)'].to_i, hash[atributo + '(3i)'].to_i)   
   end
 
+private
   def a_fecha(cadena)
     # Intentar encontrar una concordancia con el formato de fecha
     fecha = nil

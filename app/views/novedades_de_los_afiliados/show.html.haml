@@ -1,41 +1,23 @@
 - content_for :title do
+  Detalle de la solicitud
+
+#content-header
+  %h1 Detalle de la solicitud
+  - if can?(:update, @novedad) && @novedad.pendiente?
+    #action-links
+      = link_to "Modificar la solicitud", edit_novedad_del_afiliado_path(@novedad)
+      = link_to "Anular la solicitud", @novedad, :method => :delete, |
+        :confirm => "¿Está seguro que desea anular esta solicitud?\nEsta acción no se podrá deshacer." |
+
+= render :partial => "shared/info", :locals => { :registro => @novedad }
+
+#content-body
+  %h2.first-header Información de la solicitud registrada
+
   - case
     - when @novedad.tipo_de_novedad_id == 1
-      Solicitud de alta de beneficiario
+      = render :partial => "show_alta"
     - when @novedad.tipo_de_novedad_id == 2
-      Solicitud de baja
+      = render :partial => "show_baja"
     - when @novedad.tipo_de_novedad_id == 3
-      Solicitud de modificación de datos
-
-= render "shared/info"
-
-%h1 Beneficiarios
-#busqueda_afiliado
-  = form_tag('/afiliados', :method => 'get') do
-    %div.field
-      = label_tag(:patron_de_busqueda, "Búsqueda:")
-      = text_field_tag(:patron_de_busqueda, nil)
-    %div.actions
-      = submit_tag("Buscar")
-
-%h2
-  - case
-    - when @novedad.tipo_de_novedad_id == 1
-      Solicitud de alta de beneficiario
-    - when @novedad.tipo_de_novedad_id == 2
-      Solicitud de baja
-    - when @novedad.tipo_de_novedad_id == 3
-      Solicitud de modificación de datos
-
-- if @novedad.pendiente? && can?(:update, @novedad)
-  #action_links
-    = link_to "Modificar la solicitud", edit_novedad_del_afiliado_path(@novedad)
-    = link_to "Anular la solicitud", novedad_del_afiliado_path(@novedad)
-
-- case
-  - when @novedad.tipo_de_novedad_id == 1
-    = render "show_alta"
-  - when @novedad.tipo_de_novedad_id == 2
-    = render "show_baja"
-  - when @novedad.tipo_de_novedad_id == 3
-    = render "show_modificacion"
+      = render :partial => "show_modificacion"

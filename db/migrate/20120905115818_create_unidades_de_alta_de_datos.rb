@@ -7,9 +7,9 @@ class CreateUnidadesDeAltaDeDatos < ActiveRecord::Migration
       t.boolean :facturacion
       t.boolean :activa
       t.string :schema_search_path
-      t.string :created_by
-      t.string :updated_by
       t.timestamps
+      t.integer :creator_id
+      t.integer :updater_id
     end
   end
 end

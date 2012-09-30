@@ -1,7 +1,12 @@
 - content_for :title do
-  Nuevo contacto
+  Creación de un nuevo contacto
 
-%h1
-  Nuevo contacto
+#content-header
+  %h1 Creación de un nuevo contacto
 
-= render 'form'
+= render :partial => "shared/info", :locals => { :registro => @contacto }
+
+#content-body
+  %h2.first-header Información del contacto que se creará
+
+  = render 'form'

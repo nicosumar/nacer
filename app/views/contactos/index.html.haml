@@ -1,23 +1,25 @@
-%h1 Contactos
+- content_for :title do
+  Contactos
 
-%p#notice= notice
+#content-header
+  %h1 Contactos
+  - if can? :create, Contacto
+    #action-links
+      = link_to "Crear un nuevo contacto", new_contacto_url
 
-%table
-  %thead
-    %tr
-      %th Nombre
-      %th E-mail
-      %th Teléfonos
-  %tbody
-    - @contactos.each do |c|
-      %tr.clickable{ :onclick => "location.href=\'#{contacto_path(c)}\'", :title => "Ver detalles del contacto \"#{c.mostrado}\"" }
-        %td= (c.apellidos ? c.apellidos + (c.nombres ? ", " + c.nombres : "") : c.mostrado)
-        %td= c.email
-        %td= (c.telefono || "") + (c.telefono_movil || "")
-= will_paginate @contactos, :inner_window => 2, :outer_window => 0
+#content-body
+  %h2.first-header Listado de contactos registrados
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :create, Contacto
-      %li= link_to "Agregar un contacto", new_contacto_url
+  %table
+    %thead
+      %tr
+        %th Nombre mostrado
+        %th E-mail
+        %th Teléfonos
+    %tbody
+      - @contactos.each do |c|
+        %tr.clickable{ :onclick => "location.href=\'#{contacto_path(c)}\'", :title => "Ver detalles del contacto" }
+          %td= c.mostrado
+          %td= c.email
+          %td= c.telefono.to_s + " " + c.telefono_movil.to_s
+  = will_paginate @contactos, :inner_window => 2, :outer_window => 0

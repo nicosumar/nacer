@@ -1,3 +1,5 @@
+.infobox-ok=(notice)
+
 - content_for :title do
   Cuasi-factura del efector
   = @cuasi_factura.efector.nombre
@@ -6,7 +8,13 @@
   Cuasi-factura del efector
   = @cuasi_factura.efector.nombre
 
-%p#notice= notice
+%ul{:id => "submenu"}
+  - if can? :update, CuasiFactura
+    %li= link_to "Modificar esta cuasi-factura", edit_cuasi_factura_path(@cuasi_factura), :class => "drop"
+    - if can? (:create, RenglonDeCuasiFactura) && !@cuasi_factura.renglones_de_cuasi_facturas.any?
+      %li= link_to "Importar detalle de la cuasi-factura", importar_detalle_url(:cuasi_factura_id => @cuasi_factura.id), :class => "drop"
+      - if can?(:create, RegistroDePrestacion) && !@liquidacion.cuasi_facturas.any?
+        %li= link_to "Importar digitalización de prestaciones", importar_registros_de_prestaciones_url(:cuasi_factura_id => @cuasi_factura.id), :class => "drop"
 
 - if @cuasi_factura.renglones_de_cuasi_facturas.any?
   %h3 Detalle de la cuasi-factura presentada
@@ -63,13 +71,4 @@
       = l
       %br/
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :update, CuasiFactura
-      %li= link_to "Modificar esta cuasi-factura", edit_cuasi_factura_path(@cuasi_factura)
-    - if can?(:create, RenglonDeCuasiFactura) && !@cuasi_factura.renglones_de_cuasi_facturas.any?
-      %li= link_to "Importar detalle de la cuasi-factura", importar_detalle_url(:cuasi_factura_id => @cuasi_factura.id)
-    - else
-      - if can?(:create, RegistroDePrestacion) && !@cuasi_factura.registros_de_prestaciones.any?
-        %li= link_to "Importar digitalización de prestaciones", importar_registros_de_prestaciones_url(:cuasi_factura_id => @cuasi_factura.id)
+

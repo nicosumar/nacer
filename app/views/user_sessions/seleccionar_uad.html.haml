@@ -1,14 +1,18 @@
-%h3 Unidades de alta de datos
-%p
-  Usted está habilitado para operar en distintas unidades de alta de datos.
-  Por favor, seleccione del listado la unidad con la que va a operar durante esta sesión.
-%p
-  Puede cambiar luego de unidad de alta de datos utilizando el menú de usuario.
+#content-body
+  %h1 Iniciar la sesión
 
-= form_tag('/seleccionar_uad', :method => 'get') do
-  %div.field
-    = label_tag :unidad_de_alta_de_datos_id, "Unidades de alta de datos habilitadas:"
-    = select_tag :unidad_de_alta_de_datos_id, options_for_select(@unidades_de_alta_de_datos,
-      @unidad_de_alta_de_datos_id), :include_blank => true
-  %div.actions
-    = submit_tag("Seleccionar")
+  #info.infobox-advertencia
+    %h2 Unidades de alta de datos
+    %p
+      Usted está habilitado para operar en distintas unidades de alta de datos.
+      Por favor, seleccione del listado la unidad con la que va a operar durante esta sesión.
+    %p
+      Puede cambiar luego de unidad de alta de datos a través de la opción "MI CUENTA" en el menú superior.
+
+  = form_tag('/seleccionar_uad', :method => 'get') do
+    %div.field
+      = label_tag :unidad_de_alta_de_datos_id, "Unidad de alta de datos seleccionada:"
+      = select_tag :unidad_de_alta_de_datos_id, options_for_select(@unidades_de_alta_de_datos,
+        @unidad_de_alta_de_datos_id), :include_blank => false
+    %div.actions
+      = submit_tag("Seleccionar")

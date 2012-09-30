@@ -1,5 +1,7 @@
 Nacer::Application.routes.draw do
 
+  resources :pruebas
+
   match "iniciar_sesion" => "user_sessions#new"
   match "seleccionar_uad" => "user_sessions#seleccionar_uad"
   match "cerrar_sesion" => "user_sessions#destroy"
@@ -22,7 +24,7 @@ Nacer::Application.routes.draw do
   match "importar_detalle" => "cuasi_facturas#importar_detalle"
   match "importar_registros_de_prestaciones" => "cuasi_facturas#importar_registros_de_prestaciones"
   match "importar_archivo_p" => "liquidaciones#importar_archivo_p"
-  resources :novedades_de_los_afiliados, :except => :destroy
+  resources :novedades_de_los_afiliados
   resources :afiliados, :only => [:index, :show]
 
   root :to => 'inicio#index'

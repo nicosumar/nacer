@@ -1,21 +1,27 @@
-%h1 Adendas
+- content_for :title do
+  Adendas
 
-%table
-  %thead
-    %tr
-      %th Convenio
-      %th Efector
-      %th Inicio
-  %tbody
-    - @addendas.each do |a|
-      %tr.clickable{ :onclick => "location.href=\'#{addenda_path(a)}\'", :title => "Ver detalles de la adenda al convenio #{a.convenio_de_gestion.numero} suscrita el #{a.fecha_de_suscripcion.strftime("%d/%m/%Y")}" }
-        %td= a.convenio_de_gestion.numero
-        %td= a.convenio_de_gestion.efector.nombre
-        %td= a.fecha_de_inicio.strftime("%d/%m/%Y")
-= will_paginate @addendas, :inner_window => 2, :outer_window => 0
+#content-header
+  %h1 Adendas
+  - if can? :create, Addenda
+    #action-links
+      = link_to "Crear una nueva adenda", new_addenda_url
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    - if can? :create, Addenda
-      %li= link_to "Agregar una adenda", new_addenda_url
+#content-body
+  %h2.first-header Listado de adendas registradas
+
+  %table
+    %thead
+      %tr
+        %th Convenio
+        %th Efector
+        %th Inicio
+        %th Última modificación
+    %tbody
+      - @addendas.each do |a|
+        %tr.clickable{ :onclick => "location.href=\'#{addenda_path(a)}\'", :title => "Ver detalles de la adenda" }
+          %td= a.convenio_de_gestion.numero
+          %td= a.convenio_de_gestion.efector.nombre
+          %td= a.fecha_de_inicio.strftime("%d/%m/%Y")
+          %td= a.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+  = will_paginate @addendas, :inner_window => 2, :outer_window => 0
