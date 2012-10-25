@@ -18,7 +18,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
     unidad_de_alta_de_datos = self.find_by_codigo(codigo.strip)
 
     if unidad_de_alta_de_datos
-      return unidad_de_alta_de_datos.first.id
+      return unidad_de_alta_de_datos.id
     else
       return nil
     end

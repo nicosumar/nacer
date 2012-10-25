@@ -53,6 +53,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("user·_session·", "user_sessions")
   inflect.irregular("UserSession", "User·Sessions·")
   inflect.irregular("User·Session·", "UserSessions")
+  inflect.irregular("user_group_user", "user·_groups·_users·")
+  inflect.irregular("user·_group·_user·", "user_groups_users")
+  inflect.irregular("UserGroupUser", "User·Groups·Users·")
+  inflect.irregular("User·Group·User·", "UserGroupsUsers")
   inflect.irregular("ability", "abilities·")
   inflect.irregular("ability·", "abilities")
 

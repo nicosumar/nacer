@@ -1,0 +1,22 @@
+= render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
+
+#content-body
+  %h2.first-header Iniciar la sesión
+
+  = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+    = devise_error_messages!
+
+    %div.field
+      = f.label :email
+      %br/
+      = f.email_field :email
+
+    %div.field
+      = f.label :password
+      %br/
+      = f.password_field :password
+
+    %div.actions
+      = f.submit "Iniciar la sesión"
+
+  = render "devise/shared/links"

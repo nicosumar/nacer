@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120906093203) do
+ActiveRecord::Schema.define(:version => 20120930224055) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "observaciones"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "afiliados", :id => false, :force => true do |t|
@@ -145,19 +145,19 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
   create_table "centros_de_inscripcion", :force => true do |t|
     t.string   "nombre",     :null => false
     t.string   "codigo",     :null => false
-    t.string   "created_by"
-    t.string   "updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "centros_de_inscripcion_unidades_de_alta_de_datos", :id => false, :force => true do |t|
     t.integer  "centro_de_inscripcion_id"
     t.integer  "unidad_de_alta_de_datos_id"
-    t.string   "created_by"
-    t.string   "updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "clases_de_documentos", :force => true do |t|
@@ -179,8 +179,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "sexo_id"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "convenios_de_administracion", :force => true do |t|
@@ -194,8 +194,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   add_index "convenios_de_administracion", ["efector_id"], :name => "unq_convenios_de_administracion_efector_id", :unique => true
@@ -212,8 +212,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   add_index "convenios_de_gestion", ["efector_id"], :name => "unq_convenios_de_gestion_efector_id", :unique => true
@@ -229,8 +229,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "datos_adicionales", :force => true do |t|
@@ -305,8 +305,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -354,8 +354,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "motivos_de_rechazos", :force => true do |t|
@@ -392,6 +392,7 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.integer  "categoria_de_afiliado_id"
     t.integer  "sexo_id"
     t.date     "fecha_de_nacimiento"
+    t.boolean  "es_menor"
     t.integer  "pais_de_nacimiento_id"
     t.boolean  "se_declara_indigena"
     t.integer  "lengua_originaria_id"
@@ -413,7 +414,6 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.string   "domicilio_codigo_postal"
     t.text     "observaciones"
     t.integer  "lugar_de_atencion_habitual_id"
-    t.boolean  "es_menor"
     t.string   "apellido_de_la_madre"
     t.string   "nombre_de_la_madre"
     t.integer  "tipo_de_documento_de_la_madre_id"
@@ -444,10 +444,10 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.integer  "centro_de_inscripcion_id"
     t.string   "nombre_del_agente_inscriptor"
     t.text     "observaciones_generales"
-    t.string   "created_by"
-    t.string   "updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "paises", :force => true do |t|
@@ -463,6 +463,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "valor"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "percentiles_pc_edad", :force => true do |t|
@@ -517,8 +519,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.string   "autorizante_de_la_baja_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "provincias", :force => true do |t|
@@ -534,8 +536,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.date     "fecha_de_finalizacion"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "registros_de_datos_adicionales", :force => true do |t|
@@ -545,8 +547,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "registros_de_prestaciones", :force => true do |t|
@@ -568,8 +570,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "renglones_de_cuasi_facturas", :force => true do |t|
@@ -584,8 +586,8 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "sexos", :force => true do |t|
@@ -612,16 +614,12 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
   end
 
   create_table "tipos_de_novedades", :force => true do |t|
-    t.string   "nombre"
-    t.string   "codigo_para_gestion"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "nombre"
+    t.string "codigo_para_gestion"
   end
 
   create_table "tribus_originarias", :force => true do |t|
-    t.string   "nombre"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "nombre"
   end
 
   create_table "unidades_de_alta_de_datos", :force => true do |t|
@@ -631,17 +629,18 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
     t.boolean  "facturacion"
     t.boolean  "activa"
     t.string   "schema_search_path"
-    t.string   "created_by"
-    t.string   "updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   create_table "unidades_de_alta_de_datos_users", :id => false, :force => true do |t|
     t.integer  "unidad_de_alta_de_datos_id"
     t.integer  "user_id"
-    t.string   "created_by"
-    t.string   "updated_by"
+    t.boolean  "predeterminada"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -658,25 +657,45 @@ ActiveRecord::Schema.define(:version => 20120906093203) do
   end
 
   create_table "user_groups_users", :id => false, :force => true do |t|
-    t.integer "user_id"
-    t.integer "user_group_id"
-  end
-
-  create_table "users", :force => true do |t|
-    t.string   "firstname",         :null => false
-    t.string   "lastname",          :null => false
-    t.string   "login",             :null => false
-    t.string   "email",             :null => false
-    t.string   "crypted_password"
-    t.string   "password_salt"
-    t.string   "persistence_token"
-    t.datetime "current_login_at"
-    t.datetime "last_login_at"
-    t.string   "current_login_ip"
-    t.string   "last_login_ip"
+    t.integer  "user_group_id"
+    t.integer  "user_id"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "sexo_id"
   end
+
+  add_index "user_groups_users", ["user_group_id", "user_id"], :name => "index_user_groups_users_on_user_group_id_and_user_id", :unique => true
+
+  create_table "users", :force => true do |t|
+    t.string   "nombre",                                    :null => false
+    t.string   "apellido",                                  :null => false
+    t.date     "fecha_de_nacimiento"
+    t.integer  "sexo_id"
+    t.boolean  "autorizado",             :default => false, :null => false
+    t.datetime "autorizado_el"
+    t.integer  "autorizador_id"
+    t.string   "email",                  :default => "",    :null => false
+    t.string   "encrypted_password",     :default => "",    :null => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.integer  "sign_in_count",          :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
+    t.integer  "failed_attempts",        :default => 0
+    t.string   "unlock_token"
+    t.datetime "locked_at"
+  end
+
+  add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+  add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
 
 end

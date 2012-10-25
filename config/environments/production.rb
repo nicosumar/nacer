@@ -24,7 +24,7 @@ Nacer::Application.configure do
   # config.assets.manifest = YOUR_PATH
 
   # Specifies the header that your server uses for sending files
-  # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
+  config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
@@ -46,7 +46,16 @@ Nacer::Application.configure do
   # config.assets.precompile += %w( search.js )
 
   # Disable delivery errors, bad email addresses will be ignored
-  # config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.smtp_settings = {
+    :address => "su.servidor.smtp.aquí",
+    :domain => "el.dominio.de.su.servidor",
+    :user_name => "nombre_de_usuario_para_autenticación_smtp",
+    :password => "contaseña",
+    :authentication => "tipo_de_autenticación",
+    :enable_starttls_auto => false
+  }
+  config.action_mailer.default_url_options = { :host => "ip.del.servidor:puerto" }
 
   # Enable threaded mode
   # config.threadsafe!

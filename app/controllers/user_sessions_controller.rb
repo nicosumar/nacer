@@ -1,4 +1,4 @@
-class UserSessionsController < ApplicationController
+class UserSessionsController < Devise::SessionsController
   def new
     @user_session = UserSession.new
   end

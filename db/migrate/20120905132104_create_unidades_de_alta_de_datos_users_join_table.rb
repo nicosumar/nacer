@@ -4,9 +4,9 @@ class CreateUnidadesDeAltaDeDatosUsersJoinTable < ActiveRecord::Migration
       t.references :unidad_de_alta_de_datos
       t.references :user
       t.boolean :predeterminada
-      t.timestamps
       t.integer :creator_id
       t.integer :updater_id
+      t.timestamps
     end
   end
 end

@@ -407,7 +407,7 @@ class Afiliado < ActiveRecord::Base
     # de importación
     version_del_sistema = Parametro.valor_del_parametro(:version_del_sistema_de_gestion)
     if (version_del_sistema == "4.6" && campos.size != 91 ||
-        version_del_sistema == "4.7" && campos.size != 92)
+        version_del_sistema == "4.7" && campos.size != 93)
       raise ArgumentError, "El texto no contiene la cantidad correcta de campos, ¿quizás equivocó el separador?"
       return nil
     end
@@ -434,13 +434,7 @@ class Afiliado < ActiveRecord::Base
       # Datos de nacimiento, sexo, origen y estudios
       :sexo_id => Sexo.id_del_codigo(self.valor(campos[7], :texto)),
       :fecha_de_nacimiento => self.valor(campos[11], :fecha),
-      :pais_de_nacimiento_id => (
-        version_del_sistema == "4.6" ?
-          # En la versión 4.6 del sistema de gestión, el país de origen no tenía definido un lugar en
-          # la tabla de afiliados, y se utilizó el campo de 'localidad' (de nacimiento) para guardarlo.
-          Pais.id_del_nombre(self.valor(campos[9], :texto)) :
-          # En la versión 4.7 se agrega el campo 'AfiPais' al final de la tabla (campo nº 92).
-          Pais.id_del_nombre(self.valor(campos[91], :texto))),
+      :pais_de_nacimiento_id => Pais.id_del_nombre(self.valor(campos[92], :texto)),
       :se_declara_indigena => SiNo.valor_bool_del_codigo(self.valor(campos[12], :texto)),
       :lengua_originaria_id => (self.valor(campos[13], :entero) == 0 ? nil : self.valor(campos[13], :entero)),
       :tribu_originaria_id => (self.valor(campos[14], :entero) == 0 ? nil : self.valor(campos[14], :entero)),
@@ -559,6 +553,7 @@ class Afiliado < ActiveRecord::Base
       #:activo_r => self.valor(campos[83], :texto),
       #:motivo_baja_r => self.valor(campos[84], :entero),
       #:mensaje_baja_r => self.valor(campos[85], :texto),
+      #:embarazo_actual => SiNo.valor_bool_del_codigo(self.valor(campos[91], :texto)),
     }
   end
 

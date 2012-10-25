@@ -1,10 +1,10 @@
 Nacer::Application.routes.draw do
 
-  resources :pruebas
+  devise_for :users
 
-  match "iniciar_sesion" => "user_sessions#new"
+  match "iniciar_sesion" => "users#sign_in"
   match "seleccionar_uad" => "user_sessions#seleccionar_uad"
-  match "cerrar_sesion" => "user_sessions#destroy"
+  match "cerrar_sesion" => "users#sign_out"
 
   resources :users, :except => [:show, :destroy]
   resources :user_groups

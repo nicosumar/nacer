@@ -8,3 +8,4 @@ public/assets
 vendor/data
 .project
 *.lnk
+config/environments/

@@ -14,7 +14,7 @@ class CentroDeInscripcion < ActiveRecord::Base
     # además que un sistema anterior corrompió los códigos de CI (que en verdad eran UADs).
     centro_de_inscripcion = self.find_by_codigo(codigo.strip)
     if centro_de_inscripcion
-      return centro_de_inscripcion.first.id
+      return centro_de_inscripcion.id
     else
       return nil
     end

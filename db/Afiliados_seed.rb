@@ -15,13 +15,23 @@ class ModificarAfiliados < ActiveRecord::Migration
           -- Eliminar el registro asociado en la tabla de búsquedas
           DELETE FROM busquedas WHERE modelo_type = 'Afiliado' AND modelo_id = OLD.afiliado_id;
           RETURN OLD;
-        ELSIF (TG_OP = 'UPDATE') THEN
+        ELSIF (TG_OP = 'UPDATE' AND (NEW.motivo_de_la_baja_id IN (14, 81, 82, 83, 203) 
+               OLD.motivo_de_la_baja_id != 14 AND OLD.motivo_de_la_baja_id != 81 AND OLD.motivo_de_la_baja_id != 82 AND
+               OLD.motivo_de_la_baja_id != 83 AND OLD.motivo_de_la_baja_id != 203) THEN
+          -- Eliminar el registro si es una actualización y el motivo de la baja se cambia a uno de los códigos de duplicado
+          -- o de otro motivo que requiera que el afiliado no sea indexado para búsquedas
+          DELETE FROM busquedas WHERE modelo_type = 'Afiliado' AND modelo_id = NEW.afiliado_id;
+          RETURN NULL;
+        ELSIF (TG_OP = 'UPDATE' AND NEW.motivo_de_la_baja_id != 14 AND NEW.motivo_de_la_baja_id != 81 AND
+               NEW.motivo_de_la_baja_id != 82 AND NEW.motivo_de_la_baja_id != 83 AND NEW.motivo_de_la_baja_id != 203 AND
+               OLD.motivo_de_la_baja_id != 14 AND OLD.motivo_de_la_baja_id != 81 AND OLD.motivo_de_la_baja_id != 82 AND
+               OLD.motivo_de_la_baja_id != 83 AND OLD.motivo_de_la_baja_id != 203) THEN
+          -- Actualizar el registro asociado en la tabla de búsquedas
           SELECT LOWER(nombre) INTO clase_de_documento FROM clases_de_documentos WHERE id = NEW.clase_de_documento_id;
           SELECT codigo INTO tipo_de_documento FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_id;
           SELECT codigo INTO tipo_de_documento_de_la_madre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_de_la_madre_id;
           SELECT codigo INTO tipo_de_documento_del_padre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_padre_id;
           SELECT codigo INTO tipo_de_documento_del_tutor FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_tutor_id;
-          -- Actualizar el registro asociado en la tabla de búsquedas
           UPDATE busquedas SET
             titulo =
               COALESCE(NEW.apellido || ', ', '') ||
@@ -93,7 +103,13 @@ class ModificarAfiliados < ActiveRecord::Migration
               setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_del_tutor, '')), 'C')
             WHERE modelo_type = 'Afiliado' AND modelo_id = NEW.afiliado_id;
           RETURN NEW;
-        ELSIF (TG_OP = 'INSERT') THEN
+        ELSIF (TG_OP = 'UPDATE' AND NEW.motivo_de_la_baja_id != 14 AND NEW.motivo_de_la_baja_id != 81 AND
+               NEW.motivo_de_la_baja_id != 82 AND NEW.motivo_de_la_baja_id != 83 AND NEW.motivo_de_la_baja_id != 203 AND (
+               OLD.motivo_de_la_baja_id = 14 OR OLD.motivo_de_la_baja_id = 81 OR OLD.motivo_de_la_baja_id = 82 OR
+               OLD.motivo_de_la_baja_id = 83 OR OLD.motivo_de_la_baja_id = 203) OR (
+               TG_OP = 'INSERT' AND NEW.motivo_de_la_baja_id != 14 AND NEW.motivo_de_la_baja_id != 81 AND
+               NEW.motivo_de_la_baja_id != 82 AND NEW.motivo_de_la_baja_id != 83 AND NEW.motivo_de_la_baja_id != 203)) THEN
+          -- Insertar el registro asociado en la tabla de búsquedas
           SELECT LOWER(nombre) INTO clase_de_documento FROM clases_de_documentos WHERE id = NEW.clase_de_documento_id;
           SELECT codigo INTO tipo_de_documento FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_id;
           SELECT codigo INTO tipo_de_documento_de_la_madre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_de_la_madre_id;
@@ -167,6 +183,7 @@ class ModificarAfiliados < ActiveRecord::Migration
             setweight(to_tsvector('public.indices_fts', ', documento '), 'D') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(tipo_de_documento_del_tutor || ' ', '')), 'D') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_del_tutor, '')), 'C'));
+          RETURN NEW;
         END IF;
         RETURN NULL;
       END;

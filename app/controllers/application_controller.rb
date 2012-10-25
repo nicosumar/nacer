@@ -1,19 +1,20 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
-  helper_method :user_required, :admin_required, :current_user, :uad_actual
+#  helper_method :user_required, :admin_required, :current_user, :uad_actual
+  helper_method :uad_actual
 
-  def current_user_session
-    return @current_user_session if defined?(@current_user_session)
-    @current_user_session = UserSession.find
-    puts @current_user_session
-    return @current_user_session
-  end
+#  def current_user_session
+#    return @current_user_session if defined?(@current_user_session)
+#    @current_user_session = UserSession.find
+#    puts @current_user_session
+#    return @current_user_session
+#  end
 
-  def current_user
-    return @current_user if defined?(@current_user)
-    @current_user = current_user_session && current_user_session.record
-  end
+#  def current_user
+#    return @current_user if defined?(@current_user)
+#    @current_user = current_user_session && current_user_session.record
+#  end
 
 
   # establecer_uad
