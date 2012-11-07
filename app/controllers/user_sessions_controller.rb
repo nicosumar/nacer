@@ -1,50 +1,47 @@
 class UserSessionsController < Devise::SessionsController
+
+  # GET /users/sign_in
   def new
-    @user_session = UserSession.new
+    # Mantener el comportamiento de Devise
+    super
   end
 
+  # POST /users/sign_in
   def create
-    @user_session = UserSession.new(params[:user_session])
+    # Autenticación de Devise
+    resource = warden.authenticate!(auth_options)
+    sign_in(resource_name, resource)
 
-    if @user_session.save
-      # Buscar la/s UAD/s a la/s que pertenece el usuario
-      case
-        when current_user.unidades_de_alta_de_datos.size == 0
-          # El usuario fue creado, pero no ha sido asignado a ninguna UAD todavía
-          @user_session.destroy
+    # Buscar la/s UAD/s a la/s que pertenece el usuario
+    case
+      when current_user.unidades_de_alta_de_datos.size == 0
+        # El usuario fue creado, pero no ha sido asignado a ninguna UAD todavía
+        Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+        redirect_to(root_url,
+          :flash => {
+            :tipo => :error,
+            :titulo => "No puede iniciar una sesión.",
+            :mensaje => "Sus credenciales son correctas, pero aún no fue asignado a ninguna UAD activa del sistema. Póngase en contacto con los administradores del sistema para solucionar este inconveniente."
+          }
+        )
+        return
+      when current_user.unidades_de_alta_de_datos.size == 1
+        # El usuario sólo tiene asignada una única UAD, por lo cual se selecciona automáticamente
+        if !establecer_uad(current_user.unidades_de_alta_de_datos.first)
+          Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
           redirect_to(root_url,
             :flash => {
               :tipo => :error,
-              :titulo => "No puede iniciar una sesión.",
-              :mensaje => "Sus credenciales son correctas, pero aún no fue asignado a ninguna UAD activa del sistema. Póngase en contacto con los administradores del sistema para solucionar este inconveniente."
+              :titulo => "Se produjo un error al iniciar la sesión",
+              :mensaje  => "Sus credenciales son correctas, pero se produjo un error desconocido al intentar asignar su UAD. Póngase en contacto con los administradores del sistema para solucionar este inconveniente."
             }
           )
-          return
-        when current_user.unidades_de_alta_de_datos.size == 1
-          # El usuario sólo tiene asignada una única UAD, por lo cual se selecciona automáticamente
-          if !establecer_uad(current_user.unidades_de_alta_de_datos.first)
-            @user_session.destroy
-            redirect_to(root_url,
-              :flash => {
-                :tipo => :error,
-                :titulo => "Se produjo un error al iniciar la sesión",
-                :mensaje  => "Sus credenciales son correctas, pero se produjo un error desconocido al intentar asignar su UAD. Póngase en contacto con los administradores del sistema para solucionar este inconveniente."
-              }
-            )
-          end
-          redirect_to_stored({:tipo => :ok, :titulo => "Ha iniciado correctamente la sesión."})
-        when current_user.unidades_de_alta_de_datos.size > 1
-          # Presentar la página para selección de la UAD con la que va a trabajar el usuario
-          redirect_to seleccionar_uad_url
-          return
-      end
-    else
-      # Cambiar los mensajes de error
-      if @user_session.errors[:login].size > 0 || @user_session.errors[:password].size > 0
-        @user_session.errors.clear
-        @user_session.errors[:base] << "No existe el usuario, o la contraseña es incorrecta."
-      end
-      render :action => "new"
+        end
+        redirect_to_stored({:tipo => :ok, :titulo => "Ha iniciado correctamente la sesión."})
+      when current_user.unidades_de_alta_de_datos.size > 1
+        # Presentar la página para selección de la UAD con la que va a trabajar el usuario
+        redirect_to seleccionar_uad_url
+        return
     end
   end
 
@@ -121,24 +118,9 @@ class UserSessionsController < Devise::SessionsController
 
   end
 
+  # DELETE /users/sign_out
   def destroy
-    @user_session = UserSession.find
-    if @user_session
-      @user_session.destroy
-      redirect_to(root_url,
-        :flash => {
-          :tipo => :ok, :titulo => "Ha cerrado correctamente la sesión."
-        }
-      )
-    else
-      redirect_to(root_url,
-        :flash => {
-          :tipo => :error,
-          :titulo => "La petición no es válida",
-          :mensaje  => "No se puede cerrar la sesión porque no hay una sesión iniciada."
-        }
-      )
-    end
+    super
   end
 
 end

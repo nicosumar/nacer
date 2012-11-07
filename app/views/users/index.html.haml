@@ -1,31 +1,33 @@
 - content_for :title do
-  Usuarios
+  Administración de usuarios
 
-%h1 Usuarios
+#content-header
+  %h1 Administración de usuarios
 
-- if defined?(notice) and not notice.blank? then
-  %p#notice= notice
+= render 'shared/info'
 
-%table
-  %thead
-    %tr
-      %th Usuario
-      %th Grupos
-      %th Último ingreso
-  %tbody
-    - @users.each do |u|
-      %tr.clickable{ :onclick => "location.href=\'#{edit_user_path(u)}\'", :title => "Modificar la cuenta de #{u.login}" }
-        %td= u.login + " (" + u.firstname + " " + u.lastname + ")"
-        %td= u.user_groups.collect{ |ug| [ug.user_group_name]}.join(", ").capitalize
-        %td
-          - if u.last_login_at.nil? then
-            No registra ningún ingreso
-          - else
-            = u.last_login_at.strftime("%d/%m/%Y")
-            - if not u.last_login_ip.nil? then
-              = " (" + u.last_login_ip + ")"
+#content-body
+  %h2.first-header Usuarios registrados
 
-- content_for :sidebar do
-  %h2 Tareas
-  %ul
-    %li= link_to "Agregar un usuario", new_user_url
+  %table
+    %thead
+      %tr
+        %th Nombre
+        %th Dirección de correo
+        %th Grupos
+        %th UAD
+        %th Último ingreso
+    %tbody
+      - @users.each do |u|
+        %tr.clickable{ :onclick => "location.href=\'#{edit_user_path(u)}\'", :title => "Modificar las autorizaciones de esta cuenta" }
+          %td= (u.nombre + " " + u.apellido).titleize
+          %td= u.email
+          %td= u.user_groups.collect{ |ug| [ug.user_group_name]}.join(", ")
+          %td= u.unidades_de_alta_de_datos.collect{ |ug| [ug.nombre]}.join(", ")
+          %td
+            - if u.last_sign_in_at.nil? then
+              No registra ningún ingreso
+            - else
+              = u.last_sign_in_at.strftime("%d/%m/%Y")
+              - if not u.last_sign_in_ip.nil? then
+                = " (" + u.last_sign_in_ip + ")"

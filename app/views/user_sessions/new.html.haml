@@ -1,11 +1,22 @@
-- content_for :title do
-  Iniciar la sesión
+= render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
 
 #content-body
-  %h1.first-header Iniciar la sesión
+  %h2.first-header Iniciar la sesión
 
-  = render :partial => "shared/info", :locals => { :registro => @user_session }
+  = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:autocomplete => "off"} ) do |f|
+    = devise_error_messages!
 
-  %h2 Ingrese sus credenciales de acceso
+    %div.field
+      = f.label :email
+      %br/
+      = f.email_field :email
 
-  = render :partial => 'user_sessions/form'
+    %div.field
+      = f.label :password
+      %br/
+      = f.password_field :password
+
+    %div.actions
+      = f.submit "Iniciar la sesión"
+
+  = render "devise/shared/links"

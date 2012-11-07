@@ -4,7 +4,6 @@
   %h2.first-header Iniciar la sesión
 
   = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
-    = devise_error_messages!
 
     %div.field
       = f.label :email

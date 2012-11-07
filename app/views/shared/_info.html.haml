@@ -1,9 +1,19 @@
+- puts flash.inspect
+
 - if defined?(registro) && registro.errors.any?
   #info.infobox-error
     %h2= pluralize(registro.errors.count, "error impide").to_s + " llevar a cabo la operación solicitada"
     %ul
       - registro.errors.full_messages.each do |msg|
         %li= msg
+- elsif flash[:alert]
+  -# Alerta fijada por Devise
+  #info.infobox-error
+    %h2= flash[:alert]
+- elsif flash[:notice]
+  -# Notificación fijada por Devise
+  #info.infobox-ok
+    %h2= flash[:notice]
 - elsif flash[:tipo]
   - case
     - when flash[:tipo] == :error

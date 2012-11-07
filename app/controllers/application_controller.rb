@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
-#  helper_method :user_required, :admin_required, :current_user, :uad_actual
+  helper_method :admin_required
   helper_method :uad_actual
 
 #  def current_user_session
@@ -49,14 +49,6 @@ class ApplicationController < ActionController::Base
     # Cada UAD trabaja con un 'schema_search_path' distinto, por lo que usamos ese dato para ver
     # cuál UAD está seleccionada actualmente
     UnidadDeAltaDeDatos.find_by_schema_search_path(ActiveRecord::Base.connection.schema_search_path)
-  end
-
-  def user_required
-    unless current_user
-      store_location
-      redirect_to root_url, :notice => "Debe iniciar la sesión antes de intentar acceder a esta página."
-      return false
-    end
   end
 
   def admin_required

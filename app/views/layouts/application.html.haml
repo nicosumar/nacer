@@ -102,10 +102,8 @@
                     %h3 USUARIOS
                     %ul
                       %li= link_to "Ver Usuarios", users_url
-                      - if can? :create, Contacto
-                        %li= link_to "Agregar un usuario", new_user_url            
             
-                  %div.col_1
+                  -#%div.col_1
                     %h3 GRUPOS
                     %ul
                       %li= link_to "Ver Grupos", user_groups_url                       
@@ -125,11 +123,11 @@
                 %div.col_1
                   %h3 CUENTA
                   %ul
-                    %li= link_to "Modificar mis datos", edit_user_path(current_user)
+                    %li= link_to "Modificar mis datos", edit_user_registration_path
                 %div.col_1
                   %h3 SESIÓN
                   %ul
-                    %li= link_to "Cerrar la sesión", cerrar_sesion_path            
+                    %li= link_to "Cerrar la sesión", destroy_user_session_path, :method => :delete
 
         #page
           = yield

@@ -1,0 +1,16 @@
+= render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
+
+#content-body
+  %h2 Reenviar las instrucciones de confirmación
+
+  = form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f|
+
+    %div.field
+      = f.label :email
+      %br/
+      = f.email_field :email
+
+    %div.actions
+      = f.submit "Reenviar las instrucciones"
+
+  = render "devise/shared/links"

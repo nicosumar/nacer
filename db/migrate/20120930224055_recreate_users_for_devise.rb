@@ -11,13 +11,9 @@ class RecreateUsersForDevise < ActiveRecord::Migration
       t.string :apellido, :null => false
       t.date :fecha_de_nacimiento
       t.references :sexo
+      t.text :observaciones
 
-      # Autorización de los administradores
-      t.boolean :autorizado, :null => false, :default => false
-      t.datetime :autorizado_el
-      t.integer :autorizador_id
-
-      # Campos requeridos por la configuración de la gema 'devise'
+      # Campos requeridos por la configuración de la gema 'Devise'
 
       ## Database authenticatable
       t.string :email, :null => false, :default => ""

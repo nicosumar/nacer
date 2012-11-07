@@ -11,8 +11,9 @@ load 'db/Distritos_seed.rb'
 load 'db/Sexos_seed.rb'
 
 # Datos iniciales para usuarios y grupos
-load 'db/UserGroups_seed.rb'
 load 'db/Users_seed.rb'
+load 'db/UserGroups_seed.rb'
+load 'db/UserGroupsUsers_seed.rb'
 
 # Datos iniciales para el módulo de convenios
 load 'db/AreasDePrestacion_seed.rb'

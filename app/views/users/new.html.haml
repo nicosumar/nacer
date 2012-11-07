@@ -1,3 +1,41 @@
-%h1>Nuevo usuario
+- content_for :title do
+  Registro de una nueva cuenta de usuario
 
-= render 'form'
+#content-header
+  %h1 Registro de una nueva cuenta de usuario
+
+= render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
+
+#content-body
+  %h2.first-header Datos de la nueva cuenta
+
+  = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :autocomplete => "off" }) do |f|
+
+    %div.field
+      = f.label :nombre
+      = f.text_field :nombre, :style => "text-transform: uppercase;"
+
+    %div.field
+      = f.label :apellido
+      = f.text_field :apellido, :style => "text-transform: uppercase;"
+
+    %div.field
+      = f.label :email
+      = f.email_field :email
+
+    %div.field
+      = f.label :password
+      = f.password_field :password
+
+    %div.field
+      = f.label :password_confirmation
+      = f.password_field :password_confirmation
+
+    %h4 Observaciones
+    %div.field
+      = f.text_area :observaciones, :size => "70x8", :placeholder => "Sírvase indicar en esta área para observaciones cuál es su lugar de trabajo, la función que cumple y cualquier otro dato que considere relevante para que los administradores procedan a autorizar su cuenta."
+
+    %div.actions
+      = f.submit "Registrar la nueva cuenta"
+
+  = render 'devise/shared/links'
