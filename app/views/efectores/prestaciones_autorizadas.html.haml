@@ -1,0 +1,46 @@
+- content_for :title do
+  Prestaciones autorizadas del efector
+
+#content-header
+  %h1 Prestaciones autorizadas del efector
+  #action-links
+    - if can? :create, Addenda
+      = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @efector.convenio_de_gestion.id)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Efector
+  %div.field_content
+    - if !@efector.cuie.blank?
+      %span.field_value= @efector.cuie + " - " + @efector.nombre
+    - else
+      %span.field_value= @efector.nombre + " (el CUIE aún no se ha asignado)"
+    = link_to "Ver detalles del efector", @efector
+
+  - if @efector.prestaciones_autorizadas.any?
+    %h2
+      Prestaciones autorizadas al
+      = Time.now.strftime("%d/%m/%Y")
+    %table
+      %thead
+        %tr
+          %th Código
+          %th Nombre
+          %th Autorizador
+          %th Fecha de inicio
+      %tbody
+        - @efector.prestaciones_autorizadas.sort_by{|pa| pa.prestacion.codigo}.each do |p|
+          %tr
+            %td= p.prestacion.codigo
+            %td= p.prestacion.nombre_corto
+            - if p.autorizante_al_alta_type == 'ConvenioDeGestion'
+              %td Convenio de gestión
+            - elsif p.autorizante_al_alta_type == 'Addenda'
+              %td Adenda
+            - else
+              %td (desconocido)
+            %td= p.autorizante_al_alta.fecha_de_inicio.strftime('%d/%m/%Y')
+  - else
+    No hay información sobre las prestaciones autorizadas para el convenio
+

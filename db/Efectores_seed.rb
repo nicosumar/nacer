@@ -60,7 +60,7 @@ class ModificarEfector < ActiveRecord::Migration
               ', CUIE: ' ||
               COALESCE(NEW.cuie, '') ||
               ', código SISSA: ' ||
-              COALESCE(NEW.efector_sissa_id, '') ||
+              COALESCE(NEW.codigo_de_efector_sissa, '') ||
               ', convenio de gestión: ' ||
               COALESCE(convenio_de_gestion, '') ||
               ', convenio de administración: ' ||
@@ -86,7 +86,7 @@ class ModificarEfector < ActiveRecord::Migration
               setweight(to_tsvector('public.indices_fts', ', CUIE: '), 'D') ||
               setweight(to_tsvector('public.indices_fts', COALESCE(NEW.cuie, '')), 'A') ||
               setweight(to_tsvector('public.indices_fts', ', código SISSA: '), 'D') ||
-              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.efector_sissa_id, '')), 'A') ||
+              setweight(to_tsvector('public.indices_fts', COALESCE(NEW.codigo_de_efector_sissa, '')), 'A') ||
               setweight(to_tsvector('public.indices_fts', ', convenio de gestión: '), 'D') ||
               setweight(to_tsvector('public.indices_fts', COALESCE(convenio_de_gestion, '')), 'B') ||
               setweight(to_tsvector('public.indices_fts', ', convenio de administración: '), 'D') ||
@@ -124,7 +124,7 @@ class ModificarEfector < ActiveRecord::Migration
             ', CUIE: ' ||
             COALESCE(NEW.cuie, '') ||
             ', código SISSA: ' ||
-            COALESCE(NEW.efector_sissa_id, '') ||
+            COALESCE(NEW.codigo_de_efector_sissa, '') ||
             ', convenio de gestión: ' ||
             COALESCE(convenio_de_gestion, '') ||
             ', convenio de administración: ' ||
@@ -149,7 +149,7 @@ class ModificarEfector < ActiveRecord::Migration
             setweight(to_tsvector('public.indices_fts', ', CUIE: '), 'D') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(NEW.cuie, '')), 'A') ||
             setweight(to_tsvector('public.indices_fts', ', código SISSA: '), 'D') ||
-            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.efector_sissa_id, '')), 'A') ||
+            setweight(to_tsvector('public.indices_fts', COALESCE(NEW.codigo_de_efector_sissa, '')), 'A') ||
             setweight(to_tsvector('public.indices_fts', ', convenio de gestión: '), 'D') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(convenio_de_gestion, '')), 'B') ||
             setweight(to_tsvector('public.indices_fts', ', convenio de administración: '), 'D') ||
@@ -178,6 +178,30 @@ class ModificarEfector < ActiveRecord::Migration
       AFTER INSERT OR UPDATE OR DELETE ON efectores
       FOR EACH ROW EXECUTE PROCEDURE efectores_fts_trigger();
   "
+
+  # Funciones y disparadores para modificar los datos que se insertan/modifican en la tabla
+  execute "
+    CREATE OR REPLACE FUNCTION modificar_efector() RETURNS trigger AS $$
+      DECLARE
+        new_cuie varchar;
+        new_codigo_postal varchar;
+      BEGIN
+        -- Modificar todos los campos tipo varchar del registro
+        SELECT UPPER(NEW.cuie) INTO new_cuie;
+        SELECT UPPER(NEW.codigo_postal) INTO new_codigo_postal;
+        NEW.cuie = new_cuie;
+        NEW.codigo_postal = new_codigo_postal;
+
+        -- Devolver el registro modificado
+        RETURN NEW;
+      END;
+    $$ LANGUAGE plpgsql;
+  "
+  execute "
+    CREATE TRIGGER trg_modificar_efector
+      BEFORE INSERT OR UPDATE ON efector
+      FOR EACH ROW EXECUTE PROCEDURE modificar_efector();
+  "
 end
 
 # Puede ingresar aquí datos para que sean cargados al hacer el deploy
@@ -187,8 +211,8 @@ end
 #Efector.create([
 #  { #:id => 1,
 #    :cuie => '?00001',
-#    :efector_sissa_id => '??????????????',
-#    :efector_bio_id => nil,
+#    :codigo_de_efector_sissa => '??????????????',
+#    :codigo_de_efector_bio => nil,
 #    :nombre => 'Centro de Salud Nº xx «XXXXXXXXX»',
 #    :domicilio => 'Ignorado',
 #    :departamento_id => 99,

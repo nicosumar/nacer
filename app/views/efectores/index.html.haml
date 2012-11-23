@@ -1,31 +1,38 @@
+- content_for :title do
+  Efectores
 
-   
+#content-header
+  %h1 Efectores
+  - if can? :create, Efector
+    #action-links
+      = link_to "Agregar un efector", new_efector_url
 
-%h1 Efectores
+= render :partial => "shared/info"
 
+#content-body
+  %h2.first-header Listado de efectores
 
+  %table
+    %thead
+      %tr
+        %th CUIE
+        %th Nombre
+        %th Convenio
+        %th Administrador
+    %tbody
+      - @efectores.each do |e|
+        %tr.clickable{ :onclick => "location.href=\'#{efector_path(e)}\'", :title => "Ver detalles del efector" }
+          %td= e.cuie
+          %td= e.nombre
+          %td
+            - if e.convenio_de_gestion
+              = e.convenio_de_gestion.numero
+            - else
+              Sin convenio
+          %td
+            - if e.convenio_de_administracion
+              = e.convenio_de_administracion.administrador.nombre
 
-
-%table
-  %thead
-    %tr
-      %th CUIE
-      %th Nombre
-      %th Convenio
-      %th Administrador
-  %tbody
-    - @efectores.each do |e|
-      %tr.clickable{ :onclick => "location.href=\'#{efector_path(e)}\'", :title => "Ver detalles del efector #{e.nombre}" }
-        %td= e.cuie
-        %td= e.nombre
-        %td
-          - if e.convenio_de_gestion
-            = e.convenio_de_gestion.numero
-          - else
-            Sin convenio
-        %td
-          - if e.convenio_de_administracion
-            = e.convenio_de_administracion.administrador.nombre
-= will_paginate @efectores, :inner_window => 2, :outer_window => 0
+  = will_paginate @efectores, :inner_window => 2, :outer_window => 0
 
 

@@ -1,6 +1,6 @@
 = form_for(@contacto) do |f|
 
-  %h3 Datos de identificación
+  %h3.first-header Datos de identificación
   %div.field
     = f.label :apellidos
     = f.text_field :apellidos
@@ -8,7 +8,7 @@
     = f.label :nombres
     = f.text_field :nombres
   %div.field
-    = f.label :mostrado
+    = f.label :mostrado, "Nombre mostrado*"
     = f.text_field :mostrado
   %div.field
     = f.label :sexo_id
@@ -18,14 +18,14 @@
     = f.number_field :dni
   %div.field
     = f.label :email
-    = f.text_field :email
+    = f.email_field :email
   %div.field
     = f.label :email_adicional
-    = f.text_field :email_adicional
+    = f.email_field :email_adicional
 
   %h3 Domicilio
   %div.field
-    = f.text_area :domicilio, :size => "100x15"
+    = f.text_area :domicilio, :size => "80x5"
 
   %h3 Teléfonos
   %div.field
@@ -37,10 +37,12 @@
 
   %h3 Observaciones
   %div.field
-    = f.text_area :observaciones, :size => "100x15"
+    = f.text_area :observaciones, :size => "80x5"
 
   %div.actions
-    - if @contacto.persisted?
-      = f.submit "Modificar el contacto"
-    - else
+    - if @contacto.new_record?
       = f.submit "Crear el contacto"
+      = link_to "Cancelar", contactos_url
+    - else
+      = f.submit "Modificar el contacto"
+      = link_to "Cancelar", @contacto

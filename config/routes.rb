@@ -1,17 +1,18 @@
 Nacer::Application.routes.draw do
 
-  devise_for :users
-
-  match "iniciar_sesion" => "users#sign_in"
-  match "seleccionar_uad" => "user_sessions#seleccionar_uad"
-  match "cerrar_sesion" => "users#sign_out"
-
-  resources :users, :except => [:show, :destroy]
-  resources :user_groups
-  resources :user_sessions, :only => [:new, :create, :destroy]
+  devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }
+  devise_scope :user do
+    get "users", :to => "users#index", :as => :users
+    get "users/:id/edit", :to => "users#admin_edit", :as => :edit_user
+    put "users/:id", :to => "users#admin_update", :as => :user
+    get "seleccionar_uad" => "user_sessions#seleccionar_uad", :as => :seleccionar_uad
+  end
   resources :convenios_de_administracion, :except => :destroy
   resources :convenios_de_gestion, :except => :destroy
-  resources :efectores, :except => :destroy
+  resources :efectores, :except => :destroy do
+    get 'prestaciones_autorizadas', :on => :member, :as => :prestaciones_autorizadas_del
+    get 'referentes', :on => :member, :as => :referentes_del
+  end
   resources :addendas, :except => :destroy
   resources :nomencladores, :except => :destroy
   resources :busqueda, :only => :index

@@ -7,7 +7,7 @@ class CreateConveniosDeGestion < ActiveRecord::Migration
       t.string :email_notificacion
       t.date :fecha_de_suscripcion
       t.date :fecha_de_inicio, :null => false
-      t.date :fecha_de_finalizacion, :null => false
+      t.date :fecha_de_finalizacion
       t.text :observaciones
 
       t.timestamps

@@ -2,9 +2,11 @@ class Addenda < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks
 
-  # Seguridad de asignaciones masivas
-  attr_readonly :convenio_de_gestion_id, :fecha_de_inicio
-  attr_accessible :firmante, :fecha_de_suscripcion, :observaciones
+  # Los atributos siguientes pueden asignarse en forma masiva
+  attr_accessible :convenio_de_gestion_id, :firmante, :fecha_de_suscripcion, :fecha_de_inicio, :observaciones, :numero
+
+  # Los atributos siguientes solo pueden asignarse durante la creación
+  attr_readonly :convenio_de_gestion_id, :fecha_de_inicio, :numero
 
   # Asociaciones
   belongs_to :convenio_de_gestion
@@ -13,6 +15,7 @@ class Addenda < ActiveRecord::Base
 
   # Validaciones
   validates_presence_of :convenio_de_gestion_id, :fecha_de_inicio
+  validates_uniqueness_of :numero
   validate :validar_fechas
 
   # Verifica que la fecha de suscripción no sea posterior a la fecha de inicio

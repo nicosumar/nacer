@@ -1,15 +1,15 @@
 - content_for :title do
-  Detalle del contacto
+  Información detallada del contacto
 
 #content-header
-  %h1 Detalle del contacto
-  - if can? :update, @contacto
+  %h1 Información detallada del contacto
+  - if can? :update, Contacto
     #action-links
       = link_to "Modificar el contacto", edit_contacto_path(@contacto)
 
-#content-body
-  %h2.first-header Información del contacto registrado
+= render :partial => "shared/info"
 
+#content-body
   %h3 Datos personales
   %div.field_content
     %span.field_name Apellidos
@@ -78,9 +78,9 @@
   %h3 Observaciones
   %div.field_content
     - if !@contacto.observaciones.blank?
-      %div.field_value
+      %span.field_value_multiline
         - @contacto.observaciones.split("\n").each do |linea|
           = linea
           %br/
     - else
-      %span.field_empty No se ingresaron observaciones
+      %span.field_empty No se ingresaron observaciones para el contacto

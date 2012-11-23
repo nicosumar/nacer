@@ -434,6 +434,7 @@
       %span.field_value
         - @novedad.observaciones.split("\n").each do |linea|
           = linea
+          %br/
     - else
       %span.field_empty No se han ingresado observaciones para el domicilio
   
@@ -841,6 +842,7 @@
       %span.field_value
         - @novedad.observaciones_generales.split("\n").each do |linea|
           = linea
+          %br/
     - else
       %span.field_empty No se han ingresado observaciones
 

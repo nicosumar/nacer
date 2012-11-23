@@ -24,4 +24,12 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
     end
   end
 
+  # uad_actual
+  # Devuelve la UnidadDeAltaDeDatos con la que se está trabajando actualmente.
+  def self.actual
+    # Cada UAD trabaja con un 'schema_search_path' distinto, por lo que usamos ese dato para ver
+    # cuál UAD está seleccionada actualmente
+    UnidadDeAltaDeDatos.find_by_schema_search_path(ActiveRecord::Base.connection.schema_search_path)
+  end
+
 end

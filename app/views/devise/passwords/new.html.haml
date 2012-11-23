@@ -1,13 +1,13 @@
 - content_for :title do
-  ¿Olvidó su contraseña?
+  Envío de instrucciones para restablecer la contraseña
 
 #content-header
-  %h1 ¿Olvidó su contraseña?
+  %h1 Envío de instrucciones para restablecer la contraseña
 
 = render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
 
 #content-body
-  %h2.first-header Envío de instrucciones para restablecer la contraseña
+  %h2.first-header Información para el envío
 
   = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f|
 

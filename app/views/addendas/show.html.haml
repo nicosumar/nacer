@@ -1,24 +1,34 @@
 - content_for :title do
-  Detalle de la adenda
+  Información detallada de la adenda
 
 #content-header
-  %h1 Detalle de la adenda
+  %h1 Información detallada de la adenda
   - if can? :update, @addenda
     #action-links
       = link_to "Modificar la adenda", edit_addenda_path(@addenda)
 
-= render :partial => "shared/info", :locals => { :registro => @addenda }
+= render :partial => "shared/info"
 
 #content-body
-  %h2.first-header Información de la adenda registrada
-
-  %h3 Información general
+  %h3 Datos del convenio de gestión
   %div.field_content
     %span.field_name Adenda al convenio de gestión
-    %span.field_value= @addenda.convenio_de_gestion.numero
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.numero
+    = link_to "Ver detalles del convenio", @convenio_de_gestion
   %div.field_content
     %span.field_name El convenio pertenece al efector
-    %span.field_value= @addenda.convenio_de_gestion.efector.nombre
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.efector.nombre
+    = link_to "Ver detalles del efector", @convenio_de_gestion.efector
+
+  %h3 Datos de identificación
+  %div.field_content
+    %span.field_name Número
+    - if !@addenda.numero.blank?
+      %span.field_value= @addenda.numero
+    - else
+      %span.field_empty No se ingresó el número
+
+  %h3 Datos del firmante y fechas
   %div.field_content
     %span.field_name Firmante
     - if !@addenda.firmante.blank?
@@ -32,7 +42,7 @@
     - else
       %span.field_empty No se ingresó la fecha de suscripción
   %div.field_content
-    %span.field_name Fecha de entrada en vigencia
+    %span.field_name Fecha de inicio
     %span.field_value= @addenda.fecha_de_inicio.strftime("%d/%m/%Y")
 
   - if @addenda.prestaciones_autorizadas_alta.any? then
@@ -64,8 +74,9 @@
   %h3 Observaciones
   %div.field_content
     - if !@addenda.observaciones.blank?
-      %div.field_value
+      %span.field_value_multiline
         - @addenda.observaciones.split("\n").each do |linea|
-          %p= linea
+          = linea
+          %br/
     - else
-      %span.field_empty No se ingresaron observaciones
+      %span.field_empty No se han ingresado observaciones para la addenda

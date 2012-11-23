@@ -1,5 +1,5 @@
 class AfiliadosController < ApplicationController
-  before_filter :user_required
+  before_filter :authenticate_user!
 
   def index
     # Verificar si el usuario tiene el acceso permitido

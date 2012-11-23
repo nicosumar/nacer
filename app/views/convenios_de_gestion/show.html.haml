@@ -1,113 +1,112 @@
-
-.infobox-ok=(notice)
-
-
-
 - content_for :title do
-  Convenio de gestión
-  = @convenio_de_gestion.numero
+  Información detallada del convenio de gestión
 
-%h1 
-  Convenio de gestión 
-  = @convenio_de_gestion.numero
+#content-header
+  %h1 Información detallada del convenio de gestión
+  #action-links
+    - if can? :update, ConvenioDeGestion
+      = link_to "Modificar el convenio", edit_convenio_de_gestion_path(@convenio_de_gestion)
+    - if can? :create, Addenda
+      = link_to "Agregar una adenda al convenio", new_addenda_url(:convenio_de_gestion_id => @convenio_de_gestion.id)
 
+= render :partial => "shared/info"
 
-       
+#content-body
+  %h3 Datos de identificación
+  %div.field_content
+    %span.field_name Número
+    %span.field_value= @convenio_de_gestion.numero
+  %div.field
+    %span.field_name Efector
+    %span.field_value= @convenio_de_gestion.efector.nombre
+    = link_to "Ver detalles del efector", @convenio_de_gestion.efector
 
-%ul{:id => "submenu"}
-  - if can? :read, ConvenioDeGestion
-    %li= link_to "Modificar este Convenio", edit_convenio_de_gestion_path(@convenio_de_gestion), :class => "drop"
-    - if can? :create, Efector
-      %li= link_to "Agregar una Adenda al Convenio", new_addenda_url(:convenio_de_gestion_id => @convenio_de_gestion.id), :class => "drop"
-    
-     
-              
-%p
+  %h3 Datos del firmante y fechas
+  %div.field_content
+    %span.field_name Firmante por el efector
+    - if !@convenio_de_gestion.firmante.blank?
+      %span.field_value= @convenio_de_gestion.firmante
+    - else
+      %span.field_empty No se ingresó el firmante
+  %div.field_content
+    %span.field_name Fecha de suscripción
+    - if @convenio_de_gestion.fecha_de_suscripcion
+      %span.field_value= @convenio_de_gestion.fecha_de_suscripcion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de suscripción
+  %div.field_content
+    %span.field_name Fecha de inicio
+    - if @convenio_de_gestion.fecha_de_inicio
+      %span.field_value= @convenio_de_gestion.fecha_de_inicio.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de inicio
+  %div.field_content
+    %span.field_name Fecha de finalización
+    - if @convenio_de_gestion.fecha_de_finalizacion
+      %span.field_value= @convenio_de_gestion.fecha_de_finalizacion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de finalización
 
-%p
-  El convenio de gestión
-  %span.destacado= @convenio_de_gestion.numero
-  fue celebrado entre la Unidad de Gestión del Seguro Provincial y el efector
-  %span.destacado>= " " + @convenio_de_gestion.efector.nombre
-  , el día
-  %span.destacado>= " " + @convenio_de_gestion.fecha_de_suscripcion.strftime("%d/%m/%Y")
-  , suscrito por el coordinador de la UGSP y
-  - if @convenio_de_gestion.firmante then
-    el/la referente del efector,
-    %span.destacado>=  " " + @convenio_de_gestion.firmante
-    \.
-  - else
-    el/la representante del efector.
-%p
-  - if @convenio_de_gestion.email_notificacion
-    El referente del efector declara como correo/s electrónico/s para recibir notificaciones fehacientes:
-    - @convenio_de_gestion.email_notificacion.split(",").each do |e|
-      %br/
-      \-
-      %span.destacado= mail_to(e.strip, e.strip)
-  - else
-    El referente del efector no ha declarado una dirección de correo electrónico para la recepción de notificaciones.
-%p
-  El convenio de gestión
-  - if @convenio_de_gestion.fecha_de_inicio.to_datetime > Time.now then
-    entrará
-  - else
-    entró
-  en vigencia el día
-  %span.destacado>= " " + @convenio_de_gestion.fecha_de_inicio.strftime("%d/%m/%Y")
-  , y se encuentra
-  - if @convenio_de_gestion.fecha_de_finalizacion.to_datetime > Time.now then
-    %span.muy_destacado ACTIVO
-    hasta el día
-  - else
-    %span.muy_destacado VENCIDO
-    desde el día 
-  %span.destacado>= " " + @convenio_de_gestion.fecha_de_finalizacion.strftime("%d/%m/%Y")
-  \.
-%h3 Prestaciones autorizadas por el convenio
-- if @convenio_de_gestion.prestaciones_autorizadas.any? then
-  %p
-    Este es el listado de prestaciones autorizadas al momento de celebrarse el convenio de gestión.
-    No representa el estado actual de las prestaciones autorizadas para este efector. Puede ver el listado de prestaciones
-    actualmente autorizadas en la
-    = link_to("página con información detallada", @convenio_de_gestion.efector, { :title => "Información detallada del efector: #{@convenio_de_gestion.efector.nombre}" })
-    para este efector.
-  %table
-    %thead
-      %tr
-        %th Código
-        %th Nombre
-    %tbody
-      - @convenio_de_gestion.prestaciones_autorizadas.each do |c|
+  %h3 Direcciones de correo electrónico para notificaciones fehacientes
+  %div.field_content
+    - if !@convenio_de_gestion.email_notificacion.blank?
+      %span.field_value_multiline
+        - @convenio_de_gestion.email_notificacion.split(',').each do |email|
+          = mail_to(email.strip, email.strip)
+          %br/
+    - else
+      %span.field_empty No se ingresó la dirección de correo electrónico
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@convenio_de_gestion.observaciones.blank?
+      %span.field_value_multiline
+        - @convenio_de_gestion.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para el convenio de gestión
+
+  %h3 Prestaciones autorizadas en el convenio original sin tener en cuenta las adendas
+  - if @convenio_de_gestion.prestaciones_autorizadas.any?
+    %table
+      %thead
         %tr
-          %td= c.prestacion.codigo
-          %td= c.prestacion.nombre
-- else
-  %p Aún no se han definido prestaciones autorizadas para este convenio.
-%h3 Adendas que modifican este convenio
-- if @convenio_de_gestion.addendas.any? then
-  %table
-    %thead
-      %tr
-        %th Fecha de suscripción
-        %th Prestaciones dadas de alta
-        %th Prestaciones dadas de baja
-        %th Observaciones
-    %tbody
-      - @convenio_de_gestion.addendas.each do |a|
-        %tr.clickable{ :onclick => "location.href=\'#{addenda_path(a)}\'", :title => "Ver detalles de la adenda suscrita el #{a.fecha_de_suscripcion.strftime("%d/%m/%Y")}" }
-          %td= a.fecha_de_suscripcion.strftime("%d/%m/%Y")
-          - if a.prestaciones_autorizadas_alta.any? then
-            %td= a.prestaciones_autorizadas_alta.collect{ |pa| [pa.prestacion.codigo]}.join(", ")
-          - else
-            %td Ninguna
-          - if a.prestaciones_autorizadas_baja.any? then
-            %td= a.prestaciones_autorizadas_baja.collect{ |pa| [pa.prestacion.codigo]}.join(", ")
-          - else
-            %td Ninguna
-          %td= a.observaciones
-- else
-  %p Este convenio no registra adendas modificatorias.
+          %th Código
+          %th Nombre
+      %tbody
+        - @convenio_de_gestion.prestaciones_autorizadas.each do |c|
+          %tr
+            %td= c.prestacion.codigo
+            %td= c.prestacion.nombre
+  - else
+    %div.field_content
+      %span.field_empty Aún no se han definido prestaciones autorizadas para este convenio.
 
-
-  
+  %h3 Adendas que modifican este convenio
+  - if @convenio_de_gestion.addendas.any? then
+    %table
+      %thead
+        %tr
+          %th Fecha de inicio
+          %th Prestaciones dadas de alta
+          %th Prestaciones dadas de baja
+          %th Observaciones
+      %tbody
+        - @convenio_de_gestion.addendas.order(:fecha_de_inicio).each do |a|
+          %tr.clickable{ |
+            :onclick => "location.href=\'#{addenda_path(a)}\'", |
+            :title => "Ver detalles de la adenda suscrita el #{a.fecha_de_suscripcion.strftime("%d/%m/%Y")}" } |
+            %td= a.fecha_de_inicio.strftime("%d/%m/%Y")
+            - if a.prestaciones_autorizadas_alta.any? then
+              %td= a.prestaciones_autorizadas_alta.collect{ |pa| [pa.prestacion.codigo]}.join(", ")
+            - else
+              %td Ninguna
+            - if a.prestaciones_autorizadas_baja.any? then
+              %td= a.prestaciones_autorizadas_baja.collect{ |pa| [pa.prestacion.codigo]}.join(", ")
+            - else
+              %td Ninguna
+            %td= a.observaciones
+  - else
+    %div.field_content
+      %span.field_empty Este convenio no registra adendas modificatorias

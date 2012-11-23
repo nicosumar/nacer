@@ -93,6 +93,7 @@ class ModificarConveniosDeAdministracion < ActiveRecord::Migration
             setweight(to_tsvector('public.indices_fts', COALESCE(NEW.firmante, '')), 'C') ||
             setweight(to_tsvector('public.indices_fts', ', '), 'D') ||
             setweight(to_tsvector('public.indices_fts', COALESCE(NEW.observaciones, '')), 'B'));
+          RETURN NEW;
         END IF;
         RETURN NULL;
       END;
@@ -102,6 +103,27 @@ class ModificarConveniosDeAdministracion < ActiveRecord::Migration
     CREATE TRIGGER trg_convenios_de_administracion
       AFTER INSERT OR UPDATE OR DELETE ON convenios_de_administracion
       FOR EACH ROW EXECUTE PROCEDURE conv_administracion_fts_trigger();
+  "
+
+  # Funciones y disparadores para modificar los datos que se insertan/modifican en la tabla
+  execute "
+    CREATE OR REPLACE FUNCTION modificar_convenio_de_administracion() RETURNS trigger AS $$
+      DECLARE
+        new_numero varchar;
+      BEGIN
+        -- Modificar todos los campos tipo varchar del registro
+        SELECT UPPER(NEW.numero) INTO new_numero;
+        NEW.numero = new_numero;
+
+        -- Devolver el registro modificado
+        RETURN NEW;
+      END;
+    $$ LANGUAGE plpgsql;
+  "
+  execute "
+    CREATE TRIGGER trg_modificar_convenio_de_administracion
+      BEFORE INSERT OR UPDATE ON convenios_de_administracion
+      FOR EACH ROW EXECUTE PROCEDURE modificar_convenio_de_administracion();
   "
 end
 

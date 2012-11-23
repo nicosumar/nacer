@@ -7,6 +7,7 @@
 = render :partial => "shared/info", :locals => { :registro => @addenda }
 
 #content-body
-  %h2.first-header Información de la adenda que se creará
+  %h2.first-header-with-note Formulario de creación de una adenda
+  %p.note Los campos marcados con asterisco (*) son obligatorios
 
   = render 'form'

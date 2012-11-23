@@ -6,12 +6,17 @@ class RecreateUsersForDevise < ActiveRecord::Migration
 
     # Creamos la tabla con la nueva estructura
     create_table :users do |t|
-      # Datos personales
+      # Datos controlados por el usuario
       t.string :nombre, :null => false
       t.string :apellido, :null => false
       t.date :fecha_de_nacimiento
       t.references :sexo
       t.text :observaciones
+
+      # Autorización otorgada por un administrador
+      t.boolean :authorized, :default => false, :null => false
+      t.datetime :authorized_at
+      t.integer :authorized_by
 
       # Campos requeridos por la configuración de la gema 'Devise'
 

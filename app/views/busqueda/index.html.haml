@@ -1,8 +1,11 @@
+- content_for :title do
+  Resultados de la búsqueda
+
 #content-header
-  %h1 Búsqueda
+  %h1 Resultados de la búsqueda
 
 #content-body
-  %h2.first-header Resultados de la búsqueda
+  %h2.first-header Registros coincidentes
 
   - if @registros_coincidentes > 0
     La búsqueda devolvió

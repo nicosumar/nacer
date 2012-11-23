@@ -53,6 +53,19 @@ class UsersController < Devise::RegistrationsController
     # Obtener el usuario
     user = User.find(params[:id], :include => [:user_groups, :unidades_de_alta_de_datos])
 
+    # Verificar si se autorizó al usuario a iniciar sesión y registrar la hora y el administrador que autoriza
+    if !user.authorized? && params[:user][:authorized] == "1"
+      user.authorized = true
+      user.authorized_at = DateTime.now
+      user.authorized_by = current_user.id
+      user.save
+    elsif user.authorized? && params[:user][:authorized] == "0"
+      user.authorized = false
+      user.authorized_at = nil
+      user.authorized_by = nil
+      user.save
+    end
+      
     # Actualizar los valores de los atributos para validar el registro antes de guardarlo
     user.user_groups = UserGroup.find(params[:user][:user_group_ids] || [])
     user.unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find(params[:user][:unidad_de_alta_de_datos_ids] || [])

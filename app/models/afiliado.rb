@@ -190,7 +190,7 @@ class Afiliado < ActiveRecord::Base
       :estado_de_la_novedad_id => [1,2]
     )
 
-    return (novedad_pendiente.size > 0 ? true : false)
+    return (novedad_pendiente.size > 0)
   end
 
   # novedad_pendiente

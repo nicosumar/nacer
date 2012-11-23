@@ -1,5 +1,3 @@
-- puts flash.inspect
-
 - if defined?(registro) && registro.errors.any?
   #info.infobox-error
     %h2= pluralize(registro.errors.count, "error impide").to_s + " llevar a cabo la operación solicitada"
@@ -21,7 +19,9 @@
         %h2= flash[:titulo]
         - if flash[:mensaje]
           - if flash[:mensaje].is_a? String
-            %p= flash[:mensaje]
+            %p
+              - flash[:mensaje].split("\n").each do |l|
+                = l.to_s
           - elsif flash[:mensaje].is_a? Array
             %ul
               - flash[:mensaje].each do |msj|

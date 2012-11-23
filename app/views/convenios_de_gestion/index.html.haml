@@ -10,7 +10,8 @@
 = render :partial => "shared/info"
 
 #content-body
-  %h2 Listado de convenios de gestión registrados
+  %h2.first-header Listado de convenios de gestión
+
   %table
     %thead
       %tr
@@ -20,7 +21,8 @@
         %th Última modificación
     %tbody
       - @convenios_de_gestion.each do |c|
-        %tr.clickable{ :onclick => "location.href=\'#{convenio_de_gestion_path(c)}\'", :title => "Ver detalles del convenio #{c.numero}" }
+        %tr.clickable{ |
+          :onclick => "location.href=\'#{convenio_de_gestion_path(c)}\'", :title => "Ver detalles del convenio #{c.numero}" } |
           %td= c.numero
           %td= c.efector.nombre
           %td= c.fecha_de_inicio.strftime("%d/%m/%Y")

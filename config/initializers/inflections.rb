@@ -252,11 +252,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("convenio_de_administracion", "convenio de administración")
   inflect.human("convenio_de_administracion_id", "convenio de administración")
   inflect.human("cuie", "CUIE")
-  inflect.human("efector_sissa_id", "código identificador del efector (SISSA)")
-  inflect.human("efector_bio_id", "código identificador del efector (Bioestadística)")
+  inflect.human("codigo_de_efector_sissa", "código SISSA")
+  inflect.human("codigo_de_efector_bio", "código para bioestadística")
   inflect.human("telefonos", "teléfonos")
 #  inflect.human("grupo_de_efectores_id", "grupo de efectores")
   inflect.human("area_de_prestacion_id", "área de prestación")
+  inflect.human("alto_impacto", "efector de alto impacto")
   inflect.human("camas_de_internacion", "camas de internación")
 #  inflect.human("dependencia_administrativa_id", "dependencia administrativa")
   inflect.human("evaluacion_de_impacto", "evaluación de impacto")
@@ -273,6 +274,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("titulo", "título")
   inflect.human("numero", "número")
   inflect.human("descripcion", "descripción")
+  inflect.human("current_password", "contraseña actual")
 
   # Novedades de los afiliados
   inflect.human("numero_de_documento", "número de documento")

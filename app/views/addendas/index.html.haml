@@ -5,14 +5,17 @@
   %h1 Adendas
   - if can? :create, Addenda
     #action-links
-      = link_to "Crear una nueva adenda", new_addenda_url
+      = link_to "Agregar una adenda", new_addenda_url
+
+= render :partial => "shared/info"
 
 #content-body
-  %h2.first-header Listado de adendas registradas
+  %h2.first-header Listado de adendas
 
   %table
     %thead
       %tr
+        %th Número
         %th Convenio
         %th Efector
         %th Inicio
@@ -20,6 +23,7 @@
     %tbody
       - @addendas.each do |a|
         %tr.clickable{ :onclick => "location.href=\'#{addenda_path(a)}\'", :title => "Ver detalles de la adenda" }
+          %td= a.numero.blank? ? "-" : a.numero
           %td= a.convenio_de_gestion.numero
           %td= a.convenio_de_gestion.efector.nombre
           %td= a.fecha_de_inicio.strftime("%d/%m/%Y")

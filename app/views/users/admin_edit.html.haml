@@ -44,6 +44,10 @@
   %h2 Autorizaciones de la cuenta
 
   = form_for(@user) do |f|
+    %h3 Inicio de sesión
+    %div.field
+      = f.label "Cuenta autorizada para iniciar sesión"
+      = f.check_box :authorized
 
     %h3 Asignación de grupos
     %div.field

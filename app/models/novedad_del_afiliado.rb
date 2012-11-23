@@ -83,7 +83,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     atributos_del_afiliado.delete "fecha_de_la_ultima_novedad"
     self.attributes = atributos_del_afiliado
 
-    # Definir los atributos que no se pueden asignar masivamente
+    # Copiar los atributos que no se pueden asignar masivamente
     self.clave_de_beneficiario = afiliado.clave_de_beneficiario
     self.es_menor = afiliado.menor?(afiliado.fecha_de_la_ultima_novedad || afiliado.fecha_de_inscripcion)
     self.esta_embarazada = afiliado.embarazada?(afiliado.fecha_de_la_ultima_novedad ||
@@ -289,7 +289,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
         # que no esté marcado ya como duplicado
         afiliados_con_este_documento.each do |afiliado|
           if (afiliado.clave_de_beneficiario != clave_de_beneficiario &&
-              !([14,80,81,82,83,84,85,86,87,88,89,203].member? afiliado.motivo_de_la_baja_id)) # TODO: 
+              !([14,81,82,83,203].member? afiliado.motivo_de_la_baja_id)) # TODO: 
             errors.add(
               :numero_de_documento,
               (

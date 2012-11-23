@@ -9,14 +9,14 @@ class Ability
     end
 
     if user.in_group? :operaciones then
-      can :manage, Efector
       can :manage, Contacto
+      can :read, NovedadDelAfiliado
+      can :read, Efector
       can :read, Referente
       can :read, Afiliado
-      can :manage, NovedadDelAfiliado
     end
 
-    if user.in_group? :facturación then
+    if user.in_group? :facturacion then
       can :manage, Liquidacion
       can :manage, CuasiFactura
       can :manage, Contacto
@@ -32,10 +32,10 @@ class Ability
       can :manage, Addenda
       can :manage, Referente
       can :manage, Contacto
-      can :read, Efector
+      can :manage, Efector
     end
 
-    if user.in_group? :inscripción then
+    if user.in_group? :inscripcion_uad then
       can :read, Afiliado
       can :manage, NovedadDelAfiliado
     end

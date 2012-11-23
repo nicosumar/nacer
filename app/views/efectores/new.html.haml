@@ -1,7 +1,16 @@
 - content_for :title do
-  Nuevo efector
+  Creación de un nuevo efector
 
-%h1
-  Nuevo efector
+- content_for :other_includes do
+  = javascript_include_tag "efectores"
 
-= render 'form'
+#content-header
+  %h1 Creación de un nuevo efector
+
+= render :partial => "shared/info", :locals => { :registro => @efector }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de un efector
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render 'form'

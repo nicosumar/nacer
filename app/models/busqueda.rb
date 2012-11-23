@@ -1,6 +1,6 @@
 class Busqueda < ActiveRecord::Base
   # Listado de clases que se pueden buscar usando FTS
-  @@clases_fts = [:afiliados, :contactos, :convenios_de_gestion, :convenios_de_administracion, :efectores]
+  @@clases_fts = [:afiliados, :contactos, :convenios_de_gestion, :convenios_de_administracion, :efectores, :users, :addendas]
 
   # Devuelve todos los registros coincidentes de la tabla de 'Busquedas'
   def self.busqueda_fts(terminos, opciones = {})
@@ -40,6 +40,7 @@ class Busqueda < ActiveRecord::Base
               \'#{tsquery}\'::tsquery @@ vector_fts
               AND modelo_type IN (\'#{modelos_a_buscar.collect{ |m| m.to_s.singularize.camelize }.join("', '")}\');
       "
+
       # Crear la vista temporal que da finalmente los resultados de la consulta
       connection.execute "
         CREATE OR REPLACE TEMPORARY VIEW resultados_de_la_busqueda AS

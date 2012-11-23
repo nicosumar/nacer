@@ -9,10 +9,6 @@
       = text_field_tag(:patron_de_busqueda, nil, {:placeholder => "Buscar beneficiario"})
       = submit_tag("Buscar")
 
-  - if can? :create, NovedadDelAfiliado
-    #action-links
-      = link_to "Solicitar alta de beneficiario", new_novedad_del_afiliado_path(:tipo_de_novedad_id => 1)
-
 #content-body
   - if @afiliados_encontrados
     -# La búsqueda ya fue procesada

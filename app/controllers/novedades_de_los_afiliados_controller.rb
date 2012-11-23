@@ -1,34 +1,31 @@
 class NovedadesDeLosAfiliadosController < ApplicationController
-  before_filter :user_required
+  before_filter :authenticate_user!
 
+  # GET /novedades_de_los_afiliados
   def index
     # Verificar los permisos del usuario
     if cannot? :read, NovedadDelAfiliado
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to(root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
       return
     end
 
-    @novedades = NovedadDelAfiliado.paginate(
-      :page => params[:page], :per_page => 20,
-      :include => :tipo_de_novedad,
-      :order => "updated_at DESC"
-    )
+    @novedades =
+      NovedadDelAfiliado.paginate( :page => params[:page], :per_page => 20, :include => :tipo_de_novedad,
+        :order => "updated_at DESC"
+      )
 
   end
 
+  # GET /novedades_de_los_afiliados/:id
   def show
     # Verificar los permisos del usuario
     if cannot? :read, NovedadDelAfiliado
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to(root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -37,35 +34,29 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
     # Buscar la novedad
     begin
-      @novedad = NovedadDelAfiliado.find(
-        params[:id],
-        :include => [
-          :estado_de_la_novedad, :clase_de_documento, :tipo_de_documento, :sexo,
-          :pais_de_nacimiento, :lengua_originaria, :tribu_originaria,
-          :alfabetizacion_del_beneficiario, :domicilio_departamento, :domicilio_distrito,
-          :lugar_de_atencion_habitual, :tipo_de_documento_de_la_madre,
-          :alfabetizacion_de_la_madre, :tipo_de_documento_del_padre, :alfabetizacion_del_padre,
-          :tipo_de_documento_del_tutor, :alfabetizacion_del_tutor, :discapacidad,
-          :centro_de_inscripcion
-        ]
-      )
-      if @novedad.tipo_de_novedad_id == 3
-        @afiliado = Afiliado.find_by_clave_de_beneficiario(
-          @novedad.clave_de_beneficiario,
-          :include => [
-            :clase_de_documento, :tipo_de_documento, :sexo, :pais_de_nacimiento, :lengua_originaria,
-            :tribu_originaria, :alfabetizacion_del_beneficiario, :domicilio_departamento,
-            :domicilio_distrito, :lugar_de_atencion_habitual, :tipo_de_documento_de_la_madre,
-            :alfabetizacion_de_la_madre, :tipo_de_documento_del_padre, :alfabetizacion_del_padre,
-            :tipo_de_documento_del_tutor, :alfabetizacion_del_tutor, :discapacidad
+      @novedad =
+        NovedadDelAfiliado.find( params[:id],
+          :include => [ :estado_de_la_novedad, :clase_de_documento, :tipo_de_documento, :sexo, :pais_de_nacimiento,
+            :lengua_originaria, :tribu_originaria, :alfabetizacion_del_beneficiario, :domicilio_departamento, :domicilio_distrito,
+            :lugar_de_atencion_habitual, :tipo_de_documento_de_la_madre, :alfabetizacion_de_la_madre, :tipo_de_documento_del_padre,
+            :alfabetizacion_del_padre, :tipo_de_documento_del_tutor, :alfabetizacion_del_tutor, :discapacidad,
+            :centro_de_inscripcion
           ]
         )
+      if @novedad.tipo_de_novedad_id == 3
+        @afiliado =
+          Afiliado.find_by_clave_de_beneficiario( @novedad.clave_de_beneficiario,
+            :include => [ :clase_de_documento, :tipo_de_documento, :sexo, :pais_de_nacimiento, :lengua_originaria,
+              :tribu_originaria, :alfabetizacion_del_beneficiario, :domicilio_departamento, :domicilio_distrito,
+              :lugar_de_atencion_habitual, :tipo_de_documento_de_la_madre, :alfabetizacion_de_la_madre,
+              :tipo_de_documento_del_padre, :alfabetizacion_del_padre, :tipo_de_documento_del_tutor, :alfabetizacion_del_tutor,
+              :discapacidad
+            ]
+          )
       end
     rescue ActiveRecord::RecordNotFound
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -78,23 +69,20 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     end
   end
 
+  # GET /novedades_de_los_afiliados/new
   def new
     # Verificar los permisos del usuario
     if cannot? :create, NovedadDelAfiliado
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."})
       return
     end
 
     # Verificar que se haya indicado el tipo de novedad
     if !params[:tipo_de_novedad_id]
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -111,10 +99,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       when params[:tipo_de_novedad_id] == "3" # Modificación
         # Verificar que se haya pasado el ID del afiliado que se modificará
         if !params[:afiliado_id]
-          redirect_to(
-            root_url,
-            :flash => {
-              :tipo => :error, :titulo => "La petición no es válida",
+          redirect_to( root_url,
+            :flash => { :tipo => :error, :titulo => "La petición no es válida",
               :mensaje => "Se informará al administrador del sistema sobre este incidente."
             }
           )
@@ -125,10 +111,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         begin
           @afiliado = Afiliado.find(params[:afiliado_id])
         rescue ActiveRecord::RecordNotFound
-          redirect_to(
-            root_url,
-            :flash => {
-              :tipo => :error, :titulo => "La petición no es válida",
+          redirect_to( root_url,
+            :flash => { :tipo => :error, :titulo => "La petición no es válida",
               :mensaje => "Se informará al administrador del sistema sobre este incidente."
             }
           )
@@ -137,10 +121,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
         # Verificar que este afiliado no tenga una novedad pendiente
         if @afiliado.novedad_pendiente?
-          redirect_to(
-            root_url,
-            :flash => {
-              :tipo => :error, :titulo => "La petición no es válida",
+          redirect_to( root_url,
+            :flash => { :tipo => :error, :titulo => "La petición no es válida",
               :mensaje => "Se informará al administrador del sistema sobre este incidente."
             }
           )
@@ -155,30 +137,36 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
         @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
         @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-        @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-          :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
-        @lenguas_originarias = LenguaOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-          :lengua_originaria_id).collect{ |i| [i.nombre, i.id]}
-        @tribus_originarias = TribuOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-          :tribu_originaria_id).collect{ |i| [i.nombre, i.id]}
+        @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados, :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
+        @lenguas_originarias =
+          LenguaOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados, :lengua_originaria_id).collect{
+            |i| [i.nombre, i.id]
+          }
+        @tribus_originarias =
+          TribuOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados, :tribu_originaria_id).collect{
+            |i| [i.nombre, i.id]
+          }
         @niveles_de_instruccion = NivelDeInstruccion.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-        @departamentos = Departamento.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-          :domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
-        @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-          :domicilio_distrito_id, @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
-        @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id,
-          :codigo_postal => i.codigo_postal}}
-        @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-          :lugar_de_atencion_habitual_id).collect{ |i| [i.nombre, i.id]}
+        @departamentos =
+          Departamento.ordenados_por_frecuencia(
+            :novedades_de_los_afiliados, :domicilio_departamento_id
+            ).collect{ |i| [i.nombre, i.id] }
+        @distritos =
+          Distrito.ordenados_por_frecuencia(
+            :novedades_de_los_afiliados, :domicilio_distrito_id, @novedad.domicilio_departamento_id
+          ).collect{ |i| [i.nombre, i.id] }
+        @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal}}
+        @efectores =
+          Efector.ordenados_por_frecuencia(
+            :novedades_de_los_afiliados, :lugar_de_atencion_habitual_id
+          ).collect{ |i| [i.nombre, i.id] }
         @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-        @centros_de_inscripcion = uad_actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+        @centros_de_inscripcion = UnidadDeAltaDeDatos.actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
 
       when params[:tipo_de_novedad_id] == "4" # Reinscripción
       else # Tipo de novedad desconocida. ¿Petición fraguada?
-        redirect_to(
-          root_url,
-          :flash => {
-            :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+        redirect_to( root_url,
+          :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
           }
         )
@@ -187,13 +175,12 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
   end
 
+  # GET /novedades_de_los_afiliados/:id/edit
   def edit
     # Verificar los permisos del usuario
     if cannot? :update, NovedadDelAfiliado
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -207,10 +194,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
       # Verificar que la novedad esté pendiente
       if !@novedad.pendiente?
-        redirect_to(
-          root_url,
-          :flash => {
-            :tipo => :error, :titulo => "La petición no es válida",
+        redirect_to( root_url,
+          :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
           }
         )
@@ -223,10 +208,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       end
 
     rescue ActiveRecord::RecordNotFound
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -253,17 +236,16 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados,
       :lugar_de_atencion_habitual_id).collect{ |i| [i.nombre, i.id]}
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @centros_de_inscripcion = uad_actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @centros_de_inscripcion = UnidadDeAltaDeDatos.actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
 
   end
 
+  # POST /novedades_de_los_afiliados
   def create
     # Verificar los permisos del usuario
     if cannot? :create, NovedadDelAfiliado
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -282,10 +264,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       when tipo_de_novedad_id == "3" # MODIFICACIÓN
         # Verificar que se haya pasado el ID del afiliado que se modificará
         if !params[:afiliado_id]
-          redirect_to(
-            root_url,
-            :flash => {
-              :tipo => :error, :titulo => "La petición no es válida",
+          redirect_to( root_url,
+            :flash => { :tipo => :error, :titulo => "La petición no es válida",
               :mensaje => "Se informará al administrador del sistema sobre este incidente."
             }
           )
@@ -296,10 +276,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         begin
           @afiliado = Afiliado.find(params[:afiliado_id])
         rescue ActiveRecord::RecordNotFound
-          redirect_to(
-            root_url,
-            :flash => {
-              :tipo => :error, :titulo => "La petición no es válida",
+          redirect_to( root_url,
+            :flash => { :tipo => :error, :titulo => "La petición no es válida",
               :mensaje => "Se informará al administrador del sistema sobre este incidente."
             }
           )
@@ -332,23 +310,31 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
       @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
       @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
-      @lenguas_originarias = LenguaOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :lengua_originaria_id).collect{ |i| [i.nombre, i.id]}
-      @tribus_originarias = TribuOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :tribu_originaria_id).collect{ |i| [i.nombre, i.id]}
+      @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados, :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
+      @lenguas_originarias =
+        LenguaOriginaria.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :lengua_originaria_id
+        ).collect{ |i| [i.nombre, i.id] }
+      @tribus_originarias =
+        TribuOriginaria.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :tribu_originaria_id
+        ).collect{ |i| [i.nombre, i.id]}
       @niveles_de_instruccion = NivelDeInstruccion.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @departamentos = Departamento.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
-      @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :domicilio_distrito_id, @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
-      @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id,
-        :codigo_postal => i.codigo_postal}}
-      @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :lugar_de_atencion_habitual_id).collect{ |i| [i.nombre, i.id]}
+      @departamentos =
+        Departamento.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :domicilio_departamento_id
+        ).collect{ |i| [i.nombre, i.id]}
+      @distritos =
+        Distrito.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :domicilio_distrito_id, @novedad.domicilio_departamento_id
+        ).collect{ |i| [i.nombre, i.id]}
+      @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal}}
+      @efectores =
+        Efector.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :lugar_de_atencion_habitual_id
+        ).collect{ |i| [i.nombre, i.id]}
       @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @centros_de_inscripcion = uad_actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+      @centros_de_inscripcion = UnidadDeAltaDeDatos.actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
       render :action => "new"
     else
       if @novedad.advertencias && @novedad.advertencias.size > 0
@@ -357,11 +343,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @novedad.creator_id = current_user.id
         @novedad.updater_id = current_user.id
         @novedad.save
-        redirect_to(
-          novedad_del_afiliado_path(@novedad),
-          :flash => {
-            :tipo => :advertencia,
-            :titulo => "Se guardó la solicitud, pero faltan datos esenciales",
+        redirect_to( novedad_del_afiliado_path(@novedad),
+          :flash => { :tipo => :advertencia, :titulo => "Se guardó la solicitud, pero faltan datos esenciales",
             :mensaje => @novedad.advertencias
           }
         )
@@ -369,24 +352,19 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         # Guardar la solicitud, marcándola como pendiente de informar
         @novedad.estado_de_la_novedad_id = 2
         @novedad.save
-        redirect_to(
-          novedad_del_afiliado_path(@novedad),
-          :flash => {
-            :tipo => :ok,
-            :titulo => "La solicitud se guardó correctamente"
-          }
+        redirect_to( novedad_del_afiliado_path(@novedad), 
+          :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
         )
       end
     end
   end
 
+  # PUT /novedades_de_los_afiliados/:id
   def update
     # Verificar los permisos del usuario
     if cannot? :update, NovedadDelAfiliado
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -400,10 +378,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @afiliado = Afiliado.find_by_clave_de_beneficiario(@novedad.clave_de_beneficiario)
       end
     rescue ActiveRecord::RecordNotFound
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to(root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -435,33 +411,39 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
       @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
       @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
-      @lenguas_originarias = LenguaOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :lengua_originaria_id).collect{ |i| [i.nombre, i.id]}
-      @tribus_originarias = TribuOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :tribu_originaria_id).collect{ |i| [i.nombre, i.id]}
-      @niveles_de_instruccion = NivelDeInstruccion.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @departamentos = Departamento.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
-      @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :domicilio_distrito_id, @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
-      @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id,
-        :codigo_postal => i.codigo_postal}}
-      @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-        :lugar_de_atencion_habitual_id).collect{ |i| [i.nombre, i.id]}
-      @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @centros_de_inscripcion = uad_actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+      @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados, :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id] }
+      @lenguas_originarias =
+        LenguaOriginaria.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :lengua_originaria_id
+        ).collect{ |i| [i.nombre, i.id] }
+      @tribus_originarias =
+        TribuOriginaria.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :tribu_originaria_id
+        ).collect{ |i| [i.nombre, i.id] }
+      @niveles_de_instruccion = NivelDeInstruccion.find(:all, :order => :id).collect{ |i| [i.nombre, i.id] }
+      @departamentos =
+        Departamento.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :domicilio_departamento_id
+        ).collect{ |i| [i.nombre, i.id] }
+      @distritos =
+        Distrito.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :domicilio_distrito_id, @novedad.domicilio_departamento_id
+        ).collect{ |i| [i.nombre, i.id] }
+      @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal }}
+      @efectores =
+        Efector.ordenados_por_frecuencia(
+          :novedades_de_los_afiliados, :lugar_de_atencion_habitual_id
+        ).collect{ |i| [i.nombre, i.id] }
+      @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id] }
+      @centros_de_inscripcion = UnidadDeAltaDeDatos.actual.centros_de_inscripcion.collect{ |i| [i.nombre, i.id] }.sort
       render :action => "edit"
     else
       if @novedad.advertencias && @novedad.advertencias.size > 0
         # A la solicitud le faltan datos esenciales. Guardarla, pero marcándola como incompleta.
         @novedad.estado_de_la_novedad_id = 1
         @novedad.save
-        redirect_to(
-          novedad_del_afiliado_path(@novedad),
-          :flash => {
-            :tipo => :advertencia,
+        redirect_to( novedad_del_afiliado_path(@novedad),
+          :flash => { :tipo => :advertencia,
             :titulo => "La modificación se guardó correctamente, pero la solicitud no está completa",
             :mensaje => @novedad.advertencias
           }
@@ -470,24 +452,19 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         # Guardar la solicitud, marcándola como pendiente de informar
         @novedad.estado_de_la_novedad_id = 2
         @novedad.save
-        redirect_to(
-          novedad_del_afiliado_path(@novedad),
-          :flash => {
-            :tipo => :ok,
-            :titulo => "La modificación de la solicitud se guardó correctamente"
-          }
+        redirect_to( novedad_del_afiliado_path(@novedad),
+          :flash => { :tipo => :ok, :titulo => "La modificación de la solicitud se guardó correctamente" }
         )
       end
     end
   end
 
- def destroy
+  # DELETE /novedades_de_los_afiliados/:id
+  def destroy
     # Verificar los permisos del usuario
     if cannot? :update, NovedadDelAfiliado
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -496,15 +473,12 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
     # Buscar la novedad
     begin
-
       @novedad = NovedadDelAfiliado.find(params[:id])
 
       # Verificar que la novedad esté pendiente
       if !@novedad.pendiente?
-        redirect_to(
-          root_url,
-          :flash => {
-            :tipo => :error, :titulo => "La petición no es válida",
+        redirect_to( root_url,
+          :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
           }
         )
@@ -517,10 +491,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       end
 
     rescue ActiveRecord::RecordNotFound
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -531,14 +503,11 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @novedad.estado_de_la_novedad_id = 6
     @novedad.save(:validate => false)
 
-    redirect_to(
-      novedad_del_afiliado_path(@novedad),
-      :flash => {
-        :tipo => :advertencia, :titulo => "La solicitud fue anulada",
+    redirect_to( novedad_del_afiliado_path(@novedad),
+      :flash => { :tipo => :advertencia, :titulo => "La solicitud fue anulada",
         :mensaje => "Esta solicitud no podrá ser modificada ni notificada."
       }
     )
-
  end
 
 end

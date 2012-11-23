@@ -1,32 +1,28 @@
 class ContactosController < ApplicationController
-  before_filter :user_required
+  before_filter :authenticate_user!
 
+  # GET /contactos
   def index
     # Verificar los permisos del usuario
     if cannot? :read, Contacto
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
       return
     end
 
-    @contactos = Contacto.paginate(
-      :page => params[:page], :per_page => 20,
-      :order => [:apellidos, :nombres, :mostrado]
-    )
+    # Obtener el listado de contactos
+    @contactos = Contacto.paginate(:page => params[:page], :per_page => 20, :order => [:apellidos, :nombres])
   end
 
+  # GET /contactos/:id
   def show
     # Verificar los permisos del usuario
     if cannot? :read, Contacto
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -37,72 +33,68 @@ class ContactosController < ApplicationController
     begin
       @contacto = Contacto.find(params[:id], :include => :sexo)
     rescue ActiveRecord::RecordNotFound
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "El contacto solicitado no existe",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "El contacto solicitado no existe",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
+      return
     end
   end
 
+  # GET /contactos/new
   def new
     # Verificar los permisos del usuario
     if cannot? :create, Contacto
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
       return
     end
 
-    # Crear las variables requeridas para generar el formulario
+    # Crear los objetos necesarios para la vista
     @contacto = Contacto.new
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = nil
   end
 
+  # GET /contactos/:id/edit
   def edit
     # Verificar los permisos del usuario
     if cannot? :update, Contacto
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
       return
     end
 
-    # Crear las variables requeridas para generar el formulario
+    # Obtener el contacto
     begin
       @contacto = Contacto.find(params[:id], :include => :sexo)
     rescue ActiveRecord::RecordNotFound
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
       return
     end
+
+    # Crear los objetos necesarios para la vista
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = @contacto.sexo_id
   end
 
+  # POST /contactos
   def create
     # Verificar los permisos del usuario
     if cannot? :create, Contacto
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -111,10 +103,8 @@ class ContactosController < ApplicationController
 
     # Verificar que la petición contenga los parámetros esperados
     if !params[:contacto]
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre el incidente."
         }
       )
@@ -122,49 +112,45 @@ class ContactosController < ApplicationController
     end
 
     # Crear el nuevo objeto
-    @contacto = Contacto.new
+    @contacto = Contacto.new(params[:contacto])
 
-    # Verificar que el sexo indicado se corresponda con alguna de las opciones válidas del formulario
+    # Crear los objetos necesarios para regenerar la vista si hay algún error
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
-    @sexo_id = (params[:contacto][:sexo_id].blank? ? nil : params[:contacto][:sexo_id].to_i)
-    if @sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id))
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre el incidente."
-        }
+    @sexo_id = @contacto.sexo_id
+
+    # Verificar la validez del objeto
+    if @contacto.valid?
+      # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
+      if @sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id))
+        redirect_to( root_url,
+          :flash => { :tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
+        return
+      end
+
+      # Registrar el usuario que realiza la creación
+      @contacto.creator_id = current_user.id
+      @contacto.updater_id = current_user.id
+
+      # Guardar el nuevo convenio
+      @contacto.save
+      redirect_to(@contacto,
+        :flash => { :tipo => :ok, :titulo => 'El contacto se creó correctamente.' }
       )
-      return
+    else
+      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
+      render :action => "new"
     end
-
-    # Establecer el valor de los atributos protegidos
-    @contacto.creator_id = current_user.id
-    @contacto.updater_id = current_user.id
-
-    # Establecer el valor del resto de los atributos
-    @contacto.attributes = params[:contacto]
-
-    # Grabar el nuevo contacto en la base de datos
-    if @contacto.save
-      redirect_to(
-        contacto_path(@contacto),
-        :flash => {:tipo => :ok, :titulo => 'El contacto se creó correctamente.'}
-      )
-      return
-    end
-
-    # Si la grabación falla volver a mostrar el formulario con los errores
-    render :action => "new"
   end
 
+  # PUT /contactos/:id
   def update
     # Verificar los permisos del usuario
     if cannot? :update, Contacto
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -173,64 +159,57 @@ class ContactosController < ApplicationController
 
     # Verificar que la petición contenga los parámetros esperados
     if !params[:contacto]
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre el incidente."
         }
       )
       return
     end
 
-    # Obtener el contacto que se actualizará
+    # Obtener el contacto
     begin
       @contacto = Contacto.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
       return
     end
 
-    # Verificar que el sexo indicado se corresponda con alguna de las opciones válidas del formulario
-    @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
-    @sexo_id = (params[:contacto][:sexo_id].blank? ? nil : params[:contacto][:sexo_id].to_i)
-    if @sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id))
-      redirect_to(
-        root_url,
-        :flash => {
-          :tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre el incidente."
-        }
-      )
-      return
-    end
-
-    # Establecer el valor de los atributos protegidos
-    @contacto.updater_id = current_user.id
-
-    # Actualizar los valores de los atributos no protegidos por asignación masiva
+    # Cambiar los valores de los atributos de acuerdo con los parámetros
     @contacto.attributes = params[:contacto]
 
-    # Grabar la actualización en la base de datos
-    if @contacto.save
-      redirect_to(
-        contacto_path(@contacto),
-        :flash => {:tipo => :ok, :titulo => 'La información del contacto se modificó correctamente.'}
+    # Crear los objetos necesarios para regenerar la vista si hay algún error
+    @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
+    @sexo_id = @contacto.sexo_id
+
+    # Verificar la validez del objeto
+    if @contacto.valid?
+      # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
+      if @sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id))
+        redirect_to( root_url,
+          :flash => { :tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
+        return
+      end
+
+      # Registrar el usuario que realiza la modificación
+      @contacto.updater_id = current_user.id
+
+      # Guardar las modificaciones al convenio de administración
+      @contacto.save
+      redirect_to(@contacto,
+        :flash => {:tipo => :ok, :titulo => 'El contacto se modificó correctamente.'}
       )
-      return
+    else
+      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
+      render :action => "edit"
     end
-
-    # Si la grabación falla volver a mostrar el formulario con los errores
-    render :action => "edit"
   end
-
-#def destroy
-#end
 
 end

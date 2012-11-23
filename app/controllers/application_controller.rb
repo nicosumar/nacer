@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
   helper_method :admin_required
-  helper_method :uad_actual
+#  helper_method :uad_actual
 
 #  def current_user_session
 #    return @current_user_session if defined?(@current_user_session)
@@ -43,14 +43,6 @@ class ApplicationController < ActionController::Base
     return true
   end
 
-  # uad_actual
-  # Devuelve la UnidadDeAltaDeDatos con la que se está trabajando actualmente.
-  def uad_actual
-    # Cada UAD trabaja con un 'schema_search_path' distinto, por lo que usamos ese dato para ver
-    # cuál UAD está seleccionada actualmente
-    UnidadDeAltaDeDatos.find_by_schema_search_path(ActiveRecord::Base.connection.schema_search_path)
-  end
-
   def admin_required
     if !current_user
       store_location
@@ -64,7 +56,6 @@ class ApplicationController < ActionController::Base
   end
 
   def store_location
-    puts request.inspect
     session[:return_to] = request.url
   end
 

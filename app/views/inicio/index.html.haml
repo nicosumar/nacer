@@ -13,7 +13,13 @@
       Bienvenida,
     - else
       Bienvenido,
-    = current_user.nombre
+    = current_user.nombre.titleize
+
+  %p
+    Su último acceso se realizó desde la IP
+    = current_user.last_sign_in_ip
+    el día
+    = current_user.last_sign_in_at.strftime("%d/%m/%Y") + "."
 
   %p
     Puede comenzar a trabajar. Seleccione el módulo y operación deseados desde el menú superior.

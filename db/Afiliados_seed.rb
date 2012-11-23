@@ -15,18 +15,14 @@ class ModificarAfiliados < ActiveRecord::Migration
           -- Eliminar el registro asociado en la tabla de búsquedas
           DELETE FROM busquedas WHERE modelo_type = 'Afiliado' AND modelo_id = OLD.afiliado_id;
           RETURN OLD;
-        ELSIF (TG_OP = 'UPDATE' AND (NEW.motivo_de_la_baja_id IN (14, 81, 82, 83, 203) 
-               OLD.motivo_de_la_baja_id != 14 AND OLD.motivo_de_la_baja_id != 81 AND OLD.motivo_de_la_baja_id != 82 AND
-               OLD.motivo_de_la_baja_id != 83 AND OLD.motivo_de_la_baja_id != 203) THEN
+        ELSIF (TG_OP = 'UPDATE' AND NEW.motivo_de_la_baja_id IN (14, 81, 82, 83, 203) AND
+              (OLD.motivo_de_la_baja_id NOT IN (14, 81, 82, 83, 203) OR OLD.motivo_de_la_baja_id IS NULL)) THEN
           -- Eliminar el registro si es una actualización y el motivo de la baja se cambia a uno de los códigos de duplicado
-          -- o de otro motivo que requiera que el afiliado no sea indexado para búsquedas
           DELETE FROM busquedas WHERE modelo_type = 'Afiliado' AND modelo_id = NEW.afiliado_id;
-          RETURN NULL;
-        ELSIF (TG_OP = 'UPDATE' AND NEW.motivo_de_la_baja_id != 14 AND NEW.motivo_de_la_baja_id != 81 AND
-               NEW.motivo_de_la_baja_id != 82 AND NEW.motivo_de_la_baja_id != 83 AND NEW.motivo_de_la_baja_id != 203 AND
-               OLD.motivo_de_la_baja_id != 14 AND OLD.motivo_de_la_baja_id != 81 AND OLD.motivo_de_la_baja_id != 82 AND
-               OLD.motivo_de_la_baja_id != 83 AND OLD.motivo_de_la_baja_id != 203) THEN
-          -- Actualizar el registro asociado en la tabla de búsquedas
+          RETURN NEW;
+        ELSIF (TG_OP = 'UPDATE' AND (NEW.motivo_de_la_baja_id NOT IN (14, 81, 82, 83, 203) OR NEW.motivo_de_la_baja_id IS NULL)
+              AND (OLD.motivo_de_la_baja_id NOT IN (14, 81, 82, 83, 203) OR OLD.motivo_de_la_baja_id IS NULL)) THEN
+          -- Actualizar el registro asociado en la tabla de búsquedas si el registro estaba indexado y debe seguir indexado
           SELECT LOWER(nombre) INTO clase_de_documento FROM clases_de_documentos WHERE id = NEW.clase_de_documento_id;
           SELECT codigo INTO tipo_de_documento FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_id;
           SELECT codigo INTO tipo_de_documento_de_la_madre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_de_la_madre_id;
@@ -103,12 +99,10 @@ class ModificarAfiliados < ActiveRecord::Migration
               setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_del_tutor, '')), 'C')
             WHERE modelo_type = 'Afiliado' AND modelo_id = NEW.afiliado_id;
           RETURN NEW;
-        ELSIF (TG_OP = 'UPDATE' AND NEW.motivo_de_la_baja_id != 14 AND NEW.motivo_de_la_baja_id != 81 AND
-               NEW.motivo_de_la_baja_id != 82 AND NEW.motivo_de_la_baja_id != 83 AND NEW.motivo_de_la_baja_id != 203 AND (
-               OLD.motivo_de_la_baja_id = 14 OR OLD.motivo_de_la_baja_id = 81 OR OLD.motivo_de_la_baja_id = 82 OR
-               OLD.motivo_de_la_baja_id = 83 OR OLD.motivo_de_la_baja_id = 203) OR (
-               TG_OP = 'INSERT' AND NEW.motivo_de_la_baja_id != 14 AND NEW.motivo_de_la_baja_id != 81 AND
-               NEW.motivo_de_la_baja_id != 82 AND NEW.motivo_de_la_baja_id != 83 AND NEW.motivo_de_la_baja_id != 203)) THEN
+        ELSIF (TG_OP = 'UPDATE' AND (NEW.motivo_de_la_baja_id NOT IN (14, 81, 82, 83, 203) OR NEW.motivo_de_la_baja_id IS NULL)
+              AND OLD.motivo_de_la_baja_id IN (14, 81, 82, 83, 203)
+              OR TG_OP = 'INSERT' AND (NEW.motivo_de_la_baja_id NOT IN (14, 81, 82, 83, 203) OR
+              NEW.motivo_de_la_baja_id IS NULL)) THEN
           -- Insertar el registro asociado en la tabla de búsquedas
           SELECT LOWER(nombre) INTO clase_de_documento FROM clases_de_documentos WHERE id = NEW.clase_de_documento_id;
           SELECT codigo INTO tipo_de_documento FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_id;
@@ -193,8 +187,5 @@ class ModificarAfiliados < ActiveRecord::Migration
     CREATE TRIGGER trg_afiliados
       AFTER INSERT OR UPDATE OR DELETE ON afiliados
       FOR EACH ROW EXECUTE PROCEDURE afiliados_fts_trigger();
-  "
-  execute "
-    CREATE UNIQUE INDEX ON afiliados (afiliado_id);
   "
 end

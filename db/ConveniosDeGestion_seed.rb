@@ -87,6 +87,27 @@ class ModificarConveniosDeGestion < ActiveRecord::Migration
       AFTER INSERT OR UPDATE OR DELETE ON convenios_de_gestion
       FOR EACH ROW EXECUTE PROCEDURE conv_gestion_fts_trigger();
   "
+
+  # Funciones y disparadores para modificar los datos que se insertan/modifican en la tabla
+  execute "
+    CREATE OR REPLACE FUNCTION modificar_convenio_de_gestion() RETURNS trigger AS $$
+      DECLARE
+        new_numero varchar;
+      BEGIN
+        -- Modificar todos los campos tipo varchar del registro
+        SELECT UPPER(NEW.numero) INTO new_numero;
+        NEW.numero = new_numero;
+
+        -- Devolver el registro modificado
+        RETURN NEW;
+      END;
+    $$ LANGUAGE plpgsql;
+  "
+  execute "
+    CREATE TRIGGER trg_modificar_convenio_de_gestion
+      BEFORE INSERT OR UPDATE ON convenios_de_gestion
+      FOR EACH ROW EXECUTE PROCEDURE modificar_convenio_de_gestion();
+  "
 end
 
 # Puede ingresar aquí datos para que sean cargados al hacer el deploy

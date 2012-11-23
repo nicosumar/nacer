@@ -1,93 +1,104 @@
 = form_for(@efector) do |f|
-  - if @efector.errors.any?
-    #error_explanation
-      %h2= pluralize(@efector.errors.count, "error impide").to_s + " que se guarde la información de este efector."
-      %ul
-        - @efector.errors.full_messages.each do |msg|
-          %li= msg
-  %h3 Identificación del efector
+  %h3.first-header-with-note Datos de identificación
+  - if @efector.new_record? || Efector.find(@efector.id).cuie.blank?
+    %p.note Verifique la corrección del CUIE, ya que después de guardarlo no podrá modificarse
+    %div.field
+      = f.label :cuie, "CUIE"
+      = f.text_field :cuie, :style => "text-transform: uppercase;"
+  - else
+    %p.note El CUIE no puede modificarse
+    %div.field_content
+      %span.field_name CUIE
+      %span.field_value= @efector.cuie
   %div.field
-    = f.label :cuie
-    %br/
-    = f.text_field :cuie
-  %div.field
-    = f.label :efector_sissa_id
-    %br/
-    = f.number_field :efector_sissa_id
-  %div.field
-    = f.label :efector_bio_id
-    %br/
-    = f.number_field :efector_bio_id
-  %div.field
-    = f.label :nombre
-    %br/
+    = f.label :nombre, "Nombre*"
     = f.text_field :nombre
+
+  %h4 Códigos de identificación en otros sistemas
+  %div.field
+    = f.label :codigo_de_efector_sissa, "Código SISSA"
+    = f.text_field :codigo_de_efector_sissa
+  %div.field
+    = f.label :codigo_de_efector_bio, "Código para bioestadística"
+    = f.number_field :codigo_de_efector_bio
+
+  %h3 Domicilio, correo electrónico y teléfonos
   %div.field
     = f.label :domicilio
-    %br/
     = f.text_field :domicilio
   %div.field
     = f.label :departamento_id
-    %br/
-    = f.select :departamento_id, options_for_select(@departamentos, @departamento_id), {:include_blank => true}
-  %div.field
+    = f.select :departamento_id, options_for_select(@departamentos, @efector.departamento_id), { :include_blank => true }
+  #select_distritos.field
     = f.label :distrito_id
-    %br/
-    = f.select :distrito_id, options_for_select(@distritos, @distrito_id), {:include_blank => true}
+    = f.select :distrito_id, options_for_select(@distritos, @efector.distrito_id), { :include_blank => true }
   %div.field
     = f.label :codigo_postal
-    %br/
-    = f.text_field :codigo_postal
+    = f.text_field :codigo_postal, :style => "text-transform: uppercase;"
   %div.field
     = f.label :latitud
-    %br/
     = f.text_field :latitud
   %div.field
     = f.label :longitud
-    %br/
     = f.text_field :longitud
   %div.field
     = f.label :telefonos
-    %br/
     = f.text_field :telefonos
   %div.field
     = f.label :email
-    %br/
-    = f.text_field :email
+    = f.email_field :email
+
+  %h3 Categorización
   %div.field
     = f.label :grupo_de_efectores_id
-    %br/
-    = f.select :grupo_de_efectores_id, options_for_select(@grupos_de_efectores, @grupo_de_efectores_id), {:include_blank => true}
+    = f.select :grupo_de_efectores_id, options_for_select(@grupos_de_efectores, @efector.grupo_de_efectores_id), |
+      {:include_blank => true} |
   %div.field
     = f.label :area_de_prestacion_id
-    %br/
-    = f.select :area_de_prestacion_id, options_for_select(@areas_de_prestacion, @area_de_prestacion_id), {:include_blank => true}
+    = f.select :area_de_prestacion_id, options_for_select(@areas_de_prestacion, @efector.area_de_prestacion_id), |
+      {:include_blank => true} |
+  %div.field
+    = f.label :dependencia_administrativa_id
+    = f.select :dependencia_administrativa_id, |
+      options_for_select(@dependencias_administrativas, @efector.dependencia_administrativa_id), {:include_blank => true} |
+  %div.field
+    = f.label :integrante
+    = f.check_box :integrante
+  %div.field
+    = f.label :alto_impacto
+    = f.check_box :alto_impacto
+
+  %h3 Alta complejidad perinatal
+  %div.field
+    = f.label :perinatal_de_alta_complejidad, "Habilitado"
+    = f.check_box :perinatal_de_alta_complejidad
+  #addenda_perinatal
+    %div.field
+      = f.label :addenda_perinatal, "Adenda perinatal"
+      = f.check_box :addenda_perinatal
+    #fecha_de_addenda_perinatal
+      %div.field
+        = f.label :fecha_de_addenda_perinatal, "Fecha de la adenda"
+        = f.date_select :fecha_de_addenda_perinatal, |
+          {:start_year => 2012, :end_year => Date.today.year + 1, |
+          :include_blank => true} |
+
+  %h3 Infraestructura
   %div.field
     = f.label :camas_de_internacion
-    %br/
     = f.number_field :camas_de_internacion
   %div.field
     = f.label :ambientes
-    %br/
     = f.number_field :ambientes
+
+  %h3 Observaciones
   %div.field
-    = f.label :dependencia_administrativa_id
-    %br/
-    = f.select :dependencia_administrativa_id, options_for_select(@dependencias_administrativas, @dependencia_administrativa_id), {:include_blank => true}
-  %div.field
-    = f.label :integrante
-    %br/
-    = f.check_box :integrante
-  %div.field
-    = f.label :evaluacion_de_impacto
-    %br/
-    = f.check_box :evaluacion_de_impacto
-  %div.field
-    = f.label :observaciones
-    %br/
-    = f.text_area :observaciones
+    = f.text_area :observaciones, :size => "80x8"
+
   %div.actions
-    - if @efector.new_record? then
-      = f.submit "Crear efector"
+    - if @efector.new_record?
+      = f.submit "Crear el efector"
+      = link_to "Cancelar", efectores_url
     - else
-      = f.submit "Actualizar los datos del efector"
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @efector

@@ -1,5 +1,5 @@
 class LiquidacionesController < ApplicationController
-  before_filter :user_required
+  before_filter :authenticate_user!
 
   def index
     if can? :read, Liquidacion then

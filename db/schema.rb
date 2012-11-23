@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120930224055) do
+ActiveRecord::Schema.define(:version => 20121113232202) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -22,7 +22,10 @@ ActiveRecord::Schema.define(:version => 20120930224055) do
     t.text     "observaciones"
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.string   "numero"
   end
+
+  add_index "addendas", ["numero"], :name => "unq_addendas_numero", :unique => true
 
   create_table "afiliados", :id => false, :force => true do |t|
     t.integer "afiliado_id",                           :null => false
@@ -283,10 +286,10 @@ ActiveRecord::Schema.define(:version => 20120930224055) do
   end
 
   create_table "efectores", :force => true do |t|
-    t.string   "cuie",                          :null => false
+    t.string   "cuie",                                             :null => false
     t.string   "efector_sissa_id"
     t.integer  "efector_bio_id"
-    t.string   "nombre",                        :null => false
+    t.string   "nombre",                                           :null => false
     t.string   "domicilio"
     t.integer  "departamento_id"
     t.integer  "distrito_id"
@@ -300,14 +303,20 @@ ActiveRecord::Schema.define(:version => 20120930224055) do
     t.integer  "camas_de_internacion"
     t.integer  "ambientes"
     t.integer  "dependencia_administrativa_id"
-    t.boolean  "integrante",                    :null => false
-    t.boolean  "evaluacion_de_impacto"
+    t.boolean  "integrante",                                       :null => false
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.boolean  "alto_impacto",                  :default => false
+    t.boolean  "perinatal_de_alta_complejidad", :default => false
+    t.boolean  "addenda_perinatal",             :default => false
+    t.date     "fecha_de_addenda_perinatal"
   end
+
+  add_index "efectores", ["cuie"], :name => "index_efectores_on_cuie", :unique => true
+  add_index "efectores", ["efector_sissa_id"], :name => "index_efectores_on_efector_sissa_id", :unique => true
 
   create_table "estados_de_las_novedades", :force => true do |t|
     t.string "nombre"
@@ -498,14 +507,15 @@ ActiveRecord::Schema.define(:version => 20120930224055) do
   end
 
   create_table "prestaciones", :force => true do |t|
-    t.integer  "area_de_prestacion_id",       :null => false
-    t.integer  "grupo_de_prestaciones_id",    :null => false
+    t.integer  "area_de_prestacion_id",                         :null => false
+    t.integer  "grupo_de_prestaciones_id",                      :null => false
     t.integer  "subgrupo_de_prestaciones_id"
-    t.string   "codigo",                      :null => false
-    t.string   "nombre",                      :null => false
-    t.integer  "unidad_de_medida_id",         :null => false
+    t.string   "codigo",                                        :null => false
+    t.string   "nombre",                                        :null => false
+    t.integer  "unidad_de_medida_id",                           :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "activa",                      :default => true
   end
 
   create_table "prestaciones_autorizadas", :force => true do |t|
@@ -672,9 +682,10 @@ ActiveRecord::Schema.define(:version => 20120930224055) do
     t.string   "apellido",                                  :null => false
     t.date     "fecha_de_nacimiento"
     t.integer  "sexo_id"
-    t.boolean  "autorizado",             :default => false, :null => false
-    t.datetime "autorizado_el"
-    t.integer  "autorizador_id"
+    t.text     "observaciones"
+    t.boolean  "authorized",             :default => false, :null => false
+    t.datetime "authorized_at"
+    t.integer  "authorized_by"
     t.string   "email",                  :default => "",    :null => false
     t.string   "encrypted_password",     :default => "",    :null => false
     t.string   "reset_password_token"

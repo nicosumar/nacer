@@ -19,8 +19,5 @@ Sexo.create([
           :codigo => "F" },
         { #:id => 2,
           :nombre => "Masculino",
-          :codigo => "M" },
-        { #:id => 1,
-          :nombre => "Indeterminado",
-          :codigo => nil }
+          :codigo => "M" }
 ])

@@ -1,25 +1,41 @@
 class ConvenioDeGestion < ActiveRecord::Base
+  # NULLificar los campos de texto en blanco
+  nilify_blanks
+
+  # Los atributos siguientes pueden asignarse en forma masiva
+  attr_accessible :numero, :efector_id, :firmante, :email_notificacion, :fecha_de_suscripcion, :fecha_de_inicio
+  attr_accessible :fecha_de_finalizacion, :observaciones
+
+  # Los atributos siguientes solo pueden asignarse durante la creación
+  attr_readonly :numero, :efector_id
+
+  # Asociaciones
   belongs_to :efector
   has_many :prestaciones_autorizadas, :as => :autorizante_al_alta
   has_many :addendas
 
-  validates_presence_of :numero, :efector_id, :fecha_de_inicio, :fecha_de_finalizacion
+  # Validaciones
+  validates_presence_of :numero, :efector_id, :fecha_de_inicio
   validates_uniqueness_of :efector_id, :numero
-  validate :validar_fechas
+  validate :verificar_fechas
 
-  def validar_fechas
-    unless fecha_de_suscripcion.nil? or fecha_de_inicio.nil? then
-      if fecha_de_suscripcion > fecha_de_inicio then
-        errors.add(:fecha_de_suscripcion, "no puede ser posterior a la fecha de inicio.")
-        return false
-      end
+  # verificar_fechas
+  # Verifica que todos los campos de fecha contengan valores lógicos
+  def verificar_fechas
+    error_de_fecha = false
+
+    # Fecha de suscripción
+    if fecha_de_suscripcion && fecha_de_inicio && fecha_de_suscripcion > fecha_de_inicio
+      errors.add(:fecha_de_suscripcion, 'no puede ser posterior a la fecha de inicio')
+      error_de_fecha = true
     end
-    unless fecha_de_finalizacion.nil? or fecha_de_inicio.nil? then
-      if fecha_de_finalizacion < fecha_de_inicio then
-        errors.add(:fecha_de_finalizacion, "no puede ser anterior a la fecha de inicio.")
-        return false
-      end
+
+    # Fecha de la última menstruación
+    if fecha_de_inicio && fecha_de_finalizacion && fecha_de_inicio > fecha_de_finalizacion
+      errors.add(:fecha_de_inicio, 'no puede ser posterior a la fecha de finalización')
+      error_de_fecha = true
     end
-    return true
+
+    return !error_de_fecha
   end
 end

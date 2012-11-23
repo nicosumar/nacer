@@ -7,6 +7,7 @@
 = render :partial => "shared/info", :locals => { :registro => @contacto }
 
 #content-body
-  %h2.first-header Información del contacto que se creará
+  %h2.first-header-with-note Formulario de creación de un contacto
+  %p.note Los campos marcados con asterisco (*) son obligatorios
 
   = render 'form'

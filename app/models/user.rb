@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
 
   # Seguridad para asignaciones masivas
   attr_accessible :nombre, :apellido, :sexo_id, :fecha_de_nacimiento
-  attr_accessible :email, :password, :password_confirmation
+  attr_accessible :email
   attr_readonly :observaciones
 
   # Asociaciones
@@ -23,8 +23,18 @@ class User < ActiveRecord::Base
 
   def in_group?(group)
     user_groups.each do | ug |
-      return true if ug.user_group_name.downcase.to_sym == group
+      return true if (ug.user_group_name.downcase.to_sym == group || ug.user_group_name == "administradores")
     end
     return false
   end
+
+  # Modificación del comportamiento de Devise para verificar si un usuario ya fue autorizado
+  def active_for_authentication?
+    super && authorized?
+  end
+
+  def inactive_message
+    (!confirmed_at || authorized?) ? super : :confirmed_but_unauthorized
+  end
+
 end

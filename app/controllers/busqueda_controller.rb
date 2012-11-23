@@ -1,5 +1,5 @@
 class BusquedaController < ApplicationController
-  before_filter :user_required
+  before_filter :authenticate_user!
 
   def index
     # Verificar que se pasaron los términos requeridos para la búsqueda

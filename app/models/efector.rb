@@ -1,4 +1,17 @@
 class Efector < ActiveRecord::Base
+  # NULLificar los campos de texto en blanco
+  nilify_blanks
+
+  # Los atributos siguientes pueden asignarse en forma masiva
+  attr_accessible :codigo_de_efector_sissa, :codigo_de_efector_bio, :nombre, :domicilio, :departamento_id, :distrito_id
+  attr_accessible :codigo_postal, :latitud, :longitud, :telefonos, :email, :grupo_de_efectores_id, :area_de_prestacion_id
+  attr_accessible :camas_de_internacion, :ambientes, :dependencia_administrativa_id, :integrante, :observaciones, :alto_impacto
+  attr_accessible :perinatal_de_alta_complejidad, :addenda_perinatal, :fecha_de_addenda_perinatal
+
+  # Atributos protegidos
+  # attr_protected :cuie
+
+  # Asociaciones
   has_one :convenio_de_gestion
   belongs_to :departamento
   belongs_to :distrito
@@ -6,15 +19,22 @@ class Efector < ActiveRecord::Base
   belongs_to :area_de_prestacion
   belongs_to :dependencia_administrativa
   has_one :convenio_de_administracion
+  has_one :administrador, :through => :convenio_de_administracion
   has_many :prestaciones_autorizadas
   has_many :asignaciones_de_nomenclador
   has_many :referentes
 
+  # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   default_scope where(:integrante => true)
 
-  validates_presence_of :cuie, :nombre
-  validates_uniqueness_of :cuie
+  # Validaciones
+  validates_presence_of :nombre
+  validates_uniqueness_of :cuie, :allow_nil => true
+  validates_uniqueness_of :codigo_de_efector_sissa, :allow_nil => true
+  validates_uniqueness_of :codigo_de_efector_bio, :allow_nil => true
 
+  # nombre_corto
+  # Devuelve el nombre acortado a 80 caracteres (útil para listas desplegables)
   def nombre_corto
     if nombre.length > 80 then
       nombre.first(77) + "..."
@@ -23,6 +43,14 @@ class Efector < ActiveRecord::Base
     end
   end
 
+  # convenio?
+  # Indica si el efector tiene un convenio de gestión firmado
+  def tiene_convenio?
+    return convenio_de_gestion ? true : false
+  end
+
+  # nombre_corto
+  # Devuelve los efectores que no tienen convenio de gestión
   def self.que_no_tengan_convenio
     Efector.find_by_sql("
       SELECT *
@@ -34,6 +62,8 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
+  # nombre_corto
+  # Devuelve los efectores que tienen convenio de gestión
   def self.que_tengan_convenio
     Efector.find_by_sql("
       SELECT *
@@ -45,6 +75,8 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
+  # nombre_corto
+  # Devuelve los efectores que no tienen convenio de administración firmado
   def self.que_no_son_administrados
     Efector.find_by_sql("
       SELECT *
@@ -57,6 +89,9 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
+  # self.del_administrador_sin_liquidar
+  # Devuelve los efectores que pertenecen al administrador con ID 'administrador_id' y que no tienen
+  # cargada una cuasifactura para la liquidación con ID 'liquidacion_id'.
   def self.del_administrador_sin_liquidar(administrador_id, liquidacion_id)
     Efector.find_by_sql("
       SELECT *
@@ -81,6 +116,8 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
+  # self.que_son_administrados
+  # Devuelve los efectores que tienen un convenio de administración.
   def self.que_son_administrados
     Efector.find_by_sql("
       SELECT *
@@ -92,6 +129,8 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
+  # self.administradores_y_no_administrados
+  # Devuelve los efectores que administran a otros, o bien que no tienen suscrito un convenio de administración.
   def self.administradores_y_no_administrados
     Efector.find_by_sql("
       SELECT *
@@ -107,6 +146,9 @@ class Efector < ActiveRecord::Base
           nombre;")
   end
 
+  # self.administradores_y_autoadministrados
+  # Devuelve los efectores que administran a otros, o bien que tienen suscrito un convenio de gestión y no son administrados
+  # por un tercero.
   def self.administradores_y_autoadministrados
     Efector.find_by_sql("
       SELECT *
@@ -152,12 +194,20 @@ class Efector < ActiveRecord::Base
   def self.ordenados_por_frecuencia(tabla, columna)
     Efector.find_by_sql("
       SELECT
-        efectores.id, SUBSTRING(efectores.nombre FROM 1 FOR 80) AS \"nombre\",
+        efectores.id,
+        (
+          CASE
+            WHEN length(efectores.nombre) > 80 THEN
+              SUBSTRING(efectores.nombre FROM 1 FOR 77) || '...'::text
+            ELSE
+              efectores.nombre
+          END
+        ) AS \"nombre\",
         count(efectores.id) AS \"frecuencia\"
         FROM
           efectores
-          LEFT JOIN #{tabla.to_s}
-            ON (efectores.id = #{tabla.to_s}.#{columna.to_s})
+          LEFT JOIN \"#{tabla.to_s}\"
+            ON (efectores.id = \"#{tabla.to_s}\".\"#{columna.to_s}\")
         WHERE integrante
         GROUP BY efectores.id, efectores.nombre
         ORDER BY \"frecuencia\" DESC, efectores.nombre ASC;
