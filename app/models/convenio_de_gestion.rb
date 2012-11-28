@@ -15,7 +15,7 @@ class ConvenioDeGestion < ActiveRecord::Base
   has_many :addendas
 
   # Validaciones
-  validates_presence_of :numero, :efector_id, :fecha_de_inicio
+  validates_presence_of :numero, :efector_id, :fecha_de_inicio, :fecha_de_finalizacion
   validates_uniqueness_of :efector_id, :numero
   validate :verificar_fechas
 

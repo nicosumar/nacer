@@ -49,7 +49,14 @@ class Efector < ActiveRecord::Base
     return convenio_de_gestion ? true : false
   end
 
-  # nombre_corto
+  # actualizar_informacion_de_busqueda
+  # Ejecuta una actualización superflua en la base de datos para disparar el trigger que actualiza
+  # la información para búsquedas FTS.
+  def actualizar_informacion_de_busqueda
+    ActiveRecord::Base.connection.execute "UPDATE efectores SET id = id WHERE id = '#{id}';"
+  end
+
+  # self.que_no_tengan_convenio
   # Devuelve los efectores que no tienen convenio de gestión
   def self.que_no_tengan_convenio
     Efector.find_by_sql("
@@ -62,7 +69,7 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
-  # nombre_corto
+  # self.que_tengan_convenio
   # Devuelve los efectores que tienen convenio de gestión
   def self.que_tengan_convenio
     Efector.find_by_sql("
@@ -75,7 +82,7 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
-  # nombre_corto
+  # self.que_no_son_administrados
   # Devuelve los efectores que no tienen convenio de administración firmado
   def self.que_no_son_administrados
     Efector.find_by_sql("

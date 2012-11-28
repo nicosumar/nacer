@@ -105,6 +105,20 @@ class ModificarConveniosDeAdministracion < ActiveRecord::Migration
       FOR EACH ROW EXECUTE PROCEDURE conv_administracion_fts_trigger();
   "
 
+  execute "
+    CREATE OR REPLACE FUNCTION ca_efectores_fts_trigger() RETURNS trigger AS $$
+      BEGIN
+        UPDATE efectores SET id = id WHERE id = NEW.efector_id;
+        RETURN NEW;
+      END;
+    $$ LANGUAGE plpgsql;
+  "
+  execute "
+    CREATE TRIGGER trg_ca_efectores
+      AFTER INSERT OR UPDATE OF numero ON convenios_de_administracion
+      FOR EACH ROW EXECUTE PROCEDURE ca_efectores_fts_trigger();
+  "
+
   # Funciones y disparadores para modificar los datos que se insertan/modifican en la tabla
   execute "
     CREATE OR REPLACE FUNCTION modificar_convenio_de_administracion() RETURNS trigger AS $$

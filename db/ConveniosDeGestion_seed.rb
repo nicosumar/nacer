@@ -88,6 +88,34 @@ class ModificarConveniosDeGestion < ActiveRecord::Migration
       FOR EACH ROW EXECUTE PROCEDURE conv_gestion_fts_trigger();
   "
 
+  execute "
+    CREATE OR REPLACE FUNCTION cg_efectores_fts_trigger() RETURNS trigger AS $$
+      BEGIN
+        UPDATE efectores SET id = id WHERE id = NEW.efector_id;
+        RETURN NEW;
+      END;
+    $$ LANGUAGE plpgsql;
+  "
+  execute "
+    CREATE TRIGGER trg_cg_efectores
+      AFTER INSERT OR UPDATE OF numero ON convenios_de_gestion
+      FOR EACH ROW EXECUTE PROCEDURE cg_efectores_fts_trigger();
+  "
+
+  execute "
+    CREATE OR REPLACE FUNCTION cg_addendas_fts_trigger() RETURNS trigger AS $$
+      BEGIN
+        UPDATE addendas SET id = id WHERE convenio_de_gestion_id = NEW.id;
+        RETURN NEW;
+      END;
+    $$ LANGUAGE plpgsql;
+  "
+  execute "
+    CREATE TRIGGER trg_cg_addendas
+      AFTER INSERT OR UPDATE OF numero ON convenios_de_gestion
+      FOR EACH ROW EXECUTE PROCEDURE cg_addendas_fts_trigger();
+  "
+
   # Funciones y disparadores para modificar los datos que se insertan/modifican en la tabla
   execute "
     CREATE OR REPLACE FUNCTION modificar_convenio_de_gestion() RETURNS trigger AS $$

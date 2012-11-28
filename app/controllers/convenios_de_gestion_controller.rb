@@ -123,7 +123,7 @@ class ConveniosDeGestionController < ApplicationController
     end
 
     # Guardar las prestaciones seleccionadas para luego rellenar la tabla asociada si se graba correctamente
-    @prestacion_autorizada_ids = params[:convenio_de_gestion].delete(:prestacion_autorizada_ids)
+    @prestacion_autorizada_ids = params[:convenio_de_gestion].delete(:prestacion_autorizada_ids) || []
 
     # Crear un nuevo convenio desde los parámetros
     @convenio_de_gestion = ConvenioDeGestion.new(params[:convenio_de_gestion])
@@ -196,7 +196,7 @@ class ConveniosDeGestionController < ApplicationController
     end
 
     # Guardar las prestaciones seleccionadas para luego rellenar la tabla asociada si se graba correctamente
-    @prestacion_autorizada_ids = params[:convenio_de_gestion].delete(:prestacion_autorizada_ids)
+    @prestacion_autorizada_ids = params[:convenio_de_gestion].delete(:prestacion_autorizada_ids) || []
 
     # Obtener el convenio
     begin
