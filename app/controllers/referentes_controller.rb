@@ -1,82 +1,226 @@
 class ReferentesController < ApplicationController
   before_filter :authenticate_user!
 
+  # GET /referentes/new
   def new
-    if cannot? :create, Referente then
-      redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
+    # Verificar los permisos del usuario
+    if cannot? :create, Referente
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
       return
     end
 
-    # Para crear referentes, debe accederse desde la página del efector correspondiente
-    if not defined?(params[:efector_id])
-      redirect_to efectores_url, :notice => "Para agregar un referente, primero seleccione el efector correspondiente."
+    # Verificar que se hayan pasado los parámetros necesarios
+    if !params[:efector_id]
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
       return
     end
 
-    # Obtener el efector al que corresponde este referente
-    if Efector.exists?(params[:efector_id])
-      @referente = Referente.new
+    # Obtener el efector asociado
+    begin
       @efector = Efector.find(params[:efector_id])
-      @contactos = Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c| [c.apellidos ? c.apellidos + ", " + c.nombres : c.mostrado, c.id] }
-    else
-      redirect_to efectores_url, :notice => "Para agregar un referente, primero seleccione el efector correspondiente."
-    end
-  end
-
-  def edit
-    if can? :update, @referente then
-      @referente = Referente.find(params[:id], :include => :efector)
-      @efector = @referente.efector
-      @contactos = Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c| [c.apellidos ? c.apellidos + ", " + c.nombres : c.mostrado, c.id] }
-      @contacto_id = @referente.contacto_id
-    else
-      redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
-    end
-  end
-
-  def create
-    if can? :create, Referente then
-      @referente = Referente.new(params[:referente])
-      @efector = Efector.find(params[:referente][:efector_id])
-      @referente_actual = Referente.actual_del_efector(@efector.id)
-    else
-      redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
+    rescue ActiveRecord::RecordNotFound
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
       return
     end
 
-    # Grabar los datos del referente
+    # Crear los objetos necesarios para la vista
+    @referente = Referente.new
+    @contactos =
+      Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c|
+        [c.apellidos ? c.apellidos + ", " + c.nombres : c.mostrado, c.id]
+      }
+  end
+
+  # GET /referentes/:id/edit
+  def edit
+    # Verificar los permisos del usuario
+    if cannot? :update, Referente
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener el referente
+    begin
+      @referente = Referente.find(params[:id], :include => :efector)
+    rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
+      return
+    end
+
+    # Crear los objetos necesarios para la vista
+    @efector = @referente.efector
+    @contactos =
+      Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c|
+        [c.apellidos ? c.apellidos + ", " + c.nombres : c.mostrado, c.id]
+      }
+  end
+
+  # POST /referentes
+  def create
+    # Verificar los permisos del usuario
+    if cannot? :create, Referente
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Verificar si la petición contiene los parámetros esperados
+    if !params[:referente] || !params[:referente][:efector_id]
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener el efector asociado
+    begin
+      @efector = Efector.find(params[:referente][:efector_id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
+      return
+    end
+
+    # Crear un nuevo referente desde los parámetros
+    @referente = Referente.new(params[:referente])
+
+    # Crear los objetos necesarios para regenerar la vista si hay algún error
+    @contactos =
+      Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c|
+        [c.apellidos ? c.apellidos + ", " + c.nombres : c.mostrado, c.id]
+      }
+
+    # Verificar la validez del objeto
     if @referente.valid?
-      if @referente_actual && @referente.fecha_de_inicio >= @referente_actual.fecha_de_inicio
-        @referente_actual.update_attributes({:fecha_de_finalizacion => @referente.fecha_de_inicio})
-      end
-      if @referente.save
-        redirect_to efector_path(@efector), :notice => 'El referente se agregó correctamente.'
+      # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
+      if ( !@contactos.collect{ |i| i[1] }.member?(@referente.contacto_id) )
+        redirect_to( root_url,
+          :flash => { :tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
         return
       end
-    end
 
-    # Si la grabación falla volver a mostrar el formulario con los errores
-    @contactos = Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c| [c.apellidos ? c.apellidos + ", " + c.nombres : c.mostrado, c.id] }
-    @contacto_id = params[:referente][:contacto_id]
-    render :action => "new"
+      # Registrar el usuario que realiza la creación
+      @referente.creator_id = current_user.id
+      @referente.updater_id = current_user.id
+
+      # Terminar el periodo de actividad del referente actual (si existiera uno)
+      referente_actual = Referente.actual_del_efector(@efector.id)
+      if referente_actual && @referente.fecha_de_inicio > referente_actual.fecha_de_inicio
+        referente_actual.update_attributes({:fecha_de_finalizacion => @referente.fecha_de_inicio})
+      end
+
+      # Guardar el nuevo referente
+      @referente.save
+      redirect_to(referentes_del_efector_path(@efector),
+        :flash => { :tipo => :ok, :titulo => 'El referente se creó correctamente.' }
+      )
+    else
+      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
+      render :action => "new"
+    end
   end
 
+  # PUT /referentes/:id
   def update
-    @referente = Referente.find(params[:id])
-    if cannot? :update, @referente then
-      redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
-      return
-    end
-    if @referente.update_attributes(params[:referente])
-      redirect_to efector_path(@referente.efector), :notice => 'Los datos del referente se actualizaron correctamente.'
+    # Verificar los permisos del usuario
+    if cannot? :update, Referente
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
       return
     end
 
-    # Si falla la grabación, volver a presentar el formulario con los errores
-    @efector = Efector.find(@referente.efector_id)
-    @contactos = Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c| [c.apellidos ? c.apellidos + ", " + c.nombres : c.mostrado, c.id] }
-    @contacto_id = params[:referente][:contacto_id]
-    render :action => "edit"
+    # Verificar que la petición contenga los parámetros esperados
+    if !params[:referente]
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener el referente
+    begin
+      @referente = Referente.find(params[:id], :include => :efector)
+    rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Actualizar los valores de los atributos para validar el registro antes de guardarlo
+    @referente.attributes = params[:referente]
+
+    # Crear los objetos necesarios para regenerar la vista si hay algún error
+    @contactos =
+      Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c|
+        [c.apellidos ? c.apellidos + ", " + c.nombres : c.mostrado, c.id]
+      }
+    @efector = @referente.efector
+
+    # Verificar la validez del objeto
+    if @referente.valid?
+      # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
+      if ( !@contactos.collect{ |i| i[1] }.member?(@referente.contacto_id) )
+        redirect_to(root_url,
+          :flash => { :tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre este incidente."
+          }
+        )
+        return
+      end
+
+      # Registrar el usuario que realiza la modificación
+      @referente.updater_id = current_user.id
+
+      # Guardar el referente
+      @referente.save
+      redirect_to(referentes_del_efector_path(@efector),
+        :flash => {:tipo => :ok, :titulo => 'Las modificaciones al referente se guardaron correctamente.' }
+      )
+    else
+      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
+      render :action => "edit"
+    end
   end
-
 end

@@ -27,11 +27,11 @@
 
   %h3 Códigos de identificación en otros sistemas
   %div.field_content
-    %span.field_name Código SISSA
+    %span.field_name Código SISA
     - if !@efector.codigo_de_efector_sissa.blank?
       %span.field_value= @efector.codigo_de_efector_sissa
     - else
-      %span.field_empty No se ha ingresado el código de efector SISSA
+      %span.field_empty No se ha ingresado el código de efector SISA
   %div.field_content
     %span.field_name Código para bioestadística
     - if !@efector.codigo_de_efector_bio.blank?
@@ -39,8 +39,8 @@
     - else
       %span.field_empty No se ha ingresado el código de efector de bioestadística
 
+  %h3 Convenios
   - if @efector.convenio_de_gestion
-    %h3 Convenios
     %div.field_content
       %span.field_name Convenio de gestión
       %span.field_value= @efector.convenio_de_gestion.numero
@@ -61,6 +61,9 @@
       %div.field_content
         %span.field_name Administrado por un tercero
         %span.field_value No
+  - else
+    %div.infobox-advertencia.no-margin
+      %h3 El efector no ha suscrito un convenio de gestión
 
   %h3 Domicilio, correo electrónico y teléfonos
   %div.field_content

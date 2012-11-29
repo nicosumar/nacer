@@ -252,4 +252,33 @@ class ConveniosDeGestionController < ApplicationController
     end
   end
 
+  # GET /convenios_de_gestion/:id/addendas
+  def addendas
+    # Verificar los permisos del usuario
+    if cannot? :read, Addenda
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener el convenio de gestión
+    begin
+      @convenio_de_gestion =
+        ConvenioDeGestion.find(params[:id],
+          :include => {
+            :addendas => [ {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion} ]
+          }
+        )
+    rescue ActiveRecord::RecortNotFound
+      redirect_to(root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+  end
 end

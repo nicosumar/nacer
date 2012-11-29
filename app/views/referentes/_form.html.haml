@@ -1,32 +1,37 @@
 = form_for(@referente) do |f|
-  %div.hidden_field
-    %input{ :id => "referente_efector_id", :name => "referente[efector_id]", :type => "hidden", :value => @efector.id }
-  - if @referente.errors.any?
-    #error_explanation
-      %h2= pluralize(@referente.errors.count, "error impide").to_s + " que se guarde la información de este referente."
-      %ul
-        - @referente.errors.full_messages.each do |msg|
-          %li= msg
-  %h3 Información general
+  - if @referente.new_record?
+    %div.hidden_field
+      %input{ :id => "referente_efector_id", :name => "referente[efector_id]", :type => "hidden", :value => @efector.id }
+
+  %h3 Efector
+  %div.field_content
+    %span.field_value= @efector.cuie ? @efector.cuie + " - " + @efector.nombre : @efector.nombre
+
+  %h3.header-with-note Contacto asociado como referente
+  %p.note Los datos del referente deben cargarse previamente en la libreta de contactos para poder seleccionarlo de la lista
   %div.field
-    = f.label :contacto_id, "Referente:"
-    %br/
-    = f.select :contacto_id, options_for_select(@contactos, @contacto_id), {}, {:include_blank => true}
+    = f.label :contacto_id, "Referente*"
+    = f.select :contacto_id, options_for_select(@contactos, @referente.contacto_id), {}, {:include_blank => true}
+
+  %h3.header-with-note Periodo de actividad a cargo del efector
+  %p.note Deje en blanco la fecha de finalización si es el referente actual del efector
   %div.field
-    = f.label :fecha_de_inicio
-    %br/
-    = f.date_select :fecha_de_inicio
+    = f.label :fecha_de_inicio, "Fecha de inicio*"
+    = f.date_select :fecha_de_inicio, |
+      {:start_year => 2006, :end_year => Date.today.year, :include_blank => true} |
   %div.field
     = f.label :fecha_de_finalizacion
-    %br/
-    = f.date_select :fecha_de_finalizacion, :include_blank => true
-  %h3 Información complementaria
+    = f.date_select :fecha_de_finalizacion, |
+      {:start_year => 2006, :end_year => Date.today.year, :include_blank => true} |
+
+  %h3 Observaciones
   %div.field
-    = f.label :observaciones
-    %br/
-    = f.text_area :observaciones
+    = f.text_area :observaciones, :size => "80x8"
+
   %div.actions
-    - if @referente.new_record? then
-      = f.submit "Crear referente"
+    - if @referente.new_record?
+      = f.submit "Crear el referente"
+      = link_to "Cancelar", referentes_del_efector_path(@efector)
     - else
-      = f.submit "Actualizar datos del referente"
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", referentes_del_efector_path(@efector)

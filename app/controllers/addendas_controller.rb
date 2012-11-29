@@ -164,7 +164,7 @@ class AddendasController < ApplicationController
     end
 
     # Verificar si la petición contiene los parámetros esperados
-    if params[:addenda] && !params[:addenda][:convenio_de_gestion_id]
+    if !params[:addenda] || !params[:addenda][:convenio_de_gestion_id]
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre el incidente."

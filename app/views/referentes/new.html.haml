@@ -1,9 +1,13 @@
 - content_for :title do
-  Nuevo referente para el efector
-  = @efector.nombre
+  Creación de un nuevo referente
 
-%h1
-  Nuevo referente para el efector
-  = @efector.nombre
+#content-header
+  %h1 Creación de un nuevo referente
 
-= render 'form'
+= render :partial => "shared/info", :locals => { :registro => @referente }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de un referente
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render 'form'

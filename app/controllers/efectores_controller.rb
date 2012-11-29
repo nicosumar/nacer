@@ -303,7 +303,7 @@ class EfectoresController < ApplicationController
     begin
       @efector =
         Efector.find(params[:id], :include => { :referentes => :contacto })
-    rescue ActiveRecord::RecortNotFound
+    rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."

@@ -8,7 +8,9 @@ Nacer::Application.routes.draw do
     get "seleccionar_uad" => "user_sessions#seleccionar_uad", :as => :seleccionar_uad
   end
   resources :convenios_de_administracion, :except => :destroy
-  resources :convenios_de_gestion, :except => :destroy
+  resources :convenios_de_gestion, :except => :destroy do
+    get 'addendas', :on => :member, :as => :addendas_del
+  end
   resources :efectores, :except => :destroy do
     get 'prestaciones_autorizadas', :on => :member, :as => :prestaciones_autorizadas_del
     get 'referentes', :on => :member, :as => :referentes_del

@@ -19,7 +19,7 @@
               %fieldset
                 %input{ |
                   :type => 'text', :name => 'terminos', :id => 'busqueda', |
-                  :size => '15', :placeholder => 'Buscar', :value => ''} |
+                  :size => '22', :placeholder => 'Buscar', :value => ''} |
                 %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}
           #lupa
             = image_tag "lupa.png", :alt => "Buscar"
@@ -45,12 +45,14 @@
                     %ul
                       %li= link_to "Buscar afiliado", "#", {:title => "En preparación... Aún no está disponible."}
 
+            - if can? :read, Efector
               %li
                 %a.drop{:href => "#"} EFECTORES
                 %div.dropdown_2columns
                   %div.col_2
                     %h2 Gestión de efectores y convenios
-                  %div.col_1
+                  %div.col_2
+                    %h3 EFECTORES, CONVENIOS Y ADENDAS
                     %ul
                       %li= link_to "Efectores", efectores_url
                       -#- if can? :create, Efector
@@ -61,6 +63,9 @@
                       %li= link_to "Convenios de administración", convenios_de_administracion_url
                       -#- if can? :create, ConvenioDeAdministracion
                         %li= link_to "Agregar un convenio de administración", new_convenio_de_administracion_url
+                      %li= link_to "Adendas", addendas_url
+                      -#- if can? :create, Addenda
+                        %li= link_to "Agregar una adenda", new_addenda_url
                   -#%div.col_1
                     %h3 ADENDAS
                     %ul
@@ -68,37 +73,38 @@
                       - if can? :create, Addenda
                         %li= link_to "Agregar una adenda", new_addenda_url
 
+            - if can? :read, Liquidacion
               %li
                 %a.drop{:href => "#"} LIQUIDACIONES
-                %div.dropdown_2columns
-                  %div.col_2
+                %div.dropdown_3columns
+                  %div.col_3
                     %h2 Gestión de cuasifacturas y liquidaciones
-                  %div.col_1
-                    %h3 LIQUIDACIONES
+                  %div.col_2
+                    %h3 LIQUIDACIONES Y CUASIFACTURAS
                     %ul
-                      %li= link_to "Ver el listado de liquidaciones", liquidaciones_url
-                      - if can? :create, Liquidacion
+                      %li= link_to "Liquidaciones", "#", { :title => "En remodelación... Aún no disponible." }
+                      %li= link_to "Cuasifacturas", "#", { :title => "En remodelación... Aún no disponible." }
+                      -#%li= link_to "Liquidaciones", liquidaciones_url
+                      -#- if can? :create, Liquidacion
                         %li= link_to "Agregar una liquidación", new_liquidacion_url
+                      -#%li= link_to "Cuasifacturas", cuasi_facturas_url
                   %div.col_1
-                    %h3 CUASIFACTURAS
+                    %h3 UTILIDADES
                     %ul
-                      %li= link_to "Ver el listado de cuasifacturas", cuasi_facturas_url
+                      %li= link_to "Verificador de liquidaciones", verificador_index_path
 
+            - if can? :read, Contacto
               %li
                 %a.drop{:href => "#"} HERRAMIENTAS
                 %div.dropdown_2columns
                   %div.col_2
                     %h2 Herramientas y utilidades
-                  %div.col_1
+                  %div.col_2
                     %h3 LIBRETA DE CONTACTOS
                     %ul
-                      %li= link_to "Ver listado de contactos", contactos_url
-                      - if can? :create, Contacto
+                      %li= link_to "Contactos", contactos_url
+                      -#- if can? :create, Contacto
                         %li= link_to "Agregar un contacto", new_contacto_url            
-                  %div.col_1
-                    %h3 UTILIDADES
-                    %ul
-                      %li= link_to "Verificador de liquidaciones", verificador_index_path
 
             - if current_user.in_group? :administradores
               %li
@@ -125,10 +131,10 @@
                             
             %li.menu_right
               %a.drop{:href => "#"} MI CUENTA
-              %div.dropdown_1column
-                %div.col_1
+              %div.dropdown_2columns
+                %div.col_2
                   %h2= (current_user.nombre + " " + current_user.apellido).titleize
-                %div.col_1
+                %div.col_2
                   %h3 DATOS DE LA CUENTA
                   %ul
                     %li= link_to "Modificar los datos de mi cuenta", edit_user_registration_path

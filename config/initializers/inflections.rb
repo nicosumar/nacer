@@ -252,7 +252,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("convenio_de_administracion", "convenio de administración")
   inflect.human("convenio_de_administracion_id", "convenio de administración")
   inflect.human("cuie", "CUIE")
-  inflect.human("codigo_de_efector_sissa", "código SISSA")
+  inflect.human("codigo_de_efector_sissa", "código SISA")
   inflect.human("codigo_de_efector_bio", "código para bioestadística")
   inflect.human("telefonos", "teléfonos")
 #  inflect.human("grupo_de_efectores_id", "grupo de efectores")
