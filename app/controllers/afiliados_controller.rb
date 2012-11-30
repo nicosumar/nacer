@@ -19,7 +19,7 @@ class AfiliadosController < ApplicationController
       else
         # Preparar los resultados de la búsqueda en la vista temporal (buscar únicamente afiliados)
         inicio = Time.now()
-        Busqueda.busqueda_fts(@patron_de_busqueda, :solo => :afiliados)
+        Busqueda.busqueda_fts(@patron_de_busqueda, :solo => [:afiliados, :novedades_de_los_afiliados])
         @afiliados_encontrados = ResultadoDeLaBusqueda.count
         if @afiliados_encontrados > 0
           @afiliados = ResultadoDeLaBusqueda.order('orden ASC').paginate(:page => params[:page], :per_page => 20)

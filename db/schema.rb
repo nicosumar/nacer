@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121113232202) do
+ActiveRecord::Schema.define(:version => 20121130120021) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -135,6 +135,17 @@ ActiveRecord::Schema.define(:version => 20121113232202) do
 
   add_index "busquedas", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo", :unique => true
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
+
+  create_table "busquedas_locales", :force => true do |t|
+    t.integer  "modelo_id",   :null => false
+    t.string   "modelo_type", :null => false
+    t.string   "titulo",      :null => false
+    t.text     "texto",       :null => false
+    t.tsvector "vector_fts",  :null => false
+  end
+
+  add_index "busquedas_locales", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo_l", :unique => true
+  add_index "busquedas_locales", ["vector_fts"], :name => "idx_gin_on_vector_fts_l"
 
   create_table "categorias_de_afiliados", :force => true do |t|
     t.string "nombre"
@@ -286,9 +297,9 @@ ActiveRecord::Schema.define(:version => 20121113232202) do
   end
 
   create_table "efectores", :force => true do |t|
-    t.string   "cuie",                                             :null => false
-    t.string   "efector_sissa_id"
-    t.integer  "efector_bio_id"
+    t.string   "cuie"
+    t.string   "codigo_de_efector_sissa"
+    t.integer  "codigo_de_efector_bio"
     t.string   "nombre",                                           :null => false
     t.string   "domicilio"
     t.integer  "departamento_id"
@@ -303,7 +314,7 @@ ActiveRecord::Schema.define(:version => 20121113232202) do
     t.integer  "camas_de_internacion"
     t.integer  "ambientes"
     t.integer  "dependencia_administrativa_id"
-    t.boolean  "integrante",                                       :null => false
+    t.boolean  "integrante",                    :default => true,  :null => false
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -315,8 +326,8 @@ ActiveRecord::Schema.define(:version => 20121113232202) do
     t.date     "fecha_de_addenda_perinatal"
   end
 
+  add_index "efectores", ["codigo_de_efector_sissa"], :name => "index_efectores_on_efector_sissa_id", :unique => true
   add_index "efectores", ["cuie"], :name => "index_efectores_on_cuie", :unique => true
-  add_index "efectores", ["efector_sissa_id"], :name => "index_efectores_on_efector_sissa_id", :unique => true
 
   create_table "estados_de_las_novedades", :force => true do |t|
     t.string "nombre"

@@ -32,7 +32,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   belongs_to :estado_de_la_novedad
   belongs_to :clase_de_documento
   belongs_to :tipo_de_documento
-  #belongs_to :categoria_de_afiliado_id     #-- OBSOLETO
+  #belongs_to :categoria_de_afiliado     #-- OBSOLETO
   belongs_to :sexo
   belongs_to :pais_de_nacimiento, :class_name => "Pais"
   belongs_to :lengua_originaria

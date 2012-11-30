@@ -10,7 +10,7 @@ class BusquedaController < ApplicationController
 
     # Preparar los resultados de la búsqueda en la vista temporal (no buscar afiliados)
     inicio = Time.now()
-    Busqueda.busqueda_fts(params[:terminos], :excepto => :afiliados)
+    Busqueda.busqueda_fts(params[:terminos], :excepto => [:afiliados, :novedades_de_los_afiliados])
 
     # Eliminar los resultados a cuyos modelos el usuario no tiene acceso
     indices = []

@@ -1,6 +1,9 @@
 class Busqueda < ActiveRecord::Base
   # Listado de clases que se pueden buscar usando FTS
-  @@clases_fts = [:afiliados, :contactos, :convenios_de_gestion, :convenios_de_administracion, :efectores, :users, :addendas]
+  @@clases_fts = [
+    :afiliados, :novedades_de_los_afiliados, :contactos, :convenios_de_gestion, :convenios_de_administracion, :efectores,
+    :users, :addendas
+  ]
 
   # Devuelve todos los registros coincidentes de la tabla de 'Busquedas'
   def self.busqueda_fts(terminos, opciones = {})
@@ -38,6 +41,12 @@ class Busqueda < ActiveRecord::Base
             FROM busquedas
             WHERE
               \'#{tsquery}\'::tsquery @@ vector_fts
+              AND modelo_type IN (\'#{modelos_a_buscar.collect{ |m| m.to_s.singularize.camelize }.join("', '")}\')
+          UNION
+          SELECT id, modelo_type
+            FROM busquedas_locales
+            WHERE
+              \'#{tsquery}\'::tsquery @@ vector_fts
               AND modelo_type IN (\'#{modelos_a_buscar.collect{ |m| m.to_s.singularize.camelize }.join("', '")}\');
       "
 
@@ -45,16 +54,29 @@ class Busqueda < ActiveRecord::Base
       connection.execute "
         CREATE OR REPLACE TEMPORARY VIEW resultados_de_la_busqueda AS
           SELECT row_number() OVER () AS orden, *
-            FROM
-              (SELECT
-                id, modelo_type, modelo_id, titulo,
-                ts_headline('public.indices_fts', texto, \'#{tsquery}\'::tsquery,
-                  'StartSel=\"<span class=\"\"destacado\"\">\",StopSel=\"</span>\",MaxFragments=8') AS \"texto\"
-                FROM busquedas
-                WHERE
-                  \'#{tsquery}\'::tsquery @@ vector_fts
-                  AND modelo_type IN (\'#{modelos_a_buscar.collect{ |m| m.to_s.singularize.camelize }.join("', '")}\')
-                ORDER BY ts_rank(vector_fts, \'#{tsquery}\'::tsquery) DESC) AS subconsulta;
+            FROM (
+              SELECT id, modelo_type, modelo_id, titulo, texto
+                FROM (
+                  SELECT
+                    id, modelo_type, modelo_id, titulo, vector_fts,
+                    ts_headline('public.indices_fts', texto, \'#{tsquery}\'::tsquery,
+                      'StartSel=\"<span class=\"\"destacado\"\">\",StopSel=\"</span>\",MaxFragments=8') AS \"texto\"
+                    FROM busquedas
+                    WHERE
+                      \'#{tsquery}\'::tsquery @@ vector_fts
+                      AND modelo_type IN (\'#{modelos_a_buscar.collect{ |m| m.to_s.singularize.camelize }.join("', '")}\')
+                  UNION
+                  SELECT
+                    id, modelo_type, modelo_id, titulo, vector_fts,
+                    ts_headline('public.indices_fts', texto, \'#{tsquery}\'::tsquery,
+                      'StartSel=\"<span class=\"\"destacado\"\">\",StopSel=\"</span>\",MaxFragments=8') AS \"texto\"
+                    FROM busquedas_locales
+                    WHERE
+                      \'#{tsquery}\'::tsquery @@ vector_fts
+                      AND modelo_type IN (\'#{modelos_a_buscar.collect{ |m| m.to_s.singularize.camelize }.join("', '")}\')
+                ) AS subconsulta_interna
+                ORDER BY ts_rank(vector_fts, \'#{tsquery}\'::tsquery) DESC
+            ) AS subconsulta_externa;
       "
     else
       # Si no quedaron modelos que buscar, modificar las vistas para que no devuelvan nada
