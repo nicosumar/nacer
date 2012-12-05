@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121130120021) do
+ActiveRecord::Schema.define(:version => 20121116105524) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -24,8 +24,6 @@ ActiveRecord::Schema.define(:version => 20121130120021) do
     t.integer  "updater_id"
     t.string   "numero"
   end
-
-  add_index "addendas", ["numero"], :name => "unq_addendas_numero", :unique => true
 
   create_table "afiliados", :id => false, :force => true do |t|
     t.integer "afiliado_id",                           :null => false
@@ -136,17 +134,6 @@ ActiveRecord::Schema.define(:version => 20121130120021) do
   add_index "busquedas", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo", :unique => true
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
 
-  create_table "busquedas_locales", :force => true do |t|
-    t.integer  "modelo_id",   :null => false
-    t.string   "modelo_type", :null => false
-    t.string   "titulo",      :null => false
-    t.text     "texto",       :null => false
-    t.tsvector "vector_fts",  :null => false
-  end
-
-  add_index "busquedas_locales", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo_l", :unique => true
-  add_index "busquedas_locales", ["vector_fts"], :name => "idx_gin_on_vector_fts_l"
-
   create_table "categorias_de_afiliados", :force => true do |t|
     t.string "nombre"
   end
@@ -166,12 +153,12 @@ ActiveRecord::Schema.define(:version => 20121130120021) do
   end
 
   create_table "centros_de_inscripcion_unidades_de_alta_de_datos", :id => false, :force => true do |t|
-    t.integer  "centro_de_inscripcion_id"
-    t.integer  "unidad_de_alta_de_datos_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "centro_de_inscripcion_id",   :null => false
+    t.integer  "unidad_de_alta_de_datos_id", :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "clases_de_documentos", :force => true do |t|
@@ -326,9 +313,6 @@ ActiveRecord::Schema.define(:version => 20121130120021) do
     t.date     "fecha_de_addenda_perinatal"
   end
 
-  add_index "efectores", ["codigo_de_efector_sissa"], :name => "index_efectores_on_efector_sissa_id", :unique => true
-  add_index "efectores", ["cuie"], :name => "index_efectores_on_cuie", :unique => true
-
   create_table "estados_de_las_novedades", :force => true do |t|
     t.string "nombre"
   end
@@ -396,78 +380,6 @@ ActiveRecord::Schema.define(:version => 20121130120021) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "novedades_de_los_afiliados", :force => true do |t|
-    t.integer  "tipo_de_novedad_id",                    :null => false
-    t.integer  "estado_de_la_novedad_id",               :null => false
-    t.string   "clave_de_beneficiario",                 :null => false
-    t.string   "apellido"
-    t.string   "nombre"
-    t.integer  "clase_de_documento_id"
-    t.integer  "tipo_de_documento_id"
-    t.string   "numero_de_documento"
-    t.string   "numero_de_celular"
-    t.string   "e_mail"
-    t.integer  "categoria_de_afiliado_id"
-    t.integer  "sexo_id"
-    t.date     "fecha_de_nacimiento"
-    t.boolean  "es_menor"
-    t.integer  "pais_de_nacimiento_id"
-    t.boolean  "se_declara_indigena"
-    t.integer  "lengua_originaria_id"
-    t.integer  "tribu_originaria_id"
-    t.integer  "alfabetizacion_del_beneficiario_id"
-    t.integer  "alfab_beneficiario_años_ultimo_nivel"
-    t.string   "domicilio_calle"
-    t.string   "domicilio_numero"
-    t.string   "domicilio_piso"
-    t.string   "domicilio_depto"
-    t.string   "domicilio_manzana"
-    t.string   "domicilio_entre_calle_1"
-    t.string   "domicilio_entre_calle_2"
-    t.string   "telefono"
-    t.string   "otro_telefono"
-    t.integer  "domicilio_departamento_id"
-    t.integer  "domicilio_distrito_id"
-    t.string   "domicilio_barrio_o_paraje"
-    t.string   "domicilio_codigo_postal"
-    t.text     "observaciones"
-    t.integer  "lugar_de_atencion_habitual_id"
-    t.string   "apellido_de_la_madre"
-    t.string   "nombre_de_la_madre"
-    t.integer  "tipo_de_documento_de_la_madre_id"
-    t.string   "numero_de_documento_de_la_madre"
-    t.integer  "alfabetizacion_de_la_madre_id"
-    t.integer  "alfab_madre_años_ultimo_nivel"
-    t.string   "apellido_del_padre"
-    t.string   "nombre_del_padre"
-    t.integer  "tipo_de_documento_del_padre_id"
-    t.string   "numero_de_documento_del_padre"
-    t.integer  "alfabetizacion_del_padre_id"
-    t.integer  "alfab_padre_años_ultimo_nivel"
-    t.string   "apellido_del_tutor"
-    t.string   "nombre_del_tutor"
-    t.integer  "tipo_de_documento_del_tutor_id"
-    t.string   "numero_de_documento_del_tutor"
-    t.integer  "alfabetizacion_del_tutor_id"
-    t.integer  "alfab_tutor_años_ultimo_nivel"
-    t.boolean  "esta_embarazada"
-    t.date     "fecha_de_la_ultima_menstruacion"
-    t.date     "fecha_de_diagnostico_del_embarazo"
-    t.integer  "semanas_de_embarazo"
-    t.date     "fecha_probable_de_parto"
-    t.date     "fecha_efectiva_de_parto"
-    t.integer  "score_de_riesgo"
-    t.integer  "discapacidad_id"
-    t.date     "fecha_de_la_novedad"
-    t.integer  "centro_de_inscripcion_id"
-    t.string   "nombre_del_agente_inscriptor"
-    t.text     "observaciones_generales"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "creator_id"
-    t.integer  "updater_id"
   end
 
   create_table "paises", :force => true do |t|
@@ -644,22 +556,23 @@ ActiveRecord::Schema.define(:version => 20121130120021) do
   end
 
   create_table "unidades_de_alta_de_datos", :force => true do |t|
-    t.string   "nombre"
-    t.string   "codigo"
-    t.boolean  "inscripcion"
-    t.boolean  "facturacion"
-    t.boolean  "activa"
-    t.string   "schema_search_path"
+    t.string   "nombre",                         :null => false
+    t.string   "codigo",                         :null => false
+    t.boolean  "inscripcion", :default => false
+    t.boolean  "facturacion", :default => false
+    t.boolean  "activa",      :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.integer  "updater_id"
   end
 
+  add_index "unidades_de_alta_de_datos", ["codigo"], :name => "index_unidades_de_alta_de_datos_on_codigo", :unique => true
+
   create_table "unidades_de_alta_de_datos_users", :id => false, :force => true do |t|
-    t.integer  "unidad_de_alta_de_datos_id"
-    t.integer  "user_id"
-    t.boolean  "predeterminada"
+    t.integer  "unidad_de_alta_de_datos_id",                   :null => false
+    t.integer  "user_id",                                      :null => false
+    t.boolean  "predeterminada",             :default => true
     t.integer  "creator_id"
     t.integer  "updater_id"
     t.datetime "created_at"

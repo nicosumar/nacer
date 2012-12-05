@@ -29,6 +29,7 @@ Nacer::Application.routes.draw do
   match "importar_archivo_p" => "liquidaciones#importar_archivo_p"
   resources :novedades_de_los_afiliados
   resources :afiliados, :only => [:index, :show]
+  resources :unidades_de_alta_de_datos, :except => :destroy
 
   root :to => 'inicio#index'
 

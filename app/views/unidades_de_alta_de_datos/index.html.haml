@@ -1,0 +1,30 @@
+- content_for :title do
+  Unidades de alta de datos
+
+#content-header
+  %h1 Unidades de alta de datos
+  - if can? :create, UnidadDeAltaDeDatos
+    #action-links
+      = link_to "Agregar una unidad", new_unidad_de_alta_de_datos_url
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Listado de unidades de alta de datos
+
+  %table
+    %thead
+      %tr
+        %th Código
+        %th Nombre
+        %th CIs asociados
+        %th Usuarios asociados
+    %tbody
+      - @unidades_de_alta_de_datos.each do |u|
+        %tr.clickable{ |
+          :onclick => "location.href=\'#{unidad_de_alta_de_datos_path(u)}\'", :title => "Ver detalles de la unidad" } |
+          %td= u.codigo
+          %td= u.nombre
+          %td= u.centros_de_inscripcion.count
+          %td= u.users.count
+  = will_paginate @unidades_de_alta_de_datos, :inner_window => 2, :outer_window => 0

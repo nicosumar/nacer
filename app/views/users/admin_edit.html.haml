@@ -1,14 +1,16 @@
 - content_for :title do
-  Información de la cuenta y autorizaciones
+  Modificación de autorizaciones del usuario
 
 #content-header
-  %h1 Información de la cuenta y autorizaciones
+  %h1 Modificación de autorizaciones del usuario
 
 = render :partial => 'shared/info', :locals => { :registro => @user }
 
 #content-body
-  %h2.first-header Datos registrados de la cuenta
+  %h2.first-header Formulario de modificación de autorizaciones del usuario
 
+  %h3.header-with-note Información gestionada por el usuario
+  %p.note Esta información no puede ser modificada por los administradores
   %div.field_content
     %span.field_name Nombre
     %span.field_value= @user.nombre + " " + @user.apellido
@@ -41,22 +43,22 @@
     - else
       %span.field_empty No se han ingresado observaciones
   
-  %h2 Autorizaciones de la cuenta
+  %h3 Autorizaciones de la cuenta
 
   = form_for(@user) do |f|
-    %h3 Inicio de sesión
+    %h4 Inicio de sesión
     %div.field
       = f.label "Cuenta autorizada para iniciar sesión"
       = f.check_box :authorized
 
-    %h3 Asignación de grupos
+    %h4 Asignación de grupos
     %div.field
       = f.label "La cuenta está asociada a los siguientes grupos"
       %br/
       = f.select :user_group_ids, options_for_select(@user_groups, @user_group_ids), |
         {}, { :multiple => true, :size => 5, |
         :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
-    %h3 Asignación de unidades de alta de datos
+    %h4 Asignación de unidades de alta de datos
     %div.field
       = f.label "La cuenta está autorizada a operar con las siguientes unidades de alta de datos"
       %br/

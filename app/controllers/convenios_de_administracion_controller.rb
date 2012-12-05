@@ -35,7 +35,7 @@ class ConveniosDeAdministracionController < ApplicationController
     # Obtener el convenio
     begin
       @convenio_de_administracion = ConvenioDeAdministracion.find(params[:id], :include => [:efector, :administrador])
-    rescue ActiveRecord::RecortNotFound
+    rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."

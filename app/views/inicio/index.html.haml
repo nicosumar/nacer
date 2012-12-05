@@ -13,7 +13,7 @@
       Bienvenida,
     - else
       Bienvenido,
-    = current_user.nombre.titleize
+    = current_user.nombre.mb_chars.titleize.to_s
 
   %p
     Su último acceso se realizó desde la IP

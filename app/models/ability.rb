@@ -4,11 +4,11 @@ class Ability
   def initialize(user)
     cannot :manage, :all
 
-    if user.in_group? :administradores then
+    if user.in_group? :administradores
       can :manage, :all
     end
 
-    if user.in_group? :operaciones then
+    if user.in_group? :operaciones
       can :manage, Contacto
       can :read, NovedadDelAfiliado
       can :read, Efector
@@ -16,7 +16,7 @@ class Ability
       can :read, Afiliado
     end
 
-    if user.in_group? :facturacion then
+    if user.in_group? :facturacion
       can :manage, Liquidacion
       can :manage, CuasiFactura
       can :manage, Contacto
@@ -26,7 +26,7 @@ class Ability
       can :read, ConvenioDeGestion
     end
 
-    if user.in_group? :convenios then
+    if user.in_group? :convenios
       can :manage, ConvenioDeGestion
       can :manage, ConvenioDeAdministracion
       can :manage, Addenda
@@ -35,7 +35,7 @@ class Ability
       can :manage, Efector
     end
 
-    if user.in_group? :inscripcion_uad then
+    if user.in_group? :inscripcion_uad
       can :read, Afiliado
       can :manage, NovedadDelAfiliado
     end

@@ -7,8 +7,6 @@ class ModifyColumnsFromEfectores < ActiveRecord::Migration
     add_column :efectores, :perinatal_de_alta_complejidad, :boolean, :default => false
     add_column :efectores, :addenda_perinatal, :boolean, :default => false
     add_column :efectores, :fecha_de_addenda_perinatal, :date
-    add_index :efectores, :cuie, :unique => true
-    add_index :efectores, :efector_sissa_id, :unique => true
 
     execute "
       ALTER TABLE efectores ALTER COLUMN integrante SET DEFAULT 't';

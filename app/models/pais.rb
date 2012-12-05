@@ -8,7 +8,7 @@ class Pais < ActiveRecord::Base
     end
 
     # Buscar el nombre en la tabla y devolver su ID
-    pais = self.where("UPPER(nombre) = ?", nombre.strip.upcase)
+    pais = self.where("UPPER(nombre) = ?", nombre.strip.mb_chars.upcase.to_s)
     if pais.size == 1
       return pais.first.id
     else

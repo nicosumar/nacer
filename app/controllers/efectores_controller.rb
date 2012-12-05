@@ -37,7 +37,7 @@ class EfectoresController < ApplicationController
     begin
       @efector =
         Efector.find(params[:id], :include => [:departamento, :distrito, :convenio_de_gestion, :convenio_de_administracion])
-    rescue ActiveRecord::RecortNotFound
+    rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -267,7 +267,7 @@ class EfectoresController < ApplicationController
     begin
       @efector =
         Efector.find(params[:id], :include => { :prestaciones_autorizadas => [:autorizante_al_alta, :prestacion] })
-    rescue ActiveRecord::RecortNotFound
+    rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."

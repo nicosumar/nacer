@@ -1,22 +1,24 @@
 - content_for :title do
-  Modificación de la cuenta de usuario
+  Modificación de datos de la cuenta de usuario
 
 #content-header
-  %h1 Modificación de la cuenta de usuario
+  %h1 Modificación de datos de la cuenta de usuario
 
 = render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
 
 #content-body
-  %h2.first-header Datos registrados de la cuenta
+  %h2.first-header-with-note Formulario de modificación de datos de la cuenta de usuario
+  %p.note Los campos marcados con asterisco (*) son obligatorios
 
   = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :autocomplete => "off" }) do |f|
 
+    %h3 Información personal del usuario
     %div.field
-      = f.label :nombre
+      = f.label :nombre, "Nombre*"
       = f.text_field :nombre, :style => "text-transform: uppercase;"
 
     %div.field
-      = f.label :apellido
+      = f.label :apellido, "Apellido*"
       = f.text_field :apellido, :style => "text-transform: uppercase;"
 
     %div.field
@@ -30,22 +32,28 @@
         {:start_year => Date.today.year - 70, :end_year => Date.today.year, |
         :include_blank => true}
 
+    %h3.header-with-note Dirección de correo electrónico asociada a la cuenta de usuario
+    %p.note Si modifica su dirección de correo, no estará habilitada para iniciar la sesión hasta que sea confirmada nuevamente
     %div.field
-      = f.label :email
+      = f.label :email, "Dirección de correo electrónico*"
       = f.email_field :email
 
+    %h3.header-with-note Cambio de contraseña
+    %p.note Deje sin completar estos campos si no desea cambiar su contraseña actual
     %div.field
-      = f.label :password
-      = f.password_field :password, :size => 40, :placeholder => "En blanco para mantener su contraseña actual"
+      = f.label :password, "Nueva contraseña"
+      = f.password_field :password, :size => 40
 
     %div.field
-      = f.label :password_confirmation
+      = f.label :password_confirmation, "Confirmar la nueva contraseña"
       = f.password_field :password_confirmation, :size => 40,  :placeholder => "Repita la misma contraseña para confirmarla"
 
+    %h3.header-with-note Autorización para guardar las modificaciones
+    %p.note Es necesario que ingrese su contraseña actual para verificar su identidad y autorizar las modificaciones
     %div.field
-      = f.label :current_password
-      = f.password_field :current_password, :size => 50, |
-        :placeholder => "Es necesaria su contraseña actual para autorizar los cambios" |
+      = f.label :current_password, "Contraseña actual*"
+      = f.password_field :current_password
 
     %div.actions
       = f.submit "Modificar los datos de la cuenta"
+      = link_to "Cancelar", root_url

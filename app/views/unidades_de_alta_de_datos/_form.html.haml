@@ -1,0 +1,44 @@
+= form_for(@unidad_de_alta_de_datos) do |f|
+
+  %h3.first-header-with-note Datos de identificación
+  - if @unidad_de_alta_de_datos.new_record?
+    %p.note Verifique la corrección del código asignado, ya que después de guardarlo no podrá modificarse
+    %div.field
+      = f.label :codigo, "Código*"
+      = f.text_field :codigo, :size => 5
+  - else
+    %p.note El código no puede modificarse
+    %div.field_content
+      %span.field_name Código
+      %span.field_value= @unidad_de_alta_de_datos.codigo
+  %div.field
+    = f.label :nombre, "Nombre*"
+    = f.text_field :nombre
+
+  %h3 Autorizaciones de la unidad de alta de datos
+  %div.field
+    = f.label :activa, "Unidad de alta de datos activa"
+    = f.check_box :activa
+  %div.field
+    = f.label :inscripcion, "Módulo de inscripción habilitado"
+    = f.check_box :inscripcion
+  %div.field
+    = f.label :facturacion, "Módulo de facturación habilitado"
+    = f.check_box :facturacion
+  
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %h3 Centros de inscripción asociados con esta unidad de alta de datos
+  %div.field
+    = f.select :centro_de_inscripcion_ids, options_for_select(@centros_de_inscripcion, @centro_de_inscripcion_ids), {}, |
+      { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
+
+  %div.actions
+    - if @unidad_de_alta_de_datos.new_record?
+      = f.submit "Crear la unidad de alta de datos"
+      = link_to "Cancelar", unidades_de_alta_de_datos_url
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @unidad_de_alta_de_datos

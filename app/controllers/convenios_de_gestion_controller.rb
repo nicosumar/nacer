@@ -41,7 +41,7 @@ class ConveniosDeGestionController < ApplicationController
             { :addendas => [ {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion} ] }
           ]
         )
-    rescue ActiveRecord::RecortNotFound
+    rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -272,7 +272,7 @@ class ConveniosDeGestionController < ApplicationController
             :addendas => [ {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion} ]
           }
         )
-    rescue ActiveRecord::RecortNotFound
+    rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."

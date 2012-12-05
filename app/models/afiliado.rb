@@ -434,7 +434,7 @@ class Afiliado < ActiveRecord::Base
       # Datos de nacimiento, sexo, origen y estudios
       :sexo_id => Sexo.id_del_codigo(self.valor(campos[7], :texto)),
       :fecha_de_nacimiento => self.valor(campos[11], :fecha),
-      :pais_de_nacimiento_id => Pais.id_del_nombre(self.valor(campos[92], :texto)),
+      :pais_de_nacimiento_id => version_del_sistema == "4.7" ? Pais.id_del_nombre(self.valor(campos[92], :texto)) : nil,
       :se_declara_indigena => SiNo.valor_bool_del_codigo(self.valor(campos[12], :texto)),
       :lengua_originaria_id => (self.valor(campos[13], :entero) == 0 ? nil : self.valor(campos[13], :entero)),
       :tribu_originaria_id => (self.valor(campos[14], :entero) == 0 ? nil : self.valor(campos[14], :entero)),
@@ -561,7 +561,7 @@ private
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)
     return nil unless nombre
-    normalizado = nombre.upcase
+    normalizado = nombre.mb_chars.upcase.to_s
 
     normalizado.gsub!(/[\,\.\'\`\^\~\-\"\/\\\º\ª\!\·\$\%\&\(\)\=\+\*\-\_\;\:\<\>\|\@\#\[\]\{\}]/, "")
     if normalizado.match(/[ÁÉÍÓÚÄËÏÖÜÀÈÌÒÂÊÎÔÛ014]/)

@@ -20,7 +20,7 @@
     %tbody
       - @users.each do |u|
         %tr.clickable{ :onclick => "location.href=\'#{edit_user_path(u)}\'", :title => "Modificar las autorizaciones de esta cuenta" }
-          %td= (u.nombre + " " + u.apellido).titleize
+          %td= (u.nombre + " " + u.apellido).mb_chars.titleize.to_s
           %td= u.email
           %td= u.user_groups.collect{ |ug| [ug.user_group_name]}.join(", ")
           %td= u.unidades_de_alta_de_datos.collect{ |ug| [ug.nombre]}.join(", ")

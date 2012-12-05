@@ -1,0 +1,66 @@
+- content_for :title do
+  Información detallada de la unidad de alta de datos
+
+#content-header
+  %h1 Información detallada de la unidad de alta de datos
+  #action-links
+    - if can? :update, UnidadDeAltaDeDatos
+      = link_to "Modificar la unidad", edit_unidad_de_alta_de_datos_path(@unidad_de_alta_de_datos)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Datos de identificación
+  %div.field_content
+    %span.field_name Código
+    %span.field_value= @unidad_de_alta_de_datos.codigo
+  %div.field
+    %span.field_name Nombre
+    %span.field_value= @unidad_de_alta_de_datos.nombre
+
+  %h3 Autorizaciones de la unidad de alta de datos
+  %div.field_content
+    %span.field_name Activa
+    - if @unidad_de_alta_de_datos.activa
+      %span.field_value Sí
+    - else
+      %span.field_value No
+  %div.field_content
+    %span.field_name Habilitada para inscripción
+    - if @unidad_de_alta_de_datos.inscripcion
+      %span.field_value Sí
+    - else
+      %span.field_value No
+  %div.field_content
+    %span.field_name Habilitada para facturación
+    - if @unidad_de_alta_de_datos.facturacion
+      %span.field_value Sí
+    - else
+      %span.field_value No
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@unidad_de_alta_de_datos.observaciones.blank?
+      %span.field_value_multiline
+        - @unidad_de_alta_de_datos.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para la unidad de alta de datos
+
+  - if @unidad_de_alta_de_datos.inscripcion
+    %h3 Centros de inscripción asociados a la unidad de alta de datos
+    - if @unidad_de_alta_de_datos.centros_de_inscripcion.any?
+      %table
+        %thead
+          %tr
+            %th Código
+            %th Nombre
+        %tbody
+          - @unidad_de_alta_de_datos.centros_de_inscripcion.each do |c|
+            %tr
+              %td= c.codigo
+              %td= c.nombre
+    - else
+      %div.field_content
+        %span.field_empty Aún no se han asociado centros de inscripción a esta unidad de alta de datos.
