@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CuasiFactura < ActiveRecord::Base
   # Seguridad de asignaciones masivas
   attr_readonly :liquidacion_id, :efector_id, :nomenclador_id

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AreaDePrestacion < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks

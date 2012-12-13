@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ApplicationHelper
 
   # Devuelve una cadena indicando la edad en años, meses ó días dadas una fecha de nacimiento, y

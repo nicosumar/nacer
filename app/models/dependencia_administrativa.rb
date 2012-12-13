@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class DependenciaAdministrativa < ActiveRecord::Base
   has_many :efectores
 

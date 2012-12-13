@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class NovedadesDeLosAfiliadosController < ApplicationController
   before_filter :authenticate_user!
 
@@ -5,7 +6,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
   def index
     # Verificar los permisos del usuario
     if cannot? :read, NovedadDelAfiliado
-      redirect_to(root_url,
+      redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -13,6 +14,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       return
     end
 
+    # Obtener el listado de novedades
     @novedades =
       NovedadDelAfiliado.paginate( :page => params[:page], :per_page => 20, :include => :tipo_de_novedad,
         :order => "updated_at DESC"
@@ -24,7 +26,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
   def show
     # Verificar los permisos del usuario
     if cannot? :read, NovedadDelAfiliado
-      redirect_to(root_url,
+      redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }

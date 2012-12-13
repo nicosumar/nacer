@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ModifyColumnsFromEfectores < ActiveRecord::Migration
   def change
     remove_column :efectores, :evaluacion_de_impacto

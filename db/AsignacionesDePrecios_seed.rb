@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ModificarAsignacionDePrecios < ActiveRecord::Migration
   execute "
     ALTER TABLE asignaciones_de_precios

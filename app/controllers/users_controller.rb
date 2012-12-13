@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UsersController < Devise::RegistrationsController
   before_filter :authenticate_user!, :except => [:new, :create]
   before_filter :admin_required, :only => [:index, :admin_edit, :admin_update]

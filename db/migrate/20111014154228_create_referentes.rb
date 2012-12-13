@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateReferentes < ActiveRecord::Migration
   def change
     create_table :referentes do |t|

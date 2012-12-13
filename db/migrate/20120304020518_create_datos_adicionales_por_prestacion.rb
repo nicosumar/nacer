@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateDatosAdicionalesPorPrestacion < ActiveRecord::Migration
   def change
     create_table :datos_adicionales_por_prestacion do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Afiliado < ActiveRecord::Base
 
   # Cambiar la clave primaria. La clave no es creada por este sistema, sino por el
@@ -319,12 +320,13 @@ class Afiliado < ActiveRecord::Base
     encontrados = []
 
     # Primero intentamos encontrarlo por número de documento
-    afiliados = Afiliado.where("numero_de_documento = ? OR
+    afiliados = Afiliado.where("(numero_de_documento = ? OR
                                 numero_de_documento_de_la_madre = ? OR
                                 numero_de_documento_del_padre = ? OR
-                                numero_de_documento_del_tutor = ?", documento,
-                                documento, documento, documento,
-                                :order => "afiliado_id ASC")
+                                numero_de_documento_del_tutor = ?) AND
+                                (motivo_de_la_baja_id NOT IN (14, 81, 82, 83, 203) OR
+                                motivo_de_la_baja_id IS NULL)", documento,
+                                documento, documento, documento).order("afiliado_id ASC")
 
     # Procesar los nombres de todos los afiliados encontrados relacionados con el número de documento,
     # y mantener la/s mejor/es coincidencia/s, descartando el resto.

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CuasiFacturasController < ApplicationController
   before_filter :authenticate_user!
   helper_method :resultado_verificacion

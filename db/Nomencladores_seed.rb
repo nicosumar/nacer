@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Puede ingresar aquí datos para que sean cargados al hacer el deploy
 # inicial del sistema, cuando ejecute la tarea 'rake db:seed'
 #

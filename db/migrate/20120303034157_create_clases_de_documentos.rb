@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateClasesDeDocumentos < ActiveRecord::Migration
   def change
     create_table :clases_de_documentos do |t|

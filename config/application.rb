@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
@@ -46,7 +47,7 @@ module Nacer
     config.assets.version = '1.0'
 
     # Allow <span class> tags by default
-    config.action_view.sanitized_allowed_tags = 'span'
-    config.action_view.sanitized_allowed_attributes = 'class'
+    config.action_view.sanitized_allowed_tags = ['span']
+    config.action_view.sanitized_allowed_attributes = ['class']
   end
 end

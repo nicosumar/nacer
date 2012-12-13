@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RenglonDeCuasiFactura < ActiveRecord::Base
   # Seguridad de asignaciones múltiples
   attr_protected nil

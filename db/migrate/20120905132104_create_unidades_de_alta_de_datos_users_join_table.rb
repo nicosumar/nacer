@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateUnidadesDeAltaDeDatosUsersJoinTable < ActiveRecord::Migration
   def change
     create_table :unidades_de_alta_de_datos_users, :id => false do |t|

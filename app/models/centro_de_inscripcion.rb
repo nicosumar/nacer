@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CentroDeInscripcion < ActiveRecord::Base
 
   # Asociaciones

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class TribuOriginaria < ActiveRecord::Base
 
   # ordenados_por_frecuencia

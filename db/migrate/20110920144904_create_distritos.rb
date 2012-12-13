@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateDistritos < ActiveRecord::Migration
   def change
     create_table :distritos do |t|

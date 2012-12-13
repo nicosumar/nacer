@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Parametro < ActiveRecord::Base
 
   # Devuelve el valor asociado con el nombre del parámetro indicado

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ConvenioDeAdministracion < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks

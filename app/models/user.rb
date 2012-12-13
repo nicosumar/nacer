@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class User < ActiveRecord::Base
   # Definir esta clase como base para autenticación de usuarios usando Devise
   devise :database_authenticatable, :registerable, :recoverable, :trackable,

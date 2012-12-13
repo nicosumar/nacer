@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UserSessionsController < Devise::SessionsController
   before_filter :authenticate_user!, :only => :seleccionar_uad
 

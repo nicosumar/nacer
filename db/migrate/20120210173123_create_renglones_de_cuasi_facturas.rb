@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateRenglonesDeCuasiFacturas < ActiveRecord::Migration
   def change
     create_table :renglones_de_cuasi_facturas do |t|

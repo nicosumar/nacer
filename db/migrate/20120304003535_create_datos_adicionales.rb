@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateDatosAdicionales < ActiveRecord::Migration
   def change
     create_table :datos_adicionales do |t|

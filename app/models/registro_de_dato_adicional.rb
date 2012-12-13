@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RegistroDeDatoAdicional < ActiveRecord::Base
   belongs_to :registro_de_prestacion
   belongs_to :dato_adicional

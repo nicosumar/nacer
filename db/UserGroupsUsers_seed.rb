@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Crear las restricciones adicionales en la base de datos
 class ModificarUserGroupsUsers < ActiveRecord::Migration
   execute "

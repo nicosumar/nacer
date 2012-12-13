@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateDepartamentos < ActiveRecord::Migration
   def change
     create_table :departamentos do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RecreateAfiliados < ActiveRecord::Migration
   def change
     # Eliminamos la tabla anterior

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateSubgruposDePrestaciones < ActiveRecord::Migration
   def change
     create_table :subgrupos_de_prestaciones do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 lass CreateContactos < ActiveRecord::Migration
   def change
     create_table :contactos do |t|

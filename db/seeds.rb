@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Cpnfiguración de las características de FTS para búsquedas
 load 'db/configuracion_fts.rb'
 

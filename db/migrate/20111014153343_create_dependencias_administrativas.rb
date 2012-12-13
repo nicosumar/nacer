@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateDependenciasAdministrativas < ActiveRecord::Migration
   def change
     create_table :dependencias_administrativas do |t|

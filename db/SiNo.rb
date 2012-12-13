@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 SiNo.create([
   { #:id => 1,
     :nombre => 'Sí',

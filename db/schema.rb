@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -26,8 +27,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   end
 
   create_table "afiliados", :id => false, :force => true do |t|
-    t.integer "afiliado_id",                           :null => false
-    t.string  "clave_de_beneficiario",                 :null => false
+    t.integer "afiliado_id",                          :null => false
+    t.string  "clave_de_beneficiario",                :null => false
     t.string  "apellido"
     t.string  "nombre"
     t.integer "clase_de_documento_id"
@@ -146,8 +147,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   create_table "centros_de_inscripcion", :force => true do |t|
     t.string   "nombre",     :null => false
     t.string   "codigo",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
   end
@@ -157,8 +158,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
     t.integer  "unidad_de_alta_de_datos_id", :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
   create_table "clases_de_documentos", :force => true do |t|
@@ -339,7 +340,7 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   create_table "liquidaciones", :force => true do |t|
     t.integer  "efector_id",                                                :null => false
     t.integer  "mes_de_prestaciones",                                       :null => false
-    t.integer  "año_de_prestaciones",                                      :null => false
+    t.integer  "año_de_prestaciones",                                       :null => false
     t.date     "fecha_de_recepcion",                                        :null => false
     t.string   "numero_de_expediente",                                      :null => false
     t.date     "fecha_de_notificacion"
@@ -393,8 +394,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
     t.string   "tipo_postgres"
     t.string   "tipo_ruby"
     t.text     "valor"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
   end
@@ -556,13 +557,14 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   end
 
   create_table "unidades_de_alta_de_datos", :force => true do |t|
-    t.string   "nombre",                         :null => false
-    t.string   "codigo",                         :null => false
-    t.boolean  "inscripcion", :default => false
-    t.boolean  "facturacion", :default => false
-    t.boolean  "activa",      :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "nombre",                           :null => false
+    t.string   "codigo",                           :null => false
+    t.boolean  "inscripcion",   :default => false
+    t.boolean  "facturacion",   :default => false
+    t.boolean  "activa",        :default => true
+    t.text     "observaciones"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
   end
@@ -575,8 +577,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
     t.boolean  "predeterminada",             :default => true
     t.integer  "creator_id"
     t.integer  "updater_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
   end
 
   create_table "unidades_de_medida", :force => true do |t|
@@ -595,8 +597,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
     t.integer  "user_id"
     t.integer  "creator_id"
     t.integer  "updater_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   add_index "user_groups_users", ["user_group_id", "user_id"], :name => "index_user_groups_users_on_user_group_id_and_user_id", :unique => true

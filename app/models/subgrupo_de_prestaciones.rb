@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SubgrupoDePrestaciones < ActiveRecord::Base
   belongs_to :grupo_de_prestaciones
 

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateSiNo < ActiveRecord::Migration
   def change
     create_table :si_no do |t|

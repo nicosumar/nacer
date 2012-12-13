@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PadronesController < ApplicationController
   before_filter :authenticate_user!
 
@@ -239,15 +240,15 @@ class PadronesController < ApplicationController
         when prestacion[:fecha_prestacion] < (primero_del_mes - 5.months)
           prestacion.merge! :estado => :rechazada, :mensaje => "La prestación no puede pagarse porque se venció el periodo de pago."
           logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
-        when !(asignaciones_de_precios.has_key?(prestacion[:codigo]))
-          # Rechazar la prestación porque no se encontró el código de la prestación en el nomenclador
-          prestacion.merge! :estado => :rechazada, :mensaje => "El código de la prestación no existe para el nomenclador seleccionado."
-          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
-        when (asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion == 0.0 &&
-          asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
-          # Rechazar la prestación porque no coincide el monto indicado
-          prestacion.merge! :estado => :rechazada, :mensaje => "El monto de la prestación no coincide con el del nomenclador seleccionado."
-          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+#        when !(asignaciones_de_precios.has_key?(prestacion[:codigo]))
+#          # Rechazar la prestación porque no se encontró el código de la prestación en el nomenclador
+#          prestacion.merge! :estado => :rechazada, :mensaje => "El código de la prestación no existe para el nomenclador seleccionado."
+#          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+#        when (asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion == 0.0 &&
+#          asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
+#          # Rechazar la prestación porque no coincide el monto indicado
+#          prestacion.merge! :estado => :rechazada, :mensaje => "El monto de la prestación no coincide con el del nomenclador seleccionado."
+#          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
         else
           afiliados, nivel_coincidencia = Afiliado.busqueda_por_aproximacion(prestacion[:documento], prestacion[:nombre])
           if afiliados && afiliados.size > 1
@@ -259,7 +260,7 @@ class PadronesController < ApplicationController
             logger.warn "cruzar_facturacion: ADVERTENCIA, coincidencia múltiple de nivel #{nivel_coincidencia} entre los afiliados: #{(afiliados.collect {|a| a.afiliado_id}).inspect}."
             afiliados_con_documento_propio = []
             afiliados.each do |afiliado|
-              if afiliado.clase_de_documento.upcase == "P"
+              if afiliado.clase_de_documento.codigo == "P"
                 afiliados_con_documento_propio << afiliado
               end
             end

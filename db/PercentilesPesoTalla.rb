@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 PercentilPesoTalla.create([
   { #:id => 1,
     :nombre => '< -10',

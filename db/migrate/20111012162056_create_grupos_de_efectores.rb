@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateGruposDeEfectores < ActiveRecord::Migration
   def change
     create_table :grupos_de_efectores do |t|

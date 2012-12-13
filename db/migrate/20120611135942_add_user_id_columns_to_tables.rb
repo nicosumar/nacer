@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddUserIdColumnsToTables < ActiveRecord::Migration
   def change
     add_column :addendas, :creator_id, :integer

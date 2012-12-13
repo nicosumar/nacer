@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Liquidacion < ActiveRecord::Base
   # Seguridad de asignaciones masivas
   attr_readonly :efector_id, :mes_de_prestaciones, :año_de_prestaciones

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Busqueda < ActiveRecord::Base
   # Listado de clases que se pueden buscar usando FTS
   @@clases_fts = [

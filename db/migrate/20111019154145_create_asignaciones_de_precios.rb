@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateAsignacionesDePrecios < ActiveRecord::Migration
   def change
     create_table :asignaciones_de_precios do |t|

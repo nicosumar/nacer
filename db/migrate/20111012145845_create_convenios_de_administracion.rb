@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateConveniosDeAdministracion < ActiveRecord::Migration
   def change
     create_table :convenios_de_administracion do |t|

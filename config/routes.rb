@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }

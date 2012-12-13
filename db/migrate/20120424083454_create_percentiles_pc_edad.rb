@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreatePercentilesPcEdad < ActiveRecord::Migration
   def change
     create_table :percentiles_pc_edad do |t|

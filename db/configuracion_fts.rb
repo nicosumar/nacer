@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Crear las restricciones adicionales en la base de datos
 # Los archivos indicados en esta configuración deben adaptarse según su necesidad,
 # y luego deben copiarse (o enlazarse) desde la ubicación actual en el directorio

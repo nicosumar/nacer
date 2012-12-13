@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Discapacidad < ActiveRecord::Base
 
   # Devuelve el id asociado con el código pasado

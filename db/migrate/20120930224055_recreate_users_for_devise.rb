@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RecreateUsersForDevise < ActiveRecord::Migration
   def change
     # Eliminamos las tablas anteriores

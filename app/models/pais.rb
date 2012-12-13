@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Pais < ActiveRecord::Base
 
   # id_del_nombre

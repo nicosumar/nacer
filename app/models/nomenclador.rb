@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Nomenclador < ActiveRecord::Base
   has_many :asignaciones_de_precios
   has_many :asignaciones_de_nomenclador

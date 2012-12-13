@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RegistroDePrestacion < ActiveRecord::Base
   # Seguridad de asignaciones masivas
   attr_protected nil

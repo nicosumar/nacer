@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreatePeriodosDeActividad < ActiveRecord::Migration
   def change
     create_table :periodos_de_actividad do |t|

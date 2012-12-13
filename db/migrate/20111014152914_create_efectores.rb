@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateEfectores < ActiveRecord::Migration
   def change
     create_table :efectores do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 PercentilPcEdad.create([
   { #:id => 1,
     :nombre => '< -2DS',

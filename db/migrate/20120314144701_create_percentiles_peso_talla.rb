@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreatePercentilesPesoTalla < ActiveRecord::Migration
   def change
     create_table :percentiles_peso_talla do |t|

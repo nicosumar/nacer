@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class GrupoDeEfectores < ActiveRecord::Base
   validates_presence_of :nombre, :tipo_de_efector
 

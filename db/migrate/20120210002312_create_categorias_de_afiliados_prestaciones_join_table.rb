@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateCategoriasDeAfiliadosPrestacionesJoinTable < ActiveRecord::Migration
   def change
     create_table :categorias_de_afiliados_prestaciones, :id => false do |t|

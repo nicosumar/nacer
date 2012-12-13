@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class LenguaOriginaria < ActiveRecord::Base
 
   # ordenados_por_frecuencia

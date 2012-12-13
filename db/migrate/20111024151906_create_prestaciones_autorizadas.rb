@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreatePrestacionesAutorizadas < ActiveRecord::Migration
   def change
     create_table :prestaciones_autorizadas do |t|

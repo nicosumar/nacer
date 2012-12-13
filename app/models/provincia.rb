@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Provincia < ActiveRecord::Base
   has_many :departamentos
 

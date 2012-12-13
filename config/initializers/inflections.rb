@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Modificar el Inflector para generar inflexiones en español
 module ActiveSupport
   module Inflector

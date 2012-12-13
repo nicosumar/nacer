@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AlterColumnCuieFromEfectores < ActiveRecord::Migration
   def change
     execute "

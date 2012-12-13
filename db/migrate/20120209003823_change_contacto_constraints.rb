@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ChangeContactoConstraints < ActiveRecord::Migration
   def up
     execute "

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateAddendas < ActiveRecord::Migration
   def change
     create_table :addendas do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Crear las restricciones adicionales en la base de datos
 class ModificarConveniosDeGestion < ActiveRecord::Migration
   # Claves foráneas para asegurar la integridad referencial en el motor de la base de datos

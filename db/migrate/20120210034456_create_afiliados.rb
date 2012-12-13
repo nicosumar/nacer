@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateAfiliados < ActiveRecord::Migration
   def change
     create_table :afiliados, :id => false do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateLiquidaciones < ActiveRecord::Migration
   def change
     create_table :liquidaciones do |t|

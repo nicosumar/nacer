@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateAsignacionesDeNomenclador < ActiveRecord::Migration
   def change
     create_table :asignaciones_de_nomenclador do |t|

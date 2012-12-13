@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Crear las funciones adicionales en la base de datos
 class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
 

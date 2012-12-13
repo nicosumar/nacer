@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateSequencesForInscripciones < ActiveRecord::Migration
   def up
     execute "

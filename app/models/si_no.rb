@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SiNo < ActiveRecord::Base
 
   # Devuelve el valor booleano asociado con el código pasado

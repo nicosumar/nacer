@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Prestacion < ActiveRecord::Base
   belongs_to :area_de_prestacion
   belongs_to :grupo_de_prestaciones

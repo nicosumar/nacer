@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ConveniosDeGestionController < ApplicationController
   before_filter :authenticate_user!
 
@@ -14,10 +15,10 @@ class ConveniosDeGestionController < ApplicationController
     end
 
     # Obtener el listado de convenios
-      @convenios_de_gestion =
-        ConvenioDeGestion.paginate(
-          :page => params[:page], :per_page => 20, :include => :efector, :order => "updated_at DESC"
-        )
+    @convenios_de_gestion =
+      ConvenioDeGestion.paginate(
+        :page => params[:page], :per_page => 20, :include => :efector, :order => "updated_at DESC"
+      )
   end
 
   # GET /convenios_de_gestion/:id

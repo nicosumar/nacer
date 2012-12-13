@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateCentrosDeInscripcion < ActiveRecord::Migration
   def change
     create_table :centros_de_inscripcion do |t|

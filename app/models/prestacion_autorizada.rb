@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PrestacionAutorizada < ActiveRecord::Base
   # No se declara ningún atributo protegido ya que este modelo se modifica indirectamente
   # a través de las adendas y convenios de gestión

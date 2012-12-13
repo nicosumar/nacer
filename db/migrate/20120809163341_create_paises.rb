@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreatePaises < ActiveRecord::Migration
   def change
     create_table :paises do |t|

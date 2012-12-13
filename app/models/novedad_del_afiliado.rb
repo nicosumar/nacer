@@ -1,7 +1,9 @@
+# -*- encoding : utf-8 -*-
 class NovedadDelAfiliado < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks
 
+  # Advertencias generadas por las validaciones
   attr_accessor :advertencias
 
   # Los atributos siguientes pueden asignarse en forma masiva

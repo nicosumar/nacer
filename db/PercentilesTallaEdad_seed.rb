@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 PercentilTallaEdad.create([
   { #:id => 1,
     :nombre => '< 3',

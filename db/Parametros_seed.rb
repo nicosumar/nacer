@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Datos precargados al inicializar el sistema
 Parametro.create([
   { #:id => 1,

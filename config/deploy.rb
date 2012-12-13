@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 set :application, "nacer"
 set :repository,  "http://github.com/sbosio/nacer"
 

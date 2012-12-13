@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Crear las restricciones adicionales en la base de datos
 class ModificarContactos < ActiveRecord::Migration
   # Funciones y disparadores para mantener los datos para las búsquedas de texto completo (FTS)
