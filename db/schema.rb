@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -27,8 +26,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   end
 
   create_table "afiliados", :id => false, :force => true do |t|
-    t.integer "afiliado_id",                          :null => false
-    t.string  "clave_de_beneficiario",                :null => false
+    t.integer "afiliado_id",                           :null => false
+    t.string  "clave_de_beneficiario",                 :null => false
     t.string  "apellido"
     t.string  "nombre"
     t.integer "clase_de_documento_id"
@@ -154,12 +153,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   end
 
   create_table "centros_de_inscripcion_unidades_de_alta_de_datos", :id => false, :force => true do |t|
-    t.integer  "centro_de_inscripcion_id",   :null => false
-    t.integer  "unidad_de_alta_de_datos_id", :null => false
-    t.integer  "creator_id"
-    t.integer  "updater_id"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.integer "centro_de_inscripcion_id",   :null => false
+    t.integer "unidad_de_alta_de_datos_id", :null => false
   end
 
   create_table "clases_de_documentos", :force => true do |t|
@@ -340,7 +335,7 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   create_table "liquidaciones", :force => true do |t|
     t.integer  "efector_id",                                                :null => false
     t.integer  "mes_de_prestaciones",                                       :null => false
-    t.integer  "año_de_prestaciones",                                       :null => false
+    t.integer  "año_de_prestaciones",                                      :null => false
     t.date     "fecha_de_recepcion",                                        :null => false
     t.string   "numero_de_expediente",                                      :null => false
     t.date     "fecha_de_notificacion"
