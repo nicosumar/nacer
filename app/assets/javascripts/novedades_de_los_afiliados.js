@@ -35,14 +35,20 @@ $(document).ready(function() {
 
   function modificarVisibilidadOriginarios() {
     if ($('#novedad_del_afiliado_se_declara_indigena').attr('checked'))
+    {
       $('#originarios').show();
+      $('#novedad_del_afiliado_lengua_originaria_id').focus();
+    }
     else
       $('#originarios').hide();
   }
 
   function modificarVisibilidadAlfabBenef() {
     if ($('#novedad_del_afiliado_alfabetizacion_del_beneficiario_id').val() > 2)
+    {
       $('#alfab_benef').show();
+      $('#novedad_del_beneficiario_alfab_beneficiario_años_ultimo_nivel').focus();
+    }
     else
       $('#alfab_benef').hide();
   }
@@ -62,6 +68,7 @@ $(document).ready(function() {
     }
     $('#select_distritos').html(div_html)
     $('#novedad_del_afiliado_domicilio_distrito_id').bind('change', modificarCodigoPostal);
+    $('#novedad_del_afiliado_domicilio_distrito_id').focus();
   }
 
   function modificarCodigoPostal() {
@@ -77,35 +84,52 @@ $(document).ready(function() {
 
   function modificarVisibilidadEsMenor() {
     if ($('#novedad_del_afiliado_es_menor').attr('checked'))
+    {
       $('#es_menor').show();
+      $('#novedad_del_afiliado_esta_embarazada').attr('checked') = false;
+      $('#embarazo').hide();
+    }
     else
+    {
       $('#es_menor').hide();
+      if ($('#novedad_del_afiliado_sexo_id').val() != 2)
+        $('#embarazo').show();
+    }
   }
 
   function modificarVisibilidadAlfabMadre() {
     if ($('#novedad_del_afiliado_alfabetizacion_de_la_madre_id').val() > 2)
+    {
       $('#alfab_madre').show();
+      $('#novedad_del_beneficiario_alfab_madre_años_ultimo_nivel').focus();
+    }
     else
       $('#alfab_madre').hide();
   }
 
   function modificarVisibilidadAlfabPadre() {
     if ($('#novedad_del_afiliado_alfabetizacion_del_padre_id').val() > 2)
+    {
       $('#alfab_padre').show();
+      $('#novedad_del_beneficiario_alfab_padre_años_ultimo_nivel').focus();
+    }
     else
       $('#alfab_padre').hide();
   }
 
   function modificarVisibilidadAlfabTutor() {
     if ($('#novedad_del_afiliado_alfabetizacion_del_tutor_id').val() > 2)
+    {
       $('#alfab_tutor').show();
+      $('#novedad_del_beneficiario_alfab_tutor_años_ultimo_nivel').focus();
+    }
     else
       $('#alfab_tutor').hide();
   }
 
   function modificarVisibilidadEmbarazo() {
     // Ocultar o mostrar la sección dependiendo del sexo del beneficiario
-    if ($('#novedad_del_afiliado_sexo_id').val() != 2)
+    if ($('#novedad_del_afiliado_sexo_id').val() != 2) && !($('#novedad_del_afiliado_es_menor').attr('checked'))
       $('#embarazo').show();
     else
       $('#embarazo').hide();
@@ -113,7 +137,10 @@ $(document).ready(function() {
 
   function modificarVisibilidadEstaEmbarazada() {
     if ($('#novedad_del_afiliado_esta_embarazada').attr('checked'))
+    {
       $('#esta_embarazada').show();
+      $('#novedad_del_afiliado_fecha_de_la_ultima_menstruacion').focus();
+    }
     else
       $('#esta_embarazada').hide();
   }

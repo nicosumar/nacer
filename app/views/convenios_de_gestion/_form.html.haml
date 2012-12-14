@@ -52,7 +52,7 @@
   %div.actions
     - if @convenio_de_gestion.new_record?
       = f.submit "Crear el convenio de gestión"
-      = link_to "Cancelar", convenios_de_gestion_url
+      = link_to "Cancelar", convenios_de_gestion_path
     - else
       = f.submit "Guardar las modificaciones"
       = link_to "Cancelar", @convenio_de_gestion

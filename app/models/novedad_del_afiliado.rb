@@ -58,6 +58,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   validate :verificar_documentos_de_identidad
   validates_presence_of :tipo_de_novedad_id, :clave_de_beneficiario
   validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
+  validates_numericality_of :semanas_de_embarazo, :only_integer => true, :allow_blank => true, :greater_than => 3, :less_than => 43
 
   # Objeto para guardar las advertencias
   @advertencias
@@ -231,7 +232,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     # VERIFICACION DE INTERVALOS VÁLIDOS
 
     # Documento del beneficiario
-    if tipo_de_documento_id == 1 && !numero_de_documento.blank?
+    if tipo_de_documento_id == TipoDeDocumento.id_del_codigo("DNI") && !numero_de_documento.blank?
       nro_dni = numero_de_documento.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
         errors.add(
@@ -243,7 +244,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Documento de la madre
-    if tipo_de_documento_de_la_madre_id == 1 && !numero_de_documento_de_la_madre.blank?
+    if tipo_de_documento_de_la_madre_id == TipoDeDocumento.id_del_codigo("DNI") && !numero_de_documento_de_la_madre.blank?
       nro_dni = numero_de_documento_de_la_madre.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
         errors.add(
@@ -255,7 +256,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Documento del padre
-    if tipo_de_documento_del_padre_id == 1 && !numero_de_documento_del_padre.blank?
+    if tipo_de_documento_del_padre_id == TipoDeDocumento.id_del_codigo("DNI") && !numero_de_documento_del_padre.blank?
       nro_dni = numero_de_documento_del_padre.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
         errors.add(
@@ -267,7 +268,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Documento del tutor
-    if tipo_de_documento_del_tutor_id == 1 && !numero_de_documento_del_tutor.blank?
+    if tipo_de_documento_del_tutor_id == TipoDeDocumento.id_del_codigo("DNI") && !numero_de_documento_del_tutor.blank?
       nro_dni = numero_de_documento_del_tutor.strip.to_i
       if nro_dni < 50000 || nro_dni > 99999999
         errors.add(
@@ -279,7 +280,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # DUPLICADOS
-    if clase_de_documento_id == 1
+    if clase_de_documento_id == ClaseDeDocumento.id_del_codigo("P")
       # Sólo verificamos cuando el documento es propio
       afiliados_con_este_documento = Afiliado.where(
         :clase_de_documento_id => 1,
@@ -370,7 +371,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # pendiente?
   # Indica si la novedad está pendiente (aún no ha sido informada, ni anulada).
   def pendiente?
-    return ((1..2) === estado_de_la_novedad_id)
+    estado_de_la_novedad && estado_de_la_novedad.pendiente
   end
 
   # categorizar
@@ -381,9 +382,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     return 1 if edad < 1
     return 2 if edad < 6
-    return 3 if sexo_id == 1 && esta_embarazada
+    return 3 if sexo_id == Sexo.id_del_codigo("F") && esta_embarazada
     return 5 if edad < 20
-    return 6 if sexo_id == 1 && edad < 64
+    return 6 if sexo_id == Sexo.id_del_codigo("F") && edad < 64
 
     return nil
   end

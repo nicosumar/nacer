@@ -11,8 +11,8 @@
     - else
       #action-links
         = link_to("Solicitar modificación de datos", |
-          new_novedad_del_afiliado_path(:afiliado_id => @afiliado.id, :tipo_de_novedad_id => 3)) |
-        = link_to("Solicitar la baja", new_novedad_del_afiliado_path(:afiliado_id => @afiliado.id, :tipo_de_novedad_id => 2))
+          new_modificacion_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id)) |
+        = link_to("Solicitar la baja", new_baja_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id))
 
 
 #content-body

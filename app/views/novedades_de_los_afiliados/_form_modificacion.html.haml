@@ -1,81 +1,64 @@
 = form_for(@novedad) do |f|
-  - if @afiliado
-    %div.hidden_field
-      %input{ :id => "afiliado_id", |
-        :name => "afiliado_id", |
-        :type => "hidden", :value => @afiliado.id } |
   %div.hidden_field
-    %input{ :id => "novedad_del_afiliado_tipo_de_novedad_id", |
-      :name => "novedad_del_afiliado[tipo_de_novedad_id]", |
-      :type => "hidden", :value => @novedad.tipo_de_novedad_id } |
+    %input{ :id => "afiliado_id", :name => "afiliado_id", :type => "hidden", :value => @afiliado.id }
 
   %h3 Tipo de solicitud
   %div.field_content
-    %span.field_value
-      - case
-        - when @novedad.tipo_de_novedad_id == 1
-          Solicitud de alta de beneficiario
-        - when @novedad.tipo_de_novedad_id == 2
-          Solicitud de baja de beneficiario
-        - when @novedad.tipo_de_novedad_id == 3
-          Solicitud de modificación de datos
+    %span.field_value Solicitud de modificación de datos
 
-  %h3 Clave única de beneficiario
-  %div.field
-    = f.number_field :clave_de_beneficiario, :readonly => "readonly"
+  %h3.header-with-note Clave única de beneficiario
+  %p.note La clave de beneficiario no se puede modificar
+  %div.field_content
+    %span.field_value= @afiliado.clave_de_beneficiario
 
   %h3 Datos personales
   %div.field
-    = f.label :apellido
+    = f.label :apellido, "Apellido*"
     = f.text_field :apellido, :style => "text-transform: uppercase;"
   %div.field
-    = f.label :nombre
+    = f.label :nombre, "Nombre*"
     = f.text_field :nombre, :style => "text-transform: uppercase;"
-  %div.field
-    = f.label :clase_de_documento_id
-    - if @afiliado && @afiliado.clase_de_documento_id == 1
+  - if @afiliado.clase_de_documento && @afiliado.clase_de_documento.codigo == "P"
+    %div.field_content
+      %span.field_label Clase de documento
+      %span.field_value= @afiliado.clase_de_documento.nombre
+  - else
+    %div.field
+      = f.label :clase_de_documento_id, "Clase de documento*"
       = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id), |
-        {}, { :disabled => "disabled" } |
-    - else
-      = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id), |
-        :include_blank => true |
+        {:include_blank => true} |
   %div.field
-    = f.label :tipo_de_documento_id
-    = f.select :tipo_de_documento_id, |
-      options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_id), |
+    = f.label :tipo_de_documento_id, "Tipo de documento*"
+    = f.select :tipo_de_documento_id, options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_id), |
       {:include_blank => true} |
   %div.field
-    = f.label :numero_de_documento
+    = f.label :numero_de_documento, "Número de documento*"
     = f.text_field :numero_de_documento, :style => "text-transform: uppercase;"
   %div.field
     = f.label :numero_de_celular
     = f.text_field :numero_de_celular
   %div.field
     = f.label :e_mail
-    = f.text_field :e_mail
+    = f.email_field :e_mail
 
   %h3 Datos de nacimiento, sexo, origen y estudios
   %div.field
-    = f.label :sexo_id
+    = f.label :sexo_id, "Sexo*"
     = f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id), |
       {:inculde_blank => true} |
   %div.field
-    = f.label :fecha_de_nacimiento
-    - if @novedad.tipo_de_novedad_id == 1
-      = f.date_select :fecha_de_nacimiento, |
-        {:start_year => Date.today.year - 65, :end_year => Date.today.year, |
-        :include_blank => true}
-    - else
-      = f.date_select :fecha_de_nacimiento, |
-        {:start_year => 1936, :end_year => Date.today.year, |
-        :include_blank => true} |
+    = f.label :fecha_de_nacimiento, "Fecha de nacimiento*"
+    = f.date_select :fecha_de_nacimiento, {:start_year => 1936, :end_year => Date.today.year, |
+      :include_blank => true} |
   %div.field
-    = f.label :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los "+ Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años."
-    = f.check_box :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los "+ Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años."
+    = f.label :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los " + |
+      Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años." |
+    -
+    = f.check_box :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los " + |
+      Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años." |
   %div.field
     = f.label :pais_de_nacimiento_id
-    = f.select :pais_de_nacimiento_id, |
-      options_for_select(@paises, @novedad.pais_de_nacimiento_id), |
+    = f.select :pais_de_nacimiento_id, options_for_select(@paises, @novedad.pais_de_nacimiento_id), |
       {:include_blank => true} |
   %div.field
     = f.label :se_declara_indigena
@@ -100,7 +83,8 @@
     = f.label :alfab_beneficiario_años_ultimo_nivel
     = f.number_field :alfab_beneficiario_años_ultimo_nivel, :size => 3
 
-  %h3 Datos de domicilio
+  %h3.header-with-note Datos de domicilio
+  %p.note Complete al menos la calle ó manzana, el número, el departamento y distrito de residencia
   %div.field
     = f.label :domicilio_calle
     = f.text_field :domicilio_calle, :style => "text-transform: uppercase;"
@@ -129,14 +113,12 @@
     = f.label :otro_telefono
     = f.text_field :otro_telefono, :style => "text-transform: uppercase;"
   %div.field
-    = f.label :domicilio_departamento_id
-    = f.select :domicilio_departamento_id, |
-      options_for_select(@departamentos, @novedad.domicilio_departamento_id), |
+    = f.label :domicilio_departamento_id, "Departamento*"
+    = f.select :domicilio_departamento_id, options_for_select(@departamentos, @novedad.domicilio_departamento_id), |
       {:include_blank => true} |
   #select_distritos.field
-    = f.label :domicilio_distrito_id
-    = f.select :domicilio_distrito_id, |
-      options_for_select(@distritos, @novedad.domicilio_distrito_id), |
+    = f.label :domicilio_distrito_id, "Distrito*"
+    = f.select :domicilio_distrito_id, options_for_select(@distritos, @novedad.domicilio_distrito_id), |
       {:include_blank => true} |
   %div.field
     = f.label :domicilio_barrio_o_paraje
@@ -146,15 +128,16 @@
     = f.text_field :domicilio_codigo_postal, :style => "text-transform: uppercase;"
   %h4 Observaciones
   %div.field
-    = f.text_area :observaciones, :size => "70x8"
+    = f.text_area :observaciones, :size => "80x8"
   %h3 Lugar de atención habitual
   %div.field
-    = f.select :lugar_de_atencion_habitual_id, |
-      options_for_select(@efectores, @novedad.lugar_de_atencion_habitual_id), |
+    = f.select :lugar_de_atencion_habitual_id, options_for_select(@efectores, @novedad.lugar_de_atencion_habitual_id), |
       {:include_blank => true} |
 
   #es_menor
-    %h3 Datos del adulto responsable
+    %h3.header-with-note Datos del adulto responsable
+    %p.note Debe completar todos los datos de al menos uno de los adultos responsables (madre, padre o tutor/tutora)
+
     %h4 Datos de la madre
     %div.field
       = f.label :apellido_de_la_madre
@@ -230,37 +213,23 @@
     %h3 Datos del embarazo
     %div.field
       = f.label :esta_embarazada, :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo."
-      = f.check_box :esta_embarazada, :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo."
+      = f.check_box :esta_embarazada, |
+        :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo." |
     #esta_embarazada
       %div.field
         = f.label :fecha_de_la_ultima_menstruacion
-        - if @novedad.tipo_de_novedad_id == 1
-          = f.date_select :fecha_de_la_ultima_menstruacion, |
-            {:start_year => Date.today.year - 1, :end_year => Date.today.year, |
-            :include_blank => true} |
-        - else
-          = f.date_select :fecha_de_la_ultima_menstruacion, |
-            {:start_year => 2001, :end_year => Date.today.year, :include_blank => true} |
+        = f.date_select :fecha_de_la_ultima_menstruacion, {:start_year => 2001, :end_year => Date.today.year, |
+          :include_blank => true} |
       %div.field
         = f.label :fecha_de_diagnostico_del_embarazo
-        - if @novedad.tipo_de_novedad_id == 1
-          = f.date_select :fecha_de_diagnostico_del_embarazo, |
-            {:start_year => Date.today.year - 1, :end_year => Date.today.year, :include_blank => true} |
-        - else
-          = f.date_select :fecha_de_diagnostico_del_embarazo, |
-            {:start_year => 2001, :end_year => Date.today.year, :include_blank => true} |
+        = f.date_select :fecha_de_diagnostico_del_embarazo, {:start_year => 2001, :end_year => Date.today.year, |
+          :include_blank => true} |
       %div.field
         = f.label :semanas_de_embarazo
         = f.number_field :semanas_de_embarazo, :size => 3
       %div.field
         = f.label :fecha_probable_de_parto
-        - if @novedad.tipo_de_novedad_id == 1
-          = f.date_select :fecha_probable_de_parto, |
-            {:start_year => Date.today.year - 1, :end_year => Date.today.year + 1, |
-            :include_blank => true} |
-        - else
-          = f.date_select :fecha_probable_de_parto, |
-            {:start_year => 2001, :end_year => Date.today.year + 1, :include_blank => true} |
+        = f.date_select :fecha_probable_de_parto, {:start_year => 2001, :end_year => Date.today.year + 1, :include_blank => true}
 
   %h3 Remediar+Redes
   %div.field
@@ -270,28 +239,29 @@
   %h3 Discapacidad
   %div.field
     = f.label :discapacidad_id
-    = f.select :discapacidad_id, |
-      options_for_select(@discapacidades, @novedad.discapacidad_id), {:include_blank => true} |
+    = f.select :discapacidad_id, options_for_select(@discapacidades, @novedad.discapacidad_id), {:include_blank => true}
 
   %h3 Fecha y centro inscriptor
   %div.field
     = f.label :fecha_de_la_novedad
-    = f.date_select :fecha_de_la_novedad, |
-      {:start_year => Date.today.year - 1, :end_year => Date.today.year, :include_blank => true} |
+    = f.date_select :fecha_de_la_novedad, {:start_year => Date.today.year - 1, :end_year => Date.today.year, |
+      :include_blank => true} |
   %div.field
     = f.label :centro_de_inscripcion_id
-    = f.select :centro_de_inscripcion_id, |
-      options_for_select(@centros_de_inscripcion, @novedad.centro_de_inscripcion_id), {:include_blank => true} |
+    = f.select :centro_de_inscripcion_id, options_for_select(@centros_de_inscripcion, @novedad.centro_de_inscripcion_id), |
+      {:include_blank => true} |
   %div.field
-    = f.label :nonmbre_del_agente_inscriptor
+    = f.label :nombre_del_agente_inscriptor
     = f.text_field :nombre_del_agente_inscriptor, :style => "text-transform: uppercase;"
 
   %h3 Observaciones generales
   %div.field
-    = f.text_area :observaciones_generales, :size => "70x8", :style => "text-transform: uppercase;"
+    = f.text_area :observaciones_generales, :size => "80x8"
 
   %div.actions
     - if @novedad.new_record?
       = f.submit "Crear la solicitud"
+      = link_to "Cancelar", root_url
     - else
       = f.submit "Modificar la solicitud"
+      = link_to "Cancelar", @novedad

@@ -32,6 +32,7 @@ $(document).ready(function() {
     }
     $('#select_distritos').html(div_html)
     $('#efector_distrito_id').bind('change', modificarCodigoPostal);
+    $('#efector_distrito_id').focus();
   }
 
   function modificarCodigoPostal() {
@@ -47,14 +48,20 @@ $(document).ready(function() {
 
   function modificarVisibilidadFechaAddendaPerinatal() {
     if ($('#efector_addenda_perinatal').attr('checked'))
+    {
       $('#fecha_de_addenda_perinatal').show();
+      $('#efector_fecha_de_addenda_perinatal').focus();
+    }
     else
       $('#fecha_de_addenda_perinatal').hide();
   }
 
   function modificarVisibilidadAddendaPerinatal() {
     if ($('#efector_perinatal_de_alta_complejidad').attr('checked'))
+    {
       $('#addenda_perinatal').show();
+      $('#efector_addenda_perinatal').focus();
+    }
     else
       $('#addenda_perinatal').hide();
   }
