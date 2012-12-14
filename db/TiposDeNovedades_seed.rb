@@ -7,14 +7,11 @@ end
 TipoDeNovedad.create([
         { #:id => 1,
           :nombre => "Alta",
-          :codigo_para_gestion => "A" },
+          :codigo => "A" },
         { #:id => 2,
           :nombre => "Baja",
-          :codigo_para_gestion => "B" },
+          :codigo => "B" },
         { #:id => 3,
           :nombre => "Modificación",
-          :codigo_para_gestion => "M" },
-        { #:id => 4,
-          :nombre => "Reinscripción",
-          :codigo_para_gestion => "R" }
+          :codigo => "M" }
 ])

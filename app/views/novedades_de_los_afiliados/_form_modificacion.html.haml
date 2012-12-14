@@ -1,4 +1,4 @@
-= form_for(@novedad) do |f|
+= form_for(@novedad, :url => create_modificacion_novedades_de_los_afiliados_url) do |f|
   %div.hidden_field
     %input{ :id => "afiliado_id", :name => "afiliado_id", :type => "hidden", :value => @afiliado.id }
 
@@ -20,7 +20,7 @@
     = f.text_field :nombre, :style => "text-transform: uppercase;"
   - if @afiliado.clase_de_documento && @afiliado.clase_de_documento.codigo == "P"
     %div.field_content
-      %span.field_label Clase de documento
+      %span.field_name Clase de documento
       %span.field_value= @afiliado.clase_de_documento.nombre
   - else
     %div.field
@@ -261,7 +261,7 @@
   %div.actions
     - if @novedad.new_record?
       = f.submit "Crear la solicitud"
-      = link_to "Cancelar", root_url
+      = link_to "Cancelar", @afiliado
     - else
       = f.submit "Modificar la solicitud"
       = link_to "Cancelar", @novedad

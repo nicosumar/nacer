@@ -66,7 +66,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     end
 
     # Generar las advertencias si la novedad está incompleta
-    if @novedad.estado_de_la_novedad_id == 1
+    if @novedad.estado_de_la_novedad_id == EstadoDeLaNovedad.id_del_codigo("I")
       @novedad.generar_advertencias
     end
   end

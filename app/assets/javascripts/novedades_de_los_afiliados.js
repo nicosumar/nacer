@@ -86,7 +86,7 @@ $(document).ready(function() {
     if ($('#novedad_del_afiliado_es_menor').attr('checked'))
     {
       $('#es_menor').show();
-      $('#novedad_del_afiliado_esta_embarazada').attr('checked') = false;
+      $('#novedad_del_afiliado_esta_embarazada').attr('checked', false);
       $('#embarazo').hide();
     }
     else
@@ -129,7 +129,7 @@ $(document).ready(function() {
 
   function modificarVisibilidadEmbarazo() {
     // Ocultar o mostrar la sección dependiendo del sexo del beneficiario
-    if ($('#novedad_del_afiliado_sexo_id').val() != 2) && !($('#novedad_del_afiliado_es_menor').attr('checked'))
+    if ($('#novedad_del_afiliado_sexo_id').val() != 2 && !($('#novedad_del_afiliado_es_menor').attr('checked')))
       $('#embarazo').show();
     else
       $('#embarazo').hide();

@@ -283,8 +283,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if clase_de_documento_id == ClaseDeDocumento.id_del_codigo("P")
       # Sólo verificamos cuando el documento es propio
       afiliados_con_este_documento = Afiliado.where(
-        :clase_de_documento_id => 1,
-        :tipo_de_documento_id => tipo_de_documento,
+        :clase_de_documento_id => ClaseDeDocumento.id_del_codigo("P"),
+        :tipo_de_documento_id => tipo_de_documento_id,
         :numero_de_documento => numero_de_documento)
 
       if afiliados_con_este_documento.size > 0
@@ -292,13 +292,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
         # que no esté marcado ya como duplicado
         afiliados_con_este_documento.each do |afiliado|
           if (afiliado.clave_de_beneficiario != clave_de_beneficiario &&
-              !([14,81,82,83,203].member? afiliado.motivo_de_la_baja_id)) # TODO: 
-            errors.add(
-              :numero_de_documento,
-              (
-                "ya ha sido asignado a otro beneficiario: " +
-                afiliado.apellido + ", " + afiliado.nombre + " (" + afiliado.clave_de_beneficiario + ")."
-              )
+              !([14,81,82,83].member? afiliado.motivo_de_la_baja_id)) # TODO: 
+            errors.add(:numero_de_documento, ("ya ha sido asignado a otro beneficiario: " +
+              afiliado.apellido + ", " + afiliado.nombre + " (" + afiliado.clave_de_beneficiario + ").")
             )
             error_dni = true
           end
