@@ -408,8 +408,7 @@ class Afiliado < ActiveRecord::Base
     # Contrastar la cantidad de campos con la versión del sistema registrada en los parámetros, para evitar errores
     # de importación
     version_del_sistema = Parametro.valor_del_parametro(:version_del_sistema_de_gestion)
-    if (version_del_sistema == "4.6" && campos.size != 91 ||
-        version_del_sistema == "4.7" && campos.size != 93)
+    if (campos.size != 93)
       raise ArgumentError, "El texto no contiene la cantidad correcta de campos, ¿quizás equivocó el separador?"
       return nil
     end
@@ -436,7 +435,7 @@ class Afiliado < ActiveRecord::Base
       # Datos de nacimiento, sexo, origen y estudios
       :sexo_id => Sexo.id_del_codigo(self.valor(campos[7], :texto)),
       :fecha_de_nacimiento => self.valor(campos[11], :fecha),
-      :pais_de_nacimiento_id => version_del_sistema == "4.7" ? Pais.id_del_nombre(self.valor(campos[92], :texto)) : nil,
+      :pais_de_nacimiento_id => Pais.id_del_nombre(self.valor(campos[92], :texto)),
       :se_declara_indigena => SiNo.valor_bool_del_codigo(self.valor(campos[12], :texto)),
       :lengua_originaria_id => (self.valor(campos[13], :entero) == 0 ? nil : self.valor(campos[13], :entero)),
       :tribu_originaria_id => (self.valor(campos[14], :entero) == 0 ? nil : self.valor(campos[14], :entero)),
@@ -482,6 +481,7 @@ class Afiliado < ActiveRecord::Base
       :alfab_tutor_años_ultimo_nivel => self.valor(campos[82], :entero),
 
       # Datos del embarazo y parto (para embarazadas)
+      :embarazo_actual => SiNo.valor_bool_del_codigo(self.valor(campos[91], :texto)),
       :fecha_de_ultima_menstruacion => self.valor(campos[88], :fecha),
       :fecha_de_diagnostico_del_embarazo => self.valor(campos[30], :fecha),
       :semanas_de_embarazo => (self.valor(campos[31], :entero) == 0 ? nil : self.valor(campos[31], :entero)),
@@ -555,7 +555,6 @@ class Afiliado < ActiveRecord::Base
       #:activo_r => self.valor(campos[83], :texto),
       #:motivo_baja_r => self.valor(campos[84], :entero),
       #:mensaje_baja_r => self.valor(campos[85], :texto),
-      #:embarazo_actual => SiNo.valor_bool_del_codigo(self.valor(campos[91], :texto)),
     }
   end
 

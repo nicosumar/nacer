@@ -72,11 +72,12 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.integer :alfab_tutor_años_ultimo_nivel
 
       # Datos del embarazo y parto (para embarazadas)
+      t.boolean :embarazo_actual
       t.date :fecha_de_la_ultima_menstruacion
       t.date :fecha_de_diagnostico_del_embarazo
       t.integer :semanas_de_embarazo
       t.date :fecha_probable_de_parto
-      t.date :fecha_efectiva_de_parto  # Dato mantenido por compatibilidad
+      t.date :fecha_efectiva_de_parto
 
       # Score de riesgo cardiovascular del Programa Remediar+Redes
       t.integer :score_de_riesgo
