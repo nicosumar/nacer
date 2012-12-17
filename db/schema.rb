@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121116105524) do
+ActiveRecord::Schema.define(:version => 20121217121733) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -24,6 +25,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
     t.integer  "updater_id"
     t.string   "numero"
   end
+
+  add_index "addendas", ["numero"], :name => "unq_addendas_numero", :unique => true
 
   create_table "afiliados", :id => false, :force => true do |t|
     t.integer "afiliado_id",                           :null => false
@@ -43,7 +46,7 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
     t.integer "lengua_originaria_id"
     t.integer "tribu_originaria_id"
     t.integer "alfabetizacion_del_beneficiario_id"
-    t.integer "alfab_beneficiario_años_ultimo_nivel"
+    t.integer "alfab_beneficiario_anios_ultimo_nivel"
     t.string  "domicilio_calle"
     t.string  "domicilio_numero"
     t.string  "domicilio_piso"
@@ -63,19 +66,20 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
     t.integer "tipo_de_documento_de_la_madre_id"
     t.string  "numero_de_documento_de_la_madre"
     t.integer "alfabetizacion_de_la_madre_id"
-    t.integer "alfab_madre_años_ultimo_nivel"
+    t.integer "alfab_madre_anios_ultimo_nivel"
     t.string  "apellido_del_padre"
     t.string  "nombre_del_padre"
     t.integer "tipo_de_documento_del_padre_id"
     t.string  "numero_de_documento_del_padre"
     t.integer "alfabetizacion_del_padre_id"
-    t.integer "alfab_padre_años_ultimo_nivel"
+    t.integer "alfab_padre_anios_ultimo_nivel"
     t.string  "apellido_del_tutor"
     t.string  "nombre_del_tutor"
     t.integer "tipo_de_documento_del_tutor_id"
     t.string  "numero_de_documento_del_tutor"
     t.integer "alfabetizacion_del_tutor_id"
-    t.integer "alfab_tutor_años_ultimo_nivel"
+    t.integer "alfab_tutor_anios_ultimo_nivel"
+    t.boolean "embarazo_actual"
     t.date    "fecha_de_la_ultima_menstruacion"
     t.date    "fecha_de_diagnostico_del_embarazo"
     t.integer "semanas_de_embarazo"
@@ -135,7 +139,8 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
 
   create_table "categorias_de_afiliados", :force => true do |t|
-    t.string "nombre"
+    t.string "nombre", :null => false
+    t.string "codigo", :null => false
   end
 
   create_table "categorias_de_afiliados_prestaciones", :id => false, :force => true do |t|
@@ -311,6 +316,7 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
 
   create_table "estados_de_las_novedades", :force => true do |t|
     t.string "nombre"
+    t.string "codigo"
   end
 
   create_table "estados_de_las_prestaciones", :force => true do |t|
@@ -335,7 +341,7 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
   create_table "liquidaciones", :force => true do |t|
     t.integer  "efector_id",                                                :null => false
     t.integer  "mes_de_prestaciones",                                       :null => false
-    t.integer  "año_de_prestaciones",                                      :null => false
+    t.integer  "anio_de_prestaciones",                                      :null => false
     t.date     "fecha_de_recepcion",                                        :null => false
     t.string   "numero_de_expediente",                                      :null => false
     t.date     "fecha_de_notificacion"
@@ -544,7 +550,7 @@ ActiveRecord::Schema.define(:version => 20121116105524) do
 
   create_table "tipos_de_novedades", :force => true do |t|
     t.string "nombre"
-    t.string "codigo_para_gestion"
+    t.string "codigo"
   end
 
   create_table "tribus_originarias", :force => true do |t|

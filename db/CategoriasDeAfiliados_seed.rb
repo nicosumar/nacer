@@ -18,8 +18,8 @@ CategoriaDeAfiliado.create([
     :codigo => "A" },
   { #:id => 6,
     :nombre => "Mujer de 20 a 64 años",
-    :codigo => "M" }
+    :codigo => "M" },
   { #:id => 7,
     :nombre => "Niño o niña de 6 a 9 años",
-    :codigo => "N9" },
+    :codigo => "N9" }
 ])
