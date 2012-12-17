@@ -9,7 +9,7 @@ module ApplicationHelper
     return nil if (!fecha_de_nacimiento || fecha_de_calculo < fecha_de_nacimiento)
 
     # Calculamos la diferencia entre los años de ambas fechas
-    diferencia_en_años = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+    diferencia_en_anios = (fecha_de_calculo.year - fecha_de_nacimiento.year)
 
     # Calculamos la diferencia entre los meses de ambas fechas
     diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
@@ -23,13 +23,13 @@ module ApplicationHelper
 
     if diferencia_en_meses < 0
       # Ajustamos la cantidad de meses y años, si la cantidad de meses es negativa
-      diferencia_en_años -= 1
+      diferencia_en_anios -= 1
       diferencia_en_meses += 12
     end
 
     # Si la diferencia entre fechas es de un año o más, devolver la edad en años
-    return "#{diferencia_en_años} años" if diferencia_en_años > 1
-    return "un año" if diferencia_en_años == 1
+    return "#{diferencia_en_anios} años" if diferencia_en_anios > 1
+    return "un año" if diferencia_en_anios == 1
 
     # Si la diferencia entre fechas es de un mes o más, devolver la edad en meses
     return "#{diferencia_en_meses} meses" if diferencia_en_meses > 1

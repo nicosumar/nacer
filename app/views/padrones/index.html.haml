@@ -34,9 +34,9 @@
         %br/
         = select_tag :proceso_id, options_for_select(@procesos, @proceso_id), { :include_blank => false }
       %div.field
-        = label_tag(:año_y_mes, "Año y mes del padrón (AAAA-MM):")
+        = label_tag(:anio_y_mes, "Año y mes del padrón (AAAA-MM):")
         %br/
-        = text_field_tag :año_y_mes
+        = text_field_tag :anio_y_mes
       %div.field
         = label_tag(:nomenclador_id, "Nomenclador:")
         %br/

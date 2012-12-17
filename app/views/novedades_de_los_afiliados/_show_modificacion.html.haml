@@ -229,16 +229,16 @@
         %span.field_empty No se ingresó el nivel de estudios
   %div.field_content
     %span.field_name Años cursados en el mayor nivel:
-    - if @afiliado.alfab_beneficiario_años_ultimo_nivel != @novedad.alfab_beneficiario_años_ultimo_nivel
-      - if @novedad.alfab_beneficiario_años_ultimo_nivel
-        %span.field_modified= @novedad.alfab_beneficiario_años_ultimo_nivel
+    - if @afiliado.alfab_beneficiario_anios_ultimo_nivel != @novedad.alfab_beneficiario_anios_ultimo_nivel
+      - if @novedad.alfab_beneficiario_anios_ultimo_nivel
+        %span.field_modified= @novedad.alfab_beneficiario_anios_ultimo_nivel
       - else
         %span.field_deleted Se eliminó la cantidad de años cursados ingresada
-      - if @afiliado.alfab_beneficiario_años_ultimo_nivel
-        %span.field_old_value= "(era: '" + @afiliado.alfab_beneficiario_años_ultimo_nivel + "')"
+      - if @afiliado.alfab_beneficiario_anios_ultimo_nivel
+        %span.field_old_value= "(era: '" + @afiliado.alfab_beneficiario_anios_ultimo_nivel + "')"
     - else
-      - if @novedad.alfab_beneficiario_años_ultimo_nivel
-        %span.field_value= @novedad.alfab_beneficiario_años_ultimo_nivel
+      - if @novedad.alfab_beneficiario_anios_ultimo_nivel
+        %span.field_value= @novedad.alfab_beneficiario_anios_ultimo_nivel
       - else
         %span.field_empty No se ingresó la cantidad de años cursados
 
@@ -533,16 +533,16 @@
           %span.field_empty No se ingresó el nivel de estudios
     %div.field_content
       %span.field_name Años cursados en el mayor nivel:
-      - if @afiliado.alfab_madre_años_ultimo_nivel != @novedad.alfab_madre_años_ultimo_nivel
-        - if @novedad.alfab_madre_años_ultimo_nivel
-          %span.field_modified= @novedad.alfab_madre_años_ultimo_nivel
+      - if @afiliado.alfab_madre_anios_ultimo_nivel != @novedad.alfab_madre_anios_ultimo_nivel
+        - if @novedad.alfab_madre_anios_ultimo_nivel
+          %span.field_modified= @novedad.alfab_madre_anios_ultimo_nivel
         - else
           %span.field_deleted Se eliminó la cantidad de años cursados ingresada
-        - if @afiliado.alfab_madre_años_ultimo_nivel
-          %span.field_old_value= "(era: '" + @afiliado.alfab_madre_años_ultimo_nivel + "')"
+        - if @afiliado.alfab_madre_anios_ultimo_nivel
+          %span.field_old_value= "(era: '" + @afiliado.alfab_madre_anios_ultimo_nivel + "')"
       - else
-        - if @novedad.alfab_madre_años_ultimo_nivel
-          %span.field_value= @novedad.alfab_madre_años_ultimo_nivel
+        - if @novedad.alfab_madre_anios_ultimo_nivel
+          %span.field_value= @novedad.alfab_madre_anios_ultimo_nivel
         - else
           %span.field_empty No se ingresó la cantidad de años cursados
 
@@ -620,16 +620,16 @@
           %span.field_empty No se ingresó el nivel de estudios
     %div.field_content
       %span.field_name Años cursados en el mayor nivel:
-      - if @afiliado.alfab_padre_años_ultimo_nivel != @novedad.alfab_padre_años_ultimo_nivel
-        - if @novedad.alfab_padre_años_ultimo_nivel
-          %span.field_modified= @novedad.alfab_padre_años_ultimo_nivel
+      - if @afiliado.alfab_padre_anios_ultimo_nivel != @novedad.alfab_padre_anios_ultimo_nivel
+        - if @novedad.alfab_padre_anios_ultimo_nivel
+          %span.field_modified= @novedad.alfab_padre_anios_ultimo_nivel
         - else
           %span.field_deleted Se eliminó la cantidad de años cursados ingresada
-        - if @afiliado.alfab_padre_años_ultimo_nivel
-          %span.field_old_value= "(era: '" + @afiliado.alfab_padre_años_ultimo_nivel + "')"
+        - if @afiliado.alfab_padre_anios_ultimo_nivel
+          %span.field_old_value= "(era: '" + @afiliado.alfab_padre_anios_ultimo_nivel + "')"
       - else
-        - if @novedad.alfab_padre_años_ultimo_nivel
-          %span.field_value= @novedad.alfab_padre_años_ultimo_nivel
+        - if @novedad.alfab_padre_anios_ultimo_nivel
+          %span.field_value= @novedad.alfab_padre_anios_ultimo_nivel
         - else
           %span.field_empty No se ingresó la cantidad de años cursados
 
@@ -707,16 +707,16 @@
           %span.field_empty No se ingresó el nivel de estudios
     %div.field_content
       %span.field_name Años cursados en el mayor nivel:
-      - if @afiliado.alfab_tutor_años_ultimo_nivel != @novedad.alfab_tutor_años_ultimo_nivel
-        - if @novedad.alfab_tutor_años_ultimo_nivel
-          %span.field_modified= @novedad.alfab_tutor_años_ultimo_nivel
+      - if @afiliado.alfab_tutor_anios_ultimo_nivel != @novedad.alfab_tutor_anios_ultimo_nivel
+        - if @novedad.alfab_tutor_anios_ultimo_nivel
+          %span.field_modified= @novedad.alfab_tutor_anios_ultimo_nivel
         - else
           %span.field_deleted Se eliminó la cantidad de años cursados ingresada
-        - if @afiliado.alfab_tutor_años_ultimo_nivel
-          %span.field_old_value= "(era: '" + @afiliado.alfab_tutor_años_ultimo_nivel + "')"
+        - if @afiliado.alfab_tutor_anios_ultimo_nivel
+          %span.field_old_value= "(era: '" + @afiliado.alfab_tutor_anios_ultimo_nivel + "')"
       - else
-        - if @novedad.alfab_tutor_años_ultimo_nivel
-          %span.field_value= @novedad.alfab_tutor_años_ultimo_nivel
+        - if @novedad.alfab_tutor_anios_ultimo_nivel
+          %span.field_value= @novedad.alfab_tutor_anios_ultimo_nivel
         - else
           %span.field_empty No se ingresó la cantidad de años cursados
 

@@ -21,12 +21,12 @@
     - else
       = f.select :mes_de_prestaciones, options_for_select(@meses_de_prestaciones, @mes_de_prestaciones), {}, { :disabled => true }
   %div.field
-    = f.label :año_de_prestaciones
+    = f.label :anio_de_prestaciones
     %br/
     - if @liquidacion.new_record? then
-      = f.select :año_de_prestaciones, options_for_select(@años_de_prestaciones, @año_de_prestaciones), { :include_blank => false }
+      = f.select :anio_de_prestaciones, options_for_select(@anios_de_prestaciones, @anio_de_prestaciones), { :include_blank => false }
     - else
-      = f.select :año_de_prestaciones, options_for_select(@años_de_prestaciones, @año_de_prestaciones), {}, { :disabled => true }
+      = f.select :anio_de_prestaciones, options_for_select(@anios_de_prestaciones, @anio_de_prestaciones), {}, { :disabled => true }
   %div.field
     = f.label :fecha_de_recepcion
     %br/

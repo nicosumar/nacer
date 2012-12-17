@@ -10,17 +10,17 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_accessible :apellido, :nombre, :clase_de_documento_id, :tipo_de_documento_id, :numero_de_documento
   attr_accessible :numero_de_celular, :e_mail, :sexo_id, :fecha_de_nacimiento, :es_menor
   attr_accessible :pais_de_nacimiento_id, :se_declara_indigena, :lengua_originaria_id, :tribu_originaria_id
-  attr_accessible :alfabetizacion_del_beneficiario_id, :alfab_beneficiario_años_ultimo_nivel
+  attr_accessible :alfabetizacion_del_beneficiario_id, :alfab_beneficiario_anios_ultimo_nivel
   attr_accessible :domicilio_calle, :domicilio_numero, :domicilio_piso, :domicilio_depto, :domicilio_manzana
   attr_accessible :domicilio_entre_calle_1, :domicilio_entre_calle_2, :telefono, :otro_telefono
   attr_accessible :domicilio_departamento_id, :domicilio_distrito_id, :domicilio_barrio_o_paraje
   attr_accessible :domicilio_codigo_postal, :observaciones, :lugar_de_atencion_habitual_id
   attr_accessible :apellido_de_la_madre, :nombre_de_la_madre, :tipo_de_documento_de_la_madre_id
-  attr_accessible :numero_de_documento_de_la_madre, :alfabetizacion_de_la_madre_id, :alfab_madre_años_ultimo_nivel
+  attr_accessible :numero_de_documento_de_la_madre, :alfabetizacion_de_la_madre_id, :alfab_madre_anios_ultimo_nivel
   attr_accessible :apellido_del_padre, :nombre_del_padre, :tipo_de_documento_del_padre_id
-  attr_accessible :numero_de_documento_del_padre, :alfabetizacion_del_padre_id, :alfab_padre_años_ultimo_nivel
+  attr_accessible :numero_de_documento_del_padre, :alfabetizacion_del_padre_id, :alfab_padre_anios_ultimo_nivel
   attr_accessible :apellido_del_tutor, :nombre_del_tutor, :tipo_de_documento_del_tutor_id
-  attr_accessible :numero_de_documento_del_tutor, :alfabetizacion_del_tutor_id, :alfab_tutor_años_ultimo_nivel
+  attr_accessible :numero_de_documento_del_tutor, :alfabetizacion_del_tutor_id, :alfab_tutor_anios_ultimo_nivel
   attr_accessible :esta_embarazada, :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo
   attr_accessible :semanas_de_embarazo, :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo
   attr_accessible :discapacidad_id, :fecha_de_la_novedad, :centro_de_inscripcion_id, :nombre_del_agente_inscriptor
@@ -374,7 +374,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # Devuelve la categoría de beneficiario (ahora es obsoleto, pero se mantiene aún por
   # compatibilidad).
   def categorizar
-    edad = self.edad_en_años(fecha_de_la_novedad || Date.today)
+    edad = self.edad_en_anios(fecha_de_la_novedad || Date.today)
 
     return 1 if edad < 1
     return 2 if edad < 6
@@ -385,13 +385,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
     return nil
   end
   
-  # edad_en_años
+  # edad_en_anios
   # Devuelve la edad en años cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
   # indica una fecha.
-  def edad_en_años (fecha_de_calculo = Date.today)
+  def edad_en_anios (fecha_de_calculo = Date.today)
 
     # Calculamos la diferencia entre los años de ambas fechas
-    diferencia_en_años = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+    diferencia_en_anios = (fecha_de_calculo.year - fecha_de_nacimiento.year)
 
     # Calculamos la diferencia entre los meses de ambas fechas
     diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
@@ -401,10 +401,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if diferencia_en_dias < 0 then diferencia_en_meses -= 1 end
 
     # Ajustamos la diferencia en años en forma acorde
-    if diferencia_en_meses < 0 then diferencia_en_años -= 1 end
+    if diferencia_en_meses < 0 then diferencia_en_anios -= 1 end
 
     # Devolver la cantidad de años
-    return diferencia_en_años
+    return diferencia_en_anios
 
   end
 

@@ -31,7 +31,7 @@ class RecreateAfiliados < ActiveRecord::Migration
       t.references :lengua_originaria
       t.references :tribu_originaria
       t.integer :alfabetizacion_del_beneficiario_id
-      t.integer :alfab_beneficiario_años_ultimo_nivel
+      t.integer :alfab_beneficiario_anios_ultimo_nivel
 
       # Datos de residencia, vías de comunicación y lugar habitual de atención
       t.string :domicilio_calle
@@ -51,25 +51,25 @@ class RecreateAfiliados < ActiveRecord::Migration
       # Lugar de atención habitual
       t.integer :lugar_de_atencion_habitual_id
 
-      # Datos del adulto responsable del menor (para menores de 15 años)
+      # Datos del adulto responsable del menor
       t.string :apellido_de_la_madre
       t.string :nombre_de_la_madre
       t.integer :tipo_de_documento_de_la_madre_id
       t.string :numero_de_documento_de_la_madre
       t.integer :alfabetizacion_de_la_madre_id
-      t.integer :alfab_madre_años_ultimo_nivel
+      t.integer :alfab_madre_anios_ultimo_nivel
       t.string :apellido_del_padre
       t.string :nombre_del_padre
       t.integer :tipo_de_documento_del_padre_id
       t.string :numero_de_documento_del_padre
       t.integer :alfabetizacion_del_padre_id
-      t.integer :alfab_padre_años_ultimo_nivel
+      t.integer :alfab_padre_anios_ultimo_nivel
       t.string :apellido_del_tutor
       t.string :nombre_del_tutor
       t.integer :tipo_de_documento_del_tutor_id
       t.string :numero_de_documento_del_tutor
       t.integer :alfabetizacion_del_tutor_id
-      t.integer :alfab_tutor_años_ultimo_nivel
+      t.integer :alfab_tutor_anios_ultimo_nivel
 
       # Datos del embarazo y parto (para embarazadas)
       t.boolean :embarazo_actual

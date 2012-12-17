@@ -80,8 +80,8 @@
       options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_beneficiario_id), |
       {:include_blank => true} |
   #alfab_benef.field
-    = f.label :alfab_beneficiario_años_ultimo_nivel
-    = f.number_field :alfab_beneficiario_años_ultimo_nivel, :size => 3
+    = f.label :alfab_beneficiario_anios_ultimo_nivel
+    = f.number_field :alfab_beneficiario_anios_ultimo_nivel, :size => 3
 
   %h3.header-with-note Datos de domicilio
   %p.note Complete al menos la calle ó manzana, el número, el departamento y distrito de residencia
@@ -159,8 +159,8 @@
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_de_la_madre_id), |
         {:include_blank => true} |
     #alfab_madre.field
-      = f.label :alfab_madre_años_ultimo_nivel
-      = f.number_field :alfab_madre_años_ultimo_nivel, :size => 3
+      = f.label :alfab_madre_anios_ultimo_nivel
+      = f.number_field :alfab_madre_anios_ultimo_nivel, :size => 3
     %h4 Datos del padre
     %div.field
       = f.label :apellido_del_padre
@@ -182,8 +182,8 @@
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_padre_id), |
         {:include_blank => true} |
     #alfab_padre.field
-      = f.label :alfab_padre_años_ultimo_nivel
-      = f.number_field :alfab_padre_años_ultimo_nivel, :size => 3
+      = f.label :alfab_padre_anios_ultimo_nivel
+      = f.number_field :alfab_padre_anios_ultimo_nivel, :size => 3
     %h4 Datos de la tutora o tutor
     %div.field
       = f.label :apellido_del_tutor
@@ -206,8 +206,8 @@
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_tutor_id), |
         {:include_blank => true} |
     #alfab_tutor.field
-      = f.label :alfab_tutor_años_ultimo_nivel
-      = f.number_field :alfab_tutor_años_ultimo_nivel, :size => 3
+      = f.label :alfab_tutor_anios_ultimo_nivel
+      = f.number_field :alfab_tutor_anios_ultimo_nivel, :size => 3
 
   #embarazo
     %h3 Datos del embarazo

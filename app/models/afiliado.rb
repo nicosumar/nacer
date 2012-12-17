@@ -45,10 +45,10 @@ class Afiliado < ActiveRecord::Base
   # edad_en_años
   # Devuelve la edad en años cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
   # indica una fecha.
-  def edad_en_años (fecha_de_calculo = Date.today)
+  def edad_en_anios (fecha_de_calculo = Date.today)
 
     # Calculamos la diferencia entre los años de ambas fechas
-    diferencia_en_años = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+    diferencia_en_anios = (fecha_de_calculo.year - fecha_de_nacimiento.year)
 
     # Calculamos la diferencia entre los meses de ambas fechas
     diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
@@ -58,10 +58,10 @@ class Afiliado < ActiveRecord::Base
     if diferencia_en_dias < 0 then diferencia_en_meses -= 1 end
 
     # Ajustamos la diferencia en años en forma acorde
-    if diferencia_en_meses < 0 then diferencia_en_años -= 1 end
+    if diferencia_en_meses < 0 then diferencia_en_anios -= 1 end
 
     # Devolver la cantidad de años
-    return diferencia_en_años
+    return diferencia_en_anios
 
   end
 
@@ -124,7 +124,7 @@ class Afiliado < ActiveRecord::Base
   # una edad donde es exigible que se registren los datos del adulto responsable.
   #
   def menor?(fecha_de_calculo = Date.today)
-    (edad_en_años || 0) < Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable)
+    (edad_en_anios || 0) < Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable)
   end
 
   # embarazada?
@@ -135,7 +135,7 @@ class Afiliado < ActiveRecord::Base
 
     # Verificar que la beneficiaria sea de sexo femenino y su edad mayor que el mínimo establecido
     if (sexo_id == 1 &&
-      edad_en_años >= Parametro.valor_del_parametro(:edad_minima_para_registrar_embarazada) &&
+      edad_en_anios >= Parametro.valor_del_parametro(:edad_minima_para_registrar_embarazada) &&
       fecha_probable_de_parto)
       if ((fecha_probable_de_parto - 40.weeks)..(fecha_probable_de_parto + 45.days)) === fecha
         return true
@@ -440,7 +440,7 @@ class Afiliado < ActiveRecord::Base
       :lengua_originaria_id => (self.valor(campos[13], :entero) == 0 ? nil : self.valor(campos[13], :entero)),
       :tribu_originaria_id => (self.valor(campos[14], :entero) == 0 ? nil : self.valor(campos[14], :entero)),
       :alfabetizacion_del_beneficiario_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[75], :texto)),
-      :alfab_beneficiario_años_ultimo_nivel => self.valor(campos[76], :entero),
+      :alfab_beneficiario_anios_ultimo_nivel => self.valor(campos[76], :entero),
 
       # Datos de domicilio
       :domicilio_calle => self.valor(campos[36], :texto),
@@ -460,25 +460,25 @@ class Afiliado < ActiveRecord::Base
       # Lugar de atención habitual
       :lugar_de_atencion_habitual_id => Efector.id_del_cuie(self.valor(campos[68], :texto)),
 
-      # Datos del adulto responsable del menor (para menores de 15 años)
+      # Datos del adulto responsable del menor
       :apellido_de_la_madre => self.valor(campos[17], :texto),
       :nombre_de_la_madre => self.valor(campos[18], :texto),
       :tipo_de_documento_de_la_madre_id => TipoDeDocumento.id_del_codigo(self.valor(campos[15], :texto)),
       :numero_de_documento_de_la_madre => self.valor(campos[16], :texto),
       :alfabetizacion_de_la_madre_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[77], :texto)),
-      :alfab_madre_años_ultimo_nivel => self.valor(campos[78], :entero),
+      :alfab_madre_anios_ultimo_nivel => self.valor(campos[78], :entero),
       :apellido_del_padre => self.valor(campos[21], :texto),
       :nombre_del_padre => self.valor(campos[22], :texto),
       :tipo_de_documento_del_padre_id => TipoDeDocumento.id_del_codigo(self.valor(campos[19], :texto)),
       :numero_de_documento_del_padre => self.valor(campos[20], :texto),
       :alfabetizacion_del_padre_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[79], :texto)),
-      :alfab_padre_años_ultimo_nivel => self.valor(campos[80], :entero),
+      :alfab_padre_anios_ultimo_nivel => self.valor(campos[80], :entero),
       :apellido_del_tutor => self.valor(campos[25], :texto),
       :nombre_del_tutor => self.valor(campos[26], :texto),
       :tipo_de_documento_del_tutor_id => TipoDeDocumento.id_del_codigo(self.valor(campos[23], :texto)),
       :numero_de_documento_del_tutor => self.valor(campos[24], :texto),
       :alfabetizacion_del_tutor_id => NivelDeInstruccion.id_del_codigo(self.valor(campos[81], :texto)),
-      :alfab_tutor_años_ultimo_nivel => self.valor(campos[82], :entero),
+      :alfab_tutor_anios_ultimo_nivel => self.valor(campos[82], :entero),
 
       # Datos del embarazo y parto (para embarazadas)
       :embarazo_actual => SiNo.valor_bool_del_codigo(self.valor(campos[91], :texto)),

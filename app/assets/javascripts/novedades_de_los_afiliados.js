@@ -47,7 +47,7 @@ $(document).ready(function() {
     if ($('#novedad_del_afiliado_alfabetizacion_del_beneficiario_id').val() > 2)
     {
       $('#alfab_benef').show();
-      $('#novedad_del_beneficiario_alfab_beneficiario_años_ultimo_nivel').focus();
+      $('#novedad_del_beneficiario_alfab_beneficiario_anios_ultimo_nivel').focus();
     }
     else
       $('#alfab_benef').hide();
@@ -101,7 +101,7 @@ $(document).ready(function() {
     if ($('#novedad_del_afiliado_alfabetizacion_de_la_madre_id').val() > 2)
     {
       $('#alfab_madre').show();
-      $('#novedad_del_beneficiario_alfab_madre_años_ultimo_nivel').focus();
+      $('#novedad_del_beneficiario_alfab_madre_anios_ultimo_nivel').focus();
     }
     else
       $('#alfab_madre').hide();
@@ -111,7 +111,7 @@ $(document).ready(function() {
     if ($('#novedad_del_afiliado_alfabetizacion_del_padre_id').val() > 2)
     {
       $('#alfab_padre').show();
-      $('#novedad_del_beneficiario_alfab_padre_años_ultimo_nivel').focus();
+      $('#novedad_del_beneficiario_alfab_padre_anios_ultimo_nivel').focus();
     }
     else
       $('#alfab_padre').hide();
@@ -121,7 +121,7 @@ $(document).ready(function() {
     if ($('#novedad_del_afiliado_alfabetizacion_del_tutor_id').val() > 2)
     {
       $('#alfab_tutor').show();
-      $('#novedad_del_beneficiario_alfab_tutor_años_ultimo_nivel').focus();
+      $('#novedad_del_beneficiario_alfab_tutor_anios_ultimo_nivel').focus();
     }
     else
       $('#alfab_tutor').hide();

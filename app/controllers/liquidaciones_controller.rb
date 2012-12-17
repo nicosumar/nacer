@@ -26,8 +26,8 @@ class LiquidacionesController < ApplicationController
       @meses_de_prestaciones = [["Enero", 1], ["Febrero", 2], ["Marzo", 3], ["Abril", 4], ["Mayo", 5], ["Junio", 6], ["Julio", 7], ["Agosto", 8],
         ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]]
       @mes_de_prestaciones = Date.today.month - 1
-      @años_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
-      @año_de_prestaciones = Date.today.year
+      @anios_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
+      @anio_de_prestaciones = Date.today.year
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
     end
@@ -41,8 +41,8 @@ class LiquidacionesController < ApplicationController
       @meses_de_prestaciones = [["Enero", 1], ["Febrero", 2], ["Marzo", 3], ["Abril", 4], ["Mayo", 5], ["Junio", 6], ["Julio", 7], ["Agosto", 8],
         ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]]
       @mes_de_prestaciones = @liquidacion.mes_de_prestaciones
-      @años_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
-      @año_de_prestaciones = @liquidacion.año_de_prestaciones
+      @anios_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
+      @anio_de_prestaciones = @liquidacion.año_de_prestaciones
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
     end
@@ -74,7 +74,7 @@ class LiquidacionesController < ApplicationController
     @meses_de_prestaciones = [["Enero", 1], ["Febrero", 2], ["Marzo", 3], ["Abril", 4], ["Mayo", 5], ["Junio", 6], ["Julio", 7], ["Agosto", 8],
       ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]]
     @mes_de_prestaciones = @liquidacion.mes_de_prestaciones
-    @años_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
+    @anios_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
     @año_de_prestaciones = @liquidacion.año_de_prestaciones
     render :action => "new"
   end
@@ -96,7 +96,7 @@ class LiquidacionesController < ApplicationController
     @meses_de_prestaciones = [["Enero", 1], ["Febrero", 2], ["Marzo", 3], ["Abril", 4], ["Mayo", 5], ["Junio", 6], ["Julio", 7], ["Agosto", 8],
       ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]]
     @mes_de_prestaciones = @liquidacion.mes_de_prestaciones
-    @años_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
+    @anios_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
     @año_de_prestaciones = @liquidacion.año_de_prestaciones
     render :action => "edit"
   end
