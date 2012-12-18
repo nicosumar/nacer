@@ -35,8 +35,8 @@ class ApplicationController < ActionController::Base
       # seguros. Además si esto falla, puede ser que hayamos olvidado crear el
       # esquema correspondiente a una unidad de alta de datos a la cual hemos
       # asignado usuarios.
-      ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo},public"
-      ActiveRecord::Base.connection.execute("SET search_path TO uad_#{uad.codigo}, public;")
+      ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
+#      ActiveRecord::Base.connection.execute("SET search_path TO uad_#{uad.codigo}, public", "SCHEMA")
     rescue
       return false
     end

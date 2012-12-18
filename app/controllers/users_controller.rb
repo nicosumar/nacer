@@ -44,9 +44,9 @@ class UsersController < Devise::RegistrationsController
   def admin_edit
     @user = User.find(params[:id], :include => [:user_groups, :sexo])
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
-    @user_group_ids = @user.user_groups.collect{ |ug| [ug.id] }
+    @user_group_ids = @user.user_groups.collect{ |ug| ug.id }
     @unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find(:all).collect{ |uad| [uad.nombre, uad.id] }
-    @unidad_de_alta_de_datos_ids = @user.unidades_de_alta_de_datos.collect{ |uad| [uad.id] }
+    @unidad_de_alta_de_datos_ids = @user.unidades_de_alta_de_datos.collect{ |uad| uad.id }
   end
 
   # PUT /users/:id

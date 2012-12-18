@@ -4,7 +4,7 @@ class Afiliado < ActiveRecord::Base
   # Cambiar la clave primaria. La clave no es creada por este sistema, sino por el
   # sistema de gestión del padrón. Aunque podría haberse utilizado "id" como
   # identificador, se hizo así para no olvidarse de este hecho.
-  set_primary_key "afiliado_id"
+  self.primary_key = "afiliado_id"
 
   # El modelo no está asignado a ningún formulario editable por el usuario.
   # Los datos se actualizan por un proceso batch.
