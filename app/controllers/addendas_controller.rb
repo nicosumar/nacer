@@ -187,8 +187,8 @@ class AddendasController < ApplicationController
     end
 
     # Guardar las prestaciones seleccionadas para dar de alta y de baja
-    @prestacion_autorizada_alta_ids = params[:addenda].delete(:prestacion_autorizada_alta_ids) || []
-    @prestacion_autorizada_baja_ids = params[:addenda].delete(:prestacion_autorizada_baja_ids) || []
+    @prestacion_autorizada_alta_ids = params[:addenda].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
+    @prestacion_autorizada_baja_ids = params[:addenda].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
 
     # Crear una nueva adenda desde los parámetros
     @addenda = Addenda.new(params[:addenda])
@@ -297,8 +297,8 @@ class AddendasController < ApplicationController
       }
 
     # Preservar las prestaciones seleccionadas para dar de alta y de baja
-    @prestacion_autorizada_alta_ids = params[:addenda].delete(:prestacion_autorizada_alta_ids) || []
-    @prestacion_autorizada_baja_ids = params[:addenda].delete(:prestacion_autorizada_baja_ids) || []
+    @prestacion_autorizada_alta_ids = params[:addenda].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
+    @prestacion_autorizada_baja_ids = params[:addenda].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
 
     # Actualizar los valores de los atributos no protegidos por asignación masiva
     @addenda.attributes = params[:addenda]

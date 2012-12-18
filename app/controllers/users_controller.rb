@@ -68,8 +68,8 @@ class UsersController < Devise::RegistrationsController
     end
       
     # Actualizar los valores de los atributos para validar el registro antes de guardarlo
-    user.user_groups = UserGroup.find(params[:user][:user_group_ids] || [])
-    user.unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find(params[:user][:unidad_de_alta_de_datos_ids] || [])
+    user.user_groups = UserGroup.find((params[:user][:user_group_ids]).reject(&:blank?) || [])
+    user.unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find((params[:user][:unidad_de_alta_de_datos_ids]).reject(&:blank?) || [])
 
     redirect_to edit_user_path(user),
       :flash => {

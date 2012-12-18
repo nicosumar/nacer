@@ -119,7 +119,7 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     end
 
     # Guardar los centros de inscripcion seleccionados para luego rellenar la tabla asociada si se graba correctamente
-    @centro_de_inscripcion_ids = params[:unidad_de_alta_de_datos].delete(:centro_de_inscripcion_ids) || []
+    @centro_de_inscripcion_ids = params[:unidad_de_alta_de_datos].delete(:centro_de_inscripcion_ids).reject(&:blank?) || []
 
     # Crear una nueva unidad desde los parámetros
     @unidad_de_alta_de_datos = UnidadDeAltaDeDatos.new(params[:unidad_de_alta_de_datos])
@@ -190,7 +190,7 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     end
 
     # Guardar los centros de inscripción seleccionados para luego rellenar la tabla asociada si se graba correctamente
-    @centro_de_inscripcion_ids = params[:unidad_de_alta_de_datos].delete(:centro_de_inscripcion_ids) || []
+    @centro_de_inscripcion_ids = params[:unidad_de_alta_de_datos].delete(:centro_de_inscripcion_ids).reject(&:blank?) || []
 
     # Obtener la unidad
     begin
