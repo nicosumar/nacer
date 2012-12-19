@@ -38,4 +38,8 @@ class User < ActiveRecord::Base
     (!confirmed_at || authorized?) ? super : :confirmed_but_unauthorized
   end
 
+  def nombre_completo
+    (nombre + " " + apellido).titleize
+  end
+
 end

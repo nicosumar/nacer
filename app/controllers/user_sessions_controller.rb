@@ -30,17 +30,8 @@ class UserSessionsController < Devise::SessionsController
     # Seleccionar la UAD predeterminada del usuario
     uad_predeterminada = current_user.unidades_de_alta_de_datos_users.where(:predeterminada => true).first.unidad_de_alta_de_datos
 
-    # Intentar establecer la UAD predeterminada
-    if !establecer_uad(uad_predeterminada)
-      Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
-      redirect_to(root_url,
-        :flash => { :tipo => :error, :titulo => "Se produjo un error al iniciar la sesión",
-          :mensaje  => "Sus credenciales son correctas, pero se produjo un error desconocido al intentar asignar su UAD. " +
-                       "Póngase en contacto con los administradores del sistema para solucionar este inconveniente."
-        }
-      )
-      return
-    end
+    # Guardar la UAD seleccionada en la sesión
+    session[:codigo_uad_actual] = uad_predeterminada.codigo
 
     redirect_to_stored({:tipo => :ok, :titulo => "Ha iniciado correctamente la sesión."})
   end
@@ -69,17 +60,7 @@ class UserSessionsController < Devise::SessionsController
       end
 
       # Intentar establecer la UAD seleccionada en el formulario
-      if !establecer_uad(UnidadDeAltaDeDatos.find(params[:unidad_de_alta_de_datos_id].to_i))
-        Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
-        redirect_to(root_url,
-          :flash => {:tipo => :error, :titulo => "Se produjo un error al intentar cambiar la unidad de alta de datos",
-            :mensaje  => "Se produjo un error desconocido al intentar asignar su unidad de alta de datos. " +
-                         "Se tuvo que cancelar su sesión actual. " +
-                         "Reintente más tarde y si el problema persiste póngase en contacto con los administradores."
-          }
-        )
-        return
-      end
+      session[:codigo_uad_actual] = UnidadDeAltaDeDatos.find(params[:unidad_de_alta_de_datos_id]).codigo
 
       redirect_to(root_url, :flash => {:tipo => :ok, :titulo => "Se seleccionó correctamente la unidad de alta de datos."})
       return

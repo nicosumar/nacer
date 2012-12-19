@@ -2,43 +2,32 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
-  helper_method :admin_required
-#  helper_method :uad_actual
-
-#  def current_user_session
-#    return @current_user_session if defined?(@current_user_session)
-#    @current_user_session = UserSession.find
-#    puts @current_user_session
-#    return @current_user_session
-#  end
-
-#  def current_user
-#    return @current_user if defined?(@current_user)
-#    @current_user = current_user_session && current_user_session.record
-#  end
-
+  helper_method :admin_required, :modelos_autorizados
+  before_filter :establecer_uad
 
   # establecer_uad
   # Cambia la ruta de búsqueda de esquemas de PostgreSQL para que el usuario acceda prioritariamente
   # a las tablas asociadas con la UAD en la que está habilitado a operar.
-  def establecer_uad(uad)
-    return false unless uad
+  def establecer_uad
+    if !session[:codigo_uad_actual].blank?
+      # Algunos recomiendan limpiar la caché antes de cambiar la ruta de búsqueda
+      # de esquemas (parece que por un bug ya corregido, pero no lastima a nadie hacerlo).
+      ActiveRecord::Base.connection.clear_cache!
 
-    # Algunos recomiendan limpiar la caché antes de cambiar la ruta de búsqueda
-    # de esquemas (parece que por un bug ya corregido, pero no lastima a nadie hacerlo).
-    ActiveRecord::Base.connection.clear_cache!
-
-    # Ejecutamos en un bloque con recuperación por si se produce un error
-    begin
-      # Cambiamos la ruta de búsqueda sobre la conexión ActiveRecord
-      # También recomiendan ejecutar el comando SET sobre la conexión para estar
-      # seguros. Además si esto falla, puede ser que hayamos olvidado crear el
-      # esquema correspondiente a una unidad de alta de datos a la cual hemos
-      # asignado usuarios.
-      ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
-#      ActiveRecord::Base.connection.execute("SET search_path TO uad_#{uad.codigo}, public", "SCHEMA")
-    rescue
-      return false
+      # Ejecutamos en un bloque con recuperación por si se produce un error
+      begin
+        # Cambiamos la ruta de búsqueda sobre la conexión ActiveRecord
+        ActiveRecord::Base.connection.schema_search_path = "uad_#{session[:codigo_uad_actual]}, public"
+      rescue
+        Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+        redirect_to(root_url,
+          :flash => { :tipo => :error, :titulo => "Se produjo un error al iniciar la sesión",
+            :mensaje  => "Sus credenciales son correctas, pero se produjo un error desconocido al intentar asignar su UAD. " +
+                         "Póngase en contacto con los administradores del sistema para solucionar este inconveniente."
+          }
+        )
+        return false
+      end
     end
 
     return true
@@ -68,6 +57,21 @@ class ApplicationController < ActionController::Base
   def parametro_fecha(hash, clave)
     atributo = clave.to_s
     return Date.new(hash[atributo + '(1i)'].to_i, hash[atributo + '(2i)'].to_i, hash[atributo + '(3i)'].to_i)   
+  end
+
+  def modelos_autorizados
+    autorizados = []
+    if current_user
+      autorizados << :afiliados if can? :read, Afiliado
+      autorizados << :novedades_de_los_afiliados if can? :read, NovedadDelAfiliado
+      autorizados << :contactos if can? :read, Contacto
+      autorizados << :convenios_de_gestion if can? :read, ConvenioDeGestion
+      autorizados << :convenios_de_administracion if can? :read, ConvenioDeAdministracion
+      autorizados << :efectores if can? :read, Efector
+      autorizados << :users if can? :read, User
+      autorizados << :addendas if can? :read, Addenda
+    end
+    return autorizados
   end
 
 private

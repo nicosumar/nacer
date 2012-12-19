@@ -51,12 +51,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
   belongs_to :alfabetizacion_del_tutor, :class_name => "NivelDeInstruccion"
   belongs_to :discapacidad
   belongs_to :centro_de_inscripcion
+  belongs_to :creator, :class_name => "User"
+  belongs_to :updater, :class_name => "User"
 
   # Validaciones
-  validate :generar_advertencias
   validate :verificar_fechas
   validate :verificar_documentos_de_identidad
-  validates_presence_of :tipo_de_novedad_id, :clave_de_beneficiario
+  validates_presence_of :tipo_de_novedad_id
   validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
   validates_numericality_of :semanas_de_embarazo, :only_integer => true, :allow_blank => true, :greater_than => 3, :less_than => 43
 
@@ -406,6 +407,177 @@ class NovedadDelAfiliado < ActiveRecord::Base
     # Devolver la cantidad de años
     return diferencia_en_anios
 
+  end
+
+  def error_de_verificacion?
+
+    # Verificamos que se hayan completado los campos obligatorios del formulario
+    campo_obligatorio_vacio = false
+    if apellido.blank?
+      errors.add(:apellido, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+    if nombre.blank?
+      errors.add(:nombre, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+    if numero_de_documento.blank?
+      errors.add(:numero_de_documento, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+    if !fecha_de_nacimiento
+      errors.add(:fecha_de_nacimiento, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+    return true if campo_obligatorio_vacio
+
+    # Verificar que el valor del campo número de documento sea válido, si el tipo es DNI, LC o LE
+    if TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member? tipo_de_documento_id
+      numero_de_documento.gsub!(/[^[:digit:]]/, '')
+      if numero_de_documento.to_i < 50000 || numero_de_documento.to_i > 99999999
+        errors.add(:numero_de_documento, 'no se encuentra en el intervalo esperado (50000-99999999).')
+      end
+    end
+
+    # Verificar que tenga menos de un año si la clase de documento seleccionada es "Ajeno"
+    if clase_de_documento.codigo == "A"
+      if edad_en_anios(Date.today - 2.months) > 0
+        errors.add(:base,
+          "No se puede crear una solicitud de alta con documento ajeno si el niño o niña ya ha cumplido el año de vida"
+        )
+        return true
+      end
+    end
+
+    # Verificaciones para números de documento propios para evitar duplicaciones por tipo y número de documento (motivo 81)
+    if clase_de_documento.codigo == "P"
+      # Verificar si existe en la tabla de afiliados otro beneficiario con el mismo tipo y número de documento propio
+      # que no esté marcado ya como duplicado
+      afiliados =
+        Afiliado.where(
+          "tipo_de_documento_id = ? AND numero_de_documento = ?
+          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+          tipo_de_documento_id, numero_de_documento
+        )
+      if afiliados.size > 0
+        errors.add(:base,
+          "No se puede crear una solicitud de alta porque ya existe " +
+          (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
+          " con el mismo tipo y número de documento: " + afiliados.first.apellido.to_s + ", " + afiliados.first.nombre.to_s +
+          ", " + (afiliados.first.tipo_de_documento ? afiliados.first.tipo_de_documento.codigo + " " : "") +
+          afiliados.first.numero_de_documento.to_s + ", clave " + afiliados.first.clave_de_beneficiario.to_s +
+          (afiliados.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
+          afiliados.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
+        )
+        return true
+      end
+      # Verificar si existe en la tabla de novedades otro beneficiario con el mismo tipo y número de documento propio
+      # que esté pendiente
+      novedades =
+        NovedadDelAfiliado.where(
+          "tipo_de_documento_id = ? AND numero_de_documento = ? AND estado_de_la_novedad_id IN (?)",
+          tipo_de_documento_id, numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+        )
+      if novedades.size > 0
+        errors.add(:base,
+          "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente para el mismo tipo y número" +
+          " de documento: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
+          ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
+          novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
+          (novedades.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
+          novedades.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
+        )
+        return true
+      end
+    end
+
+    # Verificar si existe en la tabla de afiliados otro beneficiario con el mismo nombre, apellido y fecha de nacimiento
+    # que no esté marcado ya como duplicado
+    afiliados =
+      Afiliado.where(
+        "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ?
+        AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+        apellido, nombre, fecha_de_nacimiento
+      )
+    if afiliados.size > 0
+      errors.add(:base,
+        "No se puede crear una solicitud de alta porque ya existe " +
+        (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
+        " con el mismo nombre, apellido y fecha de nacimiento: " + afiliados.first.apellido.to_s + ", " +
+        afiliados.first.nombre.to_s + ", " +
+        (afiliados.first.tipo_de_documento ? afiliados.first.tipo_de_documento.codigo + " " : "") +
+        afiliados.first.numero_de_documento.to_s + ", clave " + afiliados.first.clave_de_beneficiario.to_s +
+        (afiliados.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
+        afiliados.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
+      )
+      return true
+    end
+
+    # Verificar si existe en la tabla de novedades otro beneficiario con el mismo nombre, apellido y fecha de nacimiento
+    # que esté pendiente
+    novedades =
+      NovedadDelAfiliado.where(
+        "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ? AND estado_de_la_novedad_id IN (?)",
+        apellido, nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"), EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+      )
+    if novedades.size > 0
+      errors.add(:base,
+        "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente con el mismo nombre, apellido y" +
+        " fecha de nacimiento: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
+        ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
+        novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
+        (novedades.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
+        novedades.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
+      )
+      return true
+    end
+
+    # Verificación de duplicados con el número de documento de la madre (código 83)
+    if !numero_de_documento_de_la_madre.blank?
+      # Verificar si existe en la tabla de afiliados otro beneficiario con el mismo nombre, fecha de nacimiento y número de
+      # documento de la madre que no esté marcado ya como duplicado
+      afiliados =
+        Afiliado.where(
+          "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
+          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+          nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre
+        )
+      if afiliados.size > 0
+        errors.add(:base,
+          "No se puede crear una solicitud de alta porque ya existe " +
+          (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
+          " con el mismo nombre, fecha de nacimiento y número de documento de la madre: " + afiliados.first.apellido.to_s + 
+          ", " + afiliados.first.nombre.to_s + ", " +
+          (afiliados.first.tipo_de_documento ? afiliados.first.tipo_de_documento.codigo + " " : "") +
+          afiliados.first.numero_de_documento.to_s + ", clave " + afiliados.first.clave_de_beneficiario.to_s +
+          (afiliados.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
+          afiliados.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
+        )
+        return true
+      end
+
+      # Verificar si existe en la tabla de novedades otro beneficiario con el mismo nombre, fecha de nacimiento y número de
+      # documento de la madre que esté pendiente
+      novedades =
+        NovedadDelAfiliado.where(
+          "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ? AND estado_de_la_novedad_id IN (?)",
+          nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"), numero_de_documento_de_la_madre,
+          EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+        )
+      if novedades.size > 0
+        errors.add(:base,
+          "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente con el mismo nombre, fecha de" +
+          " nacimiento y número de documento de la madre: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
+          ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
+          novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
+          (novedades.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
+          novedades.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
+        )
+        return true
+      end
+    end
+
+    return false
   end
 
 end

@@ -26,8 +26,6 @@ ActiveRecord::Schema.define(:version => 20121217121733) do
     t.string   "numero"
   end
 
-  add_index "addendas", ["numero"], :name => "unq_addendas_numero", :unique => true
-
   create_table "afiliados", :id => false, :force => true do |t|
     t.integer "afiliado_id",                           :null => false
     t.string  "clave_de_beneficiario",                 :null => false
@@ -315,8 +313,9 @@ ActiveRecord::Schema.define(:version => 20121217121733) do
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
-    t.string "nombre"
-    t.string "codigo"
+    t.string  "nombre"
+    t.string  "codigo"
+    t.boolean "pendiente"
   end
 
   create_table "estados_de_las_prestaciones", :force => true do |t|

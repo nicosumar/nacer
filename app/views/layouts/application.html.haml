@@ -35,7 +35,6 @@
                   %div.col_2
                     %h3 PROGRAMA SUMAR
                     %ul
-                      %li= link_to "Buscar beneficiario", afiliados_path
                       - if can? :create, NovedadDelAfiliado
                         %li= link_to "Solicitar un alta de beneficiario", new_alta_novedades_de_los_afiliados_path
                       - if can? :read, NovedadDelAfiliado

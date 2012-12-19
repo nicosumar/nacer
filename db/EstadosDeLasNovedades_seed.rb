@@ -27,7 +27,7 @@ EstadoDeLaNovedad.create([
     :pendiente => false },
   { #:id => 6,
     :nombre => "Anulada por el usuario",
-    :codigo => "U"
+    :codigo => "U",
     :pendiente => false },
   { #:id => 7,
     :nombre => "Anulada por el sistema",

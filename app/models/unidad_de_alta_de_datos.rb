@@ -23,13 +23,6 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   validates_length_of :codigo, :is => 3
 
   #
-  # schema
-  # Devuelve el esquema de la base de datos asociado con esta UAD
-  def schema
-    'uad_' + codigo
-  end
-
-  #
   # self.id_del_codigo
   # Devuelve el id asociado con el código pasado
   def self.id_del_codigo(codigo)
@@ -45,15 +38,6 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
     else
       return nil
     end
-  end
-
-  #
-  # self.actual
-  # Devuelve la UnidadDeAltaDeDatos con la que se está trabajando actualmente.
-  def self.actual
-    # Cada UAD trabaja con un 'schema_search_path' distinto, por lo que usamos ese dato para ver
-    # cuál UAD está seleccionada actualmente
-    UnidadDeAltaDeDatos.find_by_codigo(ActiveRecord::Base.connection.schema_search_path.split(',')[0].chomp.split('_')[1])
   end
 
 end
