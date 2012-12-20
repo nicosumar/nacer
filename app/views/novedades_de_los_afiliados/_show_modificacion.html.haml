@@ -4,15 +4,17 @@
 
 %h3 Estado de la solicitud
 %div.field_content
-  %span.field_value= @novedad.estado_de_la_novedad.nombre
-
-- if @novedad.advertencias && @novedad.advertencias.size > 0
-  %p
-    Los siguientes problemas impiden que esta solicitud sea notificada:
-    %br/
-    - @novedad.advertencias.each do |adv|
-      = "- " + adv
+  - if @novedad.advertencias && @novedad.advertencias.size > 0
+    %span.field_value_multiline
+      = @novedad.estado_de_la_novedad.nombre
       %br/
+        Los siguientes problemas impiden que esta solicitud sea notificada:
+        %br/
+        - @novedad.advertencias.each do |adv|
+          = "- " + adv
+          %br/
+  - else
+    %span.field_value_multiline= @novedad.estado_de_la_novedad.nombre
 
 %h3 Clave única de beneficiario
 %div.field_content

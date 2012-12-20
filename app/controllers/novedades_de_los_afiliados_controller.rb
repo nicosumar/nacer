@@ -99,7 +99,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad.apellido = @novedad.apellido.mb_chars.upcase.to_s
       @novedad.nombre = @novedad.nombre.mb_chars.upcase.to_s
 
-      if @novedad.error_de_verificacion?
+      if !@novedad.verificacion_correcta?
         # Volver a presentar el formulario si hay errores de verificación
         render :action => "verificacion"
         return
@@ -120,15 +120,18 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @departamentos = Departamento.ordenados_por_frecuencia(:novedades_de_los_afiliados, :domicilio_departamento_id).collect{
       |i| [i.nombre, i.id]
     }
-    @distritos = []
+    @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados, :domicilio_distrito_id,
+      @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id] }
     @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal}}
     @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados, :lugar_de_atencion_habitual_id).collect{
       |i| [i.nombre, i.id]
     }
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @centros_de_inscripcion = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @centros_de_inscripcion =
+      UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @post_form_url = create_alta_novedades_de_los_afiliados_path
 
-    render "new"
+    render :action => "new"
   end
 
   # GET /novedades_de_los_afiliados/new_modificacion
@@ -200,7 +203,9 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       |i| [i.nombre, i.id]
     }
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @centros_de_inscripcion = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @centros_de_inscripcion =
+      UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @post_form_url = create_modificacion_novedades_de_los_afiliados_path
 
     render "new"
   end
@@ -262,7 +267,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados,
       :lugar_de_atencion_habitual_id).collect{ |i| [i.nombre, i.id]}
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @centros_de_inscripcion = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @centros_de_inscripcion =
+      UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
 
   end
 
@@ -338,10 +344,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         # Creamos una nueva novedad y copiamos los datos del afiliado
         @novedad = NovedadDelAfiliado.new
         @novedad.copiar_atributos_del_afiliado(@afiliado)
-        # Si la clase de documento del beneficiario es 'Propio', eliminar el parámetro ya que no se puede cambiar
-        if @novedad.clase_de_documento && @novedad.clase_de_documento.codigo == "P"
-          params[:novedad_del_afiliado].delete :clase_de_documento_id
-        end
+
         # Actualizar el resto de los atributos con los valores pasados en los parámetros
         @novedad.attributes = params[:novedad_del_afiliado]
         @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("M")
@@ -374,7 +377,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
 
-    if @novedad.invalid? || @novedad.error_de_verificacion?
+    if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
       return
@@ -389,18 +392,27 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @novedad.pais_de_nacimiento_id && !@paises.collect{ |i| i[1] }.member?(@novedad.pais_de_nacimiento_id) ||
         @novedad.lengua_originaria_id && !@lenguas_originarias.collect{ |i| i[1] }.member?(@novedad.lengua_originaria_id) ||
         @novedad.tribu_originaria_id && !@tribus_originarias.collect{ |i| i[1] }.member?(@novedad.tribu_originaria_id) ||
-        @novedad.alfabetizacion_del_beneficiario_id && !@niveles_de_instruccion.collect{ |i| i[1] }.member?(@novedad.alfabetizacion_del_beneficiario_id) ||
+        @novedad.alfabetizacion_del_beneficiario_id && !@niveles_de_instruccion.collect{
+          |i| i[1] }.member?(@novedad.alfabetizacion_del_beneficiario_id) ||
         @novedad.domicilio_departamento_id && !@departamentos.collect{ |i| i[1] }.member?(@novedad.domicilio_departamento_id) ||
         @novedad.domicilio_distrito_id && !@distritos.collect{ |i| i[1] }.member?(@novedad.domicilio_distrito_id) ||
-        @novedad.lugar_de_atencion_habitual_id && !@efectores.collect{ |i| i[1] }.member?(@novedad.lugar_de_atencion_habitual_id) ||
-        @novedad.tipo_de_documento_de_la_madre_id && !@tipos_de_documentos.collect{ |i| i[1] }.member?(@novedad.tipo_de_documento_de_la_madre_id) ||
-        @novedad.alfabetizacion_de_la_madre_id && !@niveles_de_instruccion.collect{ |i| i[1] }.member?(@novedad.alfabetizacion_de_la_madre_id) ||
-        @novedad.tipo_de_documento_del_padre_id && !@tipos_de_documentos.collect{ |i| i[1] }.member?(@novedad.tipo_de_documento_del_padre_id) ||
-        @novedad.alfabetizacion_del_padre_id && !@niveles_de_instruccion.collect{ |i| i[1] }.member?(@novedad.alfabetizacion_del_padre_id) ||
-        @novedad.tipo_de_documento_del_tutor_id && !@tipos_de_documentos.collect{ |i| i[1] }.member?(@novedad.tipo_de_documento_del_tutor_id) ||
-        @novedad.alfabetizacion_del_tutor_id && !@niveles_de_instruccion.collect{ |i| i[1] }.member?(@novedad.alfabetizacion_del_tutor_id) ||
+        @novedad.lugar_de_atencion_habitual_id && !@efectores.collect{
+          |i| i[1] }.member?(@novedad.lugar_de_atencion_habitual_id) ||
+        @novedad.tipo_de_documento_de_la_madre_id && !@tipos_de_documentos.collect{
+          |i| i[1] }.member?(@novedad.tipo_de_documento_de_la_madre_id) ||
+        @novedad.alfabetizacion_de_la_madre_id && !@niveles_de_instruccion.collect{
+          |i| i[1] }.member?(@novedad.alfabetizacion_de_la_madre_id) ||
+        @novedad.tipo_de_documento_del_padre_id && !@tipos_de_documentos.collect{
+          |i| i[1] }.member?(@novedad.tipo_de_documento_del_padre_id) ||
+        @novedad.alfabetizacion_del_padre_id && !@niveles_de_instruccion.collect{
+          |i| i[1] }.member?(@novedad.alfabetizacion_del_padre_id) ||
+        @novedad.tipo_de_documento_del_tutor_id && !@tipos_de_documentos.collect{
+          |i| i[1] }.member?(@novedad.tipo_de_documento_del_tutor_id) ||
+        @novedad.alfabetizacion_del_tutor_id && !@niveles_de_instruccion.collect{
+          |i| i[1] }.member?(@novedad.alfabetizacion_del_tutor_id) ||
         @novedad.discapacidad_id && !@discapacidades.collect{ |i| i[1] }.member?(@novedad.discapacidad_id) ||
-        @novedad.centro_de_inscripcion_id && !@centros_de_inscripcion.collect{ |i| i[1] }.member?(@novedad.centro_de_inscripcion_id)
+        @novedad.centro_de_inscripcion_id && !@centros_de_inscripcion.collect{
+          |i| i[1] }.member?(@novedad.centro_de_inscripcion_id)
       )
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
@@ -461,7 +473,17 @@ class NovedadesDeLosAfiliadosController < ApplicationController
   # PUT /novedades_de_los_afiliados/:id
   def update
     # Verificar los permisos del usuario
-    if cannot? :update, NovedadDelAfiliado
+    if cannot? :create, NovedadDelAfiliado
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Verificar que la petición contenga los parámetros esperados
+    if !params[:novedad_del_afiliado]
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -470,14 +492,24 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       return
     end
 
-    # Buscar la novedad
+    # Obtener la novedad
     begin
       @novedad = NovedadDelAfiliado.find(params[:id])
       if @novedad.tipo_de_novedad.codigo == "M"
-        @afiliado = Afiliado.find_by_clave_de_beneficiario(@novedad.clave_de_beneficiario)
+        # Verificar que se haya pasado el ID del afiliado que se modificará
+        if !params[:afiliado_id]
+          redirect_to( root_url,
+            :flash => { :tipo => :error, :titulo => "La petición no es válida",
+              :mensaje => "Se informará al administrador del sistema sobre este incidente."
+            }
+          )
+          return
+        end
+        # Buscar el afiliado
+        @afiliado = Afiliado.find(params[:afiliado_id])
       end
     rescue ActiveRecord::RecordNotFound
-      redirect_to(root_url,
+      redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -485,65 +517,102 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       return
     end
 
-    # Eliminar parámetros que no se pueden asignar masivamente
-    params[:novedad_del_afiliado].delete :tipo_de_novedad_id
-    params[:novedad_del_afiliado].delete :clave_de_beneficiario
-    if @novedad.clase_de_documento.codigo == "P"
-      params[:novedad_del_afiliado].delete :clase_de_documento_id
-    end
-
+    # Modificar la novedad desde los parámetros, según el tipo de operación y establecer los valores que no se pueden asignar masivamente
     @novedad.attributes = params[:novedad_del_afiliado]
+    @novedad.categoria_de_afiliado_id = @novedad.categorizar
+    @novedad.apellido = @novedad.apellido.mb_chars.upcase.to_s
+    @novedad.nombre = @novedad.nombre.mb_chars.upcase.to_s
+
+    # Crear los objetos necesarios para regenerar la vista si hay algún error
+    @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados, :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
+    @lenguas_originarias =
+      LenguaOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados, :lengua_originaria_id).collect{ |i| [i.nombre, i.id] }
+    @tribus_originarias =
+      TribuOriginaria.ordenados_por_frecuencia(:novedades_de_los_afiliados, :tribu_originaria_id).collect{ |i| [i.nombre, i.id] }
+    @niveles_de_instruccion = NivelDeInstruccion.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @departamentos = Departamento.ordenados_por_frecuencia(:novedades_de_los_afiliados, :domicilio_departamento_id).collect{
+      |i| [i.nombre, i.id]
+    }
+    @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados,
+      :domicilio_distrito_id, @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
+    @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal}}
+    @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados, :lugar_de_atencion_habitual_id).collect{
+      |i| [i.nombre, i.id]
+    }
+    @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @centros_de_inscripcion =
+      UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
 
     if @novedad.invalid?
-      # Si hay errores en los datos ingresados, volver a mostrar el formulario con el detalle de los errores
-      @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-      @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados, :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id] }
-      @lenguas_originarias =
-        LenguaOriginaria.ordenados_por_frecuencia(
-          :novedades_de_los_afiliados, :lengua_originaria_id
-        ).collect{ |i| [i.nombre, i.id] }
-      @tribus_originarias =
-        TribuOriginaria.ordenados_por_frecuencia(
-          :novedades_de_los_afiliados, :tribu_originaria_id
-        ).collect{ |i| [i.nombre, i.id] }
-      @niveles_de_instruccion = NivelDeInstruccion.find(:all, :order => :id).collect{ |i| [i.nombre, i.id] }
-      @departamentos =
-        Departamento.ordenados_por_frecuencia(
-          :novedades_de_los_afiliados, :domicilio_departamento_id
-        ).collect{ |i| [i.nombre, i.id] }
-      @distritos =
-        Distrito.ordenados_por_frecuencia(
-          :novedades_de_los_afiliados, :domicilio_distrito_id, @novedad.domicilio_departamento_id
-        ).collect{ |i| [i.nombre, i.id] }
-      @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal }}
-      @efectores =
-        Efector.ordenados_por_frecuencia(
-          :novedades_de_los_afiliados, :lugar_de_atencion_habitual_id
-        ).collect{ |i| [i.nombre, i.id] }
-      @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id] }
-      @centros_de_inscripcion = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "edit"
+      return
+    end
+
+    # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
+    if
+      (
+        @novedad.clase_de_documento_id && !@clases_de_documentos.collect{ |i| i[1] }.member?(@novedad.clase_de_documento_id) ||
+        @novedad.tipo_de_documento_id && !@tipos_de_documentos.collect{ |i| i[1] }.member?(@novedad.tipo_de_documento_id) ||
+        @novedad.sexo_id && !@sexos.collect{ |i| i[1] }.member?(@novedad.sexo_id) ||
+        @novedad.pais_de_nacimiento_id && !@paises.collect{ |i| i[1] }.member?(@novedad.pais_de_nacimiento_id) ||
+        @novedad.lengua_originaria_id && !@lenguas_originarias.collect{ |i| i[1] }.member?(@novedad.lengua_originaria_id) ||
+        @novedad.tribu_originaria_id && !@tribus_originarias.collect{ |i| i[1] }.member?(@novedad.tribu_originaria_id) ||
+        @novedad.alfabetizacion_del_beneficiario_id && !@niveles_de_instruccion.collect{
+          |i| i[1] }.member?(@novedad.alfabetizacion_del_beneficiario_id) ||
+        @novedad.domicilio_departamento_id && !@departamentos.collect{ |i| i[1] }.member?(@novedad.domicilio_departamento_id) ||
+        @novedad.domicilio_distrito_id && !@distritos.collect{ |i| i[1] }.member?(@novedad.domicilio_distrito_id) ||
+        @novedad.lugar_de_atencion_habitual_id && !@efectores.collect{
+          |i| i[1] }.member?(@novedad.lugar_de_atencion_habitual_id) ||
+        @novedad.tipo_de_documento_de_la_madre_id && !@tipos_de_documentos.collect{
+          |i| i[1] }.member?(@novedad.tipo_de_documento_de_la_madre_id) ||
+        @novedad.alfabetizacion_de_la_madre_id && !@niveles_de_instruccion.collect{
+          |i| i[1] }.member?(@novedad.alfabetizacion_de_la_madre_id) ||
+        @novedad.tipo_de_documento_del_padre_id && !@tipos_de_documentos.collect{
+          |i| i[1] }.member?(@novedad.tipo_de_documento_del_padre_id) ||
+        @novedad.alfabetizacion_del_padre_id && !@niveles_de_instruccion.collect{
+          |i| i[1] }.member?(@novedad.alfabetizacion_del_padre_id) ||
+        @novedad.tipo_de_documento_del_tutor_id && !@tipos_de_documentos.collect{
+          |i| i[1] }.member?(@novedad.tipo_de_documento_del_tutor_id) ||
+        @novedad.alfabetizacion_del_tutor_id && !@niveles_de_instruccion.collect{
+          |i| i[1] }.member?(@novedad.alfabetizacion_del_tutor_id) ||
+        @novedad.discapacidad_id && !@discapacidades.collect{ |i| i[1] }.member?(@novedad.discapacidad_id) ||
+        @novedad.centro_de_inscripcion_id && !@centros_de_inscripcion.collect{
+          |i| i[1] }.member?(@novedad.centro_de_inscripcion_id)
+      )
+      redirect_to(root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+         :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Generar mensajes de advertencia por incompletitud (si existieran)
+    @novedad.generar_advertencias
+
+    # Registrar el usuario que realiza la modificación
+    @novedad.updater_id = current_user.id
+
+    if @novedad.advertencias && @novedad.advertencias.size > 0
+      # A la solicitud le faltan datos esenciales. Guardarla, pero marcándola como incompleta.
+      @novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo("I")
+      @novedad.save
+      redirect_to( novedad_del_afiliado_path(@novedad),
+        :flash => { :tipo => :advertencia, :titulo => "Se guardó la solicitud, pero faltan datos esenciales",
+          :mensaje => @novedad.advertencias
+        }
+      )
     else
-      if @novedad.advertencias && @novedad.advertencias.size > 0
-        # A la solicitud le faltan datos esenciales. Guardarla, pero marcándola como incompleta.
-        @novedad.estado_de_la_novedad_id = 1
-        @novedad.save
-        redirect_to( novedad_del_afiliado_path(@novedad),
-          :flash => { :tipo => :advertencia,
-            :titulo => "La modificación se guardó correctamente, pero la solicitud no está completa",
-            :mensaje => @novedad.advertencias
-          }
-        )
-      else
-        # Guardar la solicitud, marcándola como pendiente de informar
-        @novedad.estado_de_la_novedad_id = 2
-        @novedad.save
-        redirect_to( novedad_del_afiliado_path(@novedad),
-          :flash => { :tipo => :ok, :titulo => "La modificación de la solicitud se guardó correctamente" }
-        )
-      end
+      # Guardar la solicitud, marcándola como pendiente de informar
+      @novedad.estado_de_la_novedad_id = 2
+      @novedad.save
+      redirect_to( novedad_del_afiliado_path(@novedad), 
+        :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
+      )
     end
   end
 

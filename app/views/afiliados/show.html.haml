@@ -336,17 +336,3 @@
           - @afiliado.observaciones_generales.split("\n").each do |linea|
             = linea
             %br/
-  
-    %h3 Última modificación de los datos
-    %div.field_content
-      %span.field_name Carga de la última modificación:
-      - if @afiliado.fecha_de_carga
-        %span.field_value= @afiliado.fecha_de_carga.strftime("%d/%m/%Y")
-      - else
-        %span.field_empty No se registró la fecha y hora de carga.
-    %div.field_content
-      %span.field_name Usuario que cargó:
-      - if @afiliado.usuario_que_carga
-        %span.field_value= @afiliado.usuario_que_carga
-      - else
-        %span.field_empty No se registró el usuario.

@@ -125,7 +125,9 @@ a {
   border: none; }
 
 #search input {
-  margin-top: 6px;
+  margin-top: 5px;
+  margin-left: 20px;
+  height: 20px;
   padding: 2px;
   border: 0px solid #000000;
   border-radius: 3px;
@@ -138,8 +140,8 @@ a {
 
 #lupa {
   float: right;
-  margin-left: 10px; 
-  margin-right: 0px; 
+  margin-left: 5px; 
+  margin-right: 8px; 
   margin-top: 11px; }
 
 /* Page */
@@ -168,19 +170,6 @@ a {
   width: 920px;
   padding: 20px 20px 0px 20px;
   clear: both;
-}
-
-#busqueda-afiliado {
-  padding: 3px 20px 0px 10px;
-  float: left;
-}
-
-#busqueda-afiliado input[type=submit] {
-  display: none;
-}
-
-#busqueda-afiliado input[type=text] {
-  font-size: 1.1em;
 }
 
 #resultados {

@@ -13,10 +13,4 @@
   %h2.first-header-with-note Formulario de creación de una nueva solicitud
   %p.note Los campos marcados con asterisco (*) son obligatorios
 
-  - case
-    - when @novedad.tipo_de_novedad.codigo == "A"
-      = render "form_alta"
-    - when @novedad.tipo_de_novedad.codigo == "B"
-      = render "form_baja"
-    - when @novedad.tipo_de_novedad.codigo == "M"
-      = render "form_modificacion"
+  = render "form"

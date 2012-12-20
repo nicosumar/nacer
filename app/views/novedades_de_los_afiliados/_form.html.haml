@@ -1,15 +1,24 @@
-= form_for(@novedad, :url => (@novedad.persisted? ? update_modificacion_novedad_del_afiliado_url : create_modificacion_novedades_de_los_afiliados_url)) do |f|
-  %div.hidden_field
-    %input{ :id => "afiliado_id", :name => "afiliado_id", :type => "hidden", :value => @afiliado.id }
+= form_for(@novedad, :url => @post_form_url) do |f|
+  - if @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("M")
+    %div.hidden_field
+      %input{ :id => "afiliado_id", :name => "afiliado_id", :type => "hidden", :value => @afiliado.id }
 
   %h3 Tipo de solicitud
   %div.field_content
-    %span.field_value Solicitud de modificación de datos
+    %span.field_value
+      - case
+        - when @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("A")
+          Solicitud de alta de beneficiario
+        - when @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("B")
+          Solicitud de baja de beneficiario
+        - when @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("M")
+          Solicitud de modificación de datos del beneficiario
 
-  %h3.header-with-note Clave única de beneficiario
-  %p.note La clave de beneficiario no se puede modificar
-  %div.field_content
-    %span.field_value= @afiliado.clave_de_beneficiario
+  - if @novedad.tipo_de_novedad_id != TipoDeNovedad.id_del_codigo("A") || @novedad.persisted?
+    %h3.header-with-note Clave única de beneficiario
+    %p.note La clave de beneficiario no se puede modificar
+    %div.field_content
+      %span.field_value= @novedad.clave_de_beneficiario
 
   %h3 Datos personales
   %div.field
@@ -18,15 +27,10 @@
   %div.field
     = f.label :nombre, "Nombre*"
     = f.text_field :nombre, :style => "text-transform: uppercase;"
-  - if @afiliado.clase_de_documento && @afiliado.clase_de_documento.codigo == "P"
-    %div.field_content
-      %span.field_name Clase de documento
-      %span.field_value= @afiliado.clase_de_documento.nombre
-  - else
-    %div.field
-      = f.label :clase_de_documento_id, "Clase de documento*"
-      = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id), |
-        {:include_blank => true} |
+  %div.field
+    = f.label :clase_de_documento_id, "Clase de documento*"
+    = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id), |
+      {:include_blank => true} |
   %div.field
     = f.label :tipo_de_documento_id, "Tipo de documento*"
     = f.select :tipo_de_documento_id, options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_id), |
@@ -44,17 +48,16 @@
   %h3 Datos de nacimiento, sexo, origen y estudios
   %div.field
     = f.label :sexo_id, "Sexo*"
-    = f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id), |
-      {:inculde_blank => true} |
+    = f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id), {:include_blank => true}
   %div.field
     = f.label :fecha_de_nacimiento, "Fecha de nacimiento*"
     = f.date_select :fecha_de_nacimiento, {:start_year => 1936, :end_year => Date.today.year, |
       :include_blank => true} |
   %div.field
-    = f.label :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los " + |
+    = f.label :es_menor, :title => "Marcar la opción si aún no cumple los " + |
       Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años." |
     -
-    = f.check_box :es_menor, :title => "Marcar esta opción si a la fecha de inscripción o modificación aún no cumple los " + |
+    = f.check_box :es_menor, :title => "Marcar la opción si aún no cumple los " + |
       Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + " años." |
   %div.field
     = f.label :pais_de_nacimiento_id
@@ -129,6 +132,7 @@
   %h4 Observaciones
   %div.field
     = f.text_area :observaciones, :size => "80x8"
+
   %h3 Lugar de atención habitual
   %div.field
     = f.select :lugar_de_atencion_habitual_id, options_for_select(@efectores, @novedad.lugar_de_atencion_habitual_id), |
@@ -264,7 +268,10 @@
   %div.actions
     - if @novedad.new_record?
       = f.submit "Crear la solicitud"
-      = link_to "Cancelar", @afiliado
+      - if @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("A")
+        = link_to "Cancelar", root_url
+      - else
+        = link_to "Cancelar", @afiliado
     - else
       = f.submit "Modificar la solicitud"
       = link_to "Cancelar", @novedad

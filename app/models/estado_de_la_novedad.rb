@@ -5,6 +5,6 @@ class EstadoDeLaNovedad < ActiveRecord::Base
   # Devuelve el ID asociado con el código pasado
   def self.id_del_codigo(codigo)
     return nil if codigo.blank?
-    find_by_codigo(codigo)
+    find_by_codigo(codigo).id
   end
 end
