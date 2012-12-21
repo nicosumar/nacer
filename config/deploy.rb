@@ -5,9 +5,9 @@ set :repository,  "http://github.com/sbosio/nacer"
 set :scm, :git
 set :deploy_to, "/var/www"
 
-role :web, "192.168.1.64"
-role :app, "192.168.1.64"
-role :db,  "192.168.1.64", :primary => true
+role :web, "10.101.248.68"
+role :app, "10.101.248.68"
+role :db,  "10.101.248.68", :primary => true
 
 # If you are using Passenger mod_rails uncomment this:
 namespace :deploy do
