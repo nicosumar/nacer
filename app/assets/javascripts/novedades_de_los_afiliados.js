@@ -19,10 +19,6 @@ $(document).ready(function() {
   modificarVisibilidadEstaEmbarazada();
 
   $('#novedad_del_afiliado_sexo_id').bind('change', modificarVisibilidadEmbarazo);
-// TODO: Ver la conveniencia de modificar la visibilidad de la sección Embarazo con base en la edad
-//  $('#novedad_del_afiliado_fecha_de_nacimiento_1i').bind('change', modificarVisibilidadEmbarazo);
-//  $('#novedad_del_afiliado_fecha_de_nacimiento_2i').bind('change', modificarVisibilidadEmbarazo);
-//  $('#novedad_del_afiliado_fecha_de_nacimiento_3i').bind('change', modificarVisibilidadEmbarazo);
   $('#novedad_del_afiliado_se_declara_indigena').bind('change', modificarVisibilidadOriginarios);
   $('#novedad_del_afiliado_alfabetizacion_del_beneficiario_id').bind('change', modificarVisibilidadAlfabBenef);
   $('#novedad_del_afiliado_domicilio_departamento_id').bind('change', modificarSelectDistritos);
@@ -32,6 +28,8 @@ $(document).ready(function() {
   $('#novedad_del_afiliado_alfabetizacion_del_padre_id').bind('change', modificarVisibilidadAlfabPadre);
   $('#novedad_del_afiliado_alfabetizacion_del_tutor_id').bind('change', modificarVisibilidadAlfabTutor);
   $('#novedad_del_afiliado_esta_embarazada').bind('change', modificarVisibilidadEstaEmbarazada);
+
+  $('#novedad_del_afiliado_apellido').focus();
 
   function modificarVisibilidadOriginarios() {
     if ($('#novedad_del_afiliado_se_declara_indigena').attr('checked'))
@@ -44,7 +42,7 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadAlfabBenef() {
-    if ($('#novedad_del_afiliado_alfabetizacion_del_beneficiario_id').val() > 2)
+    if ($('#novedad_del_afiliado_alfabetizacion_del_beneficiario_id').val() > 4)
     {
       $('#alfab_benef').show();
       $('#novedad_del_beneficiario_alfab_beneficiario_anios_ultimo_nivel').focus();
@@ -98,7 +96,7 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadAlfabMadre() {
-    if ($('#novedad_del_afiliado_alfabetizacion_de_la_madre_id').val() > 2)
+    if ($('#novedad_del_afiliado_alfabetizacion_de_la_madre_id').val() > 4)
     {
       $('#alfab_madre').show();
       $('#novedad_del_beneficiario_alfab_madre_anios_ultimo_nivel').focus();
@@ -108,7 +106,7 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadAlfabPadre() {
-    if ($('#novedad_del_afiliado_alfabetizacion_del_padre_id').val() > 2)
+    if ($('#novedad_del_afiliado_alfabetizacion_del_padre_id').val() > 4)
     {
       $('#alfab_padre').show();
       $('#novedad_del_beneficiario_alfab_padre_anios_ultimo_nivel').focus();
@@ -118,7 +116,7 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadAlfabTutor() {
-    if ($('#novedad_del_afiliado_alfabetizacion_del_tutor_id').val() > 2)
+    if ($('#novedad_del_afiliado_alfabetizacion_del_tutor_id').val() > 4)
     {
       $('#alfab_tutor').show();
       $('#novedad_del_beneficiario_alfab_tutor_anios_ultimo_nivel').focus();

@@ -421,9 +421,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
       # que no esté marcado ya como duplicado
       afiliados =
         Afiliado.where(
-          "tipo_de_documento_id = ? AND numero_de_documento = ?
+          "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ?
           AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
-          tipo_de_documento_id, numero_de_documento
+          clase_de_documento_id, tipo_de_documento_id, numero_de_documento
         )
       if afiliados.size > 0
         errors.add(:base,

@@ -4,7 +4,7 @@
 
 #content-header
   %h1= @afiliado.nombre_completo
-  - if can? :update, @afiliado
+  - if can? :create, NovedadDelAfiliado
     - if @afiliado.novedad_pendiente?
       #action-links
         = link_to "Ver la solicitud pendiente", novedad_del_afiliado_path(@afiliado.novedad_pendiente)
@@ -12,31 +12,31 @@
       #action-links
         = link_to("Solicitar modificación de datos", |
           new_modificacion_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id)) |
-        = link_to("Solicitar la baja", new_baja_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id))
+        -#= link_to("Solicitar la baja", new_baja_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id))
+        = link_to("Solicitar la baja", "#", :title => "En preparación... Aún no disponible")
 
 
 #content-body
   %h2.first-header Información registrada en el padrón
 
   #estado
+    %h3 Estado de la inscripción
     - if @afiliado.activo
-      %span.active
-        - if @afiliado.sexo_id == 1
-          Beneficiaria activa
-        - else
-          Beneficiario activo
+      #info.infobox-ok.no-margin
+        %h2
+          - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
+            La beneficiaria se encuentra activa
+          - else
+            El beneficiario se encuentra activo
     - else
-      %span.inactive
-        - if @afiliado.sexo_id == 1
-          Beneficiaria inactiva
-        - else
-          Beneficiario inactivo
-      %span.motive
-        Motivo:
-        - if @afiliado.mensaje_de_la_baja
-          = @afiliado.mensaje_de_la_baja
-        - else
-          No se ha podido determinar el motivo.
+      #info.infobox-advertencia.no-margin
+        %h2
+          - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
+            La beneficiaria se encuentra inactiva
+          - else
+            El beneficiario se encuentra inactivo
+        %ul
+          %li= @afiliado.mensaje_de_la_baja
 
   #datos
 

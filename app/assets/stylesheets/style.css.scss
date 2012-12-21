@@ -36,7 +36,7 @@ body {
 
 h1, h2, h3, h4 {
   padding: 10px 0px 10px 0px;
-  font-weight: normal;
+  font-weight: bold;
   clear: both;
 }
 
@@ -64,14 +64,11 @@ h1 {
 
 h2 {
   font-size: 1.2em;
+  font-style: italic;
 }
 
 h3 {
   font-size: 1.1em;
-}
-
-h4 {
-  font-weight: bold;
 }
 
 ul, ol {
@@ -455,7 +452,7 @@ div.field_with_errors {
   -webkit-border-radius: 5px;
   h2 {
     margin: 0;
-    padding: 8px 0px;
+    padding: 8px 0px 2px 0px;
     font-weight: bold;
   }
   ul {

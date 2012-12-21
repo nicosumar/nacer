@@ -250,13 +250,21 @@
 
   %h3 Fecha y centro inscriptor
   %div.field
-    = f.label :fecha_de_la_novedad
+    = f.label :fecha_de_la_novedad, "Fecha de inscripción / modificación*"
     = f.date_select :fecha_de_la_novedad, {:start_year => Date.today.year - 1, :end_year => Date.today.year, |
       :include_blank => true} |
-  %div.field
-    = f.label :centro_de_inscripcion_id
-    = f.select :centro_de_inscripcion_id, options_for_select(@centros_de_inscripcion, @novedad.centro_de_inscripcion_id), |
-      {:include_blank => true} |
+  - if @centros_de_inscripcion.size == 1
+    %div.hidden_field
+      %input{ :id => "novedad_del_afiliado_centro_de_inscripcion_id", :name => "novedad_del_afiliado[centro_de_inscripcion_id]", |
+        :type => "hidden", :value => @centros_de_inscripcion[0][1] } |
+    %div.field_content
+      %span.field_name Centro de inscripción
+      %span.field_value= @centros_de_inscripcion[0][0]
+  - else
+    %div.field
+      = f.label :centro_de_inscripcion_id, "Centro de inscripción*"
+      = f.select :centro_de_inscripcion_id, options_for_select(@centros_de_inscripcion, @novedad.centro_de_inscripcion_id), |
+        {:include_blank => true} |
   %div.field
     = f.label :nombre_del_agente_inscriptor
     = f.text_field :nombre_del_agente_inscriptor, :style => "text-transform: uppercase;"
