@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 
   # Seguridad para asignaciones masivas
   attr_accessible :nombre, :apellido, :sexo_id, :fecha_de_nacimiento
-  attr_accessible :email
+  attr_accessible :email, :password, :password_confirmation, :observaciones
   attr_readonly :observaciones
 
   # Asociaciones

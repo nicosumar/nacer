@@ -8,11 +8,11 @@
     %span.field_value_multiline
       = @novedad.estado_de_la_novedad.nombre
       %br/
-        Los siguientes problemas impiden que esta solicitud sea notificada:
+      Los siguientes problemas impiden que esta solicitud sea notificada:
+      %br/
+      - @novedad.advertencias.each do |adv|
+        = "- " + adv
         %br/
-        - @novedad.advertencias.each do |adv|
-          = "- " + adv
-          %br/
   - else
     %span.field_value_multiline= @novedad.estado_de_la_novedad.nombre
 
@@ -863,6 +863,6 @@
 %div.field_content
   %span.field_name Último usuario que modificó esta solicitud
   - if @novedad.updater_id
-    %span.field_value= @novedad.updated_by
+    %span.field_value= @novedad.updater.nombre_completo
   - else
     %span.field_empty No se registró el usuario que realizó la última modificación

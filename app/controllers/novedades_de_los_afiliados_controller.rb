@@ -129,7 +129,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
-    @post_form_url = create_alta_novedades_de_los_afiliados_path
+    @post_form_url = create_alta_novedades_de_los_afiliados_url
 
     render :action => "new"
   end
@@ -205,7 +205,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
-    @post_form_url = create_modificacion_novedades_de_los_afiliados_path
+    @post_form_url = create_modificacion_novedades_de_los_afiliados_url
 
     render "new"
   end
@@ -315,10 +315,12 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         # Crear el objeto desde los parámetros
         @novedad = NovedadDelAfiliado.new(params[:novedad_del_afiliado])
         @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("A")
+        @post_form_url = create_alta_novedades_de_los_afiliados_url
 
       when tipo == :baja
         @novedad = NovedadDelAfiliado.new(params[:novedad_del_afiliado])
         @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("B")
+        @post_form_url = create_baja_novedades_de_los_afiliados_url
 
       when tipo == :modificacion
         # Verificar que se haya pasado el ID del afiliado que se modificará
@@ -344,6 +346,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         # Creamos una nueva novedad y copiamos los datos del afiliado
         @novedad = NovedadDelAfiliado.new
         @novedad.copiar_atributos_del_afiliado(@afiliado)
+        @post_form_url = create_modificacion_novedades_de_los_afiliados_url
 
         # Actualizar el resto de los atributos con los valores pasados en los parámetros
         @novedad.attributes = params[:novedad_del_afiliado]

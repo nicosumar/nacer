@@ -144,6 +144,15 @@ class UnidadesDeAltaDeDatosController < ApplicationController
       @unidad_de_alta_de_datos.creator_id = current_user.id
       @unidad_de_alta_de_datos.updater_id = current_user.id
 
+      # Añadir una observación para recordar el comando que debe ejecutarse en el sistema de gestión
+      @unidad_de_alta_de_datos.observaciones +=
+        "\n\n-- Comando requerido para ejecutar en el sistema de gestión del padrón:\n" +
+        "INSERT INTO SMIUADs\n" +
+        "  (CodigoUAD, NombreUAD, CodigoProvincia, Localidad, PersonaResponsable, Telefono)\n" +
+        "  VALUES ('#{@unidad_de_alta_de_datos.codigo}', '#{@unidad_de_alta_de_datos.nombre[0..49].to_s}', " +
+        "'#{('%02d' % Parametro.valor_del_parametro(:id_de_esta_provincia))}', '<localidad>', " +
+        "'<persona responsable>', '<teléfono>');"
+
       # Guardar la nueva unidad de alta de datos
       @unidad_de_alta_de_datos.save
 
@@ -156,9 +165,12 @@ class UnidadesDeAltaDeDatosController < ApplicationController
 
       redirect_to(@unidad_de_alta_de_datos,
         :flash => { :tipo => :ok, :titulo => 'La unidad de alta de datos se creó correctamente.',
-          :mensaje => "Deberá crear la unidad de alta de datos en el sistema de gestión del padrón," +
-                      "utilizando el siguiente comando SQL: INSERT INTO SMIuads () VALUES ();" +
-                      "antes de poder procesar los archivos generados por esta UAD."
+          :mensaje => "Deberá crear la unidad de alta de datos en el sistema de gestión del padrón, " +
+                      "utilizando el siguiente comando SQL: INSERT INTO SMIUADs (CodigoUAD, NombreUAD, CodigoProvincia, " +
+                      "Localidad, PersonaResponsable, Telefono) VALUES ('#{@unidad_de_alta_de_datos.codigo}', " +
+                      "'#{@unidad_de_alta_de_datos.nombre[0..49].to_s}', " +
+                      "'#{('%02d' % Parametro.valor_del_parametro(:id_de_esta_provincia))}', '<localidad>', " +
+                      "'<responsable>', '<telefono>'); -- antes de poder procesar los archivos generados por esta UAD."
         }
       )
     else

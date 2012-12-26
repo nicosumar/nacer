@@ -86,6 +86,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     atributos_del_afiliado.delete "fecha_de_carga"
     atributos_del_afiliado.delete "usuario_que_carga"
     atributos_del_afiliado.delete "fecha_de_la_ultima_novedad"
+    self.esta_embarazada = atributos_del_afiliado.delete "embarazo_actual"
     self.attributes = atributos_del_afiliado
 
     # Copiar los atributos que no se pueden asignar masivamente
@@ -419,15 +420,25 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if clase_de_documento_id == ClaseDeDocumento.id_del_codigo("P")
       # Verificar si existe en la tabla de afiliados otro beneficiario con el mismo tipo y número de documento propio
       # que no esté marcado ya como duplicado
-      afiliados =
-        Afiliado.where(
-          "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ?
-          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
-          clase_de_documento_id, tipo_de_documento_id, numero_de_documento
-        )
+      if tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("A")
+        afiliados =
+          Afiliado.where(
+            "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ?
+            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+            clase_de_documento_id, tipo_de_documento_id, numero_de_documento
+          )
+      else
+        afiliados =
+          Afiliado.where(
+            "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ?
+            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))
+            AND clave_de_beneficiario != ?",
+            clase_de_documento_id, tipo_de_documento_id, numero_de_documento, clave_de_beneficiario
+          )
+      end
       if afiliados.size > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta porque ya existe " +
+          "No se puede crear la solicitud porque ya existe " +
           (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
           " con el mismo tipo y número de documento: " + afiliados.first.apellido.to_s + ", " + afiliados.first.nombre.to_s +
           ", " + (afiliados.first.tipo_de_documento ? afiliados.first.tipo_de_documento.codigo + " " : "") +
@@ -468,12 +479,22 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     # Verificar si existe en la tabla de afiliados otro beneficiario con el mismo nombre, apellido y fecha de nacimiento
     # que no esté marcado ya como duplicado
-    afiliados =
-      Afiliado.where(
-        "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ?
-        AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
-        apellido, nombre, fecha_de_nacimiento
-      )
+    if tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("A")
+      afiliados =
+        Afiliado.where(
+          "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ?
+          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+          apellido, nombre, fecha_de_nacimiento
+        )
+    else
+      afiliados =
+        Afiliado.where(
+          "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ?
+          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))
+          AND clave_de_beneficiario != ?", apellido, nombre, fecha_de_nacimiento,
+          clave_de_beneficiario
+        )
+    end
     if afiliados.size > 0
       errors.add(:base,
         "No se puede crear una solicitud de alta porque ya existe " +
@@ -520,12 +541,22 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if !numero_de_documento_de_la_madre.blank?
       # Verificar si existe en la tabla de afiliados otro beneficiario con el mismo nombre, fecha de nacimiento y número de
       # documento de la madre que no esté marcado ya como duplicado
-      afiliados =
-        Afiliado.where(
-          "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
-          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
-          nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre
-        )
+      if tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("A")
+        afiliados =
+          Afiliado.where(
+            "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
+            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+            nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre
+          )
+      else
+        afiliados =
+          Afiliado.where(
+            "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
+            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))
+            AND clave_de_beneficiario != ?", nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre,
+            clave_de_beneficiario
+          )
+      end
       if afiliados.size > 0
         errors.add(:base,
           "No se puede crear una solicitud de alta porque ya existe " +
