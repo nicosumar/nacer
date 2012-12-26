@@ -4,8 +4,9 @@ Nacer::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }
   devise_scope :user do
     get "users", :to => "users#index", :as => :users
+    get "users/:id", :to => "users#admin_edit", :as => :user
     get "users/:id/edit", :to => "users#admin_edit", :as => :edit_user
-    put "users/:id", :to => "users#admin_update", :as => :user
+    put "users/:id", :to => "users#admin_update"
     get "seleccionar_uad" => "user_sessions#seleccionar_uad", :as => :seleccionar_uad
   end
   resources :convenios_de_administracion, :except => :destroy
