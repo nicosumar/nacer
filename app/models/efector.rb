@@ -57,6 +57,12 @@ class Efector < ActiveRecord::Base
     ActiveRecord::Base.connection.execute "UPDATE efectores SET id = id WHERE id = '#{id}';"
   end
 
+  # prestaciones_autorizadas_al_dia
+  # Devuelve el listado de prestaciones autorizadas al día indicado en el parámetro.
+  def prestaciones_autorizadas_al_dia(fecha = Date.today)
+    prestaciones_autorizadas.where("fecha_de_finalizacion IS NULL OR fecha_de_finalizacion > '#{fecha.strftime("%Y-%m-%d")}'")
+  end
+
   # self.que_no_tengan_convenio
   # Devuelve los efectores que no tienen convenio de gestión
   def self.que_no_tengan_convenio

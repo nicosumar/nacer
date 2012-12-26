@@ -279,9 +279,8 @@ class PadronesController < ApplicationController
       return
     end
  
-    # Ids necesarios para el cruce
+    # ID necesarios para el cruce
     id_documento_propio = ClaseDeDocumento.id_del_codigo("P")
-    id_tipo_dni = TipoDeDocumento.id_del_codigo("DNI")
 
     # Cargar el hash de los periodos de actividad
     @periodos_de_actividad = {}
@@ -455,6 +454,7 @@ class PadronesController < ApplicationController
             afiliados.each do |af|
               if af[:clase_de_documento] == id_documento_propio
                 afiliados_con_documento_propio << af
+              end
             end
             if afiliados_con_documento_propio.size == 0
               # Ninguno de los beneficiarios tenía documento propio, rechazar la prestación porque no está inscripto

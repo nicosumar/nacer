@@ -30,7 +30,7 @@
           %th Autorizador
           %th Fecha de inicio
       %tbody
-        - @efector.prestaciones_autorizadas.sort_by{|pa| pa.prestacion.codigo}.each do |p|
+        - @efector.prestaciones_autorizadas_al_dia.sort_by{|pa| pa.prestacion.codigo}.each do |p|
           %tr
             %td= p.prestacion.codigo
             %td= p.prestacion.nombre_corto
