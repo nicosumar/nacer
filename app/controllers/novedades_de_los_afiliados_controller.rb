@@ -89,6 +89,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     if !params[:novedad_del_afiliado]
       # Crear objeto vacío para generar el formulario
       @novedad = NovedadDelAfiliado.new()
+      @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("A")
       @novedad.clase_de_documento_id = ClaseDeDocumento.id_del_codigo("P")
       @novedad.tipo_de_documento_id = TipoDeDocumento.id_del_codigo("DNI")
       render :action => "verificacion"
@@ -96,6 +97,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     else
       # Crear una nueva novedad desde los parámetros
       @novedad = NovedadDelAfiliado.new(params[:novedad_del_afiliado])
+      @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("A")
       @novedad.apellido = @novedad.apellido.mb_chars.upcase.to_s
       @novedad.nombre = @novedad.nombre.mb_chars.upcase.to_s
 

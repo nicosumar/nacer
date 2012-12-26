@@ -3,7 +3,7 @@ class VerificadorController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    if not current_user.in_group?(:facturación)
+    if not current_user.in_group?(:facturacion)
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
       return
     end

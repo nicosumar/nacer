@@ -140,8 +140,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
 
       # Fecha de hoy
-      if fecha_de_la_novedad < (Date.today - 2.months)
-        errors.add(:fecha_de_la_novedad, 'no puede exceder en dos meses la fecha de hoy')
+      if fecha_de_la_novedad < (Date.today - 4.months)
+        errors.add(:fecha_de_la_novedad, 'no puede exceder en cuatro meses la fecha de hoy')
         error_de_fecha = true
       end
 
