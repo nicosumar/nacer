@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-lass CreateContactos < ActiveRecord::Migration
+class CreateContactos < ActiveRecord::Migration
   def change
     create_table :contactos do |t|
       t.string :nombres

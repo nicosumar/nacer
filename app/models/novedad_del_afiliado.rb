@@ -363,7 +363,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_id &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_id) )
       numero_de_documento.gsub!(/[^[:digit:]]/, '')
-      if numero_de_documento.to_i < 50000 || numero_de_documento.to_i > 99999999
+      if !numero_de_documento.blank? && (numero_de_documento.to_i < 50000 || numero_de_documento.to_i > 99999999)
         errors.add(:numero_de_documento, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -373,7 +373,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_de_la_madre_id &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_de_la_madre_id) )
       numero_de_documento_de_la_madre.gsub!(/[^[:digit:]]/, '')
-      if numero_de_documento_de_la_madre.to_i < 50000 || numero_de_documento_de_la_madre.to_i > 99999999
+      if !numero_de_documento_de_la_madre.blank? && (numero_de_documento_de_la_madre.to_i < 50000 || numero_de_documento_de_la_madre.to_i > 99999999)
         errors.add(:numero_de_documento_de_la_madre, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -383,7 +383,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_del_padre_id &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_del_padre_id) )
       numero_de_documento_del_padre.gsub!(/[^[:digit:]]/, '')
-      if numero_de_documento_del_padre.to_i < 50000 || numero_de_documento_del_padre.to_i > 99999999
+      if !numero_de_documento_del_padre.blank? && (numero_de_documento_del_padre.to_i < 50000 || numero_de_documento_del_padre.to_i > 99999999)
         errors.add(:numero_de_documento_del_padre, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -393,7 +393,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_del_tutor_id &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_del_tutor_id) )
       numero_de_documento_del_tutor.gsub!(/[^[:digit:]]/, '')
-      if numero_de_documento_del_tutor.to_i < 50000 || numero_de_documento_del_tutor.to_i > 99999999
+      if !numero_de_documento_del_tutor.blank? && (numero_de_documento_del_tutor.to_i < 50000 || numero_de_documento_del_tutor.to_i > 99999999)
         errors.add(:numero_de_documento_del_tutor, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
