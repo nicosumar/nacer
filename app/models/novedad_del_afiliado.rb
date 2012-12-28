@@ -403,7 +403,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if clase_de_documento_id == ClaseDeDocumento.id_del_codigo("A")
       if edad_en_anios(Date.today - 2.months) > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta con documento ajeno si el niño o niña ya ha cumplido el año de vida"
+          "No se puede crear una solicitud con documento ajeno si el niño o niña ya ha cumplido el año de vida"
         )
         error_de_documento = true
       end
@@ -466,7 +466,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
       if novedades.size > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente para el mismo tipo y número" +
+          "No se puede crear la solicitud porque ya existe otra solicitud pendiente para el mismo tipo y número" +
           " de documento: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
           ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
           novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
@@ -497,7 +497,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
     if afiliados.size > 0
       errors.add(:base,
-        "No se puede crear una solicitud de alta porque ya existe " +
+        "No se puede crear la solicitud porque ya existe " +
         (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
         " con el mismo nombre, apellido y fecha de nacimiento: " + afiliados.first.apellido.to_s + ", " +
         afiliados.first.nombre.to_s + ", " +
@@ -527,7 +527,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
     if novedades.size > 0
       errors.add(:base,
-        "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente con el mismo nombre, apellido y" +
+        "No se puede crear la solicitud porque ya existe otra solicitud pendiente con el mismo nombre, apellido y" +
         " fecha de nacimiento: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
         ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
         novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
@@ -559,7 +559,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
       if afiliados.size > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta porque ya existe " +
+          "No se puede crear la solicitud porque ya existe " +
           (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
           " con el mismo nombre, fecha de nacimiento y número de documento de la madre: " + afiliados.first.apellido.to_s + 
           ", " + afiliados.first.nombre.to_s + ", " +
@@ -590,7 +590,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
       if novedades.size > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente con el mismo nombre, fecha de" +
+          "No se puede crear la solicitud porque ya existe otra solicitud pendiente con el mismo nombre, fecha de" +
           " nacimiento y número de documento de la madre: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
           ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
           novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
