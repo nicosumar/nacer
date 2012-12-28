@@ -58,7 +58,7 @@
     - else
       %span.field_deleted Se eliminó la clase de documento seleccionada
     - if @afiliado.clase_de_documento_id
-      %span.field_old_value= "(era: '" + @afiliado.clase_de_documento_id + "')"
+      %span.field_old_value= "(era: '" + @afiliado.clase_de_documento.nombre + "')"
   - else
     - if @novedad.clase_de_documento_id
       %span.field_value= @novedad.clase_de_documento.nombre
