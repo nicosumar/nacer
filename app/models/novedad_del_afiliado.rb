@@ -454,14 +454,16 @@ class NovedadDelAfiliado < ActiveRecord::Base
       if persisted?
         novedades =
           NovedadDelAfiliado.where(
-            "id != ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND estado_de_la_novedad_id IN (?)",
-            id, tipo_de_documento_id, numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+            "id != ? AND clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
+            estado_de_la_novedad_id IN (?)", id, clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
+            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
           )
       else
         novedades =
           NovedadDelAfiliado.where(
-            "tipo_de_documento_id = ? AND numero_de_documento = ? AND estado_de_la_novedad_id IN (?)",
-            tipo_de_documento_id, numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+            "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
+            estado_de_la_novedad_id IN (?)", clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
+            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
           )
       end
       if novedades.size > 0
