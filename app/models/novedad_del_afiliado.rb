@@ -297,9 +297,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
   def categorizar
     edad = self.edad_en_anios(fecha_de_la_novedad || Date.today)
 
-    return 1 if edad < 1
-    return 2 if edad < 6
-    return 3 if sexo_id == Sexo.id_del_codigo("F") && esta_embarazada
+    return 1 if edad >= 10 && sexo_id == Sexo.id_del_codigo("F") && esta_embarazada
+    return 3 if edad < 1
+    return 4 if edad < 6
     return 5 if edad < 20
     return 6 if sexo_id == Sexo.id_del_codigo("F") && edad < 64
 
