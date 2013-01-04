@@ -14,12 +14,9 @@ CategoriaDeAfiliado.create([
     :nombre => "Niño o niña de 1 a 5 años",
     :codigo => "N5"},
   { #:id => 5,
-    :nombre => "Adolescente de 10 a 19 años",
-    :codigo => "A" },
+    :nombre => "Menor de 20 años",
+    :codigo => "<20" },
   { #:id => 6,
     :nombre => "Mujer de 20 a 64 años",
-    :codigo => "M" },
-  { #:id => 7,
-    :nombre => "Niño o niña de 6 a 9 años",
-    :codigo => "N9" }
+    :codigo => "M64" }
 ])

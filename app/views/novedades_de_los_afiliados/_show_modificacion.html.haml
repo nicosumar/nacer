@@ -58,7 +58,7 @@
     - else
       %span.field_deleted Se eliminó la clase de documento seleccionada
     - if @afiliado.clase_de_documento_id
-      %span.field_old_value= "(era: '" + @afiliado.clase_de_documento_id + "')"
+      %span.field_old_value= "(era: '" + @afiliado.clase_de_documento.nombre + "')"
   - else
     - if @novedad.clase_de_documento_id
       %span.field_value= @novedad.clase_de_documento.nombre
@@ -752,7 +752,7 @@
       - else
         %span.field_deleted Se eliminó la cantidad de semanas de embarazo ingresada
       - if !@afiliado.semanas_de_embarazo.blank?
-        %span.field_old_value= "(era: '" + @afiliado.semanas_de_embarazo + "')"
+        %span.field_old_value= "(era: '" + @afiliado.semanas_de_embarazo.to_s + "')"
     - else
       - if !@novedad.semanas_de_embarazo.blank?
         %span.field_value= @novedad.semanas_de_embarazo

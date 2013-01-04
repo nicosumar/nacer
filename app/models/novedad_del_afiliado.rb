@@ -297,9 +297,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
   def categorizar
     edad = self.edad_en_anios(fecha_de_la_novedad || Date.today)
 
-    return 1 if edad < 1
-    return 2 if edad < 6
-    return 3 if sexo_id == Sexo.id_del_codigo("F") && esta_embarazada
+    return 1 if edad >= 10 && sexo_id == Sexo.id_del_codigo("F") && esta_embarazada
+    return 3 if edad < 1
+    return 4 if edad < 6
     return 5 if edad < 20
     return 6 if sexo_id == Sexo.id_del_codigo("F") && edad < 64
 
@@ -363,7 +363,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_id &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_id) )
       numero_de_documento.gsub!(/[^[:digit:]]/, '')
-      if numero_de_documento.to_i < 50000 || numero_de_documento.to_i > 99999999
+      if !numero_de_documento.blank? && (numero_de_documento.to_i < 50000 || numero_de_documento.to_i > 99999999)
         errors.add(:numero_de_documento, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -373,7 +373,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_de_la_madre_id &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_de_la_madre_id) )
       numero_de_documento_de_la_madre.gsub!(/[^[:digit:]]/, '')
-      if numero_de_documento_de_la_madre.to_i < 50000 || numero_de_documento_de_la_madre.to_i > 99999999
+      if !numero_de_documento_de_la_madre.blank? && (numero_de_documento_de_la_madre.to_i < 50000 || numero_de_documento_de_la_madre.to_i > 99999999)
         errors.add(:numero_de_documento_de_la_madre, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -383,7 +383,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_del_padre_id &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_del_padre_id) )
       numero_de_documento_del_padre.gsub!(/[^[:digit:]]/, '')
-      if numero_de_documento_del_padre.to_i < 50000 || numero_de_documento_del_padre.to_i > 99999999
+      if !numero_de_documento_del_padre.blank? && (numero_de_documento_del_padre.to_i < 50000 || numero_de_documento_del_padre.to_i > 99999999)
         errors.add(:numero_de_documento_del_padre, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -393,7 +393,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_del_tutor_id &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_del_tutor_id) )
       numero_de_documento_del_tutor.gsub!(/[^[:digit:]]/, '')
-      if numero_de_documento_del_tutor.to_i < 50000 || numero_de_documento_del_tutor.to_i > 99999999
+      if !numero_de_documento_del_tutor.blank? && (numero_de_documento_del_tutor.to_i < 50000 || numero_de_documento_del_tutor.to_i > 99999999)
         errors.add(:numero_de_documento_del_tutor, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -403,7 +403,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if clase_de_documento_id == ClaseDeDocumento.id_del_codigo("A")
       if edad_en_anios(Date.today - 2.months) > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta con documento ajeno si el niño o niña ya ha cumplido el año de vida"
+          "No se puede crear una solicitud con documento ajeno si el niño o niña ya ha cumplido el año de vida"
         )
         error_de_documento = true
       end
@@ -454,19 +454,21 @@ class NovedadDelAfiliado < ActiveRecord::Base
       if persisted?
         novedades =
           NovedadDelAfiliado.where(
-            "id != ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND estado_de_la_novedad_id IN (?)",
-            id, tipo_de_documento_id, numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+            "id != ? AND clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
+            estado_de_la_novedad_id IN (?)", id, clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
+            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
           )
       else
         novedades =
           NovedadDelAfiliado.where(
-            "tipo_de_documento_id = ? AND numero_de_documento = ? AND estado_de_la_novedad_id IN (?)",
-            tipo_de_documento_id, numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+            "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
+            estado_de_la_novedad_id IN (?)", clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
+            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
           )
       end
       if novedades.size > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente para el mismo tipo y número" +
+          "No se puede crear la solicitud porque ya existe otra solicitud pendiente para el mismo tipo y número" +
           " de documento: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
           ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
           novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
@@ -497,7 +499,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
     if afiliados.size > 0
       errors.add(:base,
-        "No se puede crear una solicitud de alta porque ya existe " +
+        "No se puede crear la solicitud porque ya existe " +
         (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
         " con el mismo nombre, apellido y fecha de nacimiento: " + afiliados.first.apellido.to_s + ", " +
         afiliados.first.nombre.to_s + ", " +
@@ -527,7 +529,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
     if novedades.size > 0
       errors.add(:base,
-        "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente con el mismo nombre, apellido y" +
+        "No se puede crear la solicitud porque ya existe otra solicitud pendiente con el mismo nombre, apellido y" +
         " fecha de nacimiento: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
         ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
         novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
@@ -559,7 +561,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
       if afiliados.size > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta porque ya existe " +
+          "No se puede crear la solicitud porque ya existe " +
           (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
           " con el mismo nombre, fecha de nacimiento y número de documento de la madre: " + afiliados.first.apellido.to_s + 
           ", " + afiliados.first.nombre.to_s + ", " +
@@ -590,7 +592,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
       if novedades.size > 0
         errors.add(:base,
-          "No se puede crear una solicitud de alta porque ya existe una solicitud pendiente con el mismo nombre, fecha de" +
+          "No se puede crear la solicitud porque ya existe otra solicitud pendiente con el mismo nombre, fecha de" +
           " nacimiento y número de documento de la madre: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
           ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
           novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
