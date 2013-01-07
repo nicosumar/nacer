@@ -450,7 +450,6 @@ class PadronesController < ApplicationController
             # correcto, en caso contrario, con un documento ajeno, indica con altas probabilidades que se trata de un RN anotado con el documento
             # de la madre, y la prestación se le paga a ella.
             afiliados_con_documento_propio = []
-            afiliados.each do |afiliado|
             afiliados.each do |af|
               if af[:clase_de_documento] == id_documento_propio
                 afiliados_con_documento_propio << af
