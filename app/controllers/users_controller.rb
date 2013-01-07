@@ -1,11 +1,12 @@
 # -*- encoding : utf-8 -*-
 class UsersController < Devise::RegistrationsController
   before_filter :authenticate_user!, :except => [:new, :create]
-  before_filter :admin_required, :only => [:index, :admin_edit, :admin_update]
+  before_filter :admin_required, :only => [:index, :admin_edit, :admin_update, :destroy]
 
   # GET /users
   def index
-    @users = User.find(:all)
+    @new_users = User.where(:authorized => false).order("id DESC")
+    @users = User.where(:authorized => true).order("last_sign_in_at DESC")
   end
 
   # GET /users/sign_up
@@ -76,6 +77,25 @@ class UsersController < Devise::RegistrationsController
         :tipo => :ok,
         :titulo => 'Las autorizaciones de la cuenta de usuario se actualizaron correctamente.'
       }
+  end
+
+  # DELETE /users/:id
+  def destroy
+    # Obtener el usuario
+    user = User.find(params[:id])
+
+    if user.authorized || user.last_sign_in_at
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No se puede llevar a cabo esta acción",
+          :mensaje => "No se pueden eliminar usuarios autorizados o que registren algún acceso previo al sistema."
+        }
+      )
+      return
+    else
+      # Eliminar la cuenta del usuario
+      user.destroy
+      redirect_to(users_path, :flash => {:tipo => :ok, :titulo => "La cuenta de usuario fue eliminada" })
+    end
+
   end
 
 end

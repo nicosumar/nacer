@@ -8,6 +8,7 @@ Nacer::Application.routes.draw do
     get "users/:id/edit", :to => "users#admin_edit", :as => :edit_user
     put "users/:id", :to => "users#admin_update"
     get "seleccionar_uad" => "user_sessions#seleccionar_uad", :as => :seleccionar_uad
+    delete "users/:id", :to => "users#destroy", :as => :delete_user
   end
   resources :convenios_de_administracion, :except => :destroy
   resources :convenios_de_gestion, :except => :destroy do
