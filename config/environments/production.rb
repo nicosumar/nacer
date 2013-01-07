@@ -21,7 +21,7 @@ Nacer::Application.configure do
   # Generate digests for assets URLs
   config.assets.digest = true
 
-  # Defaults to Rails.root.join("public/assets")
+  # Defaults to nil and saved in location specified by config.assets.prefix
   # config.assets.manifest = YOUR_PATH
 
   # Specifies the header that your server uses for sending files
@@ -34,8 +34,11 @@ Nacer::Application.configure do
   # See everything in the log (default is :info)
   # config.log_level = :debug
 
+  # Prepend all log lines with the following tags
+  # config.log_tags = [ :subdomain, :uuid ]
+
   # Use a different logger for distributed setups
-  # config.logger = SyslogLogger.new
+  # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
   # Use a different cache store in production
   # config.cache_store = :mem_cache_store
@@ -44,10 +47,12 @@ Nacer::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  # config.assets.precompile += %w( search.js )
+  config.assets.precompile += %w( efectores.js novedades_de_los_afiliados.js users_sign_in.js verificacion.js )
 
-  # Disable delivery errors, bad email addresses will be ignored
+  # Enable delivery errors
   config.action_mailer.raise_delivery_errors = true
+
+  # SMTP server configuration
   config.action_mailer.smtp_settings = {
     :address => "su.servidor.smtp.aquí",
     :domain => "el.dominio.de.su.servidor",
@@ -56,7 +61,9 @@ Nacer::Application.configure do
     :authentication => "tipo_de_autenticación",
     :enable_starttls_auto => false
   }
-  config.action_mailer.default_url_options = { :host => "ip.del.servidor:puerto" }
+
+  # Default URL for application links written into mails (needed for Devise)
+  config.action_mailer.default_url_options = { :host => "localhost:3000" }
 
   # Enable threaded mode
   # config.threadsafe!
@@ -67,4 +74,8 @@ Nacer::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  # Log the query plan for queries taking more than this (works
+  # with SQLite, MySQL, and PostgreSQL)
+  # config.active_record.auto_explain_threshold_in_seconds = 0.5
 end
