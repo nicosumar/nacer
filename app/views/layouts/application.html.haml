@@ -54,23 +54,12 @@
                     %h3 EFECTORES, CONVENIOS Y ADENDAS
                     %ul
                       %li= link_to "Efectores", efectores_url
-                      -#- if can? :create, Efector
-                        %li= link_to "Agregar un efector", new_efector_url
-                      %li= link_to "Convenios de gestión", convenios_de_gestion_url
-                      -#- if can? :create, ConvenioDeGestion
-                        %li= link_to "Agregar un convenio de gestión", new_convenio_de_gestion_url
-                      %li= link_to "Convenios de administración", convenios_de_administracion_url
-                      -#- if can? :create, ConvenioDeAdministracion
-                        %li= link_to "Agregar un convenio de administración", new_convenio_de_administracion_url
-                      %li= link_to "Adendas", addendas_url
-                      -#- if can? :create, Addenda
-                        %li= link_to "Agregar una adenda", new_addenda_url
-                  -#%div.col_1
-                    %h3 ADENDAS
-                    %ul
-                      %li= link_to "Ver el listado de adendas", addendas_url
-                      - if can? :create, Addenda
-                        %li= link_to "Agregar una adenda", new_addenda_url
+                      - if can? :read, ConvenioDeGestion
+                        %li= link_to "Convenios de gestión", convenios_de_gestion_url
+                      - if can? :read, ConvenioDeAdministracion
+                        %li= link_to "Convenios de administración", convenios_de_administracion_url
+                      - if can? :read, Addenda
+                        %li= link_to "Adendas", addendas_url
 
             - if can? :read, Liquidacion
               %li
@@ -102,8 +91,6 @@
                     %h3 LIBRETA DE CONTACTOS
                     %ul
                       %li= link_to "Contactos", contactos_url
-                      -#- if can? :create, Contacto
-                        %li= link_to "Agregar un contacto", new_contacto_url            
 
             - if current_user.in_group? :administradores
               %li

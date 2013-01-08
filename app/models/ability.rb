@@ -15,6 +15,9 @@ class Ability
       can :read, Efector
       can :read, Referente
       can :read, Afiliado
+      can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracion
+      can :read, Addenda
     end
 
     if user.in_group? :facturacion
@@ -25,6 +28,7 @@ class Ability
       can :read, Referente
       can :read, ConvenioDeAdministracion
       can :read, ConvenioDeGestion
+      can :read, Addenda
     end
 
     if user.in_group? :convenios
@@ -39,6 +43,15 @@ class Ability
     if user.in_group? :inscripcion_uad
       can :read, Afiliado
       can :manage, NovedadDelAfiliado
+    end
+
+    if user.in_group? :auditoria_control
+      can :manage, Contacto
+      can :read, Efector
+      can :read, Referente
+      can :read, ConvenioDeAdministracion
+      can :read, ConvenioDeGestion
+      can :read, Addenda
     end
 
   end

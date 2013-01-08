@@ -1,4 +1,4 @@
-log/
+log
 tmp/
 test/
 .sass-cache/
@@ -7,3 +7,5 @@ public/assets
 vendor/data
 .project
 *.lnk
+REVISION
+public/system
