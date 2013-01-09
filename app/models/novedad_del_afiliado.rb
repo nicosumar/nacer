@@ -424,14 +424,14 @@ class NovedadDelAfiliado < ActiveRecord::Base
         afiliados =
           Afiliado.where(
             "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ?
-            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))",
             clase_de_documento_id, tipo_de_documento_id, numero_de_documento
           )
       else
         afiliados =
           Afiliado.where(
             "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ?
-            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))
+            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))
             AND clave_de_beneficiario != ?",
             clase_de_documento_id, tipo_de_documento_id, numero_de_documento, clave_de_beneficiario
           )
@@ -485,14 +485,14 @@ class NovedadDelAfiliado < ActiveRecord::Base
       afiliados =
         Afiliado.where(
           "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ?
-          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))",
           apellido, nombre, fecha_de_nacimiento
         )
     else
       afiliados =
         Afiliado.where(
           "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ?
-          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))
+          AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))
           AND clave_de_beneficiario != ?", apellido, nombre, fecha_de_nacimiento,
           clave_de_beneficiario
         )
@@ -547,14 +547,14 @@ class NovedadDelAfiliado < ActiveRecord::Base
         afiliados =
           Afiliado.where(
             "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
-            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))",
+            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))",
             nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre
           )
       else
         afiliados =
           Afiliado.where(
             "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
-            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 81, 82, 83))
+            AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))
             AND clave_de_beneficiario != ?", nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre,
             clave_de_beneficiario
           )

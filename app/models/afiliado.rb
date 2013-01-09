@@ -324,7 +324,7 @@ class Afiliado < ActiveRecord::Base
                                 numero_de_documento_de_la_madre = ? OR
                                 numero_de_documento_del_padre = ? OR
                                 numero_de_documento_del_tutor = ?) AND
-                                (motivo_de_la_baja_id NOT IN (14, 81, 82, 83, 203) OR
+                                (motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83) OR
                                 motivo_de_la_baja_id IS NULL)", documento,
                                 documento, documento, documento).order("afiliado_id ASC")
 

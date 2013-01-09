@@ -294,7 +294,7 @@ class PadronesController < ApplicationController
 
     # Cargar el hash de los afiliados
     padron_de_afiliados = {}
-    Afiliado.where("motivo_de_la_baja_id NOT IN (14, 81, 82, 83) OR motivo_de_la_baja_id IS NULL").find_each do |af|
+    Afiliado.where("motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83) OR motivo_de_la_baja_id IS NULL").find_each do |af|
       if !af.numero_de_documento.blank?
         if padron_de_afiliados.has_key?(af.numero_de_documento)
           padron_de_afiliados[af.numero_de_documento] += [{
