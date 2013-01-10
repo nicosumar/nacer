@@ -22,7 +22,9 @@ Nacer::Application.routes.draw do
   resources :nomencladores, :except => :destroy
   resources :busqueda, :only => :index
   resources :verificador, :only => :index
-  resources :padrones, :only => :index
+  resources :padrones, :only => :index do
+    post 'cierre', :on => :collection, :as => :cierre_de
+  end
   resources :referentes, :except => [:index, :show, :destroy]
   resources :contactos, :except => :destroy
   resources :liquidaciones, :except => :destroy

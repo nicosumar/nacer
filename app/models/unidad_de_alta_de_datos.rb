@@ -23,6 +23,22 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   validates_length_of :codigo, :is => 3
 
   #
+  # cantidad_de_novedades_para_procesar
+  # Devuelve la cantidad de novedades de los afiliados registradas en esta UAD
+  # con fecha anterior al parámetro
+  def cantidad_de_novedades_para_procesar(fecha_limite = Date.today + 1.day)
+    ActiveRecord::Base.connection.exec_query("
+      SELECT COUNT(na.id)
+        FROM uad_#{codigo}.novedades_de_los_afiliados na
+          LEFT JOIN estados_de_las_novedades en
+            ON (en.id = na.estado_de_la_novedad_id)
+        WHERE
+          en.codigo = 'R'
+          AND na.fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
+    ").rows[0][0].to_i || 0
+  end
+
+  #
   # self.id_del_codigo
   # Devuelve el id asociado con el código pasado
   def self.id_del_codigo(codigo)

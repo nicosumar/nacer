@@ -21,7 +21,7 @@ class PadronesController < ApplicationController
           cruzar_facturacion
           escribir_resultados
         when params[:proceso_id] == "3"
-          cierre_del_padron
+          resumen_para_el_cierre
         else
           @errores_presentes = true
           @errores << "Proceso no implementado"
@@ -33,10 +33,6 @@ class PadronesController < ApplicationController
       @proceso_id = 1
       @nomencladores = Nomenclador.find(:all).collect {|n| [n.nombre, n.id]}
     end
-  end
-
-  def cierre_del_padron
-
   end
 
   def escribir_resultados
@@ -668,6 +664,66 @@ class PadronesController < ApplicationController
         end
       end
     end
+  end
+
+  def resumen_para_el_cierre
+    # Proceso de cierre del padrón y generación de archivos "A"
+    begin
+      anio, mes = params[:anio_y_mes].split("-")
+      @primero_del_mes_siguiente = Date.new(anio.to_i, mes.to_i, 1) + 1.month
+    rescue
+      @errores_presentes = true
+      @errores << "La fecha indicada de cierre del padrón es incorrecta."
+    end
+
+    # Primero generamos un resumen con todas las UADs que tengan datos para procesar
+    @uads = []
+    UnidadDeAltaDeDatos.where(:inscripcion => true).each do |uad|
+      novedades_a_procesar = uad.cantidad_de_novedades_para_procesar(@primero_del_mes_siguiente)
+      if novedades_a_procesar > 0
+        @uads << {:codigo => uad.codigo, :nombre => uad.nombre, :a_procesar => novedades_a_procesar}
+      end
+    end
+
+    render "resumen"
+
+  end
+
+  def cierre
+    if not current_user.in_group?(:administradores)
+      redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
+      return
+    end
+
+    # TODO: ¡¡¡Añadir verificaciones!!!
+    primero_del_mes_siguiente = params[:primero_del_mes_siguiente]
+    uads_a_procesar = params[:uads_a_procesar].keys
+
+    begin
+      @directorio = "vendor/data/cierre_padron_#{DateTime.now.strftime('%Y%m%d%H%M%S')}"
+      Dir.mkdir(@directorio)
+
+      uads_a_procesar.each do |uad|
+        centros_de_inscripcion =
+          ActiveRecord::Base.connection.exec_query("
+            SELECT DISTINCT ci.codigo
+              FROM #{uad}.novedades_de_los_afiliados na
+                LEFT JOIN estados_de_las_novedades en
+                  ON (en.id = na.estado_de_la_novedad_id)
+                LEFT JOIN centros_de_inscripcion ci
+                  ON (ci.id = na.centro_de_inscripcion_id)
+              WHERE
+                en.codigo = 'R'
+                AND na.fecha_de_la_novedad < '#{@primero_del_mes_siguiente.strftime('%Y-%m-%d')}';
+          ").rows.flatten || []
+
+        centros_de_inscripcion.each do |ci|
+        end
+      end
+    rescue
+      
+    end
+
   end
 
 end

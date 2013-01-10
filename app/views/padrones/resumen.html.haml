@@ -1,0 +1,38 @@
+- content_for :title do
+  Resumen previo al cierre del padrón
+
+#content-header
+  %h1 Resumen previo al cierre del padrón
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Resumen de novedades pendientes por unidad de alta de datos
+
+  - if @uads.size > 0
+    = form_tag('padrones/cierre', :method => :post) do
+      %div.hidden_field
+        %input{ :id => "proceso_id", :name => "proceso_id", :type => "hidden", :value => 3 }
+      %div.hidden_field
+        %input{ :id => "primero_del_mes_siguiente", :name => "primero_del_mes_siguiente", |
+          :type => "hidden", :value => @primero_del_mes_siguiente.strftime('%Y-%m-%d')} |
+        
+      %table
+        %thead
+          %tr
+            %th Codigo
+            %th Nombre
+            %th Pendientes
+            %th ¿Procesar?
+        %tbody
+          - @uads.each do |uad|
+            %tr
+              %td= uad[:codigo]
+              %td= uad[:nombre]
+              %td= uad[:a_procesar].to_s
+              %td= check_box_tag("uads_a_procesar[uad_#{uad[:codigo]}]".to_sym, 1, :checked => "checked")
+
+      %div.actions
+        = submit_tag("Procesar")
+  - else
+    Ninguna unidad de alta de datos tiene registros pendientes para procesar
