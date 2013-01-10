@@ -1,8 +1,6 @@
 class ChangeAfiliadosFtsTrigger < ActiveRecord::Migration
   def up
     execute "
-      BEGIN TRANSACTION;
-
       -- Modificamos el trigger para añadir un nuevo motivo (51 - Error de DNI) que invalida el registro para las búsquedas
       -- y procesos, al igual que con los códigos de duplicado (14, 81, 82 y 83)
       CREATE OR REPLACE FUNCTION afiliados_fts_trigger() RETURNS trigger AS $$
@@ -202,13 +200,6 @@ class ChangeAfiliadosFtsTrigger < ActiveRecord::Migration
       -- Actualizamos todos los registros de la tabla de búsquedas correspondientes a Afiliados para modificar la redacción
       -- ya que cambiamos la redacción del título para incorporar el estado ACTIVO o INACTIVO
       UPDATE busquedas SET id = id WHERE modelo_type = 'Afiliado';
-
-      -- Finalizamos la transacción
-      COMMIT TRANSACTION;
-
-      -- Corremos un VACUUM ANALYZE para mejorar la performance de la base luego de esta actualización masiva
-      VACUUM ANALYZE;
-
     "
   end
 end
