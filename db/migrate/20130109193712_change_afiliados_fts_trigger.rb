@@ -197,9 +197,12 @@ class ChangeAfiliadosFtsTrigger < ActiveRecord::Migration
               WHERE a2.motivo_de_la_baja_id = '51'
           );
 
-      -- Actualizamos todos los registros de la tabla de búsquedas correspondientes a Afiliados para modificar la redacción
-      -- ya que cambiamos la redacción del título para incorporar el estado ACTIVO o INACTIVO
-      UPDATE busquedas SET id = id WHERE modelo_type = 'Afiliado';
+      -- Actualizamos todos los registros de la tabla de afiliados para disparar el trigger y modificar la redacción
+      -- de la información indexada en la tabla de búsquedas, ya que cambiamos la redacción del título para incorporar
+      -- el estado ACTIVO o INACTIVO
+      UPDATE afiliados
+        SET afiliado_id = afiliado_id
+        WHERE (motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83) OR motivo_de_la_baja_id IS NULL);
     "
   end
 end
