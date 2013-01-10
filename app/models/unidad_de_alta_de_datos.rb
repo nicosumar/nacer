@@ -39,6 +39,24 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   end
 
   #
+  # centros_de_inscripcion_con_novedades
+  # Devuelve una lista de códigos de centros de inscripcion dependientes de esta UAD
+  # que tienen novedades de los afiliados registradas con fecha anterior al parámetro
+  def codigos_de_CIs_con_novedades(fecha_limite = Date.today + 1.day)
+    ActiveRecord::Base.connection.exec_query("
+      SELECT DISTINCT ci.codigo
+        FROM uad_#{codigo}.novedades_de_los_afiliados na
+          LEFT JOIN estados_de_las_novedades en
+            ON (en.id = na.estado_de_la_novedad_id)
+          LEFT JOIN centros_de_inscripcion ci
+            ON (ci.id = na.centro_de_inscripcion_id)
+        WHERE
+          en.codigo = 'R'
+          AND na.fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
+    ").rows.flatten || []
+  end
+
+  #
   # self.id_del_codigo
   # Devuelve el id asociado con el código pasado
   def self.id_del_codigo(codigo)

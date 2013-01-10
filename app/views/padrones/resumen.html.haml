@@ -30,7 +30,7 @@
               %td= uad[:codigo]
               %td= uad[:nombre]
               %td= uad[:a_procesar].to_s
-              %td= check_box_tag("uads_a_procesar[uad_#{uad[:codigo]}]".to_sym, 1, :checked => "checked")
+              %td= check_box_tag("uads_a_procesar[#{uad[:codigo]}]".to_sym, 1, :checked => "checked")
 
       %div.actions
         = submit_tag("Procesar")

@@ -606,4 +606,225 @@ class NovedadDelAfiliado < ActiveRecord::Base
     return true
   end
 
+  #
+  # self.generar_archivo_a
+  # Genera el archivo de exportación de novedades de acuerdo con el formato requerido por el sistema de gestión de padrones
+  # para el código de UAD, código de CI y fecha límite pasados como parámetros
+  def self.generar_archivo_a(codigo_uad, codigo_ci, fecha_limite, directorio_de_destino)
+    # TODO: agregar validaciones
+    return nil unless codigo_uad && codigo_ci && fecha_limite && directorio_de_destino
+
+    codigo_provincia = ('%02d' % Parametro.valor_del_parametro(:id_de_esta_provincia))
+
+    # Ejecutar todo dentro de una transacción para así poder cancelar las modificaciones en la BD en caso de fallas
+    archivo_a = nil
+    begin
+      ActiveRecord::Base.transaction do
+  
+        # Obtener el siguiente número en la secuencia de generación de archivos A para este CI en esta UAD
+        numero_secuencia =
+          ActiveRecord::Base.connection.exec_query("
+            SELECT
+              (CASE
+                WHEN is_called THEN last_value + 1
+                ELSE last_value
+              END) AS numero_secuencia FROM uad_#{codigo_uad}.ci_#{codigo_ci}_archivo_a_seq;
+          ").rows[0][0].to_i
+  
+        # Crear el archivo de texto de salida
+        archivo_a = File.new("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uad + codigo_ci + ('%05d' % numero_secuencia)}.txt", "w")
+        archivo_a.set_encoding("CP1252", :crlf_newline => true)
+  
+        # Escribir el encabezado
+        archivo_a.puts(
+          "H\t" +
+          Date.today.strftime("%Y-%m-%d") + "\t" +
+          "admin\t" +
+          codigo_provincia + "\t" +
+          codigo_uad + "\t" +
+          codigo_ci + "\t" +
+          ('%05d' % numero_secuencia) + "\t" +
+          Parametro.valor_del_parametro(:version_del_sistema_de_gestion)
+        )
+  
+        # Obtener los registros de novedades
+        novedades =
+          ActiveRecord::Base.connection.exec_query "
+            SELECT
+              'D'::text AS \"TipoRegistro\",
+              n1.clave_de_beneficiario AS \"ClaveBeneficiario\",
+              LEFT(n1.apellido, 30) AS \"BenefApellido\",
+              LEFT(n1.nombre, 30) AS \"BenefNombre\",
+              t1.codigo AS \"BenefTipoDocumento\",
+              c1.codigo AS \"BenefClaseDocumento\",
+              LEFT(n1.numero_de_documento, 12) AS \"BenefNroDocumento\",
+              s1.codigo AS \"BenefSexo\",
+              n1.categoria_de_afiliado_id AS \"BenefIdCategoria\",
+              n1.fecha_de_nacimiento AS \"BenefFechaNacimiento\",
+              s2.codigo AS \"Indigena\",
+              n1.lengua_originaria_id AS \"Id_Lengua\",
+              n1.tribu_originaria_id AS \"Id_PuebloOriginario\",
+              t2.codigo AS \"MadreTipoDoc\",
+              LEFT(n1.numero_de_documento_de_la_madre, 12) AS \"MadreNroDoc\",
+              LEFT(n1.apellido_de_la_madre, 30) AS \"MadreApellido\",
+              LEFT(n1.nombre_de_la_madre, 30) AS \"MadreNombre\",
+              t3.codigo AS \"PadreTipoDoc\",
+              LEFT(n1.numero_de_documento_del_padre, 12) AS \"PadreNroDoc\",
+              LEFT(n1.apellido_del_padre, 30) AS \"PadreApellido\",
+              LEFT(n1.nombre_del_padre, 30) AS \"PadreNombre\",
+              t4.codigo AS \"TutorTipoDoc\",
+              LEFT(n1.numero_de_documento_del_tutor, 12) AS \"TutorNroDoc\",
+              LEFT(n1.apellido_del_tutor, 30) AS \"TutorApellido\",
+              LEFT(n1.nombre_del_tutor, 30) AS \"TutorNombre\",
+              NULL::text AS \"TutorTipoRelacion\",
+              (CASE
+                WHEN tn.codigo = 'A' THEN
+                  n1.fecha_de_la_novedad
+                ELSE
+                  af.fecha_de_inscripcion
+              END) AS \"FechaDeInscripcion\",
+              NULL::date AS \"FechaAltaEfectiva\",
+              n1.fecha_de_diagnostico_del_embarazo AS \"FechaDiagnosticoEmbarazo\",
+              n1.semanas_de_embarazo AS \"SemanasEmbarazo\",
+              n1.fecha_probable_de_parto AS \"FechaProbableParto\",
+              n1.fecha_efectiva_de_parto AS \"FechaEfectivaParto\",
+              'S'::text AS \"Activo\",
+              LEFT(n1.domicilio_calle, 40) AS \"DomicilioCalle\",
+              LEFT(n1.domicilio_numero, 5) AS \"DomicilioNro\",
+              LEFT(n1.domicilio_manzana, 5) AS \"DomicilioManzana\",
+              LEFT(n1.domicilio_piso, 5) AS \"DomicilioPiso\",
+              LEFT(n1.domicilio_depto, 5) AS \"DomicilioDepto\",
+              LEFT(n1.domicilio_entre_calle_1, 40) AS \"DomEntreCalle1\",
+              LEFT(n1.domicilio_entre_calle_2, 40) AS \"DomEntreCalle2\",
+              LEFT(n1.domicilio_barrio_o_paraje, 40) AS \"DomBarrio\",
+              UPPER(LEFT(d1.nombre, 40)) AS \"DomMunicipio\",
+              UPPER(LEFT(d1.nombre, 40)) AS \"DomDepartamento\",
+              UPPER(LEFT(d2.nombre, 40)) AS \"DomLocalidad\",
+              LEFT(n1.domicilio_codigo_postal, 8) AS \"DomCodigoPostal\",
+              '#{codigo_provincia}'::text AS \"DomIdProvincia\",
+              n1.telefono AS \"Telefono\",
+              e1.cuie AS \"LugarAtencionHabitual\",
+              e1.cuie AS \"CUIEfectorAsignado\",
+              n1.id AS \"Id_Novedad\",
+              tn.codigo AS \"TipoNovedad\",
+              n1.fecha_de_la_novedad AS \"FechaNovedad\",
+              '#{codigo_provincia}'::text AS \"CodigoProvinciaAltaDatos\",
+              '#{codigo_uad}'::text AS \"CodigoUADAltaDatos\",
+              ci.codigo AS \"CodigoCIAltaDatos\",
+              n1.created_at::date AS \"FechaCarga\",
+              LEFT(n1.creator_id::text, 10) AS \"UsuarioCarga\",
+              NULL::text AS \"Checksum\",
+              (CASE
+                WHEN tn.codigo = 'M' THEN
+                  '1111111111111111111111100011111111111111111111111111111111111100000000'::text
+                ELSE
+                  NULL::text
+              END) AS \"ClaveBinaria\",
+              n1.score_de_riesgo AS \"ScoreDeRiesgo\",
+              n2.codigo AS \"BenefAlfabetizacion\",
+              n1.alfab_beneficiario_anios_ultimo_nivel AS \"BenefAlfabetAniosUltimoNivel\",
+              n3.codigo AS \"MadreAlfabetizacion\",
+              n1.alfab_madre_anios_ultimo_nivel AS \"MadreAlfabetAniosUltimoNivel\",
+              n4.codigo AS \"PadreAlfabetizacion\",
+              n1.alfab_padre_anios_ultimo_nivel AS \"PadreAlfabetAniosUltimoNivel\",
+              n5.codigo AS \"TutorAlfabetizacion\",
+              n1.alfab_tutor_anios_ultimo_nivel AS \"TutorAlfabetAniosUltimoNivel\",
+              n1.e_mail AS \"Email\",
+              n1.numero_de_celular AS \"NumeroCelular\",
+              n1.fecha_de_la_ultima_menstruacion AS \"FUM\",
+              (CASE
+                WHEN LENGTH(n1.observaciones) > 0 THEN
+                  LEFT(
+                    '--DOMICILIO: '::text ||
+                    REGEXP_REPLACE(n1.observaciones, E'\\r\\n', '~', 'g') ||
+                    ' --~'::text ||
+                    REGEXP_REPLACE(COALESCE(n1.observaciones_generales, ''), E'\\r\\n', '~', 'g'), 200
+                  )
+                ELSE
+                  LEFT(REGEXP_REPLACE(COALESCE(n1.observaciones_generales, ''), E'\\r\\n', '~', 'g'), 200)
+              END) AS \"ObservacionesGenerales\",
+              d3.codigo AS \"Discapacidad\",
+              UPPER(LEFT(p1.nombre, 40)) AS \"AfiPais\"
+              FROM uad_#{codigo_uad}.novedades_de_los_afiliados AS n1
+                LEFT JOIN tipos_de_documentos t1
+                  ON (t1.id = n1.tipo_de_documento_id)
+                LEFT JOIN clases_de_documentos c1
+                  ON (c1.id = n1.clase_de_documento_id)
+                LEFT JOIN sexos s1
+                  ON (s1.id = n1.sexo_id)
+                LEFT JOIN si_no s2
+                  ON (s2.valor_bool = n1.se_declara_indigena)
+                LEFT JOIN tipos_de_documentos t2
+                  ON (t2.id = n1.tipo_de_documento_de_la_madre_id)
+                LEFT JOIN tipos_de_documentos t3
+                  ON (t3.id = n1.tipo_de_documento_del_padre_id)
+                LEFT JOIN tipos_de_documentos t4
+                  ON (t4.id = n1.tipo_de_documento_del_tutor_id)
+                LEFT JOIN departamentos d1
+                  ON (d1.id = n1.domicilio_departamento_id)
+                LEFT JOIN distritos d2
+                  ON (d2.id = n1.domicilio_distrito_id)
+                LEFT JOIN efectores e1
+                  ON (e1.id = n1.lugar_de_atencion_habitual_id)
+                LEFT JOIN niveles_de_instruccion n2
+                  ON (n2.id = n1.alfabetizacion_del_beneficiario_id)
+                LEFT JOIN niveles_de_instruccion n3
+                  ON (n3.id = n1.alfabetizacion_de_la_madre_id)
+                LEFT JOIN niveles_de_instruccion n4
+                  ON (n4.id = n1.alfabetizacion_del_padre_id)
+                LEFT JOIN niveles_de_instruccion n5
+                  ON (n5.id = n1.alfabetizacion_del_tutor_id)
+                LEFT JOIN discapacidades d3
+                  ON (d3.id = n1.discapacidad_id)
+                LEFT JOIN paises p1
+                  ON (p1.id = n1.pais_de_nacimiento_id)
+                LEFT JOIN centros_de_inscripcion ci
+                  ON (ci.id = n1.centro_de_inscripcion_id)
+                LEFT JOIN tipos_de_novedades tn
+                  ON (tn.id = n1.tipo_de_novedad_id)
+                LEFT JOIN estados_de_las_novedades en
+                  ON (en.id = n1.estado_de_la_novedad_id)
+                LEFT JOIN afiliados af
+                  ON (af.clave_de_beneficiario = n1.clave_de_beneficiario)
+              WHERE
+                ci.codigo = '#{codigo_ci}'
+                AND en.codigo = 'R'
+                AND n1.fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
+          "
+  
+        # Actualizar el estado de los registros exportados
+        estado = EstadoDeLaNovedad.id_del_codigo("P")
+        ActiveRecord::Base.connection.exec_query "
+          UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
+            SET estado_de_la_novedad_id = '#{estado}'
+            WHERE
+              estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
+              AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
+              AND fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
+        "
+  
+        # Exportar los registros al archivo
+        novedades.rows.each do |novedad|
+          archivo_a.puts novedad.join("\t")
+        end
+  
+        # Escribir el pie
+        archivo_a.puts "T\t#{('%06d' % novedades.rows.size)}"
+  
+        # Cerrar el archivo
+        archivo_a.close
+  
+        # Incrementar el número de secuencia si todo fue bien
+        ActiveRecord::Base.connection.exec_query("
+          SELECT nextval('uad_#{codigo_uad}.ci_#{codigo_ci}_archivo_a_seq'::regclass);
+        ")
+      end
+    rescue
+      return nil
+    end
+
+    return archivo_a ? archivo_a.path : nil
+
+  end
+
 end

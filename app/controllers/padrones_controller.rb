@@ -678,7 +678,7 @@ class PadronesController < ApplicationController
 
     # Primero generamos un resumen con todas las UADs que tengan datos para procesar
     @uads = []
-    UnidadDeAltaDeDatos.where(:inscripcion => true).each do |uad|
+    UnidadDeAltaDeDatos.where(:inscripcion => true).order(:codigo).each do |uad|
       novedades_a_procesar = uad.cantidad_de_novedades_para_procesar(@primero_del_mes_siguiente)
       if novedades_a_procesar > 0
         @uads << {:codigo => uad.codigo, :nombre => uad.nombre, :a_procesar => novedades_a_procesar}
@@ -696,32 +696,22 @@ class PadronesController < ApplicationController
     end
 
     # TODO: ¡¡¡Añadir verificaciones!!!
-    primero_del_mes_siguiente = params[:primero_del_mes_siguiente]
-    uads_a_procesar = params[:uads_a_procesar].keys
+    anio, mes, dia = params[:primero_del_mes_siguiente].split("-")
+    primero_del_mes_siguiente = Date.new(anio.to_i, mes.to_i, dia.to_i)
+    uads_a_procesar = UnidadDeAltaDeDatos.where(:codigo => params[:uads_a_procesar].keys)
 
-    begin
-      @directorio = "vendor/data/cierre_padron_#{DateTime.now.strftime('%Y%m%d%H%M%S')}"
-      Dir.mkdir(@directorio)
+    @directorio = "vendor/data/cierre_padron_#{DateTime.now.strftime('%Y%m%d%H%M%S')}"
+    Dir.mkdir(@directorio)
 
-      uads_a_procesar.each do |uad|
-        centros_de_inscripcion =
-          ActiveRecord::Base.connection.exec_query("
-            SELECT DISTINCT ci.codigo
-              FROM #{uad}.novedades_de_los_afiliados na
-                LEFT JOIN estados_de_las_novedades en
-                  ON (en.id = na.estado_de_la_novedad_id)
-                LEFT JOIN centros_de_inscripcion ci
-                  ON (ci.id = na.centro_de_inscripcion_id)
-              WHERE
-                en.codigo = 'R'
-                AND na.fecha_de_la_novedad < '#{@primero_del_mes_siguiente.strftime('%Y-%m-%d')}';
-          ").rows.flatten || []
+    @archivos_generados = []
 
-        centros_de_inscripcion.each do |ci|
-        end
+    uads_a_procesar.each do |uad|
+      uad.codigos_de_CIs_con_novedades(primero_del_mes_siguiente).each do |codigo_ci|
+        archivo_generado = NovedadDelAfiliado.generar_archivo_a( uad.codigo, codigo_ci, primero_del_mes_siguiente, @directorio )
+        @archivos_generados <<
+          "UAD: #{uad.nombre} (#{uad.codigo}) - Centro de inscripción: #{CentroDeInscripcion.find_by_codigo(codigo_ci).nombre} " +
+          "(#{codigo_ci}) => #{archivo_generado ? archivo_generado : 'ERROR'}"
       end
-    rescue
-      
     end
 
   end
