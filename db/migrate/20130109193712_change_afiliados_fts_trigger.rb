@@ -3,6 +3,8 @@ class ChangeAfiliadosFtsTrigger < ActiveRecord::Migration
     execute "
       BEGIN TRANSACTION;
 
+      -- Modificamos el trigger para añadir un nuevo motivo (51 - Error de DNI) que invalida el registro para las búsquedas
+      -- y procesos, al igual que con los códigos de duplicado (14, 81, 82 y 83)
       CREATE OR REPLACE FUNCTION afiliados_fts_trigger() RETURNS trigger AS $$
         DECLARE
           clase_de_documento text;
@@ -33,7 +35,8 @@ class ChangeAfiliadosFtsTrigger < ActiveRecord::Migration
               titulo =
                 COALESCE(NEW.apellido || ', ', '') ||
                 COALESCE(NEW.nombre, '') ||
-                ' (' || COALESCE(NEW.numero_de_documento, '') || ')',
+                ' (' || COALESCE(tipo_de_documento || ' ', '') || COALESCE(NEW.numero_de_documento, '') || '), registro ' ||
+                (CASE WHEN NEW.activo THEN 'ACTIVO' ELSE 'INACTIVO' END),
               texto =
                 'Beneficiario: ' ||
                 COALESCE(NEW.nombre || ' ', '') ||
@@ -115,7 +118,8 @@ class ChangeAfiliadosFtsTrigger < ActiveRecord::Migration
               NEW.afiliado_id,
               COALESCE(NEW.apellido || ', ', '') ||
               COALESCE(NEW.nombre, '') ||
-              ' (' || COALESCE(NEW.numero_de_documento, '') || ')',
+              ' (' || COALESCE(tipo_de_documento || ' ', '') || COALESCE(NEW.numero_de_documento, '') || '), registro ' ||
+              (CASE WHEN NEW.activo THEN 'ACTIVO' ELSE 'INACTIVO' END),
               'Beneficiario: ' ||
               COALESCE(NEW.nombre || ' ', '') ||
               COALESCE(NEW.apellido, '') ||
@@ -184,7 +188,27 @@ class ChangeAfiliadosFtsTrigger < ActiveRecord::Migration
         END;
       $$ LANGUAGE plpgsql;
 
+      -- Eliminamos de la tabla de búsquedas los registros que se hubieran indexado con un código de motivo de baja 51
+      DELETE
+        FROM busquedas
+        WHERE
+          modelo_type = 'Afiliado'
+          AND modelo_id IN (
+            SELECT afiliado_id
+              FROM afiliados a2
+              WHERE a2.motivo_de_la_baja_id = '51'
+          );
+
+      -- Actualizamos todos los registros de la tabla de búsquedas correspondientes a Afiliados para modificar la redacción
+      -- ya que cambiamos la redacción del título para incorporar el estado ACTIVO o INACTIVO
+      UPDATE busquedas SET id = id WHERE modelo_type = 'Afiliado';
+
+      -- Finalizamos la transacción
       COMMIT TRANSACTION;
+
+      -- Corremos un VACUUM ANALYZE para mejorar la performance de la base luego de esta actualización masiva
+      VACUUM ANALYZE;
+
     "
   end
 end
