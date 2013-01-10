@@ -20,16 +20,23 @@ class PadronesController < ApplicationController
           @resultado = {}
           cruzar_facturacion
           escribir_resultados
+        when params[:proceso_id] == "3"
+          cierre_del_padron
         else
           @errores_presentes = true
           @errores << "Proceso no implementado"
       end
     else # no hay parámetros
       @procesos = [["Importación del padrón de afiliados", 1],
-                   ["Cruce de la facturación", 2]]
+                   ["Cruce de la facturación", 2],
+                   ["Cierre del padrón", 3]]
       @proceso_id = 1
       @nomencladores = Nomenclador.find(:all).collect {|n| [n.nombre, n.id]}
     end
+  end
+
+  def cierre_del_padron
+
   end
 
   def escribir_resultados
