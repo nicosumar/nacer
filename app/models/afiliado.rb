@@ -188,7 +188,7 @@ class Afiliado < ActiveRecord::Base
   def novedad_pendiente?
     novedad_pendiente = NovedadDelAfiliado.where(
       :clave_de_beneficiario => clave_de_beneficiario,
-      :estado_de_la_novedad_id => [1,2]
+      :estado_de_la_novedad_id => [1,2,3]
     )
 
     return (novedad_pendiente.size > 0)
@@ -199,7 +199,7 @@ class Afiliado < ActiveRecord::Base
   def novedad_pendiente
     novedad_pendiente = NovedadDelAfiliado.where(
       :clave_de_beneficiario => clave_de_beneficiario,
-      :estado_de_la_novedad_id => [1,2]
+      :estado_de_la_novedad_id => [1,2,3]
     )
 
     return novedad_pendiente.first if novedad_pendiente.size == 1

@@ -633,7 +633,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   
         # Crear el archivo de texto de salida
         archivo_a = File.new("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uad + codigo_ci + ('%05d' % numero_secuencia)}.txt", "w")
-        archivo_a.set_encoding("CP1252", :crlf_newline => true)
+        #archivo_a.set_encoding("CP1252", :crlf_newline => true) # TODO: ¡¡OJO!! set_encoding solo funciona con Ruby 1.9. Averiguar cómo simular su funcionamiento con Ruby 1.8.7
   
         # Escribir el encabezado
         archivo_a.puts(
