@@ -35,6 +35,11 @@ TipoDeDocumento.create(
     },
     {
       #:id => 7,
+      :nombre => "Documento extranjero",
+      :codigo => "DEX"
+    },
+    {
+      #:id => 8,
       :nombre => "Otro",
       :codigo => "OTRO"
     }

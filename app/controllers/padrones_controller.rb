@@ -27,7 +27,7 @@ class PadronesController < ApplicationController
           @errores << "Proceso no implementado"
       end
     else # no hay parámetros
-      @procesos = [["Importación del padrón de afiliados", 1],
+      @procesos = [["Actualización del padrón de afiliados", 1],
                    ["Cruce de la facturación", 2],
                    ["Cierre del padrón", 3]]
       @proceso_id = 1
@@ -619,10 +619,9 @@ class PadronesController < ApplicationController
       if afiliado.nil?
         # El afiliado no existe en la versión actual (ha sido agregado al padrón)
         afiliado = Afiliado.new(atr_afiliado)
-        afiliado.afiliado_id = atr_afiliado[:afiliado_id]
         if afiliado.save
           # Como el afiliado es nuevo, tenemos que agregar un registro a la tabla de 'periodos_activos' si está ACTIVO
-          if afiliado.activo == "S"
+          if afiliado.activo
             PeriodoDeActividad.create({:afiliado_id => afiliado.afiliado_id,
               :fecha_de_inicio => primero_del_mes,
               :fecha_de_finalizacion => nil
@@ -641,19 +640,30 @@ class PadronesController < ApplicationController
           begin
             periodo = PeriodoDeActividad.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
           rescue
+            periodo = nil
           end
-          if afiliado.activo == "S"
+          if afiliado.activo
             if periodo.nil?
-              # Reactivar el beneficiario
-              PeriodoDeActividad.create({:afiliado_id => afiliado.afiliado_id,
+              # Activar el beneficiario
+              PeriodoDeActividad.create({
+                :afiliado_id => afiliado.afiliado_id,
                 :fecha_de_inicio => primero_del_mes,
                 :fecha_de_finalizacion => nil
               })
             end
           else
             if periodo
-              # Desactivar el beneficiario
-              periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
+              if periodo.fecha_de_inicio == primero_del_mes
+                # Eliminar el periodo (actualización de la información del mismo mes, el periodo no debía existir)
+                periodo.destroy
+              else
+                # Desactivar el beneficiario
+                periodo.update_attributes({
+                  :fecha_de_finalizacion => primero_del_mes,
+                  :motivo_de_la_baja_id => afiliado.motivo_de_la_baja_id,
+                  :mensaje_de_la_baja => afiliado.mensaje_de_la_baja
+                })
+              end
             end
           end
         else

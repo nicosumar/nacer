@@ -9,7 +9,22 @@ class Afiliado < ActiveRecord::Base
   # El modelo no está asignado a ningún formulario editable por el usuario.
   # Los datos se actualizan por un proceso batch.
   # Los atributos no se protegen porque se asignan masivamente en dicho proceso.
-  attr_protected nil
+  attr_accessible :afiliado_id, :clave_de_beneficiario, :apellido, :nombre, :clase_de_documento_id, :tipo_de_documento_id
+  attr_accessible :numero_de_documento, :numero_de_celular, :e_mail, :categoria_de_afiliado_id, :sexo_id, :fecha_de_nacimiento
+  attr_accessible :pais_de_nacimiento_id, :se_declara_indigena, :lengua_originaria_id, :tribu_originaria_id
+  attr_accessible :alfabetizacion_del_beneficiario_id, :alfab_beneficiario_anios_ultimo_nivel, :domicilio_calle, :domicilio_numero
+  attr_accessible :domicilio_piso, :domicilio_depto, :domicilio_manzana, :domicilio_entre_calle_1, :domicilio_entre_calle_2
+  attr_accessible :telefono, :otro_telefono, :domicilio_departamento_id, :domicilio_distrito_id, :domicilio_barrio_o_paraje
+  attr_accessible :domicilio_codigo_postal, :lugar_de_atencion_habitual_id, :apellido_de_la_madre, :nombre_de_la_madre
+  attr_accessible :tipo_de_documento_de_la_madre_id, :numero_de_documento_de_la_madre, :alfabetizacion_de_la_madre_id
+  attr_accessible :alfab_madre_anios_ultimo_nivel, :apellido_del_padre, :nombre_del_padre, :tipo_de_documento_del_padre_id
+  attr_accessible :numero_de_documento_del_padre, :alfabetizacion_del_padre_id, :alfab_padre_anios_ultimo_nivel
+  attr_accessible :apellido_del_tutor, :nombre_del_tutor, :tipo_de_documento_del_tutor_id, :numero_de_documento_del_tutor
+  attr_accessible :alfabetizacion_del_tutor_id, :alfab_tutor_anios_ultimo_nivel, :embarazo_actual, :fecha_de_la_ultima_menstruacion
+  attr_accessible :fecha_de_diagnostico_del_embarazo, :semanas_de_embarazo, :fecha_probable_de_parto, :fecha_efectiva_de_parto
+  attr_accessible :score_de_riesgo, :discapacidad_id, :fecha_de_inscripcion, :fecha_de_la_ultima_novedad
+  attr_accessible :unidad_de_alta_de_datos_id, :centro_de_inscripcion_id, :observaciones_generales, :activo
+  attr_accessible :motivo_de_la_baja_id, :mensaje_de_la_baja, :fecha_de_carga, :usuario_que_carga
 
   # Las verificaciones ya son realizadas por el sistema de gestión.
   # validate_...
@@ -407,11 +422,10 @@ class Afiliado < ActiveRecord::Base
 
     # Contrastar la cantidad de campos con la versión del sistema registrada en los parámetros, para evitar errores
     # de importación
-    version_del_sistema = Parametro.valor_del_parametro(:version_del_sistema_de_gestion)
-    if (campos.size != 93)
-      raise ArgumentError, "El texto no contiene la cantidad correcta de campos, ¿quizás equivocó el separador?"
-      return nil
-    end
+#    if (campos.size != 93)
+#      raise ArgumentError, "El texto no contiene la cantidad correcta de campos, ¿quizás equivocó el separador?"
+#      return nil
+#    end
 
     # Crear el Hash asociado al registro
     attr_hash = {
@@ -482,7 +496,7 @@ class Afiliado < ActiveRecord::Base
 
       # Datos del embarazo y parto (para embarazadas)
       :embarazo_actual => SiNo.valor_bool_del_codigo(self.valor(campos[91], :texto)),
-      :fecha_de_ultima_menstruacion => self.valor(campos[88], :fecha),
+      :fecha_de_la_ultima_menstruacion => self.valor(campos[88], :fecha),
       :fecha_de_diagnostico_del_embarazo => self.valor(campos[30], :fecha),
       :semanas_de_embarazo => (self.valor(campos[31], :entero) == 0 ? nil : self.valor(campos[31], :entero)),
       :fecha_probable_de_parto => self.valor(campos[32], :fecha),
@@ -507,7 +521,7 @@ class Afiliado < ActiveRecord::Base
 
       # Estado de la inscripción al programa
       :activo => SiNo.valor_bool_del_codigo(self.valor(campos[34], :texto)),
-      :motivo_de_la_baja => self.valor(campos[57], :entero),
+      :motivo_de_la_baja_id => self.valor(campos[57], :entero),
       :mensaje_de_la_baja => self.valor(campos[58], :texto),
 
       # Datos relacionados con la carga del registro

@@ -18,8 +18,10 @@ class TipoDeDocumento < ActiveRecord::Base
       # incluyendo códigos para extranjeros.
       # Diferencias comunes entre el sistema de gestión y este sistema
       case
-        when codigo.first == 'C' && codigo != 'CERMI' && codigo != 'C01'
-          return 5 # Código perteneciente a C09, CI de la provincia
+        when codigo == 'C09'
+          return 4 # Código perteneciente a C09, CI de la provincia
+        when codigo == 'CERMI'
+          return 6
         else
           return 7 # Otro
       end
