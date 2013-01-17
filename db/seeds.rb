@@ -54,3 +54,4 @@ load 'db/NovedadesDeLosAfiliados_seed.rb'
 
 # Datos iniciales para el módulo de facturación
 load 'db/TiposDePrestaciones_seed.rb'
+load 'db/Diagnosticos_seed.rb'
