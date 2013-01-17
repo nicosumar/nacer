@@ -210,6 +210,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("unidad·_de·_alta·_de·_datos·_user", "unidades_de_alta_de_datos_users")
   inflect.irregular("UnidadDeAltaDeDatosUser", "Unidades·De·Alta·De·Datos·Users·")
   inflect.irregular("Unidad·De·Alta·De·Datos·User·", "UnidadesDeAltaDeDatosUsers")
+  inflect.irregular("tipo_de_prestacion", "tipos·_de·_prestaciones·")
+  inflect.irregular("tipo·_de·_prestacion·", "tipos_de_prestaciones")
+  inflect.irregular("TipoDePrestacion", "Tipos·De·Prestaciones·")
+  inflect.irregular("Tipo·De·Prestacion·", "TiposDePrestaciones")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

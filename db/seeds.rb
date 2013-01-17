@@ -51,3 +51,6 @@ load 'db/TiposDeRelaciones_seed.rb'
 load 'db/NivelesDeInstruccion_seed.rb'
 load 'db/Discapacidades_seed.rb'
 load 'db/NovedadesDeLosAfiliados_seed.rb'
+
+# Datos iniciales para el módulo de facturación
+load 'db/TiposDePrestaciones_seed.rb'
