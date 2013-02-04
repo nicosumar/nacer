@@ -214,6 +214,14 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("tipo·_de·_prestacion·", "tipos_de_prestaciones")
   inflect.irregular("TipoDePrestacion", "Tipos·De·Prestaciones·")
   inflect.irregular("Tipo·De·Prestacion·", "TiposDePrestaciones")
+  inflect.irregular("agrupacion_de_beneficiarios", "agrupaciones·_de·_beneficiarios·")
+  inflect.irregular("agrupacion·_de·_beneficiarios·", "agrupaciones_de_beneficiarios")
+  inflect.irregular("AgrupacionDeBeneficiarios", "Agrupaciones·De·Beneficiarios·")
+  inflect.irregular("Agrupacion·De·Beneficiarios·", "AgrupacionesDeBeneficiarios")
+  inflect.irregular("agrupacion_de_beneficiarios_prestacion", "agrupaciones·_de·_beneficiarios·_prestaciones·")
+  inflect.irregular("agrupacion·_de·_beneficiarios·_prestacion·", "agrupaciones_de_beneficiarios_prestaciones")
+  inflect.irregular("AgrupacionDeBeneficiariosPrestacion", "Agrupaciones·De·Beneficiarios·Prestaciones·")
+  inflect.irregular("Agrupacion·De·Beneficiarios·Prestacion·", "AgrupacionesDeBeneficiariosPrestaciones")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

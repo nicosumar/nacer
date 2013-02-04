@@ -572,6 +572,10 @@ class Afiliado < ActiveRecord::Base
     }
   end
 
+  def esta_embarazada
+    embarazo_actual
+  end
+
 private
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)

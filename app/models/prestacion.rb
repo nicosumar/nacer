@@ -1,14 +1,28 @@
 # -*- encoding : utf-8 -*-
 class Prestacion < ActiveRecord::Base
-  belongs_to :area_de_prestacion
-  belongs_to :grupo_de_prestaciones
-  belongs_to :subgrupo_de_prestaciones
+  # NULLificar los campos de texto en blanco
+  nilify_blanks
+
+  # Los atributos siguientes pueden asignarse en forma masiva
+  attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id
+
+  # Los atributos siguientes solo pueden asignarse durante la creación
+  attr_readonly :codigo
+
+  # Asociaciones
+  #belongs_to :area_de_prestacion         # OBSOLETO en el nuevo nomenclador
+  #belongs_to :grupo_de_prestaciones      # OBSOLETO en el nuevo nomenclador
+  #belongs_to :subgrupo_de_prestaciones   # OBSOLETO en el nuevo nomenclador
+  #has_and_belongs_to_many :categorias_de_afiliados   # OBSOLETO: ya no existen categorías
+
+  belongs_to :tipo_de_prestacion
   belongs_to :unidad_de_medida
-  has_and_belongs_to_many :categorias_de_afiliados
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, :through => :datos_adicionales_por_prestacion
 
-  validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id, :codigo, :nombre, :unidad_de_medida_id
+  # Validaciones
+  #validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
+  validates_presence_of :codigo, :nombre, :unidad_de_medida_id
 
   # En forma predeterminada, sólo se devuelven los registros activos
   default_scope where(:activa => true)
@@ -16,7 +30,7 @@ class Prestacion < ActiveRecord::Base
   # Devuelve el valor del campo 'nombre', pero truncado a 80 caracteres.
   def nombre_corto
     if nombre.length > 80 then
-      nombre.first(77) + "..."
+      nombre.first(62) + "..." + nombre.last(15)
     else
       nombre
     end
