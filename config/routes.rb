@@ -42,6 +42,7 @@ Nacer::Application.routes.draw do
   end
   resources :afiliados, :only => [:show]
   resources :unidades_de_alta_de_datos, :except => :destroy
+  match "informe_de_beneficiarios_activos" => "informes#beneficiarios_activos"
 
   root :to => 'inicio#index'
 
