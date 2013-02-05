@@ -1,0 +1,48 @@
+- content_for :title do
+  Informe de beneficiarios activos
+
+#content-header
+  %h1 Informe de beneficiarios activos
+
+= render :partial => "shared/info"
+
+#content-body
+
+  %h2.first-header-with-note
+    Información del periodo:
+    = l @fecha_base, :format => :month_and_year
+    %p.note
+      Puede seleccionar otro periodo y presionar 'Actualizar' para obtener los datos correspondientes.
+
+  = form_tag('/informe_de_beneficiarios_activos', :method => 'get') do
+    %div.field
+      = label_tag(:mes_y_anio, "Periodo (mes y año):")
+      = date_select :mes_y_anio, :mes_y_anio, |
+        {:start_year => 2012, :end_year => @ultimo_periodo.year, :discard_day => true, :default => @fecha_base} |
+    %div.actions
+      = submit_tag("Actualizar")
+
+  %h3 Cantidad de beneficiarios activos por grupo
+  %table
+    %thead
+      %tr
+        %th Grupo
+        %th Cantidad
+    %tbody
+      %tr
+        %td Niños y niñas menores de 6 años
+        %td.derecha= @menores_de_6
+      %tr
+        %td Niños y niñas de 6 a 9 años
+        %td.derecha= @de_6_a_9
+      %tr
+        %td Adolescentes de 10 a 19 años
+        %td.derecha= @adolescentes
+      %tr
+        %td Mujeres de 20 a 64 años
+        %td.derecha= @mujeres_de_20_a_64
+
+  %h3
+    Total de beneficiarios activos:
+    = @menores_de_6 + @de_6_a_9 + @adolescentes + @mujeres_de_20_a_64
+

@@ -576,6 +576,88 @@ class Afiliado < ActiveRecord::Base
     embarazo_actual
   end
 
+  #
+  # menores_de_6
+  # Calcula la cantidad de beneficiarios menores de 6 años activos a la fecha del parámetro
+  def self.menores_de_6(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+    ActiveRecord::Base.connection.exec_query(
+        "SELECT COUNT(*)
+           FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa
+             ON (af.afiliado_id = pa.afiliado_id)
+           WHERE
+             pa.fecha_de_inicio < '#{fecha_base + 1.month}'
+             AND (
+               pa.fecha_de_finalizacion IS NULL
+               OR pa.fecha_de_finalizacion > '#{fecha_base}'
+             )
+             AND af.fecha_de_nacimiento >= '#{fecha_base - 6.years}';"
+      ).rows[0][0].to_i
+  end
+
+  #
+  # de_6_a_9
+  # Calcula la cantidad de beneficiarios activos que tienen entre 6 y 9 años a la fecha del parámetro
+  def self.de_6_a_9(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+    ActiveRecord::Base.connection.exec_query(
+        "SELECT COUNT(*)
+           FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa
+             ON (af.afiliado_id = pa.afiliado_id)
+           WHERE
+             pa.fecha_de_inicio < '#{fecha_base + 1.month}'
+             AND (
+               pa.fecha_de_finalizacion IS NULL
+               OR pa.fecha_de_finalizacion > '#{fecha_base}'
+             )
+             AND af.fecha_de_nacimiento < '#{fecha_base - 6.years}'
+             AND af.fecha_de_nacimiento >= '#{fecha_base - 10.years}';"
+      ).rows[0][0].to_i
+  end
+
+  #
+  # adolescentes
+  # Calcula la cantidad de beneficiarios activos que tienen entre 10 y 19 años a la fecha del parámetro
+  def self.adolescentes(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+    ActiveRecord::Base.connection.exec_query(
+        "SELECT COUNT(*)
+           FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa
+             ON (af.afiliado_id = pa.afiliado_id)
+           WHERE
+             pa.fecha_de_inicio < '#{fecha_base + 1.month}'
+             AND (
+               pa.fecha_de_finalizacion IS NULL
+               OR pa.fecha_de_finalizacion > '#{fecha_base}'
+             )
+             AND af.fecha_de_nacimiento < '#{fecha_base - 10.years}'
+             AND af.fecha_de_nacimiento >= '#{fecha_base - 20.years}';"
+      ).rows[0][0].to_i
+  end
+
+  #
+  # mujeres_de_20_a_64
+  # Calcula la cantidad de beneficiarias mujeres activas que tienen entre 20 y 64 años a la fecha del parámetro
+  def self.mujeres_de_20_a_64(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+    ActiveRecord::Base.connection.exec_query(
+        "SELECT COUNT(*)
+           FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa
+             ON (af.afiliado_id = pa.afiliado_id)
+           LEFT JOIN sexos sx
+             ON (af.sexo_id = sx.id)
+           WHERE
+             pa.fecha_de_inicio < '#{fecha_base + 1.month}'
+             AND (
+               pa.fecha_de_finalizacion IS NULL
+               OR pa.fecha_de_finalizacion > '#{fecha_base}'
+             )
+             AND af.fecha_de_nacimiento < '#{fecha_base - 20.years}'
+             AND af.fecha_de_nacimiento >= '#{fecha_base - 65.years}'
+             AND sx.codigo = 'F';"
+      ).rows[0][0].to_i
+  end
+
 private
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)
