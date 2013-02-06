@@ -32,8 +32,10 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
         FROM uad_#{codigo}.novedades_de_los_afiliados na
           LEFT JOIN estados_de_las_novedades en
             ON (en.id = na.estado_de_la_novedad_id)
+          LEFT JOIN tipos_de_novedades tn
         WHERE
           en.codigo = 'R'
+          AND tn.codigo != 'B'
           AND na.fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
     ").rows[0][0].to_i || 0
   end
@@ -50,8 +52,10 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
             ON (en.id = na.estado_de_la_novedad_id)
           LEFT JOIN centros_de_inscripcion ci
             ON (ci.id = na.centro_de_inscripcion_id)
+          LEFT JOIN tipos_de_novedades tn
         WHERE
           en.codigo = 'R'
+          AND tn.codigo != 'B'
           AND na.fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
     ").rows.flatten || []
   end

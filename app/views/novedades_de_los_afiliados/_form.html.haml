@@ -1,5 +1,5 @@
 = form_for(@novedad, :url => @post_form_url) do |f|
-  - if @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("M")
+  - if @novedad.tipo_de_novedad.codigo == "M"
     %div.hidden_field
       %input{ :id => "afiliado_id", :name => "afiliado_id", :type => "hidden", :value => @afiliado.id }
 
@@ -7,14 +7,12 @@
   %div.field_content
     %span.field_value
       - case
-        - when @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("A")
+        - when @novedad.tipo_de_novedad.codigo == "A"
           Solicitud de alta de beneficiario
-        - when @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("B")
-          Solicitud de baja de beneficiario
-        - when @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("M")
+        - when @novedad.tipo_de_novedad.codigo == "M"
           Solicitud de modificación de datos del beneficiario
 
-  - if @novedad.tipo_de_novedad_id != TipoDeNovedad.id_del_codigo("A") || @novedad.persisted?
+  - if @novedad.tipo_de_novedad.codigo != "A" || @novedad.persisted?
     %h3.header-with-note Clave única de beneficiario
     %p.note La clave de beneficiario no se puede modificar
     %div.field_content
@@ -276,7 +274,7 @@
   %div.actions
     - if @novedad.new_record?
       = f.submit "Crear la solicitud"
-      - if @novedad.tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("A")
+      - if @novedad.tipo_de_novedad.codigo == "A"
         = link_to "Cancelar", root_url
       - else
         = link_to "Cancelar", @afiliado

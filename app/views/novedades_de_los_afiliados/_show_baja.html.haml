@@ -1,0 +1,92 @@
+%h3 Tipo de solicitud
+%div.field_content
+  %span.field_value Solicitud de baja
+
+%h3 Estado de la solicitud
+%div.field_content
+  %span.field_value_multiline= @novedad.estado_de_la_novedad.nombre
+
+%h3 Clave única de beneficiario
+%div.field_content
+  %span.field_value= @novedad.clave_de_beneficiario
+
+%h3 Datos personales
+
+%div.field_content
+  %span.field_name Apellido
+  - if !@novedad.apellido.blank?
+    %span.field_value= @novedad.apellido
+  - else
+    %span.field_empty No se ingresó el apellido
+%div.field_content
+  %span.field_name Nombre
+  - if !@novedad.nombre.blank?
+    %span.field_value= @novedad.nombre
+  - else
+    %span.field_empty No se ingresó el nombre
+%div.field_content
+  %span.field_name Clase de documento
+  - if @novedad.clase_de_documento_id
+    %span.field_value= @novedad.clase_de_documento.nombre
+  - else
+    %span.field_empty No se seleccionó la clase de documento
+%div.field_content
+  %span.field_name Tipo de documento
+  - if @novedad.tipo_de_documento_id
+    %span.field_value= @novedad.tipo_de_documento.nombre
+  - else
+    %span.field_empty No se seleccionó el tipo de documento
+%div.field_content
+  %span.field_name Número de documento
+  - if !@novedad.numero_de_documento.blank?
+    %span.field_value= @novedad.numero_de_documento
+  - else
+    %span.field_empty No se ingresó el número de documento
+
+%h3 Fecha y centro inscriptor
+
+%div.field_content
+  %span.field_name Fecha de inscripción o modificación
+  - if @novedad.fecha_de_la_novedad
+    %span.field_value= @novedad.fecha_de_la_novedad.strftime("%d/%m/%Y")
+  - else
+    %span.field_empty No se ingresó la fecha de solicitud de la baja
+%div.field_content
+  %span.field_name Centro de inscripción
+  - if @novedad.centro_de_inscripcion_id
+    %span.field_value= @novedad.centro_de_inscripcion.nombre
+  - else
+    %span.field_empty No se indicó el centro de inscripción
+%div.field_content
+  %span.field_name Nombre del agente inscriptor
+  - if !@novedad.nombre_del_agente_inscriptor.blank?
+    %span.field_value= @novedad.nombre_del_agente_inscriptor
+  - else
+    %span.field_empty No se indicó el nombre del agente inscriptor
+
+%h3.header-with-note Observaciones generales
+%p.note Motivos por los cuales se solicita la baja
+
+%div.field_content
+  - if !@novedad.observaciones_generales.blank?
+    %span.field_value_multiline
+      - @novedad.observaciones_generales.split("\n").each do |linea|
+        = linea
+        %br/
+  - else
+    %span.field_empty No se han ingresado observaciones
+  
+%h3 Última modificación de los datos
+
+%div.field_content
+  %span.field_name Fecha de modificación de esta solicitud
+  - if @novedad.updated_at
+    %span.field_value= @novedad.updated_at.strftime("%d/%m/%Y")
+  - else
+    %span.field_empty No se registró la fecha de la última modificación
+%div.field_content
+  %span.field_name Último usuario que modificó esta solicitud
+  - if @novedad.updater_id
+    %span.field_value= @novedad.updater.nombre_completo
+  - else
+    %span.field_empty No se registró el usuario que realizó la última modificación

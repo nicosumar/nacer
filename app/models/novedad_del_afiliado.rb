@@ -55,11 +55,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
   belongs_to :updater, :class_name => "User"
 
   # Validaciones
-  validate :fechas_correctas
-  validate :documentos_correctos
-  validate :sin_duplicados
+  validate :fechas_correctas, :unless => :es_una_baja?
+  validate :es_menor_de_edad, :unless => :es_una_baja?
+  validate :documentos_correctos, :unless => :es_una_baja?
+  validate :sin_duplicados, :unless => :es_una_baja?
   validates_presence_of :tipo_de_novedad_id
   validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
+  validates_presence_of :observaciones_generales, :if => :es_una_baja?
   validates_numericality_of :semanas_de_embarazo, :only_integer => true, :allow_blank => true, :greater_than => 3, :less_than => 43
 
   # Objeto para guardar las advertencias
@@ -95,6 +97,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
     self.esta_embarazada = afiliado.embarazada?(afiliado.fecha_de_la_ultima_novedad ||
       afiliado.fecha_de_diagnostico_del_embarazo || afiliado.fecha_de_inscripcion)
     return true
+  end
+
+  #
+  # es_una_baja?
+  # Indica si la novedad es una solicitud de baja
+  def es_una_baja?
+    tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("B")
   end
 
   # fechas_correctas
@@ -224,6 +233,20 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     return !error_de_fecha
 
+  end
+
+  # Verifica que se haya marcado el campo de menor de edad si a la fecha de la novedad aún no cumple la edad límite
+  def es_menor_de_edad
+    if !es_menor && fecha_de_la_novedad && fecha_de_nacimiento &&
+      (fecha_de_nacimiento + Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).years) > fecha_de_la_novedad
+      errors.add(
+        :es_menor,
+        'debe estar marcado si aún no ha cumplido los ' + Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s +
+        ' años')
+      return false
+    end
+
+    return true
   end
 
   # Verifica que los datos estén completos para el tipo de novedad ingresado
@@ -360,7 +383,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     error_de_documento = false
 
     # Verificar que el valor del campo número de documento sea válido, si el tipo es DNI, LC o LE
-    if ( tipo_de_documento_id &&
+    if ( tipo_de_documento_id && numero_de_documento &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_id) )
       numero_de_documento.gsub!(/[^[:digit:]]/, '')
       if !numero_de_documento.blank? && (numero_de_documento.to_i < 50000 || numero_de_documento.to_i > 99999999)
@@ -370,7 +393,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Verificar que el valor del campo número de documento de la madre sea válido, si el tipo es DNI, LC o LE
-    if ( tipo_de_documento_de_la_madre_id &&
+    if ( tipo_de_documento_de_la_madre_id && numero_de_documento_de_la_madre &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_de_la_madre_id) )
       numero_de_documento_de_la_madre.gsub!(/[^[:digit:]]/, '')
       if !numero_de_documento_de_la_madre.blank? && (numero_de_documento_de_la_madre.to_i < 50000 || numero_de_documento_de_la_madre.to_i > 99999999)
@@ -380,7 +403,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Verificar que el valor del campo número de documento del padre sea válido, si el tipo es DNI, LC o LE
-    if ( tipo_de_documento_del_padre_id &&
+    if ( tipo_de_documento_del_padre_id && numero_de_documento_del_padre &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_del_padre_id) )
       numero_de_documento_del_padre.gsub!(/[^[:digit:]]/, '')
       if !numero_de_documento_del_padre.blank? && (numero_de_documento_del_padre.to_i < 50000 || numero_de_documento_del_padre.to_i > 99999999)
@@ -390,7 +413,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
 
     # Verificar que el valor del campo número de documento del padre sea válido, si el tipo es DNI, LC o LE
-    if ( tipo_de_documento_del_tutor_id &&
+    if ( tipo_de_documento_del_tutor_id && numero_de_documento_del_tutor &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_del_tutor_id) )
       numero_de_documento_del_tutor.gsub!(/[^[:digit:]]/, '')
       if !numero_de_documento_del_tutor.blank? && (numero_de_documento_del_tutor.to_i < 50000 || numero_de_documento_del_tutor.to_i > 99999999)
@@ -432,7 +455,15 @@ class NovedadDelAfiliado < ActiveRecord::Base
           Afiliado.where(
             "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ?
             AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))
-            AND clave_de_beneficiario != ?",
+            AND clave_de_beneficiario != ?
+            AND NOT EXISTS (
+              SELECT *
+                FROM novedades_de_los_afiliados na
+                WHERE
+                  na.clave_de_beneficiario = afiliados.clave_de_beneficiario
+                  AND na.tipo_de_novedad_id = '#{TipoDeNovedad.id_del_codigo("B")}'
+                  AND na.estado_de_la_novedad_id = '#{EstadoDeLaNovedad.id_del_codigo("R")}'
+            )",
             clase_de_documento_id, tipo_de_documento_id, numero_de_documento, clave_de_beneficiario
           )
       end
@@ -455,14 +486,16 @@ class NovedadDelAfiliado < ActiveRecord::Base
         novedades =
           NovedadDelAfiliado.where(
             "id != ? AND clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
-            estado_de_la_novedad_id IN (?)", id, clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
+            estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'", id,
+            clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
             EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
           )
       else
         novedades =
           NovedadDelAfiliado.where(
             "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
-            estado_de_la_novedad_id IN (?)", clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
+            estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'",
+            clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
             EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
           )
       end
@@ -493,8 +526,16 @@ class NovedadDelAfiliado < ActiveRecord::Base
         Afiliado.where(
           "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ?
           AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))
-          AND clave_de_beneficiario != ?", apellido, nombre, fecha_de_nacimiento,
-          clave_de_beneficiario
+          AND clave_de_beneficiario != ?
+          AND NOT EXISTS (
+            SELECT *
+              FROM novedades_de_los_afiliados na
+              WHERE
+                na.clave_de_beneficiario = afiliados.clave_de_beneficiario
+                AND na.tipo_de_novedad_id = '#{TipoDeNovedad.id_del_codigo("B")}'
+                AND na.estado_de_la_novedad_id = '#{EstadoDeLaNovedad.id_del_codigo("R")}'
+          )",
+          apellido, nombre, fecha_de_nacimiento, clave_de_beneficiario
         )
     end
     if afiliados.size > 0
@@ -516,15 +557,16 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if persisted?
       novedades =
         NovedadDelAfiliado.where(
-          "id != ? AND apellido = ? AND nombre = ? AND fecha_de_nacimiento = ? AND estado_de_la_novedad_id IN (?)",
-          id, apellido, nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"),
-          EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+          "id != ? AND apellido = ? AND nombre = ? AND fecha_de_nacimiento = ? AND estado_de_la_novedad_id IN (?)
+           AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'", id, apellido, nombre,
+          fecha_de_nacimiento.strftime("%Y-%m-%d"), EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
         )
     else
       novedades =
         NovedadDelAfiliado.where(
-          "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ? AND estado_de_la_novedad_id IN (?)",
-          apellido, nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"), EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+          "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ? AND estado_de_la_novedad_id IN (?)
+           AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'", apellido, nombre,
+          fecha_de_nacimiento.strftime("%Y-%m-%d"), EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
         )
     end
     if novedades.size > 0
@@ -555,8 +597,15 @@ class NovedadDelAfiliado < ActiveRecord::Base
           Afiliado.where(
             "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
             AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))
-            AND clave_de_beneficiario != ?", nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre,
-            clave_de_beneficiario
+            AND clave_de_beneficiario != ?
+            AND NOT EXISTS (
+              SELECT *
+                FROM novedades_de_los_afiliados na
+                WHERE
+                  na.clave_de_beneficiario = afiliados.clave_de_beneficiario
+                  AND na.tipo_de_novedad_id = '#{TipoDeNovedad.id_del_codigo("B")}'
+                  AND na.estado_de_la_novedad_id = '#{EstadoDeLaNovedad.id_del_codigo("R")}'
+            )", nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre, clave_de_beneficiario
           )
       end
       if afiliados.size > 0
@@ -578,16 +627,17 @@ class NovedadDelAfiliado < ActiveRecord::Base
       if persisted?
         novedades =
           NovedadDelAfiliado.where(
-            "id != ? AND nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ? " +
-            "AND estado_de_la_novedad_id IN (?)", id, nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"),
-            numero_de_documento_de_la_madre, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+            "id != ? AND nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
+             AND estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'",
+            id, nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"), numero_de_documento_de_la_madre,
+            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
           )
       else
         novedades =
           NovedadDelAfiliado.where(
-            "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ? AND estado_de_la_novedad_id IN (?)",
-            nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"), numero_de_documento_de_la_madre,
-            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+            "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ? AND estado_de_la_novedad_id IN (?)
+             AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'", nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"),
+            numero_de_documento_de_la_madre, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
           )
       end
       if novedades.size > 0
@@ -789,6 +839,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
               WHERE
                 ci.codigo = '#{codigo_ci}'
                 AND en.codigo = 'R'
+                AND tn.codigo != 'B'
                 AND n1.fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
           "
   
@@ -800,9 +851,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
             WHERE
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
               AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
+              AND tipo_de_novedad_id != (SELECT id FROM tipos_de_novedades WHERE codigo = 'B')
               AND fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
         "
-  
+
         # Exportar los registros al archivo
         novedades.rows.each do |novedad|
           archivo_a.puts novedad.join("\t")
