@@ -58,7 +58,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   validate :fechas_correctas, :unless => :es_una_baja?
   validate :es_menor_de_edad, :unless => :es_una_baja?
   validate :documentos_correctos, :unless => :es_una_baja?
-  validate :sin_duplicados, :unless => :es_una_baja?
+  validate :sin_duplicados
   validates_presence_of :tipo_de_novedad_id
   validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
   validates_presence_of :observaciones_generales, :if => :es_una_baja?
@@ -450,7 +450,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
             AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))",
             clase_de_documento_id, tipo_de_documento_id, numero_de_documento
           )
-      else
+      elsif tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("M")
         afiliados =
           Afiliado.where(
             "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ?
@@ -467,7 +467,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
             clase_de_documento_id, tipo_de_documento_id, numero_de_documento, clave_de_beneficiario
           )
       end
-      if afiliados.size > 0
+      if (afiliados || []).size > 0
         errors.add(:base,
           "No se puede crear la solicitud porque ya existe " +
           (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
@@ -486,17 +486,17 @@ class NovedadDelAfiliado < ActiveRecord::Base
         novedades =
           NovedadDelAfiliado.where(
             "id != ? AND clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
-            estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'", id,
-            clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
-            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+            estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id IN (?)", id, clase_de_documento_id, tipo_de_documento_id,
+            numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id },
+            (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } : TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id })
           )
       else
         novedades =
           NovedadDelAfiliado.where(
             "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
-            estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'",
-            clase_de_documento_id, tipo_de_documento_id, numero_de_documento,
-            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+            estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id IN (?)", clase_de_documento_id, tipo_de_documento_id,
+            numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id },
+            (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } : TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id })
           )
       end
       if novedades.size > 0
@@ -521,7 +521,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
           AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))",
           apellido, nombre, fecha_de_nacimiento
         )
-    else
+    elsif tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("M")
       afiliados =
         Afiliado.where(
           "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ?
@@ -538,7 +538,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
           apellido, nombre, fecha_de_nacimiento, clave_de_beneficiario
         )
     end
-    if afiliados.size > 0
+    if (afiliados || []).size > 0
       errors.add(:base,
         "No se puede crear la solicitud porque ya existe " +
         (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
@@ -558,15 +558,17 @@ class NovedadDelAfiliado < ActiveRecord::Base
       novedades =
         NovedadDelAfiliado.where(
           "id != ? AND apellido = ? AND nombre = ? AND fecha_de_nacimiento = ? AND estado_de_la_novedad_id IN (?)
-           AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'", id, apellido, nombre,
-          fecha_de_nacimiento.strftime("%Y-%m-%d"), EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+           AND tipo_de_novedad_id IN (?)", id, apellido, nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"),
+          EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id },
+          (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } : TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id })
         )
     else
       novedades =
         NovedadDelAfiliado.where(
           "apellido = ? AND nombre = ? AND fecha_de_nacimiento = ? AND estado_de_la_novedad_id IN (?)
-           AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'", apellido, nombre,
-          fecha_de_nacimiento.strftime("%Y-%m-%d"), EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+           AND tipo_de_novedad_id IN (?)", apellido, nombre,
+          fecha_de_nacimiento.strftime("%Y-%m-%d"), EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id },
+          (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } : TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id })
         )
     end
     if novedades.size > 0
@@ -592,7 +594,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
             AND (motivo_de_la_baja_id IS NULL OR motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83))",
             nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre
           )
-      else
+      elsif tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("M")
         afiliados =
           Afiliado.where(
             "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
@@ -608,7 +610,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
             )", nombre, fecha_de_nacimiento, numero_de_documento_de_la_madre, clave_de_beneficiario
           )
       end
-      if afiliados.size > 0
+      if (afiliados || []).size > 0
         errors.add(:base,
           "No se puede crear la solicitud porque ya existe " +
           (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
@@ -628,16 +630,18 @@ class NovedadDelAfiliado < ActiveRecord::Base
         novedades =
           NovedadDelAfiliado.where(
             "id != ? AND nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ?
-             AND estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'",
-            id, nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"), numero_de_documento_de_la_madre,
-            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+             AND estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id IN (?)", id, nombre,
+            fecha_de_nacimiento.strftime("%Y-%m-%d"), numero_de_documento_de_la_madre,
+            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id },
+            (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } : TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id })
           )
       else
         novedades =
           NovedadDelAfiliado.where(
             "nombre = ? AND fecha_de_nacimiento = ? AND numero_de_documento_de_la_madre = ? AND estado_de_la_novedad_id IN (?)
-             AND tipo_de_novedad_id != '#{TipoDeNovedad.id_del_codigo("B")}'", nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"),
-            numero_de_documento_de_la_madre, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id }
+             AND tipo_de_novedad_id IN (?)", nombre, fecha_de_nacimiento.strftime("%Y-%m-%d"), numero_de_documento_de_la_madre,
+            EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id },
+            (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } : TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id })
           )
       end
       if novedades.size > 0

@@ -33,6 +33,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
           LEFT JOIN estados_de_las_novedades en
             ON (en.id = na.estado_de_la_novedad_id)
           LEFT JOIN tipos_de_novedades tn
+            ON (tn.id = na.tipo_de_novedad_id)
         WHERE
           en.codigo = 'R'
           AND tn.codigo != 'B'
@@ -53,6 +54,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
           LEFT JOIN centros_de_inscripcion ci
             ON (ci.id = na.centro_de_inscripcion_id)
           LEFT JOIN tipos_de_novedades tn
+            ON (tn.id = na.tipo_de_novedad_id)
         WHERE
           en.codigo = 'R'
           AND tn.codigo != 'B'

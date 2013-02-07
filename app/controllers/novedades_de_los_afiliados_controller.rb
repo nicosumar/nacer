@@ -291,7 +291,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         return
       end
       # Buscar el afiliado asociado a esta novedad si es una modificación de datos
-      if @novedad.tipo_de_novedad.codigo == "M" || @novedad.tipo_de_novedad.codigo == "B"
+      if @novedad.tipo_de_novedad.codigo != "A"
         @afiliado = Afiliado.find_by_clave_de_beneficiario(@novedad.clave_de_beneficiario)
       end
     rescue ActiveRecord::RecordNotFound
@@ -365,6 +365,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("B")
     @novedad.fecha_de_la_novedad = Date.today
     @novedad.categoria_de_afiliado_id = @novedad.categorizar
+    @novedad.clave_de_beneficiario = @afiliado.clave_de_beneficiario
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @centros_de_inscripcion =
@@ -612,7 +613,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Obtener la novedad
     begin
       @novedad = NovedadDelAfiliado.find(params[:id])
-      if @novedad.tipo_de_novedad.codigo == "M"
+      if @novedad.tipo_de_novedad.codigo != "A"
         # Verificar que se haya pasado el ID del afiliado que se modificará
         if !params[:afiliado_id]
           redirect_to( root_url,
