@@ -1,32 +1,32 @@
-.infobox-ok=(notice)
-
 - content_for :title do
   Liquidaciones
 
-%h1 Liquidaciones
-
-%ul{:id => "submenu"}
+#content-header
+  %h1 Liquidaciones
   - if can? :create, Liquidacion
-    %li= link_to "Agregar una liquidación", new_liquidacion_url, :class => "drop"
-    
-%p    
+    #action-links
+      = link_to "Agregar una liquidación", new_liquidacion_path
 
-- if @liquidaciones && @liquidaciones.size > 0
-  %table
-    %thead
-      %tr
-        %th Efector
-        %th Año y mes
-        %th Fecha de recepción
-        %th Expediente
-    %tbody
-      - @liquidaciones.each do |l|
-        %tr.clickable{ :onclick => "location.href=\'#{liquidacion_path(l)}\'", :title => "Ver detalles de la liquidación" }
-          %td= l.efector.nombre
-          %td= l.año_de_prestaciones.to_s + "/" + l.mes_de_prestaciones.to_s
-          %td= l.fecha_de_recepcion.strftime("%d/%m/%Y")
-          %td= l.numero_de_expediente
-  = will_paginate @liquidaciones, :inner_window => 2, :outer_window => 0
-- else
-  %p No se ha registrado ninguna liquidación.
+= render :partial => "shared/info"
 
+#content-body
+  %h2.first-header Listado de liquidaciones
+
+  - if @liquidaciones && @liquidaciones.size > 0
+    %table
+      %thead
+        %tr
+          %th Efector
+          %th Año y mes
+          %th Fecha de recepción
+          %th Expediente
+      %tbody
+        - @liquidaciones.each do |l|
+          %tr.clickable{ :onclick => "location.href=\'#{liquidacion_path(l)}\'", :title => "Ver detalles de la liquidación" }
+            %td= l.efector.nombre
+            %td= l.anio_de_prestaciones.to_s + "/" + l.mes_de_prestaciones.to_s
+            %td= l.fecha_de_recepcion.strftime("%d/%m/%Y")
+            %td= l.numero_de_expediente
+    = will_paginate @liquidaciones, :inner_window => 2, :outer_window => 0
+  - else
+    %p No se ha registrado ninguna liquidación.

@@ -224,7 +224,7 @@ class CuasiFacturasController < ApplicationController
     if params[:detalle]
       if params[:commit] == "Verificar"
         # Procesar los datos importados para la verificación preliminar
-        @primer_dia_de_prestaciones = Date.new(@liquidacion.año_de_prestaciones, @liquidacion.mes_de_prestaciones, 1)
+        @primer_dia_de_prestaciones = Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1)
         @total_informado = params[:total_informado].gsub("$", '').gsub(/\./, '').gsub(/,/, '.').strip.to_f
         @detalle = []
         params[:detalle].split("\n").each_with_index do |linea, i|
@@ -328,7 +328,7 @@ class CuasiFacturasController < ApplicationController
     end
 
     #TODO: Agregar validaciones de fechas
-#    @primer_dia_de_prestaciones = Date.new(@liquidacion.año_de_prestaciones, @liquidacion.mes_de_prestaciones, 1)
+#    @primer_dia_de_prestaciones = Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1)
 
     # Verificar en cuál paso del proceso nos encontramos
     if params[:commit] == "Verificar"
@@ -1097,7 +1097,7 @@ private
     prestacion = Prestacion.find_by_codigo(codigo_informado)
     if prestacion
       codigo = prestacion.codigo
-      ids_prestaciones_autorizadas = PrestacionAutorizada.autorizadas_antes_del_dia(@cuasi_factura.efector_id, (Date.new(@cuasi_factura.liquidacion.año_de_prestaciones, @cuasi_factura.liquidacion.mes_de_prestaciones, 1) + 1)).collect {|p| p.prestacion_id}
+      ids_prestaciones_autorizadas = PrestacionAutorizada.autorizadas_antes_del_dia(@cuasi_factura.efector_id, (Date.new(@cuasi_factura.liquidacion.anio_de_prestaciones, @cuasi_factura.liquidacion.mes_de_prestaciones, 1) + 1)).collect {|p| p.prestacion_id}
       autorizada = true if ids_prestaciones_autorizadas.member?(prestacion.id)
       if autorizada
         asignacion_de_precios = AsignacionDePrecios.where(:nomenclador_id => @cuasi_factura.nomenclador_id, :prestacion_id => prestacion.id).first

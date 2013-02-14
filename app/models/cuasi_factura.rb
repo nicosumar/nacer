@@ -1,8 +1,9 @@
 # -*- encoding : utf-8 -*-
 class CuasiFactura < ActiveRecord::Base
   # Seguridad de asignaciones masivas
+  attr_accessible :liquidacion_id, :efector_id, :nomenclador_id
+  attr_accessible :fecha_de_presentacion, :numero_de_liquidacion, :total_informado, :observaciones
   attr_readonly :liquidacion_id, :efector_id, :nomenclador_id
-  attr_accessible :fecha_de_presentacion, :numero_de_liquidacion, :observaciones
 
   # Asociaciones
   belongs_to :liquidacion

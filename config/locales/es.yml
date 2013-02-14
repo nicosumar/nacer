@@ -101,6 +101,8 @@ es:
       default: "%d/%m/%Y"
       long: "%A, %d de %B de %Y"
       month_and_year: "%B de %Y"
+      only_weekday: "%A"
+      only_month: "%B"
   time:
     formats:
       short: "%d de %b a las %H:%M hrs"

@@ -42,7 +42,7 @@ class LiquidacionesController < ApplicationController
         ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]]
       @mes_de_prestaciones = @liquidacion.mes_de_prestaciones
       @anios_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
-      @anio_de_prestaciones = @liquidacion.año_de_prestaciones
+      @anio_de_prestaciones = @liquidacion.anio_de_prestaciones
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
     end
@@ -54,7 +54,7 @@ class LiquidacionesController < ApplicationController
       @liquidacion = Liquidacion.new
       @liquidacion.efector_id = params[:liquidacion][:efector_id]
       @liquidacion.mes_de_prestaciones = params[:liquidacion][:mes_de_prestaciones]
-      @liquidacion.año_de_prestaciones = params[:liquidacion][:año_de_prestaciones]
+      @liquidacion.anio_de_prestaciones = params[:liquidacion][:anio_de_prestaciones]
 
       # Establecer el valor del resto de los atributos por asignación masiva
       @liquidacion.attributes = params[:liquidacion]
@@ -75,7 +75,7 @@ class LiquidacionesController < ApplicationController
       ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]]
     @mes_de_prestaciones = @liquidacion.mes_de_prestaciones
     @anios_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
-    @año_de_prestaciones = @liquidacion.año_de_prestaciones
+    @anio_de_prestaciones = @liquidacion.anio_de_prestaciones
     render :action => "new"
   end
 
@@ -97,7 +97,7 @@ class LiquidacionesController < ApplicationController
       ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]]
     @mes_de_prestaciones = @liquidacion.mes_de_prestaciones
     @anios_de_prestaciones = ((Date.today.year - 5)..(Date.today.year)).collect {|a| [a.to_s, a]}
-    @año_de_prestaciones = @liquidacion.año_de_prestaciones
+    @anio_de_prestaciones = @liquidacion.anio_de_prestaciones
     render :action => "edit"
   end
 
@@ -136,7 +136,7 @@ class LiquidacionesController < ApplicationController
     end
 
     #TODO: Agregar validaciones de fechas
-#    @primer_dia_de_prestaciones = Date.new(@liquidacion.año_de_prestaciones, @liquidacion.mes_de_prestaciones, 1)
+#    @primer_dia_de_prestaciones = Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1)
 
     # Verificar en cuál paso del proceso nos encontramos
     if params[:commit] == "Verificar"
@@ -264,13 +264,14 @@ private
 
     # Importar los datos
 #    begin
+    ActiveRecord::Base.transaction do
       detalle.keys.each do |efector_id|
         # Calcular el total de la cuasi-factura para este efector
         total = (detalle[efector_id].collect{|prestacion| prestacion[1].size.to_f * prestacion[1][0][:precio_unitario].to_f}).sum
 
         # Crear la cuasi-factura
         cuasi_factura = CuasiFactura.new({:fecha_de_presentacion => @liquidacion.fecha_de_recepcion,
-          :numero_de_liquidacion => ("%02d" % @liquidacion.mes_de_prestaciones) + '/' + @liquidacion.año_de_prestaciones.to_s})
+          :numero_de_liquidacion => ("%02d" % @liquidacion.mes_de_prestaciones) + '/' + @liquidacion.anio_de_prestaciones.to_s})
         cuasi_factura.liquidacion_id = @liquidacion.id
         cuasi_factura.efector_id = efector_id
         cuasi_factura.nomenclador_id = @nomenclador_id
@@ -367,7 +368,7 @@ private
         end
       end
 #    rescue
-#    end
+    end
 
     return true
   end
