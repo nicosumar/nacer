@@ -70,12 +70,8 @@
                   %div.col_2
                     %h3 LIQUIDACIONES Y CUASIFACTURAS
                     %ul
-                      %li= link_to "Liquidaciones", "#", { :title => "En remodelación... Aún no disponible." }
-                      %li= link_to "Cuasifacturas", "#", { :title => "En remodelación... Aún no disponible." }
-                      -#%li= link_to "Liquidaciones", liquidaciones_url
-                      -#- if can? :create, Liquidacion
-                        %li= link_to "Agregar una liquidación", new_liquidacion_url
-                      -#%li= link_to "Cuasifacturas", cuasi_facturas_url
+                      %li= link_to "Liquidaciones", liquidaciones_url
+                      %li= link_to "Cuasifacturas", cuasi_facturas_url
                   %div.col_1
                     %h3 UTILIDADES
                     %ul

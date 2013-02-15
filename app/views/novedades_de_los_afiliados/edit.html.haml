@@ -13,4 +13,7 @@
   %h2.first-header-with-note Formulario de modificación de datos de la solicitud
   %p.note Los campos marcados con asterisco (*) son obligatorios
 
-  = render "form"
+  - if @novedad.tipo_de_novedad.codigo == "B"
+    = render "form_baja"
+  - else
+    = render "form"

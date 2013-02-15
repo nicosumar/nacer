@@ -125,9 +125,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados, :domicilio_distrito_id,
       @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id] }
     @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal}}
-    @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados, :lugar_de_atencion_habitual_id).collect{
-      |i| [i.nombre, i.id]
-    }
+    @efectores = Efector.find(:all).collect{ |i| [i.nombre, i.id] }.sort
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
@@ -201,15 +199,71 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados, :domicilio_distrito_id,
       @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id] }
     @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal}}
-    @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados, :lugar_de_atencion_habitual_id).collect{
-      |i| [i.nombre, i.id]
-    }
+    @efectores = Efector.find(:all).collect{ |i| [i.nombre, i.id] }.sort
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
     @post_form_url = create_modificacion_novedades_de_los_afiliados_url
 
-    render "new"
+    render :action => "new"
+  end
+
+  # GET /novedades_de_los_afiliados/new_baja
+  def new_baja
+    # Verificar los permisos del usuario
+    if cannot? :create, NovedadDelAfiliado
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+      return
+    end
+
+    # Verificar que se haya pasado el ID del afiliado que se modificará
+    if !params[:afiliado_id]
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Buscar el afiliado
+    begin
+      @afiliado = Afiliado.find(params[:afiliado_id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Verificar que este afiliado no tenga una novedad pendiente
+    if @afiliado.novedad_pendiente?
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Crear el objeto requerido para generar el formulario
+    @novedad = NovedadDelAfiliado.new
+
+    # Asignar valores a los atributos de la novedad
+    @novedad.copiar_atributos_del_afiliado(@afiliado)
+    @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("B")
+    @novedad.fecha_de_la_novedad = Date.today
+
+    # Crear objetos requeridos para la vista
+    @centros_de_inscripcion =
+      UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @post_form_url = create_baja_novedades_de_los_afiliados_url
+
+    render :action => "new"
   end
 
   # GET /novedades_de_los_afiliados/:id/edit
@@ -237,7 +291,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         return
       end
       # Buscar el afiliado asociado a esta novedad si es una modificación de datos
-      if @novedad.tipo_de_novedad.codigo == "M"
+      if @novedad.tipo_de_novedad.codigo != "A"
         @afiliado = Afiliado.find_by_clave_de_beneficiario(@novedad.clave_de_beneficiario)
       end
     rescue ActiveRecord::RecordNotFound
@@ -266,8 +320,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       :domicilio_distrito_id, @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
     @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id,
       :codigo_postal => i.codigo_postal}}
-    @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados,
-      :lugar_de_atencion_habitual_id).collect{ |i| [i.nombre, i.id]}
+    @efectores = Efector.find(:all).collect{ |i| [i.nombre, i.id] }.sort
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
@@ -279,9 +332,76 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     create(:alta)
   end
 
-  # POST /novedades_de_los_afiliados/modificacion
+  # POST /novedades_de_los_afiliados/baja
   def create_baja
-    create(:baja)
+    # Verificar que se haya pasado el ID del afiliado para el que se solicita la baja
+    if !params[:afiliado_id]
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Buscar el afiliado
+    begin
+      @afiliado = Afiliado.find(params[:afiliado_id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Creamos una nueva novedad y copiamos los datos del afiliado
+    @novedad = NovedadDelAfiliado.new
+    @novedad.copiar_atributos_del_afiliado(@afiliado)
+
+    # Actualizar el resto de los atributos
+    @novedad.attributes = params[:novedad_del_afiliado]
+    @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("B")
+    @novedad.fecha_de_la_novedad = Date.today
+    @novedad.categoria_de_afiliado_id = @novedad.categorizar
+    @novedad.clave_de_beneficiario = @afiliado.clave_de_beneficiario
+
+    # Crear los objetos necesarios para regenerar la vista si hay algún error
+    @centros_de_inscripcion =
+      UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @post_form_url = create_baja_novedades_de_los_afiliados_url
+
+    if @novedad.invalid?
+      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
+      render :action => "new"
+      return
+    end
+
+    # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
+    if
+      (
+        @novedad.centro_de_inscripcion_id && !@centros_de_inscripcion.collect{
+          |i| i[1] }.member?(@novedad.centro_de_inscripcion_id)
+      )
+      redirect_to(root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+         :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Registrar el usuario que realiza la creación
+    @novedad.creator_id = current_user.id
+    @novedad.updater_id = current_user.id
+
+    # Guardar la solicitud, marcándola como pendiente de informar
+    @novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo("R")
+    @novedad.save
+    redirect_to( novedad_del_afiliado_path(@novedad), 
+      :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
+    )
   end
   
   # POST /novedades_de_los_afiliados/modificacion
@@ -318,11 +438,6 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         @novedad = NovedadDelAfiliado.new(params[:novedad_del_afiliado])
         @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("A")
         @post_form_url = create_alta_novedades_de_los_afiliados_url
-
-      when tipo == :baja
-        @novedad = NovedadDelAfiliado.new(params[:novedad_del_afiliado])
-        @novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("B")
-        @post_form_url = create_baja_novedades_de_los_afiliados_url
 
       when tipo == :modificacion
         # Verificar que se haya pasado el ID del afiliado que se modificará
@@ -375,9 +490,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados,
       :domicilio_distrito_id, @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
     @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal}}
-    @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados, :lugar_de_atencion_habitual_id).collect{
-      |i| [i.nombre, i.id]
-    }
+    @efectores = Efector.find(:all).collect{ |i| [i.nombre, i.id] }.sort
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
@@ -500,7 +613,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Obtener la novedad
     begin
       @novedad = NovedadDelAfiliado.find(params[:id])
-      if @novedad.tipo_de_novedad.codigo == "M"
+      if @novedad.tipo_de_novedad.codigo != "A"
         # Verificar que se haya pasado el ID del afiliado que se modificará
         if !params[:afiliado_id]
           redirect_to( root_url,
@@ -544,9 +657,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @distritos = Distrito.ordenados_por_frecuencia(:novedades_de_los_afiliados,
       :domicilio_distrito_id, @novedad.domicilio_departamento_id).collect{ |i| [i.nombre, i.id]}
     @codigos_postales = Distrito.find(:all).collect{ |i| {:distrito_id => i.id, :codigo_postal => i.codigo_postal}}
-    @efectores = Efector.ordenados_por_frecuencia(:novedades_de_los_afiliados, :lugar_de_atencion_habitual_id).collect{
-      |i| [i.nombre, i.id]
-    }
+    @efectores = Efector.find(:all).collect{ |i| [i.nombre, i.id] }.sort
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort

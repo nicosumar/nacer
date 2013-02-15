@@ -1,7 +1,13 @@
 - content_for :title do
-  Modificar datos de la cuasi-factura
+  Modificación de datos de la cuasi-factura
 
-%h1
-  Modificar datos de la cuasi-factura
+#content-header
+  %h1 Modificación de datos de la cuasi-factura
 
-= render 'form'
+= render :partial => "shared/info", :locals => {:registro => @cuasi_factura}
+
+#content-body
+  %h2.first-header-with-note Formulario de modificación de datos de la cuasi-factura
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render 'form'

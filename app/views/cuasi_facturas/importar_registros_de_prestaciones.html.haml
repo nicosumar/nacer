@@ -1,158 +1,130 @@
 - content_for :title do
   - if @detalle
-    Verificación preliminar de la digitalización a importar en la cuasi-factura
+    Verificación preliminar de la digitalización a importar
   - else
-    Importar digitalización de prestaciones de la cuasi-factura
+    Importación de las prestaciones digitalizadas
 
-%h1
+#content-header
+  %h1
+    - if @detalle
+      Verificación preliminar de la digitalización a importar
+    - else
+      Importación de las prestaciones digitalizadas
+
+#content-body
   - if @detalle
-    Verificación preliminar de la digitalización a importar en la cuasi-factura
-  - else
-    Importar digitalización de prestaciones de la cuasi-factura
+    %h2.first-header Análisis preliminar de la digitalización
+    - if @detalle.size > 0
+      %p
+        El siguiente detalle
+        %span.destacado.error>= " aún no ha sido importado al sistema"
+        \. Si los datos de la digitalización se han detectado correctamente
+        (coinciden con la digitalización presentada), presione el botón
+        %span.destacado Importar
+        para guardar la información. Si el sistema no detectó correctamente la
+        información, vuelva a la página anterior utilizando el botón provisto
+        por su navegador, para corregir los datos y reintentar la operación.
 
-- if @detalle
-  %h2 Análisis preliminar de la digitalización
-  - if @detalle.size > 0
-    %p
-      El siguiente detalle
-      %span.destacado.error>= " aún no ha sido importado al sistema"
-      \. Si los datos de la digitalización se han detectado correctamente
-      (coinciden con la digitalización presentada), presione el botón
-      %span.destacado Importar
-      para guardar la información. Si el sistema no detectó correctamente la
-      información, vuelva a la página anterior utilizando el botón provisto
-      por su navegador, para corregir los datos y reintentar la operación.
-
-    %table
-      %thead
-        %tr.centrado
-          %th Código
-          %th Cantidad informada
-          %th Cantidad digitalizada
-          %th.destacado Resultado
-      %tbody
-        - @cuasi_factura.renglones_de_cuasi_facturas.each do |r|
-          %tr
-            %td.izquierda= r.codigo_de_prestacion_informado
-            %td.derecha= r.cantidad_informada || 0
-            %td.derecha= @resumen[r.codigo_de_prestacion_informado] || 0
-            %td.izquierda.destacado
-              - diferencia = ((r.cantidad_informada || 0) - (@resumen[r.codigo_de_prestacion_informado] || 0))
-              - if diferencia < 0
+      %table
+        %thead
+          %tr.centrado
+            %th Código
+            %th Cantidad informada
+            %th Cantidad digitalizada
+            %th.destacado Resultado
+        %tbody
+          - @cuasi_factura.renglones_de_cuasi_facturas.each do |r|
+            %tr
+              %td.izquierda= r.codigo_de_prestacion_informado
+              %td.derecha= r.cantidad_informada || 0
+              %td.derecha= @resumen[r.codigo_de_prestacion_informado] || 0
+              %td.izquierda.destacado
+                - diferencia = ((r.cantidad_informada || 0) - (@resumen[r.codigo_de_prestacion_informado] || 0))
+                - if diferencia < 0
+                  %span.error
+                    = "Se " + (diferencia.abs > 1 ? "han" : "ha") + " digitalizado " + diferencia.abs.to_s
+                    = (diferencia.abs > 1 ? "prestaciones" : "prestación") + " más que las informadas."
+                - elsif diferencia > 0
+                  %span.error
+                    = "Se " + (diferencia > 1 ? "han" : "ha") + " informado " + diferencia.to_s
+                    = (diferencia > 1 ? "prestaciones" : "prestación") + " más que las digitalizadas."
+                - else
+                  Verificación correcta
+              - @resumen.delete r.codigo_de_prestacion_informado
+          - @resumen.each_pair do |codigo_de_prestacion_informado, cantidad_digitalizada|
+            %tr
+              %td.izquierda= codigo_de_prestacion_informado
+              %td.derecha= 0
+              %td.derecha= cantidad_digitalizada
+              %td.izquierda.destacado
                 %span.error
-                  = "Se " + (diferencia.abs > 1 ? "han" : "ha") + " digitalizado " + diferencia.abs.to_s
-                  = (diferencia.abs > 1 ? "prestaciones" : "prestación") + " más que las informadas."
-              - elsif diferencia > 0
-                %span.error
-                  = "Se " + (diferencia > 1 ? "han" : "ha") + " informado " + diferencia.to_s
-                  = (diferencia > 1 ? "prestaciones" : "prestación") + " más que las digitalizadas."
-              - else
-                Verificación correcta
-            - @resumen.delete r.codigo_de_prestacion_informado
-        - @resumen.each_pair do |codigo_de_prestacion_informado, cantidad_digitalizada|
+                  = "Se " + (cantidad_digitalizada > 1 ? "han" : "ha") + " digitalizado " + cantidad_digitalizada.to_s
+                  = (cantidad_digitalizada > 1 ? "prestaciones" : "prestación")
+                  = "que no se " + (cantidad_digitalizada > 1 ? "informaron" : "informó") + "."
+      %br/
+      = form_tag('/importar_registros_de_prestaciones', :method => 'post') do
+        %div.hidden_field
+          %input{ :id => "cuasi_factura_id", :name => "cuasi_factura_id", :type => "hidden", :value => @cuasi_factura.id }
+          %input{ :id => "detalle_pediatria", :name => "detalle_pediatria", :type => "hidden", :value => @importacion_pediatria }
+          %input{ :id => "detalle_lactantes", :name => "detalle_lactantes", :type => "hidden", :value => @importacion_lactantes }
+          %input{ :id => "detalle_vacunacion", :name => "detalle_vacunacion", :type => "hidden", :value => @importacion_vacunacion }
+          %input{ :id => "detalle_laboratorio", :name => "detalle_laboratorio", :type => "hidden", :value => @importacion_laboratorio }
+          %input{ :id => "detalle_general", :name => "detalle_general", :type => "hidden", :value => @importacion_general }
+          %input{ :id => "detalle_parto", :name => "detalle_parto", :type => "hidden", :value => @importacion_parto }
+          %input{ :id => "detalle_incubadora", :name => "detalle_incubadora", :type => "hidden", :value => @importacion_incubadora }
+        %div.actions
+          = submit_tag("Importar")
+  
+      %h3 Detalle de las prestaciones digitalizadas
+      %table
+        %thead
           %tr
-            %td.izquierda= codigo_de_prestacion_informado
-            %td.derecha= 0
-            %td.derecha= cantidad_digitalizada
-            %td.izquierda.destacado
-              %span.error
-                = "Se " + (cantidad_digitalizada > 1 ? "han" : "ha") + " digitalizado " + cantidad_digitalizada.to_s
-                = (cantidad_digitalizada > 1 ? "prestaciones" : "prestación")
-                = "que no se " + (cantidad_digitalizada > 1 ? "informaron" : "informó") + "."
-    %br/
+            %th Fecha
+            %th Beneficiario
+            %th Documento
+            %th Historia clínica
+            %th Prestación
+          %tbody
+          - @detalle.each do |d|
+            %tr
+              %td.centrado= d[:fecha_de_prestacion]
+              %td.izquierda
+                = "#{d[:apellido]}, #{d[:nombre]}" + (d[:afiliado_id] ? " (" + d[:afiliado_id].to_s + ")" : "")
+              %td.derecha= d[:numero_de_documento]
+              %td.centrado= d[:historia_clinica]
+              %td.derecha= d[:codigo_de_prestacion_informado]
+    - else
+      No se indicó ningún detalle, o ninguna línea del detalle tiene el formato correcto.
+  - else # Mostrar el formulario para importar los datos
+    %h2.first-header Datos para importar
     = form_tag('/importar_registros_de_prestaciones', :method => 'post') do
       %div.hidden_field
         %input{ :id => "cuasi_factura_id", :name => "cuasi_factura_id", :type => "hidden", :value => @cuasi_factura.id }
-        %input{ :id => "detalle_pediatria", :name => "detalle_pediatria", :type => "hidden", :value => @importacion_pediatria }
-        %input{ :id => "detalle_lactantes", :name => "detalle_lactantes", :type => "hidden", :value => @importacion_lactantes }
-        %input{ :id => "detalle_vacunacion", :name => "detalle_vacunacion", :type => "hidden", :value => @importacion_vacunacion }
-        %input{ :id => "detalle_laboratorio", :name => "detalle_laboratorio", :type => "hidden", :value => @importacion_laboratorio }
-        %input{ :id => "detalle_general", :name => "detalle_general", :type => "hidden", :value => @importacion_general }
-        %input{ :id => "detalle_parto", :name => "detalle_parto", :type => "hidden", :value => @importacion_parto }
-        %input{ :id => "detalle_incubadora", :name => "detalle_incubadora", :type => "hidden", :value => @importacion_incubadora }
+      %p
+        Copie y pegue los renglones de las prestaciones digitalizadas en las áreas
+        de texto, y presione el botón
+        %span.destacado Verificar
+        para obtener una vista preliminar de los datos que se importarán al sistema.
+      %h3 Pediatría
+      %div.field
+        = text_area_tag(:detalle_pediatria, nil, {:size => '80x10'})
+      %h3 Lactantes
+      %div.field
+        = text_area_tag(:detalle_lactantes, nil, {:size => '80x10'})
+      %h3 Vacunación
+      %div.field
+        = text_area_tag(:detalle_vacunacion, nil, {:size => '80x10'})
+      %h3 Laboratorio, imágenes y RX
+      %div.field
+        = text_area_tag(:detalle_laboratorio, nil, {:size => '80x10'})
+      %h3 General
+      %div.field
+        = text_area_tag(:detalle_general, nil, {:size => '80x10'})
+      %h3 Parto y puerperio
+      %div.field
+        = text_area_tag(:detalle_parto, nil, {:size => '80x10'})
+      %h3 Incubadora
+      %div.field
+        = text_area_tag(:detalle_incubadora, nil, {:size => '80x10'})
       %div.actions
-        = submit_tag("Importar")
-
-    %h3 Detalle de las prestaciones digitalizadas
-    %table
-      %thead
-        %tr
-          %th Fecha
-          %th Beneficiario
-          %th Documento
-          %th Historia clínica
-          %th Prestación
-      %tbody
-        - @detalle.each do |d|
-          %tr
-            %td.centrado= d[:fecha_de_prestacion]
-            %td.izquierda
-              = "#{d[:apellido]}, #{d[:nombre]}" + (d[:afiliado_id] ? " (" + d[:afiliado_id].to_s + ")" : "")
-            %td.derecha= d[:numero_de_documento]
-            %td.centrado= d[:historia_clinica]
-            %td.derecha= d[:codigo_de_prestacion_informado]
-  - else
-    No se indicó ningún detalle, o ninguna línea del detalle tiene el formato correcto.
-- else # Mostrar el formulario para importar los datos
-  %h2 Datos para importar
-  = form_tag('/importar_registros_de_prestaciones', :method => 'post') do
-    %div.hidden_field
-      %input{ :id => "cuasi_factura_id", :name => "cuasi_factura_id", :type => "hidden", :value => @cuasi_factura.id }
-    %p
-      Copie y pegue los renglones de las prestaciones digitalizadas en las áreas
-      de texto, y presione el botón
-      %span.destacado Verificar
-      para obtener una vista preliminar de los datos que se importarán al sistema.
-    %div.field
-      = label_tag(:detalle_pediatria, "Pediatría:")
-      %br/
-      = text_area_tag(:detalle_pediatria, nil, {:size => '80x10'})
-    %div.field
-      = label_tag(:detalle_lactantes, "Lactantes:")
-      %br/
-      = text_area_tag(:detalle_lactantes, nil, {:size => '80x10'})
-    %div.field
-      = label_tag(:detalle_vacunacion, "Vacunación:")
-      %br/
-      = text_area_tag(:detalle_vacunacion, nil, {:size => '80x10'})
-    %div.field
-      = label_tag(:detalle_laboratorio, "Laboratorio, imágenes y RX:")
-      %br/
-      = text_area_tag(:detalle_laboratorio, nil, {:size => '80x10'})
-    %div.field
-      = label_tag(:detalle_general, "General:")
-      %br/
-      = text_area_tag(:detalle_general, nil, {:size => '80x10'})
-    %div.field
-      = label_tag(:detalle_parto, "Parto y puerperio:")
-      %br/
-      = text_area_tag(:detalle_parto, nil, {:size => '80x10'})
-    %div.field
-      = label_tag(:detalle_incubadora, "Incubadora:")
-      %br/
-      = text_area_tag(:detalle_incubadora, nil, {:size => '80x10'})
-    %div.actions
-      = submit_tag("Verificar")
-%br/
-%h2
-  Información general registrada en el sistema
-%p
-  Efector:
-  %span.destacado= @efector.nombre + " (" + @efector.cuie + ")"
-- if @efector.cuie != @liquidacion.efector.cuie
-  %p
-    Administrado por:
-    %span.destacado= @liquidacion.efector.nombre + " (" + @liquidacion.efector.cuie + ")"
-%p
-  Número de liquidación:
-  %span.destacado= @cuasi_factura.numero_de_liquidacion
-%p
-  Periodo facturado:
-  %span.destacado= @liquidacion.mes_de_prestaciones.to_s + "/" + @liquidacion.anio_de_prestaciones.to_s
-%p
-  Nomenclador utilizado:
-  %span.destacado= @cuasi_factura.nomenclador.nombre
-%p
-  Fecha de presentación:
-  %span.destacado= @cuasi_factura.fecha_de_presentacion.strftime("%d/%m/%Y")
-
+        = submit_tag("Verificar")
