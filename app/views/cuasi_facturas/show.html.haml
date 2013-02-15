@@ -1,22 +1,56 @@
-.infobox-ok=(notice)
-
 - content_for :title do
-  Cuasi-factura del efector
-  = @cuasi_factura.efector.nombre
+  Información detallada de la cuasi-factura
 
-%h1
-  Cuasi-factura del efector
-  = @cuasi_factura.efector.nombre
-
-%ul{:id => "submenu"}
-  - if can? :update, CuasiFactura
-    %li= link_to "Modificar esta cuasi-factura", edit_cuasi_factura_path(@cuasi_factura), :class => "drop"
+#content-header
+  %h1 Información detallada de la cuasi-factura
+  #action-links
+    - if can? :update, CuasiFactura
+      = link_to "Modificar la cuasi-factura", edit_cuasi_factura_path(@cuasi_factura)
     - if can? (:create, RenglonDeCuasiFactura) && !@cuasi_factura.renglones_de_cuasi_facturas.any?
-      %li= link_to "Importar detalle de la cuasi-factura", importar_detalle_url(:cuasi_factura_id => @cuasi_factura.id), :class => "drop"
-      - if can?(:create, RegistroDePrestacion) && !@liquidacion.cuasi_facturas.any?
-        %li= link_to "Importar digitalización de prestaciones", importar_registros_de_prestaciones_url(:cuasi_factura_id => @cuasi_factura.id), :class => "drop"
+      = link_to "Importar detalle", importar_detalle_url(:cuasi_factura_id => @cuasi_factura.id)
+    - if can?(:create, RegistroDePrestacion) && @cuasi_factura.renglones_de_cuasi_facturas.any? && |
+      !@cuasi_factura.registros_de_prestaciones.any? |
+      = link_to "Importar digitalización de prestaciones", importar_registros_de_prestaciones_url(:cuasi_factura_id => @cuasi_factura.id)
 
-- if @cuasi_factura.renglones_de_cuasi_facturas.any?
+= render :partial => "shared/info"
+
+#content-body
+  %h3.first-header Datos de la liquidación
+  %div.field_content
+    %span.field_name Administrador
+    %span.field_value= @liquidacion.efector.nombre
+  %div.field_content
+    %span.field_name Periodo liquidado (mes y año)
+    %span.field_value= l(Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1), |
+      :format => :month_and_year) |
+  = link_to "Ver detalle de la liquidación", @liquidacion
+
+  %h3 Datos de identificación
+  %div.field_content
+    %span.field_name Efector
+    %span.field_value= @cuasi_factura.efector.cuie.to_s + " - " + @cuasi_factura.efector.nombre
+  %div.field
+    %span.field_name Nomenclador
+    %span.field_value= @cuasi_factura.nomenclador.nombre
+
+  %h3 Información general
+  %div.field_content
+    %span.field_name Fecha de presentación
+    %span.field_value= @cuasi_factura.fecha_de_presentacion.strftime("%d/%m/%Y")
+  %div.field_content
+    %span.field_name Número de liquidación
+    %span.field_value= @cuasi_factura.numero_de_liquidacion
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@cuasi_factura.observaciones.blank?
+      %span.field_value_multiline
+        - @cuasi_factura.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para la cuasi-factura
+
   %h3 Detalle de la cuasi-factura presentada
   %table
     %thead
@@ -46,29 +80,3 @@
                 %span.error= resultado[1]
               - else
                 = resultado[1]
-  %br/
-%h2 Información general de la cuasi-factura
-%p
-  Liquidación:
-  %span.destacado= link_to(@liquidacion.mes_de_prestaciones.to_s + "/" + @liquidacion.anio_de_prestaciones.to_s + " - " + @liquidacion.efector.nombre, @liquidacion)
-%p
-  Expediente:
-  %span.destacado= @liquidacion.numero_de_expediente
-%p
-  Nomenclador utilizado:
-  %span.destacado= @cuasi_factura.nomenclador.nombre
-%p
-  Fecha de presentación:
-  %span.destacado= @cuasi_factura.fecha_de_presentacion.strftime("%d/%m/%Y")
-%p
-  Número de liquidación:
-  %span.destacado= @cuasi_factura.numero_de_liquidacion
-
-- if @cuasi_factura.observaciones && !@cuasi_factura.observaciones.empty?
-  %h3 Información complementaria
-  %p
-    - @cuasi_factura.observaciones.split("\n").each do |l|
-      = l
-      %br/
-
-

@@ -124,7 +124,7 @@ private
     if cadena && !cadena.empty? && !concordancia
       logger.warn "a_documento: ADVERTENCIA, no pude determinar el número de documento desde la cadena '#{cadena}'."
     end
-    return (concordancia ? concordancia[1].to_i : nil)
+    return (concordancia ? concordancia[1] : nil)
   end
 
   def a_cantidad(cadena)

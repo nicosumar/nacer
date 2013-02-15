@@ -19,16 +19,16 @@
     %span.field_name Administrador
     %span.field_value= @liquidacion.efector.cuie.to_s + " - " + @liquidacion.efector.nombre
     = link_to "Ver detalles del efector", @liquidacion.efector
-  %div.field
+  %div.field_content
     %span.field_name Periodo liquidado (mes y año)
     %span.field_value= l(Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1), |
       :format => :month_and_year) |
 
   %h3 Información general
-  %div.field
+  %div.field_content
     %span.field_name Número de expediente
     %span.field_value= @liquidacion.numero_de_expediente
-  %div.field
+  %div.field_content
     %span.field_name Fecha de recepción
     %span.field_value= @liquidacion.fecha_de_recepcion.strftime("%d/%m/%Y")
 
@@ -40,7 +40,7 @@
           = linea
           %br/
     - else
-      %span.field_empty No se han ingresado observaciones para el convenio de gestión
+      %span.field_empty No se han ingresado observaciones para la liquidación
 
   %h3 Cuasi-facturas incluidas en la liquidación
   - if @liquidacion.cuasi_facturas.any?

@@ -66,7 +66,6 @@ $(document).ready(function() {
     }
     $('#select_distritos').html(div_html)
     $('#novedad_del_afiliado_domicilio_distrito_id').bind('change', modificarCodigoPostal);
-    $('#novedad_del_afiliado_domicilio_distrito_id').focus();
   }
 
   function modificarCodigoPostal() {
