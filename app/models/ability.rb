@@ -23,6 +23,9 @@ class Ability
     if user.in_group? :facturacion
       can :manage, Liquidacion
       can :manage, CuasiFactura
+      can :manage, RegistroDePrestacion
+      can :manage, RenglonDeCuasiFactura
+      can :manage, RegistroDeDatoAdicional
       can :manage, Contacto
       can :read, Efector
       can :read, Referente
