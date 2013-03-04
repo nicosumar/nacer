@@ -60,10 +60,14 @@ class Afiliado < ActiveRecord::Base
   # edad_en_años
   # Devuelve la edad en años cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
   # indica una fecha.
-  def edad_en_anios (fecha_de_calculo = Date.today)
+  def edad_en_anios(fecha_de_calculo = Date.today)
 
     # Calculamos la diferencia entre los años de ambas fechas
-    diferencia_en_anios = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+    if fecha_de_nacimiento
+      diferencia_en_anios = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+    else
+      return nil
+    end
 
     # Calculamos la diferencia entre los meses de ambas fechas
     diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
@@ -150,7 +154,7 @@ class Afiliado < ActiveRecord::Base
 
     # Verificar que la beneficiaria sea de sexo femenino y su edad mayor que el mínimo establecido
     if (sexo_id == 1 &&
-      edad_en_anios >= Parametro.valor_del_parametro(:edad_minima_para_registrar_embarazada) &&
+      (edad_en_anios || 0) >= Parametro.valor_del_parametro(:edad_minima_para_registrar_embarazada) &&
       fecha_probable_de_parto)
       if ((fecha_probable_de_parto - 40.weeks)..(fecha_probable_de_parto + 45.days)) === fecha
         return true

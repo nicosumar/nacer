@@ -72,7 +72,7 @@
     - else
       %span.field_deleted Se eliminó el tipo de documento seleccionado
     - if @afiliado.tipo_de_documento_id
-      %span.field_old_value= "(era: '" + @afiliado.tipo_de_documento_id + "')"
+      %span.field_old_value= "(era: '" + @afiliado.tipo_de_documento.nombre + "')"
   - else
     - if @novedad.tipo_de_documento_id
       %span.field_value= @novedad.tipo_de_documento.nombre
