@@ -9,17 +9,6 @@ class Ability
       can :manage, :all
     end
 
-    if user.in_group? :operaciones
-      can :manage, Contacto
-      can :read, NovedadDelAfiliado
-      can :read, Efector
-      can :read, Referente
-      can :read, Afiliado
-      can :read, ConvenioDeGestion
-      can :read, ConvenioDeAdministracion
-      can :read, Addenda
-    end
-
     if user.in_group? :facturacion
       can :manage, Liquidacion
       can :manage, CuasiFactura
@@ -32,6 +21,29 @@ class Ability
       can :read, ConvenioDeAdministracion
       can :read, ConvenioDeGestion
       can :read, Addenda
+      can :read, PrestacionAutorizada
+    end
+
+    if user.in_group? :operaciones
+      can :manage, Contacto
+      can :read, NovedadDelAfiliado
+      can :read, Efector
+      can :read, Referente
+      can :read, Afiliado
+      can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracion
+      can :read, Addenda
+      can :read, PrestacionAutorizada
+    end
+
+    if user.in_group? :auditoria_medica
+      can :manage, Contacto
+      can :read, Efector
+      can :read, Referente
+      can :read, ConvenioDeAdministracion
+      can :read, ConvenioDeGestion
+      can :read, Addenda
+      can :read, PrestacionAutorizada
     end
 
     if user.in_group? :convenios
@@ -41,11 +53,7 @@ class Ability
       can :manage, Referente
       can :manage, Contacto
       can :manage, Efector
-    end
-
-    if user.in_group? :inscripcion_uad
-      can :read, Afiliado
-      can :manage, NovedadDelAfiliado
+      can :read, PrestacionAutorizada
     end
 
     if user.in_group? :auditoria_control
@@ -55,6 +63,34 @@ class Ability
       can :read, ConvenioDeAdministracion
       can :read, ConvenioDeGestion
       can :read, Addenda
+      can :read, PrestacionAutorizada
+    end
+
+    if user.in_group? :coordinacion
+      can :manage, Contacto
+      can :read, Efector
+      can :read, Referente
+      can :read, ConvenioDeAdministracion
+      can :read, ConvenioDeGestion
+      can :read, Addenda
+      can :read, PrestacionAutorizada
+    end
+
+    if user.in_group? :inscripcion_uad
+      can :read, Afiliado
+      can :manage, NovedadDelAfiliado
+    end
+
+    if user.in_group? :capacitacion
+      can :manage, Contacto
+      can :manage, NovedadDelAfiliado
+      can :read, Afiliado
+      can :read, Efector
+      can :read, Referente
+      can :read, ConvenioDeAdministracion
+      can :read, ConvenioDeGestion
+      can :read, Addenda
+      can :read, PrestacionAutorizada
     end
 
   end
