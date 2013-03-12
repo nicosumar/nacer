@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 # Datos precargados al inicializar el sistema
-AgrupacionDeBeneficiarios.create([
+AgrupacionDeBeneficiariosPrestacion.create([
   {
     #:id => 1,
     :nombre => "Grupo materno-infantil (Plan Nacer)",
