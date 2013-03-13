@@ -51,3 +51,6 @@ load 'db/TiposDeRelaciones_seed.rb'
 load 'db/NivelesDeInstruccion_seed.rb'
 load 'db/Discapacidades_seed.rb'
 load 'db/NovedadesDeLosAfiliados_seed.rb'
+
+# Datos iniciales para la CEB
+load 'db/GruposPoblacionales_seed.rb'

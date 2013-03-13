@@ -25,6 +25,7 @@ class Afiliado < ActiveRecord::Base
   attr_accessible :score_de_riesgo, :discapacidad_id, :fecha_de_inscripcion, :fecha_de_la_ultima_novedad
   attr_accessible :unidad_de_alta_de_datos_id, :centro_de_inscripcion_id, :observaciones_generales, :activo
   attr_accessible :motivo_de_la_baja_id, :mensaje_de_la_baja, :fecha_de_carga, :usuario_que_carga
+  attr_accessible :cobertura_efectiva_basica, :efector_ceb_id, :fecha_de_la_ultima_prestacion, :prestacion_ceb_id, :grupo_poblacional_id
 
   # Las verificaciones ya son realizadas por el sistema de gestión.
   # validate_...
@@ -52,6 +53,9 @@ class Afiliado < ActiveRecord::Base
   belongs_to :discapacidad
   belongs_to :centro_de_inscripcion
   belongs_to :unidad_de_alta_de_datos
+  belongs_to :efector_ceb, :class_name => "Efector"
+  belongs_to :prestacion_ceb, :class_name => "Prestacion"
+  belongs_to :grupo_poblacional
 
   #
   # Métodos disponibles en las instancias
@@ -426,10 +430,10 @@ class Afiliado < ActiveRecord::Base
 
     # Contrastar la cantidad de campos con la versión del sistema registrada en los parámetros, para evitar errores
     # de importación
-#    if (campos.size != 93)
-#      raise ArgumentError, "El texto no contiene la cantidad correcta de campos, ¿quizás equivocó el separador?"
-#      return nil
-#    end
+    if (campos.size != 100)
+      raise ArgumentError, "El texto no contiene la cantidad correcta de campos, ¿quizás equivocó el separador?"
+      return nil
+    end
 
     # Crear el Hash asociado al registro
     attr_hash = {
@@ -530,7 +534,14 @@ class Afiliado < ActiveRecord::Base
 
       # Datos relacionados con la carga del registro
       :fecha_de_carga => self.valor(campos[61], :fecha),
-      :usuario_que_carga => self.valor(campos[62], :texto)
+      :usuario_que_carga => self.valor(campos[62], :texto),
+
+      # Datos añadidos para la determinación de la CEB
+      :cobertura_efectiva_basica => SiNo.valor_bool_del_codigo(self.valor(campos[93], :texto)),
+      :efector_ceb => Efector.id_del_cuie(self.valor(campos[94], :texto)),
+      :fecha_de_la_ultima_prestacion => self.valor(campos[95], :fecha),
+      :prestacion_ceb => Prestacion.id_del_codigo(self.valor(campos[96], :texto)),
+      :grupo_poblacional_id => GrupoPoblacional.id_del_codigo(self.valor(campos[99], :texto))
 
       # A continuación se ubican los campos cuyos datos no se convierten ya que no tienen un uso definido,
       # o bien su utilidad es nula para los procesos modelados en el sistema.
@@ -573,6 +584,8 @@ class Afiliado < ActiveRecord::Base
       #:activo_r => self.valor(campos[83], :texto),
       #:motivo_baja_r => self.valor(campos[84], :entero),
       #:mensaje_baja_r => self.valor(campos[85], :texto),
+      #:devenga_capita => SiNo.valor_bool_del_codigo(self.valor(campos[97], :texto)),
+      #:devenga_cantidad_de_capitas => self.valor(campos[98], :entero),
     }
   end
 
