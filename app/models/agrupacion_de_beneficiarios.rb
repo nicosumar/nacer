@@ -8,14 +8,11 @@ class AgrupacionDeBeneficiarios < ActiveRecord::Base
   validates_uniqueness_of :codigo
 
   # Asociaciones
-  has_many :agrupaciones_de_beneficiarios_prestaciones
-  has_many :prestaciones, :through => :agrupaciones_de_beneficiarios_prestaciones
+  has_many :prestaciones
 
   # Devuelve el id asociado con el codigo pasado
   def self.id_del_codigo(codigo)
-    if !codigo || codigo.strip.empty?
-      return nil
-    end
+    return nil if codigo.blank?
 
     # Buscar el codigo en la tabla y devolver su ID (si existe)
     agrupacion = self.find_by_codigo(codigo.strip.upcase)

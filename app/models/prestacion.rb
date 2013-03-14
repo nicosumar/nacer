@@ -4,7 +4,9 @@ class Prestacion < ActiveRecord::Base
   nilify_blanks
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id
+  attr_accessible :area_de_prestacion_id, :grupo_de_prestaciones_id, :subgrupo_de_prestaciones_id
+  attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id, :tipo_de_prestacion_id
+  attr_accessible :agrupacion_de_beneficiarios_id
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :codigo
@@ -17,6 +19,7 @@ class Prestacion < ActiveRecord::Base
 
   belongs_to :tipo_de_prestacion
   belongs_to :unidad_de_medida
+  belongs_to :agrupacion_de_beneficiarios
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, :through => :datos_adicionales_por_prestacion
 

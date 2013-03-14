@@ -21,6 +21,16 @@ class ModificarPrestacion < ActiveRecord::Migration
       ADD CONSTRAINT fk_prestaciones_unidades_de_medida
       FOREIGN KEY (unidad_de_medida_id) REFERENCES unidades_de_medida (id);
   "
+  execute "
+    ALTER TABLE prestaciones
+      ADD CONSTRAINT fk_prestaciones_tipos_de_prestaciones
+      FOREIGN KEY (tipo_de_prestacion_id) REFERENCES tipos_de_prestaciones (id);
+  "
+  execute "
+    ALTER TABLE prestaciones
+      ADD CONSTRAINT fk_prestaciones_agrupacion_de_beneficiarios
+      FOREIGN KEY (agrupacion_de_beneficiarios_id) REFERENCES agrupaciones_de_beneficiarios (id);
+  "
 end
 
 # Puede ingresar aquí datos para que sean cargados al hacer el deploy
