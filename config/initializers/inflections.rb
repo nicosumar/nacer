@@ -210,6 +210,14 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("unidad·_de·_alta·_de·_datos·_user", "unidades_de_alta_de_datos_users")
   inflect.irregular("UnidadDeAltaDeDatosUser", "Unidades·De·Alta·De·Datos·Users·")
   inflect.irregular("Unidad·De·Alta·De·Datos·User·", "UnidadesDeAltaDeDatosUsers")
+  inflect.irregular("periodo_de_cobertura", "periodos·_de·_cobertura·")
+  inflect.irregular("periodo·_de·_cobertura·", "periodos_de_cobertura")
+  inflect.irregular("PeriodoDeCobertura", "Periodos·De·Cobertura·")
+  inflect.irregular("Periodo·De·Cobertura·", "PeriodosDeCobertura")
+  inflect.irregular("periodo_de_capita", "periodos·_de·_capita·")
+  inflect.irregular("periodo·_de·_capita·", "periodos_de_capita")
+  inflect.irregular("PeriodoDeCapita", "Periodos·De·Capita·")
+  inflect.irregular("Periodo·De·Capita·", "PeriodosDeCapita")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

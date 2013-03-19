@@ -620,11 +620,25 @@ class PadronesController < ApplicationController
         # El afiliado no existe en la versión actual (ha sido agregado al padrón)
         afiliado = Afiliado.new(atr_afiliado)
         if afiliado.save
-          # Como el afiliado es nuevo, tenemos que agregar un registro a la tabla de 'periodos_activos' si está ACTIVO
+          # Como el afiliado es nuevo, tenemos que agregar un registro a la tabla de 'periodos_de_actividad' si está ACTIVO, a
+          # la de 'periodos_de_cobertura' si tiene CEB, y a la de 'periodos_de_capita' si devengó cápita
           if afiliado.activo
             PeriodoDeActividad.create({:afiliado_id => afiliado.afiliado_id,
               :fecha_de_inicio => primero_del_mes,
               :fecha_de_finalizacion => nil
+            })
+          end
+          if afiliado.cobertura_efectiva_basica
+            PeriodoDeCobertura.create({:afiliado_id => afiliado.afiliado_id,
+              :fecha_de_inicio => primero_del_mes,
+              :fecha_de_finalizacion => nil
+            })
+          end
+          if afiliado.devenga_capita
+            PeriodoDeCobertura.create({:afiliado_id => afiliado.afiliado_id,
+              :fecha_de_inicio => primero_del_mes,
+              :fecha_de_finalizacion => nil,
+              :capitas_al_inicio => afiliado.devenga_cantidad_de_capitas
             })
           end
         else
@@ -663,6 +677,33 @@ class PadronesController < ApplicationController
                   :motivo_de_la_baja_id => afiliado.motivo_de_la_baja_id,
                   :mensaje_de_la_baja => afiliado.mensaje_de_la_baja
                 })
+              end
+            end
+          end
+
+          # Actualizar el periodo de cobertura efectiva básica
+          begin
+            periodo = PeriodoDeCobertura.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
+          rescue
+            periodo = nil
+          end
+          if afiliado.cobertura_efectiva_basica
+            if periodo.nil?
+              # Crear un nuevo periodo de cobertura
+              PeriodoDeActividad.create({
+                :afiliado_id => afiliado.afiliado_id,
+                :fecha_de_inicio => primero_del_mes,
+                :fecha_de_finalizacion => nil
+              })
+            end
+          else
+            if periodo
+              if periodo.fecha_de_inicio == primero_del_mes
+                # Eliminar el periodo (actualización de la información del mismo mes, el periodo no debía existir)
+                periodo.destroy
+              else
+                # Finalizar el periodo de cobertura
+                periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
               end
             end
           end

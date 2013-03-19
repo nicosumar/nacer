@@ -98,7 +98,7 @@ class Afiliado < ActiveRecord::Base
 
   # activo?
   # Indica si el afiliado estaba activo en el padrón correspondiente al mes y año de la fecha indicada, o
-  # en alguno de los padrones de los dos meses siguientes (lapso ventana para la carga de la ficha de inscripción).
+  # en alguno de los padrones de los cuatro meses siguientes (lapso ventana para la carga de la ficha de inscripción).
   # Si no se pasa una fecha, indica si figura actualmente como beneficiario activo
   #
   def activo?(fecha = nil)
@@ -111,7 +111,7 @@ class Afiliado < ActiveRecord::Base
     periodos.each do |p|
       # Tomamos como fecha de inicio del periodo la que sea mayor entre la inscripción y la fecha de inicio del periodo
       # desplazada dos meses antes (lapso ventana para la carga de la ficha de inscripción).
-      inicio = [p.fecha_de_inicio - 2.months, fecha_de_inscripcion].max
+      inicio = [p.fecha_de_inicio - 4.months, fecha_de_inscripcion].max
       if ( fecha >= inicio && (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion))
         return true
       end
@@ -541,6 +541,8 @@ class Afiliado < ActiveRecord::Base
       :efector_ceb => Efector.id_del_cuie(self.valor(campos[94], :texto)),
       :fecha_de_la_ultima_prestacion => self.valor(campos[95], :fecha),
       :prestacion_ceb => Prestacion.id_del_codigo(self.valor(campos[96], :texto)),
+      :devenga_capita => SiNo.valor_bool_del_codigo(self.valor(campos[97], :texto)),
+      :devenga_cantidad_de_capitas => self.valor(campos[98], :entero),
       :grupo_poblacional_id => GrupoPoblacional.id_del_codigo(self.valor(campos[99], :texto))
 
       # A continuación se ubican los campos cuyos datos no se convierten ya que no tienen un uso definido,
@@ -584,8 +586,6 @@ class Afiliado < ActiveRecord::Base
       #:activo_r => self.valor(campos[83], :texto),
       #:motivo_baja_r => self.valor(campos[84], :entero),
       #:mensaje_baja_r => self.valor(campos[85], :texto),
-      #:devenga_capita => SiNo.valor_bool_del_codigo(self.valor(campos[97], :texto)),
-      #:devenga_cantidad_de_capitas => self.valor(campos[98], :entero),
     }
   end
 
