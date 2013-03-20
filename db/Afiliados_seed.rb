@@ -10,6 +10,7 @@ class ModificarAfiliados < ActiveRecord::Migration
         tipo_de_documento_de_la_madre text;
         tipo_de_documento_del_padre text;
         tipo_de_documento_del_tutor text;
+        sexo text;
       BEGIN
         -- Actualizar la tabla de búsquedas con los datos insertados, actualizados o eliminados.
         IF (TG_OP = 'DELETE') THEN
@@ -29,11 +30,19 @@ class ModificarAfiliados < ActiveRecord::Migration
           SELECT codigo INTO tipo_de_documento_de_la_madre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_de_la_madre_id;
           SELECT codigo INTO tipo_de_documento_del_padre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_padre_id;
           SELECT codigo INTO tipo_de_documento_del_tutor FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_tutor_id;
+          SELECT codigo INTO sexo FROM sexos WHERE id = NEW.sexo_id;
           UPDATE busquedas SET
             titulo =
               COALESCE(NEW.apellido || ', ', '') ||
               COALESCE(NEW.nombre, '') ||
-              ' (' || COALESCE(NEW.numero_de_documento, '') || ')',
+              ' (' || COALESCE(tipo_de_documento || ' ', '') || COALESCE(NEW.numero_de_documento, '') || '), ' ||
+              (CASE
+                WHEN sexo = 'F' THEN
+                  (CASE WHEN NEW.activo THEN 'beneficiaria ACTIVA ' ELSE 'beneficiaria INACTIVA ' END)
+                ELSE
+                  (CASE WHEN NEW.activo THEN 'beneficiario ACTIVO ' ELSE 'beneficiario INACTIVO ' END)
+              END) ||
+              (CASE WHEN NEW.cobertura_efectiva_basica THEN 'CON C.E.B.' ELSE 'SIN C.E.B.' END),
             texto =
               'Beneficiario: ' ||
               COALESCE(NEW.nombre || ' ', '') ||
@@ -110,13 +119,21 @@ class ModificarAfiliados < ActiveRecord::Migration
           SELECT codigo INTO tipo_de_documento_de_la_madre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_de_la_madre_id;
           SELECT codigo INTO tipo_de_documento_del_padre FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_padre_id;
           SELECT codigo INTO tipo_de_documento_del_tutor FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_del_tutor_id;
+          SELECT codigo INTO sexo FROM sexos WHERE id = NEW.sexo_id;
           INSERT INTO busquedas (modelo_type, modelo_id, titulo, texto, vector_fts) VALUES (
             'Afiliado',
             NEW.afiliado_id,
             COALESCE(NEW.apellido || ', ', '') ||
             COALESCE(NEW.nombre, '') ||
-            ' (' || COALESCE(NEW.numero_de_documento, '') || ')',
-            'Beneficiario: ' ||
+            ' (' || COALESCE(tipo_de_documento || ' ', '') || COALESCE(NEW.numero_de_documento, '') || '), ' ||
+            (CASE
+              WHEN sexo = 'F' THEN
+                (CASE WHEN NEW.activo THEN 'beneficiaria ACTIVA ' ELSE 'beneficiaria INACTIVA ' END)
+              ELSE
+                (CASE WHEN NEW.activo THEN 'beneficiario ACTIVO ' ELSE 'beneficiario INACTIVO ' END)
+            END) ||
+            (CASE WHEN NEW.cobertura_efectiva_basica THEN 'CON C.E.B.' ELSE 'SIN C.E.B.' END),
+           'Beneficiario: ' ||
             COALESCE(NEW.nombre || ' ', '') ||
             COALESCE(NEW.apellido, '') ||
             ', clave ''' ||

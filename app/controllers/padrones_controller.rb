@@ -635,7 +635,7 @@ class PadronesController < ApplicationController
             })
           end
           if afiliado.devenga_capita
-            PeriodoDeCobertura.create({:afiliado_id => afiliado.afiliado_id,
+            PeriodoDeCapita.create({:afiliado_id => afiliado.afiliado_id,
               :fecha_de_inicio => primero_del_mes,
               :fecha_de_finalizacion => nil,
               :capitas_al_inicio => afiliado.devenga_cantidad_de_capitas
@@ -683,7 +683,14 @@ class PadronesController < ApplicationController
 
           # Actualizar el periodo de cobertura efectiva básica
           begin
-            periodo = PeriodoDeCobertura.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
+            periodo =
+              PeriodoDeCobertura.where(
+                "afiliado_id = '#{afiliado.afiliado_id}'
+                  AND (
+                    fecha_de_finalizacion IS NULL
+                    OR fecha_de_finalizacion > '#{(primero_del_mes - afiliado.devenga_cantidad_de_capitas.months).strftime("%Y/%m/%d")}'
+                  )"
+              ).first
           rescue
             periodo = nil
           end
@@ -695,6 +702,11 @@ class PadronesController < ApplicationController
                 :fecha_de_inicio => primero_del_mes,
                 :fecha_de_finalizacion => nil
               })
+            else
+              if !periodo.fecha_de_finalizacion.nil?
+                # Beneficiario que recupera CEB en forma retroactiva, eliminar la fecha de finalización
+                periodo.update_attributes({:fecha_de_finalizacion => nil})
+              end
             end
           else
             if periodo
@@ -703,6 +715,34 @@ class PadronesController < ApplicationController
                 periodo.destroy
               else
                 # Finalizar el periodo de cobertura
+                periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
+              end
+            end
+          end
+
+          # Actualizar el periodo de devengamiento de cápitas
+          begin
+            periodo = PeriodoDeCapita.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
+          rescue
+            periodo = nil
+          end
+          if afiliado.devenga_capita
+            if periodo.nil?
+              # Crear un nuevo periodo de cobertura
+              PeriodoDeActividad.create({
+                :afiliado_id => afiliado.afiliado_id,
+                :fecha_de_inicio => primero_del_mes,
+                :fecha_de_finalizacion => nil,
+                :capitas_al_inicio => afiliado.devenga_cantidad_de_capitas
+              })
+            end
+          else
+            if periodo
+              if periodo.fecha_de_inicio == primero_del_mes
+                # Eliminar el periodo (actualización de la información del mismo mes, el periodo no debía existir)
+                periodo.destroy
+              else
+                # Finalizar el periodo de devengamiento de cápitas
                 periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
               end
             end

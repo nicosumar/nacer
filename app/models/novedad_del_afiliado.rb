@@ -883,4 +883,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
   end
 
+  #
+  # self.con_estado
+  # Devuelve los registros filtrados de acuerdo con el ID de estado pasado como parámetro
+  def self.con_estado(id_de_estado)
+    where(:estado_de_la_novedad_id => id_de_estado)
+  end
 end

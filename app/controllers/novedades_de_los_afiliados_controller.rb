@@ -14,11 +14,37 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       return
     end
 
-    # Obtener el listado de novedades
-    @novedades =
-      NovedadDelAfiliado.paginate( :page => params[:page], :per_page => 20, :include => :tipo_de_novedad,
-        :order => "updated_at DESC"
-      )
+    # Preparar los objetos necesarios para la vista
+    @estados_de_las_novedades = EstadoDeLaNovedad.find(:all).collect{ |e| [e.nombre, e.id] }
+
+    # Verificar si hay un parámetro para filtrar las novedades
+    if params[:estado_de_la_novedad_id].blank?
+      # No hay filtro, devolver todas las novedades registradas
+      @novedades =
+        NovedadDelAfiliado.paginate( :page => params[:page], :per_page => 20, :include => :tipo_de_novedad,
+          :order => "updated_at DESC"
+        )
+      @estado_de_la_novedad_id = nil
+      @descripcion_del_estado = 'registradas'
+    else
+      @estado_de_la_novedad_id = params[:estado_de_la_novedad_id].to_i
+      # Verificar que el parámetro sea un estado válido
+      if @estado_de_la_novedad_id && !@estados_de_las_novedades.collect{|i| i[1]}.member?(@estado_de_la_novedad_id)
+        redirect_to(root_url,
+          :flash => { :tipo => :error, :titulo => "La petición no es válida",
+           :mensaje => "Se informará al administrador del sistema sobre este incidente."
+          }
+        )
+        return
+      end
+      @descripcion_del_estado = EstadoDeLaNovedad.find(@estado_de_la_novedad_id).nombre
+
+      # Obtener las novedades filtradas de acuerdo con el parámetro
+      @novedades =
+        NovedadDelAfiliado.con_estado(@estado_de_la_novedad_id).paginate(:page => params[:page], :per_page => 20, :include => :tipo_de_novedad,
+          :order => "updated_at DESC"
+        )
+    end
 
   end
 

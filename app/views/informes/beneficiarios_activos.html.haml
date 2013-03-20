@@ -11,8 +11,8 @@
   %h2.first-header-with-note
     Información del periodo:
     = l @fecha_base, :format => :month_and_year
-    %p.note
-      Puede seleccionar otro periodo y presionar 'Actualizar' para obtener los datos correspondientes.
+  %p.note
+    Puede seleccionar otro periodo y presionar 'Actualizar' para obtener los datos correspondientes.
 
   = form_tag('/informe_de_beneficiarios_activos', :method => 'get') do
     %div.field

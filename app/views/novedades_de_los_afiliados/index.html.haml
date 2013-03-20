@@ -7,7 +7,21 @@
 = render "shared/info"
 
 #content-body
-  %h2.first-header Listado de solicitudes registradas
+  - if @estado_de_la_novedad_id.blank?
+    %h2.first-header-with-note Listado de solicitudes registradas
+  - else
+    %h2.first-header-with-note
+      Listado de solicitudes que tienen el estado
+      = "'" + @descripcion_del_estado + "'"
+  %p.note
+    Puede seleccionar en la lista un estado y presionar 'Actualizar' para que se muestren únicamente solicitudes con ese estado.
+
+  = form_tag('/novedades_de_los_afiliados', :method => 'get') do
+    %div.field
+      = label_tag(:estado_de_la_novedad_id, "Mostrar únicamente solicitudes con estado:")
+      = select_tag :estado_de_la_novedad_id, options_for_select(@estados_de_las_novedades, @estado_de_la_novedad_id), |
+        {:include_blank => true} |
+      = submit_tag("Actualizar")
 
   %table
     %thead
