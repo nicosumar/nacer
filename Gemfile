@@ -16,6 +16,7 @@ end
 gem 'jquery-rails'
 gem 'devise'
 gem 'mongrel'
+gem 'therubyracer'
 gem 'haml'
 gem 'cancan'
 gem 'will_paginate'
