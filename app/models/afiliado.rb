@@ -8,7 +8,6 @@ class Afiliado < ActiveRecord::Base
 
   # El modelo no está asignado a ningún formulario editable por el usuario.
   # Los datos se actualizan por un proceso batch.
-  # Los atributos no se protegen porque se asignan masivamente en dicho proceso.
   attr_accessible :afiliado_id, :clave_de_beneficiario, :apellido, :nombre, :clase_de_documento_id, :tipo_de_documento_id
   attr_accessible :numero_de_documento, :numero_de_celular, :e_mail, :categoria_de_afiliado_id, :sexo_id, :fecha_de_nacimiento
   attr_accessible :pais_de_nacimiento_id, :se_declara_indigena, :lengua_originaria_id, :tribu_originaria_id
@@ -26,6 +25,7 @@ class Afiliado < ActiveRecord::Base
   attr_accessible :unidad_de_alta_de_datos_id, :centro_de_inscripcion_id, :observaciones_generales, :activo
   attr_accessible :motivo_de_la_baja_id, :mensaje_de_la_baja, :fecha_de_carga, :usuario_que_carga
   attr_accessible :cobertura_efectiva_basica, :efector_ceb_id, :fecha_de_la_ultima_prestacion, :prestacion_ceb_id, :grupo_poblacional_id
+  attr_accessible :devenga_capita, :devenga_cantidad_de_capitas
 
   # Las verificaciones ya son realizadas por el sistema de gestión.
   # validate_...
@@ -538,9 +538,9 @@ class Afiliado < ActiveRecord::Base
 
       # Datos añadidos para la determinación de la CEB
       :cobertura_efectiva_basica => SiNo.valor_bool_del_codigo(self.valor(campos[93], :texto)),
-      :efector_ceb => Efector.id_del_cuie(self.valor(campos[94], :texto)),
+      :efector_ceb_id => Efector.id_del_cuie(self.valor(campos[94], :texto)),
       :fecha_de_la_ultima_prestacion => self.valor(campos[95], :fecha),
-      :prestacion_ceb => Prestacion.id_del_codigo(self.valor(campos[96], :texto)),
+      :prestacion_ceb_id => Prestacion.id_del_codigo(self.valor(campos[96], :texto)),
       :devenga_capita => SiNo.valor_bool_del_codigo(self.valor(campos[97], :texto)),
       :devenga_cantidad_de_capitas => self.valor(campos[98], :entero),
       :grupo_poblacional_id => GrupoPoblacional.id_del_codigo(self.valor(campos[99], :texto))
@@ -590,85 +590,150 @@ class Afiliado < ActiveRecord::Base
   end
 
   #
-  # menores_de_6
+  # menores_de_6_activos
   # Calcula la cantidad de beneficiarios menores de 6 años activos a la fecha del parámetro
-  def self.menores_de_6(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+  # separados en dos grupos según posean CEB o no.
+  def self.menores_de_6_activos(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
     ActiveRecord::Base.connection.exec_query(
-        "SELECT COUNT(*)
-           FROM afiliados af
-           LEFT JOIN periodos_de_actividad pa
-             ON (af.afiliado_id = pa.afiliado_id)
-           WHERE
-             pa.fecha_de_inicio < '#{fecha_base + 1.month}'
-             AND (
-               pa.fecha_de_finalizacion IS NULL
-               OR pa.fecha_de_finalizacion > '#{fecha_base}'
-             )
-             AND af.fecha_de_nacimiento >= '#{fecha_base - 6.years}';"
-      ).rows[0][0].to_i
+      "SELECT
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NULL OR pc.fecha_de_inicio > '#{fecha_base}'
+                   OR pc.fecha_de_finalizacion <= '#{fecha_base}') THEN
+               1::int8
+             ELSE
+               0::int8
+             END
+         ) AS activos_sin_ceb,
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio <= '#{fecha_base}' AND (pc.fecha_de_finalizacion IS NULL
+                   OR pc.fecha_de_finalizacion > '#{fecha_base}')) THEN
+               1::int8
+             ELSE
+               0::int8
+           END
+         ) AS activos_con_ceb,
+         COUNT(*) AS activos_totales
+         FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc ON (af.afiliado_id = pc.afiliado_id)
+         WHERE
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND fecha_de_nacimiento >= '#{fecha_base - 6.years}';
+      ").rows[0].collect{ |v| v.to_i }
   end
 
   #
-  # de_6_a_9
+  # de_6_a_9_activos
   # Calcula la cantidad de beneficiarios activos que tienen entre 6 y 9 años a la fecha del parámetro
-  def self.de_6_a_9(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+  # separados en dos grupos según posean CEB o no.
+  def self.de_6_a_9_activos(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
     ActiveRecord::Base.connection.exec_query(
-        "SELECT COUNT(*)
-           FROM afiliados af
-           LEFT JOIN periodos_de_actividad pa
-             ON (af.afiliado_id = pa.afiliado_id)
-           WHERE
-             pa.fecha_de_inicio < '#{fecha_base + 1.month}'
-             AND (
-               pa.fecha_de_finalizacion IS NULL
-               OR pa.fecha_de_finalizacion > '#{fecha_base}'
-             )
-             AND af.fecha_de_nacimiento < '#{fecha_base - 6.years}'
-             AND af.fecha_de_nacimiento >= '#{fecha_base - 10.years}';"
-      ).rows[0][0].to_i
+      "SELECT
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NULL OR pc.fecha_de_inicio > '#{fecha_base}'
+                   OR pc.fecha_de_finalizacion <= '#{fecha_base}') THEN
+               1::int8
+             ELSE
+               0::int8
+             END
+         ) AS activos_sin_ceb,
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio <= '#{fecha_base}' AND (pc.fecha_de_finalizacion IS NULL
+                   OR pc.fecha_de_finalizacion > '#{fecha_base}')) THEN
+               1::int8
+             ELSE
+               0::int8
+           END
+         ) AS activos_con_ceb,
+         COUNT(*) AS activos_totales
+         FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc ON (af.afiliado_id = pc.afiliado_id)
+         WHERE
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 6.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 10.years}';
+      ").rows[0].collect{ |v| v.to_i }
   end
 
   #
-  # adolescentes
+  # adolescentes_activos
   # Calcula la cantidad de beneficiarios activos que tienen entre 10 y 19 años a la fecha del parámetro
-  def self.adolescentes(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+  def self.adolescentes_activos(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
     ActiveRecord::Base.connection.exec_query(
-        "SELECT COUNT(*)
-           FROM afiliados af
-           LEFT JOIN periodos_de_actividad pa
-             ON (af.afiliado_id = pa.afiliado_id)
-           WHERE
-             pa.fecha_de_inicio < '#{fecha_base + 1.month}'
-             AND (
-               pa.fecha_de_finalizacion IS NULL
-               OR pa.fecha_de_finalizacion > '#{fecha_base}'
-             )
-             AND af.fecha_de_nacimiento < '#{fecha_base - 10.years}'
-             AND af.fecha_de_nacimiento >= '#{fecha_base - 20.years}';"
-      ).rows[0][0].to_i
+      "SELECT
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NULL OR pc.fecha_de_inicio > '#{fecha_base}'
+                   OR pc.fecha_de_finalizacion <= '#{fecha_base}') THEN
+               1::int8
+             ELSE
+               0::int8
+             END
+         ) AS activos_sin_ceb,
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio <= '#{fecha_base}' AND (pc.fecha_de_finalizacion IS NULL
+                   OR pc.fecha_de_finalizacion > '#{fecha_base}')) THEN
+               1::int8
+             ELSE
+               0::int8
+           END
+         ) AS activos_con_ceb,
+         COUNT(*) AS activos_totales
+         FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc ON (af.afiliado_id = pc.afiliado_id)
+         WHERE
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 10.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 20.years}';
+      ").rows[0].collect{ |v| v.to_i }
   end
 
   #
-  # mujeres_de_20_a_64
+  # mujeres_de_20_a_64_activas
   # Calcula la cantidad de beneficiarias mujeres activas que tienen entre 20 y 64 años a la fecha del parámetro
-  def self.mujeres_de_20_a_64(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+  def self.mujeres_de_20_a_64_activas(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
     ActiveRecord::Base.connection.exec_query(
-        "SELECT COUNT(*)
-           FROM afiliados af
-           LEFT JOIN periodos_de_actividad pa
-             ON (af.afiliado_id = pa.afiliado_id)
-           LEFT JOIN sexos sx
-             ON (af.sexo_id = sx.id)
-           WHERE
-             pa.fecha_de_inicio < '#{fecha_base + 1.month}'
-             AND (
-               pa.fecha_de_finalizacion IS NULL
-               OR pa.fecha_de_finalizacion > '#{fecha_base}'
-             )
-             AND af.fecha_de_nacimiento < '#{fecha_base - 20.years}'
-             AND af.fecha_de_nacimiento >= '#{fecha_base - 65.years}'
-             AND sx.codigo = 'F';"
-      ).rows[0][0].to_i
+      "SELECT
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NULL OR pc.fecha_de_inicio > '#{fecha_base}'
+                   OR pc.fecha_de_finalizacion <= '#{fecha_base}') THEN
+               1::int8
+             ELSE
+               0::int8
+             END
+         ) AS activos_sin_ceb,
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio <= '#{fecha_base}' AND (pc.fecha_de_finalizacion IS NULL
+                   OR pc.fecha_de_finalizacion > '#{fecha_base}')) THEN
+               1::int8
+             ELSE
+               0::int8
+           END
+         ) AS activos_con_ceb,
+         COUNT(*) AS activos_totales
+         FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc ON (af.afiliado_id = pc.afiliado_id)
+           LEFT JOIN sexos sx ON (af.sexo_id = sx.id)
+         WHERE
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 20.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 65.years}'
+           AND sx.codigo = 'F';
+      ").rows[0].collect{ |v| v.to_i }
   end
 
 private

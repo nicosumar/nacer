@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreatePeriodosDeCobertura < ActiveRecord::Migration
   def change
     create_table :periodos_de_cobertura do |t|

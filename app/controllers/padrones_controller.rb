@@ -697,7 +697,7 @@ class PadronesController < ApplicationController
           if afiliado.cobertura_efectiva_basica
             if periodo.nil?
               # Crear un nuevo periodo de cobertura
-              PeriodoDeActividad.create({
+              PeriodoDeCobertura.create({
                 :afiliado_id => afiliado.afiliado_id,
                 :fecha_de_inicio => primero_del_mes,
                 :fecha_de_finalizacion => nil
@@ -729,7 +729,7 @@ class PadronesController < ApplicationController
           if afiliado.devenga_capita
             if periodo.nil?
               # Crear un nuevo periodo de cobertura
-              PeriodoDeActividad.create({
+              PeriodoDeCapita.create({
                 :afiliado_id => afiliado.afiliado_id,
                 :fecha_de_inicio => primero_del_mes,
                 :fecha_de_finalizacion => nil,

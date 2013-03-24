@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ModifyFunctionAfiliadosFtsTrigger < ActiveRecord::Migration
   def change
     execute "

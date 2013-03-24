@@ -1,5 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Prestacion < ActiveRecord::Base
+
+  # Seguridad de asignaciones masivas
+  attr_accessible :area_de_prestacion_id, :grupo_de_prestaciones_id, :subgrupo_de_prestaciones_id, :unidad_de_medida_id
+  attr_accessible :codigo, :nombre, :activa
+
+  # Asociaciones
   belongs_to :area_de_prestacion
   belongs_to :grupo_de_prestaciones
   belongs_to :subgrupo_de_prestaciones
@@ -8,7 +14,8 @@ class Prestacion < ActiveRecord::Base
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, :through => :datos_adicionales_por_prestacion
 
-  validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id, :codigo, :nombre, :unidad_de_medida_id
+  # Validaciones
+  validates_presence_of :codigo, :nombre, :unidad_de_medida_id
 
   # En forma predeterminada, sólo se devuelven los registros activos
   default_scope where(:activa => true)
@@ -16,7 +23,7 @@ class Prestacion < ActiveRecord::Base
   # Devuelve el valor del campo 'nombre', pero truncado a 80 caracteres.
   def nombre_corto
     if nombre.length > 80 then
-      nombre.first(77) + "..."
+      nombre.first(62) + "..." + nombre.last(15)
     else
       nombre
     end
@@ -61,4 +68,22 @@ class Prestacion < ActiveRecord::Base
               AND (fecha_de_finalizacion IS NULL OR fecha_de_finalizacion >= '#{fecha.strftime("%Y-%m-%d")}')
         ) ORDER BY codigo;")
   end
+
+  # Devuelve el id asociado con el código pasado
+  def self.id_del_codigo(codigo)
+    if !codigo || codigo.strip.empty?
+      return nil
+    end
+
+    # Buscar el código en la tabla y devolver su ID (si existe)
+    prestacion = self.find_by_codigo(codigo.strip.upcase.gsub(/ /, ''))
+
+    if prestacion
+      return prestacion.id
+    else
+      logger.warn "ADVERTENCIA: No se encontró la prestación '#{codigo.strip.upcase.gsub(/ /, '')}'."
+      return nil
+    end
+  end
+
 end

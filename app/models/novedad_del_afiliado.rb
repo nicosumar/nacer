@@ -88,6 +88,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
     atributos_del_afiliado.delete "fecha_de_carga"
     atributos_del_afiliado.delete "usuario_que_carga"
     atributos_del_afiliado.delete "fecha_de_la_ultima_novedad"
+    atributos_del_afiliado.delete "cobertura_efectiva_basica"
+    atributos_del_afiliado.delete "efector_ceb_id"
+    atributos_del_afiliado.delete "fecha_de_la_ultima_prestacion"
+    atributos_del_afiliado.delete "prestacion_ceb_id"
+    atributos_del_afiliado.delete "grupo_poblacional_id"
+    atributos_del_afiliado.delete "devenga_capita"
+    atributos_del_afiliado.delete "devenga_cantidad_de_capitas"
     self.esta_embarazada = atributos_del_afiliado.delete "embarazo_actual"
     self.attributes = atributos_del_afiliado
 

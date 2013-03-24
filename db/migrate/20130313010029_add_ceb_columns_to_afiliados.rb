@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddCebColumnsToAfiliados < ActiveRecord::Migration
   def change
     # Añadir las columnas agregadas en la versión 4.8 del sistema

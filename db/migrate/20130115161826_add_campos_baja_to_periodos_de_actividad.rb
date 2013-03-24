@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddCamposBajaToPeriodosDeActividad < ActiveRecord::Migration
   def change
     add_column :periodos_de_actividad, :motivo_de_la_baja_id, :integer

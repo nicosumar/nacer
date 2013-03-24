@@ -15,7 +15,9 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     end
 
     # Preparar los objetos necesarios para la vista
-    @estados_de_las_novedades = EstadoDeLaNovedad.find(:all).collect{ |e| [e.nombre, e.id] }
+    @estados_de_las_novedades =
+      [["En cualquier estado", nil]] +
+      EstadoDeLaNovedad.find(:all, :order => :id).collect{ |e| ["En estado '" + e.nombre + "'", e.id] }
 
     # Verificar si hay un parámetro para filtrar las novedades
     if params[:estado_de_la_novedad_id].blank?

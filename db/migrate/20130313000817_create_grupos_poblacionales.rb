@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateGruposPoblacionales < ActiveRecord::Migration
   def change
     create_table :grupos_poblacionales do |t|
