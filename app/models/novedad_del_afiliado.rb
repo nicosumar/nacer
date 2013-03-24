@@ -24,7 +24,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_accessible :esta_embarazada, :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo
   attr_accessible :semanas_de_embarazo, :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo
   attr_accessible :discapacidad_id, :fecha_de_la_novedad, :centro_de_inscripcion_id, :nombre_del_agente_inscriptor
-  attr_accessible :observaciones_generales
+  attr_accessible :observaciones_generales, :mes_y_anio_de_proceso, :mensaje_de_la_baja
 
   # La clave de beneficiario sólo puede registrarse al grabar la novedad
   attr_readonly :clave_de_beneficiario
@@ -858,10 +858,12 @@ class NovedadDelAfiliado < ActiveRecord::Base
         estado = EstadoDeLaNovedad.id_del_codigo("P")
         ActiveRecord::Base.connection.exec_query "
           UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
-            SET estado_de_la_novedad_id = '#{estado}'
+            SET
+              estado_de_la_novedad_id = '#{estado}',
+              mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}'
             WHERE
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
-              AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
+              AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHEE codigo = '#{codigo_ci}')
               AND tipo_de_novedad_id != (SELECT id FROM tipos_de_novedades WHERE codigo = 'B')
               AND fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
         "

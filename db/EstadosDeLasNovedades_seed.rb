@@ -18,7 +18,7 @@ EstadoDeLaNovedad.create([
     :codigo => "P",
     :pendiente => true },
   { #:id => 4,
-    :nombre => "Aprobada",
+    :nombre => "Aprobada y activa",
     :codigo => "A",
     :pendiente => false },
   { #:id => 5,
@@ -32,5 +32,9 @@ EstadoDeLaNovedad.create([
   { #:id => 7,
     :nombre => "Anulada por el sistema",
     :codigo => "S",
+    :pendiente => false },
+  { #:id => 8,
+    :nombre => "Aprobada, pero inactiva",
+    :codigo => "N",
     :pendiente => false }
 ])

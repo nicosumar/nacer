@@ -2,19 +2,28 @@
 %div.field_content
   %span.field_value Solicitud de alta de un beneficiario
 
-%h3 Estado de la solicitud
-%div.field_content
-  - if @novedad.advertencias && @novedad.advertencias.size > 0
-    %span.field_value_multiline
-      = @novedad.estado_de_la_novedad.nombre
-      %br/
-      Los siguientes problemas impiden que esta solicitud sea notificada:
-      %br/
-      - @novedad.advertencias.each do |adv|
-        = "- " + adv
-        %br/
+#estado
+  %h3 Estado de la solicitud
+  - if ["R", "P", "A"].member?(@novedad.estado_de_la_novedad.codigo)
+    #info.infobox-ok.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+  - elsif ["I", "U", "S"].member?(@novedad.estado_de_la_novedad.codigo)
+    #info.infobox-advertencia.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      - if @novedad.advertencias && @novedad.advertencias.size > 0
+        %ul
+          - @novedad.advertencias.each do |adv|
+            %li= adv
+  - elsif @novedad.estado_de_la_novedad.codigo == "N"
+    #info.infobox-advertencia.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      %ul
+        %li= @novedad.mensaje_de_la_baja
   - else
-    %span.field_value= @novedad.estado_de_la_novedad.nombre
+    #info.infobox-error.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      %ul
+        %li= @novedad.mensaje_de_la_baja
 
 %h3 Clave única de beneficiario
 %div.field_content

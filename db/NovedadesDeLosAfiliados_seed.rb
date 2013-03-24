@@ -10,17 +10,21 @@ class ModificarNovedadesDeLosAfiliados < ActiveRecord::Migration
         tipo_de_documento_de_la_madre text;
         tipo_de_documento_del_padre text;
         tipo_de_documento_del_tutor text;
+        old_indexable boolean;
+        new_indexable boolean;
       BEGIN
+        SELECT indexable INTO old_indexable FROM estados_de_las_novedades WHERE id = OLD.estado_de_la_novedad_id;
+        SELECT indexable INTO new_indexable FROM estados_de_las_novedades WHERE id = NEW.estado_de_la_novedad_id;
         -- Actualizar la tabla de búsquedas con los datos insertados, actualizados o eliminados.
         IF (TG_OP = 'DELETE') THEN
           -- Eliminar el registro asociado en la tabla de búsquedas
           DELETE FROM busquedas_locales WHERE modelo_type = 'NovedadDelAfiliado' AND modelo_id = OLD.id;
           RETURN OLD;
-        ELSIF (TG_OP = 'UPDATE' AND NEW.estado_de_la_novedad_id BETWEEN 4 AND 7 AND OLD.estado_de_la_novedad_id BETWEEN 1 AND 3) THEN
-          -- Eliminar el registro si es una actualización y la novedad ya no está pendiente
+        ELSIF (TG_OP = 'UPDATE' AND NOT new_indexable AND old_indexable) THEN
+          -- Eliminar el registro si es una actualización y la novedad ya no debe indexarse en las búsquedas
           DELETE FROM busquedas_locales WHERE modelo_type = 'NovedadDelAfiliado' AND modelo_id = NEW.id;
           RETURN NEW;
-        ELSIF (TG_OP = 'UPDATE') THEN
+        ELSIF (TG_OP = 'UPDATE' AND new_indexable AND old_indexable) THEN
           -- Actualizar el registro asociado en la tabla de búsquedas locales si el registro estaba indexado
           SELECT LOWER(nombre) INTO clase_de_documento FROM clases_de_documentos WHERE id = NEW.clase_de_documento_id;
           SELECT codigo INTO tipo_de_documento FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_id;
@@ -99,7 +103,7 @@ class ModificarNovedadesDeLosAfiliados < ActiveRecord::Migration
               setweight(to_tsvector('public.indices_fts', COALESCE(NEW.numero_de_documento_del_tutor, '')), 'C')
             WHERE modelo_type = 'NovedadDelAfiliado' AND modelo_id = NEW.id;
           RETURN NEW;
-        ELSIF (TG_OP = 'INSERT') THEN
+        ELSIF (new_indexable AND (TG_OP = 'INSERT' OR TG_OP = 'UPDATE' AND NOT old_indexable)) THEN
           -- Insertar el registro asociado en la tabla de búsquedas locales
           SELECT LOWER(nombre) INTO clase_de_documento FROM clases_de_documentos WHERE id = NEW.clase_de_documento_id;
           SELECT codigo INTO tipo_de_documento FROM tipos_de_documentos WHERE id = NEW.tipo_de_documento_id;

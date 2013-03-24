@@ -218,6 +218,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("periodo·_de·_capita·", "periodos_de_capita")
   inflect.irregular("PeriodoDeCapita", "Periodos·De·Capita·")
   inflect.irregular("Periodo·De·Capita·", "PeriodosDeCapita")
+  inflect.irregular("motivo_de_la_baja", "motivos·_de·_las·_bajas·")
+  inflect.irregular("motivo·_de·_la·_baja·", "motivos_de_las_bajas")
+  inflect.irregular("MotivoDeLaBaja", "Motivos·De·Las·Bajas·")
+  inflect.irregular("Motivo·De·La·Baja·", "MotivosDeLasBajas")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
