@@ -2,19 +2,28 @@
 %div.field_content
   %span.field_value Solicitud de modificación de datos
 
-%h3 Estado de la solicitud
-%div.field_content
-  - if @novedad.advertencias && @novedad.advertencias.size > 0
-    %span.field_value_multiline
-      = @novedad.estado_de_la_novedad.nombre
-      %br/
-      Los siguientes problemas impiden que esta solicitud sea notificada:
-      %br/
-      - @novedad.advertencias.each do |adv|
-        = "- " + adv
-        %br/
+#estado
+  %h3 Estado de la solicitud
+  - if ["R", "P", "A"].member?(@novedad.estado_de_la_novedad.codigo)
+    #info.infobox-ok.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+  - elsif ["I", "U", "S"].member?(@novedad.estado_de_la_novedad.codigo)
+    #info.infobox-advertencia.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      - if @novedad.advertencias && @novedad.advertencias.size > 0
+        %ul
+          - @novedad.advertencias.each do |adv|
+            %li= adv
+  - elsif @novedad.estado_de_la_novedad.codigo == "N"
+    #info.infobox-advertencia.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      %ul
+        %li= @novedad.mensaje_de_la_baja
   - else
-    %span.field_value_multiline= @novedad.estado_de_la_novedad.nombre
+    #info.infobox-error.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      %ul
+        %li= @novedad.mensaje_de_la_baja
 
 %h3 Clave única de beneficiario
 %div.field_content
@@ -24,7 +33,7 @@
 
 %div.field_content
   %span.field_name Apellido
-  - if @afiliado.apellido != @novedad.apellido
+  - if @afiliado.apellido.to_s != @novedad.apellido.to_s
     - if !@novedad.apellido.blank?
       %span.field_modified= @novedad.apellido
     - else
@@ -38,7 +47,7 @@
       %span.field_empty No se ingresó el apellido
 %div.field_content
   %span.field_name Nombre
-  - if @afiliado.nombre != @novedad.nombre
+  - if @afiliado.nombre.to_s != @novedad.nombre.to_s
     - if !@novedad.nombre.blank?
       %span.field_modified= @novedad.nombre
     - else
@@ -80,7 +89,7 @@
       %span.field_empty No se seleccionó el tipo de documento
 %div.field_content
   %span.field_name Número de documento
-  - if @afiliado.numero_de_documento != @novedad.numero_de_documento
+  - if @afiliado.numero_de_documento.to_s != @novedad.numero_de_documento.to_s
     - if !@novedad.numero_de_documento.blank?
       %span.field_modified= @novedad.numero_de_documento
     - else
@@ -94,7 +103,7 @@
       %span.field_empty No se ingresó el número de documento
 %div.field_content
   %span.field_name Número de celular
-  - if @afiliado.numero_de_celular != @novedad.numero_de_celular
+  - if @afiliado.numero_de_celular.to_s != @novedad.numero_de_celular.to_s
     - if !@novedad.numero_de_celular.blank?
       %span.field_modified= @novedad.numero_de_celular
     - else
@@ -108,7 +117,7 @@
       %span.field_empty No se ingresó el número de celular
 %div.field_content
   %span.field_name Dirección de correo electrónico:
-  - if @afiliado.e_mail != @novedad.e_mail
+  - if @afiliado.e_mail.to_s != @novedad.e_mail.to_s
     - if !@novedad.e_mail.blank?
       %span.field_modified= @novedad.e_mail
     - else
@@ -139,7 +148,7 @@
       %span.field_empty No se seleccionó el sexo
 %div.field_content
   %span.field_name Fecha de nacimiento
-  - if @afiliado.fecha_de_nacimiento != @novedad.fecha_de_nacimiento
+  - if @afiliado.fecha_de_nacimiento.to_s != @novedad.fecha_de_nacimiento.to_s
     - if @novedad.fecha_de_nacimiento
       %span.field_modified= @novedad.fecha_de_nacimiento.strftime("%d/%m/%Y")
     - else
@@ -223,7 +232,7 @@
       %span.field_empty No se ingresó el nivel de estudios
 %div.field_content
   %span.field_name Años cursados en el mayor nivel
-  - if @afiliado.alfab_beneficiario_anios_ultimo_nivel != @novedad.alfab_beneficiario_anios_ultimo_nivel
+  - if @afiliado.alfab_beneficiario_anios_ultimo_nivel.to_s != @novedad.alfab_beneficiario_anios_ultimo_nivel.to_s
     - if !@novedad.alfab_beneficiario_anios_ultimo_nivel.blank?
       %span.field_modified= @novedad.alfab_beneficiario_anios_ultimo_nivel
     - else
@@ -240,7 +249,7 @@
 
 %div.field_content
   %span.field_name Calle
-  - if @afiliado.domicilio_calle != @novedad.domicilio_calle
+  - if @afiliado.domicilio_calle.to_s != @novedad.domicilio_calle.to_s
     - if !@novedad.domicilio_calle.blank?
       %span.field_modified= @novedad.domicilio_calle
     - else
@@ -254,7 +263,7 @@
       %span.field_empty No se ingresó la calle
 %div.field_content
   %span.field_name Número de puerta o casa
-  - if @afiliado.domicilio_numero != @novedad.domicilio_numero
+  - if @afiliado.domicilio_numero.to_s != @novedad.domicilio_numero.to_s
     - if !@novedad.domicilio_numero.blank?
       %span.field_modified= @novedad.domicilio_numero
     - else
@@ -268,7 +277,7 @@
       %span.field_empty No se ingresó el número de puerta/casa
 %div.field_content
   %span.field_name Piso
-  - if @afiliado.domicilio_piso != @novedad.domicilio_piso
+  - if @afiliado.domicilio_piso.to_s != @novedad.domicilio_piso.to_s
     - if !@novedad.domicilio_piso.blank?
       %span.field_modified= @novedad.domicilio_piso
     - else
@@ -282,7 +291,7 @@
       %span.field_empty No se ingresó el piso
 %div.field_content
   %span.field_name Departamento (del piso indicado)
-  - if @afiliado.domicilio_depto != @novedad.domicilio_depto
+  - if @afiliado.domicilio_depto.to_s != @novedad.domicilio_depto.to_s
     - if !@novedad.domicilio_depto.blank?
       %span.field_modified= @novedad.domicilio_depto
     - else
@@ -296,7 +305,7 @@
       %span.field_empty No se ingresó el departamento
 %div.field_content
   %span.field_name Manzana
-  - if @afiliado.domicilio_manzana != @novedad.domicilio_manzana
+  - if @afiliado.domicilio_manzana.to_s != @novedad.domicilio_manzana.to_s
     - if !@novedad.domicilio_manzana.blank?
       %span.field_modified= @novedad.domicilio_manzana
     - else
@@ -310,7 +319,7 @@
       %span.field_empty No se ingresó la manzana
 %div.field_content
   %span.field_name Entre calle
-  - if @afiliado.domicilio_entre_calle_1 != @novedad.domicilio_entre_calle_1
+  - if @afiliado.domicilio_entre_calle_1.to_s != @novedad.domicilio_entre_calle_1.to_s
     - if !@novedad.domicilio_entre_calle_1.blank?
       %span.field_modified= @novedad.domicilio_entre_calle_1
     - else
@@ -324,7 +333,7 @@
       %span.field_empty No se ingresó el nombre de calle
 %div.field_content
   %span.field_name Y calle
-  - if @afiliado.domicilio_entre_calle_2 != @novedad.domicilio_entre_calle_2
+  - if @afiliado.domicilio_entre_calle_2.to_s != @novedad.domicilio_entre_calle_2.to_s
     - if !@novedad.domicilio_entre_calle_2.blank?
       %span.field_modified= @novedad.domicilio_entre_calle_2
     - else
@@ -338,7 +347,7 @@
       %span.field_empty No se ingresó el nombre de calle
 %div.field_content
   %span.field_name Teléfono
-  - if @afiliado.telefono != @novedad.telefono
+  - if @afiliado.telefono.to_s != @novedad.telefono.to_s
     - if !@novedad.telefono.blank?
       %span.field_modified= @novedad.telefono
     - else
@@ -352,7 +361,7 @@
       %span.field_empty No se ingresó el número de teléfono
 %div.field_content
   %span.field_name Otro teléfono
-  - if @afiliado.otro_telefono != @novedad.otro_telefono
+  - if @afiliado.otro_telefono.to_s != @novedad.otro_telefono.to_s
     - if !@novedad.otro_telefono.blank?
       %span.field_modified= @novedad.otro_telefono
     - else
@@ -394,7 +403,7 @@
       %span.field_empty No se seleccionó el distrito
 %div.field_content
   %span.field_name Barrio o paraje
-  - if @afiliado.domicilio_barrio_o_paraje != @novedad.domicilio_barrio_o_paraje
+  - if @afiliado.domicilio_barrio_o_paraje.to_s != @novedad.domicilio_barrio_o_paraje.to_s
     - if !@novedad.domicilio_barrio_o_paraje.blank?
       %span.field_modified= @novedad.domicilio_barrio_o_paraje
     - else
@@ -408,7 +417,7 @@
       %span.field_empty No se ingresó el barrio/paraje
 %div.field_content
   %span.field_name Código postal
-  - if @afiliado.domicilio_codigo_postal != @novedad.domicilio_codigo_postal
+  - if @afiliado.domicilio_codigo_postal.to_s != @novedad.domicilio_codigo_postal.to_s
     - if !@novedad.domicilio_codigo_postal.blank?
       %span.field_modified= @novedad.domicilio_codigo_postal
     - else
@@ -455,7 +464,7 @@
 
   %div.field_content
     %span.field_name Apellido
-    - if @afiliado.apellido_de_la_madre != @novedad.apellido_de_la_madre
+    - if @afiliado.apellido_de_la_madre.to_s != @novedad.apellido_de_la_madre.to_s
       - if !@novedad.apellido_de_la_madre.blank?
         %span.field_modified= @novedad.apellido_de_la_madre
       - else
@@ -469,7 +478,7 @@
         %span.field_empty No se ingresó el apellido
   %div.field_content
     %span.field_name Nombre
-    - if @afiliado.nombre_de_la_madre != @novedad.nombre_de_la_madre
+    - if @afiliado.nombre_de_la_madre.to_s != @novedad.nombre_de_la_madre.to_s
       - if !@novedad.nombre_de_la_madre.blank?
         %span.field_modified= @novedad.nombre_de_la_madre
       - else
@@ -497,7 +506,7 @@
         %span.field_empty No se seleccionó el tipo de documento
   %div.field_content
     %span.field_name Número de documento
-    - if @afiliado.numero_de_documento_de_la_madre != @novedad.numero_de_documento_de_la_madre
+    - if @afiliado.numero_de_documento_de_la_madre.to_s != @novedad.numero_de_documento_de_la_madre.to_s
       - if !@novedad.numero_de_documento_de_la_madre.blank?
         %span.field_modified= @novedad.numero_de_documento_de_la_madre
       - else
@@ -525,7 +534,7 @@
         %span.field_empty No se ingresó el nivel de estudios
   %div.field_content
     %span.field_name Años cursados en el mayor nivel
-    - if @afiliado.alfab_madre_anios_ultimo_nivel != @novedad.alfab_madre_anios_ultimo_nivel
+    - if @afiliado.alfab_madre_anios_ultimo_nivel.to_s != @novedad.alfab_madre_anios_ultimo_nivel.to_s
       - if !@novedad.alfab_madre_anios_ultimo_nivel.blank?
         %span.field_modified= @novedad.alfab_madre_anios_ultimo_nivel
       - else
@@ -542,7 +551,7 @@
 
   %div.field_content
     %span.field_name Apellido
-    - if @afiliado.apellido_del_padre != @novedad.apellido_del_padre
+    - if @afiliado.apellido_del_padre.to_s != @novedad.apellido_del_padre.to_s
       - if !@novedad.apellido_del_padre.blank?
         %span.field_modified= @novedad.apellido_del_padre
       - else
@@ -556,7 +565,7 @@
         %span.field_empty No se ingresó el apellido
   %div.field_content
     %span.field_name Nombre
-    - if @afiliado.nombre_del_padre != @novedad.nombre_del_padre
+    - if @afiliado.nombre_del_padre.to_s != @novedad.nombre_del_padre.to_s
       - if !@novedad.nombre_del_padre.blank?
         %span.field_modified= @novedad.nombre_del_padre
       - else
@@ -584,7 +593,7 @@
         %span.field_empty No se seleccionó el tipo de documento
   %div.field_content
     %span.field_name Número de documento
-    - if @afiliado.numero_de_documento_del_padre != @novedad.numero_de_documento_del_padre
+    - if @afiliado.numero_de_documento_del_padre.to_s != @novedad.numero_de_documento_del_padre.to_s
       - if !@novedad.numero_de_documento_del_padre.blank?
         %span.field_modified= @novedad.numero_de_documento_del_padre
       - else
@@ -612,7 +621,7 @@
         %span.field_empty No se ingresó el nivel de estudios
   %div.field_content
     %span.field_name Años cursados en el mayor nivel
-    - if @afiliado.alfab_padre_anios_ultimo_nivel != @novedad.alfab_padre_anios_ultimo_nivel
+    - if @afiliado.alfab_padre_anios_ultimo_nivel.to_s != @novedad.alfab_padre_anios_ultimo_nivel.to_s
       - if !@novedad.alfab_padre_anios_ultimo_nivel.blank?
         %span.field_modified= @novedad.alfab_padre_anios_ultimo_nivel
       - else
@@ -629,7 +638,7 @@
 
   %div.field_content
     %span.field_name Apellido
-    - if @afiliado.apellido_del_tutor != @novedad.apellido_del_tutor
+    - if @afiliado.apellido_del_tutor.to_s != @novedad.apellido_del_tutor.to_s
       - if !@novedad.apellido_del_tutor.blank?
         %span.field_modified= @novedad.apellido_del_tutor
       - else
@@ -643,7 +652,7 @@
         %span.field_empty No se ingresó el apellido
   %div.field_content
     %span.field_name Nombre
-    - if @afiliado.nombre_del_tutor != @novedad.nombre_del_tutor
+    - if @afiliado.nombre_del_tutor.to_s != @novedad.nombre_del_tutor.to_s
       - if !@novedad.nombre_del_tutor.blank?
         %span.field_modified= @novedad.nombre_del_tutor
       - else
@@ -671,7 +680,7 @@
         %span.field_empty No se seleccionó el tipo de documento
   %div.field_content
     %span.field_name Número de documento
-    - if @afiliado.numero_de_documento_del_tutor != @novedad.numero_de_documento_del_tutor
+    - if @afiliado.numero_de_documento_del_tutor.to_s != @novedad.numero_de_documento_del_tutor.to_s
       - if !@novedad.numero_de_documento_del_tutor.blank?
         %span.field_modified= @novedad.numero_de_documento_del_tutor
       - else
@@ -699,7 +708,7 @@
         %span.field_empty No se ingresó el nivel de estudios
   %div.field_content
     %span.field_name Años cursados en el mayor nivel
-    - if @afiliado.alfab_tutor_anios_ultimo_nivel != @novedad.alfab_tutor_anios_ultimo_nivel
+    - if @afiliado.alfab_tutor_anios_ultimo_nivel.to_s != @novedad.alfab_tutor_anios_ultimo_nivel.to_s
       - if !@novedad.alfab_tutor_anios_ultimo_nivel.blank?
         %span.field_modified= @novedad.alfab_tutor_anios_ultimo_nivel
       - else
@@ -718,7 +727,7 @@
 
   %div.field_content
     %span.field_name Fecha de la última menstruación
-    - if @afiliado.fecha_de_la_ultima_menstruacion != @novedad.fecha_de_la_ultima_menstruacion
+    - if @afiliado.fecha_de_la_ultima_menstruacion.to_s != @novedad.fecha_de_la_ultima_menstruacion.to_s
       - if @novedad.fecha_de_la_ultima_menstruacion
         %span.field_modified= @novedad.fecha_de_la_ultima_menstruacion.strftime("%d/%m/%Y")
       - else
@@ -732,7 +741,7 @@
         %span.field_empty No se ingresó la fecha de la última menstruación
   %div.field_content
     %span.field_name Fecha de diagnóstico del embarazo
-    - if @afiliado.fecha_de_diagnostico_del_embarazo != @novedad.fecha_de_diagnostico_del_embarazo
+    - if @afiliado.fecha_de_diagnostico_del_embarazo.to_s != @novedad.fecha_de_diagnostico_del_embarazo.to_s
       - if @novedad.fecha_de_diagnostico_del_embarazo
         %span.field_modified= @novedad.fecha_de_diagnostico_del_embarazo.strftime("%d/%m/%Y")
       - else
@@ -746,7 +755,7 @@
         %span.field_empty No se ingresó la fecha de diagnóstico
   %div.field_content
     %span.field_name Semanas de embarazo al diagnóstico
-    - if @afiliado.semanas_de_embarazo != @novedad.semanas_de_embarazo
+    - if @afiliado.semanas_de_embarazo.to_s != @novedad.semanas_de_embarazo.to_s
       - if !@novedad.semanas_de_embarazo.blank?
         %span.field_modified= @novedad.semanas_de_embarazo
       - else
@@ -760,7 +769,7 @@
         %span.field_empty No se ingresó la cantidad de semanas de embarazo
   %div.field_content
     %span.field_name Fecha probable de parto
-    - if @afiliado.fecha_probable_de_parto != @novedad.fecha_probable_de_parto
+    - if @afiliado.fecha_probable_de_parto.to_s != @novedad.fecha_probable_de_parto.to_s
       - if @novedad.fecha_probable_de_parto
         %span.field_modified= @novedad.fecha_probable_de_parto.strftime("%d/%m/%Y")
       - else
@@ -774,7 +783,7 @@
         %span.field_empty No se ingresó la fecha probable de parto
   %div.field_content
     %span.field_name Fecha efectiva de parto
-    - if @afiliado.fecha_efectiva_de_parto != @novedad.fecha_efectiva_de_parto
+    - if @afiliado.fecha_efectiva_de_parto.to_s != @novedad.fecha_efectiva_de_parto.to_s
       - if @novedad.fecha_efectiva_de_parto
         %span.field_modified= @novedad.fecha_efectiva_de_parto.strftime("%d/%m/%Y")
       - else

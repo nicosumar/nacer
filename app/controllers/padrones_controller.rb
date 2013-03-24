@@ -602,78 +602,210 @@ class PadronesController < ApplicationController
       anio, mes = params[:anio_y_mes].split("-")
       primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
       origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff", "r")
+      origen2 = File.new("vendor/data/ActEstadoNovedades_#{params[:anio_y_mes]}.txt", "r")
     rescue
       @errores_presentes = true
-      @errores << "La fecha indicada del padrón es incorrecta, o no se subió el archivo a la carpeta correcta del servidor."
+      @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
+      return
     end
 
-    origen.each do |linea|
-      # Procesar la siguiente línea del archivo
-      linea.gsub!(/[\r\n]+/, '')
-      atr_afiliado = Afiliado.attr_hash_desde_texto(linea)
-      afiliado_id = atr_afiliado[:afiliado_id]
-      begin
-        afiliado = Afiliado.find(afiliado_id)
-      rescue
-      end
-      if afiliado.nil?
-        # El afiliado no existe en la versión actual (ha sido agregado al padrón)
-        afiliado = Afiliado.new(atr_afiliado)
-        if afiliado.save
-          # Como el afiliado es nuevo, tenemos que agregar un registro a la tabla de 'periodos_activos' si está ACTIVO
-          if afiliado.activo
-            PeriodoDeActividad.create({:afiliado_id => afiliado.afiliado_id,
-              :fecha_de_inicio => primero_del_mes,
-              :fecha_de_finalizacion => nil
-            })
+    # Hacemos la actualización dentro de una transacción
+    ActiveRecord::Base.transaction do
+
+      # Procesamiento de la actualización del estado de las novedades
+      esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
+      ultima_uad = ''
+  
+      origen2.each do |linea|
+        # Separar los campos
+        campos = linea.split("\t")
+        codigo_uad = valor(campos[0], :texto)
+        id_de_novedad = valor(campos[1], :entero)
+        aceptado = valor(campos[2], :texto).upcase
+        activo = valor(campos[3], :texto).upcase
+        mensaje_baja = valor(campos[5], :texto)
+  
+        if codigo_uad != ultima_uad
+          # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
+          ActiveRecord::Base.connection.schema_search_path = "uad_#{codigo_uad},public"
+          ActiveRecord::Base.connection.execute("SET search_path TO #{ActiveRecord::Base.connection.schema_search_path};")
+          ultima_uad = codigo_uad
+        end
+  
+        if aceptado == 'S'
+          if activo == 'S'
+            estado = EstadoDeLaNovedad.id_del_codigo("A")
+          else
+            estado = EstadoDeLaNovedad.id_del_codigo("N")
           end
         else
-          @errores_presentes = true
-          afiliado.errors.full_messages.each do |e|
-            @errores << "Afiliado " + afiliado.afiliado_id.to_s + ": " + e
-          end
+          estado = EstadoDeLaNovedad.id_del_codigo("Z")
         end
-      else
-        # El afiliado ya existe en la tabla, actualizar sus datos
-        if afiliado.update_attributes(atr_afiliado)
-          # Actualizar el periodo de actividad de este beneficiario
-          begin
-            periodo = PeriodoDeActividad.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
-          rescue
-            periodo = nil
-          end
-          if afiliado.activo
-            if periodo.nil?
-              # Activar el beneficiario
-              PeriodoDeActividad.create({
-                :afiliado_id => afiliado.afiliado_id,
+    
+        ActiveRecord::Base.connection.execute "
+          UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
+            SET
+              estado_de_la_novedad_id = '#{estado}',
+              mensaje_de_la_baja = '#{mensaje_baja ? mensaje_baja : 'NULL'}'
+            WHERE id = '#{id_de_novedad}';
+        "
+      end
+      origen2.close
+      ActiveRecord::Base.connection.schema_search_path = esquema_actual
+      ActiveRecord::Base.connection.exec_query("SET search_path TO #{esquema_actual};")
+
+      # Procesamiento de la actualización de datos de beneficiarios
+      origen.each do |linea|
+        # Procesar la siguiente línea del archivo
+        linea.gsub!(/[\r\n]+/, '')
+        atr_afiliado = Afiliado.attr_hash_desde_texto(linea)
+        afiliado_id = atr_afiliado[:afiliado_id]
+        begin
+          afiliado = Afiliado.find(afiliado_id)
+        rescue
+        end
+        if afiliado.nil?
+          # El afiliado no existe en la versión actual (ha sido agregado al padrón)
+          afiliado = Afiliado.new(atr_afiliado)
+          if afiliado.save
+            # Como el afiliado es nuevo, tenemos que agregar un registro a la tabla de 'periodos_de_actividad' si está ACTIVO, a
+            # la de 'periodos_de_cobertura' si tiene CEB, y a la de 'periodos_de_capita' si devengó cápita
+            if afiliado.activo
+              PeriodoDeActividad.create({:afiliado_id => afiliado.afiliado_id,
                 :fecha_de_inicio => primero_del_mes,
                 :fecha_de_finalizacion => nil
               })
             end
+            if afiliado.cobertura_efectiva_basica
+              PeriodoDeCobertura.create({:afiliado_id => afiliado.afiliado_id,
+                :fecha_de_inicio => primero_del_mes,
+                :fecha_de_finalizacion => nil
+              })
+            end
+            if afiliado.devenga_capita
+              PeriodoDeCapita.create({:afiliado_id => afiliado.afiliado_id,
+                :fecha_de_inicio => primero_del_mes,
+                :fecha_de_finalizacion => nil,
+                :capitas_al_inicio => afiliado.devenga_cantidad_de_capitas
+              })
+            end
           else
-            if periodo
-              if periodo.fecha_de_inicio == primero_del_mes
-                # Eliminar el periodo (actualización de la información del mismo mes, el periodo no debía existir)
-                periodo.destroy
-              else
-                # Desactivar el beneficiario
-                periodo.update_attributes({
-                  :fecha_de_finalizacion => primero_del_mes,
-                  :motivo_de_la_baja_id => afiliado.motivo_de_la_baja_id,
-                  :mensaje_de_la_baja => afiliado.mensaje_de_la_baja
-                })
-              end
+            @errores_presentes = true
+            afiliado.errors.full_messages.each do |e|
+              @errores << "Afiliado " + afiliado.afiliado_id.to_s + ": " + e
             end
           end
         else
-          @errores_presentes = true
-          afiliado.errors.full_messages.each do |e|
-            @errores << "Afiliado " + afiliado.afiliado_id.to_s + ": " + e
+          # El afiliado ya existe en la tabla, actualizar sus datos
+          if afiliado.update_attributes(atr_afiliado)
+            # Actualizar el periodo de actividad de este beneficiario
+            begin
+              periodo = PeriodoDeActividad.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
+            rescue
+              periodo = nil
+            end
+            if afiliado.activo
+              if periodo.nil?
+                # Activar el beneficiario
+                PeriodoDeActividad.create({
+                  :afiliado_id => afiliado.afiliado_id,
+                  :fecha_de_inicio => primero_del_mes,
+                  :fecha_de_finalizacion => nil
+                })
+              end
+            else
+              if periodo
+                if periodo.fecha_de_inicio == primero_del_mes
+                  # Eliminar el periodo (actualización de la información del mismo mes, el periodo no debía existir)
+                  periodo.destroy
+                else
+                  # Desactivar el beneficiario
+                  periodo.update_attributes({
+                    :fecha_de_finalizacion => primero_del_mes,
+                    :motivo_de_la_baja_id => afiliado.motivo_de_la_baja_id,
+                    :mensaje_de_la_baja => afiliado.mensaje_de_la_baja
+                  })
+                end
+              end
+            end
+  
+            # Actualizar el periodo de cobertura efectiva básica
+            begin
+              periodo =
+                PeriodoDeCobertura.where(
+                  "afiliado_id = '#{afiliado.afiliado_id}'
+                    AND (
+                      fecha_de_finalizacion IS NULL
+                      OR fecha_de_finalizacion > '#{(primero_del_mes - afiliado.devenga_cantidad_de_capitas.months).strftime("%Y/%m/%d")}'
+                    )"
+                ).first
+            rescue
+              periodo = nil
+            end
+            if afiliado.cobertura_efectiva_basica
+              if periodo.nil?
+                # Crear un nuevo periodo de cobertura
+                PeriodoDeCobertura.create({
+                  :afiliado_id => afiliado.afiliado_id,
+                  :fecha_de_inicio => primero_del_mes,
+                  :fecha_de_finalizacion => nil
+                })
+              else
+                if !periodo.fecha_de_finalizacion.nil?
+                  # Beneficiario que recupera CEB en forma retroactiva, eliminar la fecha de finalización
+                  periodo.update_attributes({:fecha_de_finalizacion => nil})
+                end
+              end
+            else
+              if periodo
+                if periodo.fecha_de_inicio == primero_del_mes
+                  # Eliminar el periodo (actualización de la información del mismo mes, el periodo no debía existir)
+                  periodo.destroy
+                else
+                  # Finalizar el periodo de cobertura
+                  periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
+                end
+              end
+            end
+  
+            # Actualizar el periodo de devengamiento de cápitas
+            begin
+              periodo = PeriodoDeCapita.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
+            rescue
+              periodo = nil
+            end
+            if afiliado.devenga_capita
+              if periodo.nil?
+                # Crear un nuevo periodo de cobertura
+                PeriodoDeCapita.create({
+                  :afiliado_id => afiliado.afiliado_id,
+                  :fecha_de_inicio => primero_del_mes,
+                  :fecha_de_finalizacion => nil,
+                  :capitas_al_inicio => afiliado.devenga_cantidad_de_capitas
+                })
+              end
+            else
+              if periodo
+                if periodo.fecha_de_inicio == primero_del_mes
+                  # Eliminar el periodo (actualización de la información del mismo mes, el periodo no debía existir)
+                  periodo.destroy
+                else
+                  # Finalizar el periodo de devengamiento de cápitas
+                  periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
+                end
+              end
+            end
+          else
+            @errores_presentes = true
+            afiliado.errors.full_messages.each do |e|
+              @errores << "Afiliado " + afiliado.afiliado_id.to_s + ": " + e
+            end
           end
         end
       end
+      origen.close
     end
+
   end
 
   def resumen_para_el_cierre

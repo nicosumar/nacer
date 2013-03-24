@@ -7,20 +7,39 @@
 = render "shared/info"
 
 #content-body
-  %h2.first-header Listado de solicitudes registradas
+  %h2.first-header-with-note Modificación de la vista según el estado de la solicitud
+  %p.note
+    Puede seleccionar de la lista un estado y presionar 'Actualizar' para que se muestren únicamente solicitudes con ese estado.
 
-  %table
-    %thead
-      %tr
-        %th Tipo
-        %th Estado
-        %th Beneficiario
-        %th Última modificación
-    %tbody
-      - @novedades.each do |n|
-        %tr.clickable{ :onclick => "location.href=\'#{novedad_del_afiliado_path(n)}\'", :title => "Ver detalles de la solicitud" }
-          %td= n.tipo_de_novedad.nombre
-          %td= n.estado_de_la_novedad.nombre
-          %td= n.apellido.to_s + ", " + n.nombre.to_s
-          %td= n.updated_at.strftime("%d/%m/%Y %H:%M:%S")
-  = will_paginate @novedades, :inner_window => 2, :outer_window => 0
+  = form_tag('/novedades_de_los_afiliados', :method => 'get') do
+    %div.field
+      = label_tag(:estado_de_la_novedad_id, "Mostrar solicitudes:")
+      = select_tag :estado_de_la_novedad_id, options_for_select(@estados_de_las_novedades, @estado_de_la_novedad_id), |
+        {:include_blank => false} |
+      = submit_tag("Actualizar")
+
+  - if @estado_de_la_novedad_id.blank?
+    %h2.first-header Listado de solicitudes registradas
+  - else
+    %h2.first-header
+      Listado de solicitudes que tienen el estado
+      = "'" + @descripcion_del_estado + "'"
+
+  - if @novedades.any?
+    %table
+      %thead
+        %tr
+          %th Tipo
+          %th Estado
+          %th Beneficiario
+          %th Última modificación
+      %tbody
+        - @novedades.each do |n|
+          %tr.clickable{ :onclick => "location.href=\'#{novedad_del_afiliado_path(n)}\'", :title => "Ver detalles de la solicitud" }
+            %td= n.tipo_de_novedad.nombre
+            %td= n.estado_de_la_novedad.nombre
+            %td= n.apellido.to_s + ", " + n.nombre.to_s
+            %td= n.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+    = will_paginate @novedades, :inner_window => 2, :outer_window => 0
+  - else
+    %p No existen solicitudes en el estado seleccionado

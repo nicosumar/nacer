@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130117215604) do
+ActiveRecord::Schema.define(:version => 20130324133545) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -97,6 +97,13 @@ ActiveRecord::Schema.define(:version => 20130117215604) do
     t.string  "mensaje_de_la_baja"
     t.date    "fecha_de_carga"
     t.string  "usuario_que_carga"
+    t.boolean "cobertura_efectiva_basica"
+    t.integer "efector_ceb_id"
+    t.date    "fecha_de_la_ultima_prestacion"
+    t.integer "prestacion_ceb_id"
+    t.boolean "devenga_capita"
+    t.integer "devenga_cantidad_de_capitas"
+    t.integer "grupo_poblacional_id"
   end
 
   add_index "afiliados", ["afiliado_id"], :name => "index_afiliados_on_afiliado_id", :unique => true
@@ -323,6 +330,7 @@ ActiveRecord::Schema.define(:version => 20130117215604) do
     t.string  "nombre"
     t.string  "codigo"
     t.boolean "pendiente"
+    t.boolean "indexable", :default => false
   end
 
   create_table "estados_de_las_prestaciones", :force => true do |t|
@@ -338,6 +346,13 @@ ActiveRecord::Schema.define(:version => 20130117215604) do
 
   create_table "grupos_de_prestaciones", :force => true do |t|
     t.string "nombre", :null => false
+  end
+
+  create_table "grupos_poblacionales", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "lenguas_originarias", :force => true do |t|
@@ -369,6 +384,8 @@ ActiveRecord::Schema.define(:version => 20130117215604) do
     t.integer  "creator_id"
     t.integer  "updater_id"
   end
+
+  add_index "liquidaciones", ["efector_id", "anio_de_prestaciones", "mes_de_prestaciones"], :name => "unq_liquidaciones_efector_anio_y_mes", :unique => true
 
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
@@ -437,6 +454,23 @@ ActiveRecord::Schema.define(:version => 20130117215604) do
     t.datetime "updated_at"
     t.integer  "motivo_de_la_baja_id"
     t.string   "mensaje_de_la_baja"
+  end
+
+  create_table "periodos_de_capita", :force => true do |t|
+    t.integer  "afiliado_id"
+    t.date     "fecha_de_inicio"
+    t.date     "fecha_de_finalizacion"
+    t.integer  "capitas_al_inicio"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  create_table "periodos_de_cobertura", :force => true do |t|
+    t.integer  "afiliado_id"
+    t.date     "fecha_de_inicio"
+    t.date     "fecha_de_finalizacion"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
 
   create_table "prestaciones", :force => true do |t|

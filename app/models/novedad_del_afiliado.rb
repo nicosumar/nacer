@@ -24,7 +24,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_accessible :esta_embarazada, :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo
   attr_accessible :semanas_de_embarazo, :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo
   attr_accessible :discapacidad_id, :fecha_de_la_novedad, :centro_de_inscripcion_id, :nombre_del_agente_inscriptor
-  attr_accessible :observaciones_generales
+  attr_accessible :observaciones_generales, :mes_y_anio_de_proceso, :mensaje_de_la_baja
 
   # La clave de beneficiario sólo puede registrarse al grabar la novedad
   attr_readonly :clave_de_beneficiario
@@ -88,6 +88,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
     atributos_del_afiliado.delete "fecha_de_carga"
     atributos_del_afiliado.delete "usuario_que_carga"
     atributos_del_afiliado.delete "fecha_de_la_ultima_novedad"
+    atributos_del_afiliado.delete "cobertura_efectiva_basica"
+    atributos_del_afiliado.delete "efector_ceb_id"
+    atributos_del_afiliado.delete "fecha_de_la_ultima_prestacion"
+    atributos_del_afiliado.delete "prestacion_ceb_id"
+    atributos_del_afiliado.delete "grupo_poblacional_id"
+    atributos_del_afiliado.delete "devenga_capita"
+    atributos_del_afiliado.delete "devenga_cantidad_de_capitas"
     self.esta_embarazada = atributos_del_afiliado.delete "embarazo_actual"
     self.attributes = atributos_del_afiliado
 
@@ -851,10 +858,12 @@ class NovedadDelAfiliado < ActiveRecord::Base
         estado = EstadoDeLaNovedad.id_del_codigo("P")
         ActiveRecord::Base.connection.exec_query "
           UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
-            SET estado_de_la_novedad_id = '#{estado}'
+            SET
+              estado_de_la_novedad_id = '#{estado}',
+              mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}'
             WHERE
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
-              AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
+              AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHEE codigo = '#{codigo_ci}')
               AND tipo_de_novedad_id != (SELECT id FROM tipos_de_novedades WHERE codigo = 'B')
               AND fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
         "
@@ -883,4 +892,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
   end
 
+  #
+  # self.con_estado
+  # Devuelve los registros filtrados de acuerdo con el ID de estado pasado como parámetro
+  def self.con_estado(id_de_estado)
+    where(:estado_de_la_novedad_id => id_de_estado)
+  end
 end

@@ -39,10 +39,10 @@ class InformesController < ApplicationController
     end
 
     # Obtener los beneficiarios activos por grupo etario para el periodo evaluado
-    @menores_de_6 = Afiliado.menores_de_6(@fecha_base)
-    @de_6_a_9 = Afiliado.de_6_a_9(@fecha_base)
-    @adolescentes = Afiliado.adolescentes(@fecha_base)
-    @mujeres_de_20_a_64 = Afiliado.mujeres_de_20_a_64(@fecha_base)
+    @menores_de_6_activos = Afiliado.menores_de_6_activos(@fecha_base)
+    @de_6_a_9_activos = Afiliado.de_6_a_9_activos(@fecha_base)
+    @adolescentes_activos = Afiliado.adolescentes_activos(@fecha_base)
+    @mujeres_de_20_a_64_activas = Afiliado.mujeres_de_20_a_64_activas(@fecha_base)
   end
 
 end

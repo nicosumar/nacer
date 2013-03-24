@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.10'
+gem 'rails', '3.2.13'
 gem 'pg'
 gem 'json'
 
@@ -16,10 +16,10 @@ end
 gem 'jquery-rails'
 gem 'devise'
 gem 'mongrel'
+gem 'therubyracer'
 gem 'haml'
 gem 'cancan'
 gem 'will_paginate'
 gem 'capistrano'
-gem 'therubyracer'
 gem 'text'
 gem 'nilify_blanks'

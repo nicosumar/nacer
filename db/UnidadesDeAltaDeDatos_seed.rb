@@ -140,7 +140,9 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
               created_at timestamp without time zone,
               updated_at timestamp without time zone,
               creator_id integer,
-              updater_id integer
+              updater_id integer,
+              mes_y_anio_de_proceso date,
+              mensaje_de_la_baja text
             );
         
             -- Crear la secuencia que genera los identificadores de la tabla de novedades

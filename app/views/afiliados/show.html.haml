@@ -21,14 +21,22 @@
   #estado
     %h3 Estado de la inscripción
     - if @afiliado.activo
-      #info.infobox-ok.no-margin
-        %h2
-          - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
-            La beneficiaria se encuentra activa
-          - else
-            El beneficiario se encuentra activo
+      - if @afiliado.cobertura_efectiva_basica
+        #info.infobox-ok.no-margin
+          %h2
+            - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
+              La beneficiaria se encuentra activa y posee cobertura efectiva básica
+            - else
+              El beneficiario se encuentra activo y posee cobertura efectiva básica
+      - else
+        #info.infobox-advertencia.no-margin
+          %h2
+            - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
+              La beneficiaria se encuentra activa, pero no posee cobertura efectiva básica
+            - else
+              El beneficiario se encuentra activo, pero no posee cobertura efectiva básica
     - else
-      #info.infobox-advertencia.no-margin
+      #info.infobox-error.no-margin
         %h2
           - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
             La beneficiaria se encuentra inactiva

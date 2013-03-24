@@ -78,4 +78,22 @@ class Prestacion < ActiveRecord::Base
               AND (fecha_de_finalizacion IS NULL OR fecha_de_finalizacion >= '#{fecha.strftime("%Y-%m-%d")}')
         ) ORDER BY codigo;")
   end
+
+  # Devuelve el id asociado con el código pasado
+  def self.id_del_codigo(codigo)
+    if !codigo || codigo.strip.empty?
+      return nil
+    end
+
+    # Buscar el código en la tabla y devolver su ID (si existe)
+    prestacion = self.find_by_codigo(codigo.strip.upcase.gsub(/ /, ''))
+
+    if prestacion
+      return prestacion.id
+    else
+      logger.warn "ADVERTENCIA: No se encontró la prestación '#{codigo.strip.upcase.gsub(/ /, '')}'."
+      return nil
+    end
+  end
+
 end

@@ -222,6 +222,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("agrupacion·_de·_beneficiarios·_prestacion·", "agrupaciones_de_beneficiarios_prestaciones")
   inflect.irregular("AgrupacionDeBeneficiariosPrestacion", "Agrupaciones·De·Beneficiarios·Prestaciones·")
   inflect.irregular("Agrupacion·De·Beneficiarios·Prestacion·", "AgrupacionesDeBeneficiariosPrestaciones")
+  inflect.irregular("periodo_de_cobertura", "periodos·_de·_cobertura·")
+  inflect.irregular("periodo·_de·_cobertura·", "periodos_de_cobertura")
+  inflect.irregular("PeriodoDeCobertura", "Periodos·De·Cobertura·")
+  inflect.irregular("Periodo·De·Cobertura·", "PeriodosDeCobertura")
+  inflect.irregular("periodo_de_capita", "periodos·_de·_capita·")
+  inflect.irregular("periodo·_de·_capita·", "periodos_de_capita")
+  inflect.irregular("PeriodoDeCapita", "Periodos·De·Capita·")
+  inflect.irregular("Periodo·De·Capita·", "PeriodosDeCapita")
+  inflect.irregular("motivo_de_la_baja", "motivos·_de·_las·_bajas·")
+  inflect.irregular("motivo·_de·_la·_baja·", "motivos_de_las_bajas")
+  inflect.irregular("MotivoDeLaBaja", "Motivos·De·Las·Bajas·")
+  inflect.irregular("Motivo·De·La·Baja·", "MotivosDeLasBajas")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

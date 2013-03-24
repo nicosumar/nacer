@@ -11,8 +11,8 @@
   %h2.first-header-with-note
     Información del periodo:
     = l @fecha_base, :format => :month_and_year
-    %p.note
-      Puede seleccionar otro periodo y presionar 'Actualizar' para obtener los datos correspondientes.
+  %p.note
+    Puede seleccionar otro periodo y presionar 'Actualizar' para obtener los datos correspondientes.
 
   = form_tag('/informe_de_beneficiarios_activos', :method => 'get') do
     %div.field
@@ -27,22 +27,35 @@
     %thead
       %tr
         %th Grupo
-        %th Cantidad
+        %th Sin C.E.B.
+        %th Con C.E.B.
+        %th Subtotal
     %tbody
       %tr
         %td Niños y niñas menores de 6 años
-        %td.derecha= @menores_de_6
+        %td.derecha= @menores_de_6_activos[0]
+        %td.derecha= @menores_de_6_activos[1]
+        %td.derecha= @menores_de_6_activos[2]
       %tr
         %td Niños y niñas de 6 a 9 años
-        %td.derecha= @de_6_a_9
+        %td.derecha= @de_6_a_9_activos[0]
+        %td.derecha= @de_6_a_9_activos[1]
+        %td.derecha= @de_6_a_9_activos[2]
       %tr
         %td Adolescentes de 10 a 19 años
-        %td.derecha= @adolescentes
+        %td.derecha= @adolescentes_activos[0]
+        %td.derecha= @adolescentes_activos[1]
+        %td.derecha= @adolescentes_activos[2]
       %tr
         %td Mujeres de 20 a 64 años
-        %td.derecha= @mujeres_de_20_a_64
-
-  %h3
-    Total de beneficiarios activos:
-    = @menores_de_6 + @de_6_a_9 + @adolescentes + @mujeres_de_20_a_64
-
+        %td.derecha= @mujeres_de_20_a_64_activas[0]
+        %td.derecha= @mujeres_de_20_a_64_activas[1]
+        %td.derecha= @mujeres_de_20_a_64_activas[2]
+      %tr
+        %td.destacado Totales
+        %td.destacado.derecha
+          = @menores_de_6_activos[0] + @de_6_a_9_activos[0] + @adolescentes_activos[0] + @mujeres_de_20_a_64_activas[0]
+        %td.destacado.derecha
+          = @menores_de_6_activos[1] + @de_6_a_9_activos[1] + @adolescentes_activos[1] + @mujeres_de_20_a_64_activas[1]
+        %td.destacado.derecha
+          = @menores_de_6_activos[2] + @de_6_a_9_activos[2] + @adolescentes_activos[2] + @mujeres_de_20_a_64_activas[2]
