@@ -128,7 +128,7 @@ private
       subtotal_informado = texto_subtotal.strip.gsub(/\./, '').gsub(/,/, '.').gsub(/\$* /, '').to_f
 
       # Inicializar valores
-      codigo_informado = texto_codigo.strip.gsub(/ +/, " ")
+      codigo_informado = texto_codigo.strip.gsub(/[^[:alpha:][:digit:]]/, "")
       codigo = nil
       precio_por_unidad = nil
       adicional_por_prestacion = nil

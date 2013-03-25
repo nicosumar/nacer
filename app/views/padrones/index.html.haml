@@ -38,6 +38,10 @@
         %br/
         = text_field_tag :anio_y_mes
       %div.field
+        = label_tag(:multiparte, "Nº de parte (para proceso en multi-partes):")
+        %br/
+        = text_field_tag :multiparte
+      %div.field
         = label_tag(:nomenclador_id, "Nomenclador:")
         %br/
         = select_tag :nomenclador_id, options_for_select(@nomencladores, @nomenclador_id), { :include_blank => true }
