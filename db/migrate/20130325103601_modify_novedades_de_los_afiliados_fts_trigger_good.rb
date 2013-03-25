@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ModifyNovedadesDeLosAfiliadosFtsTriggerGood < ActiveRecord::Migration
   def change
     execute "
@@ -11,7 +12,7 @@ class ModifyNovedadesDeLosAfiliadosFtsTriggerGood < ActiveRecord::Migration
           old_indexable boolean;
           new_indexable boolean;
         BEGIN
-          IF (TG_OP = UPDATE)
+          IF (TG_OP = UPDATE) THEN
             SELECT indexable INTO old_indexable FROM estados_de_las_novedades WHERE id = OLD.estado_de_la_novedad_id;
           ELSE
             SELECT 'f'::boolean INTO old_indexable;
