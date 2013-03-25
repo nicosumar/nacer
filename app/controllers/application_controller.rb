@@ -151,15 +151,8 @@ private
   def a_prestacion(cadena)
     prestacion = nil
 
-    # La cadena de entrada se transforma realizando las siguientes modificaciones antes de buscarla en el listado
-    # de prestaciones de la base de datos:
-    # - Se eliminan espacios innecesarios al principio y final de la cadena (strip).
-    # - Se pasan todas las letras a mayúsculas (upcase).
-    # - Se reemplazan (si hubieran) los guiones por espacios. Ejemplo: 'MEM-01' -> 'MEM 01'.
-    # - Se eliminan los espacios duplicados, triplicados, etc. reemplazándolos por un único espacio.
-    # - Se separan en distintos bloques las letras y los números. Ejemplo: 'LMI43LB047' -> 'LMI 43 LB 047'.
-    codigo_de_prestacion = cadena.strip.upcase.gsub("-", " ").gsub(/[ ]+/, " ").gsub(/([[:alpha:]]+)([[:digit:]]+)/i,
-      '\1 \2').gsub(/([[:digit:]]+)([[:alpha:]]+)/i, '\1 \2')
+    # La cadena de entrada se normaliza antes de buscarla en la base de datos
+    codigo_de_prestacion = cadena.strip.upcase
 
     # Regresar nulos si se pasó un código de prestación en blanco (probablemente una línea en blanco en la
     # digitalización).
@@ -169,9 +162,9 @@ private
       # Eliminar el sufijo de unicidad que se añade a las prestaciones que pagan adicionales por prestación.
       # Por ejemplo, la 'TMI 71'.
       if codigo_de_prestacion.match(/[ ]*\(.*\)/)
-        prestacion = Prestacion.where("codigo = ?", codigo_de_prestacion.gsub(/[ ]*\(.*\)/, "")).first
+        prestacion = Prestacion.where("codigo = ?", codigo_de_prestacion.gsub(/[ ]*\(.*\)/, "").gsub(/[^[:alpha:][:digit:]]/,"")).first
       else
-        prestacion = Prestacion.where("codigo = ?", codigo_de_prestacion).first
+        prestacion = Prestacion.where("codigo = ?", codigo_de_prestacion.gsub(/[^[:alpha:][:digit:]]/,"")).first
       end
     rescue
     end

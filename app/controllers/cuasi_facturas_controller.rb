@@ -1094,7 +1094,7 @@ private
     error = false
 
     # Buscar el código de la prestación
-    prestacion = Prestacion.find_by_codigo(codigo_informado)
+    prestacion = Prestacion.find_by_codigo(codigo_informado.gsub(/[^[:alpha:][:digit:]]/,""))
     if prestacion
       codigo = prestacion.codigo
       ids_prestaciones_autorizadas = PrestacionAutorizada.autorizadas_antes_del_dia(@cuasi_factura.efector_id, (Date.new(@cuasi_factura.liquidacion.anio_de_prestaciones, @cuasi_factura.liquidacion.mes_de_prestaciones, 1) + 1)).collect {|p| p.prestacion_id}

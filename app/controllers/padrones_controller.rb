@@ -17,10 +17,12 @@ class PadronesController < ApplicationController
         when params[:proceso_id] == "1"
           actualizacion_del_padron
         when params[:proceso_id] == "2"
+          actualizacion_de_las_novedades
+        when params[:proceso_id] == "3"
           @resultado = {}
           cruzar_facturacion
           escribir_resultados
-        when params[:proceso_id] == "3"
+        when params[:proceso_id] == "4"
           resumen_para_el_cierre
         else
           @errores_presentes = true
@@ -28,8 +30,9 @@ class PadronesController < ApplicationController
       end
     else # no hay parámetros
       @procesos = [["Actualización del padrón de afiliados", 1],
-                   ["Cruce de la facturación", 2],
-                   ["Cierre del padrón", 3]]
+                   ["Actualización de los estados de las novedades", 2],
+                   ["Cruce de la facturación", 3],
+                   ["Cierre del padrón", 4]]
       @proceso_id = 1
       @nomencladores = Nomenclador.find(:all).collect {|n| [n.nombre, n.id]}
     end
@@ -383,15 +386,15 @@ class PadronesController < ApplicationController
         when prestacion[:fecha_prestacion] < (primero_del_mes - 5.months)
           prestacion.merge! :estado => :rechazada, :mensaje => "La prestación no puede pagarse porque se venció el periodo de pago."
           logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
-#        when !(asignaciones_de_precios.has_key?(prestacion[:codigo]))
-#          # Rechazar la prestación porque no se encontró el código de la prestación en el nomenclador
-#          prestacion.merge! :estado => :rechazada, :mensaje => "El código de la prestación no existe para el nomenclador seleccionado."
-#          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
-#        when (asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion == 0.0 &&
-#          asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
-#          # Rechazar la prestación porque no coincide el monto indicado
-#          prestacion.merge! :estado => :rechazada, :mensaje => "El monto de la prestación no coincide con el del nomenclador seleccionado."
-#          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+        when !(asignaciones_de_precios.has_key?(prestacion[:codigo]))
+          # Rechazar la prestación porque no se encontró el código de la prestación en el nomenclador
+          prestacion.merge! :estado => :rechazada, :mensaje => "El código de la prestación no existe para el nomenclador seleccionado."
+          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+        when (asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion == 0.0 &&
+          asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
+          # Rechazar la prestación porque no coincide el monto indicado
+          prestacion.merge! :estado => :rechazada, :mensaje => "El monto de la prestación no coincide con el del nomenclador seleccionado."
+          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
         else
           encontrados = []
           nivel_maximo = 1
@@ -556,7 +559,7 @@ class PadronesController < ApplicationController
               :tipo => valor(campos[6], :texto),
               :documento => valor(campos[7], :texto),
               :historia_clinica => valor(campos[8], :texto),
-              :codigo => valor(campos[9], :texto),
+              :codigo => valor(campos[9], :texto).gsub(/[^[:alpha:][:digit:]]/,""),
               :monto => valor(campos[10], :decimal) }
   end
 
@@ -601,8 +604,7 @@ class PadronesController < ApplicationController
     begin
       anio, mes = params[:anio_y_mes].split("-")
       primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
-      origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff", "r")
-      origen2 = File.new("vendor/data/ActEstadoNovedades_#{params[:anio_y_mes]}.txt", "r")
+      origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff#{params[:multiparte] ? '.part' + params[:multiparte] : ''}", "r")
     rescue
       @errores_presentes = true
       @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
@@ -610,51 +612,8 @@ class PadronesController < ApplicationController
     end
 
     # Hacemos la actualización dentro de una transacción
-    ActiveRecord::Base.transaction do
+    #ActiveRecord::Base.transaction do
 
-      # Procesamiento de la actualización del estado de las novedades
-      esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
-      ultima_uad = ''
-  
-      origen2.each do |linea|
-        # Separar los campos
-        campos = linea.split("\t")
-        codigo_uad = valor(campos[0], :texto)
-        id_de_novedad = valor(campos[1], :entero)
-        aceptado = valor(campos[2], :texto).upcase
-        activo = valor(campos[3], :texto).upcase
-        mensaje_baja = valor(campos[5], :texto)
-  
-        if codigo_uad != ultima_uad
-          # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
-          ActiveRecord::Base.connection.schema_search_path = "uad_#{codigo_uad},public"
-          ActiveRecord::Base.connection.execute("SET search_path TO #{ActiveRecord::Base.connection.schema_search_path};")
-          ultima_uad = codigo_uad
-        end
-  
-        if aceptado == 'S'
-          if activo == 'S'
-            estado = EstadoDeLaNovedad.id_del_codigo("A")
-          else
-            estado = EstadoDeLaNovedad.id_del_codigo("N")
-          end
-        else
-          estado = EstadoDeLaNovedad.id_del_codigo("Z")
-        end
-    
-        ActiveRecord::Base.connection.execute "
-          UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
-            SET
-              estado_de_la_novedad_id = '#{estado}',
-              mensaje_de_la_baja = '#{mensaje_baja ? mensaje_baja : 'NULL'}'
-            WHERE id = '#{id_de_novedad}';
-        "
-      end
-      origen2.close
-      ActiveRecord::Base.connection.schema_search_path = esquema_actual
-      ActiveRecord::Base.connection.exec_query("SET search_path TO #{esquema_actual};")
-
-      # Procesamiento de la actualización de datos de beneficiarios
       origen.each do |linea|
         # Procesar la siguiente línea del archivo
         linea.gsub!(/[\r\n]+/, '')
@@ -804,8 +763,71 @@ class PadronesController < ApplicationController
         end
       end
       origen.close
+    #end # Base::connection.transaction
+
+  end
+
+  def actualizacion_de_las_novedades
+    # Actualización de las novedades del padrón cargadas por las UADS
+    begin
+      anio, mes = params[:anio_y_mes].split("-")
+      primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
+      origen = File.new("vendor/data/ActEstadoNovedades_#{params[:anio_y_mes]}.txt", "r")
+    rescue
+      @errores_presentes = true
+      @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
+      return
     end
 
+    # Hacemos la actualización dentro de una transacción
+    ActiveRecord::Base.transaction do
+
+      # Procesamiento de la actualización del estado de las novedades
+      esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
+      ultima_uad = ''
+  
+      origen.each do |linea|
+        # Obtener la siguiente línea del archivo
+        linea.gsub!(/[\r\n]+/, '')
+
+        # Separar los campos
+        campos = linea.split("\t")
+        codigo_uad = valor(campos[0], :texto)
+        id_de_novedad = valor(campos[1], :entero)
+        aceptado = valor(campos[2], :texto).upcase
+        activo = valor(campos[3], :texto).upcase
+        mensaje_baja = valor(campos[5], :texto)
+  
+        if codigo_uad != ultima_uad
+          # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
+          ActiveRecord::Base.connection.schema_search_path = "uad_#{codigo_uad},public"
+          ActiveRecord::Base.connection.execute("SET search_path TO #{ActiveRecord::Base.connection.schema_search_path};")
+          ultima_uad = codigo_uad
+        end
+  
+        if aceptado == 'S'
+          if activo == 'S'
+            estado = EstadoDeLaNovedad.id_del_codigo("A")
+          else
+            estado = EstadoDeLaNovedad.id_del_codigo("N")
+          end
+        else
+          estado = EstadoDeLaNovedad.id_del_codigo("Z")
+        end
+    
+        ActiveRecord::Base.connection.execute "
+          UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
+            SET
+              estado_de_la_novedad_id = '#{estado}',
+              mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
+              mensaje_de_la_baja = '#{mensaje_baja ? mensaje_baja : 'NULL'}'
+            WHERE id = '#{id_de_novedad}';
+        "
+      end
+      origen.close
+      ActiveRecord::Base.connection.schema_search_path = esquema_actual
+      ActiveRecord::Base.connection.exec_query("SET search_path TO #{esquema_actual};")
+    end
   end
 
   def resumen_para_el_cierre

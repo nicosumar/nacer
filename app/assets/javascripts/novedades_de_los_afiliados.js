@@ -18,21 +18,21 @@ $(document).ready(function() {
   modificarVisibilidadEmbarazo();
   modificarVisibilidadEstaEmbarazada();
 
-  $('#novedad_del_afiliado_sexo_id').bind('change', modificarVisibilidadEmbarazo);
-  $('#novedad_del_afiliado_se_declara_indigena').bind('change', modificarVisibilidadOriginarios);
-  $('#novedad_del_afiliado_alfabetizacion_del_beneficiario_id').bind('change', modificarVisibilidadAlfabBenef);
-  $('#novedad_del_afiliado_domicilio_departamento_id').bind('change', modificarSelectDistritos);
-  $('#novedad_del_afiliado_domicilio_distrito_id').bind('change', modificarCodigoPostal);
-  $('#novedad_del_afiliado_es_menor').bind('change', modificarVisibilidadEsMenor);
-  $('#novedad_del_afiliado_alfabetizacion_de_la_madre_id').bind('change', modificarVisibilidadAlfabMadre);
-  $('#novedad_del_afiliado_alfabetizacion_del_padre_id').bind('change', modificarVisibilidadAlfabPadre);
-  $('#novedad_del_afiliado_alfabetizacion_del_tutor_id').bind('change', modificarVisibilidadAlfabTutor);
-  $('#novedad_del_afiliado_esta_embarazada').bind('change', modificarVisibilidadEstaEmbarazada);
+  $('#novedad_del_afiliado_sexo_id').on('change', modificarVisibilidadEmbarazo);
+  $('#novedad_del_afiliado_se_declara_indigena').on('change', modificarVisibilidadOriginarios);
+  $('#novedad_del_afiliado_alfabetizacion_del_beneficiario_id').on('change', modificarVisibilidadAlfabBenef);
+  $('#novedad_del_afiliado_domicilio_departamento_id').on('change', modificarSelectDistritos);
+  $('#novedad_del_afiliado_domicilio_distrito_id').on('change', modificarCodigoPostal);
+  $('#novedad_del_afiliado_es_menor').on('change', modificarVisibilidadEsMenor);
+  $('#novedad_del_afiliado_alfabetizacion_de_la_madre_id').on('change', modificarVisibilidadAlfabMadre);
+  $('#novedad_del_afiliado_alfabetizacion_del_padre_id').on('change', modificarVisibilidadAlfabPadre);
+  $('#novedad_del_afiliado_alfabetizacion_del_tutor_id').on('change', modificarVisibilidadAlfabTutor);
+  $('#novedad_del_afiliado_esta_embarazada').on('change', modificarVisibilidadEstaEmbarazada);
 
   $('#novedad_del_afiliado_apellido').focus();
 
   function modificarVisibilidadOriginarios() {
-    if ($('#novedad_del_afiliado_se_declara_indigena').attr('checked'))
+    if ($('#novedad_del_afiliado_se_declara_indigena').prop('checked'))
     {
       $('#originarios').show();
       $('#novedad_del_afiliado_lengua_originaria_id').focus();
@@ -65,7 +65,7 @@ $(document).ready(function() {
       }
     }
     $('#select_distritos').html(div_html)
-    $('#novedad_del_afiliado_domicilio_distrito_id').bind('change', modificarCodigoPostal);
+    $('#novedad_del_afiliado_domicilio_distrito_id').on('change', modificarCodigoPostal);
   }
 
   function modificarCodigoPostal() {
@@ -80,10 +80,10 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadEsMenor() {
-    if ($('#novedad_del_afiliado_es_menor').attr('checked'))
+    if ($('#novedad_del_afiliado_es_menor').prop('checked'))
     {
       $('#es_menor').show();
-      $('#novedad_del_afiliado_esta_embarazada').attr('checked', false);
+      $('#novedad_del_afiliado_esta_embarazada').prop('checked', false);
       $('#embarazo').hide();
     }
     else
@@ -126,14 +126,14 @@ $(document).ready(function() {
 
   function modificarVisibilidadEmbarazo() {
     // Ocultar o mostrar la sección dependiendo del sexo del beneficiario
-    if ($('#novedad_del_afiliado_sexo_id').val() != 2 && !($('#novedad_del_afiliado_es_menor').attr('checked')))
+    if ($('#novedad_del_afiliado_sexo_id').val() != 2 && !($('#novedad_del_afiliado_es_menor').prop('checked')))
       $('#embarazo').show();
     else
       $('#embarazo').hide();
   }
 
   function modificarVisibilidadEstaEmbarazada() {
-    if ($('#novedad_del_afiliado_esta_embarazada').attr('checked'))
+    if ($('#novedad_del_afiliado_esta_embarazada').prop('checked'))
     {
       $('#esta_embarazada').show();
       $('#novedad_del_afiliado_fecha_de_la_ultima_menstruacion').focus();

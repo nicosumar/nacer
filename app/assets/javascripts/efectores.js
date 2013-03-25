@@ -12,10 +12,10 @@ $(document).ready(function() {
   modificarVisibilidadFechaAddendaPerinatal();
   modificarVisibilidadAddendaPerinatal();
 
-  $('#efector_departamento_id').bind('change', modificarSelectDistritos);
-  $('#efector_distrito_id').bind('change', modificarCodigoPostal);
-  $('#efector_perinatal_de_alta_complejidad').bind('change', modificarVisibilidadAddendaPerinatal);
-  $('#efector_addenda_perinatal').bind('change', modificarVisibilidadFechaAddendaPerinatal);
+  $('#efector_departamento_id').on('change', modificarSelectDistritos);
+  $('#efector_distrito_id').on('change', modificarCodigoPostal);
+  $('#efector_perinatal_de_alta_complejidad').on('change', modificarVisibilidadAddendaPerinatal);
+  $('#efector_addenda_perinatal').on('change', modificarVisibilidadFechaAddendaPerinatal);
 
   function modificarSelectDistritos() {
     departamento_id = $('#efector_departamento_id').val();
@@ -31,7 +31,7 @@ $(document).ready(function() {
       }
     }
     $('#select_distritos').html(div_html)
-    $('#efector_distrito_id').bind('change', modificarCodigoPostal);
+    $('#efector_distrito_id').on('change', modificarCodigoPostal);
     $('#efector_distrito_id').focus();
   }
 
@@ -47,7 +47,7 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadFechaAddendaPerinatal() {
-    if ($('#efector_addenda_perinatal').attr('checked'))
+    if ($('#efector_addenda_perinatal').prop('checked'))
     {
       $('#fecha_de_addenda_perinatal').show();
       $('#efector_fecha_de_addenda_perinatal').focus();
@@ -57,7 +57,7 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadAddendaPerinatal() {
-    if ($('#efector_perinatal_de_alta_complejidad').attr('checked'))
+    if ($('#efector_perinatal_de_alta_complejidad').prop('checked'))
     {
       $('#addenda_perinatal').show();
       $('#efector_addenda_perinatal').focus();
