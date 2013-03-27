@@ -3,6 +3,15 @@ class TipoDePrestacion < ActiveRecord::Base
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :codigo, :nombre
 
+  # El código no puede modificarse una vez establecido
+  attr_readonly :codigo
+
+  # Asociaciones
+  has_many :objetos_de_las_prestaciones
+
+  # Validaciones
+  validate_presence_of :codigo, :nombre
+
   # id_del_codigo
   # Devuelve el ID asociado con el código pasado
   def self.id_del_codigo(codigo)
