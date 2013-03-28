@@ -234,7 +234,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("motivo·_de·_la·_baja·", "motivos_de_las_bajas")
   inflect.irregular("MotivoDeLaBaja", "Motivos·De·Las·Bajas·")
   inflect.irregular("Motivo·De·La·Baja·", "MotivosDeLasBajas")
-  inflect.irregular("objeto_de_prestacion", "objetos·_de·_las·_prestaciones·")
+  inflect.irregular("objeto_de_la_prestacion", "objetos·_de·_las·_prestaciones·")
   inflect.irregular("objeto·_de·_la·_prestacion·", "objetos_de_las_prestaciones")
   inflect.irregular("ObjetoDeLaPrestacion", "Objetos·De·Las·Prestaciones·")
   inflect.irregular("Objeto·De·La·Prestacion·", "ObjetosDeLasPrestaciones")
