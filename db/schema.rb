@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130325103601) do
+ActiveRecord::Schema.define(:version => 20130327164029) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -108,6 +108,13 @@ ActiveRecord::Schema.define(:version => 20130325103601) do
 
   add_index "afiliados", ["afiliado_id"], :name => "index_afiliados_on_afiliado_id", :unique => true
   add_index "afiliados", ["clave_de_beneficiario"], :name => "index_afiliados_on_clave_de_beneficiario", :unique => true
+
+  create_table "agrupaciones_de_beneficiarios", :force => true do |t|
+    t.string "nombre",                      :null => false
+    t.string "codigo",                      :null => false
+    t.string "condicion_ruby",              :null => false
+    t.string "descripcion_de_la_condicion"
+  end
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
@@ -407,6 +414,14 @@ ActiveRecord::Schema.define(:version => 20130325103601) do
     t.datetime "updated_at"
   end
 
+  create_table "objetos_de_las_prestaciones", :force => true do |t|
+    t.integer "tipo_de_prestacion_id",                        :null => false
+    t.string  "codigo",                                       :null => false
+    t.string  "nombre",                                       :null => false
+    t.boolean "define_si_es_catastrofica", :default => true
+    t.boolean "es_catastrofica",           :default => false
+  end
+
   create_table "paises", :force => true do |t|
     t.integer "pais_bio_id"
     t.string  "nombre"
@@ -474,15 +489,17 @@ ActiveRecord::Schema.define(:version => 20130325103601) do
   end
 
   create_table "prestaciones", :force => true do |t|
-    t.integer  "area_de_prestacion_id",                         :null => false
-    t.integer  "grupo_de_prestaciones_id",                      :null => false
+    t.integer  "area_de_prestacion_id",                            :null => false
+    t.integer  "grupo_de_prestaciones_id",                         :null => false
     t.integer  "subgrupo_de_prestaciones_id"
-    t.string   "codigo",                                        :null => false
-    t.string   "nombre",                                        :null => false
-    t.integer  "unidad_de_medida_id",                           :null => false
+    t.string   "codigo",                                           :null => false
+    t.string   "nombre",                                           :null => false
+    t.integer  "unidad_de_medida_id",                              :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "activa",                      :default => true
+    t.boolean  "activa",                         :default => true
+    t.integer  "tipo_de_prestacion_id"
+    t.integer  "agrupacion_de_beneficiarios_id"
   end
 
   create_table "prestaciones_autorizadas", :force => true do |t|
@@ -596,8 +613,8 @@ ActiveRecord::Schema.define(:version => 20130325103601) do
   end
 
   create_table "tipos_de_prestaciones", :force => true do |t|
-    t.string "nombre"
-    t.string "codigo"
+    t.string "codigo", :null => false
+    t.string "nombre", :null => false
   end
 
   create_table "tribus_originarias", :force => true do |t|

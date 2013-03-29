@@ -673,4 +673,516 @@ TipoDePrestacion.create([
     :define_si_es_catastrofica => true,
     :es_catastrofica => false
   },
+  {
+    #:id => 85,
+    :nombre => "Clínica pediátrica - Menos de 16 horas",
+    :codigo => "E001",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 86,
+    :nombre => "Clínica pediátrica - Entre 16 y 48 horas",
+    :codigo => "E002",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 87,
+    :nombre => "Clínica pediátrica - 48 horas o más",
+    :codigo => "E003",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 88,
+    :nombre => "Clínica obstétrica - Primer trimestre",
+    :codigo => "E004",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 89,
+    :nombre => "Clínica obstétrica - Segundo trimestre",
+    :codigo => "E005",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 90,
+    :nombre => "Clínica obstétrica - Tercer trimestre",
+    :codigo => "E006",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 91,
+    :nombre => "Clínica obstétrica - Alto riesgo - Módulo de emergencias hipertensivas",
+    :codigo => "E007",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 92,
+    :nombre => "Clínica obstétrica - Alto riesgo - Módulo de amenaza de parto prematuro",
+    :codigo => "E008",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 93,
+    :nombre => "Clínica obstétrica - Alto riesgo - Módulo de diabetes gestacional",
+    :codigo => "E009",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 94,
+    :nombre => "Clínica obstétrica - Alto riesgo - Hospital de día - Módulo de diabetes gestacional",
+    :codigo => "E010",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 95,
+    :nombre => "Clínica obstétrica - Alto riesgo - Hospital de día - Módulo de hipertensión en el embarazo",
+    :codigo => "E011",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 96,
+    :nombre => "Clínica obstétrica - Alto riesgo - Hospital de día - Módulo de restricción del crecimiento intauterino - Pequeño para edad gestacional",
+    :codigo => "E012",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 97,
+    :nombre => "Clínica neonatológica - Módulo RNPT (500 a 1500 gramos) con requerimiento de ARM o CPAP",
+    :codigo => "E013",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 98,
+    :nombre => "Clínica neonatológica - Módulo RNPT (500 a 1500 gramos) sin requerimiento de ARM o CPAP",
+    :codigo => "E014",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 99,
+    :nombre => "Clínica obstétrica - Alto riesgo - Hospital de día - Módulo de diabetes gestacional compensada no insulino-dependiente",
+    :codigo => "E015",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 100,
+    :nombre => "Clínica obstétrica - Alto riesgo - Hospital de día - Módulo de hipertensión gestacional no proteinúrica",
+    :codigo => "E016",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 101,
+    :nombre => "Quirúrgica - Parto vaginal normal o instrumental",
+    :codigo => "Q001",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 102,
+    :nombre => "Quirúrgica - Cesárea",
+    :codigo => "Q002",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 103,
+    :nombre => "Quirúrgica - Cirugía del embarazo ectópico",
+    :codigo => "Q003",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 104,
+    :nombre => "Quirúrgica - Histerectomía por complicaciones del parto o puerperio",
+    :codigo => "Q004",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 105,
+    :nombre => "Quirúrgica - Tratamiento quirúrgico de hemorragias del primer trimestre",
+    :codigo => "Q005",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 106,
+    :nombre => "Quirúrgica - Tratamiento quirúrgico de hemorragias del segundo trimestre",
+    :codigo => "Q006",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 107,
+    :nombre => "Quirúrgica - Tratamiento quirúrgico de hemorragias del tercer trimestre",
+    :codigo => "Q007",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 108,
+    :nombre => "Quirúrgica obstétrica - Alto riesgo - Módulo de hemorragia posparto",
+    :codigo => "Q008",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 109,
+    :nombre => "Quirúrgica neonatal - Módulo de atresia esofágica",
+    :codigo => "Q009",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 110,
+    :nombre => "Quirúrgica neonatal - Módulo de gastrosquisis",
+    :codigo => "Q010",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 111,
+    :nombre => "Quirúrgica neonatal - Módulo de oclusión intestinal",
+    :codigo => "Q011",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 112,
+    :nombre => "Quirúrgica neonatal - Módulo de malformación anorrectal",
+    :codigo => "Q012",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 113,
+    :nombre => "Quirúrgica neonatal - Módulo de mielomeningocele",
+    :codigo => "Q013",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 114,
+    :nombre => "Quirúrgica neonatal - Módulo de hidrocefalia congénita",
+    :codigo => "Q014",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 115,
+    :nombre => "Cardiopatías congénitas - Módulo I - Cierre de ductus con cirugía convencional",
+    :codigo => "K001",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 116,
+    :nombre => "Cardiopatías congénitas - Módulo I - Cerclaje de arteria pulmonar con cirugía convencional",
+    :codigo => "K002",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 117,
+    :nombre => "Cardiopatías congénitas - Módulo I - Anastomosis sublcavio-pulmonar con cirugía convencional",
+    :codigo => "K003",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 118,
+    :nombre => "Cardiopatías congénitas - Módulo I - Corrección de coartación de la aorta con cirugía convencional",
+    :codigo => "K004",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 119,
+    :nombre => "Cardiopatías congénitas - Módulo I - Cierre de ductus con hemodinamia intervencionista",
+    :codigo => "K005",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 120,
+    :nombre => "Cardiopatías congénitas - Módulo I - Corrección de coartación de la aorta con hemodinamia intervencionista",
+    :codigo => "K006",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 121,
+    :nombre => "Cardiopatías congénitas - Módulo I - Cierre de canal intra-auricular con hemodinamia intervencionista",
+    :codigo => "K007",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 122,
+    :nombre => "Cardiopatías congénitas - Módulo I - Cierre de canal intra-ventricular con hemodinamia intervencionista",
+    :codigo => "K008",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 123,
+    :nombre => "Cardiopatías congénitas - Módulo I - Colocación de Stent en ramas pulmonares con hemodinamia intervencionista",
+    :codigo => "K009",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 124,
+    :nombre => "Cardiopatías congénitas - Módulo I - Embolización de colaterales de ramas pulmonares con hemodinamia intervencionista",
+    :codigo => "K010",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 125,
+    :nombre => "Cardiopatías congénitas - Módulo II - Cierre de ductus",
+    :codigo => "K011",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 126,
+    :nombre => "Cardiopatías congénitas - Módulo II - Cerclaje de arteria pulmonar",
+    :codigo => "K012",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 127,
+    :nombre => "Cardiopatías congénitas - Módulo II - Anastomosis sublcavio-pulmonar",
+    :codigo => "K013",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 128,
+    :nombre => "Cardiopatías congénitas - Módulo II - Corrección de coartación de la aorta",
+    :codigo => "K014",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 129,
+    :nombre => "Cardiopatías congénitas - Módulo III - Cirugía de Glenn",
+    :codigo => "K015",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 130,
+    :nombre => "Cardiopatías congénitas - Módulo III - Cierre de canal intra-auricular",
+    :codigo => "K016",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 131,
+    :nombre => "Cardiopatías congénitas - Módulo IV - Cierre de canal intra-ventricular",
+    :codigo => "K017",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #:id => 132,
+    :nombre => "Cardiopatías congénitas - Módulo V - Corrección de canal aurículo-ventricular",
+    :codigo => "K018",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 133,
+    :nombre => "Cardiopatías congénitas - Módulo V - Correctora de Fallot",
+    :codigo => "K019",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 134,
+    :nombre => "Cardiopatías congénitas - Módulo V - Correctora de doble salida de ventrículo derecho",
+    :codigo => "K020",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 135,
+    :nombre => "Cardiopatías congénitas - Módulo V - Cirugía de Fontan o by-pass total",
+    :codigo => "K021",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 136,
+    :nombre => "Cardiopatías congénitas - Módulo V - Cierre de canal intra-ventricular y del defecto asociado",
+    :codigo => "K022",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 137,
+    :nombre => "Cardiopatías congénitas - Módulo V - Reemplazo o plástica valvular con prótesis u homoinjerto, cirugía de Ross",
+    :codigo => "K023",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 138,
+    :nombre => "Cardiopatías congénitas - Módulo V - Cirugía de Rastelli",
+    :codigo => "K024",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 139,
+    :nombre => "Cardiopatías congénitas - Módulo VI - Switch arterial - Nikeido - Doble switch",
+    :codigo => "K025",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 140,
+    :nombre => "Cardiopatías congénitas - Módulo VI - Plástica o reemplazo valvular",
+    :codigo => "K026",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 141,
+    :nombre => "Cardiopatías congénitas - Módulo VI - Cierre de canal intra-ventricular más colocación de homoinjerto - Recambio de homoinjerto - Colocación de tubo con unifocalización",
+    :codigo => "K027",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 142,
+    :nombre => "Cardiopatías congénitas - Módulo VI - Correctora de tronco arterioso",
+    :codigo => "K028",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 143,
+    :nombre => "Cardiopatías congénitas - Módulo VI - Correctora de ATRVP",
+    :codigo => "K029",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 144,
+    :nombre => "Cardiopatías congénitas - Módulo VI - Cirugía de Stansel con anastomosis - Glenn o Sano",
+    :codigo => "K030",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 145,
+    :nombre => "Cardiopatías congénitas - Módulo VI - Reconstrucción del arco aórtico",
+    :codigo => "K031",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 146,
+    :nombre => "Cardiopatías congénitas - Módulo VII - Norwood o Sano",
+    :codigo => "K032",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 147,
+    :nombre => "Cardiopatías congénitas - Módulo VII - Glenn",
+    :codigo => "K033",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 148,
+    :nombre => "Cardiopatías congénitas - Módulo VII - Fontan",
+    :codigo => "K034",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
 ])
