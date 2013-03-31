@@ -10,7 +10,7 @@ class TipoDePrestacion < ActiveRecord::Base
   has_many :objetos_de_las_prestaciones
 
   # Validaciones
-  validate_presence_of :codigo, :nombre
+  validates_presence_of :codigo, :nombre
 
   # id_del_codigo
   # Devuelve el ID asociado con el código pasado

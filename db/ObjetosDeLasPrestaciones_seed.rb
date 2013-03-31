@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 # Datos precargados al inicializar el sistema
-TipoDePrestacion.create([
+ObjetoDeLaPrestacion.create([
   {
     #:id => 1,
     :nombre => "Citología",
@@ -1185,4 +1185,1716 @@ TipoDePrestacion.create([
     :define_si_es_catastrofica => true,
     :es_catastrofica => true
   },
+  {
+    #id => 149,
+    :nombre => '17 Hidroxiprogesterona',
+    :codigo => 'L001',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 150,
+    :nombre => 'Ácido úrico',
+    :codigo => 'L002',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 151,
+    :nombre => 'Ácidos biliares',
+    :codigo => 'L003',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 152,
+    :nombre => 'Amilasa pancreática',
+    :codigo => 'L004',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 153,
+    :nombre => 'Antibiograma micobacterias',
+    :codigo => 'L005',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 154,
+    :nombre => 'Anticuerpos antitreponémicos',
+    :codigo => 'L006',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 155,
+    :nombre => 'Antígeno prostático específico',
+    :codigo => 'L007',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 156,
+    :nombre => 'Apolipoproteína B',
+    :codigo => 'L008',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 157,
+    :nombre => 'ASTO',
+    :codigo => 'L009',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 158,
+    :nombre => 'Baciloscopía',
+    :codigo => 'L010',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 159,
+    :nombre => 'Bacteriología directa y cultivo',
+    :codigo => 'L011',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 160,
+    :nombre => 'Bilirrubinas totales y fraccionadas',
+    :codigo => 'L012',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 161,
+    :nombre => 'Biotinidasa neonatal',
+    :codigo => 'L013',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 162,
+    :nombre => 'Calcemia',
+    :codigo => 'L014',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 163,
+    :nombre => 'Calciuria',
+    :codigo => 'L015',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 164,
+    :nombre => 'Campo oscuro',
+    :codigo => 'L016',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 165,
+    :nombre => 'Citología',
+    :codigo => 'L017',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 166,
+    :nombre => 'Colesterol',
+    :codigo => 'L018',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 167,
+    :nombre => 'Coprocultivo',
+    :codigo => 'L019',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 168,
+    :nombre => 'CPK',
+    :codigo => 'L020',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 169,
+    :nombre => 'Creatinina en orina',
+    :codigo => 'L021',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 170,
+    :nombre => 'Creatinina sérica',
+    :codigo => 'L022',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 171,
+    :nombre => 'Cuantificación fibrinógeno',
+    :codigo => 'L023',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 172,
+    :nombre => 'Cultivo Streptococo B hemolítico',
+    :codigo => 'L024',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 173,
+    :nombre => 'Cultivo vaginal. Exudado flujo',
+    :codigo => 'L025',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 174,
+    :nombre => 'Cultivo y antibiograma general',
+    :codigo => 'L026',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 175,
+    :nombre => 'Electroforesis de proteínas',
+    :codigo => 'L027',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 176,
+    :nombre => 'Eritrosedimentación',
+    :codigo => 'L028',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 177,
+    :nombre => 'Esputo seriado',
+    :codigo => 'L029',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 178,
+    :nombre => 'Estado ácido base',
+    :codigo => 'L030',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 179,
+    :nombre => 'Estudio citoquímico de médula ósea: pas-peroxidasa-esterasas',
+    :codigo => 'L031',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 180,
+    :nombre => 'Estudio citogenético de médula ósea (técnica de bandeo G)',
+    :codigo => 'L032',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 181,
+    :nombre => 'Estudio de genética molecular de médula ósea (BCR/ABL, MLL/AF4 y TEL/AML1 por técnicas de RT-PCR o Fish)',
+    :codigo => 'L033',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 182,
+    :nombre => 'Factor de coagulación 5, 7, 8, 9 y 10',
+    :codigo => 'L034',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 183,
+    :nombre => 'Fenilalanina',
+    :codigo => 'L035',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 184,
+    :nombre => 'Fenilcetonuria',
+    :codigo => 'L036',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 185,
+    :nombre => 'Ferremia',
+    :codigo => 'L037',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 186,
+    :nombre => 'Ferritina',
+    :codigo => 'L038',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 187,
+    :nombre => 'Fibrinógeno',
+    :codigo => 'L039',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 188,
+    :nombre => 'Fosfatasa alcalina y ácida',
+    :codigo => 'L040',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 189,
+    :nombre => 'Fosfatemia',
+    :codigo => 'L041',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 190,
+    :nombre => 'FSH',
+    :codigo => 'L042',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 191,
+    :nombre => 'Galactosemia',
+    :codigo => 'L043',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 192,
+    :nombre => 'Gamma-GT (Gamma glutamil transpeptidasa)',
+    :codigo => 'L044',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 193,
+    :nombre => 'Glucemia',
+    :codigo => 'L045',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 194,
+    :nombre => 'Glucosuria',
+    :codigo => 'L046',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 195,
+    :nombre => 'Gonadotrofina coriónica humana en sangre',
+    :codigo => 'L047',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 196,
+    :nombre => 'Gonadotrofina coriónica humana en orina',
+    :codigo => 'L048',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 197,
+    :nombre => 'Grasas en material fecal cualitativa',
+    :codigo => 'L049',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 198,
+    :nombre => 'Grupo y factor',
+    :codigo => 'L050',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 199,
+    :nombre => 'Hbs Ag',
+    :codigo => 'L051',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 200,
+    :nombre => 'HDL y LDL',
+    :codigo => 'L052',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 201,
+    :nombre => 'Hematocrito',
+    :codigo => 'L053',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 202,
+    :nombre => 'Hemocultivo aerobio-anaerobio',
+    :codigo => 'L054',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 203,
+    :nombre => 'Hemoglobina',
+    :codigo => 'L055',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 204,
+    :nombre => 'Hemoglobina glicosilada',
+    :codigo => 'L056',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 205,
+    :nombre => 'Hemograma completo',
+    :codigo => 'L057',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 206,
+    :nombre => 'Hepatitis B anti HBS - Anticore total',
+    :codigo => 'L058',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 207,
+    :nombre => 'Hepatograma',
+    :codigo => 'L059',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 208,
+    :nombre => 'Hidatidosis por hemoaglutinación',
+    :codigo => 'L060',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 209,
+    :nombre => 'Hidatidosis por IFI',
+    :codigo => 'L061',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 210,
+    :nombre => 'Hisopado de fauces',
+    :codigo => 'L062',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 211,
+    :nombre => 'Homocistina',
+    :codigo => 'L063',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 211,
+    :nombre => 'IFI infecciones respiratorias',
+    :codigo => 'L064',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 212,
+    :nombre => 'IFI y hemoaglutinación directa para Chagas',
+    :codigo => 'L065',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 213,
+    :nombre => 'Insulinemia basal',
+    :codigo => 'L066',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 214,
+    :nombre => 'Inmunofenotipo de médula ósea por citometría de flujo',
+    :codigo => 'L067',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 215,
+    :nombre => 'Ionograma plasmático y orina',
+    :codigo => 'L068',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 216,
+    :nombre => 'KPTT',
+    :codigo => 'L069',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 217,
+    :nombre => 'LDH',
+    :codigo => 'L070',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 218,
+    :nombre => 'Leucocitos en material fecal',
+    :codigo => 'L071',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 219,
+    :nombre => 'LH',
+    :codigo => 'L072',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 220,
+    :nombre => 'Lipidograma electroforético',
+    :codigo => 'L073',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 221,
+    :nombre => 'Líquido cefalorraquídeo citoquímico y bacteriológico',
+    :codigo => 'L074',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 222,
+    :nombre => 'Líquido cefalorraquídeo - Recuento celular (cámara), citología (MGG, Cytospin) e histoquímica',
+    :codigo => 'L075',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 223,
+    :nombre => 'Micológico',
+    :codigo => 'L076',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 224,
+    :nombre => 'Microalbuminuria',
+    :codigo => 'L077',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 225,
+    :nombre => 'Monotest',
+    :codigo => 'L078',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 226,
+    :nombre => 'Orina completa',
+    :codigo => 'L079',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 227,
+    :nombre => 'Parasitemia para Chagas',
+    :codigo => 'L080',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 228,
+    :nombre => 'Parasitológico de materia fecal',
+    :codigo => 'L081',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 229,
+    :nombre => 'PH en materia fecal',
+    :codigo => 'L082',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 230,
+    :nombre => 'Porcentaje de saturación de hierro funcional',
+    :codigo => 'L083',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 231,
+    :nombre => 'PPD',
+    :codigo => 'L084',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 232,
+    :nombre => 'Productos de degradación del fibrinógeno (PDF)',
+    :codigo => 'L085',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 233,
+    :nombre => 'Progesterona',
+    :codigo => 'L086',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 234,
+    :nombre => 'Prolactina',
+    :codigo => 'L087',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 235,
+    :nombre => 'Proteína C reactiva',
+    :codigo => 'L088',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 236,
+    :nombre => 'Proteínas totales y fraccionadas',
+    :codigo => 'L089',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 237,
+    :nombre => 'Proteinuria',
+    :codigo => 'L090',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 238,
+    :nombre => 'Protoporfirina libre eritrocitaria',
+    :codigo => 'L091',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 239,
+    :nombre => 'Prueba de Coombs directa',
+    :codigo => 'L092',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 240,
+    :nombre => 'Prueba de Coombs indirecta cuantitativa',
+    :codigo => 'L093',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 241,
+    :nombre => 'Prueba de tolerancia a la glucosa',
+    :codigo => 'L094',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 242,
+    :nombre => 'Reacción de Hudleson',
+    :codigo => 'L095',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 243,
+    :nombre => 'Reacción de Widal',
+    :codigo => 'L096',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 244,
+    :nombre => 'Receptores libres de transferrina',
+    :codigo => 'L097',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 245,
+    :nombre => 'Sangre oculta en heces',
+    :codigo => 'L098',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 246,
+    :nombre => 'Serología para Chagas (Elisa)',
+    :codigo => 'L099',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 247,
+    :nombre => 'Serología para hepatitis A IgM',
+    :codigo => 'L100',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 248,
+    :nombre => 'Serología para hepatitis A total',
+    :codigo => 'L101',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 249,
+    :nombre => 'Serología para rubéola IgM',
+    :codigo => 'L102',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 250,
+    :nombre => 'Sideremia',
+    :codigo => 'L103',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 251,
+    :nombre => 'T3',
+    :codigo => 'L104',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 252,
+    :nombre => 'T4 libre',
+    :codigo => 'L105',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 253,
+    :nombre => 'Test de Graham',
+    :codigo => 'L106',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 254,
+    :nombre => 'Test de látex',
+    :codigo => 'L107',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 255,
+    :nombre => 'TIBC',
+    :codigo => 'L108',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 256,
+    :nombre => 'Tiempo de lisis de euglobulina',
+    :codigo => 'L109',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 257,
+    :nombre => 'Toxoplasmosis por IFI',
+    :codigo => 'L110',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 258,
+    :nombre => 'Toxoplasmosis por MEIA',
+    :codigo => 'L111',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 259,
+    :nombre => 'Transaminasas TGO/TGP',
+    :codigo => 'L112',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 260,
+    :nombre => 'Transferrinas',
+    :codigo => 'L113',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 261,
+    :nombre => 'Triglicéridos',
+    :codigo => 'L114',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 262,
+    :nombre => 'Tripsina catiónica inmunorreactiv',
+    :codigo => 'L115',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 263,
+    :nombre => 'TSH',
+    :codigo => 'L116',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 264,
+    :nombre => 'Urea',
+    :codigo => 'L117',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 265,
+    :nombre => 'Urocultivo',
+    :codigo => 'L118',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 266,
+    :nombre => 'VDRL',
+    :codigo => 'L119',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 267,
+    :nombre => 'Vibrio choleræ. Cultivo e identificación',
+    :codigo => 'L120',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 268,
+    :nombre => 'VIH Elisa',
+    :codigo => 'L121',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 269,
+    :nombre => 'VIH Western Blot',
+    :codigo => 'L122',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 270,
+    :nombre => 'Serología para hepatitis C',
+    :codigo => 'L123',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 271,
+    :nombre => 'Magnesemia',
+    :codigo => 'L124',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 272,
+    :nombre => 'Serología LCR',
+    :codigo => 'L125',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 273,
+    :nombre => 'Recuento de plaquetas',
+    :codigo => 'L126',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 274,
+    :nombre => 'Antígeno P24',
+    :codigo => 'L127',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 275,
+    :nombre => 'Hemoaglutinación indirecta Chagas',
+    :codigo => 'L128',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 276,
+    :nombre => 'IgE sérica',
+    :codigo => 'L129',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 277,
+    :nombre => 'Tiempo de coagulación y sangría',
+    :codigo => 'L130',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 278,
+    :nombre => 'Tiempo de protrombina',
+    :codigo => 'L131',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 279,
+    :nombre => 'Tiempo de trombina',
+    :codigo => 'L132',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 280,
+    :nombre => 'Frotis de sangre periférica',
+    :codigo => 'L133',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 281,
+    :nombre => 'Recuento reticulocitario',
+    :codigo => 'L134',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 282,
+    :nombre => 'Alprostadil',
+    :codigo => 'X001',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 283,
+    :nombre => 'Óxido nítrico y dispenser para su administración',
+    :codigo => 'X002',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 284,
+    :nombre => 'Levosimedan',
+    :codigo => 'X003',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 285,
+    :nombre => 'Factor VII activado recombinante',
+    :codigo => 'X004',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 286,
+    :nombre => 'Iloprost',
+    :codigo => 'X005',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 287,
+    :nombre => 'Trometanol',
+    :codigo => 'X006',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 288,
+    :nombre => 'Surfactante',
+    :codigo => 'X007',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 289,
+    :nombre => 'Nutrición parenteral total',
+    :codigo => 'X008',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 290,
+    :nombre => 'Prótesis y órtesis biológica, homoinjerto, parche de Goretex o Dacron, tubo de Goretex',
+    :codigo => 'X009',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('XM'),
+    :define_si_es_catastrofica => false,
+    :es_catastrofica => false
+  },
+  {
+    #id => 291,
+    :nombre => 'De caso positivo de muestra citológica',
+    :codigo => 'N001',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('NT'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 292,
+    :nombre => 'De inicio de tratamiento',
+    :codigo => 'N002',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('NT'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 293,
+    :nombre => 'De caso positivo de biopsia',
+    :codigo => 'N003',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('NT'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 294,
+    :nombre => 'Consulta de notificación de riesgo',
+    :codigo => 'N004',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('NT'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 295,
+    :nombre => 'Referencia oportuna por embarazo de alto riesgo de nivel 2 o 3 a niveles de complejidad superiores',
+    :codigo => 'N006',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('NT'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 296,
+    :nombre => 'Acceso vascular central o periférico por cateterismo',
+    :codigo => 'P001',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 297,
+    :nombre => 'Colposcopía',
+    :codigo => 'P002',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 298,
+    :nombre => 'Colocación de DIU',
+    :codigo => 'P003',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 299,
+    :nombre => 'Electrocardiograma',
+    :codigo => 'P004',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 300,
+    :nombre => 'Ergometría',
+    :codigo => 'P005',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 301,
+    :nombre => 'Espirometría',
+    :codigo => 'P006',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 302,
+    :nombre => 'Escisión / Remoción / Toma para biopsia / Punción lumbar',
+    :codigo => 'P007',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 303,
+    :nombre => 'Extracción de sangre',
+    :codigo => 'P008',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 304,
+    :nombre => 'Incisión / Drenaje / Lavado',
+    :codigo => 'P009',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 305,
+    :nombre => 'Inyección / Infiltración local / Venopuntura',
+    :codigo => 'P010',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 306,
+    :nombre => 'Medicina física / Rehabilitación',
+    :codigo => 'P011',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 307,
+    :nombre => 'Pruebas de sensibilización',
+    :codigo => 'P014',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 308,
+    :nombre => 'Registro de trazados eléctricos cerebrales',
+    :codigo => 'P016',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 309,
+    :nombre => 'Oftalmoscopía binocular indirecta (OBI)',
+    :codigo => 'P017',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 310,
+    :nombre => 'Toma para citología exfoliativa/histológica',
+    :codigo => 'P018',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 311,
+    :nombre => 'Audiometría tonal',
+    :codigo => 'P019',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 312,
+    :nombre => 'Logoaudiometría',
+    :codigo => 'P020',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 313,
+    :nombre => 'Otoemisiones acústicas',
+    :codigo => 'P021',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 314,
+    :nombre => 'Potenciales evocados',
+    :codigo => 'P022',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 315,
+    :nombre => 'Sellado de surcos',
+    :codigo => 'P024',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 316,
+    :nombre => 'Barniz fluorado de surcos',
+    :codigo => 'P025',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 317,
+    :nombre => 'Inactivación de caries',
+    :codigo => 'P026',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 318,
+    :nombre => 'Barniz fluorado (embarazadas)',
+    :codigo => 'P027',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 319,
+    :nombre => 'Fondo de ojo',
+    :codigo => 'P028',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 320,
+    :nombre => 'Punción de médula ósea',
+    :codigo => 'P029',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 321,
+    :nombre => 'Uso de tirillas reactivas para determinación rápida de proteinuria',
+    :codigo => 'P030',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 322,
+    :nombre => 'Monitoreo fetal anteparto',
+    :codigo => 'P031',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 323,
+    :nombre => 'Oftalmoscopía directa (examen de fondo de ojo)',
+    :codigo => 'P032',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 324,
+    :nombre => 'Tartrectomía y cepillado mecánico',
+    :codigo => 'P033',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 325,
+    :nombre => 'Holter de 24 horas',
+    :codigo => 'P034',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 326,
+    :nombre => 'Presurometría',
+    :codigo => 'P035',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('PR'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 327,
+    :nombre => 'Ronda rural',
+    :codigo => 'X001',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('RO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 328,
+    :nombre => 'Ronda en poblaciones indígenas',
+    :codigo => 'X002',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('RO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 329,
+    :nombre => 'Promoción de salud sexual y reproductiva, conductas saludables, hábitos de higiene',
+    :codigo => 'T001',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 330,
+    :nombre => 'Promoción de pautas alimentarias en embarazadas, puérperas y niños menores de 6 años',
+    :codigo => 'T002',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 331,
+    :nombre => 'Promoción del desarrollo infantil, prevención de patologías prevalentes en la infancia, conductas saludables, hábitos de higiene',
+    :codigo => 'T003',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 332,
+    :nombre => 'Pautas nutricionales respetando la cultura alimentaria de comunidades indígenas',
+    :codigo => 'T004',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 333,
+    :nombre => 'Prevención de accidentes',
+    :codigo => 'T005',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 334,
+    :nombre => 'Prevención de accidentes domésticos',
+    :codigo => 'T006',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 335,
+    :nombre => 'Prevención de HIV e infecciones de transmisión sexual',
+    :codigo => 'T007',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 336,
+    :nombre => 'Prevención de violencia de género',
+    :codigo => 'T008',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 337,
+    :nombre => 'Prevención de violencia familiar',
+    :codigo => 'T009',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 338,
+    :nombre => 'Prevención de comportamientos adictivos: tabaquismo, uso de drogas y alcoholismo',
+    :codigo => 'T010',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 339,
+    :nombre => 'Promoción de hábitos saludables: salud bucal, educación alimentaria, pautas de higiene, trastornos de la alimentación',
+    :codigo => 'T011',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 340,
+    :nombre => 'Promoción de pautas alimentarias',
+    :codigo => 'T012',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 341,
+    :nombre => 'Promoción de salud sexual y reproductiva',
+    :codigo => 'T013',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 342,
+    :nombre => 'Salud sexual, confidencialidad, género y derecho (actividad en sala de espera)',
+    :codigo => 'T014',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TA'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 343,
+    :nombre => 'Consejería en salud sexual en adolescente',
+    :codigo => 'T015',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('CO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 344,
+    :nombre => 'Consejería en salud sexual (en terreno)',
+    :codigo => 'T016',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('CO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 345,
+    :nombre => 'Consejería puerperal en salud sexual y reproductiva, lactancia materna y puericultura (prevención de muerte súbita y signos de alarma)',
+    :codigo => 'T017',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('CO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 346,
+    :nombre => 'Consejería post-aborto',
+    :codigo => 'T018',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('CO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 347,
+    :nombre => 'Carta de derechos de la mujer embarazada indígena',
+    :codigo => 'T019',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('CO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 348,
+    :nombre => 'Consejería en salud sexual y procreación responsable',
+    :codigo => 'T020',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('CO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 349,
+    :nombre => 'Educación para la salud en el embarazo (bio-psico-social)',
+    :codigo => 'T021',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('CO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 350,
+    :nombre => 'Psicoprofilaxis del parto',
+    :codigo => 'T022',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('CO'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 351,
+    :nombre => 'Unidad móvil de baja o mediana complejidad',
+    :codigo => 'M010',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 352,
+    :nombre => 'Unidad móvil de alta complejidad (adultos)',
+    :codigo => 'M020',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 353,
+    :nombre => 'Unidad móvil de alta complejidad (pediátrica/neonatal)',
+    :codigo => 'M030',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 354,
+    :nombre => 'Módulo de traslado de RN entre 500 y 1500 gramos con malformación quirúrgica mayor',
+    :codigo => 'M040',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 355,
+    :nombre => 'Módulo de traslado "in-utero"',
+    :codigo => 'M041',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 356,
+    :nombre => 'Unidad móvil de baja o mediana complejidad (hasta 50 km)',
+    :codigo => 'M081',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 357,
+    :nombre => 'Unidad móvil de baja o mediana complejidad (más de 50 km)',
+    :codigo => 'M082',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 358,
+    :nombre => 'Unidad móvil de alta complejidad adultos (hasta 50 km)',
+    :codigo => 'M083',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 359,
+    :nombre => 'Unidad móvil de alta complejidad adultos (más de 50 km)',
+    :codigo => 'M084',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 360,
+    :nombre => 'Unidad móvil de alta complejidad pediátrica (hasta 50 km)',
+    :codigo => 'M085',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  },
+  {
+    #id => 361,
+    :nombre => 'Unidad móvil de alta complejidad (más de 50 km)',
+    :codigo => 'M086',
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => false
+  }
 ])
