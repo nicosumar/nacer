@@ -24,6 +24,7 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
 
         IF NOT existe_uad THEN
           existe_novedades := 'f'::bool;
+          existe_prestaciones := 'f'::bool;
           EXECUTE '
             -- Creamos el esquema para la nueva UAD
             CREATE SCHEMA \"uad_' || NEW.codigo || '\";
@@ -57,13 +58,19 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
               ON uad_' || NEW.codigo || '.busquedas_locales USING btree (modelo_type, modelo_id);';
 
         ELSE
-          -- La UAD ya existe, verificar si existe la tabla de novedades para el módulo de inscripción.
+          -- La UAD ya existe, verificar si existen las tablas para los módulos de inscripción y facturación.
           SELECT COUNT(*) > 0
             FROM information_schema.tables
             WHERE
               table_schema = ('uad_' || NEW.codigo)
               AND table_name = 'novedades_de_los_afiliados'
           INTO existe_novedades;
+          SELECT COUNT(*) > 0
+            FROM information_schema.tables
+            WHERE
+              table_schema = ('uad_' || NEW.codigo)
+              AND table_name = 'prestaciones_brindadas'
+          INTO existe_prestaciones;
         END IF;
 
         IF NEW.inscripcion AND NOT existe_novedades THEN
@@ -227,9 +234,57 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
             ADD CONSTRAINT fk_uad_' || NEW.codigo || '_novedades_tt_dd_tutor
               FOREIGN KEY (tipo_de_documento_del_tutor_id) REFERENCES tipos_de_documentos(id);';
         END IF;
-        IF NEW.facturacion THEN
-          -- TODO: Acá poner las sentencias de creación de las estructuras de la BB.DD. necesarias
-          -- para el módulo de facturación cuando esté en desarrollo.
+
+        IF NEW.facturacion AND NOT existe_prestaciones THEN
+          EXECUTE '
+
+            -- Crear la tabla para almacenar las prestaciones brindadas
+            CREATE TABLE uad_' || NEW.codigo || '.prestaciones_brindadas (
+              id integer NOT NULL,
+              estado_de_la_prestacion_id integer NOT NULL,
+              clave_de_beneficiario character varying(255) NOT NULL,
+              fecha_de_la_prestacion date,
+              efector_id integer,
+              prestacion_id integer,
+              diagnostico_id integer,
+              observaciones text,
+              created_at timestamp without time zone,
+              updated_at timestamp without time zone,
+              creator_id integer,
+              updater_id integer,
+              cuasi_factura_id integer
+            );
+        
+            -- Crear la secuencia que genera los identificadores de la tabla de prestaciones
+            CREATE SEQUENCE uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq;
+            ALTER SEQUENCE uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq
+              OWNED BY uad_' || NEW.codigo || '.prestaciones_brindadas.id;
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+              ALTER COLUMN id
+                SET DEFAULT nextval(''uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq''::regclass);
+        
+            -- Clave primaria para la tabla de prestaciones
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+              ADD CONSTRAINT uad_' || NEW.codigo || '_prestaciones_brindadas_pkey PRIMARY KEY (id);
+        
+            -- Crear triggers para actualizaciones de datos relacionadas con las prestaciones
+            CREATE TRIGGER trg_uad_' || NEW.codigo || '_prestaciones_fts
+              AFTER INSERT OR DELETE OR UPDATE ON uad_' || NEW.codigo || '.prestaciones_brindadas
+              FOR EACH ROW EXECUTE PROCEDURE prestaciones_brindadas_fts_trigger();
+        
+            -- Restricciones de clave foránea para la tabla de prestaciones
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_estados
+              FOREIGN KEY (estado_de_la_prestacion_id) REFERENCES estados_de_las_prestaciones(id);
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_efectores
+              FOREIGN KEY (efector_id) REFERENCES efectores(id);
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_prestaciones
+              FOREIGN KEY (prestacion_id) REFERENCES prestaciones(id);
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_efectores
+              FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id);';
         END IF;
         RETURN NEW;
       END;

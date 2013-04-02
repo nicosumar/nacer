@@ -17,9 +17,11 @@ class Prestacion < ActiveRecord::Base
   #belongs_to :subgrupo_de_prestaciones   # OBSOLETO en el nuevo nomenclador
   #has_and_belongs_to_many :categorias_de_afiliados   # OBSOLETO: ya no existen categorías
 
-  belongs_to :tipo_de_prestacion
-  belongs_to :unidad_de_medida
+  belongs_to :objeto_de_la_prestacion
+  belongs_to :tipo_de_prestacion, :through => :objeto_de_la_prestacion
   belongs_to :agrupacion_de_beneficiarios
+  has_and_belongs_to_many :diagnosticos
+  belongs_to :unidad_de_medida
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, :through => :datos_adicionales_por_prestacion
 
