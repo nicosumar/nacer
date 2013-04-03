@@ -70,6 +70,7 @@ class ApplicationController < ActionController::Base
       autorizados << :efectores if can? :read, Efector
       autorizados << :users if can? :read, User
       autorizados << :addendas if can? :read, Addenda
+      autorizados << :prestaciones_brindadas if can? :read, PrestacionBrindada
     end
     return autorizados
   end

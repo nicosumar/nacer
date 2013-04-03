@@ -3,7 +3,7 @@ class Busqueda < ActiveRecord::Base
   # Listado de clases que se pueden buscar usando FTS
   @@clases_fts = [
     :afiliados, :novedades_de_los_afiliados, :contactos, :convenios_de_gestion, :convenios_de_administracion, :efectores,
-    :users, :addendas
+    :users, :addendas, :prestaciones_brindadas
   ]
 
   # Devuelve todos los registros coincidentes de la tabla de 'Busquedas'

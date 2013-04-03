@@ -1,0 +1,47 @@
+- content_for :title do
+  Prestaciones brindadas por efectores asociados con esta UAD
+
+#content-header
+  %h1 Prestaciones brindadas por efectores asociados con esta UAD
+
+= render "shared/info"
+
+#content-body
+  %h2.first-header-with-note Modificación de la vista según el estado de la prestación brindada
+  %p.note
+    Puede seleccionar de la lista un estado y presionar 'Actualizar' para que se muestren únicamente prestaciones con ese estado.
+
+  = form_tag('/prestaciones_brindadas', :method => 'get') do
+    %div.field
+      = label_tag(:estado_de_la_prestacion_id, "Mostrar prestaciones:")
+      = select_tag :estado_de_la_prestacion_id, options_for_select(@estados_de_las_prestaciones, @estado_de_la_prestacion_id), |
+        {:include_blank => false} |
+      = submit_tag("Actualizar")
+
+  - if @estado_de_la_prestacion_id.blank?
+    %h2.first-header Listado de prestaciones registradas
+  - else
+    %h2.first-header
+      Listado de prestaciones que tienen el estado
+      = "'" + @descripcion_del_estado + "'"
+
+  - if @prestaciones_brindadas.any?
+    %table
+      %thead
+        %tr
+          %th Fecha
+          %th Efector
+          %th Beneficiario
+          %th Código de prestación
+          %th Última modificación
+      %tbody
+        - @prestaciones_brindadas.each do |p|
+          %tr.clickable{ :onclick => "location.href=\'#{prestacion_brindada_path(p)}\'", :title => "Ver detalles de la prestación" }
+            %td= p.fecha_de_la_prestacion.strftime("%d/%m/%Y")
+            %td= p.efector.nombre
+            %td= novedad_o_afiliado(p.clave_de_beneficiario)
+            %td= p.prestacion.codigo.to_s + (p.diagnostico ? p.diagnostico.codigo.to_s : '')
+            %td= p.updated_at ? p.updated_at.strftime("%d/%m/%Y %H:%M:%S") : ''
+    = will_paginate @prestaciones_brindadas, :inner_window => 2, :outer_window => 0
+  - else
+    %p No existen prestaciones en el estado seleccionado

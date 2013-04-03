@@ -35,6 +35,11 @@
     = f.select :centro_de_inscripcion_ids, options_for_select(@centros_de_inscripcion, @centro_de_inscripcion_ids), {}, |
       { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
 
+  %h3 Efectores asociados con esta unidad de alta de datos para facturación
+  %div.field
+    = f.select :efector_ids, options_for_select(@efectores, @efector_ids), {}, |
+      { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
+
   %div.actions
     - if @unidad_de_alta_de_datos.new_record?
       = f.submit "Crear la unidad de alta de datos"

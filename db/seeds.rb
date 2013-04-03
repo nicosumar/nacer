@@ -58,6 +58,6 @@ load 'db/GruposPoblacionales_seed.rb'
 # Datos iniciales para el módulo de facturación
 load 'db/TiposDePrestaciones_seed.rb'
 load 'db/Diagnosticos_seed.rb'
-load 'db/AgrupacionDeBeneficiarios_seed.rb'
+load 'db/AgrupacionesDeBeneficiarios_seed.rb'
 load 'db/ObjetosDeLasPrestaciones_seed.rb'
 load 'db/PrestacionesBrindadas_seed.rb'

@@ -64,3 +64,38 @@
     - else
       %div.field_content
         %span.field_empty Aún no se han asociado centros de inscripción a esta unidad de alta de datos.
+
+  - if @unidad_de_alta_de_datos.facturacion
+    %h3 Efectores asociados a la unidad de alta de datos para facturación
+    - if @unidad_de_alta_de_datos.efectores.any?
+      %table
+        %thead
+          %tr
+            %th CUIE
+            %th Nombre
+        %tbody
+          - @unidad_de_alta_de_datos.efectores.each do |e|
+            %tr
+              %td= e.cuie
+              %td= e.nombre
+    - else
+      %div.field_content
+        %span.field_empty Aún no se han asociado efectores para facturación a esta unidad de alta de datos.
+
+  %h3 Usuarios asociados a la unidad de alta de datos
+  - if @unidad_de_alta_de_datos.users.any?
+    %table
+      %thead
+        %tr
+          %th Nombre
+          %th Correo electrónico
+          %th Grupos habilitados
+      %tbody
+        - @unidad_de_alta_de_datos.users.each do |u|
+          %tr
+            %td= (u.nombre.to_s + " " + u.apellido.to_s).titleize
+            %td= u.email
+            %td= u.user_groups.collect{|ug| ug.user_group_name}.join(", ")
+  - else
+    %div.field_content
+      %span.field_empty Aún no se han asociado usuarios a esta unidad de alta de datos.

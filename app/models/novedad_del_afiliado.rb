@@ -101,8 +101,6 @@ class NovedadDelAfiliado < ActiveRecord::Base
     # Copiar los atributos que no se pueden asignar masivamente
     self.clave_de_beneficiario = afiliado.clave_de_beneficiario
     self.es_menor = afiliado.menor?(afiliado.fecha_de_la_ultima_novedad || afiliado.fecha_de_inscripcion)
-    self.esta_embarazada = afiliado.embarazada?(afiliado.fecha_de_la_ultima_novedad ||
-      afiliado.fecha_de_diagnostico_del_embarazo || afiliado.fecha_de_inscripcion)
     return true
   end
 

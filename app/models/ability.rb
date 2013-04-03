@@ -81,6 +81,12 @@ class Ability
       can :manage, NovedadDelAfiliado
     end
 
+    if user.in_group? :facturacion_uad
+      can :read, Afiliado
+      can :manage, PrestacionBrindada
+      can :manage, DatoAdicionalAsociado
+    end
+
     if user.in_group? :capacitacion
       can :manage, Contacto
       can :manage, NovedadDelAfiliado

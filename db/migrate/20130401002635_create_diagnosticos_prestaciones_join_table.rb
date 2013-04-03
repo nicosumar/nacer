@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateDiagnosticosPrestacionesJoinTable < ActiveRecord::Migration
   def change
     create_table :diagnosticos_prestaciones, :id => false do |t|

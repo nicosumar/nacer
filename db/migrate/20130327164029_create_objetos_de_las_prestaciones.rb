@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateObjetosDeLasPrestaciones < ActiveRecord::Migration
   def change
     create_table :objetos_de_las_prestaciones do |t|

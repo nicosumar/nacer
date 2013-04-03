@@ -13,6 +13,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   has_and_belongs_to_many :centros_de_inscripcion
   has_many :unidades_de_alta_de_datos_users
   has_many :users, :through => :unidades_de_alta_de_datos_users
+  has_many :efectores
 
   # En forma predeterminada, sólo se devuelven los registros activos
   default_scope where(:activa => true)

@@ -41,4 +41,21 @@ module ApplicationHelper
     return "menos de un día" if diferencia_en_dias == 0
   end
 
+  def novedad_o_afiliado(clave_de_beneficiario)
+
+    begin
+      novedad = NovedadDelAfiliado.where(:clave_de_beneficiario => clave_de_beneficiario).order('updated_at DESC').first
+    rescue
+    end
+
+    return (novedad.apellido.to_s + ", " + novedad.nombre.to_s) if novedad
+
+    afiliado = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+
+    return (afiliado.apellido.to_s + ", " + afiliado.nombre.to_s) if afiliado
+
+    return ''
+
+  end
+
 end

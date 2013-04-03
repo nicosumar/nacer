@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130401002635) do
+ActiveRecord::Schema.define(:version => 20130403091837) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -336,6 +336,7 @@ ActiveRecord::Schema.define(:version => 20130401002635) do
     t.boolean  "perinatal_de_alta_complejidad", :default => false
     t.boolean  "addenda_perinatal",             :default => false
     t.date     "fecha_de_addenda_perinatal"
+    t.integer  "unidad_de_alta_de_datos_id"
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -346,7 +347,10 @@ ActiveRecord::Schema.define(:version => 20130401002635) do
   end
 
   create_table "estados_de_las_prestaciones", :force => true do |t|
-    t.string "nombre"
+    t.string  "nombre"
+    t.string  "codigo"
+    t.boolean "pendiente", :default => false
+    t.boolean "indexable", :default => false
   end
 
   create_table "grupos_de_efectores", :force => true do |t|
@@ -494,8 +498,8 @@ ActiveRecord::Schema.define(:version => 20130401002635) do
   end
 
   create_table "prestaciones", :force => true do |t|
-    t.integer  "area_de_prestacion_id",                            :null => false
-    t.integer  "grupo_de_prestaciones_id",                         :null => false
+    t.integer  "area_de_prestacion_id"
+    t.integer  "grupo_de_prestaciones_id"
     t.integer  "subgrupo_de_prestaciones_id"
     t.string   "codigo",                                           :null => false
     t.string   "nombre",                                           :null => false

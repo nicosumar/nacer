@@ -15,6 +15,7 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
       DECLARE
         existe_uad bool;
         existe_novedades bool;
+        existe_prestaciones bool;
       BEGIN
         SELECT COUNT(*) > 0
           FROM information_schema.schemata
@@ -247,12 +248,18 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
               efector_id integer,
               prestacion_id integer,
               diagnostico_id integer,
+              cantidad_de_unidades numeric(15,4) DEFAULT 1.0000,
               observaciones text,
+              cuasi_factura_id integer,
+              nomenclador_id integer,
+              monto_facturado numeric(15,4) DEFAULT 0.0000,
+              monto_liquidado numeric(15,4) DEFAULT 0.0000,
+              mensaje_de_la_baja character varying(255),
+              fecha_del_debito date,
               created_at timestamp without time zone,
               updated_at timestamp without time zone,
               creator_id integer,
-              updater_id integer,
-              cuasi_factura_id integer
+              updater_id integer
             );
         
             -- Crear la secuencia que genera los identificadores de la tabla de prestaciones
@@ -283,8 +290,44 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
               ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_prestaciones
               FOREIGN KEY (prestacion_id) REFERENCES prestaciones(id);
             ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_efectores
-              FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id);';
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_diagnosticos
+              FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id);
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_nomencladores
+              FOREIGN KEY (nomenclador_id) REFERENCES nomencladores(id);
+
+            -- Crear la tabla para almacenar los atributos adicionales
+            CREATE TABLE uad_' || NEW.codigo || '.datos_adicionales_asociados (
+              id integer NOT NULL,
+              prestacion_brindada_id integer NOT NULL,
+              dato_adicional_id integer NOT NULL,
+              valor text,
+              observaciones text,
+              created_at timestamp without time zone,
+              updated_at timestamp without time zone,
+              creator_id integer,
+              updater_id integer
+            );
+        
+            -- Crear la secuencia que genera los identificadores de la tabla de datos adicionales
+            CREATE SEQUENCE uad_' || NEW.codigo || '.datos_adicionales_asociados_id_seq;
+            ALTER SEQUENCE uad_' || NEW.codigo || '.datos_adicionales_asociados_id_seq
+              OWNED BY uad_' || NEW.codigo || '.datos_adicionales_asociados.id;
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_adicionales_asociados
+              ALTER COLUMN id
+                SET DEFAULT nextval(''uad_' || NEW.codigo || '.datos_adicionales_asociados_id_seq''::regclass);
+        
+            -- Clave primaria para la tabla de prestaciones
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_adicionales_asociados
+              ADD CONSTRAINT uad_' || NEW.codigo || '_datos_adicionales_asociados_pkey PRIMARY KEY (id);
+
+            -- Restricciones de clave foránea para la tabla de prestaciones
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_adicionales_asociados
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_aa_aa_prestaciones_brindadas
+              FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEw.codigo || '.prestaciones_brindadas(id);
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_adicionales_asociados
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_aa_aa_datos_adicionales
+              FOREIGN KEY (dato_adicional_id) REFERENCES datos_adicionales(id);';
         END IF;
         RETURN NEW;
       END;

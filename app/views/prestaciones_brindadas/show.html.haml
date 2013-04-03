@@ -1,0 +1,50 @@
+- content_for :title do
+  Información detallada de la prestación brindada
+
+#content-header
+  %h1 Información detallada de la prestación brindada
+  - if can?(:update, @prestacion_brindada) && @prestacion_brindada.pendiente?
+    #action-links
+      = link_to "Modificar la prestación", edit_prestacion_brindada_path(@prestacion_brindada)
+      = link_to "Anular la prestación", @prestacion_brindada, :method => :delete, |
+        :confirm => "¿Está seguro que desea anular esta prestación?\nEsta acción no se podrá deshacer." |
+
+= render :partial => "shared/info"
+
+#content-body
+  #estado
+    %h3 Estado de la prestación
+    - if ["R", "P", "L"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+      #info.infobox-ok.no-margin
+        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+    - elsif ["I", "F", "U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+      #info.infobox-advertencia.no-margin
+        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        - if @prestacion_brindada.advertencias && @prestacion_brindada.advertencias.size > 0
+          %ul
+            - @prestacion_brindada.advertencias.each do |adv|
+              %li= adv
+    - else
+      #info.infobox-error.no-margin
+        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        %ul
+          %li= @prestacion_brindada.mensaje_de_la_baja
+
+  %h3 Clave única de beneficiario asociada a la prestación
+  %div.field_content
+    %span.field_value= @prestacion_brindada.clave_de_beneficiario
+
+  - if @beneficiario.sexo.codigo == 'F'
+    %h3 Datos de la beneficiaria
+  - else
+    %h3 Datos del beneficiario
+
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
+    = link_to "Ver detalles de" + (@beneficiario.sexo.codigo == 'F' ? " la beneficiaria" : "l beneficiario"), |
+      @beneficiario, { :title => "Se abre en una nueva pestaña", :onclick => "this.target='_blank'" } |
+  %div.field_content
+    %span.field_name= "Documento " + @beneficiario.clase_de_documento.nombre.downcase
+    %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
+      @beneficiario.numero_de_documento.to_s |

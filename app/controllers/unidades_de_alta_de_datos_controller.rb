@@ -17,7 +17,7 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     # Obtener el listado de convenios
       @unidades_de_alta_de_datos =
         UnidadDeAltaDeDatos.paginate(
-          :page => params[:page], :per_page => 20, :order => "updated_at DESC"
+          :page => params[:page], :per_page => 20, :order => :codigo
         )
   end
 
@@ -64,6 +64,9 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     @centros_de_inscripcion =
       CentroDeInscripcion.find(:all, :order => :nombre).collect{ |c| [c.codigo + " - " + c.nombre_corto, c.id]}
     @centro_de_inscripcion_ids = []
+    @efectores =
+      Efector.where("unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
+    @efector_ids = []
   end
 
   # GET /unidades_de_alta_de_datos/:id/edit
@@ -78,9 +81,9 @@ class UnidadesDeAltaDeDatosController < ApplicationController
       return
     end
 
-    # Obtener el convenio
+    # Obtener la unidad de alta de datos
     begin
-      @unidad_de_alta_de_datos = UnidadDeAltaDeDatos.find(params[:id], :include => [:centros_de_inscripcion])
+      @unidad_de_alta_de_datos = UnidadDeAltaDeDatos.find(params[:id], :include => [:centros_de_inscripcion, :efectores])
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
@@ -94,6 +97,12 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     @centros_de_inscripcion =
       CentroDeInscripcion.find(:all, :order => :nombre).collect{ |c| [c.codigo + " - " + c.nombre_corto, c.id]}
     @centro_de_inscripcion_ids = @unidad_de_alta_de_datos.centros_de_inscripcion.collect{ |c| c.id }
+    @efector_ids = @unidad_de_alta_de_datos.efectores.collect{ |e| e.id }
+    @efectores =
+      Efector.where((@efector_ids.size > 1 ? "id IN (#{@efector_ids.collect{|i| i.to_i}.join(", ")}) OR " : "") +
+        "unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{
+        |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]
+      }
   end
 
   # POST /unidades_de_alta_de_datos
@@ -118,8 +127,9 @@ class UnidadesDeAltaDeDatosController < ApplicationController
       return
     end
 
-    # Guardar los centros de inscripcion seleccionados para luego rellenar la tabla asociada si se graba correctamente
+    # Guardar los centros de inscripcion y efectores seleccionados para luego rellenar la tabla asociada si se graba correctamente
     @centro_de_inscripcion_ids = params[:unidad_de_alta_de_datos].delete(:centro_de_inscripcion_ids).reject(&:blank?) || []
+    @efector_ids = params[:unidad_de_alta_de_datos].delete(:efector_ids).reject(&:blank?) || []
 
     # Crear una nueva unidad desde los parámetros
     @unidad_de_alta_de_datos = UnidadDeAltaDeDatos.new(params[:unidad_de_alta_de_datos])
@@ -127,11 +137,16 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @centros_de_inscripcion =
       CentroDeInscripcion.find(:all, :order => :nombre).collect{ |c| [c.codigo + " - " + c.nombre_corto, c.id]}
+    @efectores =
+      Efector.where("unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{
+        |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]
+      }
 
     # Verificar la validez del objeto
     if @unidad_de_alta_de_datos.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if ( @centro_de_inscripcion_ids.any?{ |c_id| !((@centros_de_inscripcion.collect{ |c| c[1]}).member?(c_id.to_i))} )
+      if ( @centro_de_inscripcion_ids.any?{ |c_id| !((@centros_de_inscripcion.collect{ |c| c[1]}).member?(c_id.to_i))} ||
+           @efector_ids.any?{ |e_id| !((@efectores.collect{ |e| e[1]}).member?(e_id.to_i))} )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -161,6 +176,13 @@ class UnidadesDeAltaDeDatosController < ApplicationController
         @unidad_de_alta_de_datos.centros_de_inscripcion = (CentroDeInscripcion.find(@centro_de_inscripcion_ids) || [])
       else
         @unidad_de_alta_de_datos.centros_de_inscripcion = []
+      end
+
+      # Asociar los efectores seleccionados si la UAD tiene habilitada la facturación
+      if @unidad_de_alta_de_datos.facturacion
+        @unidad_de_alta_de_datos.efectores = (Efector.find(@efector_ids) || [])
+      else
+        @unidad_de_alta_de_datos.efectores = []
       end
 
       redirect_to(@unidad_de_alta_de_datos,
@@ -203,6 +225,7 @@ class UnidadesDeAltaDeDatosController < ApplicationController
 
     # Guardar los centros de inscripción seleccionados para luego rellenar la tabla asociada si se graba correctamente
     @centro_de_inscripcion_ids = params[:unidad_de_alta_de_datos].delete(:centro_de_inscripcion_ids).reject(&:blank?) || []
+    @efector_ids = params[:unidad_de_alta_de_datos].delete(:efector_ids).reject(&:blank?) || []
 
     # Obtener la unidad
     begin
@@ -222,11 +245,17 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @centros_de_inscripcion =
       CentroDeInscripcion.find(:all, :order => :nombre).collect{ |c| [c.codigo + " - " + c.nombre_corto, c.id]}
+    @efectores =
+      Efector.where((@efector_ids.size > 1 ? "id IN (#{@efector_ids.collect{|i| i.to_i}.join(", ")}) OR " : "") +
+        "unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{
+        |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]
+      }
 
     # Verificar la validez del objeto
     if @unidad_de_alta_de_datos.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if ( @centro_de_inscripcion_ids.any?{ |c_id| !((@centros_de_inscripcion.collect{ |c| c[1]}).member?(c_id.to_i))} )
+      if ( @centro_de_inscripcion_ids.any?{ |c_id| !((@centros_de_inscripcion.collect{ |c| c[1]}).member?(c_id.to_i))} ||
+           @efector_ids.any?{ |e_id| !((@efectores.collect{ |e| e[1]}).member?(e_id.to_i))} )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -238,12 +267,21 @@ class UnidadesDeAltaDeDatosController < ApplicationController
       # Registrar el usuario que realiza la modificación
       @unidad_de_alta_de_datos.updater_id = current_user.id
 
-      # Modificar la asignación de los centros de inscripción seleccionados
-      if @centro_de_inscripcion_ids.any?
-        @unidad_de_alta_de_datos.centros_de_inscripcion = CentroDeInscripcion.find(@centro_de_inscripcion_ids)
+      # Modificar la asociación de centros de inscripción seleccionados si la UAD tiene habilitada la inscripción
+      if @unidad_de_alta_de_datos.inscripcion
+        @unidad_de_alta_de_datos.centros_de_inscripcion = (CentroDeInscripcion.find(@centro_de_inscripcion_ids) || [])
+      else
+        @unidad_de_alta_de_datos.centros_de_inscripcion = []
       end
 
-      # Guardar el convenio
+      # Modificar la asociación de los efectores seleccionados si la UAD tiene habilitada la facturación
+      if @unidad_de_alta_de_datos.facturacion
+        @unidad_de_alta_de_datos.efectores = (Efector.find(@efector_ids) || [])
+      else
+        @unidad_de_alta_de_datos.efectores = []
+      end
+
+      # Guardar la unidad de alta de datos
       @unidad_de_alta_de_datos.save
       redirect_to(@unidad_de_alta_de_datos,
         :flash => {:tipo => :ok, :titulo => 'Las modificaciones a la unidad de alta de datos se guardaron correctamente.' }

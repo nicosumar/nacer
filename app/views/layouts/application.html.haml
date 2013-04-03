@@ -26,7 +26,7 @@
           
           -# NUEVO MENÚ
           %ul{:id => "newmenu"}
-            - if can? :read, Afiliado
+            - if can?(:read, NovedadDelAfiliado) && UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).inscripcion
               %li
                 %a.drop{:href => "#"} PADRONES
                 %div.dropdown_3columns
@@ -43,6 +43,22 @@
                     %h3 P.U.C.O.
                     %ul
                       %li= link_to "Buscar afiliado", "#", {:title => "En preparación... Aún no está disponible."}
+
+            - if can?(:read, PrestacionBrindada) && UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
+              %li
+                %a.drop{:href => "#"} PRESTACIONES
+                %div.dropdown_3columns
+                  %div.col_3
+                    %h2 Gestión de prestaciones
+                  %div.col_2
+                    %h3 PLAN DE SERVICIOS DE SALUD SUMAR
+                    %ul
+                      - if can? :read, PrestacionBrindada
+                        %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
+                  %div.col_1
+                    %h3 PROCESOS
+                    %ul
+                      %li= link_to "Emitir cuasi-facturas", "#", {:title => "En preparación... Aún no está disponible."}
 
             - if can? :read, Efector
               %li

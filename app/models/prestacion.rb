@@ -18,7 +18,7 @@ class Prestacion < ActiveRecord::Base
   #has_and_belongs_to_many :categorias_de_afiliados   # OBSOLETO: ya no existen categorías
 
   belongs_to :objeto_de_la_prestacion
-  belongs_to :tipo_de_prestacion, :through => :objeto_de_la_prestacion
+  has_one :tipo_de_prestacion, :through => :objeto_de_la_prestacion
   belongs_to :agrupacion_de_beneficiarios
   has_and_belongs_to_many :diagnosticos
   belongs_to :unidad_de_medida

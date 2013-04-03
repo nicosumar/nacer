@@ -18,6 +18,7 @@
         %th Código
         %th Nombre
         %th CIs asociados
+        %th Efectores asociados
         %th Usuarios asociados
     %tbody
       - @unidades_de_alta_de_datos.each do |u|
@@ -26,5 +27,6 @@
           %td= u.codigo
           %td= u.nombre
           %td= u.centros_de_inscripcion.count
+          %td= u.efectores.count
           %td= u.users.count
   = will_paginate @unidades_de_alta_de_datos, :inner_window => 2, :outer_window => 0

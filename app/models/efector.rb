@@ -7,7 +7,7 @@ class Efector < ActiveRecord::Base
   attr_accessible :codigo_de_efector_sissa, :codigo_de_efector_bio, :nombre, :domicilio, :departamento_id, :distrito_id
   attr_accessible :codigo_postal, :latitud, :longitud, :telefonos, :email, :grupo_de_efectores_id, :area_de_prestacion_id
   attr_accessible :camas_de_internacion, :ambientes, :dependencia_administrativa_id, :integrante, :observaciones, :alto_impacto
-  attr_accessible :perinatal_de_alta_complejidad, :addenda_perinatal, :fecha_de_addenda_perinatal
+  attr_accessible :perinatal_de_alta_complejidad, :addenda_perinatal, :fecha_de_addenda_perinatal, :unidad_de_alta_de_datos_id
 
   # Atributos protegidos
   # attr_protected :cuie
@@ -24,6 +24,7 @@ class Efector < ActiveRecord::Base
   has_many :prestaciones_autorizadas
   has_many :asignaciones_de_nomenclador
   has_many :referentes
+  belongs_to :unidad_de_alta_de_datos
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   default_scope where(:integrante => true)
