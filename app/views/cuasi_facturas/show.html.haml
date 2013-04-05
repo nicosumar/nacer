@@ -35,11 +35,17 @@
 
   %h3 Información general
   %div.field_content
-    %span.field_name Fecha de presentación
-    %span.field_value= @cuasi_factura.fecha_de_presentacion.strftime("%d/%m/%Y")
+    %span.field_name Número de cuasi-factura
+    %span.field_value= @cuasi_factura.numero
   %div.field_content
-    %span.field_name Número de liquidación
-    %span.field_value= @cuasi_factura.numero_de_liquidacion
+    %span.field_name Fecha de emisión
+    %span.field_value= @cuasi_factura.fecha_de_emision.strftime("%d/%m/%Y")
+  %div.field_content
+    %span.field_name Fecha de presentación a la UGSP
+    - if @cuasi_factura.fecha_de_presentacion
+      %span.field_value= @cuasi_factura.fecha_de_presentacion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty La cuasi-factura aún no fue presentada para su liquidación
 
   %h3 Observaciones
   %div.field_content

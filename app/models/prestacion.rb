@@ -30,7 +30,7 @@ class Prestacion < ActiveRecord::Base
   validates_presence_of :codigo, :nombre, :unidad_de_medida_id
 
   # En forma predeterminada, sólo se devuelven los registros activos
-  default_scope where(:activa => true)
+  #default_scope where(:activa => true)
 
   # Devuelve el valor del campo 'nombre', pero truncado a 80 caracteres.
   def nombre_corto

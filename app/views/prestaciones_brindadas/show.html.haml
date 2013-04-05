@@ -13,7 +13,7 @@
 
 #content-body
   #estado
-    %h3 Estado de la prestación
+    %h3.first-header Estado de la prestación
     - if ["R", "P", "L"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-ok.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
@@ -34,17 +34,94 @@
   %div.field_content
     %span.field_value= @prestacion_brindada.clave_de_beneficiario
 
-  - if @beneficiario.sexo.codigo == 'F'
-    %h3 Datos de la beneficiaria
-  - else
-    %h3 Datos del beneficiario
+  %h3
+    Datos más recientes sobre
+    - if @beneficiario.sexo.codigo == 'F'
+      la beneficiaria, según
+    - else
+      el beneficiario, según
+    - if @beneficiario.is_a? NovedadDelAfiliado
+      = link_to "una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + " pendiente", @beneficiario, |
+        { :title => "Ver detalles de la solicitud en otra pestaña", :onclick => "this.target='_blank'" } |
+    - else
+      = link_to "el registro en el padrón de beneficiarios", @beneficiario, |
+        { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
 
   %div.field_content
     %span.field_name Nombre
     %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
-    = link_to "Ver detalles de" + (@beneficiario.sexo.codigo == 'F' ? " la beneficiaria" : "l beneficiario"), |
-      @beneficiario, { :title => "Se abre en una nueva pestaña", :onclick => "this.target='_blank'" } |
   %div.field_content
     %span.field_name= "Documento " + @beneficiario.clase_de_documento.nombre.downcase
     %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
       @beneficiario.numero_de_documento.to_s |
+  %div.field_content
+    %span.field_name Fecha de nacimiento
+    - if @beneficiario.fecha_de_nacimiento
+      %span.field_value
+        = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
+        (a la fecha de la prestación tenía
+        = (edad_entre(@beneficiario.fecha_de_nacimiento, @prestacion_brindada.fecha_de_la_prestacion) || " la fecha de nacimiento en el futuro") + ")"
+    - else
+      %span.field_empty No se ingresó la fecha de nacimiento
+
+  %h3 Datos sobre la prestación
+  %div.field_content
+    %span.field_name Fecha en que se brindó la prestación
+    %span.field_value= @prestacion_brindada.fecha_de_la_prestacion.strftime("%d/%m/%Y")
+  %div.field_content
+    %span.field_name Código de prestación
+    %span.field_value= @prestacion_brindada.prestacion.codigo + (@prestacion_brindada.diagnostico ? @prestacion_brindada.diagnostico.codigo : '')
+  %div.field_content
+    %span.field_name Descripción de la prestación
+    %span.field_value= @prestacion_brindada.prestacion.nombre
+  - if @prestacion_brindada.diagnostico
+    %div.field_content
+      %span.field_name Descripción del diagnóstico
+      %span.field_value= @prestacion_brindada.diagnostico.nombre
+  - if @prestacion_brindada.prestacion.unidad_de_medida.codigo != "U"
+    %div.field_content
+      %span.field_name= "Cantidad de " + @prestacion_brindada.prestacion.unidad_de_medida.nombre.downcase
+      %span.field_value= (@prestacion_brindada.prestacion.unidad_de_medida.solo_enteros ? @prestacion_brindada.cantidad_de_unidades.to_i : 
+
+  %h3 Datos sobre el efector que brindó la prestación
+  %div.field_content
+    %span.field_name CUIE
+    - if @prestacion_brindada.efector.cuie
+      %span.field_value= @prestacion_brindada.efector.cuie
+    - else
+      %span.field_empty Todavía no se asignó un CUIE al efector
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @prestacion_brindada.efector.nombre
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@prestacion_brindada.observaciones.blank?
+      %span.field_value_multiline
+        - @prestacion_brindada.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para la prestación brindada
+
+  - if @prestacion_brindada.cuasi_factura
+    %h3 Datos de la liquidación
+    %div.field_content
+      %span.field_name Número de cuasi-factura
+      %span.field_value= @prestacion_brindada.cuasi_factura.numero
+      = link_to "Ver cuasi-factura", @prestacion_brindada.cuasi_factura, |
+        { :title => "Se abre en otra pestaña", :onclick => "this.target='_blank'" } |
+    %div.field_content
+      %span.field_name Nomenclador aplicado
+      %span.field_value= @prestacion_brindada.nomenclador.nombre
+    - if @prestacion_brindada.monto_liquidado > 0.0
+      %div.field_content
+        %span.field_name Monto liquidado
+        %span.field_value
+          = number_to_currency(@prestacion_brindada.monto_liquidado)
+          - if @prestacion_brindada.monto_facturado != @prestacion_brindada.monto_liquidado
+            = "(se había facturado por #{number_to_currency(@prestacion_brindada.monto_facturado)})"
+    - if @prestacion_brindada.fecha_del_debito
+      %div.field_content
+        %span.field_name Fecha del débito de auditoría
+        %span.field_value= @prestacion_brindada.fecha_del_debito.strftime("%d/%m/%Y")

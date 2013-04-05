@@ -22,7 +22,7 @@
         - @cuasi_facturas.each do |c|
           %tr.clickable{ :onclick => "location.href=\'#{cuasi_factura_path(c)}\'", :title => "Ver detalles de la cuasi-factura" }
             %td= c.efector.nombre
-            %td= c.numero_de_liquidacion
+            %td= c.numero
             %td= c.liquidacion.mes_de_prestaciones.to_s + "/" + c.liquidacion.anio_de_prestaciones.to_s
             %td= c.liquidacion.efector.nombre
             %td= c.fecha_de_presentacion.strftime("%d/%m/%Y")

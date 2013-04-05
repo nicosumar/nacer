@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130403091837) do
+ActiveRecord::Schema.define(:version => 20130404134435) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -238,15 +238,15 @@ ActiveRecord::Schema.define(:version => 20130403091837) do
   create_table "cuasi_facturas", :force => true do |t|
     t.integer  "liquidacion_id",                                       :null => false
     t.integer  "efector_id",                                           :null => false
-    t.integer  "nomenclador_id",                                       :null => false
     t.date     "fecha_de_presentacion",                                :null => false
-    t.string   "numero_de_liquidacion",                                :null => false
+    t.string   "numero",                                               :null => false
     t.decimal  "total_informado",       :precision => 15, :scale => 4
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.date     "fecha_de_emision"
   end
 
   create_table "datos_adicionales", :force => true do |t|
@@ -656,7 +656,9 @@ ActiveRecord::Schema.define(:version => 20130403091837) do
   end
 
   create_table "unidades_de_medida", :force => true do |t|
-    t.string "nombre", :null => false
+    t.string  "nombre",       :null => false
+    t.string  "codigo"
+    t.boolean "solo_enteros"
   end
 
   create_table "user_groups", :force => true do |t|

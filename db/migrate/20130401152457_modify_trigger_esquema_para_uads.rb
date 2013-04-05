@@ -243,6 +243,7 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
                 fecha_de_la_prestacion date,
                 efector_id integer,
                 prestacion_id integer,
+                es_catastrofica boolean DEFAULT ''f'',
                 diagnostico_id integer,
                 cantidad_de_unidades numeric(15,4) DEFAULT 1.0000,
                 observaciones text,

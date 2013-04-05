@@ -27,7 +27,7 @@ class Efector < ActiveRecord::Base
   belongs_to :unidad_de_alta_de_datos
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
-  default_scope where(:integrante => true)
+  #default_scope where(:integrante => true)
 
   # Validaciones
   validates_presence_of :nombre

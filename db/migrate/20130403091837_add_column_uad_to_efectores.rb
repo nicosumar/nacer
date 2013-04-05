@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddColumnUadToEfectores < ActiveRecord::Migration
   def change
     add_column :efectores, :unidad_de_alta_de_datos_id, :integer

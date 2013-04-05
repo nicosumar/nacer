@@ -50,7 +50,7 @@ class PrestacionesBrindadasController < ApplicationController
 
   end
 
-  # GET /prestacion_brindada/:id
+  # GET /prestaciones_brindadas/:id
   def show
     # Verificar los permisos del usuario
     if cannot? :read, PrestacionBrindada
@@ -62,11 +62,11 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Obtener la adenda solicitada
+    # Obtener la prestación solicitada
     begin
       @prestacion_brindada =
-        PrestacionBrindada.find( params[:id],
-          :include => [:estado_de_la_prestacion]
+        PrestacionBrindada.find(params[:id],
+          :include => [:estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico]
         )
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
@@ -79,18 +79,21 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Obtener el afiliado o la novedad asociadas a la prestación
     @beneficiario =
-      NovedadDelAfiliado.where(:clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true)).first
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
     if not @beneficiario
       @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
     end
 
   end
 
-  # GET /addendas/new
+  # GET /prestaciones_brindadas/new
   def new
     # Verificar los permisos del usuario
-    if cannot? :create, Addenda
+    if cannot? :create, PrestacionBrindada
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -99,23 +102,8 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Para crear addendas, debe accederse desde la página del convenio que se modificará
-    if !params[:convenio_de_gestion_id]
-      redirect_to( convenios_de_gestion_url,
-        :flash => { :tipo => :advertencia, :titulo => "No se ha seleccionado un convenio de gestión",
-          :mensaje => [ "Para poder crear la nueva adenda, debe hacerlo accediendo antes a la página " +
-            "del convenio de gestión que va a modificarse.",
-            "Seleccione el convenio de gestión del listado, o realice una búsqueda para encontrarlo."
-          ]
-        }
-      )
-      return
-    end
-
-    # Obtener el convenio de gestión asociado
-    begin
-      @convenio_de_gestion = ConvenioDeGestion.find(params[:convenio_de_gestion_id])
-    rescue ActiveRecord::RecordNotFound
+    # Para crear prestaciones debe indicarse la clave de beneficiario a la que se asociará la prestación
+    if !params[:clave_de_beneficiario] && !params[:prestacion_brindada]
       redirect_to(
         root_url,
         :flash => {:tipo => :error, :titulo => "La petición no es válida",
@@ -125,16 +113,66 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Crear los objetos necesarios para la vista
-    @addenda = Addenda.new
-    @prestaciones_alta = Prestacion.no_autorizadas(@convenio_de_gestion.efector.id).collect{
-      |p| [p.codigo + " - " + p.nombre_corto, p.id]
-    }
-    @prestaciones_baja = PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).collect{
-      |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
-    }
-    @prestacion_autorizada_alta_ids = []
-    @prestacion_autorizada_baja_ids = []
+    # Obtener la novedad o el afiliado asociado a la clave
+    @beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if !@beneficiario
+      @beneficiario =
+        Afiliado.find_by_clave_de_beneficiario(
+          params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]
+        )
+    end
+
+    if !@beneficiario
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
+      return
+    end
+
+    # Esta acción se ejecuta en dos partes. La inicial fija el efector y la fecha de la prestación, y la segunda define el resto de los datos.
+    if !params[:commit]
+      # Preparar los objetos para la vista de la primer etapa (selección de efector y fecha)
+      @prestacion_brindada = PrestacionBrindada.new
+      @prestacion_brindada.clave_de_beneficiario = @beneficiario.clave_de_beneficiario
+      @efectores = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.order(:nombre).collect{
+        |e| [e.cuie + " - " + e.nombre, e.id]
+      }
+      if @efectores.size == 1
+        # Fijar el efector si la UAD solo tiene asociado un efector para facturación
+        @prestacion_brindada.efector_id = @efectores.first[1]
+      else
+        @prestacion_brindada.efector_id = nil
+      end
+      render :action => "efector_y_fecha"
+    else
+      # Crear el objeto desde los parámetros y verificar si está correcto
+      @prestacion_brindada = PrestacionBrindada.new(params[:prestacion_brindada])
+      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("I")
+
+      # Verificar si se completaron los datos obligatorios
+      if !@prestacion_brindada.verificacion_correcta?
+        # Recrear los objetos para presentar nuevamente el formulario con los errores
+        @efectores = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.order(:nombre).collect{
+          |e| [e.cuie + " - " + e.nombre, e.id]
+        }
+        if @efectores.size == 1
+          @efector_id = @efectores.first[1]
+        else
+          @efector_id = nil
+        end
+        render :action => "efector_y_fecha"
+        return
+      end
+    end
+
   end
 
   # GET /addendas/:id/edit

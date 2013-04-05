@@ -4,16 +4,17 @@
 
 #content-header
   %h1= @afiliado.nombre_completo
-  - if can? :create, NovedadDelAfiliado
-    - if @afiliado.novedad_pendiente?
-      #action-links
-        = link_to "Ver la solicitud pendiente", novedad_del_afiliado_path(@afiliado.novedad_pendiente)
-    - else
-      #action-links
-        = link_to("Solicitar modificación de datos", |
+  #action-links
+    - if can? :create, NovedadDelAfiliado
+      - if @afiliado.novedad_pendiente?
+        = link_to "Solicitud pendiente", novedad_del_afiliado_path(@afiliado.novedad_pendiente)
+      - else
+        = link_to("Solicitar modificación", |
           new_modificacion_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id)) |
-        = link_to("Solicitar la baja", new_baja_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id))
-
+        = link_to("Solicitar baja", new_baja_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id))
+    - if can? :create, PrestacionBrindada
+      = link_to("Registrar prestación", |
+        new_prestacion_brindada_path(:clave_de_beneficiario => @afiliado.clave_de_beneficiario)) |
 
 #content-body
   %h2.first-header Información registrada en el padrón

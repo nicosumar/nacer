@@ -8,7 +8,7 @@ class PrestacionBrindada < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :cuasi_factura_id, :diagnostico_id, :efector_id
-  attr_accessible :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :fecha_del_debito, :mensaje_de_la_baja
+  attr_accessible :es_catastrofica, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :fecha_del_debito, :mensaje_de_la_baja
   attr_accessible :monto_facturado, :monto_liquidado, :nomenclador_id, :observaciones, :prestacion_id
 
   # Asociaciones
@@ -41,6 +41,30 @@ class PrestacionBrindada < ActiveRecord::Base
   # Indica si la prestación brindada está pendiente (aún no ha sido facturada ni anulada).
   def pendiente?
     estado_de_la_prestacion && estado_de_la_prestacion.pendiente
+  end
+
+  #
+  # verificacion_correcta?
+  # Indica si se han completado todos los campos obligatorios de la primera etapa en la carga de la prestación
+  def verificacion_correcta?
+
+    # Verificamos que se hayan completado los campos obligatorios del formulario
+    campo_obligatorio_vacio = false
+
+    if clave_de_beneficiario.blank?
+      errors.add(:clave_de_beneficiario, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+    if !efector_id || efector_id < 1
+      errors.add(:efector_id, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+    if !fecha_de_la_prestacion
+      errors.add(:fecha_de_la_prestacion, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+
+    return !campo_obligatorio_vacio
   end
 
 end
