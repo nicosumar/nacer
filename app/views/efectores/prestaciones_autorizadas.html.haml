@@ -5,7 +5,10 @@
   %h1 Prestaciones autorizadas del efector
   #action-links
     - if can? :create, Addenda
-      = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @efector.convenio_de_gestion.id)
+      - if @efector.convenio_de_gestion_sumar
+        = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_sumar_id => @efector.convenio_de_gestion_sumar.id)
+      - elsif @efector.convenio_de_gestion
+        = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @efector.convenio_de_gestion.id)
 
 = render :partial => "shared/info"
 
@@ -36,6 +39,8 @@
             %td= p.prestacion.nombre_corto
             - if p.autorizante_al_alta_type == 'ConvenioDeGestion'
               %td Convenio de gestión
+            - elsif p.autorizante_al_alta_type == 'ConvenioDeGestionSumar'
+              %td Convenio de gestión Sumar
             - elsif p.autorizante_al_alta_type == 'Addenda'
               %td Adenda
             - else
@@ -43,4 +48,3 @@
             %td= p.autorizante_al_alta.fecha_de_inicio.strftime('%d/%m/%Y')
   - else
     No hay información sobre las prestaciones autorizadas para el convenio
-

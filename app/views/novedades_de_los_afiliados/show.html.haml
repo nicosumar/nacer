@@ -3,11 +3,17 @@
 
 #content-header
   %h1 Detalle de la solicitud
-  - if can?(:update, @novedad) && @novedad.pendiente?
-    #action-links
+  #action-links
+    - if can?(:update, @novedad) && @novedad.pendiente?
       = link_to "Modificar la solicitud", edit_novedad_del_afiliado_path(@novedad)
       = link_to "Anular la solicitud", @novedad, :method => :delete, |
         :confirm => "¿Está seguro que desea anular esta solicitud?\nEsta acción no se podrá deshacer." |
+    -
+    - if can?(:create, PrestacionBrindada) && @novedad.tipo_de_novedad.codigo != "B" |
+      && ["R", "P"].member?(@novedad.estado_de_la_novedad.codigo) |
+      -
+      = link_to("Registrar prestación", |
+        new_prestacion_brindada_path(:clave_de_beneficiario => @novedad.clave_de_beneficiario)) |
 
 = render :partial => "shared/info", :locals => { :registro => @novedad }
 
@@ -15,9 +21,9 @@
   %h2.first-header Información de la solicitud registrada
 
   - case
-    - when @novedad.tipo_de_novedad_id == 1
+    - when @novedad.tipo_de_novedad.codigo == "A"
       = render :partial => "show_alta"
-    - when @novedad.tipo_de_novedad_id == 2
+    - when @novedad.tipo_de_novedad.codigo == "B"
       = render :partial => "show_baja"
-    - when @novedad.tipo_de_novedad_id == 3
+    - when @novedad.tipo_de_novedad.codigo == "M"
       = render :partial => "show_modificacion"

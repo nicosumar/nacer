@@ -25,14 +25,16 @@
           %td= e.cuie
           %td= e.nombre
           %td
-            - if e.convenio_de_gestion
+            - if e.convenio_de_gestion_sumar
+              = e.convenio_de_gestion_sumar.numero
+            - elsif e.convenio_de_gestion
               = e.convenio_de_gestion.numero
             - else
               Sin convenio
           %td
-            - if e.convenio_de_administracion
+            - if e.convenio_de_administracion_sumar
+              = e.convenio_de_administracion_sumar.administrador.nombre
+            - elsif e.convenio_de_administracion
               = e.convenio_de_administracion.administrador.nombre
 
   = will_paginate @efectores, :inner_window => 2, :outer_window => 0
-
-

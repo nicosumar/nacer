@@ -17,7 +17,8 @@ class EfectoresController < ApplicationController
     # Obtener el listado de efectores
     @efectores =
       Efector.paginate(:page => params[:page], :per_page => 20,
-        :include => [:convenio_de_gestion, :convenio_de_administracion
+        :include => [:convenio_de_gestion, :convenio_de_administracion, :convenio_de_gestion_sumar,
+          :convenio_de_administracion_sumar
         ], :order => :cuie
       )
   end
@@ -37,7 +38,11 @@ class EfectoresController < ApplicationController
     # Obtener el efector
     begin
       @efector =
-        Efector.find(params[:id], :include => [:departamento, :distrito, :convenio_de_gestion, :convenio_de_administracion])
+        Efector.find(params[:id],
+          :include => [:departamento, :distrito, :convenio_de_gestion, :convenio_de_administracion,
+            :convenio_de_gestion_sumar, :convenio_de_administracion_sumar
+          ]
+        )
     rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
@@ -278,7 +283,7 @@ class EfectoresController < ApplicationController
     end
 
     # Verificar que el efector tenga un convenio de gestión suscrito
-    if !@efector.convenio_de_gestion
+    if !@efector.convenio_de_gestion_sumar && !@efector.convenio_de_gestion
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."

@@ -66,16 +66,25 @@
                 %div.dropdown_2columns
                   %div.col_2
                     %h2 Gestión de efectores y convenios
-                  %div.col_2
-                    %h3 EFECTORES, CONVENIOS Y ADENDAS
+                  %div.col_1
+                    %h3 EFECTORES
                     %ul
-                      %li= link_to "Efectores", efectores_url
-                      - if can? :read, ConvenioDeGestion
-                        %li= link_to "Convenios de gestión", convenios_de_gestion_url
-                      - if can? :read, ConvenioDeAdministracion
-                        %li= link_to "Convenios de administración", convenios_de_administracion_url
-                      - if can? :read, Addenda
-                        %li= link_to "Adendas", addendas_url
+                      %li= link_to "Efectores", efectores_path
+                    - if can? :read, Addenda
+                      %h3 ADENDAS
+                      %ul
+                        %li= link_to "Adendas", addendas_path
+                  %div.col_1
+                    - if can? :read, ConvenioDeGestionSumar
+                      %h3 CONVENIOS SUMAR
+                      %ul
+                        %li= link_to "Gestión", convenios_de_gestion_sumar_path
+                        %li= link_to "Administración", convenios_de_administracion_sumar_path
+                    - if can? :read, ConvenioDeGestion
+                      %h3 CONVENIOS NACER
+                      %ul
+                        %li= link_to "Gestión", convenios_de_gestion_path
+                        %li= link_to "Administración", convenios_de_administracion_path
 
             - if can? :read, Liquidacion
               %li

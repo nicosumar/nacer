@@ -5,8 +5,7 @@ class Prestacion < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :area_de_prestacion_id, :grupo_de_prestaciones_id, :subgrupo_de_prestaciones_id
-  attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id, :tipo_de_prestacion_id
-  attr_accessible :agrupacion_de_beneficiarios_id
+  attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id, :objeto_de_la_prestacion_id
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :codigo
@@ -19,7 +18,6 @@ class Prestacion < ActiveRecord::Base
 
   belongs_to :objeto_de_la_prestacion
   has_one :tipo_de_prestacion, :through => :objeto_de_la_prestacion
-  belongs_to :agrupacion_de_beneficiarios
   has_and_belongs_to_many :diagnosticos
   belongs_to :unidad_de_medida
   has_many :datos_adicionales_por_prestacion
@@ -32,10 +30,10 @@ class Prestacion < ActiveRecord::Base
   # En forma predeterminada, sólo se devuelven los registros activos
   #default_scope where(:activa => true)
 
-  # Devuelve el valor del campo 'nombre', pero truncado a 80 caracteres.
+  # Devuelve el valor del campo 'nombre', pero truncado a 100 caracteres.
   def nombre_corto
-    if nombre.length > 80 then
-      nombre.first(62) + "..." + nombre.last(15)
+    if nombre.length > 100 then
+      nombre.first(77) + "..." + nombre.last(20)
     else
       nombre
     end

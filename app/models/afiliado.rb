@@ -310,6 +310,20 @@ class Afiliado < ActiveRecord::Base
   #  end
   #end
 
+  def grupo_poblacional_al_dia(fecha_de_la_prestacion = Date.today)
+
+    if edad_en_anios(fecha_de_la_prestacion) < 6
+      return GrupoPoblacional.find_by_codigo("A")
+    elsif (6..9) === edad_en_anios(fecha_de_la_prestacion)
+      return GrupoPoblacional.find_by_codigo("B")
+    elsif (10..19) === edad_en_anios(fecha_de_la_prestacion)
+      return GrupoPoblacional.find_by_codigo("C")
+    elsif sexo.codigo == "F" && (20..64) === edad_en_anios(fecha_de_la_prestacion)
+      return GrupoPoblacional.find_by_codigo("D")
+    end
+
+  end
+
   #
   # Métodos de clase para búsquedas
   #
@@ -740,7 +754,6 @@ class Afiliado < ActiveRecord::Base
       ").rows[0].collect{ |v| v.to_i }
   end
 
-private
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)
     return nil unless nombre

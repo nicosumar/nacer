@@ -19,7 +19,7 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :nomenclador
   belongs_to :prestacion
   has_many :datos_adicionales_asociados
-  has_many :datos_adicionales_utilizados, :class_name => "DatoAdicional", :through => :datos_adicionales_asociados
+  has_many :datos_adicionales_registrados, :class_name => "DatoAdicional", :through => :datos_adicionales_asociados
   has_many :datos_adicionales_definidos, :class_name => "DatoAdicional", :through => :prestacion
 
   # Validaciones

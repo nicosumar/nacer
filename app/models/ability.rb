@@ -20,6 +20,8 @@ class Ability
       can :read, Referente
       can :read, ConvenioDeAdministracion
       can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracionSumar
+      can :read, ConvenioDeGestionSumar
       can :read, Addenda
       can :read, PrestacionAutorizada
     end
@@ -32,6 +34,8 @@ class Ability
       can :read, Afiliado
       can :read, ConvenioDeGestion
       can :read, ConvenioDeAdministracion
+      can :read, ConvenioDeAdministracionSumar
+      can :read, ConvenioDeGestionSumar
       can :read, Addenda
       can :read, PrestacionAutorizada
     end
@@ -42,6 +46,8 @@ class Ability
       can :read, Referente
       can :read, ConvenioDeAdministracion
       can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracionSumar
+      can :read, ConvenioDeGestionSumar
       can :read, Addenda
       can :read, PrestacionAutorizada
     end
@@ -49,6 +55,8 @@ class Ability
     if user.in_group? :convenios
       can :manage, ConvenioDeGestion
       can :manage, ConvenioDeAdministracion
+      can :manage, ConvenioDeAdministracionSumar
+      can :manage, ConvenioDeGestionSumar
       can :manage, Addenda
       can :manage, Referente
       can :manage, Contacto

@@ -71,6 +71,8 @@ class ApplicationController < ActionController::Base
       autorizados << :users if can? :read, User
       autorizados << :addendas if can? :read, Addenda
       autorizados << :prestaciones_brindadas if can? :read, PrestacionBrindada
+      autorizados << :convenios_de_gestion_sumar if can? :read, ConvenioDeGestionSumar
+      autorizados << :convenios_de_administracion_sumar if can? :read, ConvenioDeAdministracionSumar
     end
     return autorizados
   end

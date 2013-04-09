@@ -14,20 +14,23 @@ class Efector < ActiveRecord::Base
 
   # Asociaciones
   has_one :convenio_de_gestion
+  has_one :convenio_de_gestion_sumar
   belongs_to :departamento
   belongs_to :distrito
   belongs_to :grupo_de_efectores
   belongs_to :area_de_prestacion
   belongs_to :dependencia_administrativa
   has_one :convenio_de_administracion
+  has_one :convenio_de_administracion_sumar
   has_one :administrador, :through => :convenio_de_administracion
+  has_one :administrador_sumar, :through => :convenio_de_administracion
   has_many :prestaciones_autorizadas
   has_many :asignaciones_de_nomenclador
   has_many :referentes
   belongs_to :unidad_de_alta_de_datos
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
-  #default_scope where(:integrante => true)
+  default_scope where(:integrante => true)
 
   # Validaciones
   validates_presence_of :nombre
@@ -48,7 +51,7 @@ class Efector < ActiveRecord::Base
   # convenio?
   # Indica si el efector tiene un convenio de gestión firmado
   def tiene_convenio?
-    return convenio_de_gestion ? true : false
+    return (convenio_de_gestion_sumar || convenio_de_gestion) ? true : false
   end
 
   # actualizar_informacion_de_busqueda

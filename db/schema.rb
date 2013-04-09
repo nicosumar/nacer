@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130404134435) do
+ActiveRecord::Schema.define(:version => 20130409102009) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -108,13 +108,6 @@ ActiveRecord::Schema.define(:version => 20130404134435) do
 
   add_index "afiliados", ["afiliado_id"], :name => "index_afiliados_on_afiliado_id", :unique => true
   add_index "afiliados", ["clave_de_beneficiario"], :name => "index_afiliados_on_clave_de_beneficiario", :unique => true
-
-  create_table "agrupaciones_de_beneficiarios", :force => true do |t|
-    t.string "nombre",                      :null => false
-    t.string "codigo",                      :null => false
-    t.string "condicion_ruby",              :null => false
-    t.string "descripcion_de_la_condicion"
-  end
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
@@ -217,6 +210,20 @@ ActiveRecord::Schema.define(:version => 20130404134435) do
   add_index "convenios_de_administracion", ["efector_id"], :name => "unq_convenios_de_administracion_efector_id", :unique => true
   add_index "convenios_de_administracion", ["numero"], :name => "unq_convenios_de_administracion_numero", :unique => true
 
+  create_table "convenios_de_administracion_sumar", :force => true do |t|
+    t.string   "numero",                :null => false
+    t.integer  "administrador_id",      :null => false
+    t.integer  "efector_id",            :null => false
+    t.string   "firmante"
+    t.string   "email"
+    t.date     "fecha_de_suscripcion",  :null => false
+    t.date     "fecha_de_inicio",       :null => false
+    t.date     "fecha_de_finalizacion"
+    t.text     "observaciones"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
   create_table "convenios_de_gestion", :force => true do |t|
     t.string   "numero",                :null => false
     t.integer  "efector_id",            :null => false
@@ -234,6 +241,19 @@ ActiveRecord::Schema.define(:version => 20130404134435) do
 
   add_index "convenios_de_gestion", ["efector_id"], :name => "unq_convenios_de_gestion_efector_id", :unique => true
   add_index "convenios_de_gestion", ["numero"], :name => "unq_convenios_de_gestion_numero", :unique => true
+
+  create_table "convenios_de_gestion_sumar", :force => true do |t|
+    t.string   "numero",                :null => false
+    t.integer  "efector_id",            :null => false
+    t.string   "firmante"
+    t.string   "email"
+    t.date     "fecha_de_suscripcion",  :null => false
+    t.date     "fecha_de_inicio",       :null => false
+    t.date     "fecha_de_finalizacion"
+    t.text     "observaciones"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
 
   create_table "cuasi_facturas", :force => true do |t|
     t.integer  "liquidacion_id",                                       :null => false
@@ -371,6 +391,11 @@ ActiveRecord::Schema.define(:version => 20130404134435) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "grupos_poblacionales_prestaciones", :id => false, :force => true do |t|
+    t.integer "grupo_poblacional_id"
+    t.integer "prestacion_id"
+  end
+
   create_table "lenguas_originarias", :force => true do |t|
     t.string "nombre"
   end
@@ -501,14 +526,13 @@ ActiveRecord::Schema.define(:version => 20130404134435) do
     t.integer  "area_de_prestacion_id"
     t.integer  "grupo_de_prestaciones_id"
     t.integer  "subgrupo_de_prestaciones_id"
-    t.string   "codigo",                                           :null => false
-    t.string   "nombre",                                           :null => false
-    t.integer  "unidad_de_medida_id",                              :null => false
+    t.string   "codigo",                                        :null => false
+    t.string   "nombre",                                        :null => false
+    t.integer  "unidad_de_medida_id",                           :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "activa",                         :default => true
+    t.boolean  "activa",                      :default => true
     t.integer  "objeto_de_la_prestacion_id"
-    t.integer  "agrupacion_de_beneficiarios_id"
   end
 
   create_table "prestaciones_autorizadas", :force => true do |t|
@@ -524,6 +548,11 @@ ActiveRecord::Schema.define(:version => 20130404134435) do
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.integer  "updater_id"
+  end
+
+  create_table "prestaciones_sexos", :id => false, :force => true do |t|
+    t.integer "prestacion_id"
+    t.integer "sexo_id"
   end
 
   create_table "provincias", :force => true do |t|

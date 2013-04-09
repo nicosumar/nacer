@@ -3,9 +3,6 @@
 
 #content-header
   %h1 Adendas
-  - if can? :create, Addenda
-    #action-links
-      = link_to "Agregar una adenda", new_addenda_url
 
 = render :partial => "shared/info"
 

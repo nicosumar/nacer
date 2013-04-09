@@ -896,4 +896,19 @@ class NovedadDelAfiliado < ActiveRecord::Base
   def self.con_estado(id_de_estado)
     where(:estado_de_la_novedad_id => id_de_estado)
   end
+
+  def grupo_poblacional_al_dia(fecha_de_la_prestacion = Date.today)
+
+    if edad_en_anios(fecha_de_la_prestacion) < 6
+      return GrupoPoblacional.find_by_codigo("A")
+    elsif (6..9) === edad_en_anios(fecha_de_la_prestacion)
+      return GrupoPoblacional.find_by_codigo("B")
+    elsif (10..19) === edad_en_anios(fecha_de_la_prestacion)
+      return GrupoPoblacional.find_by_codigo("C")
+    elsif sexo.codigo == "F" && (20..64) === edad_en_anios(fecha_de_la_prestacion)
+      return GrupoPoblacional.find_by_codigo("D")
+    end
+
+  end
+
 end

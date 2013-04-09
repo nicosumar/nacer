@@ -40,7 +40,28 @@
       %span.field_empty No se ha ingresado el código de efector de bioestadística
 
   %h3 Convenios
-  - if @efector.convenio_de_gestion
+  - if @efector.convenio_de_gestion_sumar
+    %div.field_content
+      %span.field_name Convenio de gestión Sumar
+      %span.field_value= @efector.convenio_de_gestion_sumar.numero
+      = link_to "Ver detalles del convenio", @efector.convenio_de_gestion_sumar
+    - if @efector.convenio_de_administracion_sumar
+      %div.field_content
+        %span.field_name Administrado por un tercero
+        %span.field_value Sí
+      %div.field_content
+        %span.field_name Convenio de administración Sumar
+        %span.field_value= @efector.convenio_de_administracion_sumar.numero
+        = link_to "Ver detalles del convenio", @efector.convenio_de_administracion_sumar
+      %div.field_content
+        %span.field_name Administrador
+        %span.field_value= @efector.administrador_sumar.cuie + " - " + @efector.administrador_sumar.nombre_corto
+        = link_to "Ver detalles del efector", @efector.administrador_sumar
+    - else
+      %div.field_content
+        %span.field_name Administrado por un tercero
+        %span.field_value No
+  - elsif @efector.convenio_de_gestion
     %div.field_content
       %span.field_name Convenio de gestión
       %span.field_value= @efector.convenio_de_gestion.numero
@@ -147,31 +168,32 @@
     - else
       %span.field_value No
 
-  %h3 Alta complejidad perinatal
-  - if @efector.perinatal_de_alta_complejidad
-    %div.field_content
-      %span.field_name Habilitado
-      %span.field_value Sí
-    - if @efector.addenda_perinatal
+  - if !@efector.convenio_de_gestion_sumar
+    %h3 Alta complejidad perinatal
+    - if @efector.perinatal_de_alta_complejidad
       %div.field_content
-        %span.field_name Adenda perinatal
+        %span.field_name Habilitado
         %span.field_value Sí
-      - if @efector.fecha_de_addenda_perinatal
+      - if @efector.addenda_perinatal
         %div.field_content
-          %span.field_name Fecha de la adenda
-          %span.field_value= @efector.fecha_de_addenda_perinatal.strftime("%d/%m/%Y")
+          %span.field_name Adenda perinatal
+          %span.field_value Sí
+        - if @efector.fecha_de_addenda_perinatal
+          %div.field_content
+            %span.field_name Fecha de la adenda
+            %span.field_value= @efector.fecha_de_addenda_perinatal.strftime("%d/%m/%Y")
+        - else
+          %div.field_content
+            %span.field_name Fecha de la adenda
+            %span.field_empty No se ingresó la fecha de la adenda
       - else
         %div.field_content
-          %span.field_name Fecha de la adenda
-          %span.field_empty No se ingresó la fecha de la adenda
+          %span.field_name Adenda perinatal
+          %span.field_value No
     - else
       %div.field_content
-        %span.field_name Adenda perinatal
+        %span.field_name Habilitado
         %span.field_value No
-  - else
-    %div.field_content
-      %span.field_name Habilitado
-      %span.field_value No
 
   %h3 Infraestructura
   %div.field_content

@@ -152,6 +152,7 @@ class PrestacionesBrindadasController < ApplicationController
         @prestacion_brindada.efector_id = nil
       end
       render :action => "efector_y_fecha"
+      return
     else
       # Crear el objeto desde los parámetros y verificar si está correcto
       @prestacion_brindada = PrestacionBrindada.new(params[:prestacion_brindada])
@@ -164,14 +165,29 @@ class PrestacionesBrindadasController < ApplicationController
           |e| [e.cuie + " - " + e.nombre, e.id]
         }
         if @efectores.size == 1
-          @efector_id = @efectores.first[1]
+          @prestacion_brindada.efector_id = @efectores.first[1]
         else
-          @efector_id = nil
+          @prestacion_brindada.efector_id = nil
         end
         render :action => "efector_y_fecha"
         return
       end
     end
+
+    # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
+    autorizadas_por_efector =
+      Prestacion.find(
+        @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
+          |p| p.prestacion_id
+        }
+      )
+    autorizadas_por_grupo =
+      @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
+    autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
+    @prestaciones =
+      autorizadas_por_efector.keep_if{
+          |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
+        }.collect{ |p| [p.nombre_corto, p.id] }
 
   end
 

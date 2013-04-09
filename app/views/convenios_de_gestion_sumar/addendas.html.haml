@@ -1,0 +1,49 @@
+- content_for :title do
+  Adendas del convenio de gestión Sumar
+
+#content-header
+  %h1 Adendas del convenio de gestión Sumar
+  #action-links
+    - if can? :create, Addenda
+      = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @convenio_de_gestion.id)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Convenio de gestión Sumar
+  %div.field_content
+    %span.field_name Número
+    %span.field_value= @convenio_de_gestion.numero
+    = link_to "Ver detalles del convenio", @convenio_de_gestion
+  %div.field
+    %span.field_name Efector
+    %span.field_value= @convenio_de_gestion.efector.nombre
+    = link_to "Ver detalles del efector", @convenio_de_gestion.efector
+
+  %h3 Adendas que modifican este convenio
+  - if @convenio_de_gestion.addendas.any? then
+    %table
+      %thead
+        %tr
+          %th Fecha de inicio
+          %th Prestaciones dadas de alta
+          %th Prestaciones dadas de baja
+          %th Observaciones
+      %tbody
+        - @convenio_de_gestion.addendas.order(:fecha_de_inicio).each do |a|
+          %tr.clickable{ |
+            :onclick => "location.href=\'#{addenda_path(a)}\'", |
+            :title => "Ver detalles de la adenda suscrita el #{a.fecha_de_suscripcion.strftime("%d/%m/%Y")}" } |
+            %td= a.fecha_de_inicio.strftime("%d/%m/%Y")
+            - if a.prestaciones_autorizadas_alta.any? then
+              %td= a.prestaciones_autorizadas_alta.collect{ |pa| [pa.prestacion.codigo]}.join(", ")
+            - else
+              %td Ninguna
+            - if a.prestaciones_autorizadas_baja.any? then
+              %td= a.prestaciones_autorizadas_baja.collect{ |pa| [pa.prestacion.codigo]}.join(", ")
+            - else
+              %td Ninguna
+            %td= a.observaciones
+  - else
+    %div.field_content
+      %span.field_empty Este convenio no registra adendas modificatorias
