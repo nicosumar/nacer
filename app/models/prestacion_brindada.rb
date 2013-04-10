@@ -67,4 +67,49 @@ class PrestacionBrindada < ActiveRecord::Base
     return !campo_obligatorio_vacio
   end
 
+  #
+  # Métodos de validación adicionales asociados al modelo de la clase MetodoDeValidacion
+  def beneficiaria_mujer?
+    @beneficiaria =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not @beneficiaria
+      @beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return @beneficiaria.sexo.codigo == "F"
+  end
+
+  def beneficiaria_embarazada?
+    @beneficiaria =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not @beneficiaria
+      @beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return @beneficiaria.estaba_embarazada?(fecha_de_la_prestacion)
+  end
+
+  def diagnostico_de_embarazo_del_primer_trimestre?
+    @beneficiaria =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not @beneficiaria
+      @beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return false unless @beneficiaria.embarazo_actual && @beneficiaria.semanas_de_embarazo
+
+    return (@beneficiaria.semanas_de_embarazo < 20)
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130409102009) do
+ActiveRecord::Schema.define(:version => 20130409180039) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -224,6 +224,9 @@ ActiveRecord::Schema.define(:version => 20130409102009) do
     t.datetime "updated_at",            :null => false
   end
 
+  add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
+  add_index "convenios_de_administracion_sumar", ["numero"], :name => "unq_convenios_de_administracion_sumar_numero", :unique => true
+
   create_table "convenios_de_gestion", :force => true do |t|
     t.string   "numero",                :null => false
     t.integer  "efector_id",            :null => false
@@ -254,6 +257,9 @@ ActiveRecord::Schema.define(:version => 20130409102009) do
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
   end
+
+  add_index "convenios_de_gestion_sumar", ["efector_id"], :name => "unq_convenios_de_gestion_sumar_efector_id", :unique => true
+  add_index "convenios_de_gestion_sumar", ["numero"], :name => "unq_convenios_de_gestion_sumar_numero", :unique => true
 
   create_table "cuasi_facturas", :force => true do |t|
     t.integer  "liquidacion_id",                                       :null => false
@@ -427,6 +433,19 @@ ActiveRecord::Schema.define(:version => 20130409102009) do
   end
 
   add_index "liquidaciones", ["efector_id", "anio_de_prestaciones", "mes_de_prestaciones"], :name => "unq_liquidaciones_efector_anio_y_mes", :unique => true
+
+  create_table "metodos_de_validacion", :force => true do |t|
+    t.string   "nombre"
+    t.string   "metodo"
+    t.string   "mensaje"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "metodos_de_validacion_prestaciones", :id => false, :force => true do |t|
+    t.integer "metodo_de_validacion_id"
+    t.integer "prestacion_id"
+  end
 
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"

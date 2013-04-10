@@ -607,6 +607,11 @@ class Afiliado < ActiveRecord::Base
     embarazo_actual
   end
 
+  def estaba_embarazada?(fecha = Date.today)
+    return false unless fecha_probable_de_parto
+    return fecha >= (fecha_probable_de_parto - 40.weeks) && fecha < (fecha_probable_de_parto + 6.weeks)
+  end
+
   #
   # menores_de_6_activos
   # Calcula la cantidad de beneficiarios menores de 6 años activos a la fecha del parámetro

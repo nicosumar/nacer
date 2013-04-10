@@ -329,12 +329,12 @@ Diagnostico.create([
   {
     #:id => 66,
     :nombre => "Hipertensión esencial preexistente que complica el embarazo, parto o puerperio",
-    :codigo => "O100"
+    :codigo => "O10.0"
   },
   {
     #:id => 67,
     :nombre => "Hipertensión secundaria preexistente que complica el embarazo, parto o puerperio",
-    :codigo => "O104"
+    :codigo => "O10.4"
   },
   {
     #:id => 68,
@@ -359,7 +359,7 @@ Diagnostico.create([
   {
     #:id => 72,
     :nombre => "Diabetes mellitus que se origina con el embarazo",
-    :codigo => "O244"
+    :codigo => "O24.4"
   },
   {
     #:id => 73,
@@ -379,37 +379,37 @@ Diagnostico.create([
   {
     #:id => 76,
     :nombre => "Otras hemorragias posparto inmediatas",
-    :codigo => "O721"
+    :codigo => "O72.1"
   },
   {
     #:id => 77,
     :nombre => "Hemorragia posparto secundaria o tardía",
-    :codigo => "O722"
+    :codigo => "O72.2"
   },
   {
     #:id => 78,
     :nombre => "Retardo del crecimiento intrauterino",
-    :codigo => "O984"
+    :codigo => "O98.4"
   },
   {
     #:id => 79,
     :nombre => "Atresia de esófago sin mención de fístula",
-    :codigo => "Q390"
+    :codigo => "Q39.0"
   },
   {
     #:id => 80,
     :nombre => "Atresia de esófago con mención de fístula",
-    :codigo => "Q391"
+    :codigo => "Q39.1"
   },
   {
     #:id => 81,
     :nombre => "Fístula traqueoesofágica congénita sin mención de atresia",
-    :codigo => "Q392"
+    :codigo => "Q39.2"
   },
   {
     #:id => 82,
     :nombre => "Gastroquisis",
-    :codigo => "Q793"
+    :codigo => "Q79.3"
   },
   {
     #:id => 83,
@@ -424,37 +424,37 @@ Diagnostico.create([
   {
     #:id => 85,
     :nombre => "Enfermedad de Hisrchsprung",
-    :codigo => "Q431"
+    :codigo => "Q43.1"
   },
   {
     #:id => 86,
     :nombre => "Malformación congénita de malfijación del intestino",
-    :codigo => "Q433"
+    :codigo => "Q43.3"
   },
   {
     #:id => 87,
     :nombre => "Duplicación del intestino",
-    :codigo => "Q434"
+    :codigo => "Q43.4"
   },
   {
     #:id => 88,
     :nombre => "Ausencia, atresia y estenosis congénita del recto con fístula",
-    :codigo => "Q420"
+    :codigo => "Q42.0"
   },
   {
     #:id => 89,
     :nombre => "Ausencia, atresia y estenosis congénita del recto sin fístula",
-    :codigo => "Q421"
+    :codigo => "Q42.1"
   },
   {
     #:id => 90,
     :nombre => "Ausencia, atresia y estenosis congénita del ano sin fístula",
-    :codigo => "Q422"
+    :codigo => "Q42.2"
   },
   {
     #:id => 91,
     :nombre => "Ausencia, atresia y estenosis congénita del ano con fístula",
-    :codigo => "Q423"
+    :codigo => "Q42.3"
   },
   {
     #:id => 92,
@@ -469,11 +469,11 @@ Diagnostico.create([
   {
     #:id => 94,
     :nombre => "Peso extremadamente bajo al nacer",
-    :codigo => "P070"
+    :codigo => "P07.0"
   },
   {
     #:id => 95,
     :nombre => "Inmaturidad extrema",
-    :codigo => "P072"
+    :codigo => "P07.2"
   }
 ])

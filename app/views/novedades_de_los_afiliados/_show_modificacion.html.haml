@@ -238,7 +238,7 @@
     - else
       %span.field_deleted Se eliminó la cantidad de años cursados ingresada
     - if !@afiliado.alfab_beneficiario_anios_ultimo_nivel.blank?
-      %span.field_old_value= "(era: '" + @afiliado.alfab_beneficiario_anios_ultimo_nivel + "')"
+      %span.field_old_value= "(era: '" + @afiliado.alfab_beneficiario_anios_ultimo_nivel.to_s + "')"
   - else
     - if !@novedad.alfab_beneficiario_anios_ultimo_nivel.blank?
       %span.field_value= @novedad.alfab_beneficiario_anios_ultimo_nivel
@@ -540,7 +540,7 @@
       - else
         %span.field_deleted Se eliminó la cantidad de años cursados ingresada
       - if !@afiliado.alfab_madre_anios_ultimo_nivel.blank?
-        %span.field_old_value= "(era: '" + @afiliado.alfab_madre_anios_ultimo_nivel + "')"
+        %span.field_old_value= "(era: '" + @afiliado.alfab_madre_anios_ultimo_nivel.to_s + "')"
     - else
       - if !@novedad.alfab_madre_anios_ultimo_nivel.blank?
         %span.field_value= @novedad.alfab_madre_anios_ultimo_nivel
@@ -627,7 +627,7 @@
       - else
         %span.field_deleted Se eliminó la cantidad de años cursados ingresada
       - if !@afiliado.alfab_padre_anios_ultimo_nivel.blank?
-        %span.field_old_value= "(era: '" + @afiliado.alfab_padre_anios_ultimo_nivel + "')"
+        %span.field_old_value= "(era: '" + @afiliado.alfab_padre_anios_ultimo_nivel.to_s + "')"
     - else
       - if !@novedad.alfab_padre_anios_ultimo_nivel.blank?
         %span.field_value= @novedad.alfab_padre_anios_ultimo_nivel
@@ -714,7 +714,7 @@
       - else
         %span.field_deleted Se eliminó la cantidad de años cursados ingresada
       - if !@afiliado.alfab_tutor_anios_ultimo_nivel.blank?
-        %span.field_old_value= "(era: '" + @afiliado.alfab_tutor_anios_ultimo_nivel + "')"
+        %span.field_old_value= "(era: '" + @afiliado.alfab_tutor_anios_ultimo_nivel.to_s + "')"
     - else
       - if !@novedad.alfab_tutor_anios_ultimo_nivel.blank?
         %span.field_value= @novedad.alfab_tutor_anios_ultimo_nivel

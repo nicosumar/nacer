@@ -6,6 +6,7 @@ class Prestacion < ActiveRecord::Base
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :area_de_prestacion_id, :grupo_de_prestaciones_id, :subgrupo_de_prestaciones_id
   attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id, :objeto_de_la_prestacion_id
+  attr_accessible :created_at, :updated_at
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :codigo
@@ -22,6 +23,9 @@ class Prestacion < ActiveRecord::Base
   belongs_to :unidad_de_medida
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, :through => :datos_adicionales_por_prestacion
+  has_and_belongs_to_many :metodos_de_validacion
+  has_and_belongs_to_many :sexos
+  has_and_belongs_to_many :grupos_poblacionales
 
   # Validaciones
   #validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO

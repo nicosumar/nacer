@@ -5,7 +5,7 @@ class AsignacionDePrecios < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :nomenclador_id, :prestacion_id, :precio_por_unidad, :adicional_por_prestacion, :unidades_maximas
-  attr_accessible :observaciones
+  attr_accessible :observaciones, :created_at, :updated_at
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :nomenclador_id, :prestacion_id
@@ -17,7 +17,7 @@ class AsignacionDePrecios < ActiveRecord::Base
   # Validaciones
   validates_presence_of :nomenclador_id, :prestacion_id, :precio_por_unidad
   validates_numericality_of :precio_por_unidad
-  validates_numericality_of :adicional_por_prestacion, :allow_nil
+  validates_numericality_of :adicional_por_prestacion
   validate :precio_mayor_que_cero
   validate :adicional_mayor_o_igual_que_cero
 

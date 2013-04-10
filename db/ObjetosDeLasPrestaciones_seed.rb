@@ -139,7 +139,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #:id => 18,
-    :nombre => "Consulta obtétrica ulterior",
+    :nombre => "Consulta obstétrica ulterior",
     :codigo => "C006",
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("CT"),
     :define_si_es_catastrofica => true,
