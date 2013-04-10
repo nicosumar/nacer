@@ -863,7 +863,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
               mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}'
             WHERE
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
-              AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHEE codigo = '#{codigo_ci}')
+              AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
               AND tipo_de_novedad_id != (SELECT id FROM tipos_de_novedades WHERE codigo = 'B')
               AND fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
         "
