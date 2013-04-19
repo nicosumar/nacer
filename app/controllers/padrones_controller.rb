@@ -604,7 +604,7 @@ class PadronesController < ApplicationController
     begin
       anio, mes = params[:anio_y_mes].split("-")
       primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
-      origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff#{params[:multiparte] ? '.part' + params[:multiparte] : ''}", "r")
+      origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff#{!params[:multiparte].blank? ? '.part' + params[:multiparte] : ''}", "r")
     rescue
       @errores_presentes = true
       @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."

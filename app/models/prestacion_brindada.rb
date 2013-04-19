@@ -25,6 +25,8 @@ class PrestacionBrindada < ActiveRecord::Base
   # Validaciones
   validates_presence_of :clave_de_beneficiario, :efector_id, :estado_de_la_prestacion_id, :fecha_de_la_prestacion
   validates_presence_of :prestacion_id
+  validates_numericality_of :cantidad_de_unidades
+  validates :cantidad_de_unidades_correcta?
 
   # Objeto para guardar las advertencias
   @advertencias
@@ -67,22 +69,13 @@ class PrestacionBrindada < ActiveRecord::Base
     return !campo_obligatorio_vacio
   end
 
-  #
-  # Métodos de validación adicionales asociados al modelo de la clase MetodoDeValidacion
-  def beneficiaria_mujer?
-    @beneficiaria =
-      NovedadDelAfiliado.where(
-        :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-      ).first
-    if not @beneficiaria
-      @beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
-    end
+  def cantidad_de_unidades_correcta?
+    # TODO
 
-    return @beneficiaria.sexo.codigo == "F"
   end
 
+  #
+  # Métodos de validación adicionales asociados al modelo de la clase MetodoDeValidacion
   def beneficiaria_embarazada?
     @beneficiaria =
       NovedadDelAfiliado.where(
@@ -112,4 +105,9 @@ class PrestacionBrindada < ActiveRecord::Base
 
     return (@beneficiaria.semanas_de_embarazo < 20)
   end
+
+  def cantidad_de_unidades_valida?
+    (1..self.prestacion.unidades_maximas) === cantidad_de_unidades
+  end
+
 end

@@ -1,3 +1,3 @@
 class MetodoDeValidacion < ActiveRecord::Base
-  attr_accessible :mensaje, :metodo, :nombre
+  attr_accessible :genera_error, :mensaje, :metodo, :nombre
 end

@@ -475,5 +475,55 @@ Diagnostico.create([
     #:id => 95,
     :nombre => "Inmaturidad extrema",
     :codigo => "P07.2"
+  },
+  {
+    #:id => 96,
+    :nombre => "Supervisión de embarazo con historia de esterilidad",
+    :codigo => "Z35.0"
+  },
+  {
+    #:id => 97,
+    :nombre => "Supervisión de embarazo con historia de aborto",
+    :codigo => "Z35.1"
+  },
+  {
+    #:id => 98,
+    :nombre => "Supervisión de embarazo con otro riesgo en su historia obstétrica o reproductiva",
+    :codigo => "Z35.2"
+  },
+  {
+    #:id => 99,
+    :nombre => "Supervisión de embarazo con historia de insuficiente atención prenatal",
+    :codigo => "Z35.3"
+  },
+  {
+    #:id => 100,
+    :nombre => "Supervisión de embarazo con gran multiparidad",
+    :codigo => "Z35.4"
+  },
+  {
+    #:id => 101,
+    :nombre => "Supervisión de primigesta añosa",
+    :codigo => "Z35.5"
+  },
+  {
+    #:id => 102,
+    :nombre => "Supervisión de primigesta muy joven",
+    :codigo => "Z35.6"
+  },
+  {
+    #:id => 103,
+    :nombre => "Supervisión de embarazo de alto riesgo debido a problemas sociales",
+    :codigo => "Z35.7"
+  },
+  {
+    #:id => 104,
+    :nombre => "Supervisión de otros embarazos de alto riesgo",
+    :codigo => "Z35.8"
+  },
+  {
+    #:id => 105,
+    :nombre => "Supervisión de embarazo de alto riesgo, sin otra especificación",
+    :codigo => "Z35.9"
   }
 ])

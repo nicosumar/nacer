@@ -33,6 +33,7 @@ es:
       send_paranoid_instructions: "Recibirá un correo electrónico con instrucciones para confirmar la cuenta."
       confirmed: 'Su cuenta fue confirmada, y se ha iniciado su sesión en el sistema.'
     users:
+      not_found_in_database: 'Dirección de correo electrónico o contraseña inválidos.'
       signed_up: '¡Bienvenido! Ha ingresado al sistema correctamente.'
       signed_up_but_unconfirmed: 'Su cuenta se creó correctamente, pero deberá confirmarla.'
       inactive_signed_up: 'Su cuenta se creó correctamente, pero está %{reason}.'

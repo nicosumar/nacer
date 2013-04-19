@@ -621,8 +621,7 @@ class Afiliado < ActiveRecord::Base
       "SELECT
          SUM(
            CASE
-             WHEN (pc.fecha_de_inicio IS NULL OR pc.fecha_de_inicio > '#{fecha_base}'
-                   OR pc.fecha_de_finalizacion <= '#{fecha_base.strftime('%Y-%m-%d')}') THEN
+             WHEN (pc.fecha_de_inicio IS NULL) THEN
                1::int8
              ELSE
                0::int8
@@ -630,8 +629,7 @@ class Afiliado < ActiveRecord::Base
          ) AS activos_sin_ceb,
          SUM(
            CASE
-             WHEN (pc.fecha_de_inicio <= '#{fecha_base.strftime('%Y-%m-%d')}' AND (pc.fecha_de_finalizacion IS NULL
-                   OR pc.fecha_de_finalizacion > '#{fecha_base.strftime('%Y-%m-%d')}')) THEN
+             WHEN (pc.fecha_de_inicio IS NOT NULL) THEN
                1::int8
              ELSE
                0::int8
@@ -640,11 +638,16 @@ class Afiliado < ActiveRecord::Base
          COUNT(*) AS activos_totales
          FROM afiliados af
            LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
-           LEFT JOIN periodos_de_cobertura pc ON (af.afiliado_id = pc.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc
+             ON (
+               af.afiliado_id = pc.afiliado_id
+               AND pc.fecha_de_inicio <= '#{fecha_base}'
+               AND (pc.fecha_de_finalizacion IS NULL OR pc.fecha_de_finalizacion > '#{fecha_base}')
+             )
          WHERE
-           pa.fecha_de_inicio <= '#{fecha_base.strftime('%Y-%m-%d')}'
-           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base.strftime('%Y-%m-%d')}')
-           AND fecha_de_nacimiento >= '#{(fecha_base - 6.years).strftime('%Y-%m-%d')}';
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND fecha_de_nacimiento >= '#{fecha_base - 6.years}';
       ").rows[0].collect{ |v| v.to_i }
   end
 
@@ -657,8 +660,7 @@ class Afiliado < ActiveRecord::Base
       "SELECT
          SUM(
            CASE
-             WHEN (pc.fecha_de_inicio IS NULL OR pc.fecha_de_inicio > '#{fecha_base.strftime('%Y-%m-%d')}'
-                   OR pc.fecha_de_finalizacion <= '#{fecha_base.strftime('%Y-%m-%d')}') THEN
+             WHEN (pc.fecha_de_inicio IS NULL) THEN
                1::int8
              ELSE
                0::int8
@@ -666,8 +668,7 @@ class Afiliado < ActiveRecord::Base
          ) AS activos_sin_ceb,
          SUM(
            CASE
-             WHEN (pc.fecha_de_inicio <= '#{fecha_base.strftime('%Y-%m-%d')}' AND (pc.fecha_de_finalizacion IS NULL
-                   OR pc.fecha_de_finalizacion > '#{fecha_base.strftime('%Y-%m-%d')}')) THEN
+             WHEN (pc.fecha_de_inicio IS NOT NULL) THEN
                1::int8
              ELSE
                0::int8
@@ -676,12 +677,17 @@ class Afiliado < ActiveRecord::Base
          COUNT(*) AS activos_totales
          FROM afiliados af
            LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
-           LEFT JOIN periodos_de_cobertura pc ON (af.afiliado_id = pc.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc
+             ON (
+               af.afiliado_id = pc.afiliado_id
+               AND pc.fecha_de_inicio <= '#{fecha_base}'
+               AND (pc.fecha_de_finalizacion IS NULL OR pc.fecha_de_finalizacion > '#{fecha_base}')
+             )
          WHERE
-           pa.fecha_de_inicio <= '#{fecha_base.strftime('%Y-%m-%d')}'
-           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base.strftime('%Y-%m-%d')}')
-           AND af.fecha_de_nacimiento < '#{(fecha_base - 6.years).strftime('%Y-%m-%d')}'
-           AND af.fecha_de_nacimiento >= '#{(fecha_base - 10.years).strftime('%Y-%m-%d')}';
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 6.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 10.years}';
       ").rows[0].collect{ |v| v.to_i }
   end
 
@@ -693,8 +699,7 @@ class Afiliado < ActiveRecord::Base
       "SELECT
          SUM(
            CASE
-             WHEN (pc.fecha_de_inicio IS NULL OR pc.fecha_de_inicio > '#{fecha_base.strftime('%Y-%m-%d')}'
-                   OR pc.fecha_de_finalizacion <= '#{fecha_base.strftime('%Y-%m-%d')}') THEN
+             WHEN (pc.fecha_de_inicio IS NULL) THEN
                1::int8
              ELSE
                0::int8
@@ -702,8 +707,7 @@ class Afiliado < ActiveRecord::Base
          ) AS activos_sin_ceb,
          SUM(
            CASE
-             WHEN (pc.fecha_de_inicio <= '#{fecha_base.strftime('%Y-%m-%d')}' AND (pc.fecha_de_finalizacion IS NULL
-                   OR pc.fecha_de_finalizacion > '#{fecha_base.strftime('%Y-%m-%d')}')) THEN
+             WHEN (pc.fecha_de_inicio IS NOT NULL) THEN
                1::int8
              ELSE
                0::int8
@@ -712,12 +716,17 @@ class Afiliado < ActiveRecord::Base
          COUNT(*) AS activos_totales
          FROM afiliados af
            LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
-           LEFT JOIN periodos_de_cobertura pc ON (af.afiliado_id = pc.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc
+             ON (
+               af.afiliado_id = pc.afiliado_id
+               AND pc.fecha_de_inicio <= '#{fecha_base}'
+               AND (pc.fecha_de_finalizacion IS NULL OR pc.fecha_de_finalizacion > '#{fecha_base}')
+             )
          WHERE
-           pa.fecha_de_inicio <= '#{fecha_base.strftime('%Y-%m-%d')}'
-           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base.strftime('%Y-%m-%d')}')
-           AND af.fecha_de_nacimiento < '#{(fecha_base - 10.years).strftime('%Y-%m-%d')}'
-           AND af.fecha_de_nacimiento >= '#{(fecha_base - 20.years).strftime('%Y-%m-%d')}';
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 10.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 20.years}';
       ").rows[0].collect{ |v| v.to_i }
   end
 
@@ -729,8 +738,7 @@ class Afiliado < ActiveRecord::Base
       "SELECT
          SUM(
            CASE
-             WHEN (pc.fecha_de_inicio IS NULL OR pc.fecha_de_inicio > '#{fecha_base.strftime('%Y-%m-%d')}'
-                   OR pc.fecha_de_finalizacion <= '#{fecha_base.strftime('%Y-%m-%d')}') THEN
+             WHEN (pc.fecha_de_inicio IS NULL) THEN
                1::int8
              ELSE
                0::int8
@@ -738,8 +746,7 @@ class Afiliado < ActiveRecord::Base
          ) AS activos_sin_ceb,
          SUM(
            CASE
-             WHEN (pc.fecha_de_inicio <= '#{fecha_base.strftime('%Y-%m-%d')}' AND (pc.fecha_de_finalizacion IS NULL
-                   OR pc.fecha_de_finalizacion > '#{fecha_base.strftime('%Y-%m-%d')}')) THEN
+             WHEN (pc.fecha_de_inicio IS NOT NULL) THEN
                1::int8
              ELSE
                0::int8
@@ -748,13 +755,18 @@ class Afiliado < ActiveRecord::Base
          COUNT(*) AS activos_totales
          FROM afiliados af
            LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
-           LEFT JOIN periodos_de_cobertura pc ON (af.afiliado_id = pc.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc
+             ON (
+               af.afiliado_id = pc.afiliado_id
+               AND pc.fecha_de_inicio <= '#{fecha_base}'
+               AND (pc.fecha_de_finalizacion IS NULL OR pc.fecha_de_finalizacion > '#{fecha_base}')
+             )
            LEFT JOIN sexos sx ON (af.sexo_id = sx.id)
          WHERE
-           pa.fecha_de_inicio <= '#{fecha_base.strftime('%Y-%m-%d')}'
-           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base.strftime('%Y-%m-%d')}')
-           AND af.fecha_de_nacimiento < '#{(fecha_base - 20.years).strftime('%Y-%m-%d')}'
-           AND af.fecha_de_nacimiento >= '#{(fecha_base - 65.years).strftime('%Y-%m-%d')}'
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 20.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 65.years}'
            AND sx.codigo = 'F';
       ").rows[0].collect{ |v| v.to_i }
   end

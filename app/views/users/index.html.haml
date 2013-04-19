@@ -57,9 +57,9 @@
           %td= u.user_groups.collect{ |ug| [ug.user_group_name]}.join(", ")
           %td= u.unidades_de_alta_de_datos.collect{ |ug| [ug.nombre]}.join(", ")
           %td
-            - if u.last_sign_in_at.nil? then
+            - if u.current_sign_in_at.nil? then
               No registra ningún ingreso
             - else
-              = u.last_sign_in_at.strftime("%d/%m/%Y")
-              - if not u.last_sign_in_ip.nil? then
-                = " (" + u.last_sign_in_ip + ")"
+              = u.current_sign_in_at.strftime("%d/%m/%Y")
+              - if not u.current_sign_in_ip.nil? then
+                = " (" + u.current_sign_in_ip + ")"

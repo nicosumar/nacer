@@ -20,5 +20,5 @@ Parametro.create([
     :nombre => "VersionDelSistemaDeGestion",
     :tipo_postgres => "text",
     :tipo_ruby => "String",
-    :valor => "4.7" }
+    :valor => "4.8" }
 ])

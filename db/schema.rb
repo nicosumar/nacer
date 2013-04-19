@@ -215,7 +215,6 @@ ActiveRecord::Schema.define(:version => 20130409180039) do
     t.integer  "administrador_id",      :null => false
     t.integer  "efector_id",            :null => false
     t.string   "firmante"
-    t.string   "email"
     t.date     "fecha_de_suscripcion",  :null => false
     t.date     "fecha_de_inicio",       :null => false
     t.date     "fecha_de_finalizacion"
@@ -223,9 +222,6 @@ ActiveRecord::Schema.define(:version => 20130409180039) do
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
   end
-
-  add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
-  add_index "convenios_de_administracion_sumar", ["numero"], :name => "unq_convenios_de_administracion_sumar_numero", :unique => true
 
   create_table "convenios_de_gestion", :force => true do |t|
     t.string   "numero",                :null => false
@@ -257,9 +253,6 @@ ActiveRecord::Schema.define(:version => 20130409180039) do
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
   end
-
-  add_index "convenios_de_gestion_sumar", ["efector_id"], :name => "unq_convenios_de_gestion_sumar_efector_id", :unique => true
-  add_index "convenios_de_gestion_sumar", ["numero"], :name => "unq_convenios_de_gestion_sumar_numero", :unique => true
 
   create_table "cuasi_facturas", :force => true do |t|
     t.integer  "liquidacion_id",                                       :null => false
@@ -438,8 +431,9 @@ ActiveRecord::Schema.define(:version => 20130409180039) do
     t.string   "nombre"
     t.string   "metodo"
     t.string   "mensaje"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.boolean  "genera_error", :default => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "metodos_de_validacion_prestaciones", :id => false, :force => true do |t|
@@ -545,13 +539,14 @@ ActiveRecord::Schema.define(:version => 20130409180039) do
     t.integer  "area_de_prestacion_id"
     t.integer  "grupo_de_prestaciones_id"
     t.integer  "subgrupo_de_prestaciones_id"
-    t.string   "codigo",                                        :null => false
-    t.string   "nombre",                                        :null => false
-    t.integer  "unidad_de_medida_id",                           :null => false
+    t.string   "codigo",                                         :null => false
+    t.string   "nombre",                                         :null => false
+    t.integer  "unidad_de_medida_id",                            :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "activa",                      :default => true
     t.integer  "objeto_de_la_prestacion_id"
+    t.boolean  "comunitaria",                 :default => false
   end
 
   create_table "prestaciones_autorizadas", :force => true do |t|

@@ -1363,7 +1363,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #id => 171,
-    :nombre => 'Cuantificación fibrinógeno',
+    :nombre => 'Cuantificación de fibrinógeno',
     :codigo => 'L023',
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
     :define_si_es_catastrofica => true,
@@ -1587,7 +1587,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #id => 199,
-    :nombre => 'Hbs Ag',
+    :nombre => 'Hbs antígeno',
     :codigo => 'L051',
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
     :define_si_es_catastrofica => true,
@@ -1971,7 +1971,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #id => 246,
-    :nombre => 'Serología para Chagas (Elisa)',
+    :nombre => 'Serología para Chagas (ELISA)',
     :codigo => 'L099',
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
     :define_si_es_catastrofica => true,
@@ -2147,7 +2147,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #id => 268,
-    :nombre => 'VIH Elisa',
+    :nombre => 'VIH ELISA',
     :codigo => 'L121',
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
     :define_si_es_catastrofica => true,
@@ -2203,7 +2203,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #id => 275,
-    :nombre => 'Hemoaglutinación indirecta Chagas',
+    :nombre => 'Hemoaglutinación indirecta para Chagas',
     :codigo => 'L128',
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('LB'),
     :define_si_es_catastrofica => true,
