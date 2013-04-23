@@ -604,7 +604,7 @@ class PadronesController < ApplicationController
     begin
       anio, mes = params[:anio_y_mes].split("-")
       primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
-      origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff#{params[:multiparte] ? '.part' + params[:multiparte] : ''}", "r")
+      origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff#{!params[:multiparte].blank? ? '.part' + params[:multiparte] : ''}", "r")
     rescue
       @errores_presentes = true
       @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
@@ -612,7 +612,7 @@ class PadronesController < ApplicationController
     end
 
     # Hacemos la actualización dentro de una transacción
-    #ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
 
       origen.each do |linea|
         # Procesar la siguiente línea del archivo
@@ -656,7 +656,7 @@ class PadronesController < ApplicationController
                 :fecha_de_la_ultima_menstruacion => afiliado.fecha_de_la_ultima_menstruacion,
                 :fecha_de_diagnostico_del_embarazo => afiliado.fecha_de_diagnostico_del_embarazo,
                 :semanas_de_embarazo => afiliado.semanas_de_embarazo,
-                :fecha_probable_de_parto => afiliado.fecha_de_la_ultima_menstruacion,
+                :fecha_probable_de_parto => afiliado.fecha_probable_de_parto,
                 :fecha_efectiva_de_parto => afiliado.fecha_efectiva_de_parto,
                 :unidad_de_alta_de_datos_id => afiliado.unidad_de_alta_de_datos_id,
                 :centro_de_inscripcion_id => afiliado.centro_de_inscripcion_id
@@ -784,17 +784,18 @@ class PadronesController < ApplicationController
                   :fecha_de_la_ultima_menstruacion => afiliado.fecha_de_la_ultima_menstruacion,
                   :fecha_de_diagnostico_del_embarazo => afiliado.fecha_de_diagnostico_del_embarazo,
                   :semanas_de_embarazo => afiliado.semanas_de_embarazo,
-                  :fecha_probable_de_parto => afiliado.fecha_de_la_ultima_menstruacion,
+                  :fecha_probable_de_parto => afiliado.fecha_probable_de_parto,
                   :fecha_efectiva_de_parto => afiliado.fecha_efectiva_de_parto,
                   :unidad_de_alta_de_datos_id => afiliado.unidad_de_alta_de_datos_id,
                   :centro_de_inscripcion_id => afiliado.centro_de_inscripcion_id
                 })
               else
                 # Recrear un nuevo periodo si se han modificado los datos del embarazo
-                if ( periodo.fecha_de_la_ultima_menstruacion != afiliado.fecha_de_la_ultima_menstruacion
-                     || periodo.fecha_de_diagnostico_del_embarazo != afiliado.fecha_de_diagnostico_del_embarazo
-                     || periodo.semanas_de_embarazo != afiliado.semanas_de_embarazo
-                     || periodo.fecha_probable_de_parto != afiliado.fecha_probable_de_parto )
+                if ( periodo.fecha_de_la_ultima_menstruacion != afiliado.fecha_de_la_ultima_menstruacion ||
+                     periodo.fecha_de_diagnostico_del_embarazo != afiliado.fecha_de_diagnostico_del_embarazo ||
+                     periodo.semanas_de_embarazo != afiliado.semanas_de_embarazo ||
+                     periodo.fecha_probable_de_parto != afiliado.fecha_probable_de_parto ||
+                     periodo.fecha_efectivade_parto != afiliado.fecha_efectiva_de_parto )
                   periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
                   PeriodoDeEmbarazo.create({:afiliado_id => afiliado.afiliado_id,
                     :fecha_de_inicio => primero_del_mes,
@@ -802,7 +803,7 @@ class PadronesController < ApplicationController
                     :fecha_de_la_ultima_menstruacion => afiliado.fecha_de_la_ultima_menstruacion,
                     :fecha_de_diagnostico_del_embarazo => afiliado.fecha_de_diagnostico_del_embarazo,
                     :semanas_de_embarazo => afiliado.semanas_de_embarazo,
-                    :fecha_probable_de_parto => afiliado.fecha_de_la_ultima_menstruacion,
+                    :fecha_probable_de_parto => afiliado.fecha_probable_de_parto,
                     :fecha_efectiva_de_parto => afiliado.fecha_efectiva_de_parto,
                     :unidad_de_alta_de_datos_id => afiliado.unidad_de_alta_de_datos_id,
                     :centro_de_inscripcion_id => afiliado.centro_de_inscripcion_id
@@ -829,7 +830,7 @@ class PadronesController < ApplicationController
         end
       end
       origen.close
-    #end # Base::connection.transaction
+    end # Base::connection.transaction
 
   end
 

@@ -9,6 +9,7 @@ class CreatePeriodosDeEmbarazo < ActiveRecord::Migration
       t.date :fecha_de_diagnostico_del_embarazo
       t.integer :semanas_de_embarazo
       t.date :fecha_probable_de_parto
+      t.date :fecha_efectiva_de_parto
       t.references :unidad_de_alta_de_datos
       t.references :centro_de_inscripcion
       t.timestamps

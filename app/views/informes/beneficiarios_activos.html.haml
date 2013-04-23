@@ -59,3 +59,31 @@
           = @menores_de_6_activos[1] + @de_6_a_9_activos[1] + @adolescentes_activos[1] + @mujeres_de_20_a_64_activas[1]
         %td.destacado.derecha
           = @menores_de_6_activos[2] + @de_6_a_9_activos[2] + @adolescentes_activos[2] + @mujeres_de_20_a_64_activas[2]
+
+  %h3 Cantidad de embarazadas activas por grupo
+  %table
+    %thead
+      %tr
+        %th Grupo
+        %th Sin C.E.B.
+        %th Con C.E.B.
+        %th Subtotal
+    %tbody
+      %tr
+        %td Adolescentes de 10 a 19 años
+        %td.derecha= @embarazadas_adolescentes_activas[0]
+        %td.derecha= @embarazadas_adolescentes_activas[1]
+        %td.derecha= @embarazadas_adolescentes_activas[2]
+      %tr
+        %td Mujeres de 20 a 64 años
+        %td.derecha= @embarazadas_de_20_a_64_activas[0]
+        %td.derecha= @embarazadas_de_20_a_64_activas[1]
+        %td.derecha= @embarazadas_de_20_a_64_activas[2]
+      %tr
+        %td.destacado Totales
+        %td.destacado.derecha
+          = @embarazadas_adolescentes_activas[0] + @embarazadas_de_20_a_64_activas[0]
+        %td.destacado.derecha
+          = @embarazadas_adolescentes_activas[1] + @embarazadas_de_20_a_64_activas[1]
+        %td.destacado.derecha
+          = @embarazadas_adolescentes_activas[2] + @embarazadas_de_20_a_64_activas[2]
