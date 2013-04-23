@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130409180039) do
+ActiveRecord::Schema.define(:version => 20130419165028) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -533,6 +533,21 @@ ActiveRecord::Schema.define(:version => 20130409180039) do
     t.date     "fecha_de_finalizacion"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+  end
+
+  create_table "periodos_de_embarazo", :force => true do |t|
+    t.integer  "afiliado_id"
+    t.date     "fecha_de_inicio"
+    t.date     "fecha_de_finalizacion"
+    t.date     "fecha_de_la_ultima_menstruacion"
+    t.date     "fecha_de_diagnostico_del_embarazo"
+    t.integer  "semanas_de_embarazo"
+    t.date     "fecha_probable_de_parto"
+    t.date     "fecha_efectiva_de_parto"
+    t.integer  "unidad_de_alta_de_datos_id"
+    t.integer  "centro_de_inscripcion_id"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
   end
 
   create_table "prestaciones", :force => true do |t|

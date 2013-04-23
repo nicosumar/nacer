@@ -612,7 +612,7 @@ class PadronesController < ApplicationController
     end
 
     # Hacemos la actualización dentro de una transacción
-    #ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
 
       origen.each do |linea|
         # Procesar la siguiente línea del archivo
@@ -628,7 +628,8 @@ class PadronesController < ApplicationController
           afiliado = Afiliado.new(atr_afiliado)
           if afiliado.save
             # Como el afiliado es nuevo, tenemos que agregar un registro a la tabla de 'periodos_de_actividad' si está ACTIVO, a
-            # la de 'periodos_de_cobertura' si tiene CEB, y a la de 'periodos_de_capita' si devengó cápita
+            # la de 'periodos_de_cobertura' si tiene CEB, a la de 'periodos_de_capita' si devengó cápita, y a la de
+            # 'periodos_de_embarazo' si es un embarazo actual
             if afiliado.activo
               PeriodoDeActividad.create({:afiliado_id => afiliado.afiliado_id,
                 :fecha_de_inicio => primero_del_mes,
@@ -646,6 +647,19 @@ class PadronesController < ApplicationController
                 :fecha_de_inicio => primero_del_mes,
                 :fecha_de_finalizacion => nil,
                 :capitas_al_inicio => afiliado.devenga_cantidad_de_capitas
+              })
+            end
+            if afiliado.embarazo_actual
+              PeriodoDeEmbarazo.create({:afiliado_id => afiliado.afiliado_id,
+                :fecha_de_inicio => primero_del_mes,
+                :fecha_de_finalizacion => nil,
+                :fecha_de_la_ultima_menstruacion => afiliado.fecha_de_la_ultima_menstruacion,
+                :fecha_de_diagnostico_del_embarazo => afiliado.fecha_de_diagnostico_del_embarazo,
+                :semanas_de_embarazo => afiliado.semanas_de_embarazo,
+                :fecha_probable_de_parto => afiliado.fecha_probable_de_parto,
+                :fecha_efectiva_de_parto => afiliado.fecha_efectiva_de_parto,
+                :unidad_de_alta_de_datos_id => afiliado.unidad_de_alta_de_datos_id,
+                :centro_de_inscripcion_id => afiliado.centro_de_inscripcion_id
               })
             end
           else
@@ -735,13 +749,66 @@ class PadronesController < ApplicationController
             end
             if afiliado.devenga_capita
               if periodo.nil?
-                # Crear un nuevo periodo de cobertura
+                # Crear un nuevo periodo de devengamiento de cápitas
                 PeriodoDeCapita.create({
                   :afiliado_id => afiliado.afiliado_id,
                   :fecha_de_inicio => primero_del_mes,
                   :fecha_de_finalizacion => nil,
                   :capitas_al_inicio => afiliado.devenga_cantidad_de_capitas
                 })
+              end
+            else
+              if periodo
+                if periodo.fecha_de_inicio == primero_del_mes
+                  # Eliminar el periodo (actualización de la información del mismo mes, el periodo no debía existir)
+                  periodo.destroy
+                else
+                  # Finalizar el periodo de devengamiento de cápitas
+                  periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
+                end
+              end
+            end
+  
+            # Actualizar el periodo de embarazo
+            begin
+              periodo = PeriodoDeEmbarazo.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
+            rescue
+              periodo = nil
+            end
+            if afiliado.embarazo_actual
+              if periodo.nil?
+                # Crear un nuevo periodo de embarazo
+                PeriodoDeEmbarazo.create({:afiliado_id => afiliado.afiliado_id,
+                  :fecha_de_inicio => primero_del_mes,
+                  :fecha_de_finalizacion => nil,
+                  :fecha_de_la_ultima_menstruacion => afiliado.fecha_de_la_ultima_menstruacion,
+                  :fecha_de_diagnostico_del_embarazo => afiliado.fecha_de_diagnostico_del_embarazo,
+                  :semanas_de_embarazo => afiliado.semanas_de_embarazo,
+                  :fecha_probable_de_parto => afiliado.fecha_probable_de_parto,
+                  :fecha_efectiva_de_parto => afiliado.fecha_efectiva_de_parto,
+                  :unidad_de_alta_de_datos_id => afiliado.unidad_de_alta_de_datos_id,
+                  :centro_de_inscripcion_id => afiliado.centro_de_inscripcion_id
+                })
+              else
+                # Recrear un nuevo periodo si se han modificado los datos del embarazo
+                if ( periodo.fecha_de_la_ultima_menstruacion != afiliado.fecha_de_la_ultima_menstruacion ||
+                     periodo.fecha_de_diagnostico_del_embarazo != afiliado.fecha_de_diagnostico_del_embarazo ||
+                     periodo.semanas_de_embarazo != afiliado.semanas_de_embarazo ||
+                     periodo.fecha_probable_de_parto != afiliado.fecha_probable_de_parto ||
+                     periodo.fecha_efectivade_parto != afiliado.fecha_efectiva_de_parto )
+                  periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
+                  PeriodoDeEmbarazo.create({:afiliado_id => afiliado.afiliado_id,
+                    :fecha_de_inicio => primero_del_mes,
+                    :fecha_de_finalizacion => nil,
+                    :fecha_de_la_ultima_menstruacion => afiliado.fecha_de_la_ultima_menstruacion,
+                    :fecha_de_diagnostico_del_embarazo => afiliado.fecha_de_diagnostico_del_embarazo,
+                    :semanas_de_embarazo => afiliado.semanas_de_embarazo,
+                    :fecha_probable_de_parto => afiliado.fecha_probable_de_parto,
+                    :fecha_efectiva_de_parto => afiliado.fecha_efectiva_de_parto,
+                    :unidad_de_alta_de_datos_id => afiliado.unidad_de_alta_de_datos_id,
+                    :centro_de_inscripcion_id => afiliado.centro_de_inscripcion_id
+                  })
+                end
               end
             else
               if periodo
@@ -763,7 +830,7 @@ class PadronesController < ApplicationController
         end
       end
       origen.close
-    #end # Base::connection.transaction
+    end # Base::connection.transaction
 
   end
 

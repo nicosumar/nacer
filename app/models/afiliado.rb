@@ -36,6 +36,9 @@ class Afiliado < ActiveRecord::Base
   #belongs_to :categoria_de_afiliado    # --OBSOLETO--
   belongs_to :sexo
   has_many :periodos_de_actividad
+  has_many :periodos_de_cobertura
+  has_many :periodos_de_capita
+  has_many :periodos_de_embarazo
   belongs_to :pais_de_nacimiento, :class_name => "Pais"
   belongs_to :lengua_originaria
   belongs_to :tribu_originaria
@@ -608,8 +611,17 @@ class Afiliado < ActiveRecord::Base
   end
 
   def estaba_embarazada?(fecha = Date.today)
-    return false unless fecha_probable_de_parto
-    return fecha >= (fecha_probable_de_parto - 40.weeks) && fecha < (fecha_probable_de_parto + 6.weeks)
+    # Verificar si coincide la fecha con los datos del embarazo registrados actualmente en el padrón
+    if (embarazo_actual && fecha_probable_de_parto)
+      return true if (fecha >= (fecha_probable_de_parto - 40.weeks) && fecha < (fecha_probable_de_parto + 6.weeks))
+    end
+
+    # Si no coincide con el embarazo actual, verificar si existe algún periodo de embarazo registrado que coincida con la fecha
+    self.periodos_de_embarazo.each do |pe|
+      return true if (fecha >= (pe.fecha_probable_de_parto - 40.weeks) && fecha < (pe.fecha_probable_de_parto + 6.weeks))
+    end
+
+    return false
   end
 
   #
@@ -771,6 +783,96 @@ class Afiliado < ActiveRecord::Base
       ").rows[0].collect{ |v| v.to_i }
   end
 
+  #
+  # embarazadas_adolescentes_activas
+  # Calcula la cantidad de beneficiarias activas que tienen entre 10 y 19 años a la fecha del parámetro y
+  # estaban embarazadas a la fecha del parámetro.
+  def self.embarazadas_adolescentes_activas(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+    ActiveRecord::Base.connection.exec_query(
+      "SELECT
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NULL) THEN
+               1::int8
+             ELSE
+               0::int8
+             END
+         ) AS activos_sin_ceb,
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NOT NULL) THEN
+               1::int8
+             ELSE
+               0::int8
+           END
+         ) AS activos_con_ceb,
+         COUNT(*) AS activos_totales
+         FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
+           LEFT JOIN periodos_de_embarazo pe ON (af.afiliado_id = pe.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc
+             ON (
+               af.afiliado_id = pc.afiliado_id
+               AND pc.fecha_de_inicio <= '#{fecha_base}'
+               AND (pc.fecha_de_finalizacion IS NULL OR pc.fecha_de_finalizacion > '#{fecha_base}')
+             )
+           LEFT JOIN sexos sx ON (af.sexo_id = sx.id)
+         WHERE
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND pe.fecha_de_inicio <= '#{fecha_base}'
+           AND (pe.fecha_de_finalizacion IS NULL OR pe.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 10.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 20.years}'
+           AND sx.codigo = 'F';
+      ").rows[0].collect{ |v| v.to_i }
+  end
+
+  #
+  # embarazadas_de_20_a_64_activas
+  # Calcula la cantidad de beneficiarias activas que tienen entre 20 y 64 años a la fecha del parámetro y 
+  # estaban embarazadas a la fecha del parámetro.
+  def self.embarazadas_de_20_a_64_activas(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+    ActiveRecord::Base.connection.exec_query(
+      "SELECT
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NULL) THEN
+               1::int8
+             ELSE
+               0::int8
+             END
+         ) AS activos_sin_ceb,
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NOT NULL) THEN
+               1::int8
+             ELSE
+               0::int8
+           END
+         ) AS activos_con_ceb,
+         COUNT(*) AS activos_totales
+         FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
+           LEFT JOIN periodos_de_embarazo pe ON (af.afiliado_id = pe.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc
+             ON (
+               af.afiliado_id = pc.afiliado_id
+               AND pc.fecha_de_inicio <= '#{fecha_base}'
+               AND (pc.fecha_de_finalizacion IS NULL OR pc.fecha_de_finalizacion > '#{fecha_base}')
+             )
+           LEFT JOIN sexos sx ON (af.sexo_id = sx.id)
+         WHERE
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND pe.fecha_de_inicio <= '#{fecha_base}'
+           AND (pe.fecha_de_finalizacion IS NULL OR pe.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 20.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 64.years}'
+           AND sx.codigo = 'F';
+      ").rows[0].collect{ |v| v.to_i }
+  end
+
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)
     return nil unless nombre
@@ -821,3 +923,4 @@ class Afiliado < ActiveRecord::Base
   end
 
 end
+
