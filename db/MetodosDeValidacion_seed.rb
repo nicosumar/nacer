@@ -12,5 +12,17 @@ MetodoDeValidacion.create([
     :metodo => "diagnostico_de_embarazo_del_primer_trimestre?",
     :mensaje => "La prestación es para embarazadas diagnosticadas en el primer trimestre y los datos de la beneficiaria no indican la edad gestacional al diagnóstico o es posterior a las 14 semanas",
     :genera_error => false
+  },
+  { #:id => 3,
+    :nombre => "Verificar que la tensión arterial sistólica es mayor a la diastólica",
+    :metodo => "tension_arterial_valida?",
+    :mensaje => "La tensión arterial sistólica no puede ser inferior a la diastólica",
+    :genera_error => true
+  },
+  { #:id => 4,
+    :nombre => "Verificar que el número de dientes con caries, perdidos y obturados no superan los 32",
+    :metodo => "indice_cpod_valido?",
+    :mensaje => "En el índice CPOD la suma de la cantidad de dientes cariados, perdidos y obturados no puede superar los 32",
+    :genera_error => true
   }
 ])

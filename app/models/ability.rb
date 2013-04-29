@@ -92,7 +92,7 @@ class Ability
     if user.in_group? :facturacion_uad
       can :read, Afiliado
       can :manage, PrestacionBrindada
-      can :manage, DatoAdicionalAsociado
+      can :manage, DatoReportableAsociado
     end
 
     if user.in_group? :capacitacion

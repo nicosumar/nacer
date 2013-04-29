@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateMetodosDeValidacion < ActiveRecord::Migration
   def change
     create_table :metodos_de_validacion do |t|

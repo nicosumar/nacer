@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130419165028) do
+ActiveRecord::Schema.define(:version => 20130423151700) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -285,6 +285,28 @@ ActiveRecord::Schema.define(:version => 20130419165028) do
     t.string   "metodo_de_validacion"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "datos_reportables", :force => true do |t|
+    t.string  "nombre",                 :null => false
+    t.string  "codigo",                 :null => false
+    t.string  "tipo_postgres",          :null => false
+    t.string  "tipo_ruby",              :null => false
+    t.string  "sirge_id"
+    t.boolean "enumerable"
+    t.string  "clase_para_enumeracion"
+    t.boolean "integra_grupo"
+    t.string  "nombre_de_grupo"
+  end
+
+  create_table "datos_reportables_requeridos", :force => true do |t|
+    t.integer "prestacion_id"
+    t.integer "dato_reportable_id"
+    t.date    "fecha_de_inicio"
+    t.date    "fecha_de_finalizacion"
+    t.boolean "obligatorio"
+    t.decimal "minimo",                :precision => 15, :scale => 4
+    t.decimal "maximo",                :precision => 15, :scale => 4
   end
 
   create_table "departamentos", :force => true do |t|
@@ -561,6 +583,7 @@ ActiveRecord::Schema.define(:version => 20130419165028) do
     t.datetime "updated_at"
     t.boolean  "activa",                      :default => true
     t.integer  "objeto_de_la_prestacion_id"
+    t.boolean  "otorga_cobertura",            :default => false
     t.boolean  "comunitaria",                 :default => false
   end
 

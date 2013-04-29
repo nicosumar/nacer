@@ -13,10 +13,13 @@ ActiveRecord::Base.transaction do
   # Determinar la hora y fecha actual
   ahora = DateTime.now()
 
+  # Fecha de inicio del nomenclador
+  fecha_de_inicio = Date.new(2012, 8, 1)
+
   # Creación del nuevo nomenclador
   nomenclador_sumar = Nomenclador.create({
-    :nombre => "Plan de servicios de salud 2013",
-    :fecha_de_inicio => Date.new(2012, 8, 1),
+    :nombre => "PDSS Sumar Agosto de 2012",
+    :fecha_de_inicio => fecha_de_inicio,
     :activo => true,
     :created_at => ahora,
     :updated_at => ahora
@@ -30,6 +33,7 @@ ActiveRecord::Base.transaction do
     :codigo => "CTC005",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C005"),
     :nombre => "Control prenatal de primera vez",
+    :otorga_cobertura => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -40,12 +44,54 @@ ActiveRecord::Base.transaction do
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("PKG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 20.00,
+    :maximo => 299.99,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("TM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.80,
+    :maximo => 2.49,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("EG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0,
+    :maximo => 46.0,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("TAS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 35.0,
+    :maximo => 5.0,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("TAD"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 31.0,
+    :maximo => 1.0,
+    :obligatorio => true
+  })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("tension_arterial_valida?")
 
   prestacion = Prestacion.create({
     :codigo => "CTC006",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C006"),
     :nombre => "Consulta ulterior de control prenatal",
+    :otorga_cobertura => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -56,7 +102,40 @@ ActiveRecord::Base.transaction do
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("PKG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 20.00,
+    :maximo => 299.99,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("EG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0,
+    :maximo => 46.0,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("TAS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 5.0,
+    :maximo => 35.0,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("TAD"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0,
+    :maximo => 31.0,
+    :obligatorio => true
+  })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("tension_arterial_valida?")
 
   prestacion = Prestacion.create({
     :codigo => "CTC010",
@@ -71,6 +150,30 @@ ActiveRecord::Base.transaction do
     :precio_por_unidad => 20.0000,
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CPOD_C"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0,
+    :maximo => 32,
+    :obligatorio => false
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CPOD_P"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0,
+    :maximo => 32,
+    :obligatorio => false
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CPOD_D"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0,
+    :maximo => 32,
+    :obligatorio => false
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 
@@ -90,6 +193,7 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("indice_cpod_valido?")
 
   # OJO: con observaciones
   prestacion = Prestacion.create({
@@ -106,7 +210,48 @@ ActiveRecord::Base.transaction do
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("PKG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 20.00,
+    :maximo => 299.99,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("TM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.80,
+    :maximo => 2.49,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("EG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0,
+    :maximo => 46.0,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("TAS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 35.0,
+    :maximo => 5.0,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("TAD"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 31.0,
+    :maximo => 1.0,
+    :obligatorio => true
+  })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("tension_arterial_valida?")
 
   prestacion = Prestacion.create({
     :codigo => "CTC001",
@@ -697,6 +842,14 @@ ActiveRecord::Base.transaction do
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("HB"),
+    :fecha_de_inicio => fecha_de_inicio,
+  #  :minimo => , TODO: averiguar
+  #  :maximo => , TODO: averiguar
+    :obligatorio => true
+  })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 
   prestacion = Prestacion.create({
@@ -713,6 +866,14 @@ ActiveRecord::Base.transaction do
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("HB"),
+    :fecha_de_inicio => fecha_de_inicio,
+  #  :minimo => , TODO: averiguar
+  #  :maximo => , TODO: averiguar
+    :obligatorio => true
+  })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 
   prestacion = Prestacion.create({
@@ -728,6 +889,14 @@ ActiveRecord::Base.transaction do
     :precio_por_unidad => 10.0000,
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("HB"),
+    :fecha_de_inicio => fecha_de_inicio,
+  #  :minimo => , TODO: averiguar
+  #  :maximo => , TODO: averiguar
+    :obligatorio => true
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 

@@ -3,6 +3,7 @@ class ModifyPrestaciones < ActiveRecord::Migration
   def change
     # Añadir columnas necesarias para el nuevo nomenclador del programa SUMAR
     add_column :prestaciones, :objeto_de_la_prestacion_id, :integer
+    add_column :prestaciones, :otorga_cobertura, :boolean, :default => false
     add_column :prestaciones, :comunitaria, :boolean, :default => false
 
     # Eliminar restricciones que ya no son necesarias

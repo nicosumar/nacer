@@ -18,15 +18,16 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :estado_de_la_prestacion
   belongs_to :nomenclador
   belongs_to :prestacion
-  has_many :datos_adicionales_asociados
-  has_many :datos_adicionales_registrados, :class_name => "DatoAdicional", :through => :datos_adicionales_asociados
-  has_many :datos_adicionales_definidos, :class_name => "DatoAdicional", :through => :prestacion
+  has_many :datos_reportables_asociados
+  has_many :datos_reportables_informados, :class_name => "DatoAdicional", :through => :datos_reportables_asociados
+  has_many :datos_reportables_requeridos, :class_name => "DatoAdicional", :through => :prestacion
 
   # Validaciones
   validates_presence_of :clave_de_beneficiario, :efector_id, :estado_de_la_prestacion_id, :fecha_de_la_prestacion
   validates_presence_of :prestacion_id
   validates_numericality_of :cantidad_de_unidades
-  validates :cantidad_de_unidades_correcta?
+  validate :cantidad_de_unidades_correcta?
+  validate :pasa_validaciones_especificas?
 
   # Objeto para guardar las advertencias
   @advertencias
@@ -69,25 +70,33 @@ class PrestacionBrindada < ActiveRecord::Base
     return !campo_obligatorio_vacio
   end
 
-  def cantidad_de_unidades_correcta?
-    # TODO
+  def pasa_validaciones_especificas?
 
+    error_generado = false
+    self.prestacion.metodos_de_validacion.where(:genera_error => true).each do |mv|
+      if !eval('self.' + mv.nombre)
+        error_generado = true
+        errors.add(:global, mv.mensaje)
+      end
+    end
+
+    return !error_generado
   end
 
   #
   # Métodos de validación adicionales asociados al modelo de la clase MetodoDeValidacion
   def beneficiaria_embarazada?
-    @beneficiaria =
+    beneficiaria =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
         :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
-    if not @beneficiaria
-      @beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    if not beneficiaria
+      beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
-    return @beneficiaria.estaba_embarazada?(fecha_de_la_prestacion)
+    return beneficiaria.estaba_embarazada?(fecha_de_la_prestacion)
   end
 
   def diagnostico_de_embarazo_del_primer_trimestre?
@@ -106,8 +115,47 @@ class PrestacionBrindada < ActiveRecord::Base
     return (@beneficiaria.semanas_de_embarazo < 20)
   end
 
-  def cantidad_de_unidades_valida?
+  def cantidad_de_unidades_correcta?
     (1..self.prestacion.unidades_maximas) === cantidad_de_unidades
+  end
+
+  def tension_arterial_valida?
+    self.datos_reportables_asociados.each do |dr|
+      if dr.dato_reportable.codigo = 'TAD'
+        tad = dr.valor.to_f
+      end
+      if dr.dato_reportable.codigo = 'TAS'
+        tas = dr.valor.to_f
+      end
+    end
+
+    if tas && tad
+      return tas > tad
+    else
+      return false
+    end
+
+  end
+
+  def indice_cpod_valido?
+    self.datos_reportables_asociados.each do |dr|
+      if dr.dato_reportable.codigo = 'CPOD_C'
+        cpod_c = dr.valor.to_i
+      end
+      if dr.dato_reportable.codigo = 'CPOD_P'
+        cpod_p = dr.valor.to_i
+      end
+      if dr.dato_reportable.codigo = 'CPOD_O'
+        cpod_o = dr.valor.to_i
+      end
+    end
+
+    if cpod_c && cpod_p && cpod_o
+      return (cpod_c + cpod_p + cpod_o) <= 32
+    else
+      return false
+    end
+
   end
 
 end
