@@ -24,5 +24,17 @@ MetodoDeValidacion.create([
     :metodo => "indice_cpod_valido?",
     :mensaje => "En el índice CPOD la suma de la cantidad de dientes cariados, perdidos y obturados no puede superar los 32",
     :genera_error => true
+  },
+  { #:id => 5,
+    :nombre => "Verificar que se haya completado la cantidad de días de internación en UTI",
+    :metodo => "ingreso_la_cantidad_de_dias_en_uti?",
+    :mensaje => "La cantidad de días de internación en UTI no puede estar en blanco",
+    :genera_error => true
+  },
+  { #:id => 6,
+    :nombre => "Verificar que se haya completado la cantidad de días de internación en sala común",
+    :metodo => "ingreso_la_cantidad_de_dias_en_sala?",
+    :mensaje => "La cantidad de días de internación en sala común no puede estar en blanco",
+    :genera_error => true
   }
 ])

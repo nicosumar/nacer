@@ -9,5 +9,11 @@ class DatoReportable < ActiveRecord::Base
   has_many :prestaciones, :through => :datos_reportables_requeridos
   has_many :datos_reportables_requeridos
 
+  # id_del_codigo
+  # Devuelve el ID asociado con el código pasado
+  def self.id_del_codigo(codigo)
+    return nil if codigo.blank?
+    find_by_codigo(codigo).id
+  end
 
 end

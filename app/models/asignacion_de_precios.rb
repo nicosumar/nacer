@@ -5,7 +5,7 @@ class AsignacionDePrecios < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :nomenclador_id, :prestacion_id, :precio_por_unidad, :adicional_por_prestacion, :unidades_maximas
-  attr_accessible :observaciones, :created_at, :updated_at
+  attr_accessible :observaciones, :created_at, :updated_at, :dato_reportable_id
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :nomenclador_id, :prestacion_id
@@ -13,6 +13,7 @@ class AsignacionDePrecios < ActiveRecord::Base
   # Asociaciones
   belongs_to :nomenclador
   belongs_to :prestacion
+  belongs_to :dato_reportable
 
   # Validaciones
   validates_presence_of :nomenclador_id, :prestacion_id, :precio_por_unidad

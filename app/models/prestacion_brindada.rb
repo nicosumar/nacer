@@ -158,4 +158,22 @@ class PrestacionBrindada < ActiveRecord::Base
 
   end
 
+  def ingreso_la_cantidad_de_dias_en_uti?
+    self.datos_reportables_asociados.each do |dr|
+      if dr.dato_reportable.codigo = 'UTI'
+        uti = dr.valor.gsub(/^([[:blank:]-]+)([[:digit:]]+)([^[:digit:]]*)/, '\2')
+        return !uti.blank?
+      end
+    end
+  end
+
+  def ingreso_la_cantidad_de_dias_en_sala?
+    self.datos_reportables_asociados.each do |dr|
+      if dr.dato_reportable.codigo = 'SC'
+        sc = dr.valor.gsub(/^([[:blank:]-]+)([[:digit:]]+)([^[:digit:]]*)/, '\2')
+        return !sc.blank?
+      end
+    end
+  end
+
 end

@@ -169,7 +169,7 @@ ActiveRecord::Base.transaction do
   })
   DatoReportableRequerido.create({
     :prestacion_id => prestacion.id,
-    :dato_reportable_id => DatoReportable.id_del_codigo("CPOD_D"),
+    :dato_reportable_id => DatoReportable.id_del_codigo("CPOD_O"),
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0,
     :maximo => 32,
@@ -266,6 +266,12 @@ ActiveRecord::Base.transaction do
     :precio_por_unidad => 10.0000,
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("FP"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :obligatorio => true
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 
@@ -846,8 +852,8 @@ ActiveRecord::Base.transaction do
     :prestacion_id => prestacion.id,
     :dato_reportable_id => DatoReportable.id_del_codigo("HB"),
     :fecha_de_inicio => fecha_de_inicio,
-  #  :minimo => , TODO: averiguar
-  #  :maximo => , TODO: averiguar
+    :minimo => 2.0,
+    :maximo => 20.0,
     :obligatorio => true
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
@@ -870,8 +876,8 @@ ActiveRecord::Base.transaction do
     :prestacion_id => prestacion.id,
     :dato_reportable_id => DatoReportable.id_del_codigo("HB"),
     :fecha_de_inicio => fecha_de_inicio,
-  #  :minimo => , TODO: averiguar
-  #  :maximo => , TODO: averiguar
+    :minimo => 2.0,
+    :maximo => 20.0,
     :obligatorio => true
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
@@ -894,8 +900,8 @@ ActiveRecord::Base.transaction do
     :prestacion_id => prestacion.id,
     :dato_reportable_id => DatoReportable.id_del_codigo("HB"),
     :fecha_de_inicio => fecha_de_inicio,
-  #  :minimo => , TODO: averiguar
-  #  :maximo => , TODO: averiguar
+    :minimo => 2.0,
+    :maximo => 20.0,
     :obligatorio => true
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
@@ -945,6 +951,18 @@ ActiveRecord::Base.transaction do
     :precio_por_unidad => 40.0000,
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("DIAG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("AMEU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :obligatorio => true
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 
@@ -1096,6 +1114,14 @@ ActiveRecord::Base.transaction do
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("PG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 400,
+    :maximo => 9999,
+    :obligatorio => true
+  })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 
   prestacion = Prestacion.create({
@@ -1112,6 +1138,14 @@ ActiveRecord::Base.transaction do
     :precio_por_unidad => 150.0000,
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("PG"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 400,
+    :maximo => 9999,
+    :obligatorio => true
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 
@@ -1164,6 +1198,7 @@ ActiveRecord::Base.transaction do
   prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
   prestacion.diagnosticos << Diagnostico.find_by_codigo("W78") # Embarazo
   prestacion.diagnosticos << Diagnostico.find_by_codigo("W84") # Embarazo de alto riesgo
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4") # Embarazo con diabetes gestacional
   AsignacionDePrecios.create({
     :precio_por_unidad => 10.0000,
     :adicional_por_prestacion => 0.0000,
@@ -1237,6 +1272,8 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  # EMBARAZO DE ALTO RIESGO: Ambulatorio
 
   prestacion = Prestacion.create({
     :codigo => "NTN004",
@@ -1456,6 +1493,9 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4") # Añadido de la nosología de diabetes gestacional
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.1") # Añadido de la nosología de hemorragia posparto
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.2") # Añadido de la nosología de hemorragia posparto
   AsignacionDePrecios.create({
     :precio_por_unidad => 2.5000,
     :adicional_por_prestacion => 0.0000,
@@ -1474,6 +1514,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
   AsignacionDePrecios.create({
     :precio_por_unidad => 6.2500,
     :adicional_por_prestacion => 0.0000,
@@ -1492,6 +1533,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
   AsignacionDePrecios.create({
     :precio_por_unidad => 2.5000,
     :adicional_por_prestacion => 0.0000,
@@ -1510,6 +1552,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
   AsignacionDePrecios.create({
     :precio_por_unidad => 2.5000,
     :adicional_por_prestacion => 0.0000,
@@ -1528,6 +1571,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  #prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4") ## ¿Quizás?
   AsignacionDePrecios.create({
     :precio_por_unidad => 6.2500,
     :adicional_por_prestacion => 0.0000,
@@ -1556,7 +1600,7 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.create({
     :codigo => "LBL002",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("L002"),
-    :nombre => 'Ácido úrico',
+    :nombre => 'Ácido úrico', # En la parte de HTA figura como 'Uricemia'
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -1564,6 +1608,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
   AsignacionDePrecios.create({
     :precio_por_unidad => 2.5000,
     :adicional_por_prestacion => 0.0000,
@@ -1582,6 +1627,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
   AsignacionDePrecios.create({
     :precio_por_unidad => 2.5000,
     :adicional_por_prestacion => 0.0000,
@@ -1592,7 +1638,7 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.create({
     :codigo => "LBL021",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("L021"),
-    :nombre => 'Creatinina en orina',
+    :nombre => 'Creatinina en orina', # En la parte de HTA figura como 'Creatinina urinaria (24 hs)
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -1600,6 +1646,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
   AsignacionDePrecios.create({
     :precio_por_unidad => 2.5000,
     :adicional_por_prestacion => 0.0000,
@@ -1618,6 +1665,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
   AsignacionDePrecios.create({
     :precio_por_unidad => 2.5000,
     :adicional_por_prestacion => 0.0000,
@@ -1744,6 +1792,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
   AsignacionDePrecios.create({
     :precio_por_unidad => 25.0000,
     :adicional_por_prestacion => 0.0000,
@@ -1785,7 +1834,417 @@ ActiveRecord::Base.transaction do
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
   })
+
+  prestacion = Prestacion.create({
+    :codigo => "PRP031",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("P031"),
+    :nombre => 'Monitoreo fetal anteparto',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 15.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC018",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C018"),
+    :nombre => 'Consulta de seguimiento del puerperio de paciente con hipertensión',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC007",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C007"),
+    :nombre => 'Consulta inicial de diabetes gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 20.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC022",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C022"),
+    :nombre => 'Consulta de seguimiento de diabetes gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 20.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC011",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C011"),
+    :nombre => 'Consulta con oftalmólogo de embarazadas con diabetes gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC016",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C016"),
+    :nombre => 'Consulta con cardiólogo de embarazadas con diabetes gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC016",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C016"),
+    :nombre => 'Consulta con endocrinólogo de embarazadas con diabetes gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC016",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C016"),
+    :nombre => 'Consulta con nutricionista de embarazadas con diabetes gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  # Hemograma completo se añade como otro diagnóstico al ya creado para las pacientes con HTA
+  # KPTT se añade como otro diagnóstico al ya creado para las pacientes con HTA
+  # Tiempo de protrombina se añade como otro diagnóstico al ya creado para las pacientes con HTA
+  # Tiempo de trombina se añade como otro diagnóstico al ya creado para las pacientes con HTA
+
+  prestacion = Prestacion.create({
+    :codigo => "LBL056",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("L056"),
+    :nombre => 'Hemoglobina glicosilada',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "LBL133",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("L133"),
+    :nombre => 'Fructosamina', # En el anexo figura 'Frotis de sangre periférica'
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2.5000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "LBL117",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("L117"),
+    :nombre => 'Urea',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2.5000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  # Ácido úrico: lo añado en la prestación ya creada para HTA
+  # Creatinina sérica: lo añado en la prestación ya creada para HTA
+  # Creatinina en orina: lo añado en la prestación ya creada para HTA
+  # Proteinuria: lo añado en la prestación ya creada para HTA
+
+  prestacion = Prestacion.create({
+    :codigo => "LBL118",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("L118"),
+    :nombre => 'Urocultivo',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "LBL094",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("L094"),
+    :nombre => 'Prueba de tolerancia a la glucosa',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  # Proteinuria: lo añado en la prestación ya creada para HTA
+
+  prestacion = Prestacion.create({
+    :codigo => "IGR039",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("R039"),
+    :nombre => 'Ecocadiograma fetal',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 50.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  # Monitoreo fetal anteparto: lo añado en la prestación ya creada para HTA
+  # Monitoreo fetal anteparto: lo añado en la prestación ya creada para HTA
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC018",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C018"),
+    :nombre => 'Consulta de seguimiento del puerperio de paciente con diabetes gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC018",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C018"),
+    :nombre => 'Consulta del puerperio con nutricionista',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC018",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C018"),
+    :nombre => 'Consulta de seguimiento del puerperio de paciente con hemorragia posparto',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.2")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 10.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "IGR008",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("R008"),
+    :nombre => 'Ecografía ginecológica',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.2")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 25.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  # Hemograma: agrego los diagnósticos O72.1 y O72.2 en la prestación creada para HTA
+
+  # EMBARAZO DE ALTO RIESGO: Internación
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE007",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E007"),
+    :nombre => 'Emergencia hipertensiva: preeclampsia grave, eclampsia, sindrome de Hellp',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O11")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O14")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O15")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("UTI"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0000,
+    :maximo => 7.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 636.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("UTI"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_uti?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE008",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E008"),
+    :nombre => 'Amenaza de parto prematuro',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O47")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0000,
+    :maximo => 5.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 50.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITQ004",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("Q004"),
+    :nombre => 'Hemorragia posparto con histerectomía',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O47")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("UTI"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0000,
+    :maximo => 4.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 636.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("UTI"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 150.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
 
 
   # ANEXO: RONDAS
