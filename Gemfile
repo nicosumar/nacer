@@ -15,7 +15,6 @@ end
 
 gem 'jquery-rails'
 gem 'devise'
-gem 'mongrel'
 gem 'therubyracer'
 gem 'haml'
 gem 'cancan'

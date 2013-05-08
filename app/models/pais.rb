@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 class Pais < ActiveRecord::Base
 
+  has_many :provincias
+  
   # id_del_nombre
   # Devuelve el id asociado con el código pasado
   def self.id_del_nombre(nombre)

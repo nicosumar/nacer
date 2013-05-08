@@ -45,7 +45,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.2)
-    daemons (1.0.10)
     devise (2.2.3)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -54,7 +53,6 @@ GEM
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
-    gem_plugin (0.2.3)
     haml (4.0.1)
       tilt
     highline (1.6.16)
@@ -72,9 +70,6 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.21)
     minitest (4.7.0)
-    mongrel (1.2.0.pre2)
-      daemons (~> 1.0.10)
-      gem_plugin (~> 0.2.3)
     multi_json (1.7.1)
     net-scp (1.1.0)
       net-ssh (>= 2.6.5)
@@ -154,7 +149,6 @@ DEPENDENCIES
   jquery-rails
   json
   minitest
-  mongrel
   nilify_blanks
   pg
   rails (= 3.2.13)

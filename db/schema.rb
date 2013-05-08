@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130419165028) do
+ActiveRecord::Schema.define(:version => 20130506154957) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -511,9 +511,12 @@ ActiveRecord::Schema.define(:version => 20130419165028) do
   end
 
   create_table "provincias", :force => true do |t|
-    t.string  "nombre",           :null => false
+    t.string  "nombre",                          :null => false
     t.integer "provincia_bio_id"
+    t.integer "pais_id",          :default => 1
   end
+
+  add_index "provincias", ["pais_id"], :name => "index_provincias_on_pais_id"
 
   create_table "referentes", :force => true do |t|
     t.integer  "efector_id",            :null => false
