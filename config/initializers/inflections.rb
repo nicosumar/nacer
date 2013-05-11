@@ -250,6 +250,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("dato·_reportable·_asociado·", "datos_reportables_asociados")
   inflect.irregular("DatoReportableAsociado", "Datos·Reportables·Asociados·")
   inflect.irregular("Dato·Reportable·Asociado·", "DatosReportablesAsociados")
+  inflect.irregular("addenda_sumar", "addendas·_sumar·")
+  inflect.irregular("addenda·_sumar·", "addendas_sumar")
+  inflect.irregular("AddendaSumar", "Addendas·Sumar·")
+  inflect.irregular("Addenda·Sumar·", "AddendasSumar")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

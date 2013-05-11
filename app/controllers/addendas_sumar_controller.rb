@@ -1,11 +1,11 @@
 # -*- encoding : utf-8 -*-
-class PrestacionesBrindadasController < ApplicationController
+class AddendasSumarController < ApplicationController
   before_filter :authenticate_user!
 
-  # GET /prestaciones_brindadas
+  # GET /addendas_sumar
   def index
     # Verificar los permisos del usuario
-    if cannot? :read, PrestacionBrindada
+    if cannot? :read, AddendaSumar
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -14,46 +14,17 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Preparar los objetos necesarios para la vista
-    @estados_de_las_prestaciones =
-      [["En cualquier estado", nil]] +
-      EstadoDeLaPrestacion.find(:all, :order => :id).collect{ |e| ["En estado '" + e.nombre + "'", e.id] }
-
-    # Verificar si hay un parámetro para filtrar las novedades
-    if params[:estado_de_la_prestacion_id].blank?
-      # No hay filtro, devolver todas las prestaciones brindadas
-      @prestaciones_brindadas =
-        PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico],
-          :order => "updated_at DESC"
-        )
-      @estado_de_la_prestacion_id = nil
-      @descripcion_del_estado = 'registradas'
-    else
-      @estado_de_la_prestacion_id = params[:estado_de_la_prestacion_id].to_i
-      # Verificar que el parámetro sea un estado válido
-      if @estado_de_la_prestacion_id && !@estados_de_las_prestaciones.collect{|i| i[1]}.member?(@estado_de_la_prestacion_id)
-        redirect_to(root_url,
-          :flash => { :tipo => :error, :titulo => "La petición no es válida",
-           :mensaje => "Se informará al administrador del sistema sobre este incidente."
-          }
-        )
-        return
-      end
-      @descripcion_del_estado = EstadoDeLaPrestacion.find(@estado_de_la_prestacion_id).nombre
-
-      # Obtener las novedades filtradas de acuerdo con el parámetro
-      @prestaciones_brindadas =
-        PrestacionBrindada.con_estado(@estado_de_la_prestacion_id).paginate(:page => params[:page], :per_page => 20,
-          :include => [:prestacion, :diagnostico], :order => "updated_at DESC"
-        )
-    end
-
+    # Obtener el listado de addendas
+    @addendas =
+      AddendaSumar.paginate(:page => params[:page], :per_page => 20, :include => {:convenio_de_gestion_sumar => :efector},
+        :order => "updated_at DESC"
+      )
   end
 
-  # GET /prestaciones_brindadas/:id
+  # GET /addendas_sumar/:id
   def show
     # Verificar los permisos del usuario
-    if cannot? :read, PrestacionBrindada
+    if cannot? :read, AddendaSumar
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -62,38 +33,29 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Obtener la prestación solicitada
+    # Obtener la adenda solicitada
     begin
-      @prestacion_brindada =
-        PrestacionBrindada.find(params[:id],
-          :include => [:estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico]
+      @addenda =
+        AddendaSumar.find( params[:id],
+          :include => [ {:convenio_de_gestion_sumar => :efector},
+            {:prestaciones_autorizadas_alta => :prestacion},
+            {:prestaciones_autorizadas_baja => :prestacion}
+          ]
         )
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "La prestación solicitada no existe",
+        :flash => { :tipo => :error, :titulo => "La adenda solicitada no existe",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
-      return
     end
-
-    # Obtener el afiliado o la novedad asociadas a la prestación
-    @beneficiario =
-      NovedadDelAfiliado.where(
-        :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-      ).first
-    if not @beneficiario
-      @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
-    end
-
+    @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
   end
 
-  # GET /prestaciones_brindadas/new
+  # GET /addendas_sumar/new
   def new
     # Verificar los permisos del usuario
-    if cannot? :create, PrestacionBrindada
+    if cannot? :create, AddendaSumar
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -102,8 +64,23 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Para crear prestaciones debe indicarse la clave de beneficiario a la que se asociará la prestación
-    if !params[:clave_de_beneficiario] && !params[:prestacion_brindada]
+    # Para crear addendas, debe accederse desde la página del convenio que se modificará
+    if !params[:convenio_de_gestion_sumar_id]
+      redirect_to( convenios_de_gestion_sumar_url,
+        :flash => { :tipo => :advertencia, :titulo => "No se ha seleccionado un convenio de gestión",
+          :mensaje => [ "Para poder crear la nueva adenda, debe hacerlo accediendo antes a la página " +
+            "del convenio de gestión que va a modificarse.",
+            "Seleccione el convenio de gestión del listado, o realice una búsqueda para encontrarlo."
+          ]
+        }
+      )
+      return
+    end
+
+    # Obtener el convenio de gestión asociado
+    begin
+      @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:convenio_de_gestion_sumar_id])
+    rescue ActiveRecord::RecordNotFound
       redirect_to(
         root_url,
         :flash => {:tipo => :error, :titulo => "La petición no es válida",
@@ -113,94 +90,22 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Obtener la novedad o el afiliado asociado a la clave
-    @beneficiario =
-      NovedadDelAfiliado.where(
-        :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-      ).first
-    if !@beneficiario
-      @beneficiario =
-        Afiliado.find_by_clave_de_beneficiario(
-          params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]
-        )
-    end
-
-    if !@beneficiario
-      redirect_to(
-        root_url,
-        :flash => {:tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre el incidente."
-        }
-      )
-      return
-    end
-
-    # Esta acción se ejecuta en dos partes. La inicial fija el efector y la fecha de la prestación, y la segunda define el resto de los datos.
-    if !params[:commit]
-      # Preparar los objetos para la vista de la primer etapa (selección de efector y fecha)
-      @prestacion_brindada = PrestacionBrindada.new
-      @prestacion_brindada.clave_de_beneficiario = @beneficiario.clave_de_beneficiario
-      @efectores = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.order(:nombre).collect{
-        |e| [e.cuie + " - " + e.nombre, e.id]
-      }
-      if @efectores.size == 1
-        # Fijar el efector si la UAD solo tiene asociado un efector para facturación
-        @prestacion_brindada.efector_id = @efectores.first[1]
-      else
-        @prestacion_brindada.efector_id = nil
-      end
-      render :action => "efector_y_fecha"
-      return
-    else
-      # Crear el objeto desde los parámetros y verificar si está correcto
-      @prestacion_brindada = PrestacionBrindada.new(params[:prestacion_brindada])
-      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("I")
-
-      # Verificar si se completaron los datos obligatorios
-      if !@prestacion_brindada.verificacion_correcta?
-        # Recrear los objetos para presentar nuevamente el formulario con los errores
-        @efectores = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.order(:nombre).collect{
-          |e| [e.cuie + " - " + e.nombre, e.id]
-        }
-        if @efectores.size == 1
-          @prestacion_brindada.efector_id = @efectores.first[1]
-        else
-          @prestacion_brindada.efector_id = nil
-        end
-        render :action => "efector_y_fecha"
-        return
-      end
-    end
-
-    # Añadir un nuevo objeto DatoReportableAsociado para cada uno de los DatosReportables definidos
-    @prestacion_brindada.datos_reportables_asociados.build(
-      DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{ |dr| {:dato_reportable_id => dr.id} }
-    )
-
-    # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
-    autorizadas_por_efector =
-      Prestacion.find(
-        @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
-          |p| p.prestacion_id
-        }
-      )
-    autorizadas_por_grupo =
-      @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
-    autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
-    @prestaciones =
-      autorizadas_por_efector.keep_if{
-          |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
-        }.collect{ |p| [p.nombre_corto, p.id] }
-    @diagnosticos = []
-
+    # Crear los objetos necesarios para la vista
+    @addenda = AddendaSumar.new
+    @prestaciones_alta = Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).collect{
+      |p| [p.codigo + " - " + p.nombre_corto, p.id]
+    }
+    @prestaciones_baja = PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).collect{
+      |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
+    }
+    @prestacion_autorizada_alta_ids = []
+    @prestacion_autorizada_baja_ids = []
   end
 
-  # GET /addendas/:id/edit
+  # GET /addendas_sumar/:id/edit
   def edit
     # Verificar los permisos del usuario
-    if cannot? :update, Addenda
+    if cannot? :update, AddendaSumar
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -211,9 +116,9 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Obtener la adenda
     begin
-      @addenda = Addenda.find( params[:id],
+      @addenda = AddendaSumar.find( params[:id],
         :include => [
-          {:convenio_de_gestion => :efector},
+          {:convenio_de_gestion_sumar => :efector},
           {:prestaciones_autorizadas_alta => :prestacion},
           {:prestaciones_autorizadas_baja => :prestacion}
         ]
@@ -228,8 +133,8 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     # Crear los objetos necesarios para la vista
-    @convenio_de_gestion = @addenda.convenio_de_gestion
-    @prestaciones_alta = Prestacion.no_autorizadas_antes_del_dia(
+    @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
+    @prestaciones_alta = Prestacion.no_autorizadas_sumar_antes_del_dia(
       @convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).collect{
         |p| [p.codigo + " - " + p.nombre_corto, p.id]
       }
@@ -247,10 +152,10 @@ class PrestacionesBrindadasController < ApplicationController
       }
   end
 
-  # POST /addendas
+  # POST /addendas_sumar
   def create
     # Verificar los permisos del usuario
-    if cannot? :create, Addenda
+    if cannot? :create, AddendaSumar
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -260,7 +165,7 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     # Verificar si la petición contiene los parámetros esperados
-    if !params[:addenda] || !params[:addenda][:convenio_de_gestion_id]
+    if !params[:addenda_sumar] || !params[:addenda_sumar][:convenio_de_gestion_sumar_id]
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre el incidente."
@@ -271,7 +176,7 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Obtener el convenio de gestión asociado
     begin
-      @convenio_de_gestion = ConvenioDeGestion.find(params[:addenda][:convenio_de_gestion_id])
+      @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:addenda_sumar][:convenio_de_gestion_sumar_id])
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
@@ -282,15 +187,15 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     # Guardar las prestaciones seleccionadas para dar de alta y de baja
-    @prestacion_autorizada_alta_ids = params[:addenda].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
-    @prestacion_autorizada_baja_ids = params[:addenda].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
+    @prestacion_autorizada_alta_ids = params[:addenda_sumar].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
+    @prestacion_autorizada_baja_ids = params[:addenda_sumar].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
 
     # Crear una nueva adenda desde los parámetros
-    @addenda = Addenda.new(params[:addenda])
+    @addenda = AddendaSumar.new(params[:addenda_sumar])
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @prestaciones_alta =
-      Prestacion.no_autorizadas(@convenio_de_gestion.efector.id).collect{
+      Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).collect{
         |p| [p.codigo + " - " + p.nombre_corto, p.id]
       }
     @prestaciones_baja =
@@ -345,10 +250,10 @@ class PrestacionesBrindadasController < ApplicationController
     end
   end
 
-  # PUT /addendas/:id
+  # PUT /addendas_sumar/:id
   def update
     # Verificar los permisos del usuario
-    if cannot? :update, Addenda
+    if cannot? :update, AddendaSumar
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -358,7 +263,7 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     # Verificar si la petición contiene los parámetros esperados
-    if !params[:addenda]
+    if !params[:addenda_sumar]
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre el incidente."
@@ -369,7 +274,7 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Obtener la addenda que se actualizará y su convenio de gestión
     begin
-      @addenda = Addenda.find(params[:id], :include => [{:convenio_de_gestion => :efector},
+      @addenda = AddendaSumar.find(params[:id], :include => [{:convenio_de_gestion_sumar => :efector},
         {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion}])
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
@@ -379,10 +284,10 @@ class PrestacionesBrindadasController < ApplicationController
       )
       return
     end
-    @convenio_de_gestion = @addenda.convenio_de_gestion
+    @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
-    @prestaciones_alta = Prestacion.no_autorizadas_antes_del_dia(
+    @prestaciones_alta = Prestacion.no_autorizadas_sumar_antes_del_dia(
       @convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).collect{
         |p| [p.codigo + " - " + p.nombre_corto, p.id]
       }
@@ -392,11 +297,11 @@ class PrestacionesBrindadasController < ApplicationController
       }
 
     # Preservar las prestaciones seleccionadas para dar de alta y de baja
-    @prestacion_autorizada_alta_ids = params[:addenda].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
-    @prestacion_autorizada_baja_ids = params[:addenda].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
+    @prestacion_autorizada_alta_ids = params[:addenda_sumar].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
+    @prestacion_autorizada_baja_ids = params[:addenda_sumar].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
 
     # Actualizar los valores de los atributos no protegidos por asignación masiva
-    @addenda.attributes = params[:addenda]
+    @addenda.attributes = params[:addenda_sumar]
 
     # Verificar la validez del objeto
     if @addenda.valid?

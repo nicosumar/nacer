@@ -39,7 +39,7 @@ class ConveniosDeGestionSumarController < ApplicationController
         ConvenioDeGestionSumar.find(params[:id],
           :include => [
             :efector, {:prestaciones_autorizadas => :prestacion},
-            { :addendas => [ {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion} ] }
+            { :addendas_sumar => [ {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion} ] }
           ]
         )
     rescue ActiveRecord::RecordNotFound
@@ -89,7 +89,7 @@ class ConveniosDeGestionSumarController < ApplicationController
 
     # Obtener el convenio
     begin
-      @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:id], :include => [:efector, :prestaciones_autorizadas, :addendas])
+      @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:id], :include => [:efector, :prestaciones_autorizadas, :addendas_sumar])
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
@@ -139,7 +139,7 @@ class ConveniosDeGestionSumarController < ApplicationController
     @efectores = Efector.find(:all, :order => :nombre).collect{ |e| [e.nombre_corto, e.id] }
     @efector_id = @convenio_de_gestion.efector_id
     @prestaciones =
-      Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL", :order => :codigo).collect{
+      Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL").order(:codigo).collect{
         |p| [p.codigo + " - " + p.nombre_corto, p.id]
       }
 
@@ -156,6 +156,12 @@ class ConveniosDeGestionSumarController < ApplicationController
         return
       end
 
+      # Al crear el nuevo convenio de gestión, deben deshabilitarse todas las prestaciones que el efector tenía
+      # autorizadas
+      @convenio_de_gestion.efector.prestaciones_autorizadas.where("fecha_de_finalizacion IS NULL").each do |p|
+        p.update_attributes(:fecha_de_finalizacion => @convenio_de_gestion.fecha_de_inicio)
+      end
+      
       # Registrar el usuario que realiza la creación
       @convenio_de_gestion.creator_id = current_user.id
       @convenio_de_gestion.updater_id = current_user.id
@@ -268,7 +274,7 @@ class ConveniosDeGestionSumarController < ApplicationController
   # GET /convenios_de_gestion_sumar/:id/addendas
   def addendas
     # Verificar los permisos del usuario
-    if cannot? :read, Addenda
+    if cannot? :read, AddendaSumar
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -282,7 +288,7 @@ class ConveniosDeGestionSumarController < ApplicationController
       @convenio_de_gestion =
         ConvenioDeGestionSumar.find(params[:id],
           :include => {
-            :addendas => [ {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion} ]
+            :addendas_sumar => [ {:prestaciones_autorizadas_alta => :prestacion}, {:prestaciones_autorizadas_baja => :prestacion} ]
           }
         )
     rescue ActiveRecord::RecordNotFound

@@ -6,7 +6,7 @@
   #action-links
     - if can? :create, Addenda
       - if @efector.convenio_de_gestion_sumar
-        = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_sumar_id => @efector.convenio_de_gestion_sumar.id)
+        = link_to "Agregar una adenda", new_addenda_sumar_path(:convenio_de_gestion_sumar_id => @efector.convenio_de_gestion_sumar.id)
       - elsif @efector.convenio_de_gestion
         = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @efector.convenio_de_gestion.id)
 
@@ -37,14 +37,13 @@
           %tr
             %td= p.prestacion.codigo
             %td= p.prestacion.nombre_corto
-            - if p.autorizante_al_alta_type == 'ConvenioDeGestion'
-              %td Convenio de gestión
-            - elsif p.autorizante_al_alta_type == 'ConvenioDeGestionSumar'
-              %td Convenio de gestión Sumar
-            - elsif p.autorizante_al_alta_type == 'Addenda'
-              %td Adenda
-            - else
-              %td (desconocido)
+            - case
+              - when p.autorizante_al_alta_type == 'ConvenioDeGestion' || p.autorizante_al_alta_type == 'ConvenioDeGestionSumar'
+                %td Convenio de gestión
+              - when p.autorizante_al_alta_type == 'Addenda' || p.autorizante_al_alta_type == 'AddendaSumar'
+                %td Adenda
+              - else
+                %td (desconocido)
             %td= p.autorizante_al_alta.fecha_de_inicio.strftime('%d/%m/%Y')
   - else
     No hay información sobre las prestaciones autorizadas para el convenio

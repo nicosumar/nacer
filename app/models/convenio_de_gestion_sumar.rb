@@ -13,7 +13,7 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
   # Asociaciones
   belongs_to :efector
   has_many :prestaciones_autorizadas, :as => :autorizante_al_alta
-  has_many :addendas
+  has_many :addendas_sumar
 
   # Validaciones
   validates_presence_of :numero, :efector_id, :fecha_de_inicio

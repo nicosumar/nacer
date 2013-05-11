@@ -50,7 +50,7 @@
     - if @efectores.size == 1
       %div.field_content
         %span.field_name Efector*
-        %span.field_content= @efectores.first[0]
+        %span.field_value= @efectores.first[0]
       = f.hidden_field :efector_id, :value => @prestacion_brindada.efector_id
     - else
       %div.field

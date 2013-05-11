@@ -23,6 +23,7 @@ Nacer::Application.routes.draw do
     get 'referentes', :on => :member, :as => :referentes_del
   end
   resources :addendas, :except => :destroy
+  resources :addendas_sumar, :except => :destroy
   resources :nomencladores, :except => :destroy
   resources :busqueda, :only => :index
   resources :verificador, :only => :index

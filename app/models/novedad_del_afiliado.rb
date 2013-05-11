@@ -65,7 +65,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   validates_numericality_of :semanas_de_embarazo, :only_integer => true, :allow_blank => true, :greater_than => 3, :less_than => 43
 
   # Objeto para guardar las advertencias
-  @advertencias
+  @advertencias = []
 
   # copiar_atributos_del_afiliado
   # Copia los valores de los atributos del afiliado a esta novedad

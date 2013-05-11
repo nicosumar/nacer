@@ -5,7 +5,7 @@
   %h1 Adendas del convenio de gestión Sumar
   #action-links
     - if can? :create, Addenda
-      = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @convenio_de_gestion.id)
+      = link_to "Agregar una adenda", new_addenda_sumar_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)
 
 = render :partial => "shared/info"
 
@@ -21,7 +21,7 @@
     = link_to "Ver detalles del efector", @convenio_de_gestion.efector
 
   %h3 Adendas que modifican este convenio
-  - if @convenio_de_gestion.addendas.any? then
+  - if @convenio_de_gestion.addendas_sumar.any? then
     %table
       %thead
         %tr
@@ -30,7 +30,7 @@
           %th Prestaciones dadas de baja
           %th Observaciones
       %tbody
-        - @convenio_de_gestion.addendas.order(:fecha_de_inicio).each do |a|
+        - @convenio_de_gestion.addendas_sumar.order(:fecha_de_inicio).each do |a|
           %tr.clickable{ |
             :onclick => "location.href=\'#{addenda_path(a)}\'", |
             :title => "Ver detalles de la adenda suscrita el #{a.fecha_de_suscripcion.strftime("%d/%m/%Y")}" } |

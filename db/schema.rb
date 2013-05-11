@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130511095541) do
+ActiveRecord::Schema.define(:version => 20130511152816) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -27,6 +27,19 @@ ActiveRecord::Schema.define(:version => 20130511095541) do
   end
 
   add_index "addendas", ["numero"], :name => "unq_addendas_numero", :unique => true
+
+  create_table "addendas_sumar", :force => true do |t|
+    t.string   "numero",                       :null => false
+    t.integer  "convenio_de_gestion_sumar_id", :null => false
+    t.string   "firmante"
+    t.date     "fecha_de_suscripcion"
+    t.date     "fecha_de_inicio",              :null => false
+    t.text     "observaciones"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+  end
 
   create_table "afiliados", :id => false, :force => true do |t|
     t.integer "afiliado_id",                           :null => false
@@ -227,6 +240,8 @@ ActiveRecord::Schema.define(:version => 20130511095541) do
     t.text     "observaciones"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
@@ -261,6 +276,8 @@ ActiveRecord::Schema.define(:version => 20130511095541) do
     t.text     "observaciones"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "creator_id"
+    t.integer  "updater_id"
   end
 
   add_index "convenios_de_gestion_sumar", ["efector_id"], :name => "unq_convenios_de_gestion_sumar_efector_id", :unique => true

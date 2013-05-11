@@ -1,8 +1,8 @@
 - content_for :title do
   Creación de una nueva prestación brindada
 
--# content_for :other_includes do
-  = javascript_include_tag 'verificacion'
+- content_for :other_includes do
+  = javascript_include_tag 'prestaciones_brindadas'
 
 #content-header
   %h1 Creación de una nueva prestación brindada
@@ -20,14 +20,14 @@
   %h3
     Datos más recientes sobre
     - if @beneficiario.sexo.codigo == 'F'
-      la beneficiaria, según
+      la beneficiaria,
     - else
-      el beneficiario, según
+      el beneficiario,
     - if @beneficiario.is_a? NovedadDelAfiliado
-      = link_to "una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + " pendiente", @beneficiario, |
+      = link_to "según una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + " pendiente", @beneficiario, |
         { :title => "Ver detalles de la solicitud en otra pestaña", :onclick => "this.target='_blank'" } |
     - else
-      = link_to "el registro en el padrón de beneficiarios", @beneficiario, |
+      = link_to "según el registro en el padrón de beneficiarios", @beneficiario, |
         { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
 
   %div.field_content
@@ -54,17 +54,26 @@
     = f.hidden_field :efector_id, :value => @prestacion_brindada.efector_id
     = f.hidden_field :fecha_de_la_prestacion, :value => @prestacion_brindada.fecha_de_la_prestacion
 
-    %div.field
+    #prestacion.field
       = f.label :prestacion_id, "Prestación*"
       = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
         {:include_blank => true} |
+    #diagnostico.field{:style => "display: none;"}
+      = f.label :diagnostico_id, "Diagnóstico*"
+      = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), {:include_blank => true}
+    #cantidad_de_unidades.field{:style => "display: none;"}
+      = f.label :cantidad_de_unidades, "Cantidad de unidades*"
+      = f.text_field :cantidad_de_unidades, {:size => 6}
+    #es_catastrofica.field{:style => "display: none;"}
+      = f.label :es_catastrofica, "Es catastrófica*"
+      = f.check_box :es_catastrofica
 
-    %h3 Atributos reportables
+    %h3{:style => "display: none;"} Atributos reportables
     - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
       = f.fields_for :datos_reportables_asociados_attributes, :index => i do |dra_f|
         - if dra.dato_reportable.integra_grupo && dra.dato_reportable.orden_de_grupo == 1
-          %h4= dra.dato_reportable.nombre_de_grupo
-        %div.field{:id => "dato_reportable_" + dra.dato_reportable_id.to_s}
+          %h4{:style => "display: none;"}= dra.dato_reportable.nombre_de_grupo
+        %div.field{:id => "dato_reportable_" + dra.dato_reportable_id.to_s, :style => "display: none;"}
           = dra_f.label :valor, dra.dato_reportable.nombre
           - case
             - when dra.dato_reportable.enumerable

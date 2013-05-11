@@ -32,7 +32,7 @@ class PrestacionBrindada < ActiveRecord::Base
   validate :pasa_validaciones_especificas?
 
   # Objeto para guardar las advertencias
-  @advertencias
+  @advertencias = []
 
   #
   # self.con_estado

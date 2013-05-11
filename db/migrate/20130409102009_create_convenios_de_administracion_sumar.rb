@@ -10,6 +10,8 @@ class CreateConveniosDeAdministracionSumar < ActiveRecord::Migration
       t.date :fecha_de_inicio, :null => false
       t.date :fecha_de_finalizacion
       t.text :observaciones
+      t.integer :creator_id
+      t.integer :updater_id
       t.timestamps
     end
   end

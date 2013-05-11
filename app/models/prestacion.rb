@@ -58,6 +58,22 @@ class Prestacion < ActiveRecord::Base
         ORDER BY codigo;")
   end
 
+  # Devuelve las prestaciones que han sido autorizadas para el ID del efector que se pasa
+  # como parámetro.
+  def self.autorizadas_sumar(efector_id)
+    Prestacion.find_by_sql("
+      SELECT prestaciones.*
+        FROM prestaciones
+        WHERE
+          id IN (
+            SELECT prestacion_id
+              FROM prestaciones_autorizadas
+              WHERE efector_id = \'#{efector_id}\' AND fecha_de_finalizacion IS NULL
+          )
+          AND objeto_de_la_prestacion_id IS NOT NULL
+        ORDER BY codigo;")
+  end
+
   # Devuelve las prestaciones que no han sido autorizadas para el ID del efector que se pasa
   # como parámetro.
   def self.no_autorizadas(efector_id)
@@ -68,6 +84,22 @@ class Prestacion < ActiveRecord::Base
           SELECT prestacion_id
             FROM prestaciones_autorizadas
             WHERE efector_id = \'#{efector_id}\' AND fecha_de_finalizacion IS NULL)
+        ORDER BY codigo;")
+  end
+
+  # Devuelve las prestaciones que no han sido autorizadas para el ID del efector que se pasa
+  # como parámetro.
+  def self.no_autorizadas_sumar(efector_id)
+    Prestacion.find_by_sql("
+      SELECT prestaciones.*
+        FROM prestaciones
+        WHERE
+          id NOT IN (
+            SELECT prestacion_id
+              FROM prestaciones_autorizadas
+              WHERE efector_id = \'#{efector_id}\' AND fecha_de_finalizacion IS NULL
+          )
+          AND objeto_de_la_prestacion_id IS NOT NULL
         ORDER BY codigo;")
   end
 
@@ -82,6 +114,23 @@ class Prestacion < ActiveRecord::Base
             FROM prestaciones_autorizadas
             WHERE efector_id = \'#{efector_id}\' AND fecha_de_inicio < '#{fecha.strftime("%Y-%m-%d")}'
               AND (fecha_de_finalizacion IS NULL OR fecha_de_finalizacion >= '#{fecha.strftime("%Y-%m-%d")}')
+        ) ORDER BY codigo;")
+  end
+
+  # Devuelve las prestaciones que no han sido autorizadas para el ID del efector 
+  # hasta el dia anterior de la fecha indicada en los parámetros.
+  def self.no_autorizadas_sumar_antes_del_dia(efector_id, fecha)
+    Prestacion.find_by_sql("
+      SELECT prestaciones.*
+        FROM prestaciones
+        WHERE
+          id NOT IN (
+            SELECT prestacion_id
+              FROM prestaciones_autorizadas
+              WHERE efector_id = \'#{efector_id}\' AND fecha_de_inicio < '#{fecha.strftime("%Y-%m-%d")}'
+                AND (fecha_de_finalizacion IS NULL OR fecha_de_finalizacion >= '#{fecha.strftime("%Y-%m-%d")}'
+          )
+          AND objeto_de_la_prestacion_id IS NOT NULL
         ) ORDER BY codigo;")
   end
 
