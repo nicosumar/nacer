@@ -763,7 +763,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #:id => 96,
-    :nombre => "Clínica obstétrica - Alto riesgo - Hospital de día - Módulo de restricción del crecimiento intauterino - Pequeño para edad gestacional",
+    :nombre => "Clínica obstétrica - Alto riesgo - Hospital de día - Módulo de restricción del crecimiento intauterino - Pequeño para la edad gestacional",
     :codigo => "E012",
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
     :define_si_es_catastrofica => true,

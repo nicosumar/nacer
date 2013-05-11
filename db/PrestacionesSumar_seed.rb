@@ -1465,24 +1465,6 @@ ActiveRecord::Base.transaction do
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
 
   prestacion = Prestacion.create({
-    :codigo => "PRP030",
-    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("P030"),
-    :nombre => 'Proteinuria rápida con tira reactiva',
-    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
-  })
-  prestacion.sexos << sexo_femenino
-  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
-  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
-  AsignacionDePrecios.create({
-    :precio_por_unidad => 2.5000,
-    :adicional_por_prestacion => 0.0000,
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
-  })
-  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
-
-  prestacion = Prestacion.create({
     :codigo => "LBL057",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("L057"),
     :nombre => 'Hemograma completo',
@@ -2173,7 +2155,7 @@ ActiveRecord::Base.transaction do
     :precio_por_unidad => 636.0000,
     :adicional_por_prestacion => 0.0000,
     :dato_reportable_id => DatoReportable.id_del_codigo("UTI"),
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_uti?")
@@ -2200,7 +2182,7 @@ ActiveRecord::Base.transaction do
     :precio_por_unidad => 50.0000,
     :adicional_por_prestacion => 0.0000,
     :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
@@ -2213,16 +2195,50 @@ ActiveRecord::Base.transaction do
   })
   prestacion.sexos << sexo_femenino
   prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
-  prestacion.diagnosticos << Diagnostico.find_by_codigo("P05")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo("O47")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.2")
   DatoReportableRequerido.create({
     :prestacion_id => prestacion.id,
     :dato_reportable_id => DatoReportable.id_del_codigo("UTI"),
     :fecha_de_inicio => fecha_de_inicio,
-    :minimo => 1.0000,
+    :minimo => 0.0000,
     :maximo => 3.0000,
     :obligatorio => true
   })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 4.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 636.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("UTI"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 150.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_uti?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITQ008",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("Q008"),
+    :nombre => 'Hemorragia posparto sin histerectomía',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.2")
   DatoReportableRequerido.create({
     :prestacion_id => prestacion.id,
     :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
@@ -2232,22 +2248,1639 @@ ActiveRecord::Base.transaction do
     :obligatorio => true
   })
   AsignacionDePrecios.create({
-    :precio_por_unidad => 636.0000,
+    :precio_por_unidad => 150.0000,
     :adicional_por_prestacion => 0.0000,
-    :dato_reportable_id => DatoReportable.id_del_codigo("UTI"),
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE009",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E009"),
+    :nombre => 'Diabetes gestacional sin requerimiento de insulina',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0000,
+    :maximo => 7.0000,
+    :obligatorio => true
   })
   AsignacionDePrecios.create({
     :precio_por_unidad => 150.0000,
     :adicional_por_prestacion => 0.0000,
     :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE009",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E009"),
+    :nombre => 'Diabetes gestacional con requerimiento de insulina',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1.0000,
+    :maximo => 7.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 150.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("SC"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
 
 
-  # ANEXO: RONDAS
+  # EMBARAZO DE ALTO RIESGO: HOSPITAL DE DÍA
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE010",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E010"),
+    :nombre => 'Hospital de día: Diabetes gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 520.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE011",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E011"),
+    :nombre => 'Hospital de día: Hipertensión en el embarazo',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 820.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE012",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E012"),
+    :nombre => 'Hospital de día: Restricción del crecimiento intrauterino - Pequeño para la edad gestacional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O98.4")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 740.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+
+  # EMBARAZO DE ALTO RIESGO: TRASLADO
+
+  prestacion = Prestacion.create({
+    :codigo => "TLM041",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("M041"),
+    :nombre => 'Traslado de la gestante con patología del embarazo, APP o malformación fetal mayor a centro de referencia',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O10.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O11")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O14")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O15")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O16")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O47")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O72.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O98.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("O24.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q79.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q41")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 415.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
+
+
+  # 0 A 5 AÑOS
+
+  # RECIÉN NACIDO (POSPARTO INMEDIATO)
+
+  prestacion = Prestacion.create({
+    :codigo => "IMV012",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("V012"),
+    :nombre => 'Inmunización del recién nacido: BCG antes del alta',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A98")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2.5000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "IMV009",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("V009"),
+    :nombre => 'Inmunización del recién nacido: anti-hepatitis B',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A98")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2.5000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "AUH002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("H002"),
+    :nombre => 'Informe del comité de auditoría de muerte infantil, recibido y aprobado por el Ministerio de Salud de la provincia, según ordenamiento',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A50")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 250.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "PRP021",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("P021"),
+    :nombre => 'Otoemisiones acústicas para detección temprana de hipoacusia en recién nacidos',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A97")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("H86")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("ROD"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("ROI"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 15.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E002"),
+    :nombre => 'Tratamiento inmediato de sífilis congénita en el recién nacido',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A41")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 15.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E002"),
+    :nombre => 'Tratamiento inmediato de transmisión vertical del VIH en el recién nacido',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A42")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 20.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E002"),
+    :nombre => 'Tratamiento inmediato de Chagas congénito en el recién nacido',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A40")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 15.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E002"),
+    :nombre => 'Atención de recién nacido con condición grave al nacer (tratamiento de pre-referencia)',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q79.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q41")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P07.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P07.2")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 150.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ICI001",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("I001"),
+    :nombre => 'Incubadora hasta 48 horas en recién nacidos',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  # TODO: añadir diagnósticos posibles luego de consultar. No está claro si existen diagnósticos para esta prestación, ni si el precio es por día de IC.
+  # prestacion.diagnosticos << Diagnostico.find_by_codigo("A40")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 75.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "PRP017",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("P017"),
+    :nombre => 'Pesquisa de retinopatía del prematuro: Oftalmoscopía binocular indirecta (OBI) a niñas y niños de riesgo',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A46")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A97")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("ROP"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 1,
+    :maximo => 5,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 15.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+  prestacion = Prestacion.create({
+    :codigo => "ITE002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("E002"),
+    :nombre => 'Tratamiento inmediato de trastornos metabólicos (estado ácido base y electrolitos) en el recién nacido',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("A44")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 20.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("recien_nacido?")
+
+
+  # 0 A 5 AÑOS: SEGUIMIENTO AMBULATORIO DE RN DE ALTO RIESGO
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC020",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C020"),
+    :nombre => 'Ingreso al módulo de seguimiento ambulatorio de recién nacidos de alto riesgo',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q79.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q41")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P07.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P07.2")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 600.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("menor_de_un_anio?")
+
+  prestacion = Prestacion.create({
+    :codigo => "CTC021",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("C021"),
+    :nombre => 'Egreso del módulo de seguimiento ambulatorio de recién nacidos de alto riesgo',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q79.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q41")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P07.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P07.2")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 400.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("menor_de_un_anio?")
+
+
+  # 0 A 5 AÑOS: TRASLADO DE RN DE ALTO RIESGO
+
+  prestacion = Prestacion.create({
+    :codigo => "TLM040",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("M040"),
+    :nombre => 'Traslado de recién nacido prematuro de 500 a 1500 gramos o con malformación congénita quirúrgica',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q39.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q79.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q41")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q43.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q42.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P07.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("P07.2")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 570.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("menor_de_un_anio?")
+
+
+  # 0 A 5 AÑOS: CARDIOPATÍAS CONGÉNITAS
+
+  prestacion = Prestacion.create({
+    :codigo => "PRP005",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("P005"),
+    :nombre => 'Ergometría',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 100.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "PRP034",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("P034"),
+    :nombre => 'Holter de 24 horas',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 150.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "PRP035",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("P035"),
+    :nombre => 'Presurometría',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 200.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "IGR040",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("R040"),
+    :nombre => 'Hemodinamia diagnóstica',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 3000.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "IGR041",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("R041"),
+    :nombre => 'Resonancia magnética',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1000.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "IGR030",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("R030"),
+    :nombre => 'Tomografía',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1500.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+
+
+  # 0 A 5 AÑOS: CARDIOPATÍAS CONGÉNITAS - MÓDULOS QUIRÚRGICOS
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK001",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K001"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Cierre de ductus con cirugía convencional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("088")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K002"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Cerclaje de la arteria pulmonar con cirugía convencional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("121")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("122")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("123")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("125")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("127")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("157")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK003",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K003"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Anastomosis sublcavio-pulmonar con cirugía convencional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("003")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("039")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("041")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("055")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("103")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("104")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("105")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("106")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("107")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("108")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("116")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("123")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("126")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("135")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("137")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("139")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("141")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("150")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK004",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K004"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Corrección de coartación de la aorta con cirugía convencional',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("035")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK005",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K005"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Cierre de ductus con hemodinamia intervencionista',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("088")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("091")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK006",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K006"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Corrección de coartación de la aorta con hemodinamia intervencionista',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("035")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK007",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K007"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Cierre de CIA con hemodinamia intervencionista',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("022")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("023")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("024")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK008",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K008"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Cierre de CIV con hemodinamia intervencionista',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("158")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("159")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("160")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("161")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK009",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K009"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Colocación de Stent en ramas pulmonares con hemodinamia intervencionista',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("105")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK010",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K010"),
+    :nombre => 'Cardiopatías congénitas - Módulo I - Embolización de colaterales de ramas pulmnonares con hemodinamia intervencionista',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("069")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("110")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 3.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 77.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2004.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK011",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K011"),
+    :nombre => 'Cardiopatías congénitas - Módulo II - Cierre de ductus',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("088")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("091")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 10.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 10.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 10.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 10.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 123.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2049.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create({
+    :codigo => "ITK012",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo("K012"),
+    :nombre => 'Cardiopatías congénitas - Módulo II - Cerclaje de arteria pulmonar',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("088")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo("091")
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 2.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 10.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 10.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 10.0000,
+    :obligatorio => true
+  })
+  DatoReportableRequerido.create({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :minimo => 0.0000,
+    :maximo => 10.0000,
+    :obligatorio => true
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCPQ"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 6017.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :unidades_maximas => 1, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 1926.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQU"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 123.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 2049.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQUM"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create({
+    :precio_por_unidad => 861.0000,
+    :adicional_por_prestacion => 0.0000,
+    :dato_reportable_id => DatoReportable.id_del_codigo("CCTQS"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+
 
   # OJO: se repite el código de objeto "X001", se ha colocado aparte, aunque en el PDSS figura repetida para cada grupo poblacional, además es comunitaria
   prestacion = Prestacion.create({

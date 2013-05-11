@@ -327,7 +327,7 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
               ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_prestaciones_brindadas
               FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEw.codigo || '.prestaciones_brindadas(id);
             ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
-              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_datos_adicionales
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_datos_reportables
               FOREIGN KEY (dato_reportable_id) REFERENCES datos_reportables(id);';
         END IF;
         RETURN NEW;

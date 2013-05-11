@@ -69,7 +69,7 @@ class ConveniosDeGestionSumarController < ApplicationController
     @efectores = Efector.find(:all, :order => :nombre).collect{ |e| [e.nombre_corto, e.id] }
     @efector_id = nil
     @prestaciones =
-      Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL", :order => :codigo).collect{
+      Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL").order(:codigo).collect{
         |p| [p.codigo + " - " + p.nombre_corto, p.id]
       }
     @prestacion_autorizada_ids = []
@@ -101,7 +101,7 @@ class ConveniosDeGestionSumarController < ApplicationController
 
     # Crear los objetos necesarios para generar la vista
     @prestaciones =
-      Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL", :order => :codigo).collect{
+      Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL").order(:codigo).collect{
         |p| [p.codigo + " - " + p.nombre_corto, p.id]
       }
     @prestacion_autorizada_ids = @convenio_de_gestion.prestaciones_autorizadas.collect{ |p| p.prestacion_id }

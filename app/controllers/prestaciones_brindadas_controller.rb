@@ -174,6 +174,11 @@ class PrestacionesBrindadasController < ApplicationController
       end
     end
 
+    # Añadir un nuevo objeto DatoReportableAsociado para cada uno de los DatosReportables definidos
+    @prestacion_brindada.datos_reportables_asociados.build(
+      DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{ |dr| {:dato_reportable_id => dr.id} }
+    )
+
     # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
     autorizadas_por_efector =
       Prestacion.find(

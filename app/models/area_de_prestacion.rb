@@ -3,8 +3,8 @@ class AreaDePrestacion < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks
 
-  # No se declara ningún atributo protegido ya que este modelo no tiene asociado ningún punto de interacción con el usuario
-  attr_protected nil
+  # Seguridad en asignciones masivas
+  attr_accessible :codigo, :nombre
 
   # Asociaciones
   #has_many :efectores

@@ -10,6 +10,7 @@ class PrestacionBrindada < ActiveRecord::Base
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :cuasi_factura_id, :diagnostico_id, :efector_id
   attr_accessible :es_catastrofica, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :fecha_del_debito, :mensaje_de_la_baja
   attr_accessible :monto_facturado, :monto_liquidado, :nomenclador_id, :observaciones, :prestacion_id
+  attr_accessible :datos_reportables_asociados_attributes
 
   # Asociaciones
   belongs_to :cuasi_factura
@@ -21,6 +22,7 @@ class PrestacionBrindada < ActiveRecord::Base
   has_many :datos_reportables_asociados
   has_many :datos_reportables_informados, :class_name => "DatoAdicional", :through => :datos_reportables_asociados
   has_many :datos_reportables_requeridos, :class_name => "DatoAdicional", :through => :prestacion
+  accepts_nested_attributes_for :datos_reportables_asociados
 
   # Validaciones
   validates_presence_of :clave_de_beneficiario, :efector_id, :estado_de_la_prestacion_id, :fecha_de_la_prestacion
@@ -174,6 +176,34 @@ class PrestacionBrindada < ActiveRecord::Base
         return !sc.blank?
       end
     end
+  end
+
+  def recien_nacido?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) < 3
+  end
+
+  def menor_de_un_anio?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 0) < 1
   end
 
 end

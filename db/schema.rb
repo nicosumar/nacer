@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130423151700) do
+ActiveRecord::Schema.define(:version => 20130511095541) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -111,7 +111,10 @@ ActiveRecord::Schema.define(:version => 20130423151700) do
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
+    t.string "codigo"
   end
+
+  add_index "areas_de_prestacion", ["codigo"], :name => "index_areas_de_prestacion_on_codigo", :unique => true
 
   create_table "asignaciones_de_nomenclador", :force => true do |t|
     t.integer  "efector_id",            :null => false
@@ -132,7 +135,10 @@ ActiveRecord::Schema.define(:version => 20130423151700) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "dato_reportable_id"
   end
+
+  add_index "asignaciones_de_precios", ["nomenclador_id", "prestacion_id", "dato_reportable_id"], :name => "index_unique_on_nomenclador_prestacion_ddrr", :unique => true
 
   create_table "busquedas", :force => true do |t|
     t.integer  "modelo_id",   :null => false
@@ -223,6 +229,9 @@ ActiveRecord::Schema.define(:version => 20130423151700) do
     t.datetime "updated_at",            :null => false
   end
 
+  add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
+  add_index "convenios_de_administracion_sumar", ["numero"], :name => "unq_convenios_de_administracion_sumar_numero", :unique => true
+
   create_table "convenios_de_gestion", :force => true do |t|
     t.string   "numero",                :null => false
     t.integer  "efector_id",            :null => false
@@ -253,6 +262,9 @@ ActiveRecord::Schema.define(:version => 20130423151700) do
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
   end
+
+  add_index "convenios_de_gestion_sumar", ["efector_id"], :name => "unq_convenios_de_gestion_sumar_efector_id", :unique => true
+  add_index "convenios_de_gestion_sumar", ["numero"], :name => "unq_convenios_de_gestion_sumar_numero", :unique => true
 
   create_table "cuasi_facturas", :force => true do |t|
     t.integer  "liquidacion_id",                                       :null => false
@@ -297,6 +309,8 @@ ActiveRecord::Schema.define(:version => 20130423151700) do
     t.string  "clase_para_enumeracion"
     t.boolean "integra_grupo"
     t.string  "nombre_de_grupo"
+    t.integer "orden_de_grupo"
+    t.string  "opciones_de_formateo"
   end
 
   create_table "datos_reportables_requeridos", :force => true do |t|

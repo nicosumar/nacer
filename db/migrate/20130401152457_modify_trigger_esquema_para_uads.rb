@@ -293,11 +293,11 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
                 ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_nomencladores
                 FOREIGN KEY (nomenclador_id) REFERENCES nomencladores(id);
 
-              -- Crear la tabla para almacenar los atributos adicionales
-              CREATE TABLE uad_' || NEW.codigo || '.datos_adicionales_asociados (
+              -- Crear la tabla para almacenar los atributos adicionales (datos reportables)
+              CREATE TABLE uad_' || NEW.codigo || '.datos_reportables_asociados (
                 id integer NOT NULL,
                 prestacion_brindada_id integer NOT NULL,
-                dato_adicional_id integer NOT NULL,
+                dato_reportable_id integer NOT NULL,
                 valor text,
                 observaciones text,
                 created_at timestamp without time zone,
@@ -307,24 +307,24 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
               );
 
               -- Crear la secuencia que genera los identificadores de la tabla de datos adicionales
-              CREATE SEQUENCE uad_' || NEW.codigo || '.datos_adicionales_asociados_id_seq;
-              ALTER SEQUENCE uad_' || NEW.codigo || '.datos_adicionales_asociados_id_seq
-                OWNED BY uad_' || NEW.codigo || '.datos_adicionales_asociados.id;
-              ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_adicionales_asociados
+              CREATE SEQUENCE uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq;
+              ALTER SEQUENCE uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq
+                OWNED BY uad_' || NEW.codigo || '.datos_reportables_asociados.id;
+              ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
                 ALTER COLUMN id
-                  SET DEFAULT nextval(''uad_' || NEW.codigo || '.datos_adicionales_asociados_id_seq''::regclass);
+                  SET DEFAULT nextval(''uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq''::regclass);
 
               -- Clave primaria para la tabla de prestaciones
-              ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_adicionales_asociados
-                ADD CONSTRAINT uad_' || NEW.codigo || '_datos_adicionales_asociados_pkey PRIMARY KEY (id);
+              ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
+                ADD CONSTRAINT uad_' || NEW.codigo || '_datos_reportables_asociados_pkey PRIMARY KEY (id);
 
               -- Restricciones de clave foránea para la tabla de prestaciones
-              ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_adicionales_asociados
-                ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_aa_aa_prestaciones_brindadas
+              ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
+                ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_prestaciones_brindadas
                 FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEw.codigo || '.prestaciones_brindadas(id);
-              ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_adicionales_asociados
-                ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_aa_aa_datos_adicionales
-                FOREIGN KEY (dato_adicional_id) REFERENCES datos_adicionales(id);';
+              ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
+                ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_datos_reportables
+                FOREIGN KEY (dato_reportable_id) REFERENCES datos_reportables(id);';
           END IF;
           RETURN NEW;
         END;

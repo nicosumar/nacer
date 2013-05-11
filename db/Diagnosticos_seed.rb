@@ -525,5 +525,665 @@ Diagnostico.create([
     #:id => 105,
     :nombre => "Supervisión de embarazo de alto riesgo, sin otra especificación",
     :codigo => "Z35.9"
+  },
+  {
+    #:id => 106,
+    :nombre => "Foramen oval permeable",
+    :codigo => "095"
+  },
+  {
+    #:id => 107,
+    :nombre => "CIA ostium secundum",
+    :codigo => "023"
+  },
+  {
+    #:id => 108,
+    :nombre => "CIA seno venoso",
+    :codigo => "024"
+  },
+  {
+    #:id => 109,
+    :nombre => "CIA seno coronario",
+    :codigo => "022"
+  },
+  {
+    #:id => 110,
+    :nombre => "CIA aurícula única",
+    :codigo => "021"
+  },
+  {
+    #:id => 111,
+    :nombre => "CIV infundibular (defecto conal)",
+    :codigo => "158"
+  },
+  {
+    #:id => 112,
+    :nombre => "CIV perimembranosa",
+    :codigo => "159"
+  },
+  {
+    #:id => 113,
+    :nombre => "CIV del inlet (tipo CAV)",
+    :codigo => "160"
+  },
+  {
+    #:id => 114,
+    :nombre => "CIV muscular",
+    :codigo => "161"
+  },
+  {
+    #:id => 115,
+    :nombre => "CIV tipo Gerbode (VI-AD)",
+    :codigo => "162"
+  },
+  {
+    #:id => 116,
+    :nombre => "CIV múltiple",
+    :codigo => "157"
+  },
+  {
+    #:id => 117,
+    :nombre => "CAV completo",
+    :codigo => "027"
+  },
+  {
+    #:id => 118,
+    :nombre => "CAV intermedio (transicional)",
+    :codigo => "028"
+  },
+  {
+    #:id => 119,
+    :nombre => "CAV parcial (CIA ostium primum)",
+    :codigo => "029"
+  },
+  {
+    #:id => 120,
+    :nombre => "Ventana aorto-pulmonar",
+    :codigo => "015"
+  },
+  {
+    #:id => 121,
+    :nombre => "Arteria pulmonar originada en la aorta ascendente",
+    :codigo => "102"
+  },
+  {
+    #:id => 122,
+    :nombre => "Tronco arterioso",
+    :codigo => "153"
+  },
+  {
+    #:id => 123,
+    :nombre => "Insuficiencia de la válvula troncal",
+    :codigo => "152"
+  },
+  {
+    #:id => 124,
+    :nombre => "Anomalía parcial del retorno venoso pulmonar",
+    :codigo => "026"
+  },
+  {
+    #:id => 125,
+    :nombre => "Anomalía parcial del retorno venoso pulmonar cimitarra",
+    :codigo => "087"
+  },
+  {
+    #:id => 126,
+    :nombre => "Anomalía total del retorno venoso pulmonar (supracardíaco)",
+    :codigo => "142"
+  },
+  {
+    #:id => 127,
+    :nombre => "Anomalía total del retorno venoso pulmonar (cardíaco)",
+    :codigo => "143"
+  },
+  {
+    #:id => 128,
+    :nombre => "Anomalía total del retorno venoso pulmonar (infracardíaco)",
+    :codigo => "144"
+  },
+  {
+    #:id => 129,
+    :nombre => "Anomalía total del retorno venoso pulmonar (mixto)",
+    :codigo => "145"
+  },
+  {
+    #:id => 130,
+    :nombre => "Cor triatriatum",
+    :codigo => "042"
+  },
+  {
+    #:id => 131,
+    :nombre => "Estenosis de venas pulmonares",
+    :codigo => "120"
+  },
+  {
+    #:id => 132,
+    :nombre => "Anomalías de venas sistémicas",
+    :codigo => "132"
+  },
+  {
+    #:id => 133,
+    :nombre => "Obstrucción de venas sistémicas",
+    :codigo => "133"
+  },
+  {
+    #:id => 134,
+    :nombre => "Tetralogía de Fallot",
+    :codigo => "139"
+  },
+  {
+    #:id => 135,
+    :nombre => "Tetralogía de Fallot, canal aurículo-ventricular",
+    :codigo => "141"
+  },
+  {
+    #:id => 136,
+    :nombre => "Tetralogía de Fallot con agenesia de válvulas sigmoideas pulmonares",
+    :codigo => "140"
+  },
+  {
+    #:id => 137,
+    :nombre => "Atresia pulmonar",
+    :codigo => "107"
+  },
+  {
+    #:id => 138,
+    :nombre => "Atresia pulmonar con septum intacto",
+    :codigo => "108"
+  },
+  {
+    #:id => 139,
+    :nombre => "Atresia pulmonar con CIV (incluye TOF con atresia pulmonar)",
+    :codigo => "109"
+  },
+  {
+    #:id => 140,
+    :nombre => "Atresia pulmonar con CIV y colaterales aorto-pulmonares mayores",
+    :codigo => "110"
+  },
+  {
+    #:id => 141,
+    :nombre => "Colaterales aorto-pulmonares mayores (sin CIV)",
+    :codigo => "069"
+  },
+  {
+    #:id => 142,
+    :nombre => "Anomalía de Ebstein",
+    :codigo => "057"
+  },
+  {
+    #:id => 143,
+    :nombre => "Insuficiencia tricuspídea no Ebstein",
+    :codigo => "149"
+  },
+  {
+    #:id => 144,
+    :nombre => "Estenosis tricuspídea",
+    :codigo => "150"
+  },
+  {
+    #:id => 145,
+    :nombre => "Insuficiencia y estenosis tricuspídea",
+    :codigo => "148"
+  },
+  {
+    #:id => 146,
+    :nombre => "Otras anomalías de la válvula tricúspide",
+    :codigo => "151"
+  },
+  {
+    #:id => 147,
+    :nombre => "Estenosis valvular pulmonar",
+    :codigo => "116"
+  },
+  {
+    #:id => 148,
+    :nombre => "Estenosis de arteria pulmonar (hipoplasia), principal (tronco)",
+    :codigo => "103"
+  },
+  {
+    #:id => 149,
+    :nombre => "Estenosis de arteria pulmonar, ramas, central (hasta la bifurcación hiliar)",
+    :codigo => "104"
+  },
+  {
+    #:id => 150,
+    :nombre => "Estenosis de arteria pulmonar, ramas, periférica (desde la bifurcación hiliar)",
+    :codigo => "105"
+  },
+  {
+    #:id => 151,
+    :nombre => "Arteria pulmonar desconectada",
+    :codigo => "106"
+  },
+  {
+    #:id => 152,
+    :nombre => "Estenosis pulmonar subvalvular",
+    :codigo => "115"
+  },
+  {
+    #:id => 153,
+    :nombre => "Insuficiencia pulmonar",
+    :codigo => "113"
+  },
+  {
+    #:id => 154,
+    :nombre => "Estenosis e insuficiencia valvular pulmonar",
+    :codigo => "114"
+  },
+  {
+    #:id => 155,
+    :nombre => "Otras anomalías de la válvula pulmonar",
+    :codigo => "117"
+  },
+  {
+    #:id => 156,
+    :nombre => "Falla del conducto",
+    :codigo => "036"
+  },
+  {
+    #:id => 157,
+    :nombre => "Estenosis aórtica subvalvular, membrana subaórtica",
+    :codigo => "010"
+  },
+  {
+    #:id => 158,
+    :nombre => "Estenosis aórtica valvular",
+    :codigo => "012"
+  },
+  {
+    #:id => 159,
+    :nombre => "Estenosis aórtica supravalvular",
+    :codigo => "011"
+  },
+  {
+    #:id => 160,
+    :nombre => "Atresia valvular aórtica",
+    :codigo => "013"
+  },
+  {
+    #:id => 161,
+    :nombre => "Insuficiencia aórtica",
+    :codigo => "008"
+  },
+  {
+    #:id => 162,
+    :nombre => "Estenosis e insuficiencia aórtica",
+    :codigo => "009"
+  },
+  {
+    #:id => 163,
+    :nombre => "Otra enfermedad valvular aórtica",
+    :codigo => "014"
+  },
+  {
+    #:id => 164,
+    :nombre => "Aneurisma del seno de valsalva",
+    :codigo => "128"
+  },
+  {
+    #:id => 165,
+    :nombre => "Túnel VI-Aorta",
+    :codigo => "068"
+  },
+  {
+    #:id => 166,
+    :nombre => "Estenosis mitral, anillo supramitral",
+    :codigo => "081"
+  },
+  {
+    #:id => 167,
+    :nombre => "Estenosis mitral valvular",
+    :codigo => "082"
+  },
+  {
+    #:id => 168,
+    :nombre => "Estenosis mitral subvalvular",
+    :codigo => "079"
+  },
+  {
+    #:id => 169,
+    :nombre => "Estenosis mitral subvalvular, parachute",
+    :codigo => "080"
+  },
+  {
+    #:id => 170,
+    :nombre => "Estenosis mitral",
+    :codigo => "078"
+  },
+  {
+    #:id => 171,
+    :nombre => "Estenosis e insuficiencia mitral",
+    :codigo => "077"
+  },
+  {
+    #:id => 172,
+    :nombre => "Insuficiencia mitral",
+    :codigo => "076"
+  },
+  {
+    #:id => 173,
+    :nombre => "Otra enfermedad valvular mitral",
+    :codigo => "083"
+  },
+  {
+    #:id => 174,
+    :nombre => "Sindrome de ventrículo izquierdo hipoplásico",
+    :codigo => "062"
+  },
+  {
+    #:id => 175,
+    :nombre => "Miocardiopatía, estadío final de enfermedad cardíaca congénita",
+    :codigo => "033"
+  },
+  {
+    #:id => 176,
+    :nombre => "Derrame pericárdico",
+    :codigo => "091"
+  },
+  {
+    #:id => 177,
+    :nombre => "Pericarditis",
+    :codigo => "092"
+  },
+  {
+    #:id => 178,
+    :nombre => "Otra enfermedad pericárdica",
+    :codigo => "090"
+  },
+  {
+    #:id => 179,
+    :nombre => "Ventrículo único, doble entrada ventricular izquierda",
+    :codigo => "121"
+  },
+  {
+    #:id => 180,
+    :nombre => "Ventrículo único, doble entrada ventricular derecha",
+    :codigo => "122"
+  },
+  {
+    #:id => 181,
+    :nombre => "Ventrículo único, atresia mitral",
+    :codigo => "124"
+  },
+  {
+    #:id => 182,
+    :nombre => "Ventrículo único, atresia tricuspídea",
+    :codigo => "126"
+  },
+  {
+    #:id => 183,
+    :nombre => "Ventrículo único, canal aurículo ventricular desbalanceado",
+    :codigo => "127"
+  },
+  {
+    #:id => 184,
+    :nombre => "Ventrículo único, sindrome de heterotaxia",
+    :codigo => "123"
+  },
+  {
+    #:id => 185,
+    :nombre => "Otros ventrículos únicos",
+    :codigo => "125"
+  },
+  {
+    #:id => 186,
+    :nombre => "TGA congénitamente corregida",
+    :codigo => "037"
+  },
+  {
+    #:id => 187,
+    :nombre => "TGA congénitamente corregida, septum interventricular intacto",
+    :codigo => "038"
+  },
+  {
+    #:id => 188,
+    :nombre => "TGA congénitamente corregida, septum interventricular intacto, obstrucción al TSVI",
+    :codigo => "039"
+  },
+  {
+    #:id => 189,
+    :nombre => "TGA congénitamente corregida, CIV",
+    :codigo => "040"
+  },
+  {
+    #:id => 190,
+    :nombre => "TGA congénitamente corregida, CIV, obstrucción al TSVI",
+    :codigo => "041"
+  },
+  {
+    #:id => 191,
+    :nombre => "TGA, septum interventricular intacto",
+    :codigo => "134"
+  },
+  {
+    #:id => 192,
+    :nombre => "TGA , septum interventricular intacto, obstrucción al TSVI",
+    :codigo => "135"
+  },
+  {
+    #:id => 193,
+    :nombre => "TGA , CIV",
+    :codigo => "136"
+  },
+  {
+    #:id => 194,
+    :nombre => "TGA , CIV, obstrucción al TSVI",
+    :codigo => "137"
+  },
+  {
+    #:id => 195,
+    :nombre => "DSVD, tipo CIV",
+    :codigo => "056"
+  },
+  {
+    #:id => 196,
+    :nombre => "DSVD, tipo Fallot",
+    :codigo => "055"
+  },
+  {
+    #:id => 197,
+    :nombre => "DSVD, tipo TGA",
+    :codigo => "054"
+  },
+  {
+    #:id => 198,
+    :nombre => "DSVD con septum interventricular intacto",
+    :codigo => "052"
+  },
+  {
+    #:id => 199,
+    :nombre => "DSVI",
+    :codigo => "051"
+  },
+  {
+    #:id => 200,
+    :nombre => "Coartación de aorta",
+    :codigo => "035"
+  },
+  {
+    #:id => 201,
+    :nombre => "Hipoplasia del arco aórtico",
+    :codigo => "006"
+  },
+  {
+    #:id => 202,
+    :nombre => "CIV con hipoplasia del arco aórtico",
+    :codigo => "155"
+  },
+  {
+    #:id => 203,
+    :nombre => "CIV con coartación de aorta",
+    :codigo => "156"
+  },
+  {
+    #:id => 204,
+    :nombre => "Anomalía coronaria, anomalía del orígen aórtico de la arteria coronaria desde la aorta",
+    :codigo => "044"
+  },
+  {
+    #:id => 205,
+    :nombre => "Anomalía coronaria, orígen anómalo desde la arteria pulmonar (incluye ALCAPA)",
+    :codigo => "045"
+  },
+  {
+    #:id => 206,
+    :nombre => "Anomalía coronaria, fístula",
+    :codigo => "046"
+  },
+  {
+    #:id => 207,
+    :nombre => "Anomalía coronaria, aneurisma",
+    :codigo => "043"
+  },
+  {
+    #:id => 208,
+    :nombre => "Otras anomalías coronarias",
+    :codigo => "047"
+  },
+  {
+    #:id => 209,
+    :nombre => "Interrupción del arco aórtico",
+    :codigo => "065"
+  },
+  {
+    #:id => 210,
+    :nombre => "Ductus arterioso permeable",
+    :codigo => "088"
+  },
+  {
+    #:id => 211,
+    :nombre => "Aneurisma aórtico (incluye pseudoaneurisma)",
+    :codigo => "005"
+  },
+  {
+    #:id => 212,
+    :nombre => "Disección aórtica",
+    :codigo => "007"
+  },
+  {
+    #:id => 213,
+    :nombre => "Isomerismo auricular izquierdo",
+    :codigo => "025"
+  },
+  {
+    #:id => 214,
+    :nombre => "Isomerismo auricular derecho",
+    :codigo => "056b"
+  },
+  {
+    #:id => 215,
+    :nombre => "Aneurisma ventricular derecho (incluye pseudoaneurisma)",
+    :codigo => "004"
+  },
+  {
+    #:id => 216,
+    :nombre => "Aneurisma ventricular izquierdo (incluye pseudoaneurisma)",
+    :codigo => "003"
+  },
+  {
+    #:id => 217,
+    :nombre => "Aneurisma arteria pulmonar",
+    :codigo => "002"
+  },
+  {
+    #:id => 218,
+    :nombre => "Otros aneurismas",
+    :codigo => "001"
+  },
+  {
+    #:id => 219,
+    :nombre => "Mediastinitis",
+    :codigo => "074"
+  },
+  {
+    #:id => 220,
+    :nombre => "Endocarditis",
+    :codigo => "059"
+  },
+  {
+    #:id => 221,
+    :nombre => "Falla de válvula protésica",
+    :codigo => "101"
+  },
+  {
+    #:id => 222,
+    :nombre => "Infarto de miocardio",
+    :codigo => "084"
+  },
+  {
+    #:id => 223,
+    :nombre => "Tumor cardíaco",
+    :codigo => "030"
+  },
+  {
+    #:id => 224,
+    :nombre => "Fístula arteriovenosa pulmonar",
+    :codigo => "111"
+  },
+  {
+    #:id => 225,
+    :nombre => "Embolismo pulmonar",
+    :codigo => "112"
+  },
+  {
+    #:id => 226,
+    :nombre => "Enfermedad obstructiva vascular pulmonar",
+    :codigo => "118"
+  },
+  {
+    #:id => 227,
+    :nombre => "Enfermedad obstructiva vascular pulmonar (Eisenmenger)",
+    :codigo => "119"
+  },
+  {
+    #:id => 228,
+    :nombre => "Hipertensión pulmonar primaria",
+    :codigo => "100"
+  },
+  {
+    #:id => 229,
+    :nombre => "Circulación fetal persistente",
+    :codigo => "094"
+  },
+  {
+    #:id => 230,
+    :nombre => "Aspiración meconial",
+    :codigo => "070"
+  },
+  {
+    #:id => 231,
+    :nombre => "Otras enfermedades torácicas y/o mediastinales",
+    :codigo => "138"
+  },
+  {
+    #:id => 232,
+    :nombre => "Otra enfermedad vascular periférica",
+    :codigo => "093"
+  },
+  {
+    #:id => 233,
+    :nombre => "Post transplante cardíaco",
+    :codigo => "129"
+  },
+  {
+    #:id => 234,
+    :nombre => "Post transplante pulmonar",
+    :codigo => "131"
+  },
+  {
+    #:id => 235,
+    :nombre => "Post transplante cardíaco y pulmonar",
+    :codigo => "130"
+  },
+  {
+    #:id => 236,
+    :nombre => "Corazón normal",
+    :codigo => "085"
+  },
+  {
+    #:id => 237,
+    :nombre => "Otras misceláneas",
+    :codigo => "031"
   }
 ])

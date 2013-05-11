@@ -246,6 +246,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("metodo·_de·_validacion·", "metodos_de_validacion")
   inflect.irregular("MetodoDeValidacion", "Metodos·De·Validacion·")
   inflect.irregular("Metodo·De·Validacion·", "MetodosDeValidacion")
+  inflect.irregular("dato_reportable_asociado", "datos·_reportables·_asociados·")
+  inflect.irregular("dato·_reportable·_asociado·", "datos_reportables_asociados")
+  inflect.irregular("DatoReportableAsociado", "Datos·Reportables·Asociados·")
+  inflect.irregular("Dato·Reportable·Asociado·", "DatosReportablesAsociados")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

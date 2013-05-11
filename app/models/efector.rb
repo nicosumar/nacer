@@ -35,8 +35,6 @@ class Efector < ActiveRecord::Base
   # Validaciones
   validates_presence_of :nombre
   validates_uniqueness_of :cuie, :allow_nil => true
-  validates_uniqueness_of :codigo_de_efector_sissa, :allow_nil => true
-  validates_uniqueness_of :codigo_de_efector_bio, :allow_nil => true
 
   # nombre_corto
   # Devuelve el nombre acortado a 80 caracteres (útil para listas desplegables)

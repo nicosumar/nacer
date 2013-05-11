@@ -5,7 +5,7 @@ class AsignacionDePrecios < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :nomenclador_id, :prestacion_id, :precio_por_unidad, :adicional_por_prestacion, :unidades_maximas
-  attr_accessible :observaciones, :created_at, :updated_at, :dato_reportable_id
+  attr_accessible :observaciones, :created_at, :updated_at, :dato_reportable_id, :area_de_prestacion_id
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :nomenclador_id, :prestacion_id
@@ -14,6 +14,7 @@ class AsignacionDePrecios < ActiveRecord::Base
   belongs_to :nomenclador
   belongs_to :prestacion
   belongs_to :dato_reportable
+  belongs_to :area_de_prestacion
 
   # Validaciones
   validates_presence_of :nomenclador_id, :prestacion_id, :precio_por_unidad
@@ -35,7 +36,7 @@ class AsignacionDePrecios < ActiveRecord::Base
   # adicional_mayor_o_igual_que_cero
   # Verifica que el adicional_por_prestacion sea mayor o igual que cero (si existe)
   def adicional_mayor_o_igual_que_cero
-    if adicional_por_prestacion && adicional_por_prestacion <= 0.0
+    if adicional_por_prestacion && adicional_por_prestacion < 0.0
       errors.add(:adicional_por_prestacion, 'debe tener un valor mayor o igual que cero')
       return false
     end

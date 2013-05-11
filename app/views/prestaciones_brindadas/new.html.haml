@@ -59,6 +59,23 @@
       = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
         {:include_blank => true} |
 
+    %h3 Atributos reportables
+    - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
+      = f.fields_for :datos_reportables_asociados_attributes, :index => i do |dra_f|
+        - if dra.dato_reportable.integra_grupo && dra.dato_reportable.orden_de_grupo == 1
+          %h4= dra.dato_reportable.nombre_de_grupo
+        %div.field{:id => "dato_reportable_" + dra.dato_reportable_id.to_s}
+          = dra_f.label :valor, dra.dato_reportable.nombre
+          - case
+            - when dra.dato_reportable.enumerable
+              = dra_f.select :valor, options_from_collection_for_select( |
+                eval(dra.dato_reportable.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre), |
+                eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:include_blank => true) |
+            - when dra.dato_reportable.tipo_ruby == "Date"
+              = dra_f.date_select :valor, eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:include_blank => true)
+            - else
+              = dra_f.text_field :valor, eval(dra.dato_reportable.opciones_de_formateo || "{}")
+
     %div.actions
       = f.submit "Crear la prestación"
       = link_to "Cancelar", root_url

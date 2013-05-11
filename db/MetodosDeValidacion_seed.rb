@@ -36,5 +36,23 @@ MetodoDeValidacion.create([
     :metodo => "ingreso_la_cantidad_de_dias_en_sala?",
     :mensaje => "La cantidad de días de internación en sala común no puede estar en blanco",
     :genera_error => true
+  },
+  { #:id => 7,
+    :nombre => "Verificar si el beneficiario o la beneficiaria tienen menos de 48 horas de nacidos",
+    :metodo => "recien_nacido?",
+    :mensaje => "La prestación debería haberse brindado dentro de las primeras 48 horas de vida.",
+    :genera_error => false
+  },
+  { #:id => 8,
+    :nombre => "Verificar si el beneficiario o la beneficiaria tienen menos de un año de vida",
+    :metodo => "menor_de_un_anio?",
+    :mensaje => "La prestación debería haberse brindado dentro del primer año de vida.",
+    :genera_error => false
+  },
+  { #:id => 9,
+    :nombre => "Verificar que se haya completado el detalle de los días de internación en CC y que no exceda el máximo establecido",
+    :metodo => "detalle_de_la_internacion_cc_valido?",
+    :mensaje => "Los campos no puede estar en blanco",
+    :genera_error => true
   }
 ])

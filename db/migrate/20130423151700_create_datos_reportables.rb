@@ -11,6 +11,8 @@ class CreateDatosReportables < ActiveRecord::Migration
       t.string :clase_para_enumeracion
       t.boolean :integra_grupo
       t.string :nombre_de_grupo
+      t.integer :orden_de_grupo
+      t.string :opciones_de_formateo
     end
   end
 end
