@@ -6,7 +6,7 @@ class Prestacion < ActiveRecord::Base
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :area_de_prestacion_id, :grupo_de_prestaciones_id, :subgrupo_de_prestaciones_id
   attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id, :objeto_de_la_prestacion_id
-  attr_accessible :created_at, :updated_at, :comunitaria, :otorga_cobertura
+  attr_accessible :created_at, :updated_at, :comunitaria, :otorga_cobertura, :unidades_maximas
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :codigo
@@ -43,6 +43,18 @@ class Prestacion < ActiveRecord::Base
     else
       nombre
     end
+  end
+  
+  def codigo_de_unidad
+    unidad_de_medida.codigo
+  end
+  
+  def define_si_es_catastrofica
+    objeto_de_la_prestacion ? objeto_de_la_prestacion.define_si_es_catastrofica : true
+  end
+  
+  def es_catastrofica
+    define_si_es_catastrofica && (objeto_de_la_prestacion ? objeto_de_la_prestacion.es_catastrofica : false)
   end
 
   # Devuelve las prestaciones que han sido autorizadas para el ID del efector que se pasa

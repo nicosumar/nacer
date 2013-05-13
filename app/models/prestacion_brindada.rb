@@ -19,10 +19,10 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :estado_de_la_prestacion
   belongs_to :nomenclador
   belongs_to :prestacion
-  has_many :datos_reportables_asociados
+  has_many :datos_reportables_asociados, :inverse_of => :prestacion_brindada
   has_many :datos_reportables_informados, :class_name => "DatoAdicional", :through => :datos_reportables_asociados
   has_many :datos_reportables_requeridos, :class_name => "DatoAdicional", :through => :prestacion
-  accepts_nested_attributes_for :datos_reportables_asociados
+  accepts_nested_attributes_for :datos_reportables_asociados, :reject_if => :dato_en_blanco?
 
   # Validaciones
   validates_presence_of :clave_de_beneficiario, :efector_id, :estado_de_la_prestacion_id, :fecha_de_la_prestacion
@@ -30,6 +30,7 @@ class PrestacionBrindada < ActiveRecord::Base
   validates_numericality_of :cantidad_de_unidades
   validate :cantidad_de_unidades_correcta?
   validate :pasa_validaciones_especificas?
+  validates_associated :datos_reportables_asociados
 
   # Objeto para guardar las advertencias
   @advertencias = []
@@ -118,7 +119,7 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   def cantidad_de_unidades_correcta?
-    (1..self.prestacion.unidades_maximas) === cantidad_de_unidades
+    (1..prestacion.unidades_maximas) === cantidad_de_unidades
   end
 
   def tension_arterial_valida?
@@ -206,4 +207,7 @@ class PrestacionBrindada < ActiveRecord::Base
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 0) < 1
   end
 
+  def dato_en_blanco?(dra)
+    dra[:valor].blank?
+  end
 end

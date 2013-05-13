@@ -23,6 +23,7 @@ class Ability
       can :read, ConvenioDeAdministracionSumar
       can :read, ConvenioDeGestionSumar
       can :read, Addenda
+      can :read, AddendaSumar
       can :read, PrestacionAutorizada
     end
 
@@ -37,6 +38,7 @@ class Ability
       can :read, ConvenioDeAdministracionSumar
       can :read, ConvenioDeGestionSumar
       can :read, Addenda
+      can :read, AddendaSumar
       can :read, PrestacionAutorizada
     end
 
@@ -49,6 +51,7 @@ class Ability
       can :read, ConvenioDeAdministracionSumar
       can :read, ConvenioDeGestionSumar
       can :read, Addenda
+      can :read, AddendaSumar
       can :read, PrestacionAutorizada
     end
 
@@ -58,6 +61,7 @@ class Ability
       can :manage, ConvenioDeAdministracionSumar
       can :manage, ConvenioDeGestionSumar
       can :manage, Addenda
+      can :manage, AddendaSumar
       can :manage, Referente
       can :manage, Contacto
       can :manage, Efector
@@ -70,7 +74,10 @@ class Ability
       can :read, Referente
       can :read, ConvenioDeAdministracion
       can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracionSumar
+      can :read, ConvenioDeGestionSumar
       can :read, Addenda
+      can :read, AddendaSumar
       can :read, PrestacionAutorizada
     end
 
@@ -80,7 +87,10 @@ class Ability
       can :read, Referente
       can :read, ConvenioDeAdministracion
       can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracionSumar
+      can :read, ConvenioDeGestionSumar
       can :read, Addenda
+      can :read, AddendaSumar
       can :read, PrestacionAutorizada
     end
 
@@ -91,6 +101,7 @@ class Ability
 
     if user.in_group? :facturacion_uad
       can :read, Afiliado
+      can :read, NovedadDelAfiliado
       can :manage, PrestacionBrindada
       can :manage, DatoReportableAsociado
     end
@@ -103,7 +114,10 @@ class Ability
       can :read, Referente
       can :read, ConvenioDeAdministracion
       can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracionSumar
+      can :read, ConvenioDeGestionSumar
       can :read, Addenda
+      can :read, AddendaSumar
       can :read, PrestacionAutorizada
     end
 

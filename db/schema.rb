@@ -144,14 +144,14 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.integer  "prestacion_id",                                                            :null => false
     t.decimal  "precio_por_unidad",        :precision => 15, :scale => 4,                  :null => false
     t.decimal  "adicional_por_prestacion", :precision => 15, :scale => 4, :default => 0.0
-    t.integer  "unidades_maximas"
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "area_de_prestacion_id"
     t.integer  "dato_reportable_id"
   end
 
-  add_index "asignaciones_de_precios", ["nomenclador_id", "prestacion_id", "dato_reportable_id"], :name => "index_unique_on_nomenclador_prestacion_ddrr", :unique => true
+  add_index "asignaciones_de_precios", ["nomenclador_id", "prestacion_id", "area_de_prestacion_id", "dato_reportable_id"], :name => "index_unique_on_nomenclador_prestacion_area_ddrr", :unique => true
 
   create_table "busquedas", :force => true do |t|
     t.integer  "modelo_id",   :null => false
@@ -238,14 +238,11 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.date     "fecha_de_inicio",       :null => false
     t.date     "fecha_de_finalizacion"
     t.text     "observaciones"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
-
-  add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
-  add_index "convenios_de_administracion_sumar", ["numero"], :name => "unq_convenios_de_administracion_sumar_numero", :unique => true
 
   create_table "convenios_de_gestion", :force => true do |t|
     t.string   "numero",                :null => false
@@ -274,14 +271,11 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.date     "fecha_de_inicio",       :null => false
     t.date     "fecha_de_finalizacion"
     t.text     "observaciones"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
-
-  add_index "convenios_de_gestion_sumar", ["efector_id"], :name => "unq_convenios_de_gestion_sumar_efector_id", :unique => true
-  add_index "convenios_de_gestion_sumar", ["numero"], :name => "unq_convenios_de_gestion_sumar_numero", :unique => true
 
   create_table "cuasi_facturas", :force => true do |t|
     t.integer  "liquidacion_id",                                       :null => false
@@ -326,6 +320,7 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.string  "clase_para_enumeracion"
     t.boolean "integra_grupo"
     t.string  "nombre_de_grupo"
+    t.string  "codigo_de_grupo"
     t.integer "orden_de_grupo"
     t.string  "opciones_de_formateo"
   end
@@ -607,15 +602,16 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.integer  "area_de_prestacion_id"
     t.integer  "grupo_de_prestaciones_id"
     t.integer  "subgrupo_de_prestaciones_id"
-    t.string   "codigo",                                         :null => false
-    t.string   "nombre",                                         :null => false
-    t.integer  "unidad_de_medida_id",                            :null => false
+    t.string   "codigo",                                                                        :null => false
+    t.string   "nombre",                                                                        :null => false
+    t.integer  "unidad_de_medida_id",                                                           :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "activa",                      :default => true
+    t.boolean  "activa",                                                     :default => true
+    t.decimal  "unidades_maximas",            :precision => 15, :scale => 4, :default => 1.0
     t.integer  "objeto_de_la_prestacion_id"
-    t.boolean  "otorga_cobertura",            :default => false
-    t.boolean  "comunitaria",                 :default => false
+    t.boolean  "otorga_cobertura",                                           :default => false
+    t.boolean  "comunitaria",                                                :default => false
   end
 
   create_table "prestaciones_autorizadas", :force => true do |t|

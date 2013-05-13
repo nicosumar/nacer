@@ -68,11 +68,14 @@
       = f.label :es_catastrofica, "Es catastrófica*"
       = f.check_box :es_catastrofica
 
-    %h3{:style => "display: none;"} Atributos reportables
+    #titulo_atributos{:style => "display: none;"}
+      %h3 Atributos reportables
     - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
       = f.fields_for :datos_reportables_asociados_attributes, :index => i do |dra_f|
         - if dra.dato_reportable.integra_grupo && dra.dato_reportable.orden_de_grupo == 1
-          %h4{:style => "display: none;"}= dra.dato_reportable.nombre_de_grupo
+          %div{:id => "titulo_grupo_" + dra.dato_reportable.codigo_de_grupo}
+            %h4= dra.dato_reportable.nombre_de_grupo
+        = dra_f.hidden_field :dato_reportable_id, :value => dra.dato_reportable_id
         %div.field{:id => "dato_reportable_" + dra.dato_reportable_id.to_s, :style => "display: none;"}
           = dra_f.label :valor, dra.dato_reportable.nombre
           - case
@@ -81,9 +84,11 @@
                 eval(dra.dato_reportable.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre), |
                 eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:include_blank => true) |
             - when dra.dato_reportable.tipo_ruby == "Date"
-              = dra_f.date_select :valor, eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:include_blank => true)
+              - anio, mes, dia = dra.valor.split("-").collect{|p| p.to_i}
+              = dra_f.date_select :valor, eval(dra.dato_reportable.opciones_de_formateo || "{}").merge( |
+                :default => Date.new(anio, mes, dia), :include_blank => true) |
             - else
-              = dra_f.text_field :valor, eval(dra.dato_reportable.opciones_de_formateo || "{}")
+              = dra_f.text_field :valor, eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:value => dra.valor)
 
     %div.actions
       = f.submit "Crear la prestación"

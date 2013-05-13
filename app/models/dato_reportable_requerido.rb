@@ -7,5 +7,9 @@ class DatoReportableRequerido < ActiveRecord::Base
   # Asociaciones
   belongs_to :dato_reportable
   belongs_to :prestacion
+  
+  def codigo_de_grupo
+    dato_reportable.codigo_de_grupo
+  end
 
 end

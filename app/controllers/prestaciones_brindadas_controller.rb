@@ -192,12 +192,13 @@ class PrestacionesBrindadasController < ApplicationController
     @prestaciones =
       autorizadas_por_efector.keep_if{
           |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
-        }.collect{ |p| [p.nombre_corto, p.id] }
+        }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
     @diagnosticos = []
 
   end
 
-  # GET /addendas/:id/edit
+  # GET /prestaciones_brindadas/:id/edit
+  # TODO: modificar todo, jeje
   def edit
     # Verificar los permisos del usuario
     if cannot? :update, Addenda
@@ -247,10 +248,10 @@ class PrestacionesBrindadasController < ApplicationController
       }
   end
 
-  # POST /addendas
+  # POST /prestaciones_brindadas
   def create
     # Verificar los permisos del usuario
-    if cannot? :create, Addenda
+    if cannot? :create, PrestacionBrindada
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -259,90 +260,129 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Verificar si la petición contiene los parámetros esperados
-    if !params[:addenda] || !params[:addenda][:convenio_de_gestion_id]
-      redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+    # Para crear prestaciones debe indicarse la clave de beneficiario a la que se asociará la prestación
+    if !params[:prestacion_brindada] ||
+       !params[:prestacion_brindada][:clave_de_beneficiario] ||
+       !params[:prestacion_brindada][:fecha_de_la_prestacion] ||
+       !params[:prestacion_brindada][:efector_id]
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre el incidente."
         }
       )
       return
     end
 
-    # Obtener el convenio de gestión asociado
-    begin
-      @convenio_de_gestion = ConvenioDeGestion.find(params[:addenda][:convenio_de_gestion_id])
-    rescue ActiveRecord::RecordNotFound
-      redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+    # Obtener la novedad o el afiliado asociado a la clave
+    @beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if !@beneficiario
+      @beneficiario =
+        Afiliado.find_by_clave_de_beneficiario(
+          params[:prestacion_brindada][:clave_de_beneficiario]
+        )
+    end
+
+    if !@beneficiario
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre el incidente."
         }
       )
       return
     end
 
-    # Guardar las prestaciones seleccionadas para dar de alta y de baja
-    @prestacion_autorizada_alta_ids = params[:addenda].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
-    @prestacion_autorizada_baja_ids = params[:addenda].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
-
-    # Crear una nueva adenda desde los parámetros
-    @addenda = Addenda.new(params[:addenda])
-
-    # Crear los objetos necesarios para regenerar la vista si hay algún error
-    @prestaciones_alta =
-      Prestacion.no_autorizadas(@convenio_de_gestion.efector.id).collect{
-        |p| [p.codigo + " - " + p.nombre_corto, p.id]
-      }
-    @prestaciones_baja =
-      PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).collect{
-        |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
-      }
+    # Crear el objeto desde los parámetros y verificar si está correcto
+    @prestacion_brindada = PrestacionBrindada.new(params[:prestacion_brindada])
+    #@prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("I")
+    # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
+    autorizadas_por_efector =
+      Prestacion.find(
+        @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
+          |p| p.prestacion_id
+        }
+      )
+    autorizadas_por_grupo =
+      @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
+    autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
+    @prestaciones =
+      autorizadas_por_efector.keep_if{
+          |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
+        }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
+    @diagnosticos = []
 
     # Verificar la validez del objeto
-    if @addenda.valid?
-      # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if ( @prestacion_autorizada_alta_ids.any?{|p_id| !((@prestaciones_alta.collect{|p| p[1]}).member?(p_id.to_i))} ||
-           @prestacion_autorizada_baja_ids.any?{|p_id| !((@prestaciones_baja.collect{|p| p[1]}).member?(p_id.to_i))} )
-        redirect_to( root_url,
-          :flash => { :tipo => :error, :titulo => "La petición no es válida",
-            :mensaje => "Se informará al administrador del sistema sobre el incidente."
-          }
-        )
-        return
+    puts @prestacion_brindada.inspect
+    puts @prestacion_brindada.datos_reportables_asociados.inspect
+    if !@prestacion_brindada.valid?
+      # Volver a asociar todos los datos reportables posibles con esta prestación
+      dr_asociados = []
+      @prestacion_brindada.datos_reportables_asociados.each do |dra|
+        dr_asociados << dra
       end
-
-      # Registrar el usuario que realiza la creación
-      @addenda.creator_id = current_user.id
-      @addenda.updater_id = current_user.id
-
-      # Guardar la nueva addenda y sus prestaciones asociadas
-      if @addenda.save
-        @prestacion_autorizada_alta_ids.each do |prestacion_id|
-          prestacion_autorizada_alta = PrestacionAutorizada.new
-          prestacion_autorizada_alta.attributes = {
-            :efector_id => @convenio_de_gestion.efector_id,
-            :prestacion_id => prestacion_id,
-            :fecha_de_inicio => @addenda.fecha_de_inicio
-          }
-          @addenda.prestaciones_autorizadas_alta << prestacion_autorizada_alta
-        end
-        @prestacion_autorizada_baja_ids.each do |prestacion_autorizada_id|
-          prestacion_autorizada_baja = PrestacionAutorizada.find(prestacion_autorizada_id)
-          prestacion_autorizada_baja.attributes = {
-            :fecha_de_finalizacion => @addenda.fecha_de_inicio
-          }
-          @addenda.prestaciones_autorizadas_baja << prestacion_autorizada_baja
-        end
-      end
-
-      # Redirigir a la nueva adenda creada
-      redirect_to(@addenda,
-        :flash => { :tipo => :ok, :titulo => 'La adenda se creó correctamente.' }
+      @prestacion_brindada.datos_reportables_asociados.delete_all
+      @prestacion_brindada.datos_reportables_asociados.build(
+        DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{ |dr| {:dato_reportable_id => dr.id} }
       )
-    else
-      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
+      dr_asociados.each do |dra_orig|
+        @prestacion_brindada.datos_reportables_asociados.each do |dra_dest|
+          if dra_orig.dato_reportable_id == dra_dest.dato_reportable_id
+            dra_dest.valor = dra_orig.valor
+          end
+        end
+      end
       render :action => "new"
+      return
     end
+
+    redirect_to(@prestacion_brindada)
+    return
+    
+    # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
+    if ( @prestacion_autorizada_alta_ids.any?{|p_id| !((@prestaciones_alta.collect{|p| p[1]}).member?(p_id.to_i))} ||
+         @prestacion_autorizada_baja_ids.any?{|p_id| !((@prestaciones_baja.collect{|p| p[1]}).member?(p_id.to_i))} )
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
+      return
+    end
+
+    # Registrar el usuario que realiza la creación
+    @addenda.creator_id = current_user.id
+    @addenda.updater_id = current_user.id
+
+    # Guardar la nueva addenda y sus prestaciones asociadas
+    if @addenda.save
+      @prestacion_autorizada_alta_ids.each do |prestacion_id|
+        prestacion_autorizada_alta = PrestacionAutorizada.new
+        prestacion_autorizada_alta.attributes = {
+          :efector_id => @convenio_de_gestion.efector_id,
+          :prestacion_id => prestacion_id,
+          :fecha_de_inicio => @addenda.fecha_de_inicio
+        }
+        @addenda.prestaciones_autorizadas_alta << prestacion_autorizada_alta
+      end
+      @prestacion_autorizada_baja_ids.each do |prestacion_autorizada_id|
+        prestacion_autorizada_baja = PrestacionAutorizada.find(prestacion_autorizada_id)
+        prestacion_autorizada_baja.attributes = {
+          :fecha_de_finalizacion => @addenda.fecha_de_inicio
+        }
+        @addenda.prestaciones_autorizadas_baja << prestacion_autorizada_baja
+      end
+    end
+
+    # Redirigir a la nueva adenda creada
+    redirect_to(@addenda,
+      :flash => { :tipo => :ok, :titulo => 'La adenda se creó correctamente.' }
+    )
   end
 
   # PUT /addendas/:id

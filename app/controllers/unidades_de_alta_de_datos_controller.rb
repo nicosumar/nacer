@@ -99,7 +99,7 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     @centro_de_inscripcion_ids = @unidad_de_alta_de_datos.centros_de_inscripcion.collect{ |c| c.id }
     @efector_ids = @unidad_de_alta_de_datos.efectores.collect{ |e| e.id }
     @efectores =
-      Efector.where((@efector_ids.size > 1 ? "id IN (#{@efector_ids.collect{|i| i.to_i}.join(", ")}) OR " : "") +
+      Efector.where((@efector_ids.size > 0 ? "id IN (#{@efector_ids.collect{|i| i.to_i}.join(", ")}) OR " : "") +
         "unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{
         |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]
       }
