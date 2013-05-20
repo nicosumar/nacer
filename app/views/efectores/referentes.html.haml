@@ -28,10 +28,19 @@
           %th Fecha de finalización
       %tbody
         - @efector.referentes.sort_by{ |ref| ref.fecha_de_inicio }.each do |r|
-          %tr.clickable{ :onclick => "location.href=\'#{edit_referente_path(r)}\'", :title => "Modificar el referente" }
-            %td= r.contacto.mostrado
-            %td= r.fecha_de_inicio.strftime("%d/%m/%Y")
-            - if r.fecha_de_finalizacion
-              %td= r.fecha_de_finalizacion.strftime("%d/%m/%Y")
-            - else
-              %td ACTUAL
+          - if can? :update, Referente
+            %tr.clickable{ :onclick => "location.href=\'#{edit_referente_path(r)}\'", :title => "Modificar el referente" }
+              %td= r.contacto.mostrado
+              %td= r.fecha_de_inicio.strftime("%d/%m/%Y")
+              - if r.fecha_de_finalizacion
+                %td= r.fecha_de_finalizacion.strftime("%d/%m/%Y")
+              - else
+                %td ACTUAL
+          - else
+            %tr
+              %td= r.contacto.mostrado
+              %td= r.fecha_de_inicio.strftime("%d/%m/%Y")
+              - if r.fecha_de_finalizacion
+                %td= r.fecha_de_finalizacion.strftime("%d/%m/%Y")
+              - else
+                %td ACTUAL

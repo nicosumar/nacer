@@ -7,7 +7,7 @@
 #content-header
   %h1 Creación de una nueva prestación brindada
 
-= render :partial => "shared/info", :locals => { :registro => @prestacion_brindada }
+= render :partial => "shared/info", :locals => { :registro => @prestacion_brindada, :asociacion => @prestacion_brindada.datos_reportables_asociados }
 
 #content-body
   %h2.first-header-with-note Formulario de creación de una nueva prestación brindada
@@ -59,8 +59,14 @@
       = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
         {:include_blank => true} |
     #diagnostico.field{:style => "display: none;"}
-      = f.label :diagnostico_id, "Diagnóstico*"
-      = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), {:include_blank => true}
+      - if @diagnosticos.size == 1
+        = f.hidden_field :diagnostico_id, :value => @diagnosticos.first[1]
+        %div.field_content
+          %span.field_name Diagnóstico*
+          %span.field_value= @diagnosticos.first[0]
+      - else
+        = f.label :diagnostico_id, "Diagnóstico*"
+        = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), {:include_blank => true}
     #cantidad_de_unidades.field{:style => "display: none;"}
       = f.label :cantidad_de_unidades, "Cantidad de unidades*"
       = f.text_field :cantidad_de_unidades, {:size => 6}
@@ -77,19 +83,31 @@
             %h4= dra.dato_reportable.nombre_de_grupo
         = dra_f.hidden_field :dato_reportable_id, :value => dra.dato_reportable_id
         %div.field{:id => "dato_reportable_" + dra.dato_reportable_id.to_s, :style => "display: none;"}
-          = dra_f.label :valor, dra.dato_reportable.nombre
+          - if dra.errors.size > 0
+            %div.field_with_errors
+              = dra_f.label ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, dra.dato_reportable.nombre
+          - else
+            = dra_f.label ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, dra.dato_reportable.nombre
+          - if dra.errors.size > 0
+            <div class="field_with_errors">
           - case
             - when dra.dato_reportable.enumerable
-              = dra_f.select :valor, options_from_collection_for_select( |
+              = dra_f.select :valor_integer, options_from_collection_for_select( |
                 eval(dra.dato_reportable.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre), |
                 eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:include_blank => true) |
-            - when dra.dato_reportable.tipo_ruby == "Date"
-              - anio, mes, dia = dra.valor.split("-").collect{|p| p.to_i}
-              = dra_f.date_select :valor, eval(dra.dato_reportable.opciones_de_formateo || "{}").merge( |
-                :default => Date.new(anio, mes, dia), :include_blank => true) |
+            - when dra.dato_reportable.tipo_ruby == "date"
+              -# TODO: Averiguar por qué mierda no está tomando el valor pasado en :default para establecer el valor inicial del control 
+                = dra_f.date_select :valor_date, {:default => dra.valor_date, :include_blank => true}, |
+                  eval(dra.dato_reportable.opciones_de_formateo || "{}") |
+              = dra_f.select :"valor_date(3i)", options_for_select((1..31).collect{|d| [d.to_s, d]}, dra.valor_date ? dra.valor_date.day : nil), :include_blank => true
+              = dra_f.select :"valor_date(2i)", options_for_select([["enero", 1], ["febrero", 2], ["marzo", 3], ["abril", 4], ["mayo", 5], ["junio", 6], ["julio", 7], ["agosto", 8], ["septiembre", 9], ["octubre", 10], ["noviembre", 11], ["diciembre", 12]], dra.valor_date ? dra.valor_date.month : nil), :include_blank => true
+              = dra_f.select :"valor_date(1i)", options_for_select(((Date.today.year - 1)..(Date.today.year + 1)).collect{|y| [y.to_s, y]}, dra.valor_date ? dra.valor_date.year : nil), :include_blank => true
             - else
-              = dra_f.text_field :valor, eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:value => dra.valor)
-
+              = dra_f.text_field ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, |
+                eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:value => eval("dra.valor_" + dra.dato_reportable.tipo_ruby))
+          - if dra.errors.size > 0
+            </div>
+ 
     %div.actions
       = f.submit "Crear la prestación"
       = link_to "Cancelar", root_url

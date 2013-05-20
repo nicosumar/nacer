@@ -2150,6 +2150,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 1.0000,
     :maximo => 7.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -2159,7 +2160,6 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
-  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_uti?")
 
   prestacion = Prestacion.create!({
     :codigo => "ITE008",
@@ -2177,6 +2177,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 1.0000,
     :maximo => 5.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -2186,7 +2187,6 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
-  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
 
   prestacion = Prestacion.create!({
     :codigo => "ITQ004",
@@ -2204,6 +2204,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2212,6 +2213,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 4.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -2227,8 +2229,6 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
-  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_uti?")
-  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
 
   prestacion = Prestacion.create!({
     :codigo => "ITQ008",
@@ -2246,6 +2246,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 1.0000,
     :maximo => 4.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -2255,7 +2256,6 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
-  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
 
   prestacion = Prestacion.create!({
     :codigo => "ITE009",
@@ -2272,6 +2272,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 1.0000,
     :maximo => 7.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -2281,7 +2282,6 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
-  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
 
   prestacion = Prestacion.create!({
     :codigo => "ITE009",
@@ -2298,6 +2298,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 1.0000,
     :maximo => 7.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -2307,7 +2308,6 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_embarazada?")
-  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("ingreso_la_cantidad_de_dias_en_sala?")
 
 
   # EMBARAZO DE ALTO RIESGO: HOSPITAL DE DÍA
@@ -2845,6 +2845,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2853,6 +2854,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2861,6 +2863,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2869,6 +2872,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2877,6 +2881,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -2935,6 +2940,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2943,6 +2949,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2951,6 +2958,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2959,6 +2967,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -2967,6 +2976,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3037,6 +3047,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3045,6 +3056,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3053,6 +3065,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3061,6 +3074,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3069,6 +3083,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3122,6 +3137,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3130,6 +3146,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3138,6 +3155,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3146,6 +3164,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3154,6 +3173,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3208,6 +3228,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3216,6 +3237,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3224,6 +3246,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3232,6 +3255,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3240,6 +3264,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3293,6 +3318,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3301,6 +3327,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3309,6 +3336,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3317,6 +3345,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3325,6 +3354,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3380,6 +3410,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3388,6 +3419,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3396,6 +3428,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3404,6 +3437,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3412,6 +3446,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3468,6 +3503,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3476,6 +3512,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3484,6 +3521,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3492,6 +3530,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3500,6 +3539,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3553,6 +3593,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3561,6 +3602,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3569,6 +3611,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3577,6 +3620,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3585,6 +3629,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3639,6 +3684,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3647,6 +3693,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3655,6 +3702,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3663,6 +3711,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3671,6 +3720,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 3.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3725,6 +3775,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3733,6 +3784,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 10.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3741,6 +3793,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 10.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3749,6 +3802,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 10.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3757,6 +3811,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 10.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3811,6 +3866,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 2.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3819,6 +3875,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 10.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3827,6 +3884,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 10.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3835,6 +3893,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 10.0000,
+    :necesario => true,
     :obligatorio => true
   })
   DatoReportableRequerido.create!({
@@ -3843,6 +3902,7 @@ ActiveRecord::Base.transaction do
     :fecha_de_inicio => fecha_de_inicio,
     :minimo => 0.0000,
     :maximo => 10.0000,
+    :necesario => true,
     :obligatorio => true
   })
   AsignacionDePrecios.create!({
@@ -3976,7 +4036,7 @@ ActiveRecord::Base.transaction do
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.diagnosticos << Diagnostico.find_by_codigo("A98")
-  AsignacionDePrecios {
+  AsignacionDePrecios.create!({
     :precio_por_unidad => 30.0000,
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora

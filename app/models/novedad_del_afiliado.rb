@@ -911,4 +911,19 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
   end
 
+  def estaba_embarazada?(fecha = Date.today)
+    # Verificar si coincide la fecha con los datos del embarazo registrados actualmente en esta novedad
+    if (esta_embarazada && fecha_probable_de_parto)
+      return true if (fecha >= (fecha_probable_de_parto - 40.weeks) && fecha < (fecha_probable_de_parto + 6.weeks))
+    end
+
+    # En el caso de modificaciones de datos, verificar si existe algún periodo de embarazo registrado que coincida con la fecha
+    if tipo_de_novedad.codigo == "M"
+      Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario).periodos_de_embarazo.each do |pe|
+        return true if (fecha >= (pe.fecha_probable_de_parto - 40.weeks) && fecha < (pe.fecha_probable_de_parto + 6.weeks))
+      end
+    end
+    return false
+  end
+
 end

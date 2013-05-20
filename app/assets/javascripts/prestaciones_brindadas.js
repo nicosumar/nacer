@@ -15,6 +15,18 @@ $(document).ready(function() {
 
   function modificarVisibilidadDiagnosticos() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
+    for (i = 0; i < diagnosticosPrestaciones.length; i++) {
+      if (prestacion_id == diagnosticosPrestaciones[i].prestacion_id) {
+        $('#diagnostico').show();
+        break;
+      }
+    }
+    if (i == diagnosticosPrestaciones.length)
+      $('#diagnostico').hide();
+  }
+
+  function modificarSelectDiagnosticos() {
+  	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
     var nDiagnosticosAsociados = 0;
     var oDiagnosticosAsociados = [];
     for (i = 0; i < diagnosticosPrestaciones.length; i++) {
@@ -30,9 +42,10 @@ $(document).ready(function() {
       }
     }
     if (nDiagnosticosAsociados > 1) {
-      div_html = "<label for=\"prestacion_brindada_diagnostico_id\">Diagnóstico*</label>\n<select id=\"prestacion_brindada_diagnostico_id\" name=\"prestacion_brindada[diagnostico_id]\"><option selected=\"selected\" value=\"\"></option>";
+      div_html = "<label for=\"prestacion_brindada_diagnostico_id\">Diagnóstico*</label>\n<select id=\"prestacion_brindada_diagnostico_id\" name=\"prestacion_brindada[diagnostico_id]\">\n<option selected=\"selected\" value=\"\"></option>\n";
       for (i = 0; i < nDiagnosticosAsociados; i++)
-        div_html += "<option value=\"" + oDiagnosticosAsociados[i].id + "\">" + oDiagnosticosAsociados[i].nombre_y_codigo + "</option>";
+        div_html += "<option value=\"" + oDiagnosticosAsociados[i].id + "\">" + oDiagnosticosAsociados[i].nombre_y_codigo + "</option>\n";
+      div_html += "</select>\n"
       $('#diagnostico').html(div_html);
       $('#diagnostico').show();
     }
@@ -51,6 +64,18 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadCantidad() {
+  	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
+    for (i = 0; i < prestaciones.length; i++)
+      if (prestacion_id == prestaciones[i].id) {
+        if (prestaciones[i].codigo_de_unidad != "U")
+      	  $('#cantidad_de_unidades').show();
+        else
+		  $('#cantidad_de_unidades').hide();
+        break;
+      }
+  }
+
+  function modificarInputCantidad() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
     for (i = 0; i < prestaciones.length; i++)
       if (prestacion_id == prestaciones[i].id) {
@@ -119,9 +144,9 @@ $(document).ready(function() {
   }
 
   function prestacion_id_changed() {
-    modificarVisibilidadDiagnosticos();
+  	modificarSelectDiagnosticos();
     modificarVisibilidadDatosReportables();
-    modificarVisibilidadCantidad();
+    modificarInputCantidad();
     modificarVisibilidadEsCatastrofica();
   }
 

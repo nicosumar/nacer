@@ -66,7 +66,7 @@ class PrestacionesBrindadasController < ApplicationController
     begin
       @prestacion_brindada =
         PrestacionBrindada.find(params[:id],
-          :include => [:estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico]
+          :include => [:estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico, :datos_reportables_asociados]
         )
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
@@ -76,6 +76,9 @@ class PrestacionesBrindadasController < ApplicationController
       )
       return
     end
+    
+    # Verificar si hay advertencias
+    @prestacion_brindada.hay_advertencias?
 
     # Obtener el afiliado o la novedad asociadas a la prestación
     @beneficiario =
@@ -176,7 +179,9 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Añadir un nuevo objeto DatoReportableAsociado para cada uno de los DatosReportables definidos
     @prestacion_brindada.datos_reportables_asociados.build(
-      DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{ |dr| {:dato_reportable_id => dr.id} }
+      DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{
+        |dr| {:dato_reportable_id => dr.id}
+      }
     )
 
     # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
@@ -260,7 +265,7 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Para crear prestaciones debe indicarse la clave de beneficiario a la que se asociará la prestación
+    # Verificar que se hayan pasado los parámetros requeridos
     if !params[:prestacion_brindada] ||
        !params[:prestacion_brindada][:clave_de_beneficiario] ||
        !params[:prestacion_brindada][:fecha_de_la_prestacion] ||
@@ -300,7 +305,10 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Crear el objeto desde los parámetros y verificar si está correcto
     @prestacion_brindada = PrestacionBrindada.new(params[:prestacion_brindada])
-    #@prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("I")
+
+    # Marcar la prestación brindada como incompleta, hasta tanto se completen las validaciones.
+    @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("I")
+
     # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
     autorizadas_por_efector =
       Prestacion.find(
@@ -315,13 +323,12 @@ class PrestacionesBrindadasController < ApplicationController
       autorizadas_por_efector.keep_if{
           |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
         }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
-    @diagnosticos = []
+    @diagnosticos = @prestacion_brindada.prestacion.diagnosticos.collect{|d| [d.nombre_y_codigo, d.id]}.sort
 
     # Verificar la validez del objeto
-    puts @prestacion_brindada.inspect
-    puts @prestacion_brindada.datos_reportables_asociados.inspect
     if !@prestacion_brindada.valid?
-      # Volver a asociar todos los datos reportables posibles con esta prestación
+      # Volver a asociar todos los datos reportables posibles con esta prestación para presentar nuevamente el formulario
+      # manteniendo los datos que hubieran sido cargados
       dr_asociados = []
       @prestacion_brindada.datos_reportables_asociados.each do |dra|
         dr_asociados << dra
@@ -333,7 +340,8 @@ class PrestacionesBrindadasController < ApplicationController
       dr_asociados.each do |dra_orig|
         @prestacion_brindada.datos_reportables_asociados.each do |dra_dest|
           if dra_orig.dato_reportable_id == dra_dest.dato_reportable_id
-            dra_dest.valor = dra_orig.valor
+            eval("dra_dest.valor_" + dra_dest.dato_reportable.tipo_ruby + " = dra_orig.valor_" + dra_orig.dato_reportable.tipo_ruby)
+            dra_dest.valid?
           end
         end
       end
@@ -341,12 +349,9 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    redirect_to(@prestacion_brindada)
-    return
-    
     # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-    if ( @prestacion_autorizada_alta_ids.any?{|p_id| !((@prestaciones_alta.collect{|p| p[1]}).member?(p_id.to_i))} ||
-         @prestacion_autorizada_baja_ids.any?{|p_id| !((@prestaciones_baja.collect{|p| p[1]}).member?(p_id.to_i))} )
+    if ( @prestacion_brindada.prestacion_id && !@prestaciones.collect{ |i| i[1] }.member?(@prestacion_brindada.prestacion_id) ||
+         @prestacion_brindada.diagnostico_id && !@diagnosticos.collect{ |i| i[1] }.member?(@prestacion_brindada.diagnostico_id) )
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre el incidente."
@@ -356,33 +361,29 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     # Registrar el usuario que realiza la creación
-    @addenda.creator_id = current_user.id
-    @addenda.updater_id = current_user.id
-
-    # Guardar la nueva addenda y sus prestaciones asociadas
-    if @addenda.save
-      @prestacion_autorizada_alta_ids.each do |prestacion_id|
-        prestacion_autorizada_alta = PrestacionAutorizada.new
-        prestacion_autorizada_alta.attributes = {
-          :efector_id => @convenio_de_gestion.efector_id,
-          :prestacion_id => prestacion_id,
-          :fecha_de_inicio => @addenda.fecha_de_inicio
-        }
-        @addenda.prestaciones_autorizadas_alta << prestacion_autorizada_alta
-      end
-      @prestacion_autorizada_baja_ids.each do |prestacion_autorizada_id|
-        prestacion_autorizada_baja = PrestacionAutorizada.find(prestacion_autorizada_id)
-        prestacion_autorizada_baja.attributes = {
-          :fecha_de_finalizacion => @addenda.fecha_de_inicio
-        }
-        @addenda.prestaciones_autorizadas_baja << prestacion_autorizada_baja
-      end
+    @prestacion_brindada.creator_id = current_user.id
+    @prestacion_brindada.updater_id = current_user.id
+    @prestacion_brindada.datos_reportables_asociados.each do |dra|
+      dra.creator_id = current_user.id
+      dra.updater_id = current_user.id
     end
 
-    # Redirigir a la nueva adenda creada
-    redirect_to(@addenda,
-      :flash => { :tipo => :ok, :titulo => 'La adenda se creó correctamente.' }
-    )
+    @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R") unless @prestacion_brindada.hay_advertencias?
+
+    # Guardar la prestación y los datos reportables asociados
+    @prestacion_brindada.save
+
+    if @prestacion_brindada.hay_advertencias?
+      redirect_to(@prestacion_brindada,
+        :flash => { :tipo => :advertencia,
+          :titulo => 'La prestación brindada se registró con advertencias',
+          :mensaje => 'Corrija los problemas detectados para reducir los rechazos en la facturación.' }
+      )
+    else
+      redirect_to(@prestacion_brindada,
+        :flash => { :tipo => :ok, :titulo => 'La prestación brindada se registró correctamente' }
+      )
+    end
   end
 
   # PUT /addendas/:id

@@ -330,7 +330,8 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.integer "dato_reportable_id"
     t.date    "fecha_de_inicio"
     t.date    "fecha_de_finalizacion"
-    t.boolean "obligatorio"
+    t.boolean "necesario",                                            :default => false
+    t.boolean "obligatorio",                                          :default => false
     t.decimal "minimo",                :precision => 15, :scale => 4
     t.decimal "maximo",                :precision => 15, :scale => 4
   end

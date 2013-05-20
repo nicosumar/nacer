@@ -20,10 +20,18 @@
     - elsif ["I", "F", "U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-advertencia.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
-        - if @prestacion_brindada.advertencias && @prestacion_brindada.advertencias.size > 0
+        - if @prestacion_brindada.advertencias.size > 0
           %ul
-            - @prestacion_brindada.advertencias.each do |adv|
-              %li= adv
+            - @prestacion_brindada.advertencias.each do |attr, advs|
+              - advs.each do |msj|
+                %li= msj
+        - @prestacion_brindada.datos_reportables_asociados.each do |dra|
+          - if dra.advertencias.size > 0
+            %ul
+              - dra.advertencias.each do |attr, advs|
+                - advs.each do |msj|
+                  %li= msj
+
     - else
       #info.infobox-error.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
@@ -73,15 +81,47 @@
     %span.field_value= @prestacion_brindada.prestacion.codigo + (@prestacion_brindada.diagnostico ? @prestacion_brindada.diagnostico.codigo : '')
   %div.field_content
     %span.field_name Descripción de la prestación
-    %span.field_value= @prestacion_brindada.prestacion.nombre
+    %span.field_value= @prestacion_brindada.prestacion.nombre_corto
   - if @prestacion_brindada.diagnostico
     %div.field_content
       %span.field_name Descripción del diagnóstico
-      %span.field_value= @prestacion_brindada.diagnostico.nombre
+      %span.field_value= @prestacion_brindada.diagnostico.nombre_corto
   - if @prestacion_brindada.prestacion.unidad_de_medida.codigo != "U"
     %div.field_content
       %span.field_name= "Cantidad de " + @prestacion_brindada.prestacion.unidad_de_medida.nombre.downcase
-      %span.field_value= (@prestacion_brindada.prestacion.unidad_de_medida.solo_enteros ? @prestacion_brindada.cantidad_de_unidades.to_i : 
+      %span.field_value= (@prestacion_brindada.prestacion.unidad_de_medida.solo_enteros ? @prestacion_brindada.cantidad_de_unidades.to_i : @prestacio<n_brindada.cantidad_de_unidades)
+
+  %h3 Atributos reportables
+  - @prestacion_brindada.datos_reportables_asociados.each do |dra|
+    - if dra.dato_reportable.integra_grupo && dra.dato_reportable.orden_de_grupo == 1
+      %div{:id => "titulo_grupo_" + dra.dato_reportable.codigo_de_grupo}
+        %h4= dra.dato_reportable.nombre_de_grupo
+    %div.field_content
+      - if dra.advertencias.size > 0
+        %div.field_with_warnings
+          %span.field_name= dra.dato_reportable.nombre
+      - else
+        %span.field_name= dra.dato_reportable.nombre
+      - if dra.advertencias.size > 0
+        <div class="field_with_warnings">
+      - case
+        - when dra.dato_reportable.enumerable
+          - if dra.dato_reportable.valor_integer.blank?
+            %span.field_empty No se seleccionó una opción
+          - else
+            %span.field_value= eval(dra.dato_reportable.clase_para_enumeracion).find(dra.valor_integer).nombre
+        - when dra.dato_reportable.tipo_ruby == "date"
+          - if dra.valor_date.blank?
+            %span.field_empty No se ingresó la fecha
+          - else
+            %span.field_value= dra.valor_date.strftime("%d/%m/%Y")
+        - else
+          - if eval("dra.valor_" + dra.dato_reportable.tipo_ruby + ".blank?")
+            %span.field_empty No se ingresó el valor
+          - else
+            %span.field_value= eval("dra.valor_" + dra.dato_reportable.tipo_ruby)
+      - if dra.advertencias.size > 0
+        </div>
 
   %h3 Datos sobre el efector que brindó la prestación
   %div.field_content

@@ -795,7 +795,7 @@ class PadronesController < ApplicationController
                      periodo.fecha_de_diagnostico_del_embarazo != afiliado.fecha_de_diagnostico_del_embarazo ||
                      periodo.semanas_de_embarazo != afiliado.semanas_de_embarazo ||
                      periodo.fecha_probable_de_parto != afiliado.fecha_probable_de_parto ||
-                     periodo.fecha_efectivade_parto != afiliado.fecha_efectiva_de_parto )
+                     periodo.fecha_efectiva_de_parto != afiliado.fecha_efectiva_de_parto )
                   periodo.update_attributes({:fecha_de_finalizacion => primero_del_mes})
                   PeriodoDeEmbarazo.create({:afiliado_id => afiliado.afiliado_id,
                     :fecha_de_inicio => primero_del_mes,

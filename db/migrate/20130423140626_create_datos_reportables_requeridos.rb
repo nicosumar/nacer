@@ -11,7 +11,8 @@ class CreateDatosReportablesRequeridos < ActiveRecord::Migration
       t.date :fecha_de_finalizacion
 
       # Campos varios requeridos para validaciones
-      t.boolean :obligatorio                                     # Notificación obligatoria u opcional
+      t.boolean :necesario, :default => false                    # Los datos necesarios generan un error en el formulario si no se completan
+      t.boolean :obligatorio, :default => false                  # Los datos obligatorios no completados hacen que el registro se considere incompleto
       t.decimal :minimo, :precision => 15, :scale => 4           # Valor mínimo (si existe) para datos numéricos
       t.decimal :maximo, :precision => 15, :scale => 4           # Valor máximo (si existe) para datos numéricos
     end
