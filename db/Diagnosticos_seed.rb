@@ -1063,126 +1063,121 @@ Diagnostico.create([
   },
   {
     #:id => 213,
-    :nombre => "Isomerismo auricular izquierdo",
+    :nombre => "Isomerismo auricular izquierdo / derecho",
     :codigo => "025"
   },
   {
     #:id => 214,
-    :nombre => "Isomerismo auricular derecho",
-    :codigo => "056b"
-  },
-  {
-    #:id => 215,
     :nombre => "Aneurisma ventricular derecho (incluye pseudoaneurisma)",
     :codigo => "004"
   },
   {
-    #:id => 216,
+    #:id => 215,
     :nombre => "Aneurisma ventricular izquierdo (incluye pseudoaneurisma)",
     :codigo => "003"
   },
   {
-    #:id => 217,
+    #:id => 216,
     :nombre => "Aneurisma arteria pulmonar",
     :codigo => "002"
   },
   {
-    #:id => 218,
+    #:id => 217,
     :nombre => "Otros aneurismas",
     :codigo => "001"
   },
   {
-    #:id => 219,
+    #:id => 218,
     :nombre => "Mediastinitis",
     :codigo => "074"
   },
   {
-    #:id => 220,
+    #:id => 219,
     :nombre => "Endocarditis",
     :codigo => "059"
   },
   {
-    #:id => 221,
+    #:id => 220,
     :nombre => "Falla de válvula protésica",
     :codigo => "101"
   },
   {
-    #:id => 222,
+    #:id => 221,
     :nombre => "Infarto de miocardio",
     :codigo => "084"
   },
   {
-    #:id => 223,
+    #:id => 222,
     :nombre => "Tumor cardíaco",
     :codigo => "030"
   },
   {
-    #:id => 224,
+    #:id => 223,
     :nombre => "Fístula arteriovenosa pulmonar",
     :codigo => "111"
   },
   {
-    #:id => 225,
+    #:id => 224,
     :nombre => "Embolismo pulmonar",
     :codigo => "112"
   },
   {
-    #:id => 226,
+    #:id => 225,
     :nombre => "Enfermedad obstructiva vascular pulmonar",
     :codigo => "118"
   },
   {
-    #:id => 227,
+    #:id => 226,
     :nombre => "Enfermedad obstructiva vascular pulmonar (Eisenmenger)",
     :codigo => "119"
   },
   {
-    #:id => 228,
+    #:id => 227,
     :nombre => "Hipertensión pulmonar primaria",
     :codigo => "100"
   },
   {
-    #:id => 229,
+    #:id => 228,
     :nombre => "Circulación fetal persistente",
     :codigo => "094"
   },
   {
-    #:id => 230,
+    #:id => 229,
     :nombre => "Aspiración meconial",
     :codigo => "070"
   },
   {
-    #:id => 231,
+    #:id => 230,
     :nombre => "Otras enfermedades torácicas y/o mediastinales",
     :codigo => "138"
   },
   {
-    #:id => 232,
+    #:id => 231,
     :nombre => "Otra enfermedad vascular periférica",
     :codigo => "093"
   },
   {
-    #:id => 233,
+    #:id => 232,
     :nombre => "Post transplante cardíaco",
     :codigo => "129"
   },
   {
-    #:id => 234,
+    #:id => 233,
     :nombre => "Post transplante pulmonar",
     :codigo => "131"
   },
   {
-    #:id => 235,
+    #:id => 234,
     :nombre => "Post transplante cardíaco y pulmonar",
     :codigo => "130"
   },
   {
-    #:id => 236,
+    #:id => 235,
     :nombre => "Corazón normal",
     :codigo => "085"
   },
   {
-    #:id => 237,
+    #:id => 236,
     :nombre => "Otras misceláneas",
     :codigo => "031"
   }

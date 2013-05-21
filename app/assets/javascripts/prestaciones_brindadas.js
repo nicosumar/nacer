@@ -145,9 +145,9 @@ $(document).ready(function() {
 
   function prestacion_id_changed() {
   	modificarSelectDiagnosticos();
-    modificarVisibilidadDatosReportables();
     modificarInputCantidad();
     modificarVisibilidadEsCatastrofica();
+    modificarVisibilidadDatosReportables();
   }
 
 });

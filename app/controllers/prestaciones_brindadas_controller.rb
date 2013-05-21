@@ -368,6 +368,7 @@ class PrestacionesBrindadasController < ApplicationController
       dra.updater_id = current_user.id
     end
 
+    # Verificar si hay advertencias presentes, para modificar el estado de la prestación
     @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R") unless @prestacion_brindada.hay_advertencias?
 
     # Guardar la prestación y los datos reportables asociados

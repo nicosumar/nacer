@@ -7,7 +7,7 @@ EstadoDeLaPrestacion.create([
     :pendiente => true,
     :indexable => true },
   { #:id => 2,
-    :nombre => "Registrada, pero faltan atributos",
+    :nombre => "Registrada, con advertencias",
     :codigo => "F",
     :pendiente => true,
     :indexable => true },
