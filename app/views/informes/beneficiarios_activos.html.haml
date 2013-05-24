@@ -19,7 +19,6 @@
       = label_tag(:mes_y_anio, "Periodo (mes y año):")
       = date_select :mes_y_anio, :mes_y_anio, |
         {:start_year => 2012, :end_year => @ultimo_periodo.year, :discard_day => true, :default => @fecha_base} |
-    %div.actions
       = submit_tag("Actualizar")
 
   %h3 Cantidad de beneficiarios activos por grupo
