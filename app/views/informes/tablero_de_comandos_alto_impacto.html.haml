@@ -1,0 +1,59 @@
+- content_for :title do
+  Tablero de comandos para efectores de alto impacto
+
+#content-header
+  %h1 Tablero de comandos para efectores de alto impacto
+
+= render :partial => "shared/info"
+
+#content-body
+
+  %h2.first-header-with-note
+    Información del periodo:
+    = l @fecha_base, :format => :month_and_year
+  %p.note
+    Puede seleccionar otro periodo y presionar 'Actualizar' para obtener los datos correspondientes.
+
+  = form_tag('/tablero_de_comandos_alto_impacto', :method => 'get') do
+    %div.field
+      = label_tag(:mes_y_anio, "Periodo (mes y año):")
+      = date_select :mes_y_anio, :mes_y_anio, |
+        {:start_year => 2012, :end_year => @ultimo_periodo.year, :discard_day => true, :default => @fecha_base} |
+      = submit_tag("Actualizar")
+
+  %h3 Beneficiarios activos
+  %table
+    %thead
+      %tr
+        %th{:rowspan => 2} Efector
+        %th{:rowspan => 2} Sin C.E.B.
+        %th{:colspan => 3} Con C.E.B.
+        %th{:rowspan => 2} Total del efector
+        %th{:rowspan => 2} Con C.E.B. del efector (%)
+      %tr
+        %th Del efector
+        %th Otro efector
+        %th Por inscripción
+    %tbody
+      - totales = [0, 0, 0, 0]
+      - @datos_de_cobertura.rows.each do |d|
+        %tr
+          %td= d[0]
+          %td.derecha= d[1]
+          %td.derecha= d[2]
+          %td.derecha= d[3]
+          %td.derecha= d[4]
+          %td.derecha= d[1].to_i + d[2].to_i + d[3].to_i + d[4].to_i
+          %td.derecha= "%.1f\%" % ((d[2].to_f / (d[1].to_f + d[2].to_f + d[3].to_f + d[4].to_f)) * 100.0)
+          - totales[0] += d[1].to_i
+          - totales[1] += d[2].to_i
+          - totales[2] += d[3].to_i
+          - totales[3] += d[4].to_i
+      %tr.destacado
+        %td TOTAL
+        %td.derecha= totales[0]
+        %td.derecha= totales[1]
+        %td.derecha= totales[2]
+        %td.derecha= totales[3]
+        %td.derecha= totales[0].to_i + totales[1].to_i + totales[2].to_i + totales[3].to_i
+        %td.derecha= "%.1f\%" % ((totales[1].to_f / (totales[0].to_f + totales[1].to_f + totales[2].to_f + totales[3].to_f)) * 100.0)
