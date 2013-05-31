@@ -326,7 +326,7 @@ class AddendasController < ApplicationController
         @addenda.prestaciones_autorizadas_alta.destroy_all
         @prestacion_autorizada_alta_ids.each do |prestacion_id|
           prestacion_autorizada_alta = PrestacionAutorizada.new
-          prestacion_autorizada_alta.attributes = 
+          prestacion_autorizada_alta.attributes =
             {
               :efector_id => @convenio_de_gestion.efector_id,
               :prestacion_id => prestacion_id,
@@ -336,7 +336,7 @@ class AddendasController < ApplicationController
         end
         @addenda.prestaciones_autorizadas_baja.each do |p|
           prestacion_autorizada = PrestacionAutorizada.find(p)
-          prestacion_autorizada.attributes = 
+          prestacion_autorizada.attributes =
             {
               :fecha_de_finalizacion => nil,
               :autorizante_de_la_baja_type => nil,

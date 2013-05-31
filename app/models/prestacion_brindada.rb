@@ -4,13 +4,16 @@ class PrestacionBrindada < ActiveRecord::Base
   nilify_blanks
 
   # Advertencias generadas por las validaciones
-  attr_accessor :advertencias
+  attr_accessor :advertencias, :datos_reportables_incompletos
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :cuasi_factura_id, :diagnostico_id, :efector_id
   attr_accessible :es_catastrofica, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :fecha_del_debito, :mensaje_de_la_baja
   attr_accessible :monto_facturado, :monto_liquidado, :nomenclador_id, :observaciones, :prestacion_id
   attr_accessible :datos_reportables_asociados_attributes
+
+  # Los atributos siguientes solo pueden establecerse durante la creación
+  attr_readonly :clave_de_beneficiario, :efector_id, :fecha_de_la_prestacion, :prestacion_id
 
   # Asociaciones
   belongs_to :cuasi_factura
@@ -32,6 +35,7 @@ class PrestacionBrindada < ActiveRecord::Base
 
   # Variable de instancia para guardar las advertencias
   @advertencias = {}
+  @datos_reportables_incompletos = false
 
   #
   # self.con_estado
@@ -54,34 +58,94 @@ class PrestacionBrindada < ActiveRecord::Base
 
     # Verificamos que se hayan completado los campos obligatorios del formulario
     campo_obligatorio_vacio = false
+    datos_erroneos = false
 
+    # Verificación paranoica, la clave jamás debería estar en blanco
     if clave_de_beneficiario.blank?
       errors.add(:clave_de_beneficiario, 'no puede estar en blanco')
-    campo_obligatorio_vacio = true
-    end
-    if !efector_id || efector_id < 1
-      errors.add(:efector_id, 'no puede estar en blanco')
-    campo_obligatorio_vacio = true
-    end
-    if !fecha_de_la_prestacion
-      errors.add(:fecha_de_la_prestacion, 'no puede estar en blanco')
-    campo_obligatorio_vacio = true
+      campo_obligatorio_vacio = true
     end
 
-    return !campo_obligatorio_vacio
+    # Verificar que se haya seleccionado un efector
+    if !efector_id || efector_id < 1
+      errors.add(:efector_id, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+
+    # Verificar que se haya indicado la fecha de la prestación
+    if !fecha_de_la_prestacion
+      errors.add(:fecha_de_la_prestacion, 'no puede estar en blanco')
+      campo_obligatorio_vacio = true
+    end
+
+    # Verificar que la fecha de la prestación no sea una fecha futura
+    if fecha_de_la_prestacion && fecha_de_la_prestacion > Date.today
+      errors.add(:fecha_de_la_prestacion, 'no puede ser una fecha futura.')
+      datos_erroneos = true
+    end
+
+    # TODO: Eliminar luego de que finalice el periodo de gracia
+    if fecha_de_la_prestacion && Date.today <= Date.new(2013, 6, 30) && fecha_de_la_prestacion < Date.new(2012, 8, 1)
+      errors.add(:fecha_de_la_prestacion, 'no puede ser anterior al 01/08/2012.')
+      datos_erroneos = true
+    end
+
+    # Verificar que la fecha de la prestación sea posterior al inicio del convenio
+    if efector
+      if efector.fecha_de_inicio_del_convenio_actual && fecha_de_la_prestacion < efector.fecha_de_inicio_del_convenio_actual
+        # TODO: eliminar esta verificacion cuando finalice el periodo de gracia
+        if Date.today > Date.new(2013, 6, 30)
+          errors.add(
+            :fecha_de_la_prestacion,
+            'no puede ser anterior al inicio del convenio (' +
+            efector.fecha_de_inicio_del_convenio_actual.strftime("%d/%m/%Y") + ')'
+          )
+          datos_erroneos = true
+        end
+      end
+    end
+
+    # Verificar que la fecha de la prestación sea posterior a la inscripción del beneficiario
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if !beneficiario || beneficiario.tipo_de_novedad.codigo == "M"
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+      inscripcion = beneficiario.fecha_de_inscripcion
+    else
+      inscripcion = beneficiario.fecha_de_la_novedad
+    end
+    if inscripcion && fecha_de_la_prestacion && fecha_de_la_prestacion < inscripcion
+      errors.add(
+        :fecha_de_la_prestacion,
+        'no puede ser anterior a la fecha de inscripción ' +
+        (beneficiario.sexo.codigo == "F" ? 'de la beneficiaria' : 'del beneficiario') + ' (' +
+        inscripcion.strftime("%d/%m/%Y") + ')'
+      )
+      datos_erroneos = true
+    end
+
+    return !campo_obligatorio_vacio && !datos_erroneos
   end
 
   def pasa_validaciones_especificas?
 
     error_generado = false
 
+    return true unless prestacion
+
     if prestacion.unidad_de_medida.codigo != "U"
       if cantidad_de_unidades.blank?
         error_generado = true
-        errors.add(:cantidad_de_unidades, "El valor del campo \"Cantidad de " + prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" no puede estar en blanco")      
+        errors.add(:cantidad_de_unidades, "El valor del campo \"Cantidad de " +
+        prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" no puede estar en blanco")
       elsif cantidad_de_unidades <= 0.0
         error_generado = true
-        errors.add(:cantidad_de_unidades, "El valor del campo \"Cantidad de " + prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" tiene que ser un número mayor que cero")      
+        errors.add(:cantidad_de_unidades, "El valor del campo \"Cantidad de " +
+        prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" tiene que ser un número mayor que cero")
       end
     end
 
@@ -128,23 +192,29 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   def cantidad_de_unidades_correcta?
-    (1..prestacion.unidades_maximas) === cantidad_de_unidades
+    if prestacion
+      (1..prestacion.unidades_maximas) === cantidad_de_unidades
+    else
+      true
+    end
   end
 
   def tension_arterial_valida?
-    self.datos_reportables_asociados.each do |dr|
-      if dr.dato_reportable.codigo = 'TAD'
-      tad = dr.valor_big_decimal
+    tas = nil
+    tad = nil
+    self.datos_reportables_asociados.each do |dra|
+      if dra.dato_reportable.codigo = 'TAD'
+        tad = dra.valor_big_decimal
       end
-      if dr.dato_reportable.codigo = 'TAS'
-      tas = dr.valor_big_decimal
+      if dra.dato_reportable.codigo = 'TAS'
+        tas = dra.valor_big_decimal
       end
     end
 
     if tas && tad
       return tas > tad
     else
-    return false
+      return true
     end
 
   end
@@ -152,13 +222,13 @@ class PrestacionBrindada < ActiveRecord::Base
   def indice_cpod_valido?
     self.datos_reportables_asociados.each do |dr|
       if dr.dato_reportable.codigo = 'CPOD_C'
-      cpod_c = dr.valor_integer
+        cpod_c = dr.valor_integer
       end
       if dr.dato_reportable.codigo = 'CPOD_P'
-      cpod_p = dr.valor_integer
+        cpod_p = dr.valor_integer
       end
       if dr.dato_reportable.codigo = 'CPOD_O'
-      cpod_o = dr.valor_integer
+        cpod_o = dr.valor_integer
       end
     end
 
@@ -173,7 +243,7 @@ class PrestacionBrindada < ActiveRecord::Base
   def ingreso_la_cantidad_de_dias_en_uti?
     self.datos_reportables_asociados.each do |dr|
       if dr.dato_reportable.codigo = 'UTI'
-      !dr.valor_integer.blank?
+        !dr.valor_integer.blank?
       end
     end
   end
@@ -181,18 +251,18 @@ class PrestacionBrindada < ActiveRecord::Base
   def ingreso_la_cantidad_de_dias_en_sala?
     self.datos_reportables_asociados.each do |dr|
       if dr.dato_reportable.codigo = 'SC'
-      !dr.valor_integer.blank?
+        !dr.valor_integer.blank?
       end
     end
   end
 
   def recien_nacido?
     beneficiario =
-    NovedadDelAfiliado.where(
-    :clave_de_beneficiario => clave_de_beneficiario,
-    :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-    :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-    ).first
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
@@ -202,11 +272,11 @@ class PrestacionBrindada < ActiveRecord::Base
 
   def menor_de_un_anio?
     beneficiario =
-    NovedadDelAfiliado.where(
-    :clave_de_beneficiario => clave_de_beneficiario,
-    :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-    :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-    ).first
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
@@ -215,15 +285,23 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   def dato_reportable_no_requerido?(dra)
-    !prestacion.datos_reportables_requeridos.any? do |drr|
-      fecha_de_la_prestacion >= drr.fecha_de_inicio &&
-      (drr.fecha_de_finalizacion.nil? || fecha_de_la_prestacion < drr.fecha_de_finalizacion) &&
-      drr.dato_reportable_id == dra[:dato_reportable_id].to_i
+    if prestacion
+      !prestacion.datos_reportables_requeridos.any? do |drr|
+        fecha_de_la_prestacion >= drr.fecha_de_inicio &&
+        (drr.fecha_de_finalizacion.nil? || fecha_de_la_prestacion < drr.fecha_de_finalizacion) &&
+        drr.dato_reportable_id == dra[:dato_reportable_id].to_i
+      end
+    else
+      true
     end
   end
 
   def requiere_diagnostico?
-    prestacion.objeto_de_la_prestacion && !prestacion.comunitaria
+    if prestacion
+      prestacion.objeto_de_la_prestacion && !prestacion.comunitaria
+    else
+      false
+    end
   end
 
   def validar_asociacion
@@ -234,26 +312,58 @@ class PrestacionBrindada < ActiveRecord::Base
 
     # Eliminar las advertencias anteriores (si hubiera alguna)
     @advertencias = {}
+    @datos_reportables_incompletos = false
 
     # No verificamos advertencias si hay errores presentes
-    return false if (errors.count > 0 || datos_reportables_asociados.any?{ |dra| dra.errors.count > 0 })
+    if errors.count > 0 || (datos_reportables_asociados && datos_reportables_asociados.any?{ |dra| dra.errors.count > 0 })
+      return false
+    end
 
     alguna_advertencia = false
 
-    prestacion.metodos_de_validacion.where(:genera_error => false).each do |mv|
-      if !eval('self.' + mv.metodo)
-        if @advertencias.has_key? :base
-          @advertencias[:base] << mv.mensaje
-        else
-          @advertencias.merge! :base => [mv.mensaje]
-        end
-        alguna_advertencia = true
+    # Verificar que la fecha de la prestación tenga menos de 4 meses de la fecha de hoy
+    if fecha_de_la_prestacion < (Date.today - 120.days)
+      if @advertencias.has_key? :base
+        @advertencias[:base] << "La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registración"
+      else
+        @advertencias.merge! :base => ["La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registración"]
       end
+      alguna_advertencia = true
     end
 
-    # Verificar si hay advertencias relacionadas con los datos reportables asociados
-    if datos_reportables_asociados.any?{ |dra| dra.hay_advertencias? }
+    # Verificar el estado de actividad del beneficiario
+    beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    if beneficiario && !beneficiario.activo?(fecha_de_la_prestacion)
+      if @advertencias.has_key? :base
+        @advertencias[:base] << (
+          (beneficiario.sexo.codigo == "F" ? "La beneficiaria " : "El beneficiario ") +
+          "no se encontraba " + (beneficiario.sexo.codigo == "F" ? "activa " : "activo ") + "para la fecha de la prestación"
+        )
+      else
+        @advertencias.merge! :base => [(
+          (beneficiario.sexo.codigo == "F" ? "La beneficiaria " : "El beneficiario ") +
+          "no se encontraba " + (beneficiario.sexo.codigo == "F" ? "activa " : "activo ") + "para la fecha de la prestación"
+        )]
+      end
       alguna_advertencia = true
+    end
+
+    if prestacion
+      prestacion.metodos_de_validacion.where(:genera_error => false).each do |mv|
+        if !eval('self.' + mv.metodo)
+          if @advertencias.has_key? :base
+            @advertencias[:base] << mv.mensaje
+          else
+            @advertencias.merge! :base => [mv.mensaje]
+          end
+          alguna_advertencia = true
+        end
+      end
+
+      # Verificar si hay advertencias relacionadas con los datos reportables asociados
+      if datos_reportables_asociados.any?{ |dra| dra.hay_advertencias? }
+        alguna_advertencia = true
+      end
     end
 
     return alguna_advertencia

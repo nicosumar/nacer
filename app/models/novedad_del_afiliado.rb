@@ -155,9 +155,11 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
       # Fecha de hoy
       # TODO: Eliminar después de que se agote el periodo de gracia (hasta el 30/06/2013)
-      if Date.today <= Date.new(2013, 6, 30) && fecha_de_la_novedad < Date.new(2012, 7, 1)
-        errors.add(:fecha_de_la_novedad, 'no puede ser anterior al 01/07/2012')
-        error_de_fecha = true
+      if Date.today <= Date.new(2013, 6, 30)
+        if fecha_de_la_novedad < Date.new(2012, 7, 1)
+          errors.add(:fecha_de_la_novedad, 'no puede ser anterior al 01/07/2012')
+          error_de_fecha = true
+        end
       elsif fecha_de_la_novedad < (Date.today - 4.months)
         errors.add(:fecha_de_la_novedad, 'no puede exceder en cuatro meses la fecha de hoy')
         error_de_fecha = true
@@ -250,8 +252,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
       (fecha_de_nacimiento + Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).years) > fecha_de_la_novedad
       errors.add(
         :es_menor,
-        'debe estar marcado si aún no ha cumplido los ' + Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s +
-        ' años')
+        'debe estar marcado si aún no ha cumplido los ' +
+        Parametro.valor_del_parametro(:edad_limite_para_exigir_adulto_responsable).to_s + ' años'
+      )
       return false
     end
 
@@ -337,14 +340,18 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     return nil
   end
-  
+
   # edad_en_anios
   # Devuelve la edad en años cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
   # indica una fecha.
   def edad_en_anios (fecha_de_calculo = Date.today)
 
     # Calculamos la diferencia entre los años de ambas fechas
-    diferencia_en_anios = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+    if fecha_de_nacimiento
+      diferencia_en_anios = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+    else
+      return nil
+    end
 
     # Calculamos la diferencia entre los meses de ambas fechas
     diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
@@ -358,6 +365,20 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     # Devolver la cantidad de años
     return diferencia_en_anios
+
+  end
+
+  # edad_en_dias
+  # Devuelve la edad en días cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
+  # indica una fecha.
+  def edad_en_dias (fecha_de_calculo = Date.today)
+
+    # Calculamos la diferencia en días entre ambas fechas
+    if fecha_de_nacimiento
+      return (fecha_de_calculo - fecha_de_nacimiento).to_i
+    else
+      return nil
+    end
 
   end
 
@@ -405,7 +426,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_de_la_madre_id && numero_de_documento_de_la_madre &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_de_la_madre_id) )
       numero_de_documento_de_la_madre.gsub!(/[^[:digit:]]/, '')
-      if !numero_de_documento_de_la_madre.blank? && (numero_de_documento_de_la_madre.to_i < 50000 || numero_de_documento_de_la_madre.to_i > 99999999)
+      if !numero_de_documento_de_la_madre.blank? && (numero_de_documento_de_la_madre.to_i < 50000 ||
+          numero_de_documento_de_la_madre.to_i > 99999999)
         errors.add(:numero_de_documento_de_la_madre, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -415,7 +437,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_del_padre_id && numero_de_documento_del_padre &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_del_padre_id) )
       numero_de_documento_del_padre.gsub!(/[^[:digit:]]/, '')
-      if !numero_de_documento_del_padre.blank? && (numero_de_documento_del_padre.to_i < 50000 || numero_de_documento_del_padre.to_i > 99999999)
+      if !numero_de_documento_del_padre.blank? && (numero_de_documento_del_padre.to_i < 50000 ||
+          numero_de_documento_del_padre.to_i > 99999999)
         errors.add(:numero_de_documento_del_padre, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -425,7 +448,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if ( tipo_de_documento_del_tutor_id && numero_de_documento_del_tutor &&
          TipoDeDocumento.where(:codigo => ["DNI", "LE", "LC"]).collect{ |t| t.id }.member?(tipo_de_documento_del_tutor_id) )
       numero_de_documento_del_tutor.gsub!(/[^[:digit:]]/, '')
-      if !numero_de_documento_del_tutor.blank? && (numero_de_documento_del_tutor.to_i < 50000 || numero_de_documento_del_tutor.to_i > 99999999)
+      if !numero_de_documento_del_tutor.blank? && (numero_de_documento_del_tutor.to_i < 50000 ||
+          numero_de_documento_del_tutor.to_i > 99999999)
         errors.add(:numero_de_documento_del_tutor, 'no se encuentra en el intervalo esperado (50000-99999999).')
         error_de_documento = true
       end
@@ -433,7 +457,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     # Verificar que tenga menos de un año si la clase de documento seleccionada es "Ajeno"
     if clase_de_documento_id == ClaseDeDocumento.id_del_codigo("A")
-      if edad_en_anios(Date.today - 2.months) > 0
+      if fecha_de_nacimiento && fecha_de_la_novedad && edad_en_anios(fecha_de_la_novedad) > 0
         errors.add(:base,
           "No se puede crear una solicitud con documento ajeno si el niño o niña ya ha cumplido el año de vida"
         )
@@ -497,7 +521,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
             "id != ? AND clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
             estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id IN (?)", id, clase_de_documento_id, tipo_de_documento_id,
             numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id },
-            (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } : TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id })
+            (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } :
+              TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id }
+            )
           )
       else
         novedades =
@@ -505,14 +531,16 @@ class NovedadDelAfiliado < ActiveRecord::Base
             "clase_de_documento_id = ? AND tipo_de_documento_id = ? AND numero_de_documento = ? AND
             estado_de_la_novedad_id IN (?) AND tipo_de_novedad_id IN (?)", clase_de_documento_id, tipo_de_documento_id,
             numero_de_documento, EstadoDeLaNovedad.where(:pendiente => true).collect{ |e| e.id },
-            (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } : TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id })
+            (es_una_baja? ? TipoDeNovedad.where("codigo != 'M'").collect{ |t| t.id } :
+              TipoDeNovedad.where("codigo != 'B'").collect{ |t| t.id }
+            )
           )
       end
       if novedades.size > 0
         errors.add(:base,
           "No se puede crear la solicitud porque ya existe otra solicitud pendiente para el mismo tipo y número" +
           " de documento: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
-          ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
+          ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") +
           novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
           (novedades.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
           novedades.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
@@ -584,7 +612,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       errors.add(:base,
         "No se puede crear la solicitud porque ya existe otra solicitud pendiente con el mismo nombre, apellido y" +
         " fecha de nacimiento: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
-        ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
+        ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") +
         novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
         (novedades.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
         novedades.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
@@ -623,7 +651,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
         errors.add(:base,
           "No se puede crear la solicitud porque ya existe " +
           (afiliados.first.sexo && afiliados.first.sexo.codigo == "F" ? "una beneficiaria" : "un beneficiario") +
-          " con el mismo nombre, fecha de nacimiento y número de documento de la madre: " + afiliados.first.apellido.to_s + 
+          " con el mismo nombre, fecha de nacimiento y número de documento de la madre: " + afiliados.first.apellido.to_s +
           ", " + afiliados.first.nombre.to_s + ", " +
           (afiliados.first.tipo_de_documento ? afiliados.first.tipo_de_documento.codigo + " " : "") +
           afiliados.first.numero_de_documento.to_s + ", clave " + afiliados.first.clave_de_beneficiario.to_s +
@@ -657,7 +685,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
         errors.add(:base,
           "No se puede crear la solicitud porque ya existe otra solicitud pendiente con el mismo nombre, fecha de" +
           " nacimiento y número de documento de la madre: " + novedades.first.apellido.to_s + ", " + novedades.first.nombre.to_s +
-          ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") + 
+          ", " + (novedades.first.tipo_de_documento ? novedades.first.tipo_de_documento.codigo + " " : "") +
           novedades.first.numero_de_documento.to_s + ", clave " + novedades.first.clave_de_beneficiario.to_s +
           (novedades.first.fecha_de_nacimiento ? ", fecha de nacimiento " +
           novedades.first.fecha_de_nacimiento.strftime("%d/%m/%Y") : "")
@@ -683,7 +711,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     archivo_a = nil
     begin
       ActiveRecord::Base.transaction do
-  
+
         # Obtener el siguiente número en la secuencia de generación de archivos A para este CI en esta UAD
         numero_secuencia =
           ActiveRecord::Base.connection.exec_query("
@@ -693,11 +721,11 @@ class NovedadDelAfiliado < ActiveRecord::Base
                 ELSE last_value
               END) AS numero_secuencia FROM uad_#{codigo_uad}.ci_#{codigo_ci}_archivo_a_seq;
           ").rows[0][0].to_i
-  
+
         # Crear el archivo de texto de salida
         archivo_a = File.new("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uad + codigo_ci + ('%05d' % numero_secuencia)}.txt", "w")
         #archivo_a.set_encoding("CP1252", :crlf_newline => true) # TODO: ¡¡OJO!! set_encoding solo funciona con Ruby 1.9. Averiguar cómo simular su funcionamiento con Ruby 1.8.7
-  
+
         # Escribir el encabezado
         archivo_a.puts(
           "H\t" +
@@ -709,7 +737,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
           ('%05d' % numero_secuencia) + "\t" +
           Parametro.valor_del_parametro(:version_del_sistema_de_gestion)
         )
-  
+
         # Obtener los registros de novedades
         novedades =
           ActiveRecord::Base.connection.exec_query "
@@ -855,7 +883,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
                 AND tn.codigo != 'B'
                 AND n1.fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
           "
-  
+
         # Actualizar el estado de los registros exportados
         estado = EstadoDeLaNovedad.id_del_codigo("P")
         ActiveRecord::Base.connection.exec_query "
@@ -874,13 +902,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
         novedades.rows.each do |novedad|
           archivo_a.puts novedad.join("\t")
         end
-  
+
         # Escribir el pie
         archivo_a.puts "T\t#{('%06d' % novedades.rows.size)}"
-  
+
         # Cerrar el archivo
         archivo_a.close
-  
+
         # Incrementar el número de secuencia si todo fue bien
         ActiveRecord::Base.connection.exec_query("
           SELECT nextval('uad_#{codigo_uad}.ci_#{codigo_ci}_archivo_a_seq'::regclass);

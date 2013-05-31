@@ -38,21 +38,21 @@ class Prestacion < ActiveRecord::Base
 
   # Devuelve el valor del campo 'nombre', pero truncado a 100 caracteres.
   def nombre_corto
-    if nombre.length > 100 then
-      nombre.first(77) + "..." + nombre.last(20)
+    if nombre.length > 90 then
+      nombre.first(67) + "..." + nombre.last(20)
     else
       nombre
     end
   end
-  
+
   def codigo_de_unidad
     unidad_de_medida.codigo
   end
-  
+
   def define_si_es_catastrofica
     objeto_de_la_prestacion ? objeto_de_la_prestacion.define_si_es_catastrofica : true
   end
-  
+
   def es_catastrofica
     define_si_es_catastrofica && (objeto_de_la_prestacion ? objeto_de_la_prestacion.es_catastrofica : false)
   end
@@ -115,7 +115,7 @@ class Prestacion < ActiveRecord::Base
         ORDER BY codigo;")
   end
 
-  # Devuelve las prestaciones que no han sido autorizadas para el ID del efector 
+  # Devuelve las prestaciones que no han sido autorizadas para el ID del efector
   # hasta el dia anterior de la fecha indicada en los parámetros.
   def self.no_autorizadas_antes_del_dia(efector_id, fecha)
     Prestacion.find_by_sql("
@@ -129,7 +129,7 @@ class Prestacion < ActiveRecord::Base
         ) ORDER BY codigo;")
   end
 
-  # Devuelve las prestaciones que no han sido autorizadas para el ID del efector 
+  # Devuelve las prestaciones que no han sido autorizadas para el ID del efector
   # hasta el dia anterior de la fecha indicada en los parámetros.
   def self.no_autorizadas_sumar_antes_del_dia(efector_id, fecha)
     Prestacion.find_by_sql("

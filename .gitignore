@@ -4,6 +4,7 @@ test/
 .sass-cache/
 public/assets
 *.swp
+*~
 vendor/data
 .project
 *.lnk

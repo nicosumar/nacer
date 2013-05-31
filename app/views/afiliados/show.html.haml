@@ -94,7 +94,7 @@
       %div.field_content
         %span.field_name Dirección de correo electrónico:
         %span.field_value= @afiliado.e_mail
-  
+
     %h3 Datos de nacimiento, sexo, origen y estudios
     %div.field_content
       %span.field_name Sexo:
@@ -142,7 +142,7 @@
       %div.field_content
         %span.field_name Años cursados en el mayor nivel:
         %span.field_value= @afiliado.alfab_beneficiario_anios_ultimo_nivel
-  
+
     %h3 Datos de domicilio
     - if @afiliado.domicilio_calle
       %div.field_content
@@ -200,14 +200,14 @@
       %div.field_content
         %span.field_name Código postal:
         %span.field_value= @afiliado.domicilio_codigo_postal
-  
+
     %h3 Lugar de atención habitual
     %div.field_content
       - if @afiliado.lugar_de_atencion_habitual
         %span.field_value= @afiliado.lugar_de_atencion_habitual.nombre
       - else
         %span.field_empty No se indicó el lugar de atención habitual.
-  
+
     - if @afiliado.menor?(@afiliado.fecha_de_inscripcion)
       %h3 Datos del adulto responsable
       - if @afiliado.apellido_de_la_madre || @afiliado.nombre_de_la_madre
@@ -270,7 +270,7 @@
           %div.field_content
             %span.field_name Años cursados en el mayor nivel:
             %span.field_value= @afiliado.alfab_tutor_anios_ultimo_nivel
-  
+
     - fecha_de_calculo = @afiliado.fecha_de_la_ultima_novedad || @afiliado.fecha_de_diagnostico_del_embarazo |
       || @afiliado.fecha_de_inscripcion |
     - if @afiliado.embarazo_actual
@@ -311,18 +311,18 @@
                 = "(según FPP cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fpp() + 1).to_s + " del embarazo)."
         - else
           %span.field_empty No se indicó la fecha probable de parto.
-  
+
     - if @afiliado.score_de_riesgo
       %h3 Remediar+Redes
       %div.field_content
         %span.field_name Score de riesgo cardiovascular:
         %span.field_value= @afiliado.score_de_riesgo
-  
+
     - if @afiliado.discapacidad
       %h3 Discapacidad
       %div.field_content
         %span.field_value= @afiliado.discapacidad.nombre
-  
+
     %h3 Fecha y centro inscriptor
     %div.field_content
       %span.field_name Fecha de inscripción:
@@ -336,7 +336,7 @@
         %span.field_value= @afiliado.centro_de_inscripcion.nombre
       - else
         %span.field_empty No se indicó el centro de inscripción.
-  
+
     - if @afiliado.observaciones_generales
       %h3 Observaciones generales
       %div.field_content

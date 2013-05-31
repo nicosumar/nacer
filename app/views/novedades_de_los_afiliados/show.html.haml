@@ -8,7 +8,8 @@
       = link_to "Modificar la solicitud", edit_novedad_del_afiliado_path(@novedad)
       = link_to "Anular la solicitud", @novedad, :method => :delete, |
         :confirm => "¿Está seguro que desea anular esta solicitud?\nEsta acción no se podrá deshacer." |
-    -
+
+    - # TODO: Verificar si la UAD actual tiene activado el módulo para registrar prestaciones
     - if can?(:create, PrestacionBrindada) && @novedad.tipo_de_novedad.codigo != "B" |
       && ["R", "P"].member?(@novedad.estado_de_la_novedad.codigo) |
       -

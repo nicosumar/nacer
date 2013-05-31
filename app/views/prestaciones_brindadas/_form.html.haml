@@ -1,0 +1,126 @@
+%h3 Clave única de beneficiario asociada a la prestación
+%div.field_content
+  %span.field_value= @prestacion_brindada.clave_de_beneficiario
+
+%h3
+  Datos más recientes sobre
+  - if @beneficiario.sexo.codigo == 'F'
+    la beneficiaria,
+  - else
+    el beneficiario,
+  - if @beneficiario.is_a? NovedadDelAfiliado
+    = link_to "según una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + |
+      " pendiente", @beneficiario, { :title => "Ver detalles de la solicitud en otra pestaña", |
+      :onclick => "this.target='_blank'" } |
+  - else
+    = link_to "según el registro en el padrón de beneficiarios", @beneficiario, |
+      { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
+
+%div.field_content
+  %span.field_name Nombre
+  %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
+%div.field_content
+  %span.field_name= "Documento " + @beneficiario.clase_de_documento.nombre.downcase
+  %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
+    @beneficiario.numero_de_documento.to_s |
+%div.field_content
+  %span.field_name Fecha de nacimiento
+  %span.field_value= @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
+
+%h3 Efector y fecha en que se brindó la prestación
+%div.field_content
+  %span.field_name Efector*
+  %span.field_value= @prestacion_brindada.efector.nombre
+%div.field_content
+  %span.field_name Fecha de la prestación*
+  %span.field_value= @prestacion_brindada.fecha_de_la_prestacion.strftime("%d/%m/%Y")
+
+= form_for(@prestacion_brindada) do |f|
+  = f.hidden_field :clave_de_beneficiario, :value => @prestacion_brindada.clave_de_beneficiario
+  = f.hidden_field :efector_id, :value => @prestacion_brindada.efector_id
+  = f.hidden_field :fecha_de_la_prestacion, :value => @prestacion_brindada.fecha_de_la_prestacion
+
+  #prestacion.field
+    - if @prestacion_brindada.persisted?
+      = f.hidden_field :prestacion_id, :value => @prestacion_brindada.prestacion_id
+      %div.field_content
+        %span.field_name Prestación*
+        %span.field_value= @prestacion_brindada.prestacion.nombre_corto
+    - else
+      = f.label :prestacion_id, "Prestación*"
+      = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
+        {:include_blank => true} |
+
+  #diagnostico.field{:style => "display: none;"}
+    - if @diagnosticos.size == 1
+      = f.hidden_field :diagnostico_id, :value => @diagnosticos.first[1]
+      %div.field_content
+        %span.field_name Diagnóstico*
+        %span.field_value= @diagnosticos.first[0]
+    - else
+      = f.label :diagnostico_id, "Diagnóstico*"
+      = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
+        {:include_blank => true} |
+
+  #cantidad_de_unidades.field{:style => "display: none;"}
+    = f.label :cantidad_de_unidades, "Cantidad de unidades*"
+    = f.text_field :cantidad_de_unidades, {:size => 6}
+  #es_catastrofica.field{:style => "display: none;"}
+    = f.label :es_catastrofica, "Es catastrófica*"
+    = f.check_box :es_catastrofica
+
+  #titulo_atributos{:style => "display: none;"}
+    %h3 Atributos reportables
+  - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
+    = f.fields_for :datos_reportables_asociados_attributes, :index => i do |dra_f|
+      - if dra.persisted?
+        = dra_f.hidden_field :id, :value => dra.id
+      - if dra.dato_reportable.integra_grupo && dra.dato_reportable.orden_de_grupo == 1
+        %div{:id => "titulo_grupo_" + dra.dato_reportable.codigo_de_grupo}
+          %h4= dra.dato_reportable.nombre_de_grupo
+      = dra_f.hidden_field :dato_reportable_id, :value => dra.dato_reportable_id
+      %div.field{:id => "dato_reportable_" + dra.dato_reportable_id.to_s, :style => "display: none;"}
+        - if dra.errors.size > 0
+          %div.field_with_errors
+            = dra_f.label ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, dra.dato_reportable.nombre
+        - else
+          = dra_f.label ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, dra.dato_reportable.nombre
+        - if dra.errors.size > 0
+          <div class="field_with_errors">
+        - case
+          - when dra.dato_reportable.enumerable
+            = dra_f.select :valor_integer, options_from_collection_for_select( |
+              eval(dra.dato_reportable.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre), |
+              eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:include_blank => true) |
+          - when dra.dato_reportable.tipo_ruby == "date"
+            -# TODO: Averiguar por qué mierda no está tomando el valor pasado en :default para establecer el valor
+              # inicial del control
+              # = dra_f.date_select :valor_date, {:default => dra.valor_date, :include_blank => true}, |
+              #   eval(dra.dato_reportable.opciones_de_formateo || "{}") |
+            = dra_f.select :"valor_date(3i)", options_for_select((1..31).collect{|d| [d.to_s, d]}, dra.valor_date ? |
+              dra.valor_date.day : nil), :include_blank => true |
+            -
+            = dra_f.select :"valor_date(2i)", options_for_select([["enero", 1], ["febrero", 2], ["marzo", 3], ["abril", 4], |
+              ["mayo", 5], ["junio", 6], ["julio", 7], ["agosto", 8], ["septiembre", 9], ["octubre", 10], ["noviembre", 11], |
+              ["diciembre", 12]], dra.valor_date ? dra.valor_date.month : nil), :include_blank => true |
+            -
+            = dra_f.select :"valor_date(1i)", options_for_select(((Date.today.year - 1)..(Date.today.year + 1)).collect{ |y| |
+              [y.to_s, y]}, dra.valor_date ? dra.valor_date.year : nil), :include_blank => true |
+          - else
+            = dra_f.text_field ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, |
+              eval(dra.dato_reportable.opciones_de_formateo || "{}").merge( |
+                :value => eval("dra.valor_" + dra.dato_reportable.tipo_ruby)) |
+        - if dra.errors.size > 0
+          </div>
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %div.actions
+    - if @prestacion_brindada.new_record?
+      = f.submit "Registrar la prestación brindada"
+      = link_to "Cancelar", root_url
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @prestacion_brindada

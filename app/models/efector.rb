@@ -236,4 +236,13 @@ class Efector < ActiveRecord::Base
     ")
   end
 
+  def fecha_de_inicio_del_convenio_actual
+
+    convenio_actual = (convenio_de_gestion_sumar || convenio_de_gestion)
+
+    return nil unless convenio_actual
+    convenio_actual.fecha_de_inicio
+
+  end
+
 end

@@ -4,14 +4,89 @@
 //= require diagnosticos.js
 //= require diagnosticos_prestaciones.js
 
+var oOpcionesPrestaciones = [];
+var sFiltroPrestaciones = "";
+var oOpcionesFiltradas = [];
+
 $(document).ready(function() {
 
   modificarVisibilidadDiagnosticos();
   modificarVisibilidadCantidad();
   modificarVisibilidadEsCatastrofica();
   modificarVisibilidadDatosReportables();
-
   $('#prestacion_brindada_prestacion_id').on('change', prestacion_id_changed);
+  $('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
+  $('#prestacion_brindada_prestacion_id').focus();
+
+
+  function modificar_filtro_prestacion(event) {
+
+    // Guardar el texto y valores de las opciones si es la primera vez
+    if ( oOpcionesPrestaciones.length == 0 )
+      for ( i = 0; i < $('#prestacion_brindada_prestacion_id option').size(); i++ ) {
+        oOpcionesPrestaciones[i] = {
+          text : $('#prestacion_brindada_prestacion_id option:eq(' + i + ')').text(),
+          val : $('#prestacion_brindada_prestacion_id option:eq(' + i + ')').val(),
+        }
+      }
+
+    // Añadir el carácter a la cadena del filtro si no es un carácter de control
+    if ( event.which == 32 || event.which >= 48 && event.which < 128 ) {
+      sFiltroPrestaciones += String.toLowerCase(String.fromCharCode(event.which));
+      aplicarFiltro();
+    }
+    else {
+      switch (event.which) {
+        case 27 :
+          sFiltroPrestaciones = "";
+          aplicarFiltro();
+          break;
+        case 8 :
+          sFiltroPrestaciones = sFiltroPrestaciones.slice(0, -1);
+          aplicarFiltro();
+          break;
+      }
+    }
+  }
+
+  function aplicarFiltro() {
+    var i;
+    var div_html = "<label for=\"prestacion_brindada_prestacion_id\">Prestación*</label>\n<select id=\"prestacion_brindada_prestacion_id\" name=\"prestacion_brindada[prestacion_id]\">";
+
+    if (sFiltroPrestaciones == "")
+      oOpcionesFiltradas = oOpcionesPrestaciones;
+    else {
+      oOpcionesFiltradas = [];
+      var regexp = new RegExp(escapeRegExp(sFiltroPrestaciones), "i");
+      for ( i = 0; i < oOpcionesPrestaciones.length; i++)
+        if ( regexp.test(oOpcionesPrestaciones[i].text) )
+          oOpcionesFiltradas.push(oOpcionesPrestaciones[i]);
+    }
+
+    if ( oOpcionesFiltradas.length > 0 )
+      div_html += "<option selected=\"selected\" value=\"" + oOpcionesFiltradas[0].val + "\">" + oOpcionesFiltradas[0].text + "</option>\n";
+    else
+      div_html += "<option selected=\"selected\" value=\"\"></option>\n";
+
+    for (i = 1; i < oOpcionesFiltradas.length; i++)
+      div_html += "<option value=\"" + oOpcionesFiltradas[i].val + "\">" + oOpcionesFiltradas[i].text + "</option>\n";
+
+    div_html += "</select>\n"
+
+    if ( sFiltroPrestaciones != "" )
+      div_html += "<br/>\n<label class=\"filtro\">Filtro actual: \"" + sFiltroPrestaciones + "\" (presione 'ESC' para quitarlo)";
+
+    $('#prestacion').html(div_html);
+    $('#prestacion_brindada_prestacion_id').on('change', prestacion_id_changed);
+    $('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
+    $('#prestacion_brindada_prestacion_id').change();
+    $('#prestacion_brindada_prestacion_id').focus();
+  }
+
+  // Extraído del MDN Javascript Guide
+  function escapeRegExp(string){
+    return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
+  }
 
   function modificarVisibilidadDiagnosticos() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();

@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
 
   def parametro_fecha(hash, clave)
     atributo = clave.to_s
-    return Date.new(hash[atributo + '(1i)'].to_i, hash[atributo + '(2i)'].to_i, hash[atributo + '(3i)'].to_i)   
+    return Date.new(hash[atributo + '(1i)'].to_i, hash[atributo + '(2i)'].to_i, hash[atributo + '(3i)'].to_i)
   end
 
   def modelos_autorizados
@@ -73,6 +73,7 @@ class ApplicationController < ActionController::Base
       autorizados << :prestaciones_brindadas if can? :read, PrestacionBrindada
       autorizados << :convenios_de_gestion_sumar if can? :read, ConvenioDeGestionSumar
       autorizados << :convenios_de_administracion_sumar if can? :read, ConvenioDeAdministracionSumar
+      autorizados << :addendas_sumar if can? :read, AddendaSumar
     end
     return autorizados
   end

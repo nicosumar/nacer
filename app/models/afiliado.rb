@@ -63,8 +63,8 @@ class Afiliado < ActiveRecord::Base
   #
   # Métodos disponibles en las instancias
   #
-  
-  # edad_en_años
+
+  # edad_en_anios
   # Devuelve la edad en años cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
   # indica una fecha.
   def edad_en_anios(fecha_de_calculo = Date.today)
@@ -91,6 +91,20 @@ class Afiliado < ActiveRecord::Base
 
   end
 
+  # edad_en_dias
+  # Devuelve la edad en dias cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
+  # indica una fecha.
+  def edad_en_dias(fecha_de_calculo = Date.today)
+
+    # Calculamos y devolvemos la diferencia en días entre ambas fechas
+    if fecha_de_nacimiento
+      return (fecha_de_calculo - fecha_de_nacimiento).to_i
+    else
+      return nil
+    end
+
+  end
+
   # inscripto?
   # Indica si el afiliado estaba inscripto para la fecha del parámetro, o al día de hoy si
   # no se indica una fecha
@@ -107,7 +121,7 @@ class Afiliado < ActiveRecord::Base
   def activo?(fecha = nil)
 
     # Devuelve 'true' si no se especifica una fecha y el campo 'activo' es 'S'
-    return (activo.upcase == "S") unless fecha
+    return activo unless fecha
 
     # Obtener los periodos de actividad de este afiliado
     periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
@@ -830,7 +844,7 @@ class Afiliado < ActiveRecord::Base
 
   #
   # embarazadas_de_20_a_64_activas
-  # Calcula la cantidad de beneficiarias activas que tienen entre 20 y 64 años a la fecha del parámetro y 
+  # Calcula la cantidad de beneficiarias activas que tienen entre 20 y 64 años a la fecha del parámetro y
   # estaban embarazadas a la fecha del parámetro.
   def self.embarazadas_de_20_a_64_activas(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
     ActiveRecord::Base.connection.exec_query(
@@ -923,4 +937,3 @@ class Afiliado < ActiveRecord::Base
   end
 
 end
-

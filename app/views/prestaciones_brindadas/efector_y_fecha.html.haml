@@ -58,8 +58,12 @@
         = f.select :efector_id, options_for_select(@efectores, @prestacion_brindada.efector_id), { :include_blank => true }
     %div.field
       = f.label :fecha_de_la_prestacion, "Fecha de la prestación*"
-      = f.date_select :fecha_de_la_prestacion, { :start_year => (Date.today - 4.months).year, :end_year => Date.today.year, |
-        :include_blank => true} |
+      -# TODO: Remover luego de que haya finalizado el periodo de gracia
+      - if Date.today <= Date.new(2013, 6, 30)
+        = f.date_select :fecha_de_la_prestacion, { :start_year => 2012, :end_year => 2013, :include_blank => true }
+      - else
+        = f.date_select :fecha_de_la_prestacion, { :start_year => (Date.today - 4.months).year, :end_year => Date.today.year, |
+          :include_blank => true } |
 
     %div.actions
       = f.submit "Continuar"
