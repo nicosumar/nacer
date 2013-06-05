@@ -18,6 +18,10 @@ Nacer::Application.routes.draw do
     get 'prestaciones_autorizadas', :on => :member, :as => :prestaciones_autorizadas_del
     get 'referentes', :on => :member, :as => :referentes_del
   end
+  resources :paises, :except => :destroy
+  resources :provincias, :except => :destroy
+  resources :departamentos, :except => :destroy
+  resources :distritos, :except => :destroy
   resources :addendas, :except => :destroy
   resources :nomencladores, :except => :destroy
   resources :busqueda, :only => :index

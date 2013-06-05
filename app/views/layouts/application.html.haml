@@ -117,7 +117,7 @@
                   %div.col_1
                     %h3 TABLAS AUXILIARES
                     %ul
-                      %li= link_to "Gestionar tablas auxiliares", "#", { :title => "En preparación... Aún no disponible." }
+                      %li= link_to "Gestionar tablas auxiliares", paises_path, { :title => "En preparación... Aún no disponible." }
                     %h3 PROCESOS
                     %ul
                       %li= link_to "Procesos relacionados con padrones", padrones_url                       
@@ -136,7 +136,6 @@
                     %li= link_to "Cerrar la sesión", destroy_user_session_path, :method => :delete
                     - if current_user.unidades_de_alta_de_datos.count > 1
                       %li= link_to "Cambiar la UAD actual", seleccionar_uad_url
-
         #page
           = yield
 

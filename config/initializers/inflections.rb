@@ -340,4 +340,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("fecha_de_la_novedad", "fecha de inscripción/modificación")
   inflect.human("centro_de_inscripcion_id", "centro de inscripción")
 
+  #Tablas de configuracion
+  #Paises
+  inflect.human("pais_bio_id", "Id de Bioestadística")
+
 end

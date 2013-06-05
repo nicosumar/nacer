@@ -4,6 +4,8 @@ class Distrito < ActiveRecord::Base
 
   validates_presence_of :nombre, :departamento_id, :alias_id
 
+  attr_accessible :nombre, :codigo_postal, :distrito_bio_id, :distrito_insc_id, :distrito_indec_id, :alias_id, :departamento_id
+
   def nombre_corto
     if nombre.length > 80 then
       nombre.first(77) + "..."

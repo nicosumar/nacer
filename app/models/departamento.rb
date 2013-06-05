@@ -1,10 +1,16 @@
 # -*- encoding : utf-8 -*-
 class Departamento < ActiveRecord::Base
+  
+  #relaciones
   belongs_to :provincia
   has_many :distritos
 
+  #validaciones
   validates_presence_of :nombre, :provincia_id
 
+  #atributos
+  attr_accessible :nombre, :provincia_id, :departamento_bio_id, :departamento_indec_id , :departamento_insc_id
+  
   def nombre_corto
     if nombre.length > 80 then
       nombre.first(77) + "..."

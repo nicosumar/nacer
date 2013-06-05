@@ -2,7 +2,10 @@
 class Pais < ActiveRecord::Base
 
   has_many :provincias
-  
+  attr_accessible :nombre, :nombre_largo, :pais_bio_id
+  validates :nombre, :uniqueness => true, :presence => true 
+
+
   # id_del_nombre
   # Devuelve el id asociado con el código pasado
   def self.id_del_nombre(nombre)
