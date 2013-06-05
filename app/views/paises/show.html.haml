@@ -1,0 +1,37 @@
+- content_for :title do
+  Paises
+
+#content-header
+  %h1 Paises
+  #action-links
+    - if can? :read, Pais
+      = link_to "<<  Volver", :action => "index"
+    - if can? :update, Pais
+      = link_to "Modificar", :controller => "paises", :action => "edit", :id => @pais.id
+    - if can? :update, Provincia
+      = link_to("Agregar Provincia", :controller => "provincias", :action => "new", :pais_id => @pais.id)
+
+#content-body
+  %h3 Datos del pais
+  
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @pais.nombre
+
+  %div.field_content
+    %span.field_name Nombre 
+    %span.field_value= @pais.nombre_largo
+
+  %h4 Provincias
+  
+  %table
+    %thead
+      %tr
+        %th Nombre
+        %th Id Bioestadistica
+    %tbody
+      - @provincias.each do |pr|
+        %tr.clickable{ :onclick => "location.href=\'#{provincia_path(pr, :pais_id => @pais.id)}\'", :title => "Ver provincia"}
+          %td= pr.nombre
+          %td= pr.provincia_bio_id
+  = will_paginate @provincias, :inner_window => 2, :outer_window => 0

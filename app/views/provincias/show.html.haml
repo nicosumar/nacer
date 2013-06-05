@@ -1,0 +1,41 @@
+- content_for :title do
+  Provincias
+
+#content-header
+  %h1 Provincia
+  #action-links
+    - if can? :read, Pais
+      = link_to "<<  Volver", :controller => "paises", :action => "show", :id => @pais.id
+    - if can? :update, Provincia
+      = link_to "Modificar", :controller => "provincias", :action => "edit", :id => @provincia.id
+    - if can? :update, Distrito
+      = link_to "Agregar Departamento", :controller => "departamentos", :action => "new", :provincia_id => @provincia.id
+
+#content-body
+  %h3 Datos del la provincia
+  
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @provincia.nombre
+
+  %div.field_content
+    %span.field_name Id Bioestadistica 
+    %span.field_value= @provincia.provincia_bio_id
+
+  %h4 Departamento
+    
+  %table
+    %thead
+      %tr
+        %th Nombre
+        %th Id Bioestadistica
+        %th Id Indec
+        %th Id inscripcion
+    %tbody
+      - @departamentos.each do |d|
+        %tr.clickable{ :onclick => "location.href=\'#{departamento_path(d, :provincia_id => @provincia.id)}\'", :title => "Ver departamento"}
+          %td= d.nombre
+          %td= d.departamento_bio_id
+          %td= d.departamento_indec_id
+          %td= d.departamento_insc_id
+  = will_paginate @departamentos, :inner_window => 2, :outer_window => 0

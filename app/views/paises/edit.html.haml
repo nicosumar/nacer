@@ -1,0 +1,14 @@
+- content_for :title do
+  Paises
+
+#content-header
+  %h1 Paises
+  #action-links
+    = link_to "<< Volver", :back
+    
+#content-body
+  %h3 Editar datos del pais
+  = form_for @pais do |p|
+    = render(:partial => "form", :locals => {:p => p})
+    %div.field_content
+      = p.submit

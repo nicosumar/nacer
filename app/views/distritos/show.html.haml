@@ -1,0 +1,37 @@
+- content_for :title do
+  Distritos
+
+#content-header
+  %h1 Distritos
+  #action-links
+    - if can? :read, Departamento
+      = link_to "<<  Volver", :controller => "departamentos", :action => "show", :id => @dpto.id
+    - if can? :update, Departamento
+      = link_to "Modificar", :controller => "distritos", :action => "edit", :id => @distrito.id
+
+#content-body
+  %h3 Datos del distrito
+  
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @distrito.nombre
+
+  %div.field_content
+    %span.field_name Codigo Postal
+    %span.field_value= @distrito.codigo_postal
+
+  %div.field_content
+    %span.field_name Id Bioestadistica 
+    %span.field_value= @distrito.distrito_bio_id
+
+  %div.field_content
+    %span.field_name Id Indec
+    %span.field_value= @distrito.distrito_indec_id
+
+  %div.field_content
+    %span.field_name Id inscripcion
+    %span.field_value= @distrito.distrito_insc_id
+
+  %div.field_content
+    %span.field_name Alias
+    %span.field_value= @distrito.alias_id
