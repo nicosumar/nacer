@@ -14,7 +14,7 @@
 #content-body
   #estado
     %h3.first-header Estado de la prestación
-    - if ["R", "P", "L"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+    - if ["R", "P", "L", "V"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-ok.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
     - elsif ["I", "F", "U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
@@ -32,7 +32,6 @@
                 - dra.advertencias.each do |attr, advs|
                   - advs.each do |msj|
                     %li= msj
-
     - else
       #info.infobox-error.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
@@ -98,33 +97,35 @@
   - if @prestacion_brindada.datos_reportables_asociados.any?
     %h3 Atributos reportables
     - @prestacion_brindada.datos_reportables_asociados.each do |dra|
-      - if dra.dato_reportable.integra_grupo && dra.dato_reportable.orden_de_grupo == 1
-        %div{:id => "titulo_grupo_" + dra.dato_reportable.codigo_de_grupo}
-          %h4= dra.dato_reportable.nombre_de_grupo
+      - drr = dra.dato_reportable_requerido
+      - dr = drr.dato_reportable
+      - if dr.integra_grupo && dr.orden_de_grupo == 1
+        %div{:id => "titulo_grupo_" + dr.codigo_de_grupo}
+          %h4= dr.nombre_de_grupo
       %div.field_content
         - if dra.advertencias.size > 0
           %div.field_with_warnings
-            %span.field_name= dra.dato_reportable.nombre
+            %span.field_name= dr.nombre
         - else
-          %span.field_name= dra.dato_reportable.nombre
+          %span.field_name= dr.nombre
         - if dra.advertencias.size > 0
           <div class="field_with_warnings">
         - case
-          - when dra.dato_reportable.enumerable
-            - if dra.dato_reportable.valor_integer.blank?
+          - when dr.enumerable
+            - if dra.valor_integer.blank?
               %span.field_empty No se seleccionó una opción
             - else
-              %span.field_value= eval(dra.dato_reportable.clase_para_enumeracion).find(dra.valor_integer).nombre
-          - when dra.dato_reportable.tipo_ruby == "date"
+              %span.field_value= eval(dr.clase_para_enumeracion).find(dra.valor_integer).nombre
+          - when dr.tipo_ruby == "date"
             - if dra.valor_date.blank?
               %span.field_empty No se ingresó la fecha
             - else
               %span.field_value= dra.valor_date.strftime("%d/%m/%Y")
           - else
-            - if eval("dra.valor_" + dra.dato_reportable.tipo_ruby + ".blank?")
+            - if eval("dra.valor_" + dr.tipo_ruby + ".blank?")
               %span.field_empty No se ingresó el valor
             - else
-              %span.field_value= eval("dra.valor_" + dra.dato_reportable.tipo_ruby)
+              %span.field_value= eval("dra.valor_" + dr.tipo_ruby)
         - if dra.advertencias.size > 0
           </div>
 

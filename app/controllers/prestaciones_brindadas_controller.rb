@@ -95,6 +95,7 @@ class PrestacionesBrindadasController < ApplicationController
 
   end
 
+
   # GET /prestaciones_brindadas/new
   def new
     # Verificar los permisos del usuario
@@ -107,14 +108,49 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Para crear prestaciones debe indicarse la clave de beneficiario a la que se asociará la prestación
-    if !params[:clave_de_beneficiario] && !params[:prestacion_brindada]
-      redirect_to(
-        root_url,
-        :flash => {:tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre el incidente."
-        }
-      )
+    # Si no se han pasado parámetros para esta ruta, debe iniciarse el procedimiento con una búsqueda de beneficiario
+    if !params[:clave_de_beneficiario] && !params[:prestacion_brindada] && !params[:terminos]
+      @terminos = nil
+      @resultados_de_la_busqueda = []
+      flash.delete :tipo
+      render "new_busqueda"
+      return
+    end
+
+    # Si se pasa el parámetro ":terminos", es que ya se ha iniciado la búsqueda, debemos mostrar los resultados
+      # Realizar la búsqueda de los beneficiarios
+    if params[:terminos]
+      @terminos = params[:terminos]
+      if @terminos.blank?
+        redirect_to(
+          new_prestacion_brindada_path,
+          :flash => {:tipo => :error, :titulo => "Debe ingresar uno o más términos para buscar"}
+        )
+        return
+      end
+
+      # Preparar los resultados de la búsqueda en la vista temporal
+      inicio = Time.now()
+      Busqueda.busqueda_fts(@terminos, :solo => [:afiliados, :novedades_de_los_afiliados])
+
+      # Eliminar los resultados a cuyos modelos el usuario no tiene acceso
+      indices = []
+      ObjetoEncontrado.find(:all).each do |o|
+        if can? :read, eval(o.modelo_type)
+          indices << o.id
+        end
+      end
+
+      @registros_coincidentes = indices.size
+
+      if @registros_coincidentes > 0
+        @resultados_de_la_busqueda =
+          ResultadoDeLaBusqueda.where('id IN (?)', indices).order('orden ASC').paginate(:page => params[:page], :per_page => 20)
+      end
+      fin = Time.now()
+      @tiempo_de_busqueda = fin - inicio
+
+      render "new_busqueda"
       return
     end
 
@@ -181,11 +217,11 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     # Añadir un nuevo objeto DatoReportableAsociado para cada uno de los DatosReportables definidos
-    @prestacion_brindada.datos_reportables_asociados.build(
-      DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{
-        |dr| {:dato_reportable_id => dr.id}
-      }
-    )
+    #@prestacion_brindada.datos_reportables_asociados.build(
+    #  DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{
+    #    |dr| {:dato_reportable_id => dr.id}
+    #  }
+    #)
 
     # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
     # TODO: eliminar esto luego de que finalice el periodo de gracia
@@ -214,6 +250,7 @@ class PrestacionesBrindadasController < ApplicationController
         }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
     @diagnosticos = []
 
+    # Mostrar las advertencias que se puedan haber generado en la selección de efector y fecha
     if @prestacion_brindada.hay_advertencias?
       flash[:tipo] = :advertencia
       flash[:titulo] = "Advertencia"
@@ -413,7 +450,7 @@ class PrestacionesBrindadasController < ApplicationController
       redirect_to(@prestacion_brindada,
         :flash => { :tipo => :advertencia,
           :titulo => 'La prestación brindada se registró con advertencias',
-          :mensaje => 'Corrija los problemas detectados para reducir los rechazos en la facturación.' }
+          :mensaje => 'Intente corregir los problemas detectados para reducir los rechazos en la facturación.' }
       )
     else
       redirect_to(@prestacion_brindada,
@@ -533,7 +570,7 @@ class PrestacionesBrindadasController < ApplicationController
       redirect_to(@prestacion_brindada,
         :flash => { :tipo => :advertencia,
           :titulo => 'Los datos de la prestación brindada se modificaron, pero hay advertencias',
-          :mensaje => 'Corrija los problemas detectados para reducir los rechazos en la facturación.' }
+          :mensaje => 'Intente corregir los problemas detectados para reducir los rechazos en la facturación.' }
       )
     else
       redirect_to(@prestacion_brindada,
@@ -541,5 +578,41 @@ class PrestacionesBrindadasController < ApplicationController
       )
     end
   end
+
+  # DELETE /novedades_de_los_afiliados/:id
+  def destroy
+    # Verificar los permisos del usuario
+    if cannot? :update, PrestacionBrindada
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Buscar la prestación
+    @prestacion_brindada = PrestacionBrindada.find(params[:id])
+
+    # Verificar que la prestación brindada esté pendiente
+    if !@prestacion_brindada.pendiente?
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Cambiar el estado de la prestación por el que corresponde a la anulación por el usuario
+    @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("U")
+    @prestacion_brindada.save(:validate => false)
+
+    redirect_to( prestacion_brindada_path(@prestacion_brindada),
+      :flash => { :tipo => :advertencia, :titulo => "El registro de la prestación brindada fue anulado",
+        :mensaje => "Esta prestación no podrá ser modificada ni facturada."
+      }
+    )
+ end
 
 end

@@ -2896,5 +2896,29 @@ ObjetoDeLaPrestacion.create([
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
     :define_si_es_catastrofica => true,
     :es_catastrofica => false
+  },
+  {
+    #:id => 362,
+    :nombre => "Cardiopatías congénitas - Módulo III - Cirugía correctora de anomalía parcial del retorno venoso pulmonar Cimitarra",
+    :codigo => "K035",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 363,
+    :nombre => "Cardiopatías congénitas - Módulo III - Cirugía correctora de ventana aorto-pulmonar",
+    :codigo => "K036",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
+  },
+  {
+    #:id => 364,
+    :nombre => "Cardiopatías congénitas - Módulo III - Cirugía correctora de canal aurículo-ventricular parcial",
+    :codigo => "K037",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
   }
 ])

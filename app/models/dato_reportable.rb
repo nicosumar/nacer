@@ -12,8 +12,22 @@ class DatoReportable < ActiveRecord::Base
   # id_del_codigo
   # Devuelve el ID asociado con el código pasado
   def self.id_del_codigo(codigo)
-    return nil if codigo.blank?
-    find_by_codigo(codigo).id
+    if !codigo || codigo.strip.empty?
+      return nil
+    end
+
+    dato_reportable = self.find_by_codigo(codigo)
+
+    if dato_reportable
+      return dato_reportable.id
+    else
+      return nil
+    end
+  end
+  def self.id_del_codigo!(codigo)
+    codigo_id = self.id_del_codigo(codigo)
+    raise ActiveRecord::RecordNotFound if codigo_id.nil?
+    return codigo_id
   end
 
 end

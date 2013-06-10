@@ -15,11 +15,22 @@ class ObjetoDeLaPrestacion < ActiveRecord::Base
   # id_del_codigo
   # Devuelve el ID asociado con el código pasado
   def self.id_del_codigo(codigo)
-    return nil if codigo.blank?
+    if !codigo || codigo.strip.empty?
+      return nil
+    end
 
-    # Buscar el codigo en la tabla y devolver su ID (si existe)
-    objeto = self.find_by_codigo(codigo.strip.upcase)
-    return objeto.id if objeto
+    # Buscar el código en la tabla y devolver su ID (si existe)
+    objeto_de_la_prestacion = self.find_by_codigo(codigo.strip.upcase)
+    if objeto_de_la_prestacion
+      return objeto_de_la_prestacion.id
+    else
+      return nil
+    end
+  end
+  def self.id_del_codigo!(codigo)
+    codigo_id = self.id_del_codigo(codigo)
+    raise ActiveRecord::RecordNotFound if codigo_id.nil?
+    return codigo_id
   end
 
 end

@@ -12,14 +12,17 @@ class GrupoPoblacional < ActiveRecord::Base
     end
 
     # Buscar el código en la tabla y devolver su ID (si existe)
-    grupo = self.find_by_codigo(codigo.strip.upcase)
-
-    if grupo
-      return grupo.id
+    grupo_poblacional = self.find_by_codigo(codigo.strip.upcase)
+    if grupo_poblacional
+      return grupo_poblacional.id
     else
-      logger.warn "ADVERTENCIA: No se encontró el grupo poblacional '#{codigo.strip.upcase}'."
       return nil
     end
+  end
+  def self.id_del_codigo!(codigo)
+    codigo_id = self.id_del_codigo(codigo)
+    raise ActiveRecord::RecordNotFound if codigo_id.nil?
+    return codigo_id
   end
 
 end

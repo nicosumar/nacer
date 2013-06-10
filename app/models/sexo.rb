@@ -12,13 +12,16 @@ class Sexo < ActiveRecord::Base
 
     # Buscar el código en la tabla y devolver su ID (si existe)
     sexo = self.find_by_codigo(codigo.strip.upcase)
-
     if sexo
       return sexo.id
     else
-      logger.warn "ADVERTENCIA: No se encontró el sexo '#{codigo.strip.upcase}'."
       return nil
     end
+  end
+  def self.id_del_codigo!(codigo)
+    codigo_id = self.id_del_codigo(codigo)
+    raise ActiveRecord::RecordNotFound if codigo_id.nil?
+    return codigo_id
   end
 
 end

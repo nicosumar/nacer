@@ -18,14 +18,14 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
             WHERE
               schema_name = ('uad_' || NEW.codigo)
           INTO existe_uad;
-  
+
           IF NOT existe_uad THEN
             existe_novedades := 'f'::bool;
             existe_prestaciones := 'f'::bool;
             EXECUTE '
               -- Creamos el esquema para la nueva UAD
               CREATE SCHEMA \"uad_' || NEW.codigo || '\";
-  
+
               -- Crear la tabla local de indexación de términos para búsquedas FTS
               CREATE TABLE uad_' || NEW.codigo || '.busquedas_locales (
                 id integer NOT NULL,
@@ -35,7 +35,7 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
                 texto text NOT NULL,
                 vector_fts tsvector NOT NULL
               );
-  
+
               -- Crear la secuencia que genera los identificadores de la tabla de búsquedas locales
               CREATE SEQUENCE uad_' || NEW.codigo || '.busquedas_locales_id_seq;
               ALTER SEQUENCE uad_' || NEW.codigo || '.busquedas_locales_id_seq
@@ -43,17 +43,17 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
               ALTER TABLE ONLY uad_' || NEW.codigo || '.busquedas_locales
                 ALTER COLUMN id
                   SET DEFAULT nextval(''uad_' || NEW.codigo || '.busquedas_locales_id_seq''::regclass);
-  
+
               -- Clave primaria para la tabla de búsquedas locales
               ALTER TABLE ONLY uad_' || NEW.codigo || '.busquedas_locales
                 ADD CONSTRAINT uad_' || NEW.codigo || '_busquedas_locales_pkey PRIMARY KEY (id);
-  
+
               -- Crear índices en la tabla de búsquedas locales
               CREATE INDEX uad_' || NEW.codigo || '_idx_gin_on_vector_fts
                 ON uad_' || NEW.codigo || '.busquedas_locales USING gin (vector_fts);
               CREATE UNIQUE INDEX uad_' || NEW.codigo || '_idx_unq_modelo
                 ON uad_' || NEW.codigo || '.busquedas_locales USING btree (modelo_type, modelo_id);';
-  
+
           ELSE
             -- La UAD ya existe, verificar si existen las tablas para los módulos de inscripción y facturación.
             SELECT COUNT(*) > 0
@@ -69,10 +69,10 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
                 AND table_name = 'prestaciones_brindadas'
             INTO existe_prestaciones;
           END IF;
-  
+
           IF NEW.inscripcion AND NOT existe_novedades THEN
             EXECUTE '
-  
+
               -- Crear la tabla para almacenar las novedades del padrón
               CREATE TABLE uad_' || NEW.codigo || '.novedades_de_los_afiliados (
                 id integer NOT NULL,
@@ -148,7 +148,7 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
                 mes_y_anio_de_proceso date,
                 mensaje_de_la_baja text
               );
-          
+
               -- Crear la secuencia que genera los identificadores de la tabla de novedades
               CREATE SEQUENCE uad_' || NEW.codigo || '.novedades_de_los_afiliados_id_seq;
               ALTER SEQUENCE uad_' || NEW.codigo || '.novedades_de_los_afiliados_id_seq
@@ -156,11 +156,11 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
               ALTER TABLE ONLY uad_' || NEW.codigo || '.novedades_de_los_afiliados
                 ALTER COLUMN id
                   SET DEFAULT nextval(''uad_' || NEW.codigo || '.novedades_de_los_afiliados_id_seq''::regclass);
-          
+
               -- Clave primaria para la tabla de novedades
               ALTER TABLE ONLY uad_' || NEW.codigo || '.novedades_de_los_afiliados
                 ADD CONSTRAINT uad_' || NEW.codigo || '_novedades_de_los_afiliados_pkey PRIMARY KEY (id);
-          
+
               -- Crear triggers para actualizaciones de datos relacionadas con las novedades
               CREATE TRIGGER trg_uad_' || NEW.codigo || '_modificar_novedad
                 BEFORE INSERT OR UPDATE ON uad_' || NEW.codigo || '.novedades_de_los_afiliados
@@ -168,7 +168,7 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
               CREATE TRIGGER trg_uad_' || NEW.codigo || '_novedades_fts
                 AFTER INSERT OR DELETE OR UPDATE ON uad_' || NEW.codigo || '.novedades_de_los_afiliados
                 FOR EACH ROW EXECUTE PROCEDURE novedades_de_los_afiliados_fts_trigger();
-          
+
               -- Restricciones de clave foránea para la tabla de novedades
               ALTER TABLE ONLY uad_' || NEW.codigo || '.novedades_de_los_afiliados
                 ADD CONSTRAINT fk_uad_' || NEW.codigo || '_novedades_categorias_de_afiliados
@@ -231,10 +231,10 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
               ADD CONSTRAINT fk_uad_' || NEW.codigo || '_novedades_tt_dd_tutor
                 FOREIGN KEY (tipo_de_documento_del_tutor_id) REFERENCES tipos_de_documentos(id);';
           END IF;
-  
+
           IF NEW.facturacion AND NOT existe_prestaciones THEN
             EXECUTE '
-  
+
               -- Crear la tabla para almacenar las prestaciones brindadas
               CREATE TABLE uad_' || NEW.codigo || '.prestaciones_brindadas (
                 id integer NOT NULL,
@@ -258,7 +258,7 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
                 creator_id integer,
                 updater_id integer
               );
-          
+
               -- Crear la secuencia que genera los identificadores de la tabla de prestaciones
               CREATE SEQUENCE uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq;
               ALTER SEQUENCE uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq
@@ -266,16 +266,16 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
               ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
                 ALTER COLUMN id
                   SET DEFAULT nextval(''uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq''::regclass);
-          
+
               -- Clave primaria para la tabla de prestaciones
               ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
                 ADD CONSTRAINT uad_' || NEW.codigo || '_prestaciones_brindadas_pkey PRIMARY KEY (id);
-          
+
               -- Crear triggers para actualizaciones de datos relacionadas con las prestaciones
               CREATE TRIGGER trg_uad_' || NEW.codigo || '_prestaciones_fts
                 AFTER INSERT OR DELETE OR UPDATE ON uad_' || NEW.codigo || '.prestaciones_brindadas
                 FOR EACH ROW EXECUTE PROCEDURE prestaciones_brindadas_fts_trigger();
-          
+
               -- Restricciones de clave foránea para la tabla de prestaciones
               ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
                 ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_estados
@@ -297,7 +297,7 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
               CREATE TABLE uad_' || NEW.codigo || '.datos_reportables_asociados (
                 id integer NOT NULL,
                 prestacion_brindada_id integer NOT NULL,
-                dato_reportable_id integer NOT NULL,
+                dato_reportable_requerido_id integer NOT NULL,
                 valor_integer integer,
                 valor_big_decimal numeric(15,4),
                 valor_date date,
@@ -325,8 +325,8 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
                 ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_prestaciones_brindadas
                 FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEw.codigo || '.prestaciones_brindadas(id);
               ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
-                ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_datos_reportables
-                FOREIGN KEY (dato_reportable_id) REFERENCES datos_reportables(id);';
+                ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_datos_reportables_requeridos
+                FOREIGN KEY (dato_reportable_requerido_id) REFERENCES datos_reportables_requeridos(id);';
           END IF;
           RETURN NEW;
         END;

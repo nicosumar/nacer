@@ -17,5 +17,10 @@ class ClaseDeDocumento < ActiveRecord::Base
       return nil
     end
   end
+  def self.id_del_codigo!(codigo)
+    codigo_id = self.id_del_codigo(codigo)
+    raise ActiveRecord::RecordNotFound if codigo_id.nil?
+    return codigo_id
+  end
 
 end

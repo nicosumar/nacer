@@ -69,49 +69,50 @@
     = f.label :es_catastrofica, "Es catastrófica*"
     = f.check_box :es_catastrofica
 
-  #titulo_atributos{:style => "display: none;"}
-    %h3 Atributos reportables
-  - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
-    = f.fields_for :datos_reportables_asociados_attributes, :index => i do |dra_f|
-      - if dra.persisted?
-        = dra_f.hidden_field :id, :value => dra.id
-      - if dra.dato_reportable.integra_grupo && dra.dato_reportable.orden_de_grupo == 1
-        %div{:id => "titulo_grupo_" + dra.dato_reportable.codigo_de_grupo}
-          %h4= dra.dato_reportable.nombre_de_grupo
-      = dra_f.hidden_field :dato_reportable_id, :value => dra.dato_reportable_id
-      %div.field{:id => "dato_reportable_" + dra.dato_reportable_id.to_s, :style => "display: none;"}
-        - if dra.errors.size > 0
-          %div.field_with_errors
-            = dra_f.label ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, dra.dato_reportable.nombre
-        - else
-          = dra_f.label ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, dra.dato_reportable.nombre
-        - if dra.errors.size > 0
-          <div class="field_with_errors">
-        - case
-          - when dra.dato_reportable.enumerable
-            = dra_f.select :valor_integer, options_from_collection_for_select( |
-              eval(dra.dato_reportable.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre), |
-              eval(dra.dato_reportable.opciones_de_formateo || "{}").merge(:include_blank => true) |
-          - when dra.dato_reportable.tipo_ruby == "date"
-            -# TODO: Averiguar por qué mierda no está tomando el valor pasado en :default para establecer el valor
-              # inicial del control
-              # = dra_f.date_select :valor_date, {:default => dra.valor_date, :include_blank => true}, |
-              #   eval(dra.dato_reportable.opciones_de_formateo || "{}") |
-            = dra_f.select :"valor_date(3i)", options_for_select((1..31).collect{|d| [d.to_s, d]}, dra.valor_date ? |
-              dra.valor_date.day : nil), :include_blank => true |
-            -
-            = dra_f.select :"valor_date(2i)", options_for_select([["enero", 1], ["febrero", 2], ["marzo", 3], ["abril", 4], |
-              ["mayo", 5], ["junio", 6], ["julio", 7], ["agosto", 8], ["septiembre", 9], ["octubre", 10], ["noviembre", 11], |
-              ["diciembre", 12]], dra.valor_date ? dra.valor_date.month : nil), :include_blank => true |
-            -
-            = dra_f.select :"valor_date(1i)", options_for_select(((Date.today.year - 1)..(Date.today.year + 1)).collect{ |y| |
-              [y.to_s, y]}, dra.valor_date ? dra.valor_date.year : nil), :include_blank => true |
-          - else
-            = dra_f.text_field ("valor_" + dra.dato_reportable.tipo_ruby).to_sym, |
-              eval(dra.dato_reportable.opciones_de_formateo || "{}").merge( |
-                :value => eval("dra.valor_" + dra.dato_reportable.tipo_ruby)) |
-        - if dra.errors.size > 0
-          </div>
+  #atributos_reportables
+    - if @prestacion_brindada.persisted? && @prestacion_brindada.datos_reportables_asociados.size > 0
+      %h3 Atributos reportables
+      - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
+        - drr = dra.dato_reportable_requerido
+        - dr = drr.dato_reportable
+        = f.fields_for :datos_reportables_asociados_attributes, :index => i do |dra_f|
+          = dra_f.hidden_field :id, :value => dra.id
+          - if dr.integra_grupo && dr.orden_de_grupo == 1
+            %div{:id => "titulo_grupo_" + dr.codigo_de_grupo}
+              %h4= dr.nombre_de_grupo
+          = dra_f.hidden_field :dato_reportable_requerido_id, :value => dra.dato_reportable_requerido_id
+          %div.field{:id => "dato_reportable_requerido_" + dra.dato_reportable_requerido_id.to_s}
+            - if dra.errors.size > 0
+              %div.field_with_errors
+                = dra_f.label ("valor_" + dr.tipo_ruby).to_sym, dr.nombre
+            - else
+              = dra_f.label ("valor_" + dr.tipo_ruby).to_sym, dr.nombre
+            - if dra.errors.size > 0
+              <div class="field_with_errors">
+            - case
+              - when dr.enumerable
+                = dra_f.select :valor_integer, options_from_collection_for_select( |
+                  eval(dr.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre), |
+                  eval(dr.opciones_de_formateo || "{}").merge(:include_blank => true) |
+              - when dr.tipo_ruby == "date"
+                -# TODO: Averiguar por qué mierda no está tomando el valor pasado en :default para establecer el valor
+                  # inicial del control
+                  # = dra_f.date_select :valor_date, {:default => dra.valor_date, :include_blank => true}, |
+                  #   eval(dra.dato_reportable.opciones_de_formateo || "{}") |
+                = dra_f.select :"valor_date(3i)", options_for_select((1..31).collect{|d| [d.to_s, d]}, dra.valor_date ? |
+                  dra.valor_date.day : nil), :include_blank => true |
+                -
+                = dra_f.select :"valor_date(2i)", options_for_select([["enero", 1], ["febrero", 2], ["marzo", 3], ["abril", 4], |
+                  ["mayo", 5], ["junio", 6], ["julio", 7], ["agosto", 8], ["septiembre", 9], ["octubre", 10], ["noviembre", 11], |
+                  ["diciembre", 12]], dra.valor_date ? dra.valor_date.month : nil), :include_blank => true |
+                -
+                = dra_f.select :"valor_date(1i)", options_for_select(((Date.today.year - 1)..(Date.today.year + 1)).collect{ |y| |
+                  [y.to_s, y]}, dra.valor_date ? dra.valor_date.year : nil), :include_blank => true |
+              - else
+                = dra_f.text_field ("valor_" + dr.tipo_ruby).to_sym, eval(dr.opciones_de_formateo || "{}").merge( |
+                  :value => eval("dra.valor_" + dra.dato_reportable.tipo_ruby)) |
+            - if dra.errors.size > 0
+              </div>
 
   %h3 Observaciones
   %div.field

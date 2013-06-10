@@ -15,11 +15,22 @@ class TipoDePrestacion < ActiveRecord::Base
   # id_del_codigo
   # Devuelve el ID asociado con el código pasado
   def self.id_del_codigo(codigo)
-    return nil if codigo.blank?
+    if !codigo || codigo.strip.empty?
+      return nil
+    end
 
-    # Buscar el codigo en la tabla y devolver su ID (si existe)
-    tipo = self.find_by_codigo(codigo.strip.upcase)
-    return tipo.id if tipo
+    # Buscar el código en la tabla y devolver su ID (si existe)
+    tipo_de_prestacion = self.find_by_codigo(codigo.strip.upcase)
+    if tipo_de_prestacion
+      return tipo_de_prestacion.id
+    else
+      return nil
+    end
+  end
+  def self.id_del_codigo!(codigo)
+    codigo_id = self.id_del_codigo(codigo)
+    raise ActiveRecord::RecordNotFound if codigo_id.nil?
+    return codigo_id
   end
 
 end

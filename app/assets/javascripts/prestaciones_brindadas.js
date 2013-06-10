@@ -6,6 +6,8 @@
 
 var oOpcionesPrestaciones = [];
 var sFiltroPrestaciones = "";
+var oOpcionesDiagnosticos = [];
+var sFiltroDiagnosticos = "";
 var oOpcionesFiltradas = [];
 
 $(document).ready(function() {
@@ -16,8 +18,8 @@ $(document).ready(function() {
   modificarVisibilidadDatosReportables();
   $('#prestacion_brindada_prestacion_id').on('change', prestacion_id_changed);
   $('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
+  $('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
   $('#prestacion_brindada_prestacion_id').focus();
-
 
   function modificar_filtro_prestacion(event) {
 
@@ -33,23 +35,23 @@ $(document).ready(function() {
     // Añadir el carácter a la cadena del filtro si no es un carácter de control
     if ( event.which == 32 || event.which >= 48 && event.which < 128 ) {
       sFiltroPrestaciones += String.toLowerCase(String.fromCharCode(event.which));
-      aplicarFiltro();
+      aplicarFiltroPrestacion();
     }
     else {
       switch (event.which) {
         case 27 :
           sFiltroPrestaciones = "";
-          aplicarFiltro();
+          aplicarFiltroPrestacion();
           break;
         case 8 :
           sFiltroPrestaciones = sFiltroPrestaciones.slice(0, -1);
-          aplicarFiltro();
+          aplicarFiltroPrestacion();
           break;
       }
     }
   }
 
-  function aplicarFiltro() {
+  function aplicarFiltroPrestacion() {
     var i;
     var div_html = "<label for=\"prestacion_brindada_prestacion_id\">Prestación*</label>\n<select id=\"prestacion_brindada_prestacion_id\" name=\"prestacion_brindada[prestacion_id]\">";
 
@@ -83,6 +85,69 @@ $(document).ready(function() {
     $('#prestacion_brindada_prestacion_id').focus();
   }
 
+  function modificar_filtro_diagnostico(event) {
+
+    // Guardar el texto y valores de las opciones si es la primera vez
+    if ( oOpcionesDiagnosticos.length == 0 )
+      for ( i = 0; i < $('#prestacion_brindada_diagnostico_id option').size(); i++ ) {
+        oOpcionesDiagnosticos[i] = {
+          text : $('#prestacion_brindada_diagnostico_id option:eq(' + i + ')').text(),
+          val : $('#prestacion_brindada_diagnostico_id option:eq(' + i + ')').val(),
+        }
+      }
+
+    // Añadir el carácter a la cadena del filtro si no es un carácter de control
+    if ( event.which == 32 || event.which >= 48 && event.which < 128 ) {
+      sFiltroDiagnosticos += String.toLowerCase(String.fromCharCode(event.which));
+      aplicarFiltroDiagnostico();
+    }
+    else {
+      switch (event.which) {
+        case 27 :
+          sFiltroDiagnosticos = "";
+          aplicarFiltroDiagnostico();
+          break;
+        case 8 :
+          sFiltroDiagnosticos = sFiltroDiagnosticos.slice(0, -1);
+          aplicarFiltroDiagnostico();
+          break;
+      }
+    }
+  }
+
+
+  function aplicarFiltroDiagnostico() {
+    var i;
+    var div_html = "<label for=\"prestacion_brindada_diagnostico_id\">Diagnóstico*</label>\n<select id=\"prestacion_brindada_diagnostico_id\" name=\"prestacion_brindada[diagnostico_id]\">";
+
+    if (sFiltroDiagnosticos == "")
+      oOpcionesFiltradas = oOpcionesDiagnosticos;
+    else {
+      oOpcionesFiltradas = [];
+      var regexp = new RegExp(escapeRegExp(sFiltroDiagnosticos), "i");
+      for ( i = 0; i < oOpcionesDiagnosticos.length; i++)
+        if ( regexp.test(oOpcionesDiagnosticos[i].text) )
+          oOpcionesFiltradas.push(oOpcionesDiagnosticos[i]);
+    }
+
+    if ( oOpcionesFiltradas.length > 0 )
+      div_html += "<option selected=\"selected\" value=\"" + oOpcionesFiltradas[0].val + "\">" + oOpcionesFiltradas[0].text + "</option>\n";
+    else
+      div_html += "<option selected=\"selected\" value=\"\"></option>\n";
+
+    for (i = 1; i < oOpcionesFiltradas.length; i++)
+      div_html += "<option value=\"" + oOpcionesFiltradas[i].val + "\">" + oOpcionesFiltradas[i].text + "</option>\n";
+
+    div_html += "</select>\n"
+
+    if ( sFiltroDiagnosticos != "" )
+      div_html += "<br/>\n<label class=\"filtro\">Filtro actual: \"" + sFiltroDiagnosticos + "\" (presione 'ESC' para quitarlo)";
+
+    $('#diagnostico').html(div_html);
+    $('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
+    $('#prestacion_brindada_diagnostico_id').focus();
+  }
+
   // Extraído del MDN Javascript Guide
   function escapeRegExp(string){
     return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
@@ -104,6 +169,9 @@ $(document).ready(function() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
     var nDiagnosticosAsociados = 0;
     var oDiagnosticosAsociados = [];
+    oOpcionesDiagnosticos = [];
+    sFiltroDiagnosticos = "";
+
     for (i = 0; i < diagnosticosPrestaciones.length; i++) {
       if (prestacion_id == diagnosticosPrestaciones[i].prestacion_id) {
       	for (j = 0; j < diagnosticos.length; j++)
@@ -122,6 +190,7 @@ $(document).ready(function() {
         div_html += "<option value=\"" + oDiagnosticosAsociados[i].id + "\">" + oDiagnosticosAsociados[i].nombre_y_codigo + "</option>\n";
       div_html += "</select>\n"
       $('#diagnostico').html(div_html);
+      $('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
       $('#diagnostico').show();
     }
     else if (nDiagnosticosAsociados > 0) {
@@ -142,10 +211,15 @@ $(document).ready(function() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
     for (i = 0; i < prestaciones.length; i++)
       if (prestacion_id == prestaciones[i].id) {
-        if (prestaciones[i].codigo_de_unidad != "U")
+        if (prestaciones[i].codigo_de_unidad != "U") {
+    	    for (j = 0; j < unidadesDeMedida.length; j++)
+    	      if (unidadesDeMedida[j].codigo == prestaciones[i].codigo_de_unidad)
+    	        break;
+	        $('label[for="prestacion_brindada_cantidad_de_unidades"]').text("Cantidad de " + unidadesDeMedida[j].nombre.toLowerCase() + "*")
       	  $('#cantidad_de_unidades').show();
+      	}
         else
-		  $('#cantidad_de_unidades').hide();
+		      $('#cantidad_de_unidades').hide();
         break;
       }
   }
@@ -164,7 +238,7 @@ $(document).ready(function() {
 	    }
 	    else {
 	      $('#cantidad_de_unidades').hide();
-	      $('#prestacion_brindada_cantidad_de_unidades').val("1.0");
+	      $('#prestacion_brindada_cantidad_de_unidades').val("1.0000");
 	    }
         break;
       }
@@ -203,7 +277,7 @@ $(document).ready(function() {
       	  $('#titulo_grupo_' + datosReportablesRequeridos[i].codigo_de_grupo).show();
 
         // Modificar la etiqueta asociada al dato reportable si es obligatorio (añadir el asterisco)
-	    var l = $("#dato_reportable_" + datosReportablesRequeridos[i].dato_reportable_id + " label");
+	      var l = $("#dato_reportable_" + datosReportablesRequeridos[i].dato_reportable_id + " label");
         if (datosReportablesRequeridos[i].obligatorio)
         {
           if (/([^\*])$/.test(l.text()))

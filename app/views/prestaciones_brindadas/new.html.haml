@@ -1,11 +1,11 @@
 - content_for :title do
-  Creación de una nueva prestación brindada
+  Nueva prestación brindada
 
 - content_for :other_includes do
   = javascript_include_tag 'prestaciones_brindadas'
 
 #content-header
-  %h1 Creación de una nueva prestación brindada
+  %h1 Nueva prestación brindada
 
 = render :partial => "shared/info", :locals => { :registro => @prestacion_brindada }
 

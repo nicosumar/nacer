@@ -16,6 +16,8 @@
       = link_to("Registrar prestación", |
         new_prestacion_brindada_path(:clave_de_beneficiario => @afiliado.clave_de_beneficiario)) |
 
+= render :partial => "shared/info"
+
 #content-body
   %h2.first-header Información registrada en el padrón
 

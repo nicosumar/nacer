@@ -9,7 +9,7 @@ class BusquedaController < ApplicationController
         :notice => "Debe ingresar algún término de búsqueda.")
     end
 
-    # Preparar los resultados de la búsqueda en la vista temporal (no buscar afiliados)
+    # Preparar los resultados de la búsqueda en la vista temporal
     inicio = Time.now()
     Busqueda.busqueda_fts(params[:terminos], :solo => modelos_autorizados)
 

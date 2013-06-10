@@ -16,14 +16,14 @@
         - if user_signed_in?
           #lupa
             = image_tag "lupa.png", :alt => "Buscar"
-          #search 
-            %form{:method => 'get', :action => '/busqueda/'} 
+          #search
+            %form{:method => 'get', :action => '/busqueda/'}
               %fieldset
                 %input{ |
                   :type => 'text', :name => 'terminos', :id => 'busqueda', |
                   :size => '22', :placeholder => 'Buscar', :value => ''} |
                 %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}
-          
+
           -# NUEVO MENÚ
           %ul{:id => "newmenu"}
             - if can?(:read, NovedadDelAfiliado) && UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).inscripcion
@@ -51,8 +51,16 @@
                   %div.col_3
                     %h2 Gestión de prestaciones
                   %div.col_2
-                    %h3 PLAN DE SERVICIOS DE SALUD SUMAR
+                    %h3 PRESTACIONES INDIVIDUALES
                     %ul
+                      - if can? :create, PrestacionBrindada
+                        %li= link_to "Registrar una prestación", new_prestacion_brindada_path
+                      - if can? :read, PrestacionBrindada
+                        %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
+                    %h3 PRESTACIONES COMUNITARIAS
+                    %ul
+                      - if can? :create, PrestacionBrindada
+                        %li= link_to "Registrar una prestación comunitaria", new_prestacion_brindada_path(:comunitaria => true)
                       - if can? :read, PrestacionBrindada
                         %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
                   %div.col_1
@@ -149,8 +157,8 @@
                       %li= link_to "Gestionar tablas auxiliares", "#", { :title => "En preparación... Aún no disponible." }
                     %h3 PROCESOS
                     %ul
-                      %li= link_to "Procesos relacionados con padrones", padrones_url                       
-                            
+                      %li= link_to "Procesos relacionados con padrones", padrones_url
+
             %li.menu_right
               %a.drop{:href => "#"} MI CUENTA
               %div.dropdown_2columns
@@ -170,8 +178,8 @@
           = yield
 
         #footer
-          
-          #pie 
+
+          #pie
             = image_tag "footer.png"
           %p.primero
             Copyleft 2011-2013,
@@ -180,7 +188,7 @@
             = " - Teléfono: (0261) 424-7020, int. 119"
           %p
             Código fuente disponible en
-            %a{ :href => "http://github.com/sbosio/nacer", :onclick => "this.target='_blank'" } 
+            %a{ :href => "http://github.com/sbosio/nacer", :onclick => "this.target='_blank'" }
               GitHub
           %p.licencia
             %a{:rel => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/deed.es", |

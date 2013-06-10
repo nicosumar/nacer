@@ -23,13 +23,12 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :nomenclador
   belongs_to :prestacion
   has_many :datos_reportables_asociados, :inverse_of => :prestacion_brindada
-  accepts_nested_attributes_for :datos_reportables_asociados, :reject_if => :dato_reportable_no_requerido?
+  accepts_nested_attributes_for :datos_reportables_asociados #, :reject_if => :dato_reportable_no_requerido?
 
   # Validaciones
-  validates_presence_of :clave_de_beneficiario, :efector_id, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :prestacion_id
+  validates_presence_of :efector_id, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :prestacion_id
   validates_presence_of :diagnostico_id, :if => :requiere_diagnostico?
-  #validates_associated :datos_reportables_asociados
-  validate :cantidad_de_unidades_correcta?
+  validates_presence_of :clave_de_beneficiario, :unless => :prestacion_comunitaria?
   validate :pasa_validaciones_especificas?
   validate :validar_asociacion
 
@@ -141,11 +140,19 @@ class PrestacionBrindada < ActiveRecord::Base
       if cantidad_de_unidades.blank?
         error_generado = true
         errors.add(:cantidad_de_unidades, "El valor del campo \"Cantidad de " +
-        prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" no puede estar en blanco")
-      elsif cantidad_de_unidades <= 0.0
+          prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" no puede estar en blanco"
+        )
+      elsif cantidad_de_unidades.to_f <= 0.0
         error_generado = true
         errors.add(:cantidad_de_unidades, "El valor del campo \"Cantidad de " +
-        prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" tiene que ser un número mayor que cero")
+          prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" tiene que ser un número mayor que cero"
+        )
+      elsif cantidad_de_unidades.to_f > prestacion.unidades_maximas
+        error_generado = true
+        errors.add(:cantidad_de_unidades, "El valor del campo \"Cantidad de " +
+          prestacion.unidad_de_medida.nombre.mb_chars.downcase.to_s + "\" no puede ser mayor que " +
+          ('%0.2f' % prestacion.unidades_maximas.to_f)
+        )
       end
     end
 
@@ -191,28 +198,20 @@ class PrestacionBrindada < ActiveRecord::Base
     return (@beneficiaria.semanas_de_embarazo < 20)
   end
 
-  def cantidad_de_unidades_correcta?
-    if prestacion
-      (1..prestacion.unidades_maximas) === cantidad_de_unidades
-    else
-      true
-    end
-  end
-
   def tension_arterial_valida?
     tas = nil
     tad = nil
     self.datos_reportables_asociados.each do |dra|
-      if dra.dato_reportable.codigo = 'TAD'
-        tad = dra.valor_big_decimal
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'TAS'
+        tas = dra.valor_integer
       end
-      if dra.dato_reportable.codigo = 'TAS'
-        tas = dra.valor_big_decimal
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'TAD'
+        tad = dra.valor_integer
       end
     end
 
     if tas && tad
-      return tas > tad
+      return (tas > tad)
     else
       return true
     end
@@ -220,15 +219,15 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   def indice_cpod_valido?
-    self.datos_reportables_asociados.each do |dr|
-      if dr.dato_reportable.codigo = 'CPOD_C'
-        cpod_c = dr.valor_integer
+    self.datos_reportables_asociados.each do |dra|
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_C'
+        cpod_c = dra.valor_integer
       end
-      if dr.dato_reportable.codigo = 'CPOD_P'
-        cpod_p = dr.valor_integer
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_P'
+        cpod_p = dra.valor_integer
       end
-      if dr.dato_reportable.codigo = 'CPOD_O'
-        cpod_o = dr.valor_integer
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_O'
+        cpod_o = dra.valor_integer
       end
     end
 
@@ -238,22 +237,6 @@ class PrestacionBrindada < ActiveRecord::Base
     return false
     end
 
-  end
-
-  def ingreso_la_cantidad_de_dias_en_uti?
-    self.datos_reportables_asociados.each do |dr|
-      if dr.dato_reportable.codigo = 'UTI'
-        !dr.valor_integer.blank?
-      end
-    end
-  end
-
-  def ingreso_la_cantidad_de_dias_en_sala?
-    self.datos_reportables_asociados.each do |dr|
-      if dr.dato_reportable.codigo = 'SC'
-        !dr.valor_integer.blank?
-      end
-    end
   end
 
   def recien_nacido?
@@ -281,20 +264,40 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
-    return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 0) < 1
+    return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 2) < 1
   end
 
-  def dato_reportable_no_requerido?(dra)
-    if prestacion
-      !prestacion.datos_reportables_requeridos.any? do |drr|
-        fecha_de_la_prestacion >= drr.fecha_de_inicio &&
-        (drr.fecha_de_finalizacion.nil? || fecha_de_la_prestacion < drr.fecha_de_finalizacion) &&
-        drr.dato_reportable_id == dra[:dato_reportable_id].to_i
+  def total_de_dias_postquirurgicos_valido?
+    self.datos_reportables_asociados.each do |dra|
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CCTQU'
+        postq_uti = dra.valor_integer
       end
-    else
-      true
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CCTQM'
+        postq_med = dra.valor_integer
+      end
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CCTQUM'
+        postq_uti_med = dra.valor_integer
+      end
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CCTQS'
+        postq_sala = dra.valor_integer
+      end
     end
+
+    # *** CONTINUAR AQUÍ ***
   end
+
+  #
+  # dato_reportable_no_requerido?
+  # Indica si el DatoReportableAsociado pasado en el hash de atributos es requerido por esta prestación brindada
+  #def dato_reportable_no_requerido?(dra)
+  #  if prestacion
+  #    prestacion.datos_reportables_requeridos.any? do |drr|
+  #      drr.id == dra[:dato_reportable_requerido_id].to_i && drr.fecha_de_inicio <= fecha_de_la_prestacion
+  #    end
+  #  else
+  #    true
+  #  end
+  #end
 
   def requiere_diagnostico?
     if prestacion
@@ -324,9 +327,9 @@ class PrestacionBrindada < ActiveRecord::Base
     # Verificar que la fecha de la prestación tenga menos de 4 meses de la fecha de hoy
     if fecha_de_la_prestacion < (Date.today - 120.days)
       if @advertencias.has_key? :base
-        @advertencias[:base] << "La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registración"
+        @advertencias[:base] << "La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registro"
       else
-        @advertencias.merge! :base => ["La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registración"]
+        @advertencias.merge! :base => ["La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registro"]
       end
       alguna_advertencia = true
     end
@@ -368,4 +371,10 @@ class PrestacionBrindada < ActiveRecord::Base
 
     return alguna_advertencia
   end
+
+  def prestacion_comunitaria?
+    return true unless prestacion
+    prestacion.comunitaria
+  end
+
 end

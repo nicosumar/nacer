@@ -133,7 +133,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
         # Volver a presentar el formulario si hay errores de verificación
         render :action => "verificacion"
         return
-      end      
+      end
     end
 
     # Asignar valores a los atributos de la novedad
@@ -406,6 +406,19 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       return
     end
 
+    # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén pendientes, en cuyo caso
+    # no se permite dar la baja
+    if PrestacionBrindada.where(:clave_de_beneficiario => @novedad.clave_de_beneficiario).any? { |pb| pb.pendiente? }
+      redirect_to( @afiliado,
+        :flash => { :tipo => :error, :titulo => "No se puede solicitar la baja",
+          :mensaje => "No es posible solicitar la baja porque " +
+            (@novedad.sexo.codigo == "F" ? "la beneficiaria" : "el beneficiario") +
+            " tiene alguna prestación brindada pendiente de resolución."
+        }
+      )
+      return
+    end
+
     # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
     if
       (
@@ -427,16 +440,16 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Guardar la solicitud, marcándola como pendiente de informar
     @novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo("R")
     @novedad.save
-    redirect_to( novedad_del_afiliado_path(@novedad), 
+    redirect_to( novedad_del_afiliado_path(@novedad),
       :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
     )
   end
-  
+
   # POST /novedades_de_los_afiliados/modificacion
   def create_modificacion
     create(:modificacion)
   end
-  
+
   def create(tipo)
     # Verificar los permisos del usuario
     if cannot? :create, NovedadDelAfiliado
@@ -458,7 +471,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       return
     end
 
-    # Crear la nueva novedad desde los parámetros, según el tipo de operación y establecer los valores que no se pueden asignar masivamente
+    # Crear la nueva novedad desde los parámetros, según el tipo de operación y establecer los valores que no se pueden
+    # asignar masivamente
     case
 
       when tipo == :alta
@@ -610,9 +624,22 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       # Guardar la solicitud, marcándola como pendiente de informar
       @novedad.estado_de_la_novedad_id = 2
       @novedad.save
-      redirect_to( novedad_del_afiliado_path(@novedad), 
+
+      # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
+      # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
+      PrestacionBrindada.where(
+        :clave_de_beneficiario => @novedad.clave_de_beneficiario,
+        :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
+      ).each do |pb|
+        if !pb.hay_advertencias?
+          pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+        end
+      end
+
+      redirect_to( novedad_del_afiliado_path(@novedad),
         :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
       )
+
     end
   end
 
@@ -754,7 +781,19 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       # Guardar la solicitud, marcándola como pendiente de informar
       @novedad.estado_de_la_novedad_id = 2
       @novedad.save
-      redirect_to( novedad_del_afiliado_path(@novedad), 
+
+      # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
+      # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
+      PrestacionBrindada.where(
+        :clave_de_beneficiario => @novedad.clave_de_beneficiario,
+        :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
+      ).each do |pb|
+        if !pb.hay_advertencias?
+          pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+        end
+      end
+
+      redirect_to( novedad_del_afiliado_path(@novedad),
         :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
       )
     end
@@ -787,7 +826,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       end
 
       # Buscar el afiliado asociado a esta novedad si es una modificación de datos
-      if @novedad.tipo_de_novedad_id == 3
+      if @novedad.tipo_de_novedad.codigo == "M"
         @afiliado = Afiliado.find_by_clave_de_beneficiario(@novedad.clave_de_beneficiario)
       end
 
@@ -801,7 +840,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     end
 
     # Cambiar el estado de la novedad por el que corresponde a la anulación por el usuario
-    @novedad.estado_de_la_novedad_id = 6
+    @novedad.estado_de_la_novedad_id = TipoDeNovedad.id_del_codigo("U")
     @novedad.save(:validate => false)
 
     redirect_to( novedad_del_afiliado_path(@novedad),
