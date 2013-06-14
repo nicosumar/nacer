@@ -40,7 +40,7 @@ class PadronesController < ApplicationController
 
   def escribir_resultados
     efectores_segun_cuie = {}
-    Efector.find(:all).each do |efector|
+    Efector.unscoped.find(:all).each do |efector|
       efectores_segun_cuie.merge! efector.cuie => efector.nombre
     end
     archivo_sumas = File.new("vendor/data/SUMAS.csv", "w")
@@ -383,18 +383,18 @@ class PadronesController < ApplicationController
           # Rechazar la prestación si es posterior al periodo analizado
           prestacion.merge! :estado => :rechazada, :mensaje => "La fecha de la prestación es posterior al mes facturado."
           logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
-        when prestacion[:fecha_prestacion] < (primero_del_mes - 5.months)
-          prestacion.merge! :estado => :rechazada, :mensaje => "La prestación no puede pagarse porque se venció el periodo de pago."
-          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
-        when !(asignaciones_de_precios.has_key?(prestacion[:codigo]))
-          # Rechazar la prestación porque no se encontró el código de la prestación en el nomenclador
-          prestacion.merge! :estado => :rechazada, :mensaje => "El código de la prestación no existe para el nomenclador seleccionado."
-          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
-        when (asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion == 0.0 &&
-          asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
-          # Rechazar la prestación porque no coincide el monto indicado
-          prestacion.merge! :estado => :rechazada, :mensaje => "El monto de la prestación no coincide con el del nomenclador seleccionado."
-          logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+        #when prestacion[:fecha_prestacion] < (primero_del_mes - 5.months)
+        #  prestacion.merge! :estado => :rechazada, :mensaje => "La prestación no puede pagarse porque se venció el periodo de pago."
+        #  logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+        #when !(asignaciones_de_precios.has_key?(prestacion[:codigo]))
+        #  # Rechazar la prestación porque no se encontró el código de la prestación en el nomenclador
+        #  prestacion.merge! :estado => :rechazada, :mensaje => "El código de la prestación no existe para el nomenclador seleccionado."
+        #  logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
+        #when (asignaciones_de_precios[prestacion[:codigo]].adicional_por_prestacion == 0.0 &&
+        #  asignaciones_de_precios[prestacion[:codigo]].precio_por_unidad != prestacion[:monto])
+        #  # Rechazar la prestación porque no coincide el monto indicado
+        #  prestacion.merge! :estado => :rechazada, :mensaje => "El monto de la prestación no coincide con el del nomenclador seleccionado."
+        #  logger.warn "cruzar_facturacion: ADVERTENCIA, ocurrió un error. Datos de la prestación: #{prestacion.inspect}."
         else
           encontrados = []
           nivel_maximo = 1

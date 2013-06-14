@@ -258,9 +258,11 @@ $(document).ready(function() {
 
   function modificarVisibilidadDatosReportables() {
     // Primero ocultamos todos los elementos
-    $('#titulo_atributos').hide();
-    $('div[id^="dato_reportable_"]').hide();
-    $('div[id^="titulo_grupo_"]').hide();
+    //$('#titulo_atributos').hide();
+    //$('div[id^="dato_reportable_"]').hide();
+    //$('div[id^="titulo_grupo_"]').hide();
+    var oDatosReportablesAsociados = [];
+    var nIndiceDra = 0;
 
     // Luego mostramos únicamente los que estén asociados con esta prestación
     prestacion_id = $('#prestacion_brindada_prestacion_id').val();
@@ -268,12 +270,17 @@ $(document).ready(function() {
     {
       if (datosReportablesRequeridos[i].prestacion_id == prestacion_id)
       {
-      	// Mostrar el título de esta sección del formulario, si todavía estaba oculta
-      	if (!$('#titulo_atributos').is(':visible'))
-      	  $('#titulo_atributos').show();
+        for (j = 0; j < datosReportables.length; j++)
+          if (datosReportables[j].id == datosReportablesRequeridos[i].dato_reportable_id)
+            break;
 
-      	// Mostrar el titulo del grupo, si el dato reportable pertenece a uno
-      	if (datosReportablesRequeridos[i].codigo_de_grupo != null)
+        // Añadir este DatoReportableRequerido a los asociados a la prestación
+        oDatosReportablesAsociados[nIndiceDra] =
+        if (!$('#titulo_atributos').is(':visible'))
+          $('#titulo_atributos').show();
+
+        // Mostrar el titulo del grupo, si el dato reportable pertenece a uno
+        if (datosReportablesRequeridos[i].codigo_de_grupo != null)
       	  $('#titulo_grupo_' + datosReportablesRequeridos[i].codigo_de_grupo).show();
 
         // Modificar la etiqueta asociada al dato reportable si es obligatorio (añadir el asterisco)
