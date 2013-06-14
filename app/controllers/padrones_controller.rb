@@ -556,10 +556,10 @@ class PadronesController < ApplicationController
               :fecha_prestacion => valor(campos[3], :fecha),
               :nombre => valor(campos[4], :texto),
               :clase => valor(campos[5], :texto) == "R" ? "P" : "A",
-              :tipo => valor(campos[6], :texto),
-              :documento => valor(campos[7], :texto),
+              :tipo => valor(campos[6], :texto).gsub("[ \.]", ""),
+              :documento => valor(campos[7], :texto).gsub("[ \.]", ""),
               :historia_clinica => valor(campos[8], :texto),
-              :codigo => valor(campos[9], :texto).gsub(/[^[:alpha:][:digit:]]/,""),
+              :codigo => valor(campos[9], :texto).gsub(/[^[:alpha:][:digit:]\.]/,""),
               :monto => valor(campos[10], :decimal) }
   end
 
