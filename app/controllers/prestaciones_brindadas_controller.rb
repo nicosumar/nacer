@@ -400,17 +400,17 @@ class PrestacionesBrindadasController < ApplicationController
         dr_asociados << dra
       end
       @prestacion_brindada.datos_reportables_asociados.delete_all
-      @prestacion_brindada.datos_reportables_asociados.build(
-        DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{ |dr| {:dato_reportable_id => dr.id} }
-      )
-      dr_asociados.each do |dra_orig|
-        @prestacion_brindada.datos_reportables_asociados.each do |dra_dest|
-          if dra_orig.dato_reportable_id == dra_dest.dato_reportable_id
-            eval("dra_dest.valor_" + dra_dest.dato_reportable.tipo_ruby + " = dra_orig.valor_" + dra_orig.dato_reportable.tipo_ruby)
-            dra_dest.valid?
-          end
-        end
-      end
+      #@prestacion_brindada.datos_reportables_asociados.build(
+      #  DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{ |dr| {:dato_reportable_id => dr.id} }
+      #)
+      #dr_asociados.each do |dra_orig|
+      #  @prestacion_brindada.datos_reportables_asociados.each do |dra_dest|
+      #    if dra_orig.dato_reportable_id == dra_dest.dato_reportable_id
+      #      eval("dra_dest.valor_" + dra_dest.dato_reportable.tipo_ruby + " = dra_orig.valor_" + dra_orig.dato_reportable.tipo_ruby)
+      #      dra_dest.valid?
+      #    end
+      #  end
+      #end
       render :action => "new"
       return
     end

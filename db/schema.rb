@@ -613,6 +613,7 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.integer  "objeto_de_la_prestacion_id"
     t.boolean  "otorga_cobertura",                                           :default => false
     t.boolean  "comunitaria",                                                :default => false
+    t.boolean  "requiere_historia_clinica",                                  :default => true
   end
 
   create_table "prestaciones_autorizadas", :force => true do |t|

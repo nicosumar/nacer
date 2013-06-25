@@ -25,7 +25,10 @@
     @beneficiario.numero_de_documento.to_s |
 %div.field_content
   %span.field_name Fecha de nacimiento
-  %span.field_value= @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
+  %span.field_value
+    = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y") + " (a la fecha de la prestación tenía "
+    = (edad_entre(@beneficiario.fecha_de_nacimiento, @prestacion_brindada.fecha_de_la_prestacion) || |
+      "fecha de nacimiento en el futuro") + ")" |
 
 %h3 Efector y fecha en que se brindó la prestación
 %div.field_content
@@ -61,6 +64,10 @@
       = f.label :diagnostico_id, "Diagnóstico*"
       = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
         {:include_blank => true} |
+
+  #historia_clinica.field{:style => "dislay: none;"}
+    = f.label :historia_clinica, "Historia clínica*"
+    = f.text_field :historia_clinica, {:size => 12}
 
   #cantidad_de_unidades.field{:style => "display: none;"}
     = f.label :cantidad_de_unidades, "Cantidad de unidades*"

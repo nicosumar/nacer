@@ -4,7 +4,7 @@ class DatoReportableAsociado < ActiveRecord::Base
   nilify_blanks
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :dato_reportable_id, :observaciones, :prestacion_brindada_id
+  attr_accessible :dato_reportable_requerido_id, :observaciones, :prestacion_brindada_id
   attr_accessible :valor_integer, :valor_big_decimal, :valor_date, :valor_text
 
   # Asociaciones
@@ -12,7 +12,7 @@ class DatoReportableAsociado < ActiveRecord::Base
   belongs_to :dato_reportable_requerido
 
   # Validaciones
-  validates_presence_of :dato_reportable_id
+  validates_presence_of :dato_reportable_requerido_id
   validate :dentro_del_intervalo_esperado?
   validate :dato_reportable_necesario_presente?
 

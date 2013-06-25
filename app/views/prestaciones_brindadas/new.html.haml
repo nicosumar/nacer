@@ -1,7 +1,13 @@
+- anio = @prestacion_brindada.fecha_de_la_prestacion.year
+- mes = @prestacion_brindada.fecha_de_la_prestacion.month - 1
+- dia = @prestacion_brindada.fecha_de_la_prestacion.day
+
 - content_for :title do
   Nueva prestación brindada
 
 - content_for :other_includes do
+  %script{:type => "text/javascript"}
+    = "var dFechaPrestacion = new Date(#{anio}, #{mes}, #{dia});"
   = javascript_include_tag 'prestaciones_brindadas'
 
 #content-header

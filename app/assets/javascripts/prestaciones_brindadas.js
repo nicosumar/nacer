@@ -3,6 +3,8 @@
 //= require datos_reportables_requeridos.js
 //= require diagnosticos.js
 //= require diagnosticos_prestaciones.js
+//= require datos_reportables.js
+//= require si_no.js
 
 var oOpcionesPrestaciones = [];
 var sFiltroPrestaciones = "";
@@ -16,6 +18,8 @@ $(document).ready(function() {
   modificarVisibilidadCantidad();
   modificarVisibilidadEsCatastrofica();
   modificarVisibilidadDatosReportables();
+  modificarVisibilidadHistoriaClinica();
+
   $('#prestacion_brindada_prestacion_id').on('change', prestacion_id_changed);
   $('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
   $('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
@@ -207,6 +211,18 @@ $(document).ready(function() {
       $('#diagnostico').hide();
   }
 
+  function modificarVisibilidadHistoriaClinica() {
+  	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
+    for (i = 0; i < prestaciones.length; i++)
+      if (prestacion_id == prestaciones[i].id) {
+        if (prestaciones[i].requiere_historia_clinica)
+      	  $('#historia_clinica').show();
+        else
+		      $('#historia_clinica').hide();
+        break;
+      }
+  }
+
   function modificarVisibilidadCantidad() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
     for (i = 0; i < prestaciones.length; i++)
@@ -257,12 +273,9 @@ $(document).ready(function() {
   }
 
   function modificarVisibilidadDatosReportables() {
-    // Primero ocultamos todos los elementos
-    //$('#titulo_atributos').hide();
-    //$('div[id^="dato_reportable_"]').hide();
-    //$('div[id^="titulo_grupo_"]').hide();
     var oDatosReportablesAsociados = [];
     var nIndiceDra = 0;
+    var div_html = "";
 
     // Luego mostramos únicamente los que estén asociados con esta prestación
     prestacion_id = $('#prestacion_brindada_prestacion_id').val();
@@ -275,8 +288,88 @@ $(document).ready(function() {
             break;
 
         // Añadir este DatoReportableRequerido a los asociados a la prestación
-        oDatosReportablesAsociados[nIndiceDra] =
-        if (!$('#titulo_atributos').is(':visible'))
+        var anio = datosReportablesRequeridos[i].fecha_de_inicio.substring(0, 4);
+        var mes = datosReportablesRequeridos[i].fecha_de_inicio.substring(5, 7);
+        var dia = datosReportablesRequeridos[i].fecha_de_inicio.substring(8, 10);
+        oDatosReportablesAsociados[nIndiceDra++] = {
+          "id" : datosReportablesRequeridos[i].id,
+          "fecha_de_inicio" : new Date(anio, mes, dia),
+          "obligatorio" : datosReportablesRequeridos[i].obligatorio,
+          "dato_reportable" : datosReportables[j]
+        }
+      }
+    }
+
+    if (nIndiceDra > 0) {
+      div_html += "<h3>Atributos reportables</h3>\n";
+      for (i = 0; i < nIndiceDra; i++) {
+        if ( oDatosReportablesAsociados[i].dato_reportable.integra_grupo && oDatosReportablesAsociados[i].dato_reportable.orden_de_grupo == 1 ) {
+          // Añadir el subtítulo del grupo de datos
+          div_html += "<div id=\"titulo_grupo_" + oDatosReportablesAsociados[i].dato_reportable.codigo_de_grupo + "\">\n"
+          div_html += "  <h4>" + oDatosReportablesAsociados[i].dato_reportable.nombre_de_grupo + "</h4>\n";
+          div_html += "</div>\n";
+        }
+
+        // Añadir el campo oculto con el ID del DatoReportableRequerido
+        div_html += "<input id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_dato_reportable_requerido_id\"";
+        div_html += " name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][dato_reportable_requerido_id]\"";
+        div_html += " type=\"hidden\" value=\"" + oDatosReportablesAsociados[i].id + "\" />\n";
+
+        // Crear el DIV que aloja la etiqueta y el campo
+        div_html += "<div class='field' id='dato_reportable_requerido_" + oDatosReportablesAsociados[i].id + "'>\n";
+
+        // Crear la etiqueta
+        div_html += "  <label for=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_";
+        div_html += oDatosReportablesAsociados[i].dato_reportable.tipo_ruby + "\">";
+        div_html += oDatosReportablesAsociados[i].dato_reportable.nombre;
+        if ( oDatosReportablesAsociados[i].obligatorio ) {
+          div_html += "*";
+        }
+        div_html += "</label>\n";
+
+        // Crear el campo según su tipo
+
+/*<div class='field' id='cantidad_de_unidades' style='display: none;'>
+                <label for="prestacion_brindada_cantidad_de_unidades">Cantidad de unidades*</label>
+                <input id="prestacion_brindada_cantidad_de_unidades" name="prestacion_brindada[cantidad_de_unidades]" size="6" type="text" value="1.0" />
+                <input id="prestacion_brindada_clave_de_beneficiario" name="prestacion_brindada[clave_de_beneficiario]" type="hidden" value="0900511129001855" />
+                <select id="prestacion_brindada_prestacion_id" name="prestacion_brindada[prestacion_id]"><option value=""></option>
+                <option value="419">Alprostadil - XMX001</option>
+*/
+
+        // Si el campo corresponde a un dato enumerable (modelo secundario), construir un SELECT que permita seleccionar la opción correspondiente
+        if ( oDatosReportablesAsociados[i].dato_reportable.enumerable ) {
+          div_html += "<select id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_integer\"";
+          div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_integer]\">\n";
+          div_html += "<option value=\"\"></option>\n";
+          enumeracion = eval(oDatosReportablesAsociados[i].dato_reportable.clase_para_enumeracion);
+          for (j = 0; j < enumeracion.length; j++)
+            div_html += "<option value=\"" + enumeracion[j].id + "\">" + enumeracion[j].nombre + "</option>\n";
+          div_html += "</select>\n"
+        }
+        else {
+          switch ( oDatosReportablesAsociados[i].dato_reportable.tipo_ruby ) {
+            case "date":
+              break;
+
+            // En forma predeterminada se utiliza una caja de entrada de texto
+            default:
+              div_html += "<input id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_";
+              div_html += oDatosReportablesAsociados[i].dato_reportable.tipo_ruby + "\"";
+              div_html += " name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_";
+              div_html += oDatosReportablesAsociados[i].dato_reportable.tipo_ruby + "]\" type=\"text\" />";
+              break;
+          }
+        }
+
+        // Cerrar el DIV que aloja la etiqueta y el campo
+        div_html += "</div>\n";
+      }
+    }
+
+    $("#atributos_reportables").html(div_html);
+    return;
+/*        if (!$('#titulo_atributos').is(':visible'))
           $('#titulo_atributos').show();
 
         // Mostrar el titulo del grupo, si el dato reportable pertenece a uno
@@ -296,12 +389,13 @@ $(document).ready(function() {
         // Mostrar el dato reportable
       	$('#dato_reportable_' + datosReportablesRequeridos[i].dato_reportable_id).show();
       }
-    }
+    } */
   }
 
   function prestacion_id_changed() {
   	modificarSelectDiagnosticos();
     modificarInputCantidad();
+    modificarVisibilidadEsCatastrofica();
     modificarVisibilidadEsCatastrofica();
     modificarVisibilidadDatosReportables();
   }

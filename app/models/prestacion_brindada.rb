@@ -10,7 +10,7 @@ class PrestacionBrindada < ActiveRecord::Base
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :cuasi_factura_id, :diagnostico_id, :efector_id
   attr_accessible :es_catastrofica, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :fecha_del_debito, :mensaje_de_la_baja
   attr_accessible :monto_facturado, :monto_liquidado, :nomenclador_id, :observaciones, :prestacion_id
-  attr_accessible :datos_reportables_asociados_attributes
+  attr_accessible :datos_reportables_asociados_attributes, :historia_clinica
 
   # Los atributos siguientes solo pueden establecerse durante la creación
   attr_readonly :clave_de_beneficiario, :efector_id, :fecha_de_la_prestacion, :prestacion_id
@@ -28,6 +28,7 @@ class PrestacionBrindada < ActiveRecord::Base
   # Validaciones
   validates_presence_of :efector_id, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :prestacion_id
   validates_presence_of :diagnostico_id, :if => :requiere_diagnostico?
+  validates_presence_of :historia_clinica, :if => :requiere_historia_clinica?
   validates_presence_of :clave_de_beneficiario, :unless => :prestacion_comunitaria?
   validate :pasa_validaciones_especificas?
   validate :validar_asociacion
@@ -90,7 +91,7 @@ class PrestacionBrindada < ActiveRecord::Base
     end
 
     # Verificar que la fecha de la prestación sea posterior al inicio del convenio
-    if efector
+    if efector && fecha_de_la_prestacion
       if efector.fecha_de_inicio_del_convenio_actual && fecha_de_la_prestacion < efector.fecha_de_inicio_del_convenio_actual
         # TODO: eliminar esta verificacion cuando finalice el periodo de gracia
         if Date.today > Date.new(2013, 6, 30)
@@ -305,6 +306,10 @@ class PrestacionBrindada < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def requiere_historia_clinica?
+    prestacion && prestacion.requiere_historia_clinica
   end
 
   def validar_asociacion

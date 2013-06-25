@@ -6,6 +6,7 @@ class ModifyPrestaciones < ActiveRecord::Migration
     add_column :prestaciones, :objeto_de_la_prestacion_id, :integer
     add_column :prestaciones, :otorga_cobertura, :boolean, :default => false
     add_column :prestaciones, :comunitaria, :boolean, :default => false
+    add_column :prestaciones, :requiere_historia_clinica, :boolean, :default => true
 
     # Eliminar restricciones que ya no son necesarias
     execute "

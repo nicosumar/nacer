@@ -4812,32 +4812,6 @@ ActiveRecord::Base.transaction do
   })
 
   prestacion = Prestacion.create!({
-    :codigo => "XMX004",
-    :objeto_de_la_prestacion_id => (
-      ObjetoDeLaPrestacion.where(:codigo => 'X004', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
-    ),
-    :nombre => 'Factor VII activado recombinante',
-    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
-  })
-  prestacion.sexos << [sexo_femenino, sexo_masculino]
-  prestacion.grupos_poblacionales << [menores_de_6]
-  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
-  DatoReportableRequerido.create!({
-    :prestacion_id => prestacion.id,
-    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-    :fecha_de_inicio => fecha_de_inicio,
-    :minimo => 0.0100,
-    :necesario => true,
-    :obligatorio => true
-  })
-  AsignacionDePrecios.create!({
-    :precio_por_unidad => 1.0000,
-    :adicional_por_prestacion => 0.0000,
-    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
-  })
-
-  prestacion = Prestacion.create!({
     :codigo => "XMX005",
     :objeto_de_la_prestacion_id => (
       ObjetoDeLaPrestacion.where(:codigo => 'X005', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
