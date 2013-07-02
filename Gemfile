@@ -15,7 +15,7 @@ end
 
 gem 'jquery-rails'
 gem 'devise'
-gem 'therubyracer'
+gem 'therubyracer', :platform => 'ruby'
 gem 'haml'
 gem 'cancan'
 gem 'will_paginate'
