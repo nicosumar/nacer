@@ -36,6 +36,7 @@ Nacer::Application.routes.draw do
   match "importar_detalle" => "cuasi_facturas#importar_detalle"
   match "importar_registros_de_prestaciones" => "cuasi_facturas#importar_registros_de_prestaciones"
   match "importar_archivo_p" => "liquidaciones#importar_archivo_p"
+  match "procesar_bajas" => "novedades_de_los_afiliados#procesar_bajas"
   resources :novedades_de_los_afiliados, :except => [:new, :create] do
     get 'alta', :on => :collection, :as => :new_alta, :action => :new_alta
     get 'baja', :on => :collection, :as => :new_baja, :action => :new_baja

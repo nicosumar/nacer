@@ -879,7 +879,7 @@ class Afiliado < ActiveRecord::Base
     return nil unless nombre
     normalizado = nombre.mb_chars.upcase.to_s
 
-    normalizado.gsub!(/[\,\.\'\`\^\~\-\"\/\\\º\ª\!\·\$\%\&\(\)\=\+\*\-\_\;\:\<\>\|\@\#\[\]\{\}]/, "")
+    #normalizado.gsub!(/[\,\.\'\`\^\~\-\"\/\\\º\ª\!\·\$\%\&\(\)\=\+\*\-\_\;\:\<\>\|\@\#\[\]\{\}]/, "")
     if normalizado.match(/[ÁÉÍÓÚÄËÏÖÜÀÈÌÒÂÊÎÔÛ014]/)
       normalizado.gsub!(/[ÁÄÀÂ4]/, "A")
       normalizado.gsub!(/[ÉËÈÊ]/, "E")

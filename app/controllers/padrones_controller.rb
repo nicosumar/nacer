@@ -216,7 +216,7 @@ class PadronesController < ApplicationController
     return nil unless nombre
     normalizado = nombre.mb_chars.upcase.to_s.chomp
 
-    normalizado.gsub!(/[\,\.\'\`\^\~\-\"\/\\\º\ª\!\·\$\%\&\(\)\=\+\*\-\_\;\:\<\>\|\@\#\[\]\{\}]/, "")
+    #normalizado.gsub!(/[\,\.\'\`\^\~\-\"\/\\\º\ª\!\·\$\%\&\(\)\=\+\*\-\_\;\:\<\>\|\@\#\[\]\{\}]/, "")
     if normalizado.match(/[ÁÉÍÓÚÄËÏÖÜÀÈÌÒÂÊÎÔÛ014]/)
       normalizado.gsub!(/[ÁÄÀÂ4]/, "A")
       normalizado.gsub!(/[ÉËÈÊ]/, "E")

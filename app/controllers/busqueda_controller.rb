@@ -3,6 +3,7 @@ class BusquedaController < ApplicationController
   before_filter :authenticate_user!
 
   def index
+
     # Verificar que se pasaron los términos requeridos para la búsqueda
     if !params[:terminos] || params[:terminos].empty?
       redirect_to(root_url,

@@ -5,6 +5,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
   # Advertencias generadas por las validaciones
   attr_accessor :advertencias
+  # VA de la UAD, usado para procesar las bajas de las novedades
+  attr_accessor :uad
+
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :apellido, :nombre, :clase_de_documento_id, :tipo_de_documento_id, :numero_de_documento

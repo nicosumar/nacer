@@ -18,10 +18,41 @@
     segundos
     #resultados
       - @resultados_de_busqueda.each do |r|
-        %p
-          %span.titulo= link_to r.titulo, eval(r.modelo_type.underscore + "_path(" + r.modelo_id.to_s + ")")
-          %br/
-          = sanitize r.texto
+        - if r.modelo_type == "Afiliado"
+          %div.afiliados
+            %span.titulo= link_to r.titulo, eval(r.modelo_type.underscore + "_path(" + r.modelo_id.to_s + ")")
+            %br/
+            = sanitize r.texto
+            %div
+              = r.instancia.activo ? "Activo" : "Inactivo" 
+              |
+              = r.instancia.cobertura_efectiva_basica ? "C.E.B." : ""
+              |
+              = r.instancia.sexo.nombre
+              |
+              = link_to "Modificar", new_modificacion_novedades_de_los_afiliados_path(:afiliado_id => r.modelo_id.to_s)
+              |
+              = link_to "Solicitar baja", new_baja_novedades_de_los_afiliados_path(:afiliado_id => r.modelo_id.to_s)
+              |
+              = link_to "Agregar Prestación", "#"
+        - elsif r.modelo_type == "Prestaciones"
+          %div.prestaciones
+            %span.titulo= link_to r.titulo, eval(r.modelo_type.underscore + "_path(" + r.modelo_id.to_s + ")")
+            %br/
+            = sanitize r.texto
+            %div
+              Estado de la preacion (aprobado o en verificacion)
+              | 
+              = r.instancia.sexo.nombre
+              |
+              = link_to "Modificar", "#"
+              |
+              = link_to "Solicitar baja", "#"
+        - else # Otro tipo de registro, ni prestación ni afiliado.
+          %div.afiliados
+            %span.titulo= link_to r.titulo, eval(r.modelo_type.underscore + "_path(" + r.modelo_id.to_s + ")")
+            %br/
+            = sanitize r.texto
       = will_paginate @resultados_de_busqueda, :inner_window => 2, :outer_window => 0
   - else
     No se encontraron resultados que coincidan con los criterios de búsqueda que ingresó.
