@@ -906,14 +906,17 @@ class NovedadDelAfiliado < ActiveRecord::Base
     where(:estado_de_la_novedad_id => id_de_estado)
   end
 
-    attr_accessor :esquemas
+  attr_accessor :esquemas
   attr_accessor :esquema
 
 
   def set_schema(nombre)
 
+    logger.warn "set_schema.."
+    logger.warn "nombre de la superclase:  #{self.class.superclass.name}" 
+    logger.warn "#{self.class.superclass.name}"
     begin
-    if self.superclass.name == "ActiveRecord::Base" && !nombre.blank?
+    if self.class.superclass.name == "ActiveRecord::Base" && !nombre.blank?
       #Ok, esta el modulo incluido en un Modelo
       ActiveRecord::Base.connection.clear_cache!
       ActiveRecord::Base.connection.schema_search_path = "#{nombre}, public"
@@ -934,21 +937,34 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end
     
     resp = []
-
+    
+    if sql.blank?
+      sql = "Select * from #{self.class.table_name} where estado_de_la_novedad_id = 2 and tipo_de_novedad_id = 2"
+    end
     @esquemas.each do |esq|
       begin
         
-        set_schema(esq)
-        query = "Select * from #{self.table_name} where estado_de_la_novedad_id = 2 and tipo_de_novedad_id = 2"
-      r = self.find_by_sql(query).each do |r| 
-        r.esquema = esq.to_s
+        logger.warn "El esquema actual es: #{esq['nombre']} " 
+        logger.warn  "El query es: " + sql
+        
+        if set_schema(esq['nombre'])
+          logger.warn "El esquema se seteo correctamente"   
+        else
+          logger.warn "El esquema no se seteo"   
+        end 
+
+        
+        #query = "Select * from #{self.table_name} where estado_de_la_novedad_id = 2 and tipo_de_novedad_id = 2"
+      r = self.class.find_by_sql(sql).each do |r| 
+        r.esquema = esq['nombre'].to_s
         resp <<= r
       end
+      return resp
 
 
-    rescue 
-        raise "El sql puede no ser válido"
-      return false
+      rescue
+        raise "El sql puede no ser válido" 
+        return false
       end
 
     end

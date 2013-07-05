@@ -18,8 +18,8 @@
           %th Última modificación
       %tbody
         - @novedades.each do |n|
-          %tr.clickable{ :onclick => "location.href=\'#{novedad_del_afiliado_path(n)}\'", :title => "Ver detalles de la solicitud" }
-            %td= n.uad
+          %tr
+            %td= n.esquema
             %td= n.tipo_de_novedad.nombre
             %td= n.estado_de_la_novedad.nombre
             %td= n.apellido.to_s + ", " + n.nombre.to_s
