@@ -814,22 +814,10 @@ class NovedadesDeLosAfiliadosController < ApplicationController
  def procesar_bajas
    verificar_actualizacion
    
-   resultado = ActiveRecord::Base.connection.exec_query "  
-         SELECT table_schema||'.'||table_name||' n1 ' tabla, substring(table_schema from 5 for 7) uad
-         FROM information_schema.tables
-               WHERE table_schema ilike 'uad%'
-         and table_name ilike 'novedades%'"
+   nov = NovedadDelAfiliado.new()
+   @novedades = nov.buscar_por_sql("")
 
-  if resultado.rows.size > 0
-    resultado.rows.each do |r|
-      ActiveRecord::Base.connection.clear_cache!
-      ActiveRecord::Base.connection.schema_search_path = "uad_#{r[1]}, public"
-
-      @novedades = NovedadDelAfiliado.find(4) 
-      @novedades.map { |nov| nov.uad = r[1] }
-
-    end
-  end
+   
 
  end
 

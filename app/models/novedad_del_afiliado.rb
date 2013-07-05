@@ -1,13 +1,13 @@
 # -*- encoding : utf-8 -*-
 class NovedadDelAfiliado < ActiveRecord::Base
+  #include 'usaMultiTenant'
+
   # NULLificar los campos de texto en blanco
   nilify_blanks
+  
 
   # Advertencias generadas por las validaciones
   attr_accessor :advertencias
-  # VA de la UAD, usado para procesar las bajas de las novedades
-  attr_accessor :uad
-
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :apellido, :nombre, :clase_de_documento_id, :tipo_de_documento_id, :numero_de_documento
@@ -904,5 +904,60 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # Devuelve los registros filtrados de acuerdo con el ID de estado pasado como parámetro
   def self.con_estado(id_de_estado)
     where(:estado_de_la_novedad_id => id_de_estado)
+  end
+
+    attr_accessor :esquemas
+  attr_accessor :esquema
+
+
+  def set_schema(nombre)
+
+    begin
+    if self.superclass.name == "ActiveRecord::Base" && !nombre.blank?
+      #Ok, esta el modulo incluido en un Modelo
+      ActiveRecord::Base.connection.clear_cache!
+      ActiveRecord::Base.connection.schema_search_path = "#{nombre}, public"
+      return true
+    end
+    rescue 
+      raise "Ocurrio un error. :S. Tal vez el esquema \'#{nombre}\'' no existe"
+      return false
+    end
+  end
+
+  # Esta implementación busca un tipo de query en particular, deberia definir una que reciba solo los binds
+  def buscar_por_sql(sql="")
+    
+    
+    if @esquemas.blank?
+      set_all_schemas
+    end
+    
+    resp = []
+
+    @esquemas.each do |esq|
+      begin
+        
+        set_schema(esq)
+        query = "Select * from #{self.table_name} where estado_de_la_novedad_id = 2 and tipo_de_novedad_id = 2"
+      r = self.find_by_sql(query).each do |r| 
+        r.esquema = esq.to_s
+        resp <<= r
+      end
+
+
+    rescue 
+        raise "El sql puede no ser válido"
+      return false
+      end
+
+    end
+  end
+  
+  def set_all_schemas
+    @esquemas = ActiveRecord::Base.connection.select_all("select schema_name \"nombre\" from information_schema.schemata
+                                           where schema_name <> 'information_schema' 
+                                           and schema_name not ilike 'pg_%' ")
+    
   end
 end
