@@ -8,6 +8,10 @@
 - content_for :other_includes do
   %script{:type => "text/javascript"}
     = "var dFechaPrestacion = new Date(#{anio}, #{mes}, #{dia});"
+    - if @prestacion_brindada.datos_reportables_asociados.any?
+      != "var dDatosReportablesAsociados = #{@prestacion_brindada.datos_reportables_asociados.to_json(:include => {:dato_reportable_requerido => {:include => :dato_reportable}}, :methods => :errors)};"
+    - else
+      = "var dDatosReportablesAsociados = {};"
   = javascript_include_tag 'prestaciones_brindadas'
 
 #content-header

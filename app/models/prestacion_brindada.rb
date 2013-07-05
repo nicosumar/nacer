@@ -84,24 +84,15 @@ class PrestacionBrindada < ActiveRecord::Base
       datos_erroneos = true
     end
 
-    # TODO: Eliminar luego de que finalice el periodo de gracia
-    if fecha_de_la_prestacion && Date.today <= Date.new(2013, 6, 30) && fecha_de_la_prestacion < Date.new(2012, 8, 1)
-      errors.add(:fecha_de_la_prestacion, 'no puede ser anterior al 01/08/2012.')
-      datos_erroneos = true
-    end
-
     # Verificar que la fecha de la prestación sea posterior al inicio del convenio
     if efector && fecha_de_la_prestacion
       if efector.fecha_de_inicio_del_convenio_actual && fecha_de_la_prestacion < efector.fecha_de_inicio_del_convenio_actual
-        # TODO: eliminar esta verificacion cuando finalice el periodo de gracia
-        if Date.today > Date.new(2013, 6, 30)
-          errors.add(
-            :fecha_de_la_prestacion,
-            'no puede ser anterior al inicio del convenio (' +
-            efector.fecha_de_inicio_del_convenio_actual.strftime("%d/%m/%Y") + ')'
-          )
-          datos_erroneos = true
-        end
+        errors.add(
+          :fecha_de_la_prestacion,
+          'no puede ser anterior al inicio del convenio (' +
+          efector.fecha_de_inicio_del_convenio_actual.strftime("%d/%m/%Y") + ')'
+        )
+        datos_erroneos = true
       end
     end
 

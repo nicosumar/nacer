@@ -315,52 +315,137 @@ $(document).ready(function() {
         div_html += " name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][dato_reportable_requerido_id]\"";
         div_html += " type=\"hidden\" value=\"" + oDatosReportablesAsociados[i].id + "\" />\n";
 
+        // Verificar si este campo tiene errores y guardar su valor para establecerlo luego
+        var field_error = false;
+        for ( j = 0; j < dDatosReportablesAsociados.length; j++ )
+          if ( dDatosReportablesAsociados[j].dato_reportable_requerido_id == oDatosReportablesAsociados[i].id ) {
+            if ( Object.keys(dDatosReportablesAsociados[j].errors).length > 0 )
+              field_error = true;
+            break;
+          }
+
         // Crear el DIV que aloja la etiqueta y el campo
         div_html += "<div class='field' id='dato_reportable_requerido_" + oDatosReportablesAsociados[i].id + "'>\n";
 
         // Crear la etiqueta
+        if ( field_error )
+          div_html += "<div class=\"field_with_errors\">";
         div_html += "  <label for=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_";
         div_html += oDatosReportablesAsociados[i].dato_reportable.tipo_ruby + "\">";
         div_html += oDatosReportablesAsociados[i].dato_reportable.nombre;
         if ( oDatosReportablesAsociados[i].obligatorio ) {
           div_html += "*";
         }
-        div_html += "</label>\n";
+        div_html += "</label>";
 
-        // Crear el campo según su tipo
+        if ( field_error ) {
+          div_html += "</div>\n";
+          div_html += "<div class=\"field_with_errors\">";
+        }
+        else
+          div_html += "\n";
 
-/*<div class='field' id='cantidad_de_unidades' style='display: none;'>
-                <label for="prestacion_brindada_cantidad_de_unidades">Cantidad de unidades*</label>
-                <input id="prestacion_brindada_cantidad_de_unidades" name="prestacion_brindada[cantidad_de_unidades]" size="6" type="text" value="1.0" />
-                <input id="prestacion_brindada_clave_de_beneficiario" name="prestacion_brindada[clave_de_beneficiario]" type="hidden" value="0900511129001855" />
-                <select id="prestacion_brindada_prestacion_id" name="prestacion_brindada[prestacion_id]"><option value=""></option>
-                <option value="419">Alprostadil - XMX001</option>
-*/
+        // Definir una variable para almacenar el valor actual escrito en el control
+        var valor = null;
 
-        // Si el campo corresponde a un dato enumerable (modelo secundario), construir un SELECT que permita seleccionar la opción correspondiente
+        // Si el campo corresponde a un dato enumerable (modelo secundario), construir un SELECT que permita seleccionar
+        // la opción correspondiente
         if ( oDatosReportablesAsociados[i].dato_reportable.enumerable ) {
+          for ( j = 0; j < dDatosReportablesAsociados.length; j++ )
+            if ( dDatosReportablesAsociados[j].dato_reportable_requerido_id == oDatosReportablesAsociados[i].id ) {
+              valor = dDatosReportablesAsociados[j].valor_integer;
+              break;
+            }
           div_html += "<select id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_integer\"";
           div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_integer]\">\n";
-          div_html += "<option value=\"\"></option>\n";
+          if ( valor )
+            div_html += "<option value=\"\"></option>\n";
+          else
+            div_html += "<option value=\"\" selected=\"selected\"></option>\n";
+
           enumeracion = eval(oDatosReportablesAsociados[i].dato_reportable.clase_para_enumeracion);
           for (j = 0; j < enumeracion.length; j++)
-            div_html += "<option value=\"" + enumeracion[j].id + "\">" + enumeracion[j].nombre + "</option>\n";
-          div_html += "</select>\n"
+            if ( valor == enumeracion[j].id )
+              div_html += "<option value=\"" + enumeracion[j].id + "\" selected=\"selected\">" + enumeracion[j].nombre + "</option>\n";
+            else
+              div_html += "<option value=\"" + enumeracion[j].id + "\">" + enumeracion[j].nombre + "</option>\n";
+          div_html += "</select>";
         }
         else {
           switch ( oDatosReportablesAsociados[i].dato_reportable.tipo_ruby ) {
             case "date":
+              for ( j = 0; j < dDatosReportablesAsociados.length; j++ )
+                if ( dDatosReportablesAsociados[j].dato_reportable_requerido_id == oDatosReportablesAsociados[i].id ) {
+                  valor = dDatosReportablesAsociados[j].valor_date;
+                  break;
+                }
+
+              // Si el campo es de tipo "date", crear los select para ingresar una fecha
+              div_html += "<select id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_date_3i\"";
+              div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_date(3i)]\">\n";
+              if ( valor )
+                div_html += "<option value=\"\"></option>\n";
+              else
+                div_html += "<option value=\"\" selected=\"selected\"></option>\n";
+              for ( j = 1; j <= 31; j++ )
+                if ( valor && valor.substring(8, 10) == j )
+                  div_html += "<option value=\"" + j + "\" selected=\"selected\">" + j + "</option>\n";
+                else
+                  div_html += "<option value=\"" + j + "\">" + j + "</option>\n";
+              div_html += "</select>\n";
+              div_html += "<select id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_date_2i\"";
+              div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_date(2i)]\">\n";
+              if ( valor )
+                div_html += "<option value=\"\"></option>\n";
+              else
+                div_html += "<option value=\"\" selected=\"selected\"></option>\n";
+
+              var aMeses = [ "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre"]
+              for ( j = 0; j < 12; j++ )
+                if ( valor && (valor.substring(5, 7) - 1) == j )
+                  div_html += "<option value=\"" + (j + 1) + "\" selected=\"selected\">" + aMeses[j] + "</option>\n";
+                else
+                  div_html += "<option value=\"" + (j + 1) + "\">" + aMeses[j] + "</option>\n";
+              div_html += "</select>\n";
+
+              var hoy = new Date();
+              var anio_final = hoy.getFullYear() + 1;
+              div_html += "<select id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_date_1i\"";
+              div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_date(1i)]\">\n";
+              if ( valor )
+                div_html += "<option value=\"\"></option>\n";
+              else
+                div_html += "<option value=\"\" selected=\"selected\"></option>\n";
+              for ( j = 2012; j <= anio_final; j++ )
+                if ( valor && valor.substring(0, 4) == j )
+                  div_html += "<option value=\"" + j + "\" selected=\"selected\">" + j + "</option>\n";
+                else
+                  div_html += "<option value=\"" + j + "\">" + j + "</option>\n";
+              div_html += "</select>";
               break;
 
-            // En forma predeterminada se utiliza una caja de entrada de texto
             default:
+              // En forma predeterminada se utiliza una caja de entrada de texto
+              for ( j = 0; j < dDatosReportablesAsociados.length; j++ )
+                if ( dDatosReportablesAsociados[j].dato_reportable_requerido_id == oDatosReportablesAsociados[i].id ) {
+                  valor = eval("dDatosReportablesAsociados[j].valor_" + oDatosReportablesAsociados[i].dato_reportable.tipo_ruby);
+                  break;
+                }
               div_html += "<input id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_";
               div_html += oDatosReportablesAsociados[i].dato_reportable.tipo_ruby + "\"";
               div_html += " name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_";
-              div_html += oDatosReportablesAsociados[i].dato_reportable.tipo_ruby + "]\" type=\"text\" />";
+              div_html += oDatosReportablesAsociados[i].dato_reportable.tipo_ruby + "]\" type=\"text\""
+              if ( valor != null )
+                div_html += " value=\"" + valor + "\"";
+              div_html += " />";
               break;
           }
         }
+
+        if ( field_error )
+          div_html += "</div>\n";
+        else
+          div_html += "\n";
 
         // Cerrar el DIV que aloja la etiqueta y el campo
         div_html += "</div>\n";
@@ -368,28 +453,10 @@ $(document).ready(function() {
     }
 
     $("#atributos_reportables").html(div_html);
+
+    // Establecer el valor de los distintos campos, si se han pasado datos
+
     return;
-/*        if (!$('#titulo_atributos').is(':visible'))
-          $('#titulo_atributos').show();
-
-        // Mostrar el titulo del grupo, si el dato reportable pertenece a uno
-        if (datosReportablesRequeridos[i].codigo_de_grupo != null)
-      	  $('#titulo_grupo_' + datosReportablesRequeridos[i].codigo_de_grupo).show();
-
-        // Modificar la etiqueta asociada al dato reportable si es obligatorio (añadir el asterisco)
-	      var l = $("#dato_reportable_" + datosReportablesRequeridos[i].dato_reportable_id + " label");
-        if (datosReportablesRequeridos[i].obligatorio)
-        {
-          if (/([^\*])$/.test(l.text()))
-            l.text(l.text() + "*");
-        }
-        else
-          l.text(l.text().replace(/\*$/, ""));
-
-        // Mostrar el dato reportable
-      	$('#dato_reportable_' + datosReportablesRequeridos[i].dato_reportable_id).show();
-      }
-    } */
   }
 
   function prestacion_id_changed() {

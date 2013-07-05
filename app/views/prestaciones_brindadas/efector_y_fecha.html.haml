@@ -40,7 +40,11 @@
   %div.field_content
     %span.field_name Fecha de nacimiento
     - if @beneficiario.fecha_de_nacimiento
-      %span.field_value= @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
+      %span.field_value
+        = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
+        = "(actualmente tiene"
+        = edad_entre(@beneficiario.fecha_de_nacimiento, Date.today) + ")"
+
     - else
       %span.field_empty No se ingresó la fecha de nacimiento
 
