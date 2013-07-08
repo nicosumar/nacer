@@ -1,11 +1,10 @@
 # -*- encoding : utf-8 -*-
 require 'usa_multi_tenant'
 class NovedadDelAfiliado < ActiveRecord::Base
-  include UsaMultiTenant
+  extend UsaMultiTenant
 
   # NULLificar los campos de texto en blanco
   nilify_blanks
-  
 
   # Advertencias generadas por las validaciones
   attr_accessor :advertencias
@@ -907,9 +906,9 @@ class NovedadDelAfiliado < ActiveRecord::Base
     where(:estado_de_la_novedad_id => id_de_estado)
   end
 
-  attr_accessor :esquemas2
-  attr_accessor :esquema2
-  attr_accessor :excepto2
+  #attr_accessor :esquemas2
+  #attr_accessor :esquema2
+  #attr_accessor :excepto2
 
 
   def self.set_schema2(nombre)

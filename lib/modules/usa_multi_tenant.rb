@@ -1,7 +1,19 @@
 # -*- encoding : utf-8 -*-
 module UsaMultiTenant
 
-  def self.find_by_sql3(*args)
+  attr_accessor :esquemas
+  attr_accessor :esquema
+  attr_accessor :excepto
+
+  def hola
+    true
+  end
+
+  def chau
+    "chau"
+  end
+
+  def find_by_sql(*args)
     logger.warn "HOLaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
     args = args.extract_options!
     esquemas = []
@@ -39,7 +51,7 @@ module UsaMultiTenant
           logger.warn "El esquema no se seteo"   
         end 
         logger.warn "La clase actual es :#{self.to_s}"
-        r = super(args.values).each do |r| 
+        r = (args.values).each do |r| 
           r.esquema = esq['nombre'].to_s
           resp <<= r
         end
@@ -53,7 +65,7 @@ module UsaMultiTenant
     return resp
   end
 
-  def self.set_schema(nombre)
+  def set_schema(nombre)
 
     logger.warn "set_schema.."
     logger.warn "nombre de la superclase:  #{self.superclass.name}" 
@@ -73,7 +85,7 @@ module UsaMultiTenant
     end
   end
   
-  def self.set_all_schemas(*argExcepto)
+  def set_all_schemas(*argExcepto)
 
     logger.warn "Aca llego #{argExcepto}.to_s"
     sql = "select schema_name \"nombre\" from information_schema.schemata

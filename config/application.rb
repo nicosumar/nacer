@@ -20,6 +20,7 @@ module Nacer
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += %W(#{config.root}/lib/modules)
     config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
     #config.autoload_paths += Dir["#{config.root}/lib/modules/**"]
     
     # Only load the plugins named here, in the order given (default is alphabetical).
