@@ -814,19 +814,14 @@ class NovedadesDeLosAfiliadosController < ApplicationController
  def procesar_bajas
    verificar_actualizacion
    
-   #nov = NovedadDelAfiliado.new
-   boo = NovedadDelAfiliado.hola
-   @novedades = NovedadDelAfiliado.find_by_sql (
+   @novedades = NovedadDelAfiliado.multi_find (
     {
       :except => ["public"],
-      :sql => "Select * from novedades_de_los_afiliados where estado_de_la_novedad_id = ? and tipo_de_novedad_id = ?", 
+      :where => "where estado_de_la_novedad_id = ? and tipo_de_novedad_id = ?", 
       :v1 => 2, 
       :v2 => 2
     })
    
-
-   
-
  end
 
  private 

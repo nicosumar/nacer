@@ -8,7 +8,7 @@
 
 #content-body
   - if true
-    = 1
+    = @novedades.first.class.to_s + @novedades.first.esquema
     %table
       %thead
         %tr
