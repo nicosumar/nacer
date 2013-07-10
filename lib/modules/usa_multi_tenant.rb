@@ -30,7 +30,12 @@ module UsaMultiTenant
     end
 
     filtro = args[:where]
-
+    i = 0
+    args[:values].each do |v|
+      args[i.to_s+v.to_s] = v
+      i+=1
+    end
+    args.delete(:values)
     
     esquemas.each do |esq|
       begin

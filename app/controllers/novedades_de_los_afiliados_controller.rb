@@ -818,8 +818,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     {
       :except => ["public"],
       :where => "where estado_de_la_novedad_id = ? and tipo_de_novedad_id = ?", 
-      :v1 => 2, 
-      :v2 => 2
+      :values => [2,2]
     })
    
  end
