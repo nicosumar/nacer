@@ -2,9 +2,7 @@
 module UsaMultiTenant
 
   module MetodosDeInstancia
-  
-   #attr_accessor :esquema 
-
+    #attr_accessor :esquema 
   end
 
   def multi_find(*args)
@@ -19,29 +17,34 @@ module UsaMultiTenant
 
     case 
 
-    when args[:where].blank? 
-      raise "Debe definir el simbolo :where en el hash"  
+    when args[:where].blank? & args[:sql].blank?
+      raise "Debe definir el simbolo :where o :sql en el hash"  
       return false
     when !args[:esquemas].blank?
-      #TODO: Agregar para que use todos los esquemas elegidos
+      #TODO: Agregar para que use solo los esquemas elegidos
     when !args[:except].blank?
       esquemas = self.set_all_schemas args[:except]
       args.delete(:except)
     end
 
-    filtro = args[:where]
+    filtro = args[:where] unless args[:where].blank?
+    
     i = 0
-    args[:values].each do |v|
-      args[i.to_s+v.to_s] = v
-      i+=1
+    unless args[:values].blank?
+      args[:values].each do |v|
+        args[i.to_s+v.to_s] = v
+        i+=1
+      end
+      args.delete(:values)
     end
-    args.delete(:values)
     
     esquemas.each do |esq|
       begin
         set_schema(esq['nombre'])
         
-        args[:where] = "Select '#{esq['nombre']}' as esquema, * from #{self.table_name} " + filtro
+        args[:where] = "Select '#{esq['nombre']}' as esquema, * from #{self.table_name} " + filtro unless args[:where].blank?
+
+        logger.warn "Argumentos: #{args.values}"
         r = self.find_by_sql(args.values)
         resp <<= r
         resp.flatten! 1

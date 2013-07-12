@@ -1,0 +1,25 @@
+- content_for :title do
+  Resumen bajas solicitadas
+
+#content-header
+  %h1 Resumen bajas solicitadas
+
+= render "shared/info"
+
+#content-body
+  - if true
+    %table
+      %thead
+        %tr
+          %th Uad
+          %th Nombre y Apellido
+          %th Inscripciones registradas
+      %tbody
+        - @usrinsc.each do |n|
+          %tr
+            %td= n.uad
+            %td= n.apellido.to_s + ", " + n.nombre.to_s
+            %td= n.cant
+  - else
+    %p No existen solicitudes en el estado seleccionado
+

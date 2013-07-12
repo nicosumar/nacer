@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
+require 'usa_multi_tenant'
 class InformesController < ApplicationController
+
   before_filter :authenticate_user!
 
   def beneficiarios_activos
@@ -134,6 +136,34 @@ class InformesController < ApplicationController
             AND ef.alto_impacto
           GROUP BY ef.nombre; 
       "
+  end
+
+  class UsuariosInscripciones < ActiveRecord::Base
+    extend UsaMultiTenant
+  end
+  def usuarios_inscripciones
+
+
+    @usrinsc = UsuariosInscripciones.multi_find (
+    {
+      :except => ["public"],
+      :sql => " select uad.nombre, u.email, u.nombre, u.apellido, count(nov.id)
+                from users u
+                  join novedades_de_los_afiliados nov on nov.creator_id = u.id
+                  join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
+                  join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
+                where u.confirmed_at < '2013-06-01'
+                and   nov.created_at between '2013-08-01' and '2013-08-30'
+                group by uad.nombre, u.email, u.nombre, u.apellido "#, 
+      #:values => [2,2]
+    })
+    logger.warn "tipo usser #{@usrinsc.class.to_s}"
+
+
+
+
+
+
   end
 
 end

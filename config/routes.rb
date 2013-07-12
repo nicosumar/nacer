@@ -49,6 +49,7 @@ Nacer::Application.routes.draw do
   resources :unidades_de_alta_de_datos, :except => :destroy
   match "informe_de_beneficiarios_activos" => "informes#beneficiarios_activos"
   match "tablero_de_comandos_alto_impacto" => "informes#tablero_de_comandos_alto_impacto"
+  match "usuarios_inscripciones" => "informes#usuarios_inscripciones"
 
   root :to => 'inicio#index'
 

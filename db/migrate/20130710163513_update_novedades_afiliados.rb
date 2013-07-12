@@ -4,6 +4,7 @@ class UpdateNovedadesAfiliados < ActiveRecord::Migration
   end
 
   def down
+  	=begin
   	execute <<-SQL
   		-- Function: crear_esquema_para_uad()
 
@@ -241,5 +242,6 @@ class UpdateNovedadesAfiliados < ActiveRecord::Migration
 
 
   	SQL
+  	=end
   end
 end
