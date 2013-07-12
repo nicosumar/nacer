@@ -141,6 +141,7 @@ class InformesController < ApplicationController
   class UsuariosInscripciones < ActiveRecord::Base
     extend UsaMultiTenant
   end
+
   def usuarios_inscripciones
 
 
@@ -155,7 +156,7 @@ class InformesController < ApplicationController
                 where u.confirmed_at < '2013-06-01'
                 and   nov.created_at between '2013-08-01' and '2013-08-30'
                 group by uad.nombre, u.email, u.nombre, u.apellido "#, 
-      #:values => [2,2]
+      :values => [2,2]
     })
     logger.warn "tipo usser #{@usrinsc.class.to_s}"
 
