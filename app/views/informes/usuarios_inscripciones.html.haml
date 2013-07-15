@@ -1,3 +1,4 @@
+= javascript_include_tag "informes.js"
 - content_for :title do
   Resumen bajas solicitadas
 
@@ -15,11 +16,11 @@
           %th Nombre y Apellido
           %th Inscripciones registradas
       %tbody
-        - @usrinsc.each do |n|
-          %tr
-            %td= n.uad
-            %td= n.apellido.to_s + ", " + n.nombre.to_s
-            %td= n.cant
+      -#  - @usrinsc.each do |n|
+      -#    %tr
+      -#      %td= n.uad
+      -#      %td= n.apellido.to_s + ", " + n.nombre.to_s
+      -#      %td= n.cant
   - else
     %p No existen solicitudes en el estado seleccionado
 

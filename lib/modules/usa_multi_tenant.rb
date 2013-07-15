@@ -2,7 +2,7 @@
 module UsaMultiTenant
 
   module MetodosDeInstancia
-    #attr_accessor :esquema 
+    attr_accessor :esquema 
   end
 
   def multi_find(*args)
@@ -17,7 +17,7 @@ module UsaMultiTenant
 
     case 
 
-    when args[:where].blank? & args[:sql].blank?
+    when args[:where].blank? && args[:sql].blank?
       raise "Debe definir el simbolo :where o :sql en el hash"  
       return false
     when !args[:esquemas].blank?
@@ -42,16 +42,31 @@ module UsaMultiTenant
       begin
         set_schema(esq['nombre'])
         
-        args[:where] = "Select '#{esq['nombre']}' as esquema, * from #{self.table_name} " + filtro unless args[:where].blank?
+        if args[:sql].blank?
+          #args[:where] = "Select '#{esq['nombre']}' as esquema, * from #{self.table_name} " + filtro
+          args[:where] = "Select * from #{self.table_name} " + filtro
 
-        logger.warn "Argumentos: #{args.values}"
-        r = self.find_by_sql(args.values)
-        resp <<= r
-        resp.flatten! 1
+          r = self.find_by_sql(args.values).each do |row|
+            send :include, MetodosDeInstancia
+            row.esquema = esq['nombre']
+          end
+          resp <<= r
+          resp.flatten! 1
+        else
+          #ejecuto sin select
+          r = self.find_by_sql(args.values).each do |row|
+            send :include, MetodosDeInstancia
+            row.esquema = esq['nombre']
+          end
+          resp <<= r
+          resp.flatten! 1
+        end
+
+        
         ActiveRecord::Base.connection.clear_query_cache
         
-      rescue
-        raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados" 
+      rescue Exception => e
+        raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}" 
         return false
       end
     end
