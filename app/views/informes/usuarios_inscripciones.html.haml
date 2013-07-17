@@ -8,19 +8,17 @@
 = render "shared/info"
 
 #content-body
-  - if true
-    %table
-      %thead
-        %tr
-          %th Uad
-          %th Nombre y Apellido
-          %th Inscripciones registradas
-      %tbody
-      -#  - @usrinsc.each do |n|
-      -#    %tr
-      -#      %td= n.uad
-      -#      %td= n.apellido.to_s + ", " + n.nombre.to_s
-      -#      %td= n.cant
-  - else
-    %p No existen solicitudes en el estado seleccionado
-
+  %h3 Informes - Inscripciones por usuario
+  = form_tag :action => 'usuarios_inscripciones', :remote => true do
+    = label_tag "Desde" 
+    = text_field_tag 'desde'
+    = label_tag "Hasta"
+    = text_field_tag 'hasta'
+    = submit_tag 'Buscar'
+  -#= form_for @usrinsc do |row|
+    -#%div.field  
+      -#= row.label(:desde)
+      -#= row.text_field("Desde") 
+    -#%div.field
+      -#= row.label(:hasta)
+      -#= row.label("Hasta")

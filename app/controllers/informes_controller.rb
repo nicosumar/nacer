@@ -151,12 +151,12 @@ class InformesController < ApplicationController
                   join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
                 where u.confirmed_at < '2013-06-01'
                 and   nov.created_at between '2013-01-01' and '2013-01-30'
-                group by uad.nombre, u.email, u.nombre, u.apellido "#, 
+                group by uad.nombre, u.email, u.nombre, u.apellido limit 2"#, 
     })
-    #respond_to do |format|
-    #  format.html 
-    #  format.js
-    #end
+    respond_to do |format|
+      format.html 
+      format.js
+    end
 
 
 
