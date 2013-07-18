@@ -1,14 +1,124 @@
 class UpdateNovedadesAfiliados < ActiveRecord::Migration
   def up
+  	    #Creo la tabla
+  		execute <<-SQL
+		  	CREATE TABLE novedades_motivos_de_baja
+			(
+			  id integer NOT NULL,
+			  descripcion text NOT NULL,
+			  comentarios text,
+			  CONSTRAINT novedades_motivos_de_baja_pkey PRIMARY KEY (id)
+			)
+			WITH (
+			  OIDS=FALSE
+			);
+			COMMENT ON TABLE novedades_motivos_de_baja
+			  IS 'Importada de SMICodMotivosBaja';
+		SQL
+	    
+		execute <<-SQL
+		INSERT INTO novedades_motivos_de_baja(
+            id, descripcion)
+			VALUES (10,'MOTIVOS VARIOS')
+			, (11,'Ausente en Padron Provincial')
+			, (12,'Faltan datos Imprescindibles')
+			, (13,'Faltan datos necesarios')
+			, (14,'Benficiario duplicado por: @1')
+			, (15,'La categoria del beneficiario no es valida: (Tipo categoría: @1)')
+			, (16,'Para esta categoria, el sexo debe ser femenino')
+			, (18,'Fecha de inscripción (@1) anterior a 01/08/2004')
+			, (19,'Se mudó a otra provincia')
+			, (20,'EMBARAZADAS')
+			, (21,'No puedo calcular la fecha de parto')
+			, (22,'Embarazada que supero los 45 dias de la Fecha Probable de Parto')
+			, (23,'Embarazada menor a 10 años')
+			, (24,'Mujer embarazada con datos incosistentes')
+			, (27,'Clave del Beneficiario NO tiene 16 dígitos')
+			, (30,'PUERPERAS')
+			, (31,'Puérpera que superó los 45 días')
+			, (33,'Puérpera menor a 10 años')
+			, (40,'MENORES')
+			, (41,'La edad del beneficiario no está contemplada en el programa')
+			, (42,'Menor con fecha de nacimiento futura')
+			, (43,'El beneficiario es menor y no tengo los datos completos de ninguno de sus adultos responsables')
+			, (44,'El beneficiario es niño con documento ajeno y el mismo no coincide con ninguno de sus adultos resp.')
+			, (45,'Beneficiario con DNI ajeno que supera edad permitida. @1')
+			, (46,'El beneficiario es niño y los documentos de al menos dos de sus adultos responsables son iguales')
+			, (47,'Benef. niño con doc ajeno sin datos completos del resp. cuyo documento coincide con el del benef.')
+			, (48,'Benef. niño con documento propio igual al documento de alguno de sus adultos responsables')
+			, (50,'DOCUMENTOS')
+			, (51,'Documento de beneficiario no valido')
+			, (52,'Documento de madre no valido')
+			, (53,'Documento de padre no valido')
+			, (54,'Documento de tutor no valido')
+			, (55,'Documento de beneficiario excede los digitos permitidos')
+			, (56,'Documento de madre excede los digitos permitidos')
+			, (57,'Documento de padre excede los digitos permitidos')
+			, (58,'Documento de tutor excede los digitos permitidos')
+			, (59,'Documento de beneficiario menor a 50.000')
+			, (60,'Documento de madre menor a 50.000')
+			, (61,'Documento de padre menor a 50.000')
+			, (62,'Documento de tutor menor a 50.000')
+			, (70,'P.U.C.O.')
+			, (71,'Beneficiario se encuentra en el PUCO (En O.S.@1)')
+			, (72,'Madre se encuentra en el PUCO (En O.S.@1)')
+			, (73,'Padre se encuentra en el PUCO (En O.S. @1)')
+			, (74,'Tutor se encuentra en el PUCO (En O.S.@1)')
+			, (80,'REGISTROS DUPLICADOS')
+			, (81,'Benef. dupl. x Tipo y Nro. doc. benef.: @1')
+			, (82,'Benef. dupl. x Nombre, Apellido y F.Nac.: @1')
+			, (83,'Benef. dupl. x Nombre y F.Nac., y Doc. Madre: @1')
+			, (90,'BAJAS')
+			, (91,'Fallecimiento')
+			, (92,'Renuncia')
+			, (93,'Baja registrada en U.A.D.')
+			, (100,'BENEFICIARIO PERTENECIENTE A OTRO PLAN NACER')
+			, (101,'Beneficiario perteneciente al Plan Nacer Ciudad Aut. de Buenos Aires')
+			, (102,'Beneficiario perteneciente al Plan Nacer Buenos Aires')
+			, (103,'Beneficiario perteneciente al Plan Nacer Catamarca')
+			, (104,'Beneficiario perteneciente al Plan Nacer Cordoba')
+			, (105,'Beneficiario perteneciente al Plan Nacer Corrientes')
+			, (106,'Beneficiario perteneciente al Plan Nacer Entre Rios')
+			, (107,'Beneficiario perteneciente al Plan Nacer Jujuy')
+			, (108,'Beneficiario perteneciente al Plan Nacer La Rioja')
+			, (109,'Beneficiario perteneciente al Plan Nacer Mendoza')
+			, (110,'Beneficiario perteneciente al Plan Nacer Salta')
+			, (111,'Beneficiario perteneciente al Plan Nacer San Juan')
+			, (112,'Beneficiario perteneciente al Plan Nacer San Luis')
+			, (113,'Beneficiario perteneciente al Plan Nacer Santa Fe')
+			, (114,'Beneficiario perteneciente al Plan Nacer Santiago del Estero')
+			, (115,'Beneficiario perteneciente al Plan Nacer Tucumán')
+			, (116,'Beneficiario perteneciente al Plan Nacer Chaco')
+			, (117,'Beneficiario perteneciente al Plan Nacer Chubut')
+			, (118,'Beneficiario perteneciente al Plan Nacer Formosa')
+			, (119,'Beneficiario perteneciente al Plan Nacer La Pampa')
+			, (120,'Beneficiario perteneciente al Plan Nacer Misiones')
+			, (121,'Beneficiario perteneciente al Plan Nacer Neuquen')
+			, (122,'Beneficiario perteneciente al Plan Nacer Rio Negro')
+			, (123,'Beneficiario perteneciente al Plan Nacer Santa Cruz')
+			, (124,'Beneficiario perteneciente al Plan Nacer Tierra del Fuego')
+			, (200,'AUDITORIA INTERNA / CONCURRENTE')
+			, (201,'No existe Planilla de Inscripción')
+			, (202,'Faltan datos indispensables')
+			, (203,'No evidencia atención en los ultimos 6 meses')
+			, (204,'No cumple con agenda sanitaria en el ultimo año')
+			, (205,'Falsear información en IPOs o FC')
+			, (206,'No vive en domicilio declarado')
+			, (207,'Domicilio inexistente')
+			, (208,'Datos falsos')
+			, (209,'Fallecimiento')
+			, (210,'Se mudó de Provincia')
+			, (211,'Fecha de inscripción alterada')
+			, (215,'Baja por cambio de Programa')
+		SQL
 
+		
   end
 
   def down
-  	=begin
+  	
   	execute <<-SQL
   		-- Function: crear_esquema_para_uad()
-
-		
 
 	CREATE OR REPLACE FUNCTION crear_esquema_para_uad()
 	  RETURNS trigger AS
@@ -242,6 +352,6 @@ class UpdateNovedadesAfiliados < ActiveRecord::Migration
 
 
   	SQL
-  	=end
+  	
   end
 end
