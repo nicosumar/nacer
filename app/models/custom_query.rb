@@ -3,6 +3,29 @@ require 'usa_multi_tenant'
 class CustomQuery < ActiveRecord::Base
   extend UsaMultiTenant
 
+  attr_accessor :attr_busqueda
+
+  def initialize(crear=false)
+    #Creo la vista para que no chille en la inicializacion
+    #Ver cuanto afecta la velocidad
+    if crear
+      ActiveRecord::Base.connection.execute <<-SQL 
+        CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1
+        SQL
+    end
+    @attr_busqueda = []
+  end
+
+  #define los parametros para la busqueda, devuelve los atributos ya definidos
+  def parametros_busqueda(attrs)
+    attrs.each do |var, value|
+      class_eval { attr_accessor var }
+      instance_variable_set "@#{var}", value
+      attr_busqueda << var
+    end
+
+  end
+
   def self.buscar(*args)
   	args = args.extract_options!
 
@@ -54,6 +77,12 @@ class CustomQuery < ActiveRecord::Base
 
   def nombres_de_columna
   	
+  end
+
+  private
+
+  def persited?
+    false
   end
 
 end
