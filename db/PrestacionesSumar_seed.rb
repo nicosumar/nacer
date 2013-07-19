@@ -279,6 +279,7 @@ ActiveRecord::Base.transaction do
     :codigo => "IMV010",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("V010"),
     :nombre => "Inmunización doble para adultos en el embarazo",
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -295,6 +296,7 @@ ActiveRecord::Base.transaction do
     :codigo => "IMV013",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("V013"),
     :nombre => "Dosis aplicada de vacuna antigripal en el embarazo o puerperio",
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -311,6 +313,7 @@ ActiveRecord::Base.transaction do
     :codigo => "IMV011",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("V011"),
     :nombre => "Inmunización puerperal doble viral (rubéola)",
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -327,6 +330,7 @@ ActiveRecord::Base.transaction do
     :codigo => "PRP018",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("P018"),
     :nombre => "Toma de muestra para PAP (incluye material descartable)",
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -343,6 +347,7 @@ ActiveRecord::Base.transaction do
     :codigo => "PRP002",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("P002"),
     :nombre => "Colposcopía en control de embarazo (incluye material descartable)",
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -359,6 +364,7 @@ ActiveRecord::Base.transaction do
     :codigo => "PRP033",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("P033"),
     :nombre => "Tartrectomía y cepillado mecánico en el embarazo",
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -375,6 +381,7 @@ ActiveRecord::Base.transaction do
     :codigo => "PRP026",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("P033"),
     :nombre => "Inactivación de caries en el embarazo",
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -391,6 +398,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL047",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L047"),
     :nombre => 'Laboratorio de prueba de embarazo - Gonadotrofina coriónica humana en sangre',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -406,6 +414,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL048",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L048"),
     :nombre => 'Laboratorio de prueba de embarazo - Gonadotrofina coriónica humana en orina',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -421,6 +430,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL050",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L050"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Grupo y factor',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -437,6 +447,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL055",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L055"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Hemoglobina',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -453,6 +464,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL045",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L045"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Glucemia',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -469,6 +481,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL079",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L079"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Orina completa',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -485,6 +498,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL119",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L119"),
     :nombre => 'Laboratorio de control prenatal de primera vez - VDRL',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -501,6 +515,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL065",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L065"),
     :nombre => 'Laboratorio de control prenatal de primera vez - IFI y hemoaglutinación directa para Chagas',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -517,6 +532,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL080",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L080"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Parasitemia para Chagas',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -533,6 +549,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL099",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L099"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Serología para Chagas (ELISA)',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -549,6 +566,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL128",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L128"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Hemoaglutinación indirecta para Chagas',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -565,6 +583,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL121",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L121"),
     :nombre => 'Laboratorio de control prenatal de primera vez - VIH ELISA',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -581,6 +600,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL122",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L122"),
     :nombre => 'Laboratorio de control prenatal de primera vez - VIH Western Blot',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -597,6 +617,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL110",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L110"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Toxoplasmosis por IFI',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -613,6 +634,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL111",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L111"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Toxoplasmosis por MEIA',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -629,6 +651,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL051",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L051"),
     :nombre => 'Laboratorio de control prenatal de primera vez - Hbs antígeno',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -645,6 +668,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL055",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L055"),
     :nombre => 'Laboratorio ulterior de control prenatal - Hemoglobina',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -661,6 +685,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL045",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L045"),
     :nombre => 'Laboratorio ulterior de control prenatal - Glucemia',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -677,6 +702,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL079",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L079"),
     :nombre => 'Laboratorio ulterior de control prenatal - Orina completa',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -693,6 +719,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL119",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L119"),
     :nombre => 'Laboratorio ulterior de control prenatal - VDRL',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -709,6 +736,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL121",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L121"),
     :nombre => 'Laboratorio ulterior de control prenatal - VIH ELISA',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -725,6 +753,7 @@ ActiveRecord::Base.transaction do
     :codigo => "LBL122",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("L122"),
     :nombre => 'Laboratorio ulterior control prenatal - VIH Western Blot',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -822,6 +851,7 @@ ActiveRecord::Base.transaction do
     :codigo => "AUH001",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("H001"),
     :nombre => 'Informe del comité de auditoría de muerte materna, recibido y aprobado por el Ministerio de Salud de la provincia, según ordenamiento',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -1017,7 +1047,7 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.create!({
     :codigo => "ITQ007",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("Q007"),
-    :nombre => 'Tratamiento de la hemorragia del segundo trimestre (quirúrgica)',
+    :nombre => 'Tratamiento de la hemorragia del tercer trimestre (quirúrgica)',
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino
@@ -1087,6 +1117,7 @@ ActiveRecord::Base.transaction do
     :codigo => "APA001",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("A001"),
     :nombre => 'Lectura de muestra tomada en mujeres embarazadas, en laboratorio de Anatomía patológica/Citología, firmado por anátomo-patólogo matriculado (CA cérvico-uterino)',
+    :requiere_historia_clinica => false,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << sexo_femenino

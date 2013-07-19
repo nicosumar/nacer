@@ -22,7 +22,7 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :estado_de_la_prestacion
   belongs_to :nomenclador
   belongs_to :prestacion
-  has_many :datos_reportables_asociados, :inverse_of => :prestacion_brindada
+  has_many :datos_reportables_asociados, :inverse_of => :prestacion_brindada, :order => :id
   accepts_nested_attributes_for :datos_reportables_asociados #, :reject_if => :dato_reportable_no_requerido?
 
   # Validaciones

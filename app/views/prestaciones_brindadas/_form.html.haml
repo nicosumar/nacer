@@ -79,6 +79,7 @@
   #atributos_reportables
     - if @prestacion_brindada.persisted? && @prestacion_brindada.datos_reportables_asociados.size > 0
       %h3 Atributos reportables
+      -# @prestacion_brindada.datos_reportables_asociados.order(:id).each_with_index do |dra, i|
       - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
         - drr = dra.dato_reportable_requerido
         - dr = drr.dato_reportable
@@ -106,6 +107,7 @@
                   # inicial del control
                   # = dra_f.date_select :valor_date, {:default => dra.valor_date, :include_blank => true}, |
                   #   eval(dra.dato_reportable.opciones_de_formateo || "{}") |
+                -
                 = dra_f.select :"valor_date(3i)", options_for_select((1..31).collect{|d| [d.to_s, d]}, dra.valor_date ? |
                   dra.valor_date.day : nil), :include_blank => true |
                 -
@@ -117,7 +119,7 @@
                   [y.to_s, y]}, dra.valor_date ? dra.valor_date.year : nil), :include_blank => true |
               - else
                 = dra_f.text_field ("valor_" + dr.tipo_ruby).to_sym, eval(dr.opciones_de_formateo || "{}").merge( |
-                  :value => eval("dra.valor_" + dra.dato_reportable.tipo_ruby)) |
+                  :value => eval("dra.valor_" + dr.tipo_ruby)) |
             - if dra.errors.size > 0
               </div>
 

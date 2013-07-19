@@ -29,16 +29,18 @@
     %table
       %thead
         %tr
+          - if @mostrar_efector
+            %th Efector
           %th Fecha
-          %th Efector
           %th Beneficiario
           %th Código de prestación
           %th Última modificación
       %tbody
         - @prestaciones_brindadas.each do |p|
           %tr.clickable{ :onclick => "location.href=\'#{prestacion_brindada_path(p)}\'", :title => "Ver detalles de la prestación" }
+            - if @mostrar_efector
+              %td= p.efector.nombre
             %td= p.fecha_de_la_prestacion.strftime("%d/%m/%Y")
-            %td= p.efector.nombre
             %td= novedad_o_afiliado(p.clave_de_beneficiario)
             %td= p.prestacion.codigo.to_s + (p.diagnostico ? p.diagnostico.codigo.to_s : '')
             %td= p.updated_at ? p.updated_at.strftime("%d/%m/%Y %H:%M:%S") : ''

@@ -17,7 +17,7 @@
     - if ["R", "P", "L", "V"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-ok.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
-    - elsif ["I", "F", "U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+    - elsif ["I", "F"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-advertencia.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
         - if @prestacion_brindada.advertencias.size > 0
@@ -32,6 +32,11 @@
                 - dra.advertencias.each do |attr, advs|
                   - advs.each do |msj|
                     %li= msj
+    - elsif ["U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+      #info.infobox-advertencia.no-margin
+        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        %ul
+          %li La prestación no podrá ser facturada.
     - else
       #info.infobox-error.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
@@ -96,19 +101,19 @@
 
   - if @prestacion_brindada.datos_reportables_asociados.any?
     %h3 Atributos reportables
-    - @prestacion_brindada.datos_reportables_asociados.each do |dra|
+    - @prestacion_brindada.datos_reportables_asociados.order(:id).each do |dra|
       - drr = dra.dato_reportable_requerido
       - dr = drr.dato_reportable
       - if dr.integra_grupo && dr.orden_de_grupo == 1
         %div{:id => "titulo_grupo_" + dr.codigo_de_grupo}
           %h4= dr.nombre_de_grupo
       %div.field_content
-        - if dra.advertencias.size > 0
+        - if dra.advertencias && dra.advertencias.size > 0
           %div.field_with_warnings
             %span.field_name= dr.nombre
         - else
           %span.field_name= dr.nombre
-        - if dra.advertencias.size > 0
+        - if dra.advertencias && dra.advertencias.size > 0
           <div class="field_with_warnings">
         - case
           - when dr.enumerable
@@ -126,7 +131,7 @@
               %span.field_empty No se ingresó el valor
             - else
               %span.field_value= eval("dra.valor_" + dr.tipo_ruby)
-        - if dra.advertencias.size > 0
+        - if dra.advertencias && dra.advertencias.size > 0
           </div>
 
   %h3 Datos sobre el efector que brindó la prestación

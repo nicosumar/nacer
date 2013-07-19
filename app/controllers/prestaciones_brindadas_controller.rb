@@ -46,6 +46,8 @@ class PrestacionesBrindadasController < ApplicationController
         PrestacionBrindada.con_estado(@estado_de_la_prestacion_id).paginate(:page => params[:page], :per_page => 20,
           :include => [:prestacion, :diagnostico], :order => "updated_at DESC"
         )
+
+      @mostrar_efector = (UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.size > 1)
     end
 
   end
@@ -275,7 +277,8 @@ class PrestacionesBrindadasController < ApplicationController
       @prestacion_brindada =
         PrestacionBrindada.find(params[:id],
           :include => [
-            :estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico, :datos_reportables_asociados
+            :estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico,
+            {:datos_reportables_asociados => {:dato_reportable_requerido => :dato_reportable}}
           ]
         )
     rescue ActiveRecord::RecordNotFound
@@ -458,7 +461,8 @@ class PrestacionesBrindadasController < ApplicationController
       @prestacion_brindada =
         PrestacionBrindada.find(params[:id],
           :include => [
-            :estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico, :datos_reportables_asociados
+            :estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico,
+            {:datos_reportables_asociados => {:dato_reportable_requerido => :dato_reportable}}
           ]
         )
     rescue ActiveRecord::RecordNotFound
