@@ -4,7 +4,7 @@ class PadronesController < ApplicationController
 
   def index
     if not current_user.in_group?(:administradores)
-      redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
+      redirect_to root_url, :notice => "No está autorizado para realizar esta operación."
       return
     end
 
@@ -78,8 +78,8 @@ class PadronesController < ApplicationController
                             "\t" + ("%.2f" % prestacion[:monto]).gsub(".", ",") +
                             "\t" + prestacion[:mes_padron] +
                             "\t" + prestacion[:clave_beneficiario]
-        if aceptadas_por_efector.has_key? prestacion[:efector] 
-          if aceptadas_por_efector[prestacion[:efector]].has_key? prestacion[:codigo] 
+        if aceptadas_por_efector.has_key? prestacion[:efector]
+          if aceptadas_por_efector[prestacion[:efector]].has_key? prestacion[:codigo]
             aceptadas_por_efector[prestacion[:efector]][prestacion[:codigo]][1] += 1
           else
             aceptadas_por_efector[prestacion[:efector]].merge! prestacion[:codigo] => [prestacion[:monto], 1]
@@ -90,7 +90,7 @@ class PadronesController < ApplicationController
         listado_de_prestaciones.merge! prestacion[:codigo] => prestacion[:monto] unless listado_de_prestaciones.has_key? prestacion[:codigo]
         listado_de_efectores.merge! prestacion[:efector] => efectores_segun_cuie[prestacion[:efector]] unless listado_de_efectores.has_key? prestacion[:efector]
         suma_aceptadas += prestacion[:monto]
-        if aceptadas_por_administrador.has_key? hash_administrador[0] 
+        if aceptadas_por_administrador.has_key? hash_administrador[0]
           if aceptadas_por_administrador[hash_administrador[0]].has_key? prestacion[:codigo]
             aceptadas_por_administrador[hash_administrador[0]][prestacion[:codigo]][1] += 1
           else
@@ -137,9 +137,9 @@ class PadronesController < ApplicationController
       archivo_salida.puts "\t\t\t\t\t\t\t\t\t#{("%.02f" % (suma_aceptadas + suma_rechazadas)).gsub(".", ",")}"
       archivo_salida.puts
       archivo_salida.puts "Aceptadas:"
-      archivo_salida.puts "S/nomenclador\t\t" + 
+      archivo_salida.puts "S/nomenclador\t\t" +
                           (aceptadas_por_efector.collect { |hash_efector| efectores_segun_cuie[hash_efector[0]] + "\t" }).join("\t")
-      archivo_salida.puts "Prestación\tValor\t" + 
+      archivo_salida.puts "Prestación\tValor\t" +
                           (aceptadas_por_efector.collect { |hash_efector| "Cantidad\tTotal" }).join("\t")
       (listado_de_prestaciones.collect { |prest| prest[0]}).sort.each do |prestacion|
         archivo_salida.puts prestacion + "\t" + ("%.02f" % listado_de_prestaciones[prestacion]).gsub(".", ",") + "\t" +
@@ -155,9 +155,9 @@ class PadronesController < ApplicationController
       archivo_salida.puts
       archivo_salida.puts
       archivo_salida.puts "Rechazadas:"
-      archivo_salida.puts "S/nomenclador\t\t" + 
+      archivo_salida.puts "S/nomenclador\t\t" +
                           (rechazadas_por_efector.collect { |hash_efector| efectores_segun_cuie[hash_efector[0]] + "\t" }).join("\t")
-      archivo_salida.puts "Prestación\tValor\t" + 
+      archivo_salida.puts "Prestación\tValor\t" +
                           (rechazadas_por_efector.collect { |hash_efector| "Cantidad\tTotal" }).join("\t")
       (listado_de_prestaciones.collect { |prest| prest[0]}).sort.each do |prestacion|
         archivo_salida.puts prestacion + "\t" + listado_de_prestaciones[prestacion].to_s.gsub(".", ",") + "\t" +
@@ -195,9 +195,9 @@ class PadronesController < ApplicationController
     archivo_sumas.puts "TOTALES\t\t#{("%.02f" % (suma_total_aceptadas + suma_total_rechazadas)).gsub(".", ",")}\t#{("%.02f" % suma_total_rechazadas).gsub(".", ",")}\t#{("%.02f" % suma_total_aceptadas).gsub(".", ",")}"
     archivo_sumas.close
 
-    archivo_declaracion.puts "Código de prestación\tValor\tTOTALES\t\t" + 
+    archivo_declaracion.puts "Código de prestación\tValor\tTOTALES\t\t" +
       (aceptadas_por_administrador.collect { |hash_administrador| efectores_segun_cuie[hash_administrador[0]] + "\t" }).join("\t")
-    archivo_declaracion.puts "\t\tCantidad\tTotal\t" + 
+    archivo_declaracion.puts "\t\tCantidad\tTotal\t" +
       (aceptadas_por_administrador.collect { |hash_administrador| "Cantidad\tTotal" }).join("\t")
     (general_de_prestaciones.collect { |prest| prest[0]}).sort.each do |prestacion|
       archivo_declaracion.puts prestacion + "\t" + ("%.02f" % general_de_prestaciones[prestacion]).gsub(".", ",") + "\t" +
@@ -284,7 +284,7 @@ class PadronesController < ApplicationController
       @errores << "La fecha indicada es incorrecta, no se seleccionó un nomenclador, o no se encontró el archivo de la facturación."
       return
     end
- 
+
     # ID necesarios para el cruce
     id_documento_propio = ClaseDeDocumento.id_del_codigo("P")
 
@@ -535,11 +535,11 @@ class PadronesController < ApplicationController
           @resultado[prestacion[:administrador]][prestacion[:efector]][:rechazada] << prestacion
         end
       else
-        @resultado[prestacion[:administrador]].merge! prestacion[:efector] => ( 
+        @resultado[prestacion[:administrador]].merge! prestacion[:efector] => (
           prestacion[:estado] == :aceptada ? { :aceptada => [prestacion], :rechazada => [] } : { :aceptada => [], :rechazada => [prestacion] })
       end
     else
-      @resultado.merge! prestacion[:administrador] => { prestacion[:efector] => ( 
+      @resultado.merge! prestacion[:administrador] => { prestacion[:efector] => (
           prestacion[:estado] == :aceptada ? { :aceptada => [prestacion], :rechazada => [] } : { :aceptada => [], :rechazada => [prestacion] }) }
     end
   end
@@ -611,10 +611,10 @@ class PadronesController < ApplicationController
       return
     end
 
-    # Hacemos la actualización dentro de una transacción
-    ActiveRecord::Base.transaction do
+    origen.each do |linea|
+      # Hacemos la actualización dentro de una transacción
+      ActiveRecord::Base.transaction do
 
-      origen.each do |linea|
         # Procesar la siguiente línea del archivo
         linea.gsub!(/[\r\n]+/, '')
         atr_afiliado = Afiliado.attr_hash_desde_texto(linea)
@@ -632,7 +632,7 @@ class PadronesController < ApplicationController
             # 'periodos_de_embarazo' si es un embarazo actual
             if afiliado.activo
               PeriodoDeActividad.create({:afiliado_id => afiliado.afiliado_id,
-                :fecha_de_inicio => primero_del_mes,
+                :fecha_de_inicio => afiliado.fecha_de_inscripcion,
                 :fecha_de_finalizacion => nil
               })
             end
@@ -642,7 +642,7 @@ class PadronesController < ApplicationController
                 :fecha_de_finalizacion => nil
               })
             end
-            if afiliado.devenga_capita
+            if afiliado.activo && afiliado.devenga_capita
               PeriodoDeCapita.create({:afiliado_id => afiliado.afiliado_id,
                 :fecha_de_inicio => primero_del_mes,
                 :fecha_de_finalizacion => nil,
@@ -701,7 +701,7 @@ class PadronesController < ApplicationController
                 end
               end
             end
-  
+
             # Actualizar el periodo de cobertura efectiva básica
             begin
               periodo =
@@ -740,7 +740,7 @@ class PadronesController < ApplicationController
                 end
               end
             end
-  
+
             # Actualizar el periodo de devengamiento de cápitas
             begin
               periodo = PeriodoDeCapita.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
@@ -768,7 +768,7 @@ class PadronesController < ApplicationController
                 end
               end
             end
-  
+
             # Actualizar el periodo de embarazo
             begin
               periodo = PeriodoDeEmbarazo.where("afiliado_id = '#{afiliado.afiliado_id}' AND fecha_de_finalizacion IS NULL").first
@@ -828,9 +828,9 @@ class PadronesController < ApplicationController
             end
           end
         end
-      end
-      origen.close
-    end # Base::connection.transaction
+      end # Base::connection.transaction
+    end
+    origen.close
 
   end
 
@@ -852,7 +852,7 @@ class PadronesController < ApplicationController
       # Procesamiento de la actualización del estado de las novedades
       esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
       ultima_uad = ''
-  
+
       origen.each do |linea|
         # Obtener la siguiente línea del archivo
         linea.gsub!(/[\r\n]+/, '')
@@ -864,14 +864,14 @@ class PadronesController < ApplicationController
         aceptado = valor(campos[2], :texto).upcase
         activo = valor(campos[3], :texto).upcase
         mensaje_baja = valor(campos[5], :texto)
-  
+
         if codigo_uad != ultima_uad
           # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
           ActiveRecord::Base.connection.schema_search_path = "uad_#{codigo_uad},public"
           ActiveRecord::Base.connection.execute("SET search_path TO #{ActiveRecord::Base.connection.schema_search_path};")
           ultima_uad = codigo_uad
         end
-  
+
         if aceptado == 'S'
           if activo == 'S'
             estado = EstadoDeLaNovedad.id_del_codigo("A")
@@ -881,7 +881,7 @@ class PadronesController < ApplicationController
         else
           estado = EstadoDeLaNovedad.id_del_codigo("Z")
         end
-    
+
         ActiveRecord::Base.connection.execute "
           UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
             SET
@@ -922,7 +922,7 @@ class PadronesController < ApplicationController
 
   def cierre
     if not current_user.in_group?(:administradores)
-      redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
+      redirect_to root_url, :notice => "No está autorizado para realizar esta operación."
       return
     end
 
