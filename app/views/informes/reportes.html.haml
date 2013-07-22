@@ -1,0 +1,34 @@
+= javascript_include_tag "reportes.js"
+- content_for :title do
+  Informes
+
+#content-header
+  %h1 Informes
+
+-# Lista todos los reportes disponibles
+#content-body
+  %h2.first-header Listado de informes 
+  %table{:border => "1", :width => "440", :align => 'center'}
+    %tbody
+      - (@reportes.each_slice(5).to_a).each do |row|
+        %tr
+          - @reportes.each do |rep|
+            %td
+              %table{:border => "0", :width => "100"}
+                %tr
+                  %td= image_tag 'report.gif'
+                %tr
+                  %td= content_tag :a, rep[:titulo], id: "reporte", href: "#", class: 'reportlink', data: {repor: rep}
+
+#dialog-form{title: "Opciones de filtro"}
+  = form_tag  'filtro_reporte', :id => 'formulario_filtro' do
+    = content_tag "div", id: "filtros", data: {repor: @reportes} do
+      = ""
+      
+
+
+%button#create-user Create new user
+
+
+
+  

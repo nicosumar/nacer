@@ -138,6 +138,34 @@ class InformesController < ApplicationController
       "
   end
 
+  def reportes
+    @reportes = [
+                {
+                 titulo: 'Inscripciones por usuario', 
+                 filtros: { desde: '2013-06-01', hasta: '2013-06-30' },
+                 validadores: {desde: 'datepicker', hasta: 'datepicker'},
+                 sql: 'lala',
+                 esquemas: { except: ['public'] },
+                 formatos: [:html],
+                 controller: 'usuarios_inscripciones'
+                },
+                {
+                 titulo: 'Otro reporte', 
+                 filtros: { otrodesde: '2013-06-01', otrohasta: '2013-06-30' },
+                 validadores: {desde: 'datepicker', hasta: 'datepicker'},
+                 sql: 'lala',
+                 esquemas: { except: ['public'] },
+                 formatos: [:html],
+                 controller: 'usuarios_inscripciones'
+                }
+               ]
+
+  end
+
+  def filtro_reporte
+    @cq = CustomQuery.new.filtros_de_busqueda desde: '2013-06-01', hasta: '2013-06-30'
+  end
+
   def usuarios_inscripciones
 
 
