@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130710163513) do
+ActiveRecord::Schema.define(:version => 20130723140355) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -350,6 +350,31 @@ ActiveRecord::Schema.define(:version => 20130710163513) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "informes", :force => true do |t|
+    t.string   "titulo"
+    t.text     "sql"
+    t.string   "metodo_en_controller"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
+
+  create_table "informes_filtros", :force => true do |t|
+    t.integer  "informe_id"
+    t.integer  "informe_filtro_validador_ui_id"
+    t.string   "nombre"
+    t.string   "valor_por_defecto"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "informes_filtros", ["informe_id", "informe_filtro_validador_ui_id"], :name => "indexfiltrosvalidadores"
+
+  create_table "informes_filtros_validadores_uis", :force => true do |t|
+    t.string   "tipo"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "lenguas_originarias", :force => true do |t|
     t.string "nombre"
   end
@@ -400,6 +425,12 @@ ActiveRecord::Schema.define(:version => 20130710163513) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "novedades_motivos_de_baja", :id => false, :force => true do |t|
+    t.integer "id",          :null => false
+    t.text    "descripcion", :null => false
+    t.text    "comentarios"
   end
 
   create_table "paises", :force => true do |t|

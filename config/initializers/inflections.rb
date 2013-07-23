@@ -226,6 +226,11 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("motivo·_de·_la·_baja·", "motivos_de_las_bajas")
   inflect.irregular("MotivoDeLaBaja", "Motivos·De·Las·Bajas·")
   inflect.irregular("Motivo·De·La·Baja·", "MotivosDeLasBajas")
+  #Informes
+  inflect.irregular("informe_filtro", "informes·_filtros·")
+  inflect.irregular("informe·_filtro·", "informes_filtros")
+  inflect.irregular("InformeFiltro", "Informes·Filtros·")
+  inflect.irregular("Informe·Filtro·", "InformesFiltros")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
@@ -343,5 +348,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   #Tablas de configuracion
   #Paises
   inflect.human("pais_bio_id", "Id de Bioestadística")
+
+  #
 
 end

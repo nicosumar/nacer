@@ -172,14 +172,15 @@ class InformesController < ApplicationController
     @usrinsc = CustomQuery.buscar (
     {
       :except => ["public"],
-      :sql => " select uad.nombre, u.email, u.nombre, u.apellido, count(nov.id)
-                from users u
-                  join novedades_de_los_afiliados nov on nov.creator_id = u.id
+      :sql => " select u.email, u.nombre, u.apellido, uad.nombre AS "uad", count(nov.*)
+                 from users u
+                  left join novedades_de_los_afiliados nov on nov.creator_id = u.id
                   join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
                   join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
-                where u.confirmed_at < '2013-06-01'
-                and   nov.created_at between '2013-01-01' and '2013-01-30'
-                group by uad.nombre, u.email, u.nombre, u.apellido limit 2"#, 
+                where u.confirmed_at < '2014-06-01'
+                and   (nov.created_at between '2010-04-01' and '2013-08-30' or nov.created_at is null) and
+                'uad_' ||  uad.codigo = current_schema()
+                group by u.email, u.nombre, u.apellido, uad "
     })
     respond_to do |format|
       format.html 
