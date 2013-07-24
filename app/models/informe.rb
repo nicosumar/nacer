@@ -4,4 +4,6 @@ class Informe < ActiveRecord::Base
   attr_accessible :metodo_en_controller
   
   has_many :informes_filtros
+  has_many :informes_uads
+  
 end

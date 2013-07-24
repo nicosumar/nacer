@@ -226,11 +226,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("motivo·_de·_la·_baja·", "motivos_de_las_bajas")
   inflect.irregular("MotivoDeLaBaja", "Motivos·De·Las·Bajas·")
   inflect.irregular("Motivo·De·La·Baja·", "MotivosDeLasBajas")
-  #Informes
+  #Informes - Filtros
   inflect.irregular("informe_filtro", "informes·_filtros·")
   inflect.irregular("informe·_filtro·", "informes_filtros")
   inflect.irregular("InformeFiltro", "Informes·Filtros·")
   inflect.irregular("Informe·Filtro·", "InformesFiltros")
+  #Informes - Uads
+  inflect.irregular("informe_uad", "informes·_uads·")
+  inflect.irregular("informe·_uad·", "informes_uads")
+  inflect.irregular("InformeUad", "Informes·Uads·")
+  inflect.irregular("Informe·Uad·", "InformesUads")
+
+
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
