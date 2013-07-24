@@ -138,8 +138,8 @@ class InformesController < ApplicationController
       "
   end
 
-  def reportes
-    @reportes = [
+  def index 
+      @reportes = [
                 {
                  titulo: 'Inscripciones por usuario', 
                  filtros: { desde: '2013-06-01', hasta: '2013-06-30' },
@@ -159,7 +159,6 @@ class InformesController < ApplicationController
                  controller: 'usuarios_inscripciones'
                 }
                ]
-
   end
 
   def filtro_reporte
@@ -172,13 +171,13 @@ class InformesController < ApplicationController
     @usrinsc = CustomQuery.buscar (
     {
       :except => ["public"],
-      :sql => " select u.email, u.nombre, u.apellido, uad.nombre AS "uad", count(nov.*)
+      :sql => " select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
                  from users u
                   left join novedades_de_los_afiliados nov on nov.creator_id = u.id
                   join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
                   join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
-                where u.confirmed_at < '2014-06-01'
-                and   (nov.created_at between '2010-04-01' and '2013-08-30' or nov.created_at is null) and
+                where u.confirmed_at < '2013-04-01'
+                and   (nov.created_at between '2013-04-01' and '2013-04-30' or nov.created_at is null) and
                 'uad_' ||  uad.codigo = current_schema()
                 group by u.email, u.nombre, u.apellido, uad "
     })
@@ -186,7 +185,17 @@ class InformesController < ApplicationController
       format.html 
       format.js
     end
-
+Informe.create ({:sql => "select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
+                from users u
+                   left join novedades_de_los_afiliados nov on nov.creator_id = u.id
+                   join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
+                   join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
+                where u.confirmed_at < '2014-06-01'
+                and   (nov.created_at between '2010-04-01' and '2013-08-30' or nov.created_at is null) 
+                and   'uad_' ||  uad.codigo = current_schema()
+                group by u.email, u.nombre, u.apellido, uad", 
+  :titulo => 'Cargas por Usuario', 
+  :metodo_en_controller => 'novedades_usuarios'})
 
 
 

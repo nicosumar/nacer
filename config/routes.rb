@@ -22,6 +22,7 @@ Nacer::Application.routes.draw do
   resources :provincias, :except => :destroy
   resources :departamentos, :except => :destroy
   resources :distritos, :except => :destroy
+  resources :informes, :except => :destroy
   resources :addendas, :except => :destroy
   resources :nomencladores, :except => :destroy
   resources :busqueda, :only => :index
@@ -50,7 +51,6 @@ Nacer::Application.routes.draw do
   match "informe_de_beneficiarios_activos" => "informes#beneficiarios_activos"
   match "tablero_de_comandos_alto_impacto" => "informes#tablero_de_comandos_alto_impacto"
   match "filtro_reporte" => "informes#filtro_reporte"
-  match "reportes" => "informes#reportes"
 
   root :to => 'inicio#index'
 
