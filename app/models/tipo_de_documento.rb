@@ -25,6 +25,7 @@ class TipoDeDocumento < ActiveRecord::Base
       end
     end
   end
+
   def self.id_del_codigo!(codigo)
     codigo_id = self.id_del_codigo(codigo)
     raise ActiveRecord::RecordNotFound if codigo_id.nil?

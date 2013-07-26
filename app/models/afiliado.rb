@@ -91,6 +91,36 @@ class Afiliado < ActiveRecord::Base
 
   end
 
+  # edad_en_meses
+  # Devuelve la edad en meses cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
+  # indica una fecha.
+  def edad_en_meses(fecha_de_calculo = Date.today)
+
+    # Calculamos la diferencia entre los años de ambas fechas
+    if fecha_de_nacimiento
+      diferencia_en_anios = (fecha_de_calculo.year - fecha_de_nacimiento.year)
+    else
+      return nil
+    end
+
+    # Calculamos la diferencia entre los meses de ambas fechas
+    diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
+
+    # Calculamos la diferencia en días y ajustamos la diferencia en meses en forma acorde
+    diferencia_en_dias = (fecha_de_calculo.day) - (fecha_de_nacimiento.day)
+    if diferencia_en_dias < 0 then diferencia_en_meses -= 1 end
+
+    # Ajustamos la diferencia en años en forma acorde
+    if diferencia_en_meses < 0
+      diferencia_en_anios -= 1
+      diferencia_en_meses += 12
+    end
+
+    # Devolver la cantidad de meses cumplidos
+    return (diferencia_en_anios * 12 + diferencia_en_meses)
+
+  end
+
   # edad_en_dias
   # Devuelve la edad en dias cumplidos para la fecha de cálculo indicada, o para el día de hoy, si no se
   # indica una fecha.

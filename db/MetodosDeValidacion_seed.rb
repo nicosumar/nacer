@@ -38,9 +38,15 @@ MetodoDeValidacion.create([
     :genera_error => false
   },
   { #:id => 7,
-    :nombre => "Verificar que se haya completado el detalle de los días de internación en CC y que no exceda el máximo establecido",
-    :metodo => "detalle_de_la_internacion_cc_valido?",
-    :mensaje => "Los campos no puede estar en blanco",
-    :genera_error => true
+    :nombre => "Verificar si el beneficiario tiene 5 años",
+    :metodo => "mayor_de_53_meses?",
+    :mensaje => "La prestación debería haberse brindado a los cinco años.",
+    :genera_error => false
+  },
+    { #:id => 8,
+    :nombre => "Verificar que el beneficiario haya declarado ser indígena",
+    :metodo => "beneficiario_indigena?",
+    :mensaje => "La prestación debería haberse brindado a un beneficiario o beneficiaria que haya declarado pertenecer a un pueblo originario.",
+    :genera_error => false
   }
 ])

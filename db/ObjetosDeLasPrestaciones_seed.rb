@@ -931,7 +931,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #:id => 117,
-    :nombre => "Cardiopatías congénitas - Módulo I - Anastomosis sublcavio-pulmonar con cirugía convencional",
+    :nombre => "Cardiopatías congénitas - Módulo I - Anastomosis subclavio-pulmonar con cirugía convencional",
     :codigo => "K003",
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
     :define_si_es_catastrofica => true,
@@ -2891,7 +2891,7 @@ ObjetoDeLaPrestacion.create([
   },
   {
     #id => 361,
-    :nombre => 'Unidad móvil de alta complejidad (más de 50 km)',
+    :nombre => 'Unidad móvil de alta complejidad pediátrica (más de 50 km)',
     :codigo => 'M086',
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo('TL'),
     :define_si_es_catastrofica => true,

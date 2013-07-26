@@ -19,4 +19,21 @@ class AreaDePrestacion < ActiveRecord::Base
       nombre
     end
   end
+
+  def self.id_del_codigo(codigo)
+    if !codigo || codigo.strip.empty?
+      return nil
+    end
+
+    # Buscar el código en la tabla y devolver su ID (si existe)
+    area_de_prestacion = self.find_by_codigo(codigo.strip.upcase)
+    return area_de_prestacion.id if area_de_prestacion
+  end
+
+  def self.id_del_codigo!(codigo)
+    codigo_id = self.id_del_codigo(codigo)
+    raise ActiveRecord::RecordNotFound if codigo_id.nil?
+    return codigo_id
+  end
+
 end

@@ -51,22 +51,18 @@
                   %div.col_3
                     %h2 Gestión de prestaciones
                   %div.col_2
-                    %h3 PRESTACIONES INDIVIDUALES
+                    %h3 REGISTRO DE PRESTACIONES
                     %ul
                       - if can? :create, PrestacionBrindada
-                        %li= link_to "Registrar una prestación", new_prestacion_brindada_path
-                      - if can? :read, PrestacionBrindada
-                        %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
-                    %h3 PRESTACIONES COMUNITARIAS
-                    %ul
+                        %li= link_to "Registrar una prestación individual", new_prestacion_brindada_path
                       - if can? :create, PrestacionBrindada
                         %li= link_to "Registrar una prestación comunitaria", new_prestacion_brindada_path(:comunitaria => true)
                       - if can? :read, PrestacionBrindada
                         %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
                   %div.col_1
-                    %h3 PROCESOS
+                    %h3 FACTURACIÓN
                     %ul
-                      %li= link_to "Emitir cuasi-facturas", "#", {:title => "En preparación... Aún no está disponible."}
+                      %li= link_to "Cuasi-facturas", "#", {:title => "En preparación... Aún no está disponible."}
 
             - if can? :read, Efector
               %li

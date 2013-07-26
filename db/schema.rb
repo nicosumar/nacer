@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "area_de_prestacion_id"
+    t.integer  "area_de_prestacion_id",                                   :default => 1
     t.integer  "dato_reportable_id"
   end
 
