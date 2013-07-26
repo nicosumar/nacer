@@ -14,3 +14,65 @@
     = render(:partial => "form", :locals => {:p => p})
     %div.field_content
       = p.submit
+
+
+<form name="form1" method="post" action="">
+  <table width="100%" border="0">
+    <tr>
+      <td width="22%">Titulo</td>
+      <td colspan="5">text_select</td>
+    </tr>
+    <tr>
+      <td>Formato de salida</td>
+      <td colspan="5">html</td>
+    </tr>
+    <tr>
+      <td>Metodo del controller</td>
+      <td colspan="5">text_metodo</td>
+    </tr>
+    <tr>
+      <td>Esquemas incluidos</td>
+      <td colspan="5">select_tuneado_esquemas</td>
+    </tr>
+    <tr>
+      <td>Filtro</td>
+      <td width="18%">text_filtro</td>
+      <td width="33%">Valor por defecto</td>
+      <td width="33%">text_valxdef</td>
+      <td width="24%">Validador Ui</td>
+      <td>select_validador_ui</td>
+    </tr>
+    <tr>
+      <td colspan="5">&nbsp;</td>
+      <td width="3%">bton_agregar</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td colspan="5"><table width="100%" border="0">
+        <tr>
+          <th scope="col">Filtro</th>
+          <th scope="col">Valor por defecto</th>
+          <th scope="col">Validador de UI</th>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+      </table></td>
+    </tr>
+    <tr>
+      <td>SQL</td>
+      <td colspan="5" rowspan="2">&nbsp;</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+  
+</form>

@@ -185,6 +185,11 @@ class InformesController < ApplicationController
       format.html 
       format.js
     end
+
+    def new
+      @informe = Informe.new
+      
+    end
 Informe.create ({:sql => "select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
                 from users u
                    left join novedades_de_los_afiliados nov on nov.creator_id = u.id

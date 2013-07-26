@@ -1,0 +1,54 @@
+- content_for :title do
+  Informes
+
+#content-header
+  %h1 Informes
+
+#content-body
+  %h2.first-header Nuevo informe
+  = form_for @informe do |i|
+    %table{:border => "0", :width => "100%"}
+      %tr
+        %td{:width => "22%"} Titulo
+        %td{:colspan => "5"} i.text_field(:titulo)
+      %tr
+        %td Formato de salida
+        %td{:colspan => "5"} html
+      %tr
+        %td Metodo del controller
+        %td{:colspan => "5"} text_metodo
+      %tr
+        %td Esquemas incluidos
+        %td{:colspan => "5"} select_tuneado_esquemas
+      %tr
+        %td Filtro
+        %td{:width => "18%"} text_filtro
+        %td{:width => "33%"} Valor por defecto
+        %td{:width => "33%"} text_valxdef
+        %td{:width => "24%"} Validador Ui
+        %td select_validador_ui
+      %tr
+        %td{:colspan => "5"} &nbsp;
+        %td{:width => "3%"} bton_agregar
+      %tr
+        %td &nbsp;
+        %td{:colspan => "5"}
+          %table{:border => "0", :width => "100%"}
+            %tr
+              %th{:scope => "col"} Filtro
+              %th{:scope => "col"} Valor por defecto
+              %th{:scope => "col"} Validador de UI
+            %tr
+              %td &nbsp;
+              %td &nbsp;
+              %td &nbsp;
+            %tr
+              %td &nbsp;
+              %td &nbsp;
+              %td &nbsp;
+      %tr
+        %td SQL
+        %td{:colspan => "5", :rowspan => "2"} &nbsp;
+      %tr
+        %td &nbsp;
+
