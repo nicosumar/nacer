@@ -353,6 +353,7 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   create_table "informes", :force => true do |t|
     t.string   "titulo"
     t.text     "sql"
+    t.string   "formato"
     t.string   "metodo_en_controller"
     t.datetime "created_at",           :null => false
     t.datetime "updated_at",           :null => false
@@ -378,10 +379,12 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   create_table "informes_uads", :force => true do |t|
     t.integer  "informe_id"
     t.integer  "unidad_de_alta_de_datos_id"
-    t.integer  "condicion"
+    t.integer  "incluido"
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
   end
+
+  add_index "informes_uads", ["informe_id", "unidad_de_alta_de_datos_id"], :name => "informes_uads_idx"
 
   create_table "lenguas_originarias", :force => true do |t|
     t.string "nombre"

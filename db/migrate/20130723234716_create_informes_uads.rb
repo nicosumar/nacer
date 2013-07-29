@@ -6,5 +6,7 @@ class CreateInformesUads < ActiveRecord::Migration
       t.integer 'incluido' # 0= Excluido; 1 = Incluido; 
       t.timestamps
     end
+
+    add_index :informes_uads, ['informe_id', 'unidad_de_alta_de_datos_id'], :name => 'informes_uads_idx'
   end
 end

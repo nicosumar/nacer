@@ -10,16 +10,19 @@
     %table{:border => "0", :width => "100%"}
       %tr
         %td{:width => "22%"} Titulo
-        %td{:colspan => "5"} i.text_field(:titulo)
+        %td{:colspan => "5"}= i.text_field(:titulo, {style: 'width: 250px'})
       %tr
         %td Formato de salida
-        %td{:colspan => "5"} html
+        %td{:colspan => "5"}= i.select :formato, ['html'], {style: 'width: 250px'}
       %tr
         %td Metodo del controller
-        %td{:colspan => "5"} text_metodo
+        %td{:colspan => "5"}= i.select :metodo_en_controller, @controller_metodos
       %tr
-        %td Esquemas incluidos
-        %td{:colspan => "5"} select_tuneado_esquemas
+        = fields_for(@esquemas_informes) do |ei|
+          %td Esquemas incluidos
+          %td= collection_select :informe_esquema_inc, :id, @esquemas, :id, :codigo,{}, {multiple: true, size: 5, style: 'width: 250px'}
+          %td Esquemas excluidos
+          %td= collection_select :informe_esquema_exc, :id, @esquemas, :id, :codigo,{}, {multiple: true, size: 5, style: 'width: 250px'}
       %tr
         %td Filtro
         %td{:width => "18%"} text_filtro
@@ -48,7 +51,8 @@
               %td &nbsp;
       %tr
         %td SQL
-        %td{:colspan => "5", :rowspan => "2"} &nbsp;
+        %td{:colspan => "5", :rowspan => "2"}= i.text_area :sql, {style: "width: 100%", rows: 10}
       %tr
         %td &nbsp;
+    = i.submit "Crear informe"
 

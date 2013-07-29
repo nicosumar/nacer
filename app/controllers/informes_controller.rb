@@ -186,26 +186,57 @@ class InformesController < ApplicationController
       format.js
     end
 
-    def new
-      @informe = Informe.new
-      
-    end
-Informe.create ({:sql => "select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
-                from users u
-                   left join novedades_de_los_afiliados nov on nov.creator_id = u.id
-                   join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
-                   join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
-                where u.confirmed_at < '2014-06-01'
-                and   (nov.created_at between '2010-04-01' and '2013-08-30' or nov.created_at is null) 
-                and   'uad_' ||  uad.codigo = current_schema()
-                group by u.email, u.nombre, u.apellido, uad", 
-  :titulo => 'Cargas por Usuario', 
-  :metodo_en_controller => 'novedades_usuarios'})
+    Informe.create!({:sql => "select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
+                    from users u
+                       left join novedades_de_los_afiliados nov on nov.creator_id = u.id
+                       join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
+                       join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
+                    where u.confirmed_at < '2014-06-01'
+                    and   (nov.created_at between '2010-04-01' and '2013-08-30' or nov.created_at is null) 
+                    and   'uad_' ||  uad.codigo = current_schema()
+                    group by u.email, u.nombre, u.apellido, uad", 
+      :titulo => 'Cargas por Usuario', 
+      :metodo_en_controller => 'novedades_usuarios',
+      :formato => 'html'
 
-
-
-
+      })
 
   end
 
+
+  def new
+    @informe = Informe.new
+    @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit"]).to_a
+    @esquemas = UnidadDeAltaDeDatos.all
+    @esquemas_informes = @informe.esquemas.build
+  end
+
+  def create
+    @informe = Informe.new(params[:informe])
+
+    #Elimina espacios extras y retornos de carro
+    @informe.sql.split.join(" ")
+
+    params[:informe_esquema_inc][:id].each do |ie|
+      unless ie.blank?
+        logger.warn ie.inspect
+        @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: 1
+      end 
+    end
+    
+    params[:informe_esquema_exc][:id].each do |ie|
+      unless ie.blank?
+        logger.warn ie.inspect
+        @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: 0
+      end 
+    end
+
+    if @informe.save
+      redirect_to(:action => 'index')
+    else
+      render(:action => "new")
+    end
+
+
+  end
 end

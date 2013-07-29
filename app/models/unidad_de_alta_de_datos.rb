@@ -14,6 +14,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   has_many :unidades_de_alta_de_datos_users
   has_many :users, :through => :unidades_de_alta_de_datos_users
   has_many :informes_uads
+  has_many :informes, :through => :informes_uads
 
   # En forma predeterminada, sólo se devuelven los registros activos
   default_scope where(:activa => true)

@@ -3,6 +3,7 @@ class CreateInformes < ActiveRecord::Migration
     create_table :informes do |t|
       t.string "titulo"
       t.text "sql"
+      t.string "formato"
       t.string "metodo_en_controller"
       t.timestamps
     end
