@@ -208,6 +208,7 @@ class InformesController < ApplicationController
     @informe = Informe.new
     @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit"]).to_a
     @esquemas = UnidadDeAltaDeDatos.all
+    @esquemas << UnidadDeAltaDeDatos.new(nombre: 'Todos', id:'todos')
     @esquemas_informes = @informe.esquemas.build
   end
 
@@ -217,19 +218,13 @@ class InformesController < ApplicationController
     #Elimina espacios extras y retornos de carro
     @informe.sql.split.join(" ")
 
-    params[:informe_esquema_inc][:id].each do |ie|
+    params[:informe_esquema][:id].each do |ie|
       unless ie.blank?
-        logger.warn ie.inspect
-        @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: 1
+        @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: (params[:incluido] )
       end 
     end
     
-    params[:informe_esquema_exc][:id].each do |ie|
-      unless ie.blank?
-        logger.warn ie.inspect
-        @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: 0
-      end 
-    end
+
 
     if @informe.save
       redirect_to(:action => 'index')
@@ -239,4 +234,5 @@ class InformesController < ApplicationController
 
 
   end
+
 end

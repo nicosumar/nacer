@@ -438,6 +438,12 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.datetime "updated_at"
   end
 
+  create_table "novedades_motivos_de_baja", :id => false, :force => true do |t|
+    t.integer "id",          :null => false
+    t.text    "descripcion", :null => false
+    t.text    "comentarios"
+  end
+
   create_table "paises", :force => true do |t|
     t.integer "pais_bio_id"
     t.string  "nombre"

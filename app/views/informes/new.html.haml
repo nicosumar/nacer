@@ -1,7 +1,8 @@
 - content_for :title do
   Informes
 
-=stylesheet_link_tag"entradas.css"
+= javascript_include_tag "set.chosen.js"
+= stylesheet_link_tag"entradas.css"
 #content-header
   %h1 Informes
 
@@ -19,11 +20,16 @@
         %td Metodo del controller
         %td{:colspan => "5"}= i.select :metodo_en_controller, @controller_metodos
       %tr
+        %td Esquemas:
+        %td{colspan: '5'}
+          = label_tag :incluir_esquema, 'Incluir'
+          = radio_button_tag :incluido, '1', true
+          = label_tag :excluir_esquema, 'Excluir'
+          = radio_button_tag :incluido, '0'
+      %tr
         = fields_for(@esquemas_informes) do |ei|
-          %td Esquemas incluidos
-          %td= collection_select :informe_esquema_inc, :id, @esquemas, :id, :codigo,{}, {multiple: true, size: 5, style: 'width: 250px'}
-          %td Esquemas excluidos
-          %td= collection_select :informe_esquema_exc, :id, @esquemas, :id, :codigo,{}, {multiple: true, size: 5, style: 'width: 250px'}
+          %td Esquemas
+          %td{colspan: '5'}= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
       %tr
         %td Filtro
         %td{:width => "18%"} text_filtro
