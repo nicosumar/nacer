@@ -220,7 +220,12 @@ class InformesController < ApplicationController
 
     params[:informe_esquema][:id].each do |ie|
       unless ie.blank?
-        @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: (params[:incluido] )
+        if ie == 'todos'
+          UnidadDeAltaDeDatos.all.each do |u|
+            @informe.informes_uads.build unidad_de_alta_de_datos_id: u.id, incluido: (params[:incluido] )  
+        else
+          @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: (params[:incluido] )
+        end
       end 
     end
     
