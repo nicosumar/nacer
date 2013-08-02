@@ -42,7 +42,7 @@
           = linea
     - else
       %span.field_empty No se han ingresado observaciones
-  
+
   %h3 Autorizaciones de la cuenta
 
   = form_for(@user) do |f|
@@ -56,7 +56,7 @@
       = f.label "La cuenta está asociada a los siguientes grupos"
       %br/
       = f.select :user_group_ids, options_for_select(@user_groups, @user_group_ids), |
-        {}, { :multiple => true, :size => 5, |
+        {}, { :multiple => true, :size => 5, :class => "multi_select", |
         :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
     %h4 Asignación de unidades de alta de datos
     %div.field
@@ -64,7 +64,7 @@
       %br/
       = f.select :unidad_de_alta_de_datos_ids, |
         options_for_select(@unidades_de_alta_de_datos, @unidad_de_alta_de_datos_ids), {}, |
-        { :multiple => true, :size => 5, |
+        { :multiple => true, :size => 5,  :class => "multi_select", |
         :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
     %div.actions
       = f.submit "Modificar las autorizaciones de la cuenta"

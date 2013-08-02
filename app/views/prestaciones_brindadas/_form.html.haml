@@ -52,7 +52,7 @@
     - else
       = f.label :prestacion_id, "Prestación*"
       = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select"} |
 
   #diagnostico.field{:style => "display: none;"}
     - if @diagnosticos.size == 1
@@ -63,7 +63,7 @@
     - else
       = f.label :diagnostico_id, "Diagnóstico*"
       = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select"} |
 
   #historia_clinica.field{:style => "dislay: none;"}
     = f.label :historia_clinica, "Historia clínica*"

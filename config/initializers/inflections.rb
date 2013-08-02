@@ -258,6 +258,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("addenda·_sumar·", "addendas_sumar")
   inflect.irregular("AddendaSumar", "Addendas·Sumar·")
   inflect.irregular("Addenda·Sumar·", "AddendasSumar")
+  inflect.irregular("documentacion_respaldatoria", "documentaciones·_respaldatorias·")
+  inflect.irregular("documentacion·_respaldatoria·", "documentaciones_respaldatorias")
+  inflect.irregular("DocumentacionRespaldatoria", "Documentaciones·Respaldatorias·")
+  inflect.irregular("Documentacion·Respaldatoria·", "DocumentacionesRespaldatorias")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

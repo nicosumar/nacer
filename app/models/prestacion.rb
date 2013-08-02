@@ -29,6 +29,7 @@ class Prestacion < ActiveRecord::Base
   has_and_belongs_to_many :grupos_poblacionales
   has_many :datos_reportables_requeridos
   has_many :datos_reportables, :through => :datos_reportables_requeridos
+  has_and_belongs_to_many :documentaciones_respaldatorias
 
   # Validaciones
   #validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO

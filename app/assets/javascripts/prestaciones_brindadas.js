@@ -21,8 +21,8 @@ $(document).ready(function() {
   modificarVisibilidadHistoriaClinica();
 
   $('#prestacion_brindada_prestacion_id').on('change', prestacion_id_changed);
-  $('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
-  $('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
+  //$('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
+  //$('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
   $('#prestacion_brindada_prestacion_id').focus();
 
   function modificar_filtro_prestacion(event) {
@@ -84,12 +84,12 @@ $(document).ready(function() {
 
     $('#prestacion').html(div_html);
     $('#prestacion_brindada_prestacion_id').on('change', prestacion_id_changed);
-    $('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
+    //$('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
     $('#prestacion_brindada_prestacion_id').change();
     $('#prestacion_brindada_prestacion_id').focus();
   }
 
-  function modificar_filtro_diagnostico(event) {
+/*  function modificar_filtro_diagnostico(event) {
 
     // Guardar el texto y valores de las opciones si es la primera vez
     if ( oOpcionesDiagnosticos.length == 0 )
@@ -148,7 +148,7 @@ $(document).ready(function() {
       div_html += "<br/>\n<label class=\"filtro\">Filtro actual: \"" + sFiltroDiagnosticos + "\" (presione 'ESC' para quitarlo)";
 
     $('#diagnostico').html(div_html);
-    $('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
+    //$('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
     $('#prestacion_brindada_diagnostico_id').focus();
   }
 
@@ -156,6 +156,7 @@ $(document).ready(function() {
   function escapeRegExp(string){
     return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
   }
+*/
 
   function modificarVisibilidadDiagnosticos() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
@@ -194,7 +195,8 @@ $(document).ready(function() {
         div_html += "<option value=\"" + oDiagnosticosAsociados[i].id + "\">" + oDiagnosticosAsociados[i].nombre_y_codigo + "</option>\n";
       div_html += "</select>\n"
       $('#diagnostico').html(div_html);
-      $('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
+      $('#prestacion_brindada_diagnostico_id').chosen({width: "600px", no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true});
+//      $('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
       $('#diagnostico').show();
     }
     else if (nDiagnosticosAsociados > 0) {
