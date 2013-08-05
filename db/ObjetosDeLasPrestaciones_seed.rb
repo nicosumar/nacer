@@ -2920,5 +2920,13 @@ ObjetoDeLaPrestacion.create([
     :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
     :define_si_es_catastrofica => true,
     :es_catastrofica => true
+  },
+  {
+    #:id => 365,
+    :nombre => "Cardiopatías congénitas - Módulo V - Reimplante o Takeuchi",
+    :codigo => "K038",
+    :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo("IT"),
+    :define_si_es_catastrofica => true,
+    :es_catastrofica => true
   }
 ])

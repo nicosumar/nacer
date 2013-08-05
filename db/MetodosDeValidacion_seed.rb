@@ -43,10 +43,28 @@ MetodoDeValidacion.create([
     :mensaje => "La prestación debería haberse brindado a los cinco años.",
     :genera_error => false
   },
-    { #:id => 8,
+  { #:id => 8,
     :nombre => "Verificar que el beneficiario haya declarado ser indígena",
     :metodo => "beneficiario_indigena?",
     :mensaje => "La prestación debería haberse brindado a un beneficiario o beneficiaria que haya declarado pertenecer a un pueblo originario.",
+    :genera_error => false
+  },
+  { #:id => 9,
+    :nombre => "Verificar que la beneficiaria sea menor de 50 años",
+    :metodo => "beneficiaria_menor_de_50_anios?",
+    :mensaje => "La prestación debería haberse brindado a una beneficiaria que sea menor de 50 años.",
+    :genera_error => false
+  },
+  { #:id => 10,
+    :nombre => "Verificar que la beneficiaria sea mayor de 24 años",
+    :metodo => "beneficiaria_mayor_de_24_anios?",
+    :mensaje => "La prestación debería haberse brindado a una beneficiaria que sea mayor de 24 años.",
+    :genera_error => false
+  },
+  { #:id => 11,
+    :nombre => "Verificar que la beneficiaria sea mayor de 49 años",
+    :metodo => "beneficiaria_mayor_de_49_anios?",
+    :mensaje => "La prestación debería haberse brindado a una beneficiaria que sea mayor de 49 años.",
     :genera_error => false
   }
 ])

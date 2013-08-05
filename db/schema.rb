@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130511152816) do
+ActiveRecord::Schema.define(:version => 20130801222559) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -374,6 +374,19 @@ ActiveRecord::Schema.define(:version => 20130511152816) do
     t.integer  "alias_id",          :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "documentaciones_respaldatorias", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo"
+    t.text     "descripcion"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "documentaciones_respaldatorias_prestaciones", :id => false, :force => true do |t|
+    t.integer "documentacion_respaldatoria_id"
+    t.integer "prestacion_id"
   end
 
   create_table "efectores", :force => true do |t|

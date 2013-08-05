@@ -227,7 +227,7 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
     # TODO: eliminar esto luego de que finalice el periodo de gracia
-    if ( Date.today < Date.new(2013, 6, 30) &&
+    if ( Date.today < Date.new(2013, 8, 31) &&
          @prestacion_brindada.fecha_de_la_prestacion < @prestacion_brindada.efector.fecha_de_inicio_del_convenio_actual )
       autorizadas_por_efector =
         Prestacion.find(
@@ -364,7 +364,7 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
     # TODO: eliminar esto luego de que finalice el periodo de gracia
-    if ( Date.today < Date.new(2013, 6, 30) &&
+    if ( Date.today < Date.new(2013, 8, 31) &&
          @prestacion_brindada.fecha_de_la_prestacion < @prestacion_brindada.efector.fecha_de_inicio_del_convenio_actual )
       autorizadas_por_efector =
         Prestacion.find(

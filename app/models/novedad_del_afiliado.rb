@@ -155,7 +155,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
       # Fecha de hoy
       # TODO: Eliminar después de que se agote el periodo de gracia (hasta el 30/06/2013)
-      if Date.today <= Date.new(2013, 6, 30)
+      if Date.today <= Date.new(2013, 8, 31)
         if fecha_de_la_novedad < Date.new(2012, 7, 1)
           errors.add(:fecha_de_la_novedad, 'no puede ser anterior al 01/07/2012')
           error_de_fecha = true

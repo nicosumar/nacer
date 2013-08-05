@@ -287,6 +287,48 @@ class PrestacionBrindada < ActiveRecord::Base
     return beneficiario.se_declara_indigena
   end
 
+  def beneficiaria_menor_de_50_anios?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 51) < 50
+  end
+
+  def beneficiaria_mayor_de_49_anios?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 48) > 49
+  end
+
+  def beneficiaria_mayor_de_24_anios?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 23) > 24
+  end
+
   def total_de_dias_postquirurgicos_valido?
     self.datos_reportables_asociados.each do |dra|
       if dra.dato_reportable_requerido.dato_reportable.codigo = 'DEPOSTQU'
