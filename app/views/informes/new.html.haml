@@ -8,20 +8,20 @@
 
 #content-body
   %h2.first-header Nuevo informe
-  = form_for @informe do |i|
+  = form_for @informe do |f|
     %table{:border => "0", :width => "100%"}
       %tr
         %td{:width => "22%"} Titulo
-        %td{:colspan => "5"}= i.text_field(:titulo, {style: 'width: 250px'})
+        %td= f.text_field(:titulo, {style: 'width: 250px'})
       %tr
         %td Formato de salida
-        %td{:colspan => "5"}= i.select :formato, ['html'], {style: 'width: 250px'}
+        %td= f.select :formato, @formatos, {style: 'width: 250px'}
       %tr
-        %td Metodo del controller
-        %td{:colspan => "5"}= i.select :metodo_en_controller, @controller_metodos
+        %td Metodo del controller 
+        %td= f.select :metodo_en_controller, @controller_metodos
       %tr
         %td Esquemas:
-        %td{colspan: '5'}
+        %td
           = label_tag :incluir_esquema, 'Incluir'
           = radio_button_tag :incluido, '1', true
           = label_tag :excluir_esquema, 'Excluir'
@@ -29,37 +29,23 @@
       %tr
         = fields_for(@esquemas_informes) do |ei|
           %td Esquemas
-          %td{colspan: '5'}= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
+          %td= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
       %tr
-        %td Filtro
-        %td{:width => "18%"} text_filtro
-        %td{:width => "33%"} Valor por defecto
-        %td{:width => "33%"} text_valxdef
-        %td{:width => "24%"} Validador Ui
-        %td select_validador_ui
-      %tr
-        %td{:colspan => "5"} &nbsp;
-        %td{:width => "3%"} bton_agregar
-      %tr
-        %td &nbsp;
-        %td{:colspan => "5"}
-          %table{:border => "0", :width => "100%"}
-            %tr
-              %th{:scope => "col"} Filtro
-              %th{:scope => "col"} Valor por defecto
-              %th{:scope => "col"} Validador de UI
-            %tr
-              %td &nbsp;
-              %td &nbsp;
-              %td &nbsp;
-            %tr
-              %td &nbsp;
-              %td &nbsp;
-              %td &nbsp;
+        %td= link_to_add_association 'Agregar Filtro', f , :informes_filtros, data: {'association-insertion-node' => '#tabla_filtros tr:last', 'association-insertion-method' => 'after'}, style: 'color: #f0f0f0; float: left; margin-right: 10px; padding: 2px 5px; border: 1px solid #00447a; text-decoration: none; font-weight: bold; background-color: $azul_nacer; display: block; &:hover { background-color: #f0f0f0; color: $azul_nacer; border: 1px solid $azul_nacer; }'
+        %td
+          = f.fields_for :informes_filtros do |fi|
+            -#.nested_fields
+            %table{:border => "0", :width => "100%", :id => 'tabla_filtros'}
+              %tr
+                %th{:scope => "col"} Filtro
+                %th{:scope => "col"} Valor por defecto
+                %th{:scope => "col"} Validador de UI
+                %th{:scope => "col"} Acciones
+              = render 'informe_filtro_fields', :f => fi
       %tr
         %td SQL
-        %td{:colspan => "5", :rowspan => "2"}= i.text_area :sql, {style: "width: 100%", rows: 10}
+        %td{:colspan => "5", :rowspan => "2"}= f.text_area :sql, {style: "width: 100%", rows: 10}
       %tr
         %td &nbsp;
-    = i.submit "Crear informe"
+    = f.submit "Crear informe"
 

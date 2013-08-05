@@ -206,10 +206,16 @@ class InformesController < ApplicationController
 
   def new
     @informe = Informe.new
-    @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit"]).to_a
+    @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit", "create"]).to_a.map {|item| [item, item]}
+    @formatos = ['html'].map {|item| [item, item]}
     @esquemas = UnidadDeAltaDeDatos.all
     @esquemas << UnidadDeAltaDeDatos.new(nombre: 'Todos', id:'todos')
     @esquemas_informes = @informe.esquemas.build
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @informe }
+    end
   end
 
   def create
@@ -223,21 +229,18 @@ class InformesController < ApplicationController
         if ie == 'todos'
           UnidadDeAltaDeDatos.all.each do |u|
             @informe.informes_uads.build unidad_de_alta_de_datos_id: u.id, incluido: (params[:incluido] )  
+          end
         else
           @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: (params[:incluido] )
         end
       end 
     end
     
-
-
     if @informe.save
       redirect_to(:action => 'index')
     else
       render(:action => "new")
     end
-
-
   end
 
 end
