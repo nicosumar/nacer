@@ -16,6 +16,8 @@ class Informe < ActiveRecord::Base
   validates :sql, presence: true
   validates :metodo_en_controller, presence: true
   validates :formato, presence: true
+
+  validates_associated :informes_filtros
   
 
 

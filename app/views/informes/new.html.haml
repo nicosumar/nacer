@@ -31,7 +31,7 @@
           %td Esquemas
           %td= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
       %tr
-        %td= link_to_add_association 'Agregar Filtro', f , :informes_filtros, data: {'association-insertion-node' => '#tabla_filtros tr:last', 'association-insertion-method' => 'after'}, style: 'color: #f0f0f0; float: left; margin-right: 10px; padding: 2px 5px; border: 1px solid #00447a; text-decoration: none; font-weight: bold; background-color: $azul_nacer; display: block; &:hover { background-color: #f0f0f0; color: $azul_nacer; border: 1px solid $azul_nacer; }'
+        %td= link_to_add_association 'Agregar Filtro', f , :informes_filtros, data: {'association-insertion-node' => '#tabla_filtros tr:last', 'association-insertion-method' => 'after'}
         %td
           = f.fields_for :informes_filtros do |fi|
             -#.nested_fields

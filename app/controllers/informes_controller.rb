@@ -219,6 +219,7 @@ class InformesController < ApplicationController
   end
 
   def create
+    logger.warn "parametros: #{params[:informe].inspect}"
     @informe = Informe.new(params[:informe])
 
     #Elimina espacios extras y retornos de carro
