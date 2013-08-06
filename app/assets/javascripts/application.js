@@ -9,5 +9,5 @@
 //= require chosen-jquery
 
 $(document).ready(function() {
-  $('.multi_select').chosen({width: "600px", no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true});
+  $('.multi_select').chosen({width: "80%", no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true});
 });

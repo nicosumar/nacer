@@ -60,12 +60,6 @@ class PrestacionBrindada < ActiveRecord::Base
     campo_obligatorio_vacio = false
     datos_erroneos = false
 
-    # Verificación paranoica, la clave jamás debería estar en blanco
-    if clave_de_beneficiario.blank?
-      errors.add(:clave_de_beneficiario, 'no puede estar en blanco')
-      campo_obligatorio_vacio = true
-    end
-
     # Verificar que se haya seleccionado un efector
     if !efector_id || efector_id < 1
       errors.add(:efector_id, 'no puede estar en blanco')
@@ -96,27 +90,29 @@ class PrestacionBrindada < ActiveRecord::Base
       end
     end
 
-    # Verificar que la fecha de la prestación sea posterior a la inscripción del beneficiario
-    beneficiario =
-      NovedadDelAfiliado.where(
-        :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-      ).first
-    if !beneficiario || beneficiario.tipo_de_novedad.codigo == "M"
-      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
-      inscripcion = beneficiario.fecha_de_inscripcion
-    else
-      inscripcion = beneficiario.fecha_de_la_novedad
-    end
-    if inscripcion && fecha_de_la_prestacion && fecha_de_la_prestacion < inscripcion
-      errors.add(
-        :fecha_de_la_prestacion,
-        'no puede ser anterior a la fecha de inscripción ' +
-        (beneficiario.sexo.codigo == "F" ? 'de la beneficiaria' : 'del beneficiario') + ' (' +
-        inscripcion.strftime("%d/%m/%Y") + ')'
-      )
-      datos_erroneos = true
+    if clave_de_beneficiario
+      # Verificar que la fecha de la prestación sea posterior a la inscripción del beneficiario
+      beneficiario =
+        NovedadDelAfiliado.where(
+          :clave_de_beneficiario => clave_de_beneficiario,
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+          :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+        ).first
+      if !beneficiario || beneficiario.tipo_de_novedad.codigo == "M"
+        beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+        inscripcion = beneficiario.fecha_de_inscripcion
+      else
+        inscripcion = beneficiario.fecha_de_la_novedad
+      end
+      if inscripcion && fecha_de_la_prestacion && fecha_de_la_prestacion < inscripcion
+        errors.add(
+          :fecha_de_la_prestacion,
+          'no puede ser anterior a la fecha de inscripción ' +
+          (beneficiario.sexo.codigo == "F" ? 'de la beneficiaria' : 'del beneficiario') + ' (' +
+          inscripcion.strftime("%d/%m/%Y") + ')'
+        )
+        datos_erroneos = true
+      end
     end
 
     return !campo_obligatorio_vacio && !datos_erroneos

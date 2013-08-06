@@ -5,12 +5,14 @@
 //= require diagnosticos_prestaciones.js
 //= require datos_reportables.js
 //= require si_no.js
+//= require efectores.js
 
-var oOpcionesPrestaciones = [];
+/* var oOpcionesPrestaciones = [];
 var sFiltroPrestaciones = "";
 var oOpcionesDiagnosticos = [];
 var sFiltroDiagnosticos = "";
 var oOpcionesFiltradas = [];
+*/
 
 $(document).ready(function() {
 
@@ -18,14 +20,11 @@ $(document).ready(function() {
   modificarVisibilidadCantidad();
   modificarVisibilidadEsCatastrofica();
   modificarVisibilidadDatosReportables();
-  modificarVisibilidadHistoriaClinica();
 
   $('#prestacion_brindada_prestacion_id').on('change', prestacion_id_changed);
-  //$('#prestacion_brindada_prestacion_id').on('keyup', modificar_filtro_prestacion);
-  //$('#prestacion_brindada_diagnostico_id').on('keyup', modificar_filtro_diagnostico);
   $('#prestacion_brindada_prestacion_id').focus();
 
-  function modificar_filtro_prestacion(event) {
+/*  function modificar_filtro_prestacion(event) {
 
     // Guardar el texto y valores de las opciones si es la primera vez
     if ( oOpcionesPrestaciones.length == 0 )
@@ -89,7 +88,8 @@ $(document).ready(function() {
     $('#prestacion_brindada_prestacion_id').focus();
   }
 
-/*  function modificar_filtro_diagnostico(event) {
+
+  function modificar_filtro_diagnostico(event) {
 
     // Guardar el texto y valores de las opciones si es la primera vez
     if ( oOpcionesDiagnosticos.length == 0 )
@@ -190,7 +190,7 @@ $(document).ready(function() {
       }
     }
     if (nDiagnosticosAsociados > 1) {
-      div_html = "<label for=\"prestacion_brindada_diagnostico_id\">Diagnóstico*</label>\n<select id=\"prestacion_brindada_diagnostico_id\" name=\"prestacion_brindada[diagnostico_id]\">\n<option selected=\"selected\" value=\"\"></option>\n";
+      div_html = "<label for=\"prestacion_brindada_diagnostico_id\">Diagnóstico*</label>\n<select id=\"prestacion_brindada_diagnostico_id\" name=\"prestacion_brindada[diagnostico_id]\" placeholder=\"Seleccione una opción\">\n<option selected=\"selected\" value=\"\"></option>\n";
       for (i = 0; i < nDiagnosticosAsociados; i++)
         div_html += "<option value=\"" + oDiagnosticosAsociados[i].id + "\">" + oDiagnosticosAsociados[i].nombre_y_codigo + "</option>\n";
       div_html += "</select>\n"
@@ -215,14 +215,18 @@ $(document).ready(function() {
 
   function modificarVisibilidadHistoriaClinica() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
-    for (i = 0; i < prestaciones.length; i++)
-      if (prestacion_id == prestaciones[i].id) {
-        if (prestaciones[i].requiere_historia_clinica)
-      	  $('#historia_clinica').show();
-        else
-		      $('#historia_clinica').hide();
-        break;
-      }
+
+  	if (prestacion_id > 0)
+      for (i = 0; i < prestaciones.length; i++)
+        if (prestacion_id == prestaciones[i].id) {
+          if (!prestaciones[i].comunitaria)
+        	  $('#historia_clinica').show();
+          else
+		        $('#historia_clinica').hide();
+          break;
+        }
+    else
+      $('#historia_clinica').hide();
   }
 
   function modificarVisibilidadCantidad() {
@@ -359,7 +363,7 @@ $(document).ready(function() {
               break;
             }
           div_html += "<select id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_integer\"";
-          div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_integer]\">\n";
+          div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_integer]\" placeholder=\"Seleccione una opción\">\n";
           if ( valor )
             div_html += "<option value=\"\"></option>\n";
           else
@@ -465,7 +469,7 @@ $(document).ready(function() {
   	modificarSelectDiagnosticos();
     modificarInputCantidad();
     modificarVisibilidadEsCatastrofica();
-    modificarVisibilidadEsCatastrofica();
+    modificarVisibilidadHistoriaClinica();
     modificarVisibilidadDatosReportables();
   }
 

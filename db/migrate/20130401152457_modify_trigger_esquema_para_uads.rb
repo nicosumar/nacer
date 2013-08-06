@@ -302,7 +302,7 @@ class ModifyTriggerEsquemaParaUads < ActiveRecord::Migration
                 valor_integer integer,
                 valor_big_decimal numeric(15,4),
                 valor_date date,
-                valor_text text,
+                valor_string text,
                 created_at timestamp without time zone,
                 updated_at timestamp without time zone,
                 creator_id integer,

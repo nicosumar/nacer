@@ -1,34 +1,35 @@
-%h3 Clave única de beneficiario asociada a la prestación
-%div.field_content
-  %span.field_value= @prestacion_brindada.clave_de_beneficiario
+- if @prestacion_brindada.clave_de_beneficiario
+  %h3 Clave única de beneficiario asociada a la prestación
+  %div.field_content
+    %span.field_value= @prestacion_brindada.clave_de_beneficiario
 
-%h3
-  Datos más recientes sobre
-  - if @beneficiario.sexo.codigo == 'F'
-    la beneficiaria,
-  - else
-    el beneficiario,
-  - if @beneficiario.is_a? NovedadDelAfiliado
-    = link_to "según una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + |
-      " pendiente", @beneficiario, { :title => "Ver detalles de la solicitud en otra pestaña", |
-      :onclick => "this.target='_blank'" } |
-  - else
-    = link_to "según el registro en el padrón de beneficiarios", @beneficiario, |
-      { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
+  %h3
+    Datos más recientes sobre
+    - if @beneficiario.sexo.codigo == 'F'
+      la beneficiaria,
+    - else
+      el beneficiario,
+    - if @beneficiario.is_a? NovedadDelAfiliado
+      = link_to "según una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + |
+        " pendiente", @beneficiario, { :title => "Ver detalles de la solicitud en otra pestaña", |
+        :onclick => "this.target='_blank'" } |
+    - else
+      = link_to "según el registro en el padrón de beneficiarios", @beneficiario, |
+        { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
 
-%div.field_content
-  %span.field_name Nombre
-  %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
-%div.field_content
-  %span.field_name= "Documento " + @beneficiario.clase_de_documento.nombre.downcase
-  %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
-    @beneficiario.numero_de_documento.to_s |
-%div.field_content
-  %span.field_name Fecha de nacimiento
-  %span.field_value
-    = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y") + " (a la fecha de la prestación tenía "
-    = (edad_entre(@beneficiario.fecha_de_nacimiento, @prestacion_brindada.fecha_de_la_prestacion) || |
-      "fecha de nacimiento en el futuro") + ")" |
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
+  %div.field_content
+    %span.field_name= "Documento " + @beneficiario.clase_de_documento.nombre.downcase
+    %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
+      @beneficiario.numero_de_documento.to_s |
+  %div.field_content
+    %span.field_name Fecha de nacimiento
+    %span.field_value
+      = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y") + " (a la fecha de la prestación tenía "
+      = (edad_entre(@beneficiario.fecha_de_nacimiento, @prestacion_brindada.fecha_de_la_prestacion) || |
+        "fecha de nacimiento en el futuro") + ")" |
 
 %h3 Efector y fecha en que se brindó la prestación
 %div.field_content
@@ -52,7 +53,7 @@
     - else
       = f.label :prestacion_id, "Prestación*"
       = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
-        {:include_blank => true}, {:class => "multi_select"} |
+        {:include_blank => true}, {:class => "multi_select", :placeholder => "Seleccione una opción"} |
 
   #diagnostico.field{:style => "display: none;"}
     - if @diagnosticos.size == 1
@@ -63,15 +64,16 @@
     - else
       = f.label :diagnostico_id, "Diagnóstico*"
       = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
-        {:include_blank => true}, {:class => "multi_select"} |
+        {:include_blank => true}, {:class => "multi_select", :placeholder => "Seleccione una opción"} |
 
-  #historia_clinica.field{:style => "dislay: none;"}
-    = f.label :historia_clinica, "Historia clínica*"
-    = f.text_field :historia_clinica, {:size => 12}
+  #historia_clinica.field{:style => "display: none;"}
+    = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+    = f.text_field :historia_clinica, {:size => 15}
 
   #cantidad_de_unidades.field{:style => "display: none;"}
     = f.label :cantidad_de_unidades, "Cantidad de unidades*"
     = f.text_field :cantidad_de_unidades, {:size => 6}
+
   #es_catastrofica.field{:style => "display: none;"}
     = f.label :es_catastrofica, "Es catastrófica*"
     = f.check_box :es_catastrofica
@@ -101,7 +103,8 @@
               - when dr.enumerable
                 = dra_f.select :valor_integer, options_from_collection_for_select( |
                   eval(dr.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre), |
-                  eval(dr.opciones_de_formateo || "{}").merge(:include_blank => true) |
+                  eval(dr.opciones_de_formateo || "{}").merge(:include_blank => true), |
+                  {:class => "multi_select", :placeholder => "Seleccione una opción"} |
               - when dr.tipo_ruby == "date"
                 -# TODO: Averiguar por qué mierda no está tomando el valor pasado en :default para establecer el valor
                   # inicial del control

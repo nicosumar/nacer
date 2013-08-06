@@ -71,6 +71,19 @@ class Efector < ActiveRecord::Base
     ")
   end
 
+  # prestaciones_comunitarias_autorizadas_al_dia
+  # Devuelve el listado de prestaciones autorizadas al día indicado en el parámetro.
+  def prestaciones_comunitarias_autorizadas_al_dia(fecha = Date.today)
+    prestaciones_autorizadas.where("
+      fecha_de_inicio <= '#{fecha.strftime("%Y-%m-%d")}'
+      AND (
+        fecha_de_finalizacion IS NULL
+        OR fecha_de_finalizacion > '#{fecha.strftime("%Y-%m-%d")}'
+      )
+      AND comunitaria
+    ")
+  end
+
   # self.que_no_tengan_convenio
   # Devuelve los efectores que no tienen convenio de gestión
   def self.que_no_tengan_convenio

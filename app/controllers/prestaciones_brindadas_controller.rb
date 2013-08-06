@@ -111,7 +111,7 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     # Si no se han pasado parámetros para esta ruta, debe iniciarse el procedimiento con una búsqueda de beneficiario
-    if !params[:clave_de_beneficiario] && !params[:prestacion_brindada] && !params[:terminos]
+    if !params[:clave_de_beneficiario] && !params[:prestacion_brindada] && !params[:terminos] && !params[:comunitaria]
       @terminos = nil
       @resultados_de_la_busqueda = []
       flash.delete :tipo
@@ -156,28 +156,30 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Obtener la novedad o el afiliado asociado a la clave
-    @beneficiario =
-      NovedadDelAfiliado.where(
-        :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-      ).first
-    if !@beneficiario
+    if !params[:comunitaria]
+      # Obtener la novedad o el afiliado asociado a la clave
       @beneficiario =
-        Afiliado.find_by_clave_de_beneficiario(
-          params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]
-        )
-    end
+        NovedadDelAfiliado.where(
+          :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+          :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+        ).first
+      if !@beneficiario
+        @beneficiario =
+          Afiliado.find_by_clave_de_beneficiario(
+            params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]
+          )
+      end
 
-    if !@beneficiario
-      redirect_to(
-        root_url,
-        :flash => {:tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre el incidente."
-        }
-      )
-      return
+      if !@beneficiario
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
+        return
+      end
     end
 
     # Esta acción se ejecuta en dos partes. La inicial fija el efector y la fecha de la prestación, y la segunda define el resto
@@ -185,7 +187,9 @@ class PrestacionesBrindadasController < ApplicationController
     if !params[:commit]
       # Preparar los objetos para la vista de la primer etapa (selección de efector y fecha)
       @prestacion_brindada = PrestacionBrindada.new
-      @prestacion_brindada.clave_de_beneficiario = @beneficiario.clave_de_beneficiario
+      if !params[:comunitaria]
+        @prestacion_brindada.clave_de_beneficiario = @beneficiario.clave_de_beneficiario
+      end
       @efectores = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.order(:nombre).collect{
         |e| [e.cuie + " - " + e.nombre, e.id]
       }
@@ -218,38 +222,25 @@ class PrestacionesBrindadasController < ApplicationController
       end
     end
 
-    # Añadir un nuevo objeto DatoReportableAsociado para cada uno de los DatosReportables definidos
-    #@prestacion_brindada.datos_reportables_asociados.build(
-    #  DatoReportable.find(:all, :order => [:id, :orden_de_grupo]).collect{
-    #    |dr| {:dato_reportable_id => dr.id}
-    #  }
-    #)
-
-    # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
-    # TODO: eliminar esto luego de que finalice el periodo de gracia
-    if ( Date.today < Date.new(2013, 8, 31) &&
-         @prestacion_brindada.fecha_de_la_prestacion < @prestacion_brindada.efector.fecha_de_inicio_del_convenio_actual )
-      autorizadas_por_efector =
-        Prestacion.find(
-          @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(
-            @prestacion_brindada.efector.fecha_de_inicio_del_convenio_actual
-          ).collect{ |p| p.prestacion_id }
-        )
+    # Generar el listado de prestaciones válidas
+    autorizadas_por_efector =
+      Prestacion.find(
+        @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
+          |p| p.prestacion_id
+        }
+      )
+    if !params[:comunitaria]
+      autorizadas_por_grupo =
+        @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
+      autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
+      @prestaciones =
+        autorizadas_por_efector.keep_if{
+            |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
+          }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
     else
-      autorizadas_por_efector =
-        Prestacion.find(
-          @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
-            |p| p.prestacion_id
-          }
-        )
+      @prestaciones = autorizadas_por_efector.keep_if{|p| p.comunitaria}.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
     end
-    autorizadas_por_grupo =
-      @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
-    autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
-    @prestaciones =
-      autorizadas_por_efector.keep_if{
-          |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
-        }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
+
     @diagnosticos = []
 
     # Mostrar las advertencias que se puedan haber generado en la selección de efector y fecha
@@ -290,6 +281,17 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
+    # Verificar que la prestación esté en un estado modificable
+    if !@prestacion_brindada.pendiente?
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
+      return
+    end
+
     # Obtener el afiliado o la novedad asociadas a la prestación
     @beneficiario =
       NovedadDelAfiliado.where(
@@ -320,7 +322,6 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Verificar que se hayan pasado los parámetros requeridos
     if !params[:prestacion_brindada] ||
-       !params[:prestacion_brindada][:clave_de_beneficiario] ||
        !params[:prestacion_brindada][:fecha_de_la_prestacion] ||
        !params[:prestacion_brindada][:efector_id]
       redirect_to(
@@ -469,6 +470,17 @@ class PrestacionesBrindadasController < ApplicationController
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La prestación solicitada no existe",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Verificar que la prestación esté en un estado modificable
+    if !@prestacion_brindada.pendiente?
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
         }
       )
       return
