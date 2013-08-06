@@ -206,8 +206,8 @@ class InformesController < ApplicationController
 
   def new
     @informe = Informe.new
-    @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit", "create"]).to_a.map {|item| [item, item]}
-    @formatos = ['html'].map {|item| [item, item]}
+    @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit", "create"]).to_a
+    @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
     @esquemas << UnidadDeAltaDeDatos.new(nombre: 'Todos', id:'todos')
     @esquemas_informes = @informe.esquemas.build
@@ -240,6 +240,12 @@ class InformesController < ApplicationController
     if @informe.save
       redirect_to(:action => 'index')
     else
+      @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit", "create"]).to_a
+      @formatos = ['html']
+      @esquemas = UnidadDeAltaDeDatos.all
+      @esquemas << UnidadDeAltaDeDatos.new(nombre: 'Todos', id:'todos')
+      @esquemas_informes = @informe.esquemas.build
+      
       render(:action => "new")
     end
   end
