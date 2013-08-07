@@ -5,7 +5,7 @@ class DatoReportableAsociado < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :dato_reportable_requerido_id, :observaciones, :prestacion_brindada_id
-  attr_accessible :valor_integer, :valor_big_decimal, :valor_date, :valor_text
+  attr_accessible :valor_integer, :valor_big_decimal, :valor_date, :valor_string
 
   # Asociaciones
   belongs_to :prestacion_brindada, :inverse_of => :datos_reportables_asociados

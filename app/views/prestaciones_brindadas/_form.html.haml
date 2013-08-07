@@ -40,7 +40,10 @@
   %span.field_value= @prestacion_brindada.fecha_de_la_prestacion.strftime("%d/%m/%Y")
 
 = form_for(@prestacion_brindada) do |f|
-  = f.hidden_field :clave_de_beneficiario, :value => @prestacion_brindada.clave_de_beneficiario
+  - if @prestacion_brindada.clave_de_beneficiario
+    = f.hidden_field :clave_de_beneficiario, :value => @prestacion_brindada.clave_de_beneficiario
+  - else
+    = hidden_field_tag :comunitaria, true
   = f.hidden_field :efector_id, :value => @prestacion_brindada.efector_id
   = f.hidden_field :fecha_de_la_prestacion, :value => @prestacion_brindada.fecha_de_la_prestacion
 
@@ -49,11 +52,11 @@
       = f.hidden_field :prestacion_id, :value => @prestacion_brindada.prestacion_id
       %div.field_content
         %span.field_name Prestación*
-        %span.field_value= @prestacion_brindada.prestacion.nombre_corto
+        %span.field_value= @prestacion_brindada.prestacion.nombre
     - else
       = f.label :prestacion_id, "Prestación*"
       = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
-        {:include_blank => true}, {:class => "multi_select", :placeholder => "Seleccione una opción"} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione una prestación..."} |
 
   #diagnostico.field{:style => "display: none;"}
     - if @diagnosticos.size == 1
@@ -64,7 +67,7 @@
     - else
       = f.label :diagnostico_id, "Diagnóstico*"
       = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
-        {:include_blank => true}, {:class => "multi_select", :placeholder => "Seleccione una opción"} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione un diagnóstico..."} |
 
   #historia_clinica.field{:style => "display: none;"}
     = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"

@@ -58,10 +58,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
   validate :fechas_correctas, :unless => :es_una_baja?
   validate :es_menor_de_edad, :unless => :es_una_baja?
   validate :documentos_correctos, :unless => :es_una_baja?
+  validate :datos_de_embarazo, :unless => :es_una_baja?
   validate :sin_duplicados
   validates_presence_of :tipo_de_novedad_id
   validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
   validates_presence_of :observaciones_generales, :if => :es_una_baja?
+  validates_presence_of :fecha_de_diagnostico_del_embarazo, :if => :embarazada?
+  validates_presence_of :semanas_de_embarazo, :if => :embarazada?
   validates_numericality_of :semanas_de_embarazo, :only_integer => true, :allow_blank => true, :greater_than => 3, :less_than => 43
 
   # Objeto para guardar las advertencias
@@ -109,6 +112,14 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # Indica si la novedad es una solicitud de baja
   def es_una_baja?
     tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("B")
+  end
+
+  def embarazada?
+    esta_embarazada && !fecha_efectiva_de_parto
+  end
+
+  def puerpera?
+    esta_embarazada && fecha_efectiva_de_parto
   end
 
   # fechas_correctas
@@ -244,6 +255,12 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
     return !error_de_fecha
 
+  end
+
+  def datos_de_embarazo
+    return true
+
+    # TODO: Escribir validaciones para las fechas y semanas de gestación
   end
 
   # Verifica que se haya marcado el campo de menor de edad si a la fecha de la novedad aún no cumple la edad límite

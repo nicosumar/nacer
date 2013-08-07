@@ -23,6 +23,14 @@ class User < ActiveRecord::Base
   validates_presence_of :nombre, :apellido
 
   def in_group?(group)
+    if group && group.is_a?(Array)
+      return group.any?{ |g| has_group?(g) }
+    else
+      return has_group?(group)
+    end
+  end
+
+  def has_group?(group)
     user_groups.each do | ug |
       return true if (ug.user_group_name.downcase.to_sym == group || ug.user_group_name == "administradores")
     end

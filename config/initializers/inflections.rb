@@ -368,7 +368,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("numero_de_documento_del_tutor", "número de documento del tutor/a")
   inflect.human("alfabetizacion_del_tutor_id", "alfabetización")
   inflect.human("alfab_tutor_anios_ultimo_nivel", "años cursados en el mayor nivel")
-  inflect.human("esta_embarazada", "está embarazada")
+  inflect.human("esta_embarazada", "cursa embarazo o puerperio")
   inflect.human("fecha_de_la_ultima_menstruacion", "fecha de la última menstruación")
   inflect.human("fecha_de_diagnostico_del_embarazo", "fecha de diagnóstico del embarazo")
   inflect.human("semanas_de_embarazo", "semanas de embarazo al diagnóstico")

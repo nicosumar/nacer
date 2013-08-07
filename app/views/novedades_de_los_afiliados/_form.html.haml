@@ -28,11 +28,13 @@
   %div.field
     = f.label :clase_de_documento_id, "Clase de documento*"
     = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id), |
-      {:include_blank => true} |
+      {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione la clase de documento...", |
+      :style => "width: 280px;"} |
   %div.field
     = f.label :tipo_de_documento_id, "Tipo de documento*"
     = f.select :tipo_de_documento_id, options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_id), |
-      {:include_blank => true} |
+      {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el tipo de documento...", |
+      :style => "width: 250px;"} |
   %div.field
     = f.label :numero_de_documento, "Número de documento*"
     = f.text_field :numero_de_documento, :style => "text-transform: uppercase;"
@@ -46,7 +48,8 @@
   %h3 Datos de nacimiento, sexo, origen y estudios
   %div.field
     = f.label :sexo_id, "Sexo*"
-    = f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id), {:include_blank => true}
+    = f.select :sexo_id, options_for_select(@sexos, @novedad.sexo_id), {:include_blank => true}, |
+      {:class => "multi_select", :"data-placeholder" => "Seleccione el sexo...", :style => "width: 170px;"} |
   %div.field
     = f.label :fecha_de_nacimiento, "Fecha de nacimiento*"
     = f.date_select :fecha_de_nacimiento, {:start_year => 1936, :end_year => Date.today.year, |
@@ -60,7 +63,8 @@
   %div.field
     = f.label :pais_de_nacimiento_id
     = f.select :pais_de_nacimiento_id, options_for_select(@paises, @novedad.pais_de_nacimiento_id), |
-      {:include_blank => true} |
+      {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el país de nacimiento...", |
+      :style => "width: 350px;"} |
   %div.field
     = f.label :se_declara_indigena
     = f.check_box :se_declara_indigena
@@ -69,17 +73,20 @@
       = f.label :lengua_originaria_id
       = f.select :lengua_originaria_id, |
         options_for_select(@lenguas_originarias, @novedad.lengua_originaria_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione la lengua originaria...", |
+      :style => "width: 250px;"} |
     %div.field
       = f.label :tribu_originaria_id
       = f.select :tribu_originaria_id, |
         options_for_select(@tribus_originarias, @novedad.tribu_originaria_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione la tribu originaria...", |
+      :style => "width: 250px;"} |
   %div.field
     = f.label :alfabetizacion_del_beneficiario_id
     = f.select :alfabetizacion_del_beneficiario_id, |
       options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_beneficiario_id), |
-      {:include_blank => true} |
+      {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el nivel de alfabetización...", |
+      :style => "width: 300px;"} |
   #alfab_benef.field
     = f.label :alfab_beneficiario_anios_ultimo_nivel
     = f.number_field :alfab_beneficiario_anios_ultimo_nivel, :size => 3
@@ -116,11 +123,13 @@
   %div.field
     = f.label :domicilio_departamento_id, "Departamento*"
     = f.select :domicilio_departamento_id, options_for_select(@departamentos, @novedad.domicilio_departamento_id), |
-      {:include_blank => true} |
+      {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el departamento...", |
+      :style => "width: 250px;"} |
   #select_distritos.field
     = f.label :domicilio_distrito_id, "Distrito*"
     = f.select :domicilio_distrito_id, options_for_select(@distritos, @novedad.domicilio_distrito_id), |
-      {:include_blank => true} |
+      {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el distrito...", |
+      :style => "width: 250px;"} |
   %div.field
     = f.label :domicilio_barrio_o_paraje
     = f.text_field :domicilio_barrio_o_paraje, :style => "text-transform: uppercase;"
@@ -134,7 +143,8 @@
   %h3 Lugar de atención habitual
   %div.field
     = f.select :lugar_de_atencion_habitual_id, options_for_select(@efectores, @novedad.lugar_de_atencion_habitual_id), |
-      {:include_blank => true} |
+      {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el lugar de atención habitual...", |
+      :style => "width: 550px;"} |
 
   #es_menor
     %h3.header-with-note Datos del adulto responsable
@@ -151,7 +161,8 @@
       = f.label :tipo_de_documento_de_la_madre_id
       = f.select :tipo_de_documento_de_la_madre_id, |
         options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_de_la_madre_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el tipo de documento...", |
+      :style => "width: 250px;"} |
     %div.field
       = f.label :numero_de_documento_de_la_madre
       = f.text_field :numero_de_documento_de_la_madre, :style => "text-transform: uppercase;"
@@ -159,7 +170,8 @@
       = f.label :alfabetizacion_de_la_madre_id
       = f.select :alfabetizacion_de_la_madre_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_de_la_madre_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el nivel de alfabetización...", |
+      :style => "width: 300px;"} |
     #alfab_madre.field
       = f.label :alfab_madre_anios_ultimo_nivel
       = f.number_field :alfab_madre_anios_ultimo_nivel, :size => 3
@@ -174,7 +186,8 @@
       = f.label :tipo_de_documento_del_padre_id
       = f.select :tipo_de_documento_del_padre_id, |
         options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_del_padre_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el tipo de documento...", |
+      :style => "width: 250px;"} |
     %div.field
       = f.label :numero_de_documento_del_padre
       = f.text_field :numero_de_documento_del_padre, :style => "text-transform: uppercase;"
@@ -182,7 +195,8 @@
       = f.label :alfabetizacion_del_padre_id
       = f.select :alfabetizacion_del_padre_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_padre_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el nivel de alfabetización...", |
+      :style => "width: 300px;"} |
     #alfab_padre.field
       = f.label :alfab_padre_anios_ultimo_nivel
       = f.number_field :alfab_padre_anios_ultimo_nivel, :size => 3
@@ -197,7 +211,8 @@
       = f.label :tipo_de_documento_del_tutor_id
       = f.select :tipo_de_documento_del_tutor_id, |
         options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_del_tutor_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el tipo de documento...", |
+      :style => "width: 250px;"} |
     %div.field
       = f.label :numero_de_documento_del_tutor
       = f.text_field :numero_de_documento_del_tutor, |
@@ -206,17 +221,19 @@
       = f.label :alfabetizacion_del_tutor_id
       = f.select :alfabetizacion_del_tutor_id, |
         options_for_select(@niveles_de_instruccion, @novedad.alfabetizacion_del_tutor_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el nivel de alfabetización...", |
+      :style => "width: 300px;"} |
     #alfab_tutor.field
       = f.label :alfab_tutor_anios_ultimo_nivel
       = f.number_field :alfab_tutor_anios_ultimo_nivel, :size => 3
 
   #embarazo
-    %h3 Datos del embarazo
+    %h3.header-with-note Datos de embarazo o puerperio
+    %p.note Para embarazadas ingrese fecha de diagnóstico, semanas de embarazo y FUM/FPP, para puérperas únicamente la fecha efectiva de parto
     %div.field
-      = f.label :esta_embarazada, :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo."
+      = f.label :esta_embarazada, :title => "Marcar esta opción para ingresar o modificar los datos de embarazo o puerperio."
       = f.check_box :esta_embarazada, |
-        :title => "Marcar esta opción si a la fecha de inscripción o modificación cursaba un embarazo." |
+        :title => "Marcar esta opción para ingresar o modificar los datos de embarazo o puerperio." |
     #esta_embarazada
       %div.field
         = f.label :fecha_de_la_ultima_menstruacion
@@ -244,7 +261,8 @@
   %h3 Discapacidad
   %div.field
     = f.label :discapacidad_id
-    = f.select :discapacidad_id, options_for_select(@discapacidades, @novedad.discapacidad_id), {:include_blank => true}
+    = f.select :discapacidad_id, options_for_select(@discapacidades, @novedad.discapacidad_id), {:include_blank => true}, |
+      {:class => "multi_select", :"data-placeholder" => "Seleccione el tipo de discapacidad...", :style => "width: 300px;"} |
 
   %h3 Fecha y centro inscriptor
   %div.field
@@ -262,7 +280,8 @@
     %div.field
       = f.label :centro_de_inscripcion_id, "Centro de inscripción*"
       = f.select :centro_de_inscripcion_id, options_for_select(@centros_de_inscripcion, @novedad.centro_de_inscripcion_id), |
-        {:include_blank => true} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione el centro de inscripción...", |
+      :style => "width: 550px;"} |
   %div.field
     = f.label :nombre_del_agente_inscriptor
     = f.text_field :nombre_del_agente_inscriptor, :style => "text-transform: uppercase;"

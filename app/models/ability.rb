@@ -94,6 +94,19 @@ class Ability
       can :read, PrestacionAutorizada
     end
 
+    if user.in_group? :planificacion
+      can :manage, Contacto
+      can :read, Efector
+      can :read, Referente
+      can :read, ConvenioDeAdministracion
+      can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracionSumar
+      can :read, ConvenioDeGestionSumar
+      can :read, Addenda
+      can :read, AddendaSumar
+      can :read, PrestacionAutorizada
+    end
+
     if user.in_group? :inscripcion_uad
       can :read, Afiliado
       can :manage, NovedadDelAfiliado

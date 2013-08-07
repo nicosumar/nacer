@@ -43,40 +43,51 @@
         %ul
           %li= @prestacion_brindada.mensaje_de_la_baja
 
-  %h3 Clave única de beneficiario asociada a la prestación
-  %div.field_content
-    %span.field_value= @prestacion_brindada.clave_de_beneficiario
+  - if @prestacion_brindada.clave_de_beneficiario
+    %h3 Clave única de beneficiario asociada a la prestación
+    %div.field_content
+      %span.field_value= @prestacion_brindada.clave_de_beneficiario
 
-  %h3
-    Datos más recientes sobre
-    - if @beneficiario.sexo.codigo == 'F'
-      la beneficiaria, según
-    - else
-      el beneficiario, según
-    - if @beneficiario.is_a? NovedadDelAfiliado
-      = link_to "una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + " pendiente", @beneficiario, |
-        { :title => "Ver detalles de la solicitud en otra pestaña", :onclick => "this.target='_blank'" } |
-    - else
-      = link_to "el registro en el padrón de beneficiarios", @beneficiario, |
-        { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
+    %h3
+      Datos más recientes sobre
+      - if @beneficiario.sexo.codigo == 'F'
+        la beneficiaria, según
+      - else
+        el beneficiario, según
+      - if @beneficiario.is_a? NovedadDelAfiliado
+        = link_to "una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + " pendiente", @beneficiario, |
+          { :title => "Ver detalles de la solicitud en otra pestaña", :onclick => "this.target='_blank'" } |
+      - else
+        = link_to "el registro en el padrón de beneficiarios", @beneficiario, |
+          { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
 
-  %div.field_content
-    %span.field_name Nombre
-    %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
-  %div.field_content
-    %span.field_name= "Documento " + @beneficiario.clase_de_documento.nombre.downcase
-    %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
-      @beneficiario.numero_de_documento.to_s |
-  %div.field_content
-    %span.field_name Fecha de nacimiento
-    - if @beneficiario.fecha_de_nacimiento
-      %span.field_value
-        = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
-        (a la fecha de la prestación tenía
-        = (edad_entre(@beneficiario.fecha_de_nacimiento, @prestacion_brindada.fecha_de_la_prestacion) || |
-          " la fecha de nacimiento en el futuro") + ")" |
-    - else
-      %span.field_empty No se ingresó la fecha de nacimiento
+    %div.field_content
+      %span.field_name Nombre
+      %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
+    %div.field_content
+      %span.field_name= "Documento " + @beneficiario.clase_de_documento.nombre.downcase
+      %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
+        @beneficiario.numero_de_documento.to_s |
+    %div.field_content
+      %span.field_name Fecha de nacimiento
+      - if @beneficiario.fecha_de_nacimiento
+        %span.field_value
+          = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
+          (a la fecha de la prestación tenía
+          = (edad_entre(@beneficiario.fecha_de_nacimiento, @prestacion_brindada.fecha_de_la_prestacion) || |
+            " la fecha de nacimiento en el futuro") + ")" |
+      - else
+        %span.field_empty No se ingresó la fecha de nacimiento
+
+    - if @prestacion_brindada.clave_de_beneficiario && @prestacion_brindada.pendiente?
+      = link_to 'Haga clic aquí', new_prestacion_brindada_path({ |
+        :"prestacion_brindada[clave_de_beneficiario]" => @prestacion_brindada.clave_de_beneficiario, |
+        :"prestacion_brindada[efector_id]" => @prestacion_brindada.efector_id, |
+        :"prestacion_brindada[fecha_de_la_prestacion(3i)]" => @prestacion_brindada.fecha_de_la_prestacion.day, |
+        :"prestacion_brindada[fecha_de_la_prestacion(2i)]" => @prestacion_brindada.fecha_de_la_prestacion.month, |
+        :"prestacion_brindada[fecha_de_la_prestacion(1i)]" => @prestacion_brindada.fecha_de_la_prestacion.year, |
+        :commit => 'Continuar'}) |
+      si desea registrar otra prestación otorgada al beneficiario en la misma fecha
 
   %h3 Datos sobre la prestación
   %div.field_content

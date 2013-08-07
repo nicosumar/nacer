@@ -58,13 +58,14 @@ $(document).ready(function() {
     {
       if (departamentosDistritos[i].departamento_id == departamento_id)
       {
-        div_html += "<label for=\"novedad_del_afiliado_domicilio_distrito_id\">Distrito</label>\n<select id=\"novedad_del_afiliado_domicilio_distrito_id\" name=\"novedad_del_afiliado[domicilio_distrito_id]\"><option selected=\"selected\" value=\"\"></option>";
+        div_html += "<label for=\"novedad_del_afiliado_domicilio_distrito_id\">Distrito</label>\n<select id=\"novedad_del_afiliado_domicilio_distrito_id\" name=\"novedad_del_afiliado[domicilio_distrito_id]\" data-placeholder=\"Seleccione un distrito...\" style=\"width: 250px;\"><option selected=\"selected\" value=\"\"></option>";
         for (j = 0; j < departamentosDistritos[i].distritos.length; j++)
           div_html += "<option value=\"" + departamentosDistritos[i].distritos[j].distrito_id + "\">" + departamentosDistritos[i].distritos[j].distrito_nombre + "</option>";
         break;
       }
     }
     $('#select_distritos').html(div_html)
+    $('#novedad_del_afiliado_domicilio_distrito_id').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
     $('#novedad_del_afiliado_domicilio_distrito_id').on('change', modificarCodigoPostal);
   }
 

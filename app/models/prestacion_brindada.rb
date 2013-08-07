@@ -30,6 +30,10 @@ class PrestacionBrindada < ActiveRecord::Base
   validates_presence_of :diagnostico_id, :if => :requiere_diagnostico?
   validates_presence_of :historia_clinica, :if => :requiere_historia_clinica?
   validates_presence_of :clave_de_beneficiario, :unless => :prestacion_comunitaria?
+  # TODO: Ver cómo hacer para que no tome en cuenta las prestaciones anuladas
+  validates_uniqueness_of(:prestacion_id,
+                          :scope => [:efector_id, :fecha_de_la_prestacion, :clave_de_beneficiario],
+                          :message => "crearía una prestación duplicada. Ya se registró una prestación con estos mismos datos.")
   validate :pasa_validaciones_especificas?
   validate :validar_asociacion
 
@@ -366,7 +370,7 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   def requiere_historia_clinica?
-    prestacion && prestacion.requiere_historia_clinica
+    prestacion && !prestacion.comunitaria
   end
 
   def validar_asociacion

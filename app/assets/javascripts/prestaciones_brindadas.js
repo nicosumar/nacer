@@ -190,7 +190,7 @@ $(document).ready(function() {
       }
     }
     if (nDiagnosticosAsociados > 1) {
-      div_html = "<label for=\"prestacion_brindada_diagnostico_id\">Diagnóstico*</label>\n<select id=\"prestacion_brindada_diagnostico_id\" name=\"prestacion_brindada[diagnostico_id]\" placeholder=\"Seleccione una opción\">\n<option selected=\"selected\" value=\"\"></option>\n";
+      div_html = "<label for=\"prestacion_brindada_diagnostico_id\">Diagnóstico*</label>\n<select id=\"prestacion_brindada_diagnostico_id\" name=\"prestacion_brindada[diagnostico_id]\" data-placeholder=\"Seleccione un diagnóstico...\">\n<option selected=\"selected\" value=\"\"></option>\n";
       for (i = 0; i < nDiagnosticosAsociados; i++)
         div_html += "<option value=\"" + oDiagnosticosAsociados[i].id + "\">" + oDiagnosticosAsociados[i].nombre_y_codigo + "</option>\n";
       div_html += "</select>\n"
@@ -363,7 +363,7 @@ $(document).ready(function() {
               break;
             }
           div_html += "<select id=\"prestacion_brindada_datos_reportables_asociados_attributes_" + i + "_valor_integer\"";
-          div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_integer]\" placeholder=\"Seleccione una opción\">\n";
+          div_html += "name=\"prestacion_brindada[datos_reportables_asociados_attributes][" + i + "][valor_integer]\" data-placeholder=\"Seleccione una opción...\">\n";
           if ( valor )
             div_html += "<option value=\"\"></option>\n";
           else
@@ -459,6 +459,7 @@ $(document).ready(function() {
     }
 
     $("#atributos_reportables").html(div_html);
+    $("#atributos_reportables select").chosen({width: "80%", no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
 
     // Establecer el valor de los distintos campos, si se han pasado datos
 

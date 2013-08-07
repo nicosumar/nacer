@@ -117,7 +117,7 @@
                     %ul
                       %li= link_to "Contactos", contactos_url
 
-            - if current_user.in_group? :coordinacion
+            - if current_user.in_group? [:coordinacion, :comunicacion, :planificacion]
               %li
                 %a.drop{:href => "#"} INFORMES
                 %div.dropdown_2columns

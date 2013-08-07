@@ -292,15 +292,17 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Obtener el afiliado o la novedad asociadas a la prestación
-    @beneficiario =
-      NovedadDelAfiliado.where(
-        :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-      ).first
-    if not @beneficiario
-      @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
+    if !@prestacion_brindada.prestacion.comunitaria
+      # Obtener el afiliado o la novedad asociadas a la prestación
+      @beneficiario =
+        NovedadDelAfiliado.where(
+          :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+          :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+        ).first
+      if not @beneficiario
+        @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
+      end
     end
 
     # Generar el listado de diagnósticos válidos para la prestación
@@ -333,28 +335,30 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Obtener la novedad o el afiliado asociado a la clave
-    @beneficiario =
-      NovedadDelAfiliado.where(
-        :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-      ).first
-    if !@beneficiario
+    if !params[:prestacion_brindada][:clave_de_beneficiario].blank?
+      # Obtener la novedad o el afiliado asociado a la clave
       @beneficiario =
-        Afiliado.find_by_clave_de_beneficiario(
-          params[:prestacion_brindada][:clave_de_beneficiario]
-        )
-    end
+        NovedadDelAfiliado.where(
+          :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+          :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+        ).first
+      if !@beneficiario
+        @beneficiario =
+          Afiliado.find_by_clave_de_beneficiario(
+            params[:prestacion_brindada][:clave_de_beneficiario]
+          )
+      end
 
-    if !@beneficiario
-      redirect_to(
-        root_url,
-        :flash => {:tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre el incidente."
-        }
-      )
-      return
+      if !@beneficiario
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
+        return
+      end
     end
 
     # Crear el objeto desde los parámetros y verificar si está correcto
@@ -363,31 +367,24 @@ class PrestacionesBrindadasController < ApplicationController
     # Marcar la prestación brindada como incompleta, hasta tanto se completen las validaciones.
     @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("I")
 
-    # Generar el listado de prestaciones válidas para esta combinación de beneficiario / efector / fecha
-    # TODO: eliminar esto luego de que finalice el periodo de gracia
-    if ( Date.today < Date.new(2013, 8, 31) &&
-         @prestacion_brindada.fecha_de_la_prestacion < @prestacion_brindada.efector.fecha_de_inicio_del_convenio_actual )
-      autorizadas_por_efector =
-        Prestacion.find(
-          @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(
-            @prestacion_brindada.efector.fecha_de_inicio_del_convenio_actual
-          ).collect{ |p| p.prestacion_id }
-        )
+    # Generar el listado de prestaciones válidas
+    autorizadas_por_efector =
+      Prestacion.find(
+        @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
+          |p| p.prestacion_id
+        }
+      )
+    if !params[:comunitaria]
+      autorizadas_por_grupo =
+        @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
+      autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
+      @prestaciones =
+        autorizadas_por_efector.keep_if{
+            |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
+          }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
     else
-      autorizadas_por_efector =
-        Prestacion.find(
-          @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
-            |p| p.prestacion_id
-          }
-        )
+      @prestaciones = autorizadas_por_efector.keep_if{|p| p.comunitaria}.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
     end
-    autorizadas_por_grupo =
-      @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
-    autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
-    @prestaciones =
-      autorizadas_por_efector.keep_if{
-          |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
-        }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
 
     if @prestacion_brindada.prestacion
       @diagnosticos = @prestacion_brindada.prestacion.diagnosticos.collect{|d| [d.nombre_y_codigo, d.id]}.sort
@@ -486,32 +483,34 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Obtener la novedad o el afiliado asociado a la clave
-    @beneficiario =
-      NovedadDelAfiliado.where(
-        :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
-      ).first
-    if !@beneficiario
+    if !@prestacion_brindada.prestacion.comunitaria
+      # Obtener la novedad o el afiliado asociado a la clave
       @beneficiario =
-        Afiliado.find_by_clave_de_beneficiario(
-          params[:prestacion_brindada][:clave_de_beneficiario]
+        NovedadDelAfiliado.where(
+          :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+          :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+        ).first
+      if !@beneficiario
+        @beneficiario =
+          Afiliado.find_by_clave_de_beneficiario(
+            params[:prestacion_brindada][:clave_de_beneficiario]
+          )
+      end
+
+      if !@beneficiario
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
         )
+        return
+      end
     end
 
     # Verificar que se hayan pasado los parámetros requeridos
     if !params[:prestacion_brindada]
-      redirect_to(
-        root_url,
-        :flash => {:tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre el incidente."
-        }
-      )
-      return
-    end
-
-    if !@beneficiario
       redirect_to(
         root_url,
         :flash => {:tipo => :error, :titulo => "La petición no es válida",
