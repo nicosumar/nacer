@@ -625,20 +625,22 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad.estado_de_la_novedad_id = 2
       @novedad.save
 
-      # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
-      # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
-      PrestacionBrindada.where(
-        :clave_de_beneficiario => @novedad.clave_de_beneficiario,
-        :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
-      ).each do |pb|
-        if !pb.hay_advertencias?
-          pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+      if UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
+        # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
+        # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
+        PrestacionBrindada.where(
+          :clave_de_beneficiario => @novedad.clave_de_beneficiario,
+          :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
+        ).each do |pb|
+          if !pb.hay_advertencias?
+            pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+          end
         end
-      end
 
-      redirect_to( novedad_del_afiliado_path(@novedad),
-        :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
-      )
+        redirect_to( novedad_del_afiliado_path(@novedad),
+          :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
+        )
+      end
 
     end
   end
@@ -782,14 +784,16 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad.estado_de_la_novedad_id = 2
       @novedad.save
 
-      # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
-      # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
-      PrestacionBrindada.where(
-        :clave_de_beneficiario => @novedad.clave_de_beneficiario,
-        :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
-      ).each do |pb|
-        if !pb.hay_advertencias?
-          pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+      if UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
+        # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
+        # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
+        PrestacionBrindada.where(
+          :clave_de_beneficiario => @novedad.clave_de_beneficiario,
+          :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
+        ).each do |pb|
+          if !pb.hay_advertencias?
+            pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+          end
         end
       end
 
