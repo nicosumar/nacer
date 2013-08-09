@@ -638,11 +638,11 @@ class NovedadesDeLosAfiliadosController < ApplicationController
             pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
           end
         end
-
-        redirect_to( novedad_del_afiliado_path(@novedad),
-          :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
-        )
       end
+
+      redirect_to( novedad_del_afiliado_path(@novedad),
+        :flash => { :tipo => :ok, :titulo => "La solicitud se guardó correctamente" }
+      )
 
     end
   end
