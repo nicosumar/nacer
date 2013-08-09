@@ -7812,6 +7812,21 @@ ActiveRecord::Base.transaction do
   })
 
   prestacion = Prestacion.create!({
+    :codigo => "CTC002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("C002"),
+    :nombre => 'Atención ambulatoria de enfermedades diarreicas agudas en niños menores de 6 años (ulterior)',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D11")
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 50.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  prestacion = Prestacion.create!({
     :codigo => "ITE001",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("E001"),
     :nombre => 'Posta de rehidratación: diarrea aguda en ambulatorio',
@@ -8507,7 +8522,7 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.create!({
     :codigo => "IMV001",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("V001"),
-    :nombre => 'Dosis aplicada Sabin oral (actualización de esquema)',
+    :nombre => 'Dosis aplicada de triple viral (actualización de esquema)',
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -10813,6 +10828,32 @@ ActiveRecord::Base.transaction do
     :codigo => "TAT004",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("T004"),
     :nombre => 'Pautas nutricionales respetando la cultura alimentaria de comunidades indígenas',
+    :comunitaria => true,
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98")
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 50.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 100.0000,
+    :adicional_por_prestacion => 0.0000,
+    :area_de_prestacion_id => AreaDePrestacion.id_del_codigo!("R"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  DatoReportableRequerido.create!({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo!("TEMA"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :obligatorio => false
+  })
+
+  prestacion = Prestacion.create!({
+    :codigo => "TAT006",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("T006"),
+    :nombre => 'Prevención de accidentes domésticos',
     :comunitaria => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
