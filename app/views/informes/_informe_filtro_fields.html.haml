@@ -1,6 +1,6 @@
 %tr.nested-fields
   %td= f.text_field :nombre
   %td= f.text_field :valor_por_defecto
-  = f.fields_for :informe_filtro_validador_ui do |ff|
-    %td= f.select :informe_filtro_validador_ui, @validadores_ui
+  -#= f.fields_for :informe_filtro_validador_ui do |ff|
+  %td= f.select :informe_filtro_validador_ui_id, @validadores_ui
   %td= link_to_remove_association "Quitar Filtro", f

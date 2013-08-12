@@ -209,7 +209,9 @@ class InformesController < ApplicationController
     @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit", "create"]).to_a
     @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
-    @esquemas << UnidadDeAltaDeDatos.new(nombre: 'Todos', id:'todos')
+    esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
+    esquema.id = 0
+    @esquemas << esquema
     @esquemas_informes = @informe.esquemas.build
     @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
 
@@ -217,6 +219,7 @@ class InformesController < ApplicationController
 
   def create
     logger.warn "parametros: #{params[:informe].inspect}"
+    logger.warn "parametros: #{params[:informe_esquema].inspect}"
     @informe = Informe.new(params[:informe])
 
     #Elimina espacios extras y retornos de carro
@@ -224,7 +227,7 @@ class InformesController < ApplicationController
 
     params[:informe_esquema][:id].each do |ie|
       unless ie.blank?
-        if ie == 'todos'
+        if ie == '0'
           UnidadDeAltaDeDatos.all.each do |u|
             @informe.informes_uads.build unidad_de_alta_de_datos_id: u.id, incluido: (params[:incluido] )  
           end
