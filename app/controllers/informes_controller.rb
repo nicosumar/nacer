@@ -211,11 +211,8 @@ class InformesController < ApplicationController
     @esquemas = UnidadDeAltaDeDatos.all
     @esquemas << UnidadDeAltaDeDatos.new(nombre: 'Todos', id:'todos')
     @esquemas_informes = @informe.esquemas.build
+    @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @informe }
-    end
   end
 
   def create

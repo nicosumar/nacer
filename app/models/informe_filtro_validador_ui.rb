@@ -1,5 +1,5 @@
 class InformeFiltroValidadorUi < ActiveRecord::Base
-  has_many :informes_filtros
+  belongs_to :informe_filtro
   
 
   attr_accessible :tipo
