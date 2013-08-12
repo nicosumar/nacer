@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130723234716) do
+ActiveRecord::Schema.define(:version => 20130801222559) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -27,6 +27,19 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   end
 
   add_index "addendas", ["numero"], :name => "unq_addendas_numero", :unique => true
+
+  create_table "addendas_sumar", :force => true do |t|
+    t.string   "numero",                       :null => false
+    t.integer  "convenio_de_gestion_sumar_id", :null => false
+    t.string   "firmante"
+    t.date     "fecha_de_suscripcion"
+    t.date     "fecha_de_inicio",              :null => false
+    t.text     "observaciones"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+  end
 
   create_table "afiliados", :id => false, :force => true do |t|
     t.integer "afiliado_id",                           :null => false
@@ -111,7 +124,10 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
+    t.string "codigo"
   end
+
+  add_index "areas_de_prestacion", ["codigo"], :name => "index_areas_de_prestacion_on_codigo", :unique => true
 
   create_table "asignaciones_de_nomenclador", :force => true do |t|
     t.integer  "efector_id",            :null => false
@@ -128,11 +144,14 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.integer  "prestacion_id",                                                            :null => false
     t.decimal  "precio_por_unidad",        :precision => 15, :scale => 4,                  :null => false
     t.decimal  "adicional_por_prestacion", :precision => 15, :scale => 4, :default => 0.0
-    t.integer  "unidades_maximas"
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "area_de_prestacion_id",                                   :default => 1
+    t.integer  "dato_reportable_id"
   end
+
+  add_index "asignaciones_de_precios", ["nomenclador_id", "prestacion_id", "area_de_prestacion_id", "dato_reportable_id"], :name => "index_unique_on_nomenclador_prestacion_area_ddrr", :unique => true
 
   create_table "busquedas", :force => true do |t|
     t.integer  "modelo_id",   :null => false
@@ -210,6 +229,24 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   add_index "convenios_de_administracion", ["efector_id"], :name => "unq_convenios_de_administracion_efector_id", :unique => true
   add_index "convenios_de_administracion", ["numero"], :name => "unq_convenios_de_administracion_numero", :unique => true
 
+  create_table "convenios_de_administracion_sumar", :force => true do |t|
+    t.string   "numero",                :null => false
+    t.integer  "administrador_id",      :null => false
+    t.integer  "efector_id",            :null => false
+    t.string   "firmante"
+    t.date     "fecha_de_suscripcion",  :null => false
+    t.date     "fecha_de_inicio",       :null => false
+    t.date     "fecha_de_finalizacion"
+    t.text     "observaciones"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
+  add_index "convenios_de_administracion_sumar", ["numero"], :name => "unq_convenios_de_administracion_sumar_numero", :unique => true
+
   create_table "convenios_de_gestion", :force => true do |t|
     t.string   "numero",                :null => false
     t.integer  "efector_id",            :null => false
@@ -228,18 +265,36 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   add_index "convenios_de_gestion", ["efector_id"], :name => "unq_convenios_de_gestion_efector_id", :unique => true
   add_index "convenios_de_gestion", ["numero"], :name => "unq_convenios_de_gestion_numero", :unique => true
 
+  create_table "convenios_de_gestion_sumar", :force => true do |t|
+    t.string   "numero",                :null => false
+    t.integer  "efector_id",            :null => false
+    t.string   "firmante"
+    t.string   "email"
+    t.date     "fecha_de_suscripcion",  :null => false
+    t.date     "fecha_de_inicio",       :null => false
+    t.date     "fecha_de_finalizacion"
+    t.text     "observaciones"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "convenios_de_gestion_sumar", ["efector_id"], :name => "unq_convenios_de_gestion_sumar_efector_id", :unique => true
+  add_index "convenios_de_gestion_sumar", ["numero"], :name => "unq_convenios_de_gestion_sumar_numero", :unique => true
+
   create_table "cuasi_facturas", :force => true do |t|
     t.integer  "liquidacion_id",                                       :null => false
     t.integer  "efector_id",                                           :null => false
-    t.integer  "nomenclador_id",                                       :null => false
     t.date     "fecha_de_presentacion",                                :null => false
-    t.string   "numero_de_liquidacion",                                :null => false
+    t.string   "numero",                                               :null => false
     t.decimal  "total_informado",       :precision => 15, :scale => 4
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.date     "fecha_de_emision"
   end
 
   create_table "datos_adicionales", :force => true do |t|
@@ -261,6 +316,32 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.datetime "updated_at"
   end
 
+  create_table "datos_reportables", :force => true do |t|
+    t.string  "nombre",                 :null => false
+    t.string  "codigo",                 :null => false
+    t.string  "tipo_postgres",          :null => false
+    t.string  "tipo_ruby",              :null => false
+    t.string  "sirge_id"
+    t.boolean "enumerable"
+    t.string  "clase_para_enumeracion"
+    t.boolean "integra_grupo"
+    t.string  "nombre_de_grupo"
+    t.string  "codigo_de_grupo"
+    t.integer "orden_de_grupo"
+    t.string  "opciones_de_formateo"
+  end
+
+  create_table "datos_reportables_requeridos", :force => true do |t|
+    t.integer "prestacion_id"
+    t.integer "dato_reportable_id"
+    t.date    "fecha_de_inicio"
+    t.date    "fecha_de_finalizacion"
+    t.boolean "necesario",                                            :default => false
+    t.boolean "obligatorio",                                          :default => false
+    t.decimal "minimo",                :precision => 15, :scale => 4
+    t.decimal "maximo",                :precision => 15, :scale => 4
+  end
+
   create_table "departamentos", :force => true do |t|
     t.string  "nombre",                :null => false
     t.integer "provincia_id",          :null => false
@@ -272,6 +353,16 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   create_table "dependencias_administrativas", :force => true do |t|
     t.string "nombre",              :null => false
     t.string "tipo_de_dependencia"
+  end
+
+  create_table "diagnosticos", :force => true do |t|
+    t.string "nombre"
+    t.string "codigo"
+  end
+
+  create_table "diagnosticos_prestaciones", :id => false, :force => true do |t|
+    t.integer "diagnostico_id"
+    t.integer "prestacion_id"
   end
 
   create_table "discapacidades", :force => true do |t|
@@ -289,6 +380,19 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.integer  "alias_id",          :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "documentaciones_respaldatorias", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo"
+    t.text     "descripcion"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "documentaciones_respaldatorias_prestaciones", :id => false, :force => true do |t|
+    t.integer "documentacion_respaldatoria_id"
+    t.integer "prestacion_id"
   end
 
   create_table "efectores", :force => true do |t|
@@ -319,6 +423,7 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.boolean  "perinatal_de_alta_complejidad", :default => false
     t.boolean  "addenda_perinatal",             :default => false
     t.date     "fecha_de_addenda_perinatal"
+    t.integer  "unidad_de_alta_de_datos_id"
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -329,7 +434,10 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   end
 
   create_table "estados_de_las_prestaciones", :force => true do |t|
-    t.string "nombre"
+    t.string  "nombre"
+    t.string  "codigo"
+    t.boolean "pendiente", :default => false
+    t.boolean "indexable", :default => false
   end
 
   create_table "grupos_de_efectores", :force => true do |t|
@@ -348,6 +456,11 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.string   "codigo"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "grupos_poblacionales_prestaciones", :id => false, :force => true do |t|
+    t.integer "grupo_poblacional_id"
+    t.integer "prestacion_id"
   end
 
   create_table "informes", :force => true do |t|
@@ -418,6 +531,67 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
 
   add_index "liquidaciones", ["efector_id", "anio_de_prestaciones", "mes_de_prestaciones"], :name => "unq_liquidaciones_efector_anio_y_mes", :unique => true
 
+  create_table "metodos_de_validacion", :force => true do |t|
+    t.string   "nombre"
+    t.string   "metodo"
+    t.string   "mensaje"
+    t.boolean  "genera_error", :default => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
+  create_table "metodos_de_validacion_prestaciones", :id => false, :force => true do |t|
+    t.integer "metodo_de_validacion_id"
+    t.integer "prestacion_id"
+  end
+
+  create_table "migra_anexos", :id => false, :force => true do |t|
+    t.integer "id",                                   :null => false
+    t.integer "numero_fila"
+    t.integer "numero_columna_si_no"
+    t.string  "prestaciones",          :limit => 256
+    t.string  "anexo",                 :limit => 500
+    t.string  "codigo",                :limit => 256
+    t.string  "precio",                :limit => 50
+    t.string  "rural",                 :limit => 3
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_anexos", ["id"], :name => "migra_anexos_id_idx", :unique => true
+  add_index "migra_anexos", ["numero_fila"], :name => "migra_anexos_numero_fila_idx"
+
+  create_table "migra_modulos", :id => false, :force => true do |t|
+    t.integer "id",                                          :null => false
+    t.integer "numero_fila"
+    t.integer "numero_columna_si_no"
+    t.integer "grupo"
+    t.string  "subgrupo",                     :limit => 100
+    t.text    "modulo"
+    t.text    "definicion_cirugia_conceptos"
+    t.string  "codigos",                      :limit => 256
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_modulos", ["id"], :name => "migra_modulos_id_idx", :unique => true
+  add_index "migra_modulos", ["numero_fila"], :name => "migra_modulos_numero_fila_idx"
+
+  create_table "migra_prestaciones", :id => false, :force => true do |t|
+    t.integer "id",                                   :null => false
+    t.integer "numero_fila",                          :null => false
+    t.integer "numero_columna_si_no",                 :null => false
+    t.integer "grupo",                                :null => false
+    t.string  "subgrupo",              :limit => 100, :null => false
+    t.string  "nosologia",             :limit => 512, :null => false
+    t.text    "tipo_de_prestacion",                   :null => false
+    t.text    "nombre_prestacion",                    :null => false
+    t.string  "codigos",               :limit => 256
+    t.string  "precio",                :limit => 30
+    t.string  "rural",                 :limit => 3
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_prestaciones", ["numero_fila"], :name => "migra_prestaciones_numero_fila_idx"
+
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
     t.datetime "created_at"
@@ -438,10 +612,12 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.datetime "updated_at"
   end
 
-  create_table "novedades_motivos_de_baja", :id => false, :force => true do |t|
-    t.integer "id",          :null => false
-    t.text    "descripcion", :null => false
-    t.text    "comentarios"
+  create_table "objetos_de_las_prestaciones", :force => true do |t|
+    t.integer "tipo_de_prestacion_id",                        :null => false
+    t.string  "codigo",                                       :null => false
+    t.string  "nombre",                                       :null => false
+    t.boolean "define_si_es_catastrofica", :default => true
+    t.boolean "es_catastrofica",           :default => false
   end
 
   create_table "paises", :force => true do |t|
@@ -526,15 +702,20 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   end
 
   create_table "prestaciones", :force => true do |t|
-    t.integer  "area_de_prestacion_id",                         :null => false
-    t.integer  "grupo_de_prestaciones_id",                      :null => false
+    t.integer  "area_de_prestacion_id"
+    t.integer  "grupo_de_prestaciones_id"
     t.integer  "subgrupo_de_prestaciones_id"
-    t.string   "codigo",                                        :null => false
-    t.string   "nombre",                                        :null => false
-    t.integer  "unidad_de_medida_id",                           :null => false
+    t.string   "codigo",                                                                        :null => false
+    t.string   "nombre",                                                                        :null => false
+    t.integer  "unidad_de_medida_id",                                                           :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "activa",                      :default => true
+    t.boolean  "activa",                                                     :default => true
+    t.decimal  "unidades_maximas",            :precision => 15, :scale => 4, :default => 1.0
+    t.integer  "objeto_de_la_prestacion_id"
+    t.boolean  "otorga_cobertura",                                           :default => false
+    t.boolean  "comunitaria",                                                :default => false
+    t.boolean  "requiere_historia_clinica",                                  :default => true
   end
 
   create_table "prestaciones_autorizadas", :force => true do |t|
@@ -550,6 +731,11 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.integer  "updater_id"
+  end
+
+  create_table "prestaciones_sexos", :id => false, :force => true do |t|
+    t.integer "prestacion_id"
+    t.integer "sexo_id"
   end
 
   create_table "provincias", :force => true do |t|
@@ -650,6 +836,11 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
     t.string "codigo"
   end
 
+  create_table "tipos_de_prestaciones", :force => true do |t|
+    t.string "codigo", :null => false
+    t.string "nombre", :null => false
+  end
+
   create_table "tribus_originarias", :force => true do |t|
     t.string "nombre"
   end
@@ -680,7 +871,9 @@ ActiveRecord::Schema.define(:version => 20130723234716) do
   end
 
   create_table "unidades_de_medida", :force => true do |t|
-    t.string "nombre", :null => false
+    t.string  "nombre",       :null => false
+    t.string  "codigo"
+    t.boolean "solo_enteros"
   end
 
   create_table "user_groups", :force => true do |t|
