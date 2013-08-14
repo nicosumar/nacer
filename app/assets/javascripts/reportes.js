@@ -1,5 +1,3 @@
-
-
 $(document).ready(function(){
 
 	$( "#dialog-form" ).dialog({
@@ -10,6 +8,7 @@ $(document).ready(function(){
       buttons: {
         "Buscar": function() {
         	//poner el codigo para realizar la busqueda (que mande los parametros y ponga el resultado)
+            
             $( this ).dialog( "close" );
         },
         Cancelar: function() {
@@ -36,15 +35,15 @@ $(document).ready(function(){
           $($("input#reporte_"+ifiltro.posicion)).autoGrowInput({
               comfortZone: 50,
               minWidth: 200,
-              maxWidth: 2000
+              maxWidth: 500
           });
       	});
       	//Verifico si agregaron validadores para los inputs
-      	/*$.each(f.validadores,function(fil, tip){ 
+      	$.each(f.validadores,function(fil, tip){ 
       		if(tip =="datepicker"){
       			$( "#reporte_"+fil ).datepicker({ altFormat: "yyyy-mm-dd" });	
        		}
-      	});*/
+      	});
       	//abro el cuadro de dialogo
       	$( "#dialog-form" ).dialog( "open" );
 	});

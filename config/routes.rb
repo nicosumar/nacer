@@ -22,7 +22,9 @@ Nacer::Application.routes.draw do
   resources :provincias, :except => :destroy
   resources :departamentos, :except => :destroy
   resources :distritos, :except => :destroy
-  resources :informes, :except => :destroy
+  resources :informes, :except => :destroy do 
+    get "informe_solicitado", on: :collection, as: :render_informe_default, action: :render_informe_defaults
+  end
   resources :addendas, :except => :destroy
   resources :nomencladores, :except => :destroy
   resources :busqueda, :only => :index

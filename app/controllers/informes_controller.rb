@@ -212,7 +212,8 @@ class InformesController < ApplicationController
 
   def new
     @informe = Informe.new
-    @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods).to_a.select{|s| s =~ /render_informe_/}
+    #@controller_metodos = (InformesController.action_methods - ApplicationController.action_methods).to_a.select{|s| s =~ /render_informe_/}
+    @controller_metodos = (Dir.glob("**/app/views*/informes/render_informe**")).collect { |s| (s.split "/").last }
     @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
     esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
@@ -246,10 +247,8 @@ class InformesController < ApplicationController
     if @informe.save
       redirect_to(:action => 'index')
     else
-      @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods).to_a.select{|s| s =~ /render_informe_/}
+      @controller_metodos = (Dir.glob("**/app/views*/informes/render_informe**")).collect { |s| (s.split "/").last }
       @formatos = ['html']
-      @esquemas = UnidadDeAltaDeDatos.all
-      @esquemas << UnidadDeAltaDeDatos.new(nombre: 'Todos', id:'todos')
       @esquemas = UnidadDeAltaDeDatos.all
       esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
       esquema.id = 0

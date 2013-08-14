@@ -18,7 +18,7 @@
         %td= f.select :formato, @formatos, {style: 'width: 250px'}
       %tr
         %td Metodo del controller 
-        %td= f.select :metodo_en_controller, @controller_metodos
+        %td= f.select :nombre_partial, @controller_metodos
       %tr
         %td Esquemas:
         %td
@@ -27,7 +27,6 @@
           = label_tag :excluir_esquema, 'Excluir'
           = radio_button_tag :incluido, '0'
       %tr
-        -#= fields_for(@esquemas_informes) do |ei|
         %td Esquemas
         %td= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
       %tr

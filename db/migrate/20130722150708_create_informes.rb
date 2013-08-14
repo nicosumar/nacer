@@ -4,7 +4,7 @@ class CreateInformes < ActiveRecord::Migration
       t.string "titulo"
       t.text "sql"
       t.string "formato"
-      t.string "metodo_en_controller"
+      t.string "nombre_partial"
       t.timestamps
     end
   end

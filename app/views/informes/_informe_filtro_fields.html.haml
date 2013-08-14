@@ -2,6 +2,5 @@
   %td{ width: "10px"}= f.text_field :posicion, {width: "10px", size: "1"}
   %td= f.text_field :nombre
   %td= f.text_field :valor_por_defecto
-  -#= f.fields_for :informe_filtro_validador_ui do |ff|
   %td= f.select :informe_filtro_validador_ui_id, @validadores_ui, { :include_blank => true}
   %td= link_to_remove_association "Quitar Filtro", f
