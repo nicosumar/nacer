@@ -1,6 +1,7 @@
 class CreateInformesFiltros < ActiveRecord::Migration
   def change
     create_table :informes_filtros do |t|
+      t.integer :posicion
       t.references :informe
       t.references :informe_filtro_validador_ui
       t.string "nombre"

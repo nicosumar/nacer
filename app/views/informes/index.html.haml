@@ -1,5 +1,10 @@
+= javascript_include_tag "reportes.js"
+= javascript_include_tag "auto_grow_input.js"
+= stylesheet_link_tag"entradas.css"
+
 - content_for :title do
   Informes
+
 
 #content-header
   %h1 Informes
@@ -17,13 +22,13 @@
     %tbody
       - (@reportes.each_slice(5).to_a).each do |row|
         %tr
-          - @reportes.each do |rep|
+          - row.each do |rep|
             %td
               %table{:border => "0", :width => "100"}
                 %tr
                   %td= image_tag 'report.gif'
                 %tr
-                  %td= content_tag :a, rep[:titulo], id: "reporte", href: "#", class: 'reportlink', data: {repor: rep}
+                  %td= content_tag :a, rep.titulo, id: "reporte", href: "#", class: 'reportlink', data: {repor: rep.to_json( include: :informes_filtros)}
 
 #dialog-form{title: "Opciones de filtro"}
   = form_tag  'filtro_reporte', :id => 'formulario_filtro' do

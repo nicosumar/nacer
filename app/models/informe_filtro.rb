@@ -9,6 +9,6 @@ class InformeFiltro < ActiveRecord::Base
   validates :valor_por_defecto, presence: true
   
   #Atributos
-  attr_accessible :nombre, :valor_por_defecto, :informe_filtro_validador_ui_id
+  attr_accessible :nombre, :valor_por_defecto, :informe_filtro_validador_ui_id, :posicion
 
 end

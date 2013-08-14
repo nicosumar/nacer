@@ -1,8 +1,11 @@
+
+
 $(document).ready(function(){
+
 	$( "#dialog-form" ).dialog({
       autoOpen: false,
       height: 300,
-      width: 300,
+      width: 500,
       modal: true,
       buttons: {
         "Buscar": function() {
@@ -24,17 +27,24 @@ $(document).ready(function(){
 		//me traigo la info de ese reporte
 		f = $(this).data('repor');
 		
-      	//Busco los filtros y creo los input y los labels y le pongo valor x defecto
-      	$.each(f.filtros, function(filtro, valorxdef){
-      		$( "#filtros" ).append('<label for="reporte_'+filtro+'">'+filtro+'</label>');
-      		$( "#filtros" ).append('<input id="reporte_'+filtro+'" name="reporte['+filtro+']" value="'+valorxdef+'" type="text" ><br>');
+      	//Borro los filtors anteriores
+        $("#filtros").empty();
+        //Busco los filtros y creo los input y los labels y le pongo valor x defecto
+      	$.each(f.informes_filtros, function(indice, ifiltro){
+      		$( "#filtros" ).append('<label for="reporte_'+ifiltro.posicion+'">'+ifiltro.nombre+'</label>');
+      		$( "#filtros" ).append('<input id="reporte_'+ifiltro.posicion+'" name="reporte['+ifiltro.posicion+']" value="'+ifiltro.valor_por_defecto+'" type="text" ><br>');
+          $($("input#reporte_"+ifiltro.posicion)).autoGrowInput({
+              comfortZone: 50,
+              minWidth: 200,
+              maxWidth: 2000
+          });
       	});
       	//Verifico si agregaron validadores para los inputs
-      	$.each(f.validadores,function(fil, tip){ 
+      	/*$.each(f.validadores,function(fil, tip){ 
       		if(tip =="datepicker"){
       			$( "#reporte_"+fil ).datepicker({ altFormat: "yyyy-mm-dd" });	
        		}
-      	});
+      	});*/
       	//abro el cuadro de dialogo
       	$( "#dialog-form" ).dialog( "open" );
 	});

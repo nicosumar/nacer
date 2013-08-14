@@ -4,6 +4,11 @@ class InformesController < ApplicationController
 
   before_filter :authenticate_user!
 
+  #Los renders de informes deben comenzar con "render_informe"
+  def render_informe_default
+    
+  end
+
   def beneficiarios_activos
     # Verificar los permisos del usuario
     if not current_user.in_group?(:coordinacion)
@@ -139,26 +144,27 @@ class InformesController < ApplicationController
   end
 
   def index 
-      @reportes = [
-                {
-                 titulo: 'Inscripciones por usuario', 
-                 filtros: { desde: '2013-06-01', hasta: '2013-06-30' },
-                 validadores: {desde: 'datepicker', hasta: 'datepicker'},
-                 sql: 'lala',
-                 esquemas: { except: ['public'] },
-                 formatos: [:html],
-                 controller: 'usuarios_inscripciones'
-                },
-                {
-                 titulo: 'Otro reporte', 
-                 filtros: { otrodesde: '2013-06-01', otrohasta: '2013-06-30' },
-                 validadores: {desde: 'datepicker', hasta: 'datepicker'},
-                 sql: 'lala',
-                 esquemas: { except: ['public'] },
-                 formatos: [:html],
-                 controller: 'usuarios_inscripciones'
-                }
-               ]
+      # @reportes = [
+      #           {
+      #            titulo: 'Inscripciones por usuario', 
+      #            filtros: { desde: '2013-06-01', hasta: '2013-06-30' },
+      #            validadores: {desde: 'datepicker', hasta: 'datepicker'},
+      #            sql: 'lala',
+      #            esquemas: { except: ['public'] },
+      #            formatos: [:html],
+      #            controller: 'usuarios_inscripciones'
+      #           },
+      #           {
+      #            titulo: 'Otro reporte', 
+      #            filtros: { otrodesde: '2013-06-01', otrohasta: '2013-06-30' },
+      #            validadores: {desde: 'datepicker', hasta: 'datepicker'},
+      #            sql: 'lala',
+      #            esquemas: { except: ['public'] },
+      #            formatos: [:html],
+      #            controller: 'usuarios_inscripciones'
+      #           }
+      #          ]
+      @reportes = Informe.all
   end
 
   def filtro_reporte
@@ -206,7 +212,7 @@ class InformesController < ApplicationController
 
   def new
     @informe = Informe.new
-    @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit", "create"]).to_a
+    @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods).to_a.select{|s| s =~ /render_informe_/}
     @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
     esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
@@ -240,11 +246,16 @@ class InformesController < ApplicationController
     if @informe.save
       redirect_to(:action => 'index')
     else
-      @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods - ["new","index", "edit", "create"]).to_a
+      @controller_metodos = (InformesController.action_methods - ApplicationController.action_methods).to_a.select{|s| s =~ /render_informe_/}
       @formatos = ['html']
       @esquemas = UnidadDeAltaDeDatos.all
       @esquemas << UnidadDeAltaDeDatos.new(nombre: 'Todos', id:'todos')
+      @esquemas = UnidadDeAltaDeDatos.all
+      esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
+      esquema.id = 0
+      @esquemas << esquema
       @esquemas_informes = @informe.esquemas.build
+      @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
       
       render(:action => "new")
     end
