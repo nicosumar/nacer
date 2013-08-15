@@ -6,8 +6,22 @@ class InformesController < ApplicationController
 
   #Los renders de informes deben comenzar con "render_informe"
   def render_informe_default
-    logger.warn "parametros!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: #{params.inspect}"
     @informe = Informe.find(params[:reporte][:id])
+    esquemas_incluidos = i.esquemas.collect { |s| "uad_"+ s.codigo }
+    cq = CustomQuery.buscar (
+    {
+      :except => ["public"],
+      :sql => " select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
+                 from users u
+                  left join novedades_de_los_afiliados nov on nov.creator_id = u.id
+                  join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
+                  join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
+                where u.confirmed_at < '2013-04-01'
+                and   (nov.created_at between '2013-04-01' and '2013-04-30' or nov.created_at is null) and
+                'uad_' ||  uad.codigo = current_schema()
+                group by u.email, u.nombre, u.apellido, uad "
+    })
+
 
   end
 
@@ -171,6 +185,7 @@ class InformesController < ApplicationController
 
   def filtro_reporte
     @cq = CustomQuery.new.filtros_de_busqueda desde: '2013-06-01', hasta: '2013-06-30'
+
   end
 
   def usuarios_inscripciones

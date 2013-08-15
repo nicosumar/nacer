@@ -88,6 +88,25 @@ module UsaMultiTenant
       return false
     end
   end
+
+  def set_only_schemas(*argEsquemas)
+    sql = "select schema_name \"nombre\" from information_schema.schemata
+                                           where schema_name <> 'information_schema' 
+                                           and schema_name not ilike 'pg_%
+                                           and schema_name in ( "
+    esquemas= []
+    if !argEsquemas.blank?
+      argEsquemas.flatten!
+      esquema +=argEsquemas
+      esquema.each do |esq|
+        sql += "'#{esq}', "
+
+      end
+
+
+    end
+    
+  end
   
   def set_all_schemas(*argExcepto)
     sql = "select schema_name \"nombre\" from information_schema.schemata
