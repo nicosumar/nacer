@@ -1,0 +1,11 @@
+- content_for :title do
+  = @informe.titulo
+
+#content-header
+  %h1 @informe.titulo
+  #action-links
+    -#= link_to "Nuevo Pais", :action => "new"
+
+-# Sidebar
+#content-body
+  %h2.first-header= @informe.titulo

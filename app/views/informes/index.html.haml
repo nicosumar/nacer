@@ -31,10 +31,10 @@
                   %td= content_tag :a, rep.titulo, id: "reporte", href: "#", class: 'reportlink', data: {repor: rep.to_json( include: :informes_filtros)}
 
 #dialog-form{title: "Opciones de filtro"}
-  = form_tag  'filtro_reporte', :id => 'formulario_filtro' do
+  = form_tag  '/informes/informe_solicitado', :id => 'formulario_filtro' do
     = content_tag "div", id: "filtros", data: {repor: @reportes} do
       = ""
       
 
-
-%button#create-user Create new user
+-##hola= link_to "render_informe_default_informes_path", controller: "informes", action: "render_informe_default"
+-#%button#create-user Create new user

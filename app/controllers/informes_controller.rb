@@ -6,7 +6,9 @@ class InformesController < ApplicationController
 
   #Los renders de informes deben comenzar con "render_informe"
   def render_informe_default
-    
+    logger.warn "parametros!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: #{params.inspect}"
+    @informe = Informe.find(params[:reporte][:id])
+
   end
 
   def beneficiarios_activos
