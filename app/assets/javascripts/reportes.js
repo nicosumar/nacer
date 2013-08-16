@@ -33,9 +33,9 @@ $(document).ready(function(){
         $( "#filtros" ).append('<input type="hidden" id="reporte_id" name="reporte[id]" value="'+f.id+'">');
         //Busco los filtros y creo los input y los labels y le pongo valor x defecto
       	$.each(f.informes_filtros, function(indice, ifiltro){
-      		$( "#filtros" ).append('<label for="reporte_'+ifiltro.posicion+'">'+ifiltro.nombre+'</label>');
-      		$( "#filtros" ).append('<input id="reporte_'+ifiltro.posicion+'" name="reporte['+ifiltro.posicion+']" value="'+ifiltro.valor_por_defecto+'" type="text" ><br>');
-          $($("input#reporte_"+ifiltro.posicion)).autoGrowInput({
+      		$( "#filtros" ).append('<label for="reporte_parametros'+ifiltro.posicion+'">'+ifiltro.nombre+'</label>');
+      		$( "#filtros" ).append('<input id="reporte_parametros_'+ifiltro.posicion+'" name="reporte[parametros]['+ifiltro.posicion+']" value="'+ifiltro.valor_por_defecto+'" type="text" ><br>');
+          $($("input#reporte_parametros_"+ifiltro.posicion)).autoGrowInput({
               comfortZone: 50,
               minWidth: 200,
               maxWidth: 500

@@ -7,20 +7,50 @@ class InformesController < ApplicationController
   #Los renders de informes deben comenzar con "render_informe"
   def render_informe_default
     @informe = Informe.find(params[:reporte][:id])
-    esquemas_incluidos = i.esquemas.collect { |s| "uad_"+ s.codigo }
-    cq = CustomQuery.buscar (
-    {
-      :except => ["public"],
-      :sql => " select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
-                 from users u
-                  left join novedades_de_los_afiliados nov on nov.creator_id = u.id
-                  join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
-                  join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
-                where u.confirmed_at < '2013-04-01'
-                and   (nov.created_at between '2013-04-01' and '2013-04-30' or nov.created_at is null) and
-                'uad_' ||  uad.codigo = current_schema()
-                group by u.email, u.nombre, u.apellido, uad "
-    })
+
+    #traigo los parametros del reporte y los ordeno para el query
+    valores = []
+    params[:reporte][:parametros].sort.each { |p, v| valores << v} unless params[:reporte][:parametros].blank?
+    #Al ser todos o incluidos o excluidos, busco los codigos, y despues verifico si se incluye o excluye
+    #esquemas = @informe.esquemas.collect { |s| "uad_"+ s.codigo }
+    
+    if @informe.informes_uads.first.incluido == 1
+      @cq = CustomQuery.buscar (
+        {
+          esquemas: @informe.esquemas,
+          #except: ["public"],
+          sql: @informe.sql,
+          values: valores
+        })
+    else
+      @cq = CustomQuery.buscar (
+        {
+          except: esquemas,
+          #except: ["public"],
+          sql: @informe.sql,
+          values: valores
+        })
+      
+    end
+          
+
+    # cq = CustomQuery.buscar (
+    # {
+    #   ( ? { esquemas: esquemas } : { except: esquemas} ),
+    #   sql: @informe.sql,
+    #   values: [],
+
+    #   #:except => ["public"],
+    #   :sql => " select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
+    #              from users u
+    #               left join novedades_de_los_afiliados nov on nov.creator_id = u.id
+    #               join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
+    #               join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
+    #             where u.confirmed_at < '2013-04-01'
+    #             and   (nov.created_at between '2013-04-01' and '2013-04-30' or nov.created_at is null) and
+    #             'uad_' ||  uad.codigo = current_schema()
+    #             group by u.email, u.nombre, u.apellido, uad "
+    # })
 
 
   end

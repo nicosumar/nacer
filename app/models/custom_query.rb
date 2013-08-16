@@ -61,20 +61,24 @@ class CustomQuery < ActiveRecord::Base
       CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1
   	  SQL
 
-    #Si no existen estos parametros, busco en un solo esquema
+    #Si no existen estos parametros, busco en un solo esquema (el actual)
     if args[:except].blank? && args[:esquemas].blank?
-      
+      args.delete(:except)
+      args.delete(:esquemas)
       begin
         return self.find_by_sql args.values
       rescue Exception => e
-      	raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}"
+        raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}"
       	return nil
       end
     else
+      #si hay esquemas o exepct
+      args[:esquemas] = args[:esquemas].collect { |s| "uad_"+ s.codigo } unless args[:esquemas].blank?
+      args[:except] = args[:except].collect { |s| "uad_"+ s.codigo } unless args[:except].blank?
       begin
 		return self.multi_find args
       rescue Exception => e
-      	raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}"
+        raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}"
       end
 
     end

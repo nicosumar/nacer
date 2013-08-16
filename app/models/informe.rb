@@ -7,14 +7,14 @@ class Informe < ActiveRecord::Base
   
   attr_accessible :titulo
   attr_accessible :sql
-  attr_accessible :metodo_en_controller
+  attr_accessible :nombre_partial
   attr_accessible :formato
   attr_accessible :informes_filtros_attributes
 
   #"Sexy" validations
   validates :titulo, presence: true
   validates :sql, presence: true
-  validates :metodo_en_controller, presence: true
+  validates :nombre_partial, presence: true
   validates :formato, presence: true
 
   validates_associated :informes_filtros

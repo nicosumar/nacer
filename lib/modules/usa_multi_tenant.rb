@@ -21,7 +21,8 @@ module UsaMultiTenant
       raise "Debe definir el simbolo :where o :sql en el hash"  
       return false
     when !args[:esquemas].blank?
-      #TODO: Agregar para que use solo los esquemas elegidos
+      esquemas = self.set_only_schemas args[:esquemas]
+      args.delete(:esquemas)
     when !args[:except].blank?
       esquemas = self.set_all_schemas args[:except]
       args.delete(:except)
@@ -45,18 +46,27 @@ module UsaMultiTenant
         if args[:sql].blank?
           #args[:where] = "Select '#{esq['nombre']}' as esquema, * from #{self.table_name} " + filtro
           args[:where] = "Select * from #{self.table_name} " + filtro
+          parametros = args.values.sort {|a,b| b <=> a }
 
-          r = self.find_by_sql(args.values).each do |row|
+
+          r = self.find_by_sql(parametros).each do |row|
             send :include, MetodosDeInstancia
-            row.esquema = esq['nombre']
+            row.esquema = esq['multi_nombre']
           end
           resp <<= r
           resp.flatten! 1
         else
           #ejecuto sin select
-          r = self.find_by_sql(args.values).each do |row|
+          logger.warn "args --------------------------- #{args.inspect}"
+          #para que primero quede el sql
+          parametros = args.values.sort {|a,b| a <=> b }
+          
+          
+          logger.warn "parametrosssssssss!!!!!!!!!!!!!!!!!!!!!!!  --------------- #{parametros.inspect}"
+
+          r = self.find_by_sql(parametros).each do |row|
             send :include, MetodosDeInstancia
-            row.esquema = esq['nombre']
+            row.esquema = esq['multi_nombre']
           end
           resp <<= r
           resp.flatten! 1
@@ -92,20 +102,17 @@ module UsaMultiTenant
   def set_only_schemas(*argEsquemas)
     sql = "select schema_name \"nombre\" from information_schema.schemata
                                            where schema_name <> 'information_schema' 
-                                           and schema_name not ilike 'pg_%
+                                           and schema_name not ilike 'pg_%' 
                                            and schema_name in ( "
-    esquemas= []
+    esquemas = []
     if !argEsquemas.blank?
       argEsquemas.flatten!
-      esquema +=argEsquemas
-      esquema.each do |esq|
-        sql += "'#{esq}', "
-
-      end
-
-
+      argEsquemas.each {|e| esquemas << "'#{e}'"}
+      #esquemas = argEsquemas
+      streEsq = esquemas.join(", ")
+      sql += streEsq + ")"
     end
-    
+    return ActiveRecord::Base.connection.select_all(sql)
   end
   
   def set_all_schemas(*argExcepto)
