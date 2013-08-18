@@ -102,6 +102,11 @@
                     %h3 PLANIFICACIÓN
                     %ul
                       %li= link_to "Tablero de comandos EAI", tablero_de_comandos_alto_impacto_path
+                  %div.col_2
+                    %h3 INFORMES PARAMETRIZADOS
+                    %ul
+                      %li= link_to "Informes parametrizados", informes_path
+                      
 
             - if current_user.in_group? :administradores
               %li

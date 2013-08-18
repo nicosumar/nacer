@@ -3,4 +3,5 @@
   %td= f.text_field :nombre
   %td= f.text_field :valor_por_defecto
   %td= f.select :informe_filtro_validador_ui_id, @validadores_ui, { :include_blank => true}
-  %td= link_to_remove_association "Quitar Filtro", f
+  %td
+    = link_to_remove_association "Quitar Filtro", f

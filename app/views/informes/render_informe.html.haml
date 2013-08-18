@@ -6,4 +6,4 @@
 
 #content-body
   %h2.first-header= @informe.titulo
-  = render(:partial => @informe.nombre_partial, :locals => {:i => @informes})
+  = render(:partial => "render_"+@informe.nombre_partial, :locals => {:cq => @cq})

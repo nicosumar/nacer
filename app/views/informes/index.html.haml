@@ -12,9 +12,6 @@
     - if can? :create, Informe
       = link_to("Nuevo Informe", :controller => "informes", :action => "new")
 
-#content-header
-  %h1 Informes
-
 -# Lista todos los reportes disponibles
 #content-body
   %h2.first-header Listado de informes 
@@ -28,13 +25,8 @@
                 %tr
                   %td= image_tag 'report.gif'
                 %tr
-                  %td= content_tag :a, rep.titulo, id: "reporte", href: "#", class: 'reportlink', data: {repor: rep.to_json( include: :informes_filtros)}
-
+                  %td= content_tag :a, rep.titulo, id: "reporte", href: "#", class: 'reportlink', data: {repor: rep.to_json(only: :id, :include => {:informes_filtros => {only: [:nombre, :posicion, :valor_por_defecto], :include => {:informe_filtro_validador_ui => {only: :tipo}}  }} )}
 #dialog-form{title: "Opciones de filtro"}
   = form_tag  '/informes/informe_solicitado', :id => 'formulario_filtro' do
     = content_tag "div", id: "filtros", data: {repor: @reportes} do
       = ""
-      
-
--##hola= link_to "render_informe_default_informes_path", controller: "informes", action: "render_informe_default"
--#%button#create-user Create new user

@@ -1,19 +1,18 @@
 # -*- encoding : utf-8 -*-
-require 'usa_multi_tenant'
 class InformesController < ApplicationController
 
   before_filter :authenticate_user!
+  before_filter :verificar_permisos
 
-  #Los renders de informes deben comenzar con "render_informe"
-  def render_informe_default
+  #Los renders de informes deben comenzar con "_render_"
+  def render_informe
     @informe = Informe.find(params[:reporte][:id])
 
     #traigo los parametros del reporte y los ordeno para el query
     valores = []
     params[:reporte][:parametros].sort.each { |p, v| valores << v} unless params[:reporte][:parametros].blank?
-    #Al ser todos o incluidos o excluidos, busco los codigos, y despues verifico si se incluye o excluye
-    #esquemas = @informe.esquemas.collect { |s| "uad_"+ s.codigo }
     
+    #Al ser todos o incluidos o excluidos, busco los codigos, y despues verifico si se incluye o excluye
     if @informe.informes_uads.first.incluido == 1
       @cq = CustomQuery.buscar (
         {
@@ -25,14 +24,13 @@ class InformesController < ApplicationController
     else
       @cq = CustomQuery.buscar (
         {
-          except: esquemas,
+          except: @informe.esquemas,
           #except: ["public"],
           sql: @informe.sql,
           values: valores
         })
       
     end
-          
 
     # cq = CustomQuery.buscar (
     # {
@@ -51,8 +49,6 @@ class InformesController < ApplicationController
     #             'uad_' ||  uad.codigo = current_schema()
     #             group by u.email, u.nombre, u.apellido, uad "
     # })
-
-
   end
 
   def beneficiarios_activos
@@ -190,32 +186,7 @@ class InformesController < ApplicationController
   end
 
   def index 
-      # @reportes = [
-      #           {
-      #            titulo: 'Inscripciones por usuario', 
-      #            filtros: { desde: '2013-06-01', hasta: '2013-06-30' },
-      #            validadores: {desde: 'datepicker', hasta: 'datepicker'},
-      #            sql: 'lala',
-      #            esquemas: { except: ['public'] },
-      #            formatos: [:html],
-      #            controller: 'usuarios_inscripciones'
-      #           },
-      #           {
-      #            titulo: 'Otro reporte', 
-      #            filtros: { otrodesde: '2013-06-01', otrohasta: '2013-06-30' },
-      #            validadores: {desde: 'datepicker', hasta: 'datepicker'},
-      #            sql: 'lala',
-      #            esquemas: { except: ['public'] },
-      #            formatos: [:html],
-      #            controller: 'usuarios_inscripciones'
-      #           }
-      #          ]
       @reportes = Informe.all
-  end
-
-  def filtro_reporte
-    @cq = CustomQuery.new.filtros_de_busqueda desde: '2013-06-01', hasta: '2013-06-30'
-
   end
 
   def usuarios_inscripciones
@@ -260,7 +231,7 @@ class InformesController < ApplicationController
   def new
     @informe = Informe.new
     #@controller_metodos = (InformesController.action_methods - ApplicationController.action_methods).to_a.select{|s| s =~ /render_informe_/}
-    @controller_metodos = (Dir.glob("**/app/views*/informes/render_informe**")).collect { |s| (s.split "/").last }
+    @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
     @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
     esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
@@ -272,12 +243,11 @@ class InformesController < ApplicationController
   end
 
   def create
-    logger.warn "parametros: #{params[:informe].inspect}"
-    logger.warn "parametros: #{params[:informe_esquema].inspect}"
+
     @informe = Informe.new(params[:informe])
 
     #Elimina espacios extras y retornos de carro
-    @informe.sql.split.join(" ")
+    @informe.sql = @informe.sql.split.join(" ")
 
     params[:informe_esquema][:id].each do |ie|
       unless ie.blank?
@@ -294,7 +264,7 @@ class InformesController < ApplicationController
     if @informe.save
       redirect_to(:action => 'index')
     else
-      @controller_metodos = (Dir.glob("**/app/views*/informes/render_informe**")).collect { |s| (s.split "/").last }
+      @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
       @formatos = ['html']
       @esquemas = UnidadDeAltaDeDatos.all
       esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
@@ -306,5 +276,20 @@ class InformesController < ApplicationController
       render(:action => "new")
     end
   end
+
+  private 
+
+  def verificar_permisos
+    if not current_user.in_group?(:coordinacion)
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+  end
+
+
 
 end

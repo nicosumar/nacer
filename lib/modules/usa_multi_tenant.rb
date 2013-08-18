@@ -17,8 +17,8 @@ module UsaMultiTenant
 
     case 
 
-    when args[:where].blank? && args[:sql].blank?
-      raise "Debe definir el simbolo :where o :sql en el hash"  
+    when args[:sql].blank?
+      raise "Debe definir el simbolo :sql en el hash"  
       return false
     when !args[:esquemas].blank?
       esquemas = self.set_only_schemas args[:esquemas]
@@ -38,43 +38,26 @@ module UsaMultiTenant
       end
       args.delete(:values)
     end
+
+    #para que primero quede el sql
+    psql = [args[:sql]]
+    args.delete(:sql)
+    pvalores = args.values
+    parametros = psql + pvalores
     
     esquemas.each do |esq|
       begin
         set_schema(esq['nombre'])
         
-        if args[:sql].blank?
-          #args[:where] = "Select '#{esq['nombre']}' as esquema, * from #{self.table_name} " + filtro
-          args[:where] = "Select * from #{self.table_name} " + filtro
-          parametros = args.values.sort {|a,b| b <=> a }
-
-
-          r = self.find_by_sql(parametros).each do |row|
-            send :include, MetodosDeInstancia
-            row.esquema = esq['multi_nombre']
-          end
-          resp <<= r
-          resp.flatten! 1
-        else
-          #ejecuto sin select
-          logger.warn "args --------------------------- #{args.inspect}"
-          #para que primero quede el sql
-          parametros = args.values.sort {|a,b| a <=> b }
-          
-          
-          logger.warn "parametrosssssssss!!!!!!!!!!!!!!!!!!!!!!!  --------------- #{parametros.inspect}"
-
-          r = self.find_by_sql(parametros).each do |row|
-            send :include, MetodosDeInstancia
-            row.esquema = esq['multi_nombre']
-          end
-          resp <<= r
-          resp.flatten! 1
+        r = self.find_by_sql(parametros).each do |row|
+          send :include, MetodosDeInstancia
+          row.esquema = esq['nombre']
         end
+        resp <<= r
+        resp.flatten! 1
 
-        
         ActiveRecord::Base.connection.clear_query_cache
-        
+
       rescue Exception => e
         raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}" 
         return false
@@ -103,6 +86,7 @@ module UsaMultiTenant
     sql = "select schema_name \"nombre\" from information_schema.schemata
                                            where schema_name <> 'information_schema' 
                                            and schema_name not ilike 'pg_%' 
+                                           and schema_name <> 'public'
                                            and schema_name in ( "
     esquemas = []
     if !argEsquemas.blank?
@@ -118,7 +102,8 @@ module UsaMultiTenant
   def set_all_schemas(*argExcepto)
     sql = "select schema_name \"nombre\" from information_schema.schemata
                                            where schema_name <> 'information_schema' 
-                                           and schema_name not ilike 'pg_%' "
+                                           and schema_name not ilike 'pg_%' 
+                                           and schema_name <> 'public'"
     excepto = []
     if !argExcepto.blank?
       argExcepto.flatten!

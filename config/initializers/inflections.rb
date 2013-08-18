@@ -231,6 +231,13 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("informe·_filtro·", "informes_filtros")
   inflect.irregular("InformeFiltro", "Informes·Filtros·")
   inflect.irregular("Informe·Filtro·", "InformesFiltros")
+  #Informes - Filtros plural a plural 
+  #A veces trata de pluralizar cuando ya esta en plural, le agrego mas reglas
+  inflect.irregular("informes_filtros", "informes·_filtros·")
+  inflect.irregular("informes·_filtros·", "informes_filtros")
+  inflect.irregular("InformesFiltros", "Informes·Filtros·")
+  inflect.irregular("Informes·Filtros·", "InformesFiltros")
+
   #Informes - Uads
   inflect.irregular("informe_uad", "informes·_uads·")
   inflect.irregular("informe·_uad·", "informes_uads")

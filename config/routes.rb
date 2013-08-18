@@ -23,7 +23,7 @@ Nacer::Application.routes.draw do
   resources :departamentos, :except => :destroy
   resources :distritos, :except => :destroy
   resources :informes, :except => :destroy do 
-    post "informe_solicitado", on: :collection, as: :render_informe_default, action: :render_informe_default
+    post "informe_solicitado", on: :collection, as: :render_informe_default, action: :render_informe
   end
   resources :addendas, :except => :destroy
   resources :nomencladores, :except => :destroy
@@ -52,7 +52,6 @@ Nacer::Application.routes.draw do
   resources :unidades_de_alta_de_datos, :except => :destroy
   match "informe_de_beneficiarios_activos" => "informes#beneficiarios_activos"
   match "tablero_de_comandos_alto_impacto" => "informes#tablero_de_comandos_alto_impacto"
-  match "filtro_reporte" => "informes#filtro_reporte"
 
   root :to => 'inicio#index'
 

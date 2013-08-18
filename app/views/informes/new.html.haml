@@ -8,6 +8,7 @@
 = render :partial => "shared/info", :locals => { :registro => @informe }
 #content-body
   %h2.first-header Nuevo informe
+
   = form_for @informe do |f|
     %table{:border => "0", :width => "100%"}
       %tr
@@ -30,15 +31,19 @@
         %td Esquemas
         %td= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
       %tr
-        %td= link_to_add_association 'Agregar Filtro', f , :informes_filtros, data: {'association-insertion-node' => '#tabla_filtros tr:last', 'association-insertion-method' => 'after'}
+        %td
+          #links
+            = link_to_add_association 'Agregar Filtro', f , :informes_filtros, data: {'association-insertion-node' => 'tbody#informes_filtros', 'association-insertion-method' => 'append'}
         %td
           %table{:border => "0", :width => "100%", :id => 'tabla_filtros'}
-            %tr
-              %th{:scope => "col", width: "10px"} #
-              %th{:scope => "col"} Filtro
-              %th{:scope => "col"} Valor por defecto
-              %th{:scope => "col"} Validador de UI
-              %th{:scope => "col"} Acciones
+            %thead
+              %tr
+                %th{:scope => "col", width: "10px"} #
+                %th{:scope => "col"} Filtro
+                %th{:scope => "col"} Valor por defecto
+                %th{:scope => "col"} Validador de UI
+                %th{:scope => "col"} Acciones 
+            %tbody#informes_filtros
               = f.fields_for :informes_filtros do |fi|
                 = render 'informe_filtro_fields', :f => fi
       %tr

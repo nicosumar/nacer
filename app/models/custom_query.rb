@@ -15,22 +15,11 @@ class CustomQuery < ActiveRecord::Base
     end
     @filtros_de_busqueda = Hash.new
   end
- 
-  # Devuelve o establece los parametros de busqueda
-  #
-  # @param [] attrs=nil Hash con los nombres de columna que se usaran para la busqueda y como valor, su valor por defecto.
-  # @return los filtros ya cargados.
-  def filtros_de_busqueda(attrs=nil)
 
-    return @filtros_de_busqueda if attrs.blank?
-
-    attrs.each do |var, value|
-      class_eval { attr_accessor var }
-      instance_variable_set "@#{var}", value unless "@#{var}".blank?
-    end
-    @filtros_de_busqueda.merge! attrs
+  def nombres_columnas
+    self.attributes.keys
   end
-
+ 
   def self.buscar(*args)
   	args = args.extract_options!
 
@@ -50,7 +39,7 @@ class CustomQuery < ActiveRecord::Base
     if !args[:values].blank?
       i = 0
       args[:values].each do |v|
-        args[i.to_s+v.to_s] = v
+        args[i.to_s+v.to_s] =  v 
         i+=1
       end
     end
