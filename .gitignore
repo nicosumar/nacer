@@ -10,3 +10,4 @@ vendor/data
 *.lnk
 REVISION
 public/system
+lib/tasks/archproc
