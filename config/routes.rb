@@ -22,6 +22,13 @@ Nacer::Application.routes.draw do
     get 'prestaciones_autorizadas', :on => :member, :as => :prestaciones_autorizadas_del
     get 'referentes', :on => :member, :as => :referentes_del
   end
+  resources :paises, :except => :destroy
+  resources :provincias, :except => :destroy
+  resources :departamentos, :except => :destroy
+  resources :distritos, :except => :destroy
+  resources :informes, :except => :destroy do 
+    post "informe_solicitado", on: :collection, as: :render_informe_default, action: :render_informe
+  end
   resources :addendas, :except => :destroy
   resources :addendas_sumar, :except => :destroy
   resources :nomencladores, :except => :destroy
@@ -37,6 +44,7 @@ Nacer::Application.routes.draw do
   match "importar_detalle" => "cuasi_facturas#importar_detalle"
   match "importar_registros_de_prestaciones" => "cuasi_facturas#importar_registros_de_prestaciones"
   match "importar_archivo_p" => "liquidaciones#importar_archivo_p"
+  match "procesar_bajas" => "novedades_de_los_afiliados#procesar_bajas"
   resources :novedades_de_los_afiliados, :except => [:new, :create] do
     get 'alta', :on => :collection, :as => :new_alta, :action => :new_alta
     get 'baja', :on => :collection, :as => :new_baja, :action => :new_baja

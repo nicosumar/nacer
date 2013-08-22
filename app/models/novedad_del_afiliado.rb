@@ -1,5 +1,8 @@
 # -*- encoding : utf-8 -*-
+require 'usa_multi_tenant'
 class NovedadDelAfiliado < ActiveRecord::Base
+  extend UsaMultiTenant
+
   # NULLificar los campos de texto en blanco
   nilify_blanks
 

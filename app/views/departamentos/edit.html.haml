@@ -1,0 +1,18 @@
+- content_for :title do
+  Departamentos
+
+#content-header
+  %h1 Departamentos
+  #action-links
+    = link_to "<< Volver ",:controller => "departamentos", :action => "show", :id => @departamento.id
+
+= render :partial => "shared/info", :locals => { :registro => @departamento }
+
+#content-body
+  %h3 Modificar departamento
+  = form_for @departamento, :url => {:action => "update", :id => @departamento.id, :provincia_id => @provincia.id } do |dpto|
+    %div.hidden_field
+      %input{ :id => "provincia_id", :name => "departamento[provincia_id]", :type => "hidden", :value => @departamento.provincia_id }
+    = render(:partial => "form", :locals => {:dpto => dpto})
+    %div.field_content
+      = dpto.submit

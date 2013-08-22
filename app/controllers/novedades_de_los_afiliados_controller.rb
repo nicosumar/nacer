@@ -856,4 +856,40 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     )
  end
 
+ def procesar_bajas
+   verificar_actualizacion
+   
+   @novedades = NovedadDelAfiliado.multi_find (
+    {
+      :except => ["public"],
+      :where => "where estado_de_la_novedad_id = ? and tipo_de_novedad_id = ?", 
+      :values => [2,2]
+    })
+   
+ end
+
+ private 
+
+  def verificar_lectura
+    if cannot? :update, NovedadDelAfiliado
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+  end
+
+  def verificar_actualizacion
+    if cannot? :update, NovedadDelAfiliado
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+  end
+
 end

@@ -262,12 +262,31 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("documentacion·_respaldatoria·", "documentaciones_respaldatorias")
   inflect.irregular("DocumentacionRespaldatoria", "Documentaciones·Respaldatorias·")
   inflect.irregular("Documentacion·Respaldatoria·", "DocumentacionesRespaldatorias")
+  #Informes - Filtros
+  inflect.irregular("informe_filtro", "informes·_filtros·")
+  inflect.irregular("informe·_filtro·", "informes_filtros")
+  inflect.irregular("InformeFiltro", "Informes·Filtros·")
+  inflect.irregular("Informe·Filtro·", "InformesFiltros")
+  #Informes - Filtros plural a plural 
+  #A veces trata de pluralizar cuando ya esta en plural, le agrego mas reglas
+  inflect.irregular("informes_filtros", "informes·_filtros·")
+  inflect.irregular("informes·_filtros·", "informes_filtros")
+  inflect.irregular("InformesFiltros", "Informes·Filtros·")
+  inflect.irregular("Informes·Filtros·", "InformesFiltros")
+
+  #Informes - Uads
+  inflect.irregular("informe_uad", "informes·_uads·")
+  inflect.irregular("informe·_uad·", "informes_uads")
+  inflect.irregular("InformeUad", "Informes·Uads·")
+  inflect.irregular("Informe·Uad·", "InformesUads")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")
   inflect.irregular("impide", "impiden·")
   inflect.irregular("impide·", "impiden")
+  inflect.irregular("informe", "informes·")
+  inflect.irregular("informe·", "informes")
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")
@@ -375,5 +394,11 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("score_de_riesgo", "score de riesgo cardiovascular")
   inflect.human("fecha_de_la_novedad", "fecha de inscripción/modificación")
   inflect.human("centro_de_inscripcion_id", "centro de inscripción")
+
+  #Tablas de configuracion
+  #Paises
+  inflect.human("pais_bio_id", "Id de Bioestadística")
+
+  #
 
 end

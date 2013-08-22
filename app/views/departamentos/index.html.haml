@@ -1,0 +1,39 @@
+- content_for :title do
+  Departamentos
+
+#content-header
+  %h1 Departamentos
+  #action-links
+    = link_to "Nuevo Departamento", :action => "new"
+
+-# Sidebar
+#content-header
+  #action-links
+    = link_to "Listar Paises", :controller => "paises", :action => "index"
+    = link_to "Listar Provincias", :controller => "provincias", :action => "index"
+    = link_to "Listar Departamentos", :controller => "departamentos", :action => "index"
+    = link_to "Listar Distritos", :controller => "distritos", :action => "index"
+
+#content-body
+  %h2.first-header Listado de departamentos
+  %table
+    %thead
+      %tr
+        %th Id
+        %th Nombre
+        %th ID Bioestadistica
+        %th ID Indec
+        %th ID Inscripcion
+    %tbody
+      - @departamentos.each do |d|
+        %tr
+          %td= d.id
+          %td= d.nombre
+          %td= d.departamento_bio_id
+          %td= d.departamento_indec_id
+          %td= d.departamento_insc_id
+  = will_paginate @departamentos, :inner_window => 2, :outer_window => 0
+
+  
+
+        

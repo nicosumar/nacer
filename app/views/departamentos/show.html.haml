@@ -1,0 +1,53 @@
+- content_for :title do
+  Departamentos
+
+#content-header
+  %h1 Departamentos
+  #action-links
+    - if can? :read, Provincia
+      = link_to "<<  Volver", :controller => "provincias", :action => "show", :id => @provincia.id
+    - if can? :update, Departamento
+      = link_to "Modificar", :controller => "departamentos", :action => "edit", :id => @departamento.id
+    - if can? :update, Distrito
+      = link_to "Agregar Distrito", :controller => "distritos", :action => "new", :departamento_id => @departamento.id
+
+#content-body
+  %h3 Datos del departamento
+  
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @departamento.nombre
+
+  %div.field_content
+    %span.field_name Id Bioestadistica 
+    %span.field_value= @departamento.departamento_bio_id
+
+  %div.field_content
+    %span.field_name Id Indec
+    %span.field_value= @departamento.departamento_indec_id
+
+  %div.field_content
+    %span.field_name Id inscripcion
+    %span.field_value= @departamento.departamento_insc_id
+
+  %h4 Distritos
+  
+  %table
+    %thead
+      %tr
+        %th Nombre
+        %th Codigo Postal
+        %th Id Bioestadistica
+        %th Id Inscripción 
+        %th Id Indec
+        %th Alias
+    %tbody
+      - @distritos.each do |d|
+        %tr.clickable{ :onclick => "location.href=\'#{distrito_path(d, :departamento_id => @departamento.id)}\'", :title => "Ver distrito"} 
+          %td= d.nombre
+          %td= d.codigo_postal
+          %td= d.distrito_bio_id
+          %td= d.distrito_insc_id
+          %td= d.distrito_indec_id
+          %td= d.alias_id
+  = will_paginate @distritos, :inner_window => 2, :outer_window => 0

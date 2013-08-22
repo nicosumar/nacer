@@ -1,0 +1,25 @@
+- content_for :title do
+  Provincias
+
+#content-header
+  %h1 Provincias
+  #action-links
+    - if !@pais.nil?
+      = link_to "<< Volver ",:controller => "paises", :action => "show", :id => @pais.id
+    - else 
+      = link_to "<< Volver ",:controller => "provincias", :action => "index"
+
+= render :partial => "shared/info", :locals => { :registro => @provincia }
+
+#content-body
+  %h3 Agregar provincia
+  = form_for @provincia, :url => {:action => "create", :id => @provincia.id, :pais_id => (@pais ? @pais.id : nil) } do |p|
+    - if @pais
+      %div.hidden_field
+        %input{ :id => "provincia_pais_id", :name => "provincia[pais_id]", :type => "hidden", :value => @provincia.pais_id }
+    - else
+      = collection_select :provincia, :pais_id, @paises, :id, :nombre
+    = render(:partial => "form", :locals => {:p => p})
+    %div.field_content
+      = p.submit
+
