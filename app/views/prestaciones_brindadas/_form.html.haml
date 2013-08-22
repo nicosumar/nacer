@@ -56,22 +56,33 @@
     - else
       = f.label :prestacion_id, "Prestación*"
       = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
-        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione una prestación..."} |
+        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione una prestación...", |
+        :style => "width: 600px;"} |
 
-  #diagnostico.field{:style => "display: none;"}
-    - if @diagnosticos.size == 1
-      = f.hidden_field :diagnostico_id, :value => @diagnosticos.first[1]
-      %div.field_content
-        %span.field_name Diagnóstico*
-        %span.field_value= @diagnosticos.first[0]
-    - else
-      = f.label :diagnostico_id, "Diagnóstico*"
-      = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
-        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione un diagnóstico..."} |
+  -# Modificación porque 'chosen' establece el width en 0 cuando un div superior tiene la propiedad display en 'none'.
+  - if @diagnosticos.size > 0
+    #diagnostico.field
+      - if @diagnosticos.size == 1
+        = f.hidden_field :diagnostico_id, :value => @diagnosticos.first[1]
+        %div.field_content
+          %span.field_name Diagnóstico*
+          %span.field_value= @diagnosticos.first[0]
+      - else
+        = f.label :diagnostico_id, "Diagnóstico*"
+        = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
+          {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione un diagnóstico...", |
+          :style => "width: 600px;"} |
+  - else
+    #diagnostico.field
 
-  #historia_clinica.field{:style => "display: none;"}
-    = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
-    = f.text_field :historia_clinica, {:size => 15}
+  - if @prestacion_brindada.prestacion && !@prestacion_brindada.prestacion.comunitaria
+    #historia_clinica.field
+      = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+      = f.text_field :historia_clinica, {:size => 15}
+  - else
+    #historia_clinica.field{:style => "display: none;"}
+      = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+      = f.text_field :historia_clinica, {:size => 15}
 
   #cantidad_de_unidades.field{:style => "display: none;"}
     = f.label :cantidad_de_unidades, "Cantidad de unidades*"
