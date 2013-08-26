@@ -921,7 +921,6 @@ class Afiliado < ActiveRecord::Base
   def self.transformar_nombre(nombre)
     return nil unless nombre
     normalizado = nombre.mb_chars.upcase.to_s
-
     normalizado.gsub!(/[\,\.\'\`\^\~\-\"\/\\\!\$\%\&\(\)\=\+\*\-\_\;\:\<\>\|\@\#\[\]\{\}]/, "")
     if normalizado.match(/[ÁÉÍÓÚÄËÏÖÜÀÈÌÒÂÊÎÔÛ014]/)
       normalizado.gsub!(/[ÁÄÀÂ4]/, "A")

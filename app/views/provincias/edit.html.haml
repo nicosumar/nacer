@@ -1,0 +1,14 @@
+- content_for :title do
+  Provincias
+
+#content-header
+  %h1 Provincias
+  #action-links
+    = link_to "<< Volver", :back
+    
+#content-body
+  %h3 Editar datos de la provincia
+  = form_for @provincia do |p|
+    = render(:partial => "form", :locals => {:p => p})
+    %div.field_content
+      = p.submit

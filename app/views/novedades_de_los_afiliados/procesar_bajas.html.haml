@@ -1,0 +1,30 @@
+- content_for :title do
+  Resumen bajas solicitadas
+
+#content-header
+  %h1 Resumen bajas solicitadas
+
+= render "shared/info"
+
+#content-body
+  - if true
+    = @novedades.first.class.to_s + @novedades.first.esquema
+    %table
+      %thead
+        %tr
+          %th UAD
+          %th Tipo de Novedad
+          %th Estado
+          %th Beneficiario
+          %th Última modificación
+      %tbody
+        - @novedades.each do |n|
+          %tr
+            %td= n.esquema
+            %td= n.tipo_de_novedad.nombre
+            %td= n.estado_de_la_novedad.nombre
+            %td= n.apellido.to_s + ", " + n.nombre.to_s
+            %td= n.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+  - else
+    %p No existen solicitudes en el estado seleccionado
+

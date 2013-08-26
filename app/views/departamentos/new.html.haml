@@ -1,0 +1,26 @@
+- content_for :title do
+  Departamentos
+
+#content-header
+  %h1 Departamentos
+  #action-links
+    - if @pais.nil?
+      = link_to "<< Volver ",:controller => "provincias", :action => "index"
+    - else
+      = link_to "<< Volver ",:controller => "provincias", :action => "show", :id => @provincia.id
+
+= render :partial => "shared/info", :locals => { :registro => @departamento }
+
+#content-body
+  %h3 Agregar departamento
+  = form_for @departamento, :url => {:action => "create", :id => @departamento.id, :provincia_id => (@provincia ? @provincia.id : nil) } do |dpto|
+    - if @provincia
+      %div.hidden_field
+        %input{ :id => "provincia_id", :name => "departamento[provincia_id]", :type => "hidden", :value => @departamento.provincia_id }
+    - else
+      = collection_select :depto, :id, @paises, :id, :nombre,{:prompt => 'select'}, { :onchange =>  remote_function(:url => {:action => 'get_products'}, :with => "'id=' + this.value")} 
+      = collection_select :departamento, :provincia_id, @provincias, :id, :nombre
+    = render(:partial => "form", :locals => {:dpto => dpto})
+
+    %div.field_content
+      = dpto.submit

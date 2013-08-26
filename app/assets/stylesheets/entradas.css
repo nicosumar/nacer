@@ -1,0 +1,43 @@
+table {
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left; }
+  
+
+table th {
+  background: none repeat scroll 0 0 #333333;
+  border-bottom: 2px solid #FFFFFF;
+  border-top: 1px solid transparent;
+  color: white;
+  padding: 8px;
+  text-align: center; }
+
+table tr {
+}
+
+table td {
+  background: none repeat scroll 0 0 transparent;
+  border-bottom: 2px solid #FFFFFF;
+  border-top: 1px solid transparent;
+  color: #1A1A1A;
+  padding: 8px;
+  &.centrado {
+    text-align: center; }
+  &.izquierda {
+    text-align: left; }
+  &.derecha {
+    text-align: right; } }
+
+table tr:hover td {
+  background: none repeat scroll 0 0 #FFFFFF; }
+  
+
+
+table tr.clickable:hover td {
+/*  font-weight: bold; */
+  color: #333333; }
+
+table tr.clickable {
+  cursor: pointer; }
+  

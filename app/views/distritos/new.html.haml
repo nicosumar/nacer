@@ -1,0 +1,25 @@
+- content_for :title do
+  Distritos
+
+#content-header
+  %h1 Distritos
+  #action-links
+    - if @depto.nil?
+      = link_to "<< Volver ",:controller => "departamentos", :action => "index"
+    - else
+      = link_to "<< Volver ",:controller => "departamentos", :action => "show", :id => @dpto.id
+
+= render :partial => "shared/info", :locals => { :registro => @distrito }
+
+#content-body
+  %h3 Agregar Distrito
+  = form_for @distrito, :url => {:action => "create", :id => @distrito.id, :departamento_id => (@depto ? @dpto.id : nil)  } do |dist|
+    - if !@dpto.nil?
+      %div.hidden_field
+        %input{ :id => "departamento_id", :name => "distrito[departamento_id]", :type => "hidden", :value => @distrito.departamento_id }
+    - else
+      = collection_select :distrito, :departamento_id, @departamentos, :id, :nombre
+    = render(:partial => "form", :locals => {:dist => dist})
+
+    %div.field_content
+      = dist.submit

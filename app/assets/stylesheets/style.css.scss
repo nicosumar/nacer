@@ -173,6 +173,15 @@ a {
   padding-top: 20px;
 }
 
+.afiliados {
+  border: groove ;
+}
+
+.prestaciones {
+  border: dashed;
+}
+
+
 .destacado {
   color: $azul_nacer;
   font-weight: bold;
@@ -208,6 +217,17 @@ a {
 }
 
 /* Tables */
+
+.no-css{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+
 table {
   border-collapse: collapse;
   font-size: 12px;

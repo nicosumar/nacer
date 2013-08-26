@@ -1,0 +1,9 @@
+- content_for :title do
+  = @informe.titulo
+
+#content-header
+  %h1= @informe.titulo
+
+#content-body
+  %h2.first-header= @informe.titulo
+  = render(:partial => "render_"+@informe.nombre_partial, :locals => {:cq => @cq})

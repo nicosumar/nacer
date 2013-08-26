@@ -1,0 +1,19 @@
+- content_for :title do
+  Distritos
+
+#content-header
+  %h1 Distritos
+  #action-links
+    = link_to "<< Volver ",:controller => "departamentos", :action => "show", :id => @dpto.id
+
+= render :partial => "shared/info", :locals => { :registro => @distrito }
+
+#content-body
+  %h3 Agregar Distrito
+  = form_for @distrito, :url => {:action => "update", :id => @distrito.id, :departamento_id => @dpto.id } do |dist|
+    %div.hidden_field
+      %input{ :id => "departamento_id", :name => "distrito[departamento_id]", :type => "hidden", :value => @distrito.departamento_id }
+    = render(:partial => "form", :locals => {:dist => dist})
+
+    %div.field_content
+      = dist.submit
