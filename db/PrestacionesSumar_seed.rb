@@ -2725,7 +2725,6 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.3")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q03")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.2")
   prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
@@ -2796,7 +2795,6 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.2")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.3")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q03")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.2")
@@ -3253,7 +3251,6 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.3")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q03")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.2")
   prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
@@ -3286,7 +3283,6 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.2")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.3")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q03")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.2")
@@ -3324,8 +3320,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.3")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q03")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
-  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
+f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.2")
   prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
   AsignacionDePrecios.create!({
@@ -10270,8 +10265,8 @@ ActiveRecord::Base.transaction do
     :nombre => "Consulta para confirmación diagnóstica en población indígena con riesgo detectado en terreno",
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
-  prestacion.sexos << [sexo_femenino, sexo_masculino]
-  prestacion.grupos_poblacionales << adolescentes
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << mujeres_20_a_64
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("B80")
