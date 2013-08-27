@@ -578,53 +578,6 @@ ActiveRecord::Schema.define(:version => 20130827123145) do
     t.integer "prestacion_id"
   end
 
-  create_table "migra_anexos", :id => false, :force => true do |t|
-    t.integer "id",                                   :null => false
-    t.integer "numero_fila"
-    t.integer "numero_columna_si_no"
-    t.string  "prestaciones",          :limit => 256
-    t.string  "anexo",                 :limit => 500
-    t.string  "codigo",                :limit => 256
-    t.string  "precio",                :limit => 50
-    t.string  "rural",                 :limit => 3
-    t.integer "id_subrrogada_foranea"
-  end
-
-  add_index "migra_anexos", ["id"], :name => "migra_anexos_id_idx", :unique => true
-  add_index "migra_anexos", ["numero_fila"], :name => "migra_anexos_numero_fila_idx"
-
-  create_table "migra_modulos", :id => false, :force => true do |t|
-    t.integer "id",                                          :null => false
-    t.integer "numero_fila"
-    t.integer "numero_columna_si_no"
-    t.integer "grupo"
-    t.string  "subgrupo",                     :limit => 100
-    t.text    "modulo"
-    t.text    "definicion_cirugia_conceptos"
-    t.string  "codigos",                      :limit => 256
-    t.integer "id_subrrogada_foranea"
-  end
-
-  add_index "migra_modulos", ["id"], :name => "migra_modulos_id_idx", :unique => true
-  add_index "migra_modulos", ["numero_fila"], :name => "migra_modulos_numero_fila_idx"
-
-  create_table "migra_prestaciones", :id => false, :force => true do |t|
-    t.integer "id",                                   :null => false
-    t.integer "numero_fila",                          :null => false
-    t.integer "numero_columna_si_no",                 :null => false
-    t.integer "grupo",                                :null => false
-    t.string  "subgrupo",              :limit => 100, :null => false
-    t.string  "nosologia",             :limit => 512, :null => false
-    t.text    "tipo_de_prestacion",                   :null => false
-    t.text    "nombre_prestacion",                    :null => false
-    t.string  "codigos",               :limit => 256
-    t.string  "precio",                :limit => 30
-    t.string  "rural",                 :limit => 3
-    t.integer "id_subrrogada_foranea"
-  end
-
-  add_index "migra_prestaciones", ["numero_fila"], :name => "migra_prestaciones_numero_fila_idx"
-
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
     t.datetime "created_at"
