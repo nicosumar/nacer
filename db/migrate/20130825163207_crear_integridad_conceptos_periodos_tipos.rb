@@ -20,9 +20,8 @@ class CrearIntegridadConceptosPeriodosTipos < ActiveRecord::Migration
 
     #Prestaciones
     #agrego referencia a prestaciones
-    change_table :prestaciones do |t|
-      t.references :concepto_de_facturacion
-    end
+      add_column :prestaciones, :concepto_de_facturacion_id, :integer
+
     #Creo la fk para la integridad referencial y agrego un indice para la fk. 
   	execute <<-SQL
 	  ALTER TABLE "public"."prestaciones"
