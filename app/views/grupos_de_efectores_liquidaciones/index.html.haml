@@ -1,0 +1,25 @@
+- content_for :title do
+  Grupos de efectores para liquidacion
+#content-header
+  %h1 Grupos de efectores para liquidacion
+  #action-links
+    - if can? :create, GrupoDeEfectoresLiquidacion
+      = link_to 'New Grupo de efectores liquidacion', new_grupo_de_efector_liquidacion_path
+
+#content-body
+  %table
+    %tr
+      %th Grupo
+      %th Descripción
+      %th
+      %th
+      %th
+    - @grupos_de_efectores_liquidaciones.each do |grupo_de_efector_liquidacion|
+      %tr
+        %td= grupo_de_efector_liquidacion.grupo
+        %td= grupo_de_efector_liquidacion.descripcion
+        %td= link_to 'Ver', grupo_de_efector_liquidacion
+        %td= link_to 'Editar', edit_grupo_de_efector_liquidacion_path(grupo_de_efector_liquidacion)
+        %td= link_to 'Borrar', grupo_de_efector_liquidacion, method: :delete, data: { confirm: '¿Esta seguro?' }
+
+

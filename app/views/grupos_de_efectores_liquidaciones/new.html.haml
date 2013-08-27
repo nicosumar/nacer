@@ -1,0 +1,12 @@
+- content_for :title do
+  Nuevo Grupo de Efectores para liquidacion
+
+#content-header
+  %h1 Nuevo Grupo de Efectores para liquidacion
+  #action-links
+    = link_to 'Back', grupos_de_efectores_liquidaciones_path
+
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @grupo_de_efector_liquidacion }
+  = render 'form'
+

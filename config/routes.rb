@@ -5,6 +5,10 @@ Nacer::Application.routes.draw do
   resources :conceptos_de_facturacion
   resources :periodos
   resources :tipos_periodos
+  resources :liquidaciones_sumar
+  resources :formulas
+  resources :grupos_de_efectores_liquidaciones
+
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }
   devise_scope :user do

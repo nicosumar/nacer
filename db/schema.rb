@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130825163207) do
+ActiveRecord::Schema.define(:version => 20130827123145) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -406,7 +406,7 @@ ActiveRecord::Schema.define(:version => 20130825163207) do
     t.string   "cuie"
     t.string   "codigo_de_efector_sissa"
     t.integer  "codigo_de_efector_bio"
-    t.string   "nombre",                                           :null => false
+    t.string   "nombre",                                                  :null => false
     t.string   "domicilio"
     t.integer  "departamento_id"
     t.integer  "distrito_id"
@@ -420,17 +420,18 @@ ActiveRecord::Schema.define(:version => 20130825163207) do
     t.integer  "camas_de_internacion"
     t.integer  "ambientes"
     t.integer  "dependencia_administrativa_id"
-    t.boolean  "integrante",                    :default => true,  :null => false
+    t.boolean  "integrante",                           :default => true,  :null => false
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.integer  "updater_id"
-    t.boolean  "alto_impacto",                  :default => false
-    t.boolean  "perinatal_de_alta_complejidad", :default => false
-    t.boolean  "addenda_perinatal",             :default => false
+    t.boolean  "alto_impacto",                         :default => false
+    t.boolean  "perinatal_de_alta_complejidad",        :default => false
+    t.boolean  "addenda_perinatal",                    :default => false
     t.date     "fecha_de_addenda_perinatal"
     t.integer  "unidad_de_alta_de_datos_id"
+    t.integer  "grupos_de_efectores_liquidaciones_id"
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -447,11 +448,27 @@ ActiveRecord::Schema.define(:version => 20130825163207) do
     t.boolean "indexable", :default => false
   end
 
+  create_table "formulas", :force => true do |t|
+    t.string   "descripcion"
+    t.text     "formula"
+    t.text     "observaciones"
+    t.boolean  "activa",        :default => true
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
   create_table "grupos_de_efectores", :force => true do |t|
     t.string  "nombre",                        :null => false
     t.string  "tipo_de_efector",               :null => false
     t.integer "grupo_bio_id"
     t.boolean "centro_integrador_comunitario"
+  end
+
+  create_table "grupos_de_efectores_liquidaciones", :force => true do |t|
+    t.string   "grupo"
+    t.string   "descripcion"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "grupos_de_prestaciones", :force => true do |t|
@@ -538,6 +555,14 @@ ActiveRecord::Schema.define(:version => 20130825163207) do
   end
 
   add_index "liquidaciones", ["efector_id", "anio_de_prestaciones", "mes_de_prestaciones"], :name => "unq_liquidaciones_efector_anio_y_mes", :unique => true
+
+  create_table "liquidaciones_sumar", :force => true do |t|
+    t.integer  "formula_id"
+    t.integer  "concepto_de_facturacion_id"
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+    t.integer  "grupos_de_efectores_liquidaciones_id"
+  end
 
   create_table "metodos_de_validacion", :force => true do |t|
     t.string   "nombre"

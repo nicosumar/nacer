@@ -278,6 +278,16 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("concepto·_de·_facturacion·", "conceptos_de_facturacion")
   inflect.irregular("ConceptoDeFacturacion", "Conceptos·De·Facturacion·")
   inflect.irregular("Concepto·De·Facturacion·", "ConceptosDeFacturacion")
+  #Liquidaciones Sumar
+  inflect.irregular("liquidacion_sumar", "liquidaciones·_sumar·")
+  inflect.irregular("liquidacion·_sumar·", "liquidaciones_sumar")
+  inflect.irregular("LiquidacionSumar", "Liquidaciones·Sumar·")
+  inflect.irregular("Liquidacion·Sumar·", "LiquidacionesSumar")
+  #Grupo de efectores para liquidacion
+  inflect.irregular("grupo_de_efectores_liquidacion", "grupos·_de·_efectores·_liquidaciones·")
+  inflect.irregular("grupo·_de·_efectores·_liquidacion·", "grupo_de_efectores_liquidaciones")
+  inflect.irregular("GrupoDeEfectoresLiquidacion", "Grupo·De·Efectores·Liquidaciones·")
+  inflect.irregular("Grupo·De·Efectores·Liquidacion·", "GrupoDeEfectoresLiquidaciones")
 
   #El articulo "de" lo trata de pluralizar
   inflect.irregular("de", "de·")

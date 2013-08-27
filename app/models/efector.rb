@@ -28,6 +28,7 @@ class Efector < ActiveRecord::Base
   has_many :asignaciones_de_nomenclador
   has_many :referentes
   belongs_to :unidad_de_alta_de_datos
+  belongs_to :grupo_de_efectores_liquidacion
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   default_scope where(:integrante => true)
