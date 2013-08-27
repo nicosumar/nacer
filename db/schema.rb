@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130801222559) do
+ActiveRecord::Schema.define(:version => 20130825163207) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -191,6 +191,13 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
   create_table "clases_de_documentos", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
+  end
+
+  create_table "conceptos_de_facturacion", :force => true do |t|
+    t.string   "concepto"
+    t.string   "descripcion"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "contactos", :force => true do |t|
@@ -463,6 +470,43 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.integer "prestacion_id"
   end
 
+  create_table "informes", :force => true do |t|
+    t.string   "titulo"
+    t.text     "sql"
+    t.string   "formato"
+    t.string   "nombre_partial"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  create_table "informes_filtros", :force => true do |t|
+    t.integer  "posicion"
+    t.integer  "informe_id"
+    t.integer  "informe_filtro_validador_ui_id"
+    t.string   "nombre"
+    t.string   "valor_por_defecto"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "informes_filtros", ["informe_id", "informe_filtro_validador_ui_id"], :name => "indexfiltrosvalidadores"
+
+  create_table "informes_filtros_validadores_uis", :force => true do |t|
+    t.string   "tipo"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "informes_uads", :force => true do |t|
+    t.integer  "informe_id"
+    t.integer  "unidad_de_alta_de_datos_id"
+    t.integer  "incluido"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "informes_uads", ["informe_id", "unidad_de_alta_de_datos_id"], :name => "informes_uads_idx"
+
   create_table "lenguas_originarias", :force => true do |t|
     t.string "nombre"
   end
@@ -508,6 +552,53 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.integer "metodo_de_validacion_id"
     t.integer "prestacion_id"
   end
+
+  create_table "migra_anexos", :id => false, :force => true do |t|
+    t.integer "id",                                   :null => false
+    t.integer "numero_fila"
+    t.integer "numero_columna_si_no"
+    t.string  "prestaciones",          :limit => 256
+    t.string  "anexo",                 :limit => 500
+    t.string  "codigo",                :limit => 256
+    t.string  "precio",                :limit => 50
+    t.string  "rural",                 :limit => 3
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_anexos", ["id"], :name => "migra_anexos_id_idx", :unique => true
+  add_index "migra_anexos", ["numero_fila"], :name => "migra_anexos_numero_fila_idx"
+
+  create_table "migra_modulos", :id => false, :force => true do |t|
+    t.integer "id",                                          :null => false
+    t.integer "numero_fila"
+    t.integer "numero_columna_si_no"
+    t.integer "grupo"
+    t.string  "subgrupo",                     :limit => 100
+    t.text    "modulo"
+    t.text    "definicion_cirugia_conceptos"
+    t.string  "codigos",                      :limit => 256
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_modulos", ["id"], :name => "migra_modulos_id_idx", :unique => true
+  add_index "migra_modulos", ["numero_fila"], :name => "migra_modulos_numero_fila_idx"
+
+  create_table "migra_prestaciones", :id => false, :force => true do |t|
+    t.integer "id",                                   :null => false
+    t.integer "numero_fila",                          :null => false
+    t.integer "numero_columna_si_no",                 :null => false
+    t.integer "grupo",                                :null => false
+    t.string  "subgrupo",              :limit => 100, :null => false
+    t.string  "nosologia",             :limit => 512, :null => false
+    t.text    "tipo_de_prestacion",                   :null => false
+    t.text    "nombre_prestacion",                    :null => false
+    t.string  "codigos",               :limit => 256
+    t.string  "precio",                :limit => 30
+    t.string  "rural",                 :limit => 3
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_prestaciones", ["numero_fila"], :name => "migra_prestaciones_numero_fila_idx"
 
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
@@ -576,6 +667,19 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.string "codigo_para_prestaciones"
   end
 
+  create_table "periodos", :force => true do |t|
+    t.string   "periodo"
+    t.date     "fecha_cierre"
+    t.date     "fecha_recepcion"
+    t.integer  "tipo_periodo_id"
+    t.integer  "concepto_de_facturacion_id"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "periodos", ["concepto_de_facturacion_id"], :name => "periodos_concepto_de_facturacion_id_idx"
+  add_index "periodos", ["tipo_periodo_id"], :name => "periodos_tipo_periodo_id_idx"
+
   create_table "periodos_de_actividad", :force => true do |t|
     t.integer  "afiliado_id"
     t.date     "fecha_de_inicio"
@@ -633,7 +737,10 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.boolean  "otorga_cobertura",                                           :default => false
     t.boolean  "comunitaria",                                                :default => false
     t.boolean  "requiere_historia_clinica",                                  :default => true
+    t.integer  "concepto_de_facturacion_id"
   end
+
+  add_index "prestaciones", ["concepto_de_facturacion_id"], :name => "prestaciones_concepto_de_facturacion_id_idx"
 
   create_table "prestaciones_autorizadas", :force => true do |t|
     t.integer  "efector_id",                  :null => false
@@ -656,9 +763,12 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
   end
 
   create_table "provincias", :force => true do |t|
-    t.string  "nombre",           :null => false
+    t.string  "nombre",                          :null => false
     t.integer "provincia_bio_id"
+    t.integer "pais_id",          :default => 1
   end
+
+  add_index "provincias", ["pais_id"], :name => "index_provincias_on_pais_id"
 
   create_table "referentes", :force => true do |t|
     t.integer  "efector_id",            :null => false
@@ -753,6 +863,13 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
   create_table "tipos_de_prestaciones", :force => true do |t|
     t.string "codigo", :null => false
     t.string "nombre", :null => false
+  end
+
+  create_table "tipos_periodos", :force => true do |t|
+    t.string   "tipo",        :limit => 1
+    t.string   "descripcion"
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
   end
 
   create_table "tribus_originarias", :force => true do |t|

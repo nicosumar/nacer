@@ -1,0 +1,24 @@
+- content_for :title do
+  Liquidaciones - Conceptos de Facturación
+#content-header
+  %h1 Conceptos de Facturacion
+  #action-links
+    - if can? :create, ConceptoDeFacturacion
+      = link_to 'Nuevo Concepto', new_concepto_de_facturacion_path
+
+#content-body
+  %table
+    %tr
+      %th Concepto
+      %th Descripción
+      %th{colspan: '3'} Acciones
+    - @conceptos_de_facturacion.each do |concepto_de_facturacion|
+      %tr
+        %td= concepto_de_facturacion.concepto
+        %td= concepto_de_facturacion.descripcion
+        %td= link_to 'Ver', concepto_de_facturacion
+        %td= link_to 'Editar', edit_concepto_de_facturacion_path(concepto_de_facturacion)
+        %td= link_to 'Borrar', concepto_de_facturacion, method: :delete, data: { confirm: '¿Esta Seguro?' }
+  %br/
+
+

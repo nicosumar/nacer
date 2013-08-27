@@ -1,0 +1,11 @@
+- content_for :title do
+  Periodos
+
+#content-header
+  %h1 Nuevo Periodo
+  #action-links
+    = link_to '<< Volver al listado', periodos_path
+
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @periodo }
+  = render 'form'

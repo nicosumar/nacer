@@ -8,6 +8,8 @@ class Prestacion < ActiveRecord::Base
   attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id, :objeto_de_la_prestacion_id
   attr_accessible :created_at, :updated_at, :comunitaria, :otorga_cobertura, :unidades_maximas
   attr_accessible :requiere_historia_clinica
+  #Atributos para asignacion masiva vinculados a Liquidaciones
+  attr_accessible :conceptos_de_facturacion_id
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :codigo
@@ -30,6 +32,10 @@ class Prestacion < ActiveRecord::Base
   has_many :datos_reportables_requeridos
   has_many :datos_reportables, :through => :datos_reportables_requeridos
   has_and_belongs_to_many :documentaciones_respaldatorias
+  #Relaciones para liquidacion
+  belongs_to :concepto_de_facturacion
+
+
 
   # Validaciones
   #validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO

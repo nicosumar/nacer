@@ -5,7 +5,7 @@
   %h1 Paises
   #action-links
     - if can? :read, Pais
-      = link_to "<<  Volver", :action => "index"
+      = link_to "<<  Volver al listado", :action => "index"
     - if can? :update, Pais
       = link_to "Modificar", :controller => "paises", :action => "edit", :id => @pais.id
     - if can? :update, Provincia

@@ -15,6 +15,11 @@ $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
 });
 
+//Usar la clase "jquery_fecha" para cambiar un input text a jquery con calendar
+$(document).ready(function() {
+  $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true });  
+});
+
 jQuery(function($){
         $.datepicker.regional['es'] = {
                 closeText: 'Cerrar',

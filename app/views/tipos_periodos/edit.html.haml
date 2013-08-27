@@ -1,0 +1,12 @@
+- content_for :title do
+  Editar Tipo de Periodo
+
+#content-header
+  %h1 Editar Tipo de Periodo
+  #action-links
+    = link_to '<< Volver', tipos_periodos_path
+    = link_to 'Ver', @tipo_periodo
+
+= render :partial => "shared/info", :locals => { :registro => @tipo_periodo }
+
+= render 'form'

@@ -1,0 +1,26 @@
+- content_for :title do
+  Liquidaciones - Tipos de Periodos 
+
+#content-header
+  %h1 Tipos de Periodo
+  #action-links
+    - if can? :create, TipoPeriodo
+      = link_to 'Nuevo', new_tipo_periodo_path
+
+%table
+  %tr
+    %th Tipo
+    %th Descripción
+    %th
+    %th
+    %th
+  - @tipos_periodos.each do |tipo_periodo|
+    %tr
+      %td= tipo_periodo.tipo
+      %td= tipo_periodo.descripcion
+      %td= link_to 'Ver', tipo_periodo
+      %td= link_to 'Editar', edit_tipo_periodo_path(tipo_periodo)
+      %td= link_to 'Borrar', tipo_periodo, method: :delete, data: { confirm: '¿Esta seguro?' }
+%br/
+
+

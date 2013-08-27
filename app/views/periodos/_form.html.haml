@@ -1,0 +1,15 @@
+= form_for(@periodo) do |f|
+  .field
+    = f.label :periodo
+    = f.text_field :periodo
+  .field
+    = f.label :fecha_cierre, 'Fecha de cierre'
+    = f.text_field :fecha_cierre, { :class => "jquery_fecha"}
+  .field
+    = f.label :fecha_recepcion, 'Fecha de recepción'
+    = f.text_field :fecha_recepcion, { :class => "jquery_fecha"}
+  .field
+    = f.label :tipo_periodo, 'Tipo de periodo'
+    = f.select :tipo_periodo_id, @tipos_periodos
+  .actions
+    = f.submit

@@ -1,6 +1,11 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  #Liquidaciones - Sumar
+  resources :conceptos_de_facturacion
+  resources :periodos
+  resources :tipos_periodos
+
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }
   devise_scope :user do
     get "users", :to => "users#index", :as => :users

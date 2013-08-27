@@ -1,0 +1,19 @@
+- content_for :title do
+  Liquidaciones - Ver - Tipos de Periodos 
+
+#content-header
+  %h1 Tipos de Periodo
+  #action-links
+    - if can? :read, TipoPeriodo
+      = link_to '<< Volver al listado', tipos_periodos_path
+    - if can? :update, TipoPeriodo
+      = link_to 'Editar', edit_tipo_periodo_path(@tipo_periodo)
+
+= render :partial => "shared/info", :locals => { :registro => @tipo_periodo }
+
+%div.field_content
+  %span.field_name Tipo:
+  %span.field_value= @tipo_periodo.tipo
+%div.field_content
+  %span.field_name Descripción:
+  %span.field_value= @tipo_periodo.descripcion

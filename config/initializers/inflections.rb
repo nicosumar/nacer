@@ -273,7 +273,17 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("informes·_filtros·", "informes_filtros")
   inflect.irregular("InformesFiltros", "Informes·Filtros·")
   inflect.irregular("Informes·Filtros·", "InformesFiltros")
+  #Conceptos de facturacion
+  inflect.irregular("concepto_de_facturacion", "conceptos·_de·_facturacion·")
+  inflect.irregular("concepto·_de·_facturacion·", "conceptos_de_facturacion")
+  inflect.irregular("ConceptoDeFacturacion", "Conceptos·De·Facturacion·")
+  inflect.irregular("Concepto·De·Facturacion·", "ConceptosDeFacturacion")
 
+  #El articulo "de" lo trata de pluralizar
+  inflect.irregular("de", "de·")
+  inflect.irregular("de·", "de")
+  inflect.irregular("De", "De·")
+  inflect.irregular("De·", "De")
   #Informes - Uads
   inflect.irregular("informe_uad", "informes·_uads·")
   inflect.irregular("informe·_uad·", "informes_uads")
