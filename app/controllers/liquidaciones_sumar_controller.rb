@@ -1,83 +1,79 @@
+# -*- encoding : utf-8 -*-
 class LiquidacionesSumarController < ApplicationController
+  before_filter :authenticate_user!
+  before_filter :verificar_lectura
+
   # GET /liquidaciones_sumar
-  # GET /liquidaciones_sumar.json
   def index
     @liquidaciones_sumar = LiquidacionSumar.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @liquidaciones_sumar }
-    end
   end
 
   # GET /liquidaciones_sumar/1
-  # GET /liquidaciones_sumar/1.json
   def show
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @liquidacion_sumar }
-    end
   end
 
   # GET /liquidaciones_sumar/new
-  # GET /liquidaciones_sumar/new.json
   def new
     @liquidacion_sumar = LiquidacionSumar.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @liquidacion_sumar }
-    end
+    @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+    @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
+    @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id]}
+    @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
   end
 
   # GET /liquidaciones_sumar/1/edit
   def edit
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+    @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
+    @periodo_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id]}
+    @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
   end
 
   # POST /liquidaciones_sumar
-  # POST /liquidaciones_sumar.json
   def create
     @liquidacion_sumar = LiquidacionSumar.new(params[:liquidacion_sumar])
 
-    respond_to do |format|
-      if @liquidacion_sumar.save
-        format.html { redirect_to @liquidacion_sumar, notice: 'Liquidacion sumar was successfully created.' }
-        format.json { render json: @liquidacion_sumar, status: :created, location: @liquidacion_sumar }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @liquidacion_sumar.errors, status: :unprocessable_entity }
-      end
+    if @liquidacion_sumar.save
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => 'Se actualizo el periodo correctamente' } 
+    else
+      @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+      @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
+      @periodo_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id]}
+      @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
+      render action: "new" 
     end
   end
 
   # PUT /liquidaciones_sumar/1
-  # PUT /liquidaciones_sumar/1.json
   def update
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
 
-    respond_to do |format|
       if @liquidacion_sumar.update_attributes(params[:liquidacion_sumar])
-        format.html { redirect_to @liquidacion_sumar, notice: 'Liquidacion sumar was successfully updated.' }
-        format.json { head :no_content }
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => 'Se actualizo el periodo correctamente' } 
       else
-        format.html { render action: "edit" }
-        format.json { render json: @liquidacion_sumar.errors, status: :unprocessable_entity }
+        @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+        @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
+        @periodo_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id]}
+        @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
+        render action: "edit" 
       end
-    end
   end
 
   # DELETE /liquidaciones_sumar/1
-  # DELETE /liquidaciones_sumar/1.json
   def destroy
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
     @liquidacion_sumar.destroy
 
-    respond_to do |format|
-      format.html { redirect_to liquidaciones_sumar_url }
-      format.json { head :no_content }
+    redirect_to liquidaciones_sumar_url 
+  end
+
+  private
+
+  def verificar_lectura
+    if cannot? :read, LiquidacionSumar
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
 end

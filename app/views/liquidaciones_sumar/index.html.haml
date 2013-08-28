@@ -1,0 +1,28 @@
+- content_for :title do
+  Liquidaciones Sumar
+#content-header
+  %h1 Liquidaciones - Sumar
+  #action-links
+    - if can? :create, LiquidacionSumar
+      = link_to 'Nueva Liquidacion', new_liquidacion_sumar_path
+
+#content-body
+  %table
+    %tr
+      %th Descripcion
+      %th Grupo de Efectores
+      %th Concepto de facturacion
+      %th Periodo
+      %th Formula
+      %th{colspan: '3'} Acciones
+    - @liquidaciones_sumar.each do |liquidacion_sumar|
+      %tr
+        %td= liquidacion_sumar.descripcion
+        %td= liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
+        %td= liquidacion_sumar.concepto_de_facturacion.descripcion
+        %td  ??????
+        %td liquidacion_sumar.formulas.descripcion
+        %td= link_to 'Ver', liquidacion_sumar
+        %td= link_to 'Editar', edit_liquidacion_sumar_path(liquidacion_sumar)
+        %td= link_to 'Borrar', liquidacion_sumar, method: :delete, data: { confirm: '¿Esta Seguro?' }
+

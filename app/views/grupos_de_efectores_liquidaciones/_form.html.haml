@@ -5,7 +5,7 @@
   .field
     = f.label :descripcion
     = f.text_field :descripcion
-   .field
+  .field
     = f.label :efectores
     = collection_select :grupo_liquidacion_en_efectores, :id, @efectores, :id, :nombre,{:selected => @efectores_ids}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
   .actions

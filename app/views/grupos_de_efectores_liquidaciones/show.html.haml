@@ -7,7 +7,7 @@
     - if can? :read, GrupoDeEfectoresLiquidacion
       = link_to '<< Volver al listado', grupos_de_efectores_liquidaciones_path
     - if can? :update, GrupoDeEfectoresLiquidacion
-      = link_to 'Ediart', edit_grupo_de_efector_liquidacion_path(@grupo_de_efector_liquidacion)
+      = link_to 'Editar', edit_grupo_de_efector_liquidacion_path(@grupo_de_efector_liquidacion)
 
 = render :partial => "shared/info", :locals => { :registro => @grupo_de_efector_liquidacion }
 
@@ -18,3 +18,10 @@
   %div.field_content
     %span.field_name Descripción:
     %span.field_value= @grupo_de_efector_liquidacion.descripcion
+  %table
+    %tr
+      %th Efector
+    - @grupo_de_efector_liquidacion.efectores.each do |efector|
+      %tr
+        %td= efector.nombre
+        

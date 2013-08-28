@@ -2,6 +2,7 @@ class Periodo < ActiveRecord::Base
 
   belongs_to :tipo_periodo
   belongs_to :concepto_de_facturacion
+  has_one :liquidacion_sumar
   
   attr_accessible :fecha_cierre, :fecha_recepcion, :periodo, :tipo_periodo_id
 
