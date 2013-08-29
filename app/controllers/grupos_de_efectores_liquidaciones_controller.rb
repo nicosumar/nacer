@@ -32,7 +32,7 @@ class GruposDeEfectoresLiquidacionesController < ApplicationController
     @grupo_de_efector_liquidacion.efectores = Efector.find( (params[:grupo_liquidacion_en_efectores][:id]).reject(&:blank?) || [] )
 
     if @grupo_de_efector_liquidacion.save
-      redirect_to @grupo_de_efector_liquidacion, :flash => { :tipo => :ok, :titulo => 'Se creo el periodo correctamente' } 
+      redirect_to @grupo_de_efector_liquidacion, :flash => { :tipo => :ok, :titulo => "El grupo '#{@grupo_de_efector_liquidacion.grupo}' se creo correctamente" } 
     else
       @efectores = Efector.all
       @efectores_ids = @grupo_de_efector_liquidacion.efectores.collect{ |p| p.id }
@@ -48,7 +48,7 @@ class GruposDeEfectoresLiquidacionesController < ApplicationController
     @grupo_de_efector_liquidacion.efectores = Efector.find( (params[:grupo_liquidacion_en_efectores][:id]).reject(&:blank?) || [] )
 
     if @grupo_de_efector_liquidacion.update_attributes(params[:grupo_de_efectores_liquidacion])
-      redirect_to @grupo_de_efector_liquidacion, :flash => { :tipo => :ok, :titulo => 'Se creo el periodo correctamente' } 
+      redirect_to @grupo_de_efector_liquidacion, :flash => { :tipo => :ok, :titulo => "El grupo '#{@grupo_de_efector_liquidacion.grupo}' se actualizo correctamente" } 
     else
       @efectores = Efector.all
       @efectores_ids = @grupo_de_efector_liquidacion.efectores.collect{ |p| p.id }

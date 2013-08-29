@@ -6,11 +6,11 @@
     = f.label :concepto_de_facturacion, 'Concepto de Liquidacion'
     = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion
   .field
-    = f.label :grupo_de_efectores_liquidacion, 'Grupo de Efectores a liquidar'
-    = f.select :grupo_de_efectores_liquidacion_id, @grupo_de_efectores_liquidacion
-  .field
     = f.label :periodo, 'Periodo de Liquidacion'
     = f.select :periodo_id, @periodos_liquidacion
+  .field
+    = f.label :grupo_de_efectores_liquidacion, 'Grupo de Efectores a liquidar'
+    = f.select :grupo_de_efectores_liquidacion_id, @grupo_de_efectores_liquidacion
   .field
     = f.label :periodo, 'Formula'
     = f.select :formula_id, @formulas

@@ -8,7 +8,7 @@ class Periodo < ActiveRecord::Base
 
   validates :fecha_cierre, presence: true
   validates :periodo, presence: true
-  validates :tipo_periodo_id, presence: true
+  validates :tipo_periodo, presence: true
 
   def prestacion_html
   	"Nombre: #{self.periodo} Fecha de Cierre: #{self.fecha_cierre}

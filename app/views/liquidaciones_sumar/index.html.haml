@@ -20,8 +20,8 @@
         %td= liquidacion_sumar.descripcion
         %td= liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
         %td= liquidacion_sumar.concepto_de_facturacion.descripcion
-        %td  ??????
-        %td liquidacion_sumar.formulas.descripcion
+        %td= liquidacion_sumar.periodo.periodo
+        %td= liquidacion_sumar.formula.descripcion
         %td= link_to 'Ver', liquidacion_sumar
         %td= link_to 'Editar', edit_liquidacion_sumar_path(liquidacion_sumar)
         %td= link_to 'Borrar', liquidacion_sumar, method: :delete, data: { confirm: '¿Esta Seguro?' }

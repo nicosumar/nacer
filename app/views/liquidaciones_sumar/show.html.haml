@@ -1,3 +1,4 @@
+= stylesheet_link_tag"entradas.css"
 - content_for :title do
   Liquidaciones Sumar - Ver
 
@@ -10,20 +11,42 @@
       = link_to 'Editar', edit_liquidacion_sumar_path(@liquidacion_sumar)
 
 = render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar }
-#content-body
-  %div.field_content
-    %span.field_name Descripcion:
-    %span.field_value= @liquidacion_sumar.descripcion
-  %div.field_content
-    %span.field_name Concepto de liquidacion:
-    %span.field_value= @liquidacion_sumar.concepto_de_facturacion.descripcion
-  %div.field_content
-    %span.field_name Grupo de efectores:
-    %span.field_value= @liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
-  %div.field_content
-    %span.field_name Periodo:
-    %span.field_value
-  %div.field_content
-    %span.field_name Formula:
-    %span.field_value= @liquidacion_sumar.formula.descripcion
 
+#content-body
+  %table
+    %tr
+      %td
+        %b Liquidacion:
+      %td{:colspan => "3"}
+        %span.field_value= @liquidacion_sumar.descripcion
+    %tr
+      %td
+        %b Concepto:
+      %td
+        %span.field_value= @liquidacion_sumar.concepto_de_facturacion.descripcion
+      %td 
+        %b Periodo:
+      %td
+        %span.field_value= @liquidacion_sumar.periodo.periodo
+    %tr
+      %td 
+        %b Grupo de Efectores:
+      %td{:colspan => "2"}
+        %span.field_value= @liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
+      %td= button_to 'Ver grupo', @liquidacion_sumar.grupo_de_efectores_liquidacion, method: "get"
+    %tr
+      %td 
+        %b Formula:
+      %td{:colspan => "2"}
+        %span.field_value= @liquidacion_sumar.formula.descripcion
+      %td= button_to 'Ver formula de cálculo', @liquidacion_sumar.formula,:method => "get"
+    %tr
+      %td &nbsp;
+      %td &nbsp;
+      %td &nbsp;
+      %td &nbsp;
+    %tr
+      %td &nbsp;
+      %td Vaciar
+      %td Procesar
+      %td Ver detalle

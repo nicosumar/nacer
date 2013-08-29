@@ -6,4 +6,10 @@ class LiquidacionSumar < ActiveRecord::Base
 
   attr_accessible :descripcion, :formula_id, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id
 
+  validates :descripcion, presence: true
+  validates :grupo_de_efectores_liquidacion, presence:true
+  validates :formula, presence: true
+  validates :concepto_de_facturacion, presence: true
+  validates :periodo_id, presence: true
+
 end
