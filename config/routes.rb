@@ -5,9 +5,11 @@ Nacer::Application.routes.draw do
   resources :conceptos_de_facturacion
   resources :periodos
   resources :tipos_periodos
-  resources :liquidaciones_sumar
   resources :formulas
   resources :grupos_de_efectores_liquidaciones
+  resources :liquidaciones_sumar do
+    post "proceso_liquidacion", on :member, as: :proceso_liquidacion, action: :procesar_liquidacion
+  end
 
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }

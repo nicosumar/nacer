@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Periodo < ActiveRecord::Base
 
   belongs_to :tipo_periodo
@@ -12,7 +13,7 @@ class Periodo < ActiveRecord::Base
 
   def prestacion_html
   	"Nombre: #{self.periodo} Fecha de Cierre: #{self.fecha_cierre}
-  	 Fecha de Recepcoin: #{self.fecha_recepcion}
+  	 Fecha de Recepción: #{self.fecha_recepcion}
   	 Tipo de periodo: #{self.tipo_periodo.descripcion}
   	"
   end

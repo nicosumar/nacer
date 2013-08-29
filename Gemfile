@@ -14,6 +14,11 @@ group :assets do
   gem 'minitest'
 end
 
+group :development do
+  gem 'hirb-unicode'
+end
+
+
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'cocoon', '>= 1.2'
