@@ -8,7 +8,9 @@ Nacer::Application.routes.draw do
   resources :formulas
   resources :grupos_de_efectores_liquidaciones
   resources :liquidaciones_sumar do
-    post "proceso_liquidacion", on :member, as: :proceso_liquidacion, action: :procesar_liquidacion
+    member do
+      get 'proceso_liquidacion'
+    end
   end
 
 

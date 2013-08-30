@@ -73,6 +73,10 @@ class LiquidacionesSumarController < ApplicationController
     redirect_to liquidaciones_sumar_url 
   end
 
+  def proceso_liquidacion
+    
+  end
+
   private
 
   def verificar_lectura
