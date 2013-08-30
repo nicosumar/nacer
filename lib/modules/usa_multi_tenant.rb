@@ -67,6 +67,65 @@ module UsaMultiTenant
     return resp
   end
 
+  def multi_execute(*args)
+    args = args.extract_options!
+    esquemas = []
+    resp = []
+
+    if args.class.to_s != 'Hash' 
+      return false 
+    end
+    args.symbolize_keys!
+
+    case 
+
+    when args[:sql].blank?
+      raise "Debe definir el simbolo :sql en el hash"  
+      return false
+    when !args[:esquemas].blank?
+      esquemas = self.set_only_schemas args[:esquemas]
+      args.delete(:esquemas)
+    when !args[:except].blank?
+      esquemas = self.set_all_schemas args[:except]
+      args.delete(:except)
+    end
+
+    i = 0
+    unless args[:values].blank?
+      args[:values].each do |v|
+        args[i.to_s+v.to_s] = v
+        i+=1
+      end
+      args.delete(:values)
+    end
+
+    #para que primero quede el sql
+    psql = [args[:sql]]
+    args.delete(:sql)
+    pvalores = args.values
+    parametros = psql + pvalores
+    
+    esquemas.each do |esq|
+      begin
+        set_schema(esq['nombre'])
+        
+        r = self.execute(parametros)
+        resp <<= r
+        resp.flatten! 1
+
+        ActiveRecord::Base.connection.clear_query_cache
+
+      rescue Exception => e
+        raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}" 
+        return false
+      end
+    end
+    send :include, MetodosDeInstancia
+    return resp
+
+    
+  end
+
   def set_schema(nombre)
     begin
       if self.superclass.name == "ActiveRecord::Base" && !nombre.blank?
