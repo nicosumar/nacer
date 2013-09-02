@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130827123145) do
+ActiveRecord::Schema.define(:version => 20130831221733) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -842,6 +842,23 @@ ActiveRecord::Schema.define(:version => 20130827123145) do
     t.integer  "creator_id"
     t.integer  "updater_id"
   end
+
+  create_table "reglas", :force => true do |t|
+    t.string   "nombre"
+    t.boolean  "permitir"
+    t.string   "observaciones"
+    t.integer  "efector_id"
+    t.integer  "metodo_de_validacion_id"
+    t.integer  "nomenclador_id"
+    t.integer  "prestacion_id"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+  end
+
+  add_index "reglas", ["efector_id"], :name => "index_reglas_on_efector_id"
+  add_index "reglas", ["metodo_de_validacion_id"], :name => "index_reglas_on_metodo_de_validacion_id"
+  add_index "reglas", ["nomenclador_id"], :name => "index_reglas_on_nomenclador_id"
+  add_index "reglas", ["prestacion_id"], :name => "index_reglas_on_prestacion_id"
 
   create_table "renglones_de_cuasi_facturas", :force => true do |t|
     t.integer  "cuasi_factura_id",                                              :null => false

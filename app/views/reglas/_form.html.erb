@@ -1,0 +1,29 @@
+<%= form_for(@regla) do |f| %>
+  <% if @regla.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@regla.errors.count, "error") %> prohibited this regla from being saved:</h2>
+
+      <ul>
+      <% @regla.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :nombre %><br />
+    <%= f.text_field :nombre %>
+  </div>
+  <div class="field">
+    <%= f.label :permitir %><br />
+    <%= f.check_box :permitir %>
+  </div>
+  <div class="field">
+    <%= f.label :observaciones %><br />
+    <%= f.text_field :observaciones %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :reglas
+
+
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion
   resources :periodos

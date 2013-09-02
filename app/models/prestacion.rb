@@ -34,6 +34,9 @@ class Prestacion < ActiveRecord::Base
   has_and_belongs_to_many :documentaciones_respaldatorias
   #Relaciones para liquidacion
   belongs_to :concepto_de_facturacion
+  has_many :asignaciones_de_precios
+  has_many :nomencladores, through: :asignaciones_de_precios 
+
 
 
 
