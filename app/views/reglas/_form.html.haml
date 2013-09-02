@@ -1,0 +1,26 @@
+= form_for(@regla) do |f|
+  .field
+    = f.label :nombre
+    = f.text_field :nombre
+  .field
+    = f.label :efector, 'Efector al que aplica'
+    = f.select :efector_id, @efectores
+  .field
+    = f.label :nomenclador, 'Nomenclador'
+    = f.select :efector_id, @efectores
+  .field
+    = f.label :permitir
+    = f.check_box :permitir
+  .field
+    = f.label :observaciones
+    = f.text_field :observaciones
+  .actions
+    = f.submit
+
+      %th Nombre
+      %th Efector
+      %th Nomenclador
+      %th Prestación
+      %th Método de Validación
+      %th Permitir
+      %th Observaciones

@@ -1,0 +1,12 @@
+- content_for :title do
+  Reglas de liquidacion - nuevo
+
+#content-header
+  %h1 Nueva regla de liquidación
+  #action-links
+    = link_to '<< Volver al listado', reglas_path
+
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @regla }
+  
+  = render 'form'

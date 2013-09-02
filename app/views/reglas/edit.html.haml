@@ -1,0 +1,12 @@
+- content_for :title do
+  Editar regla de facturacion
+
+#content-header
+  %h1 Editar regla de facturacion
+  #action-links
+    = link_to '<< Volver al listado', reglas_path
+    = link_to 'Ver', @regla
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @regla }
+  
+  = render 'form'

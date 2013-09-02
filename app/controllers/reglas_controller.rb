@@ -17,11 +17,16 @@ class ReglasController < ApplicationController
   # GET /reglas/new
   def new
     @regla = Regla.new
+    @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+    @nomencladores =  Nomenclador.all.collect {|e| [e.nombre, e.id]}
+    @prestaciones = Prestacion.join(:asignaciones_de_precios).all.collect {|p| ["#{p.nombre} - Cod: #{p.codigo}", p.id, {:class => p.nomencladores.id}]}
+    #collect {|p| ["#{p.nombre} - Cod: #{p.codigo}", p.id, {:class => p.nomencladores.id}]}
   end
 
   # GET /reglas/1/edit
   def edit
     @regla = Regla.find(params[:id])
+    @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
   end
 
   # POST /reglas
