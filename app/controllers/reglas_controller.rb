@@ -19,8 +19,11 @@ class ReglasController < ApplicationController
     @regla = Regla.new
     @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
     @nomencladores =  Nomenclador.all.collect {|e| [e.nombre, e.id]}
-    @prestaciones = Prestacion.join(:asignaciones_de_precios).all.collect {|p| ["#{p.nombre} - Cod: #{p.codigo}", p.id, {:class => p.nomencladores.id}]}
-    #collect {|p| ["#{p.nombre} - Cod: #{p.codigo}", p.id, {:class => p.nomencladores.id}]}
+    @prestaciones = Prestacion.find(:all, include: :nomencladores).collect do |p|
+      p.nomencladores.collect do |n|
+        ["#{p.nombre_corto} - Cod: #{p.codigo}", p.id, {:class => n.id} ]
+      end
+    end.flatten! 1  
   end
 
   # GET /reglas/1/edit

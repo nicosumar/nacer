@@ -4,10 +4,13 @@
     = f.text_field :nombre
   .field
     = f.label :efector, 'Efector al que aplica'
-    = f.select :efector_id, @efectores
+    = f.select :efector_id, @efectores,{}, {:class => 'multi_select'}
   .field
     = f.label :nomenclador, 'Nomenclador'
-    = f.select :efector_id, @efectores
+    = f.select :nomenclador_id, @nomencladores
+  .field
+    = f.label :prestacion, 'Prestacion'
+    = f.select :prestacion_id, @prestaciones
   .field
     = f.label :permitir
     = f.check_box :permitir
@@ -17,10 +20,10 @@
   .actions
     = f.submit
 
-      %th Nombre
-      %th Efector
-      %th Nomenclador
-      %th Prestación
-      %th Método de Validación
-      %th Permitir
-      %th Observaciones
+    -#%th Nombre
+    -#%th Efector
+    -#%th Nomenclador
+    -#%th Prestación
+    -#%th Método de Validación
+    -#%th Permitir
+    -#%th Observaciones
