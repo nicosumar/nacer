@@ -14,6 +14,7 @@
       %th Concepto de facturacion
       %th Periodo
       %th Formula
+      %th Plantilla de Reglas
       %th{colspan: '3'} Acciones
     - @liquidaciones_sumar.each do |liquidacion_sumar|
       %tr
@@ -22,6 +23,7 @@
         %td= liquidacion_sumar.concepto_de_facturacion.descripcion
         %td= liquidacion_sumar.periodo.periodo
         %td= liquidacion_sumar.formula.descripcion
+        %th= liquidacion_sumar.plantilla_de_reglas.nombre
         %td= link_to 'Ver', liquidacion_sumar
         %td= link_to 'Editar', edit_liquidacion_sumar_path(liquidacion_sumar)
         %td= link_to 'Borrar', liquidacion_sumar, method: :delete, data: { confirm: '¿Esta Seguro?' }

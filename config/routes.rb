@@ -1,9 +1,6 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
-  resources :reglas
-
-
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion
   resources :periodos
@@ -15,6 +12,8 @@ Nacer::Application.routes.draw do
       get 'proceso_liquidacion'
     end
   end
+  resources :reglas
+  resources :plantillas_de_reglas
 
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }

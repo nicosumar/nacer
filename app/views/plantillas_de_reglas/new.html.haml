@@ -1,0 +1,15 @@
+- content_for :title do
+  Plantilla de Reglas - Nuevo
+
+#content-header
+  %h1 Nueva Plantilla de Reglas
+  #action-links
+    = link_to '<< Volver al listado', plantillas_de_reglas_path
+
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @plantilla_de_reglas }
+  = render 'form'
+
+
+
+

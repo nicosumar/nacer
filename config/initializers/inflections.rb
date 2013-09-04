@@ -288,6 +288,11 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("grupo·_de·_efectores·_liquidacion·", "grupo_de_efectores_liquidaciones")
   inflect.irregular("GrupoDeEfectoresLiquidacion", "Grupo·De·Efectores·Liquidaciones·")
   inflect.irregular("Grupo·De·Efectores·Liquidacion·", "GrupoDeEfectoresLiquidaciones")
+  #Plantilla de Reglas
+  inflect.irregular("plantilla_de_reglas", "plantillas·_de·_reglas·")
+  inflect.irregular("plantilla·_de·_reglas·", "plantillas_de_reglas")
+  inflect.irregular("PlantillaDeReglas", "Plantillas·De·Reglas·")
+  inflect.irregular("Plantilla·De·Reglas·", "PlantillasDeReglas")
 
   #El articulo "de" lo trata de pluralizar
   inflect.irregular("de", "de·")

@@ -1,0 +1,21 @@
+- content_for :title do
+  Plantillas de Reglas para Liquidación
+#content-header
+  %h1 Plantillas de Reglas para Liquidación
+  #action-links
+    - if can? :create, Regla
+      = link_to 'Crear Plantilla', new_plantilla_de_reglas_path
+
+#content-body
+  %table
+    %tr
+      %th Nombre
+      %th Observaciones
+      %th{colspan: '3'}
+    - @plantillas_de_reglas.each do |plantilla_de_reglas|
+      %tr
+        %td= plantilla_de_reglas.nombre
+        %td= plantilla_de_reglas.observaciones
+        %td= link_to 'Ver', plantilla_de_reglas
+        %td= link_to 'Editar', edit_plantilla_de_reglas_path(plantilla_de_reglas)
+        %td= link_to 'Eliminar', plantilla_de_reglas, method: :delete, data: { confirm: "¿Esta seguro que desea borrar la plantilla '#{plantilla_de_reglas.nombre}' ? " }

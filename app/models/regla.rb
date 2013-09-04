@@ -6,7 +6,8 @@ class Regla < ActiveRecord::Base
   belongs_to :efector
   belongs_to :nomenclador
   belongs_to :prestacion
+  has_and_belongs_to_many :plantillas_de_reglas
 
-  validates_presence_of :nombre, :permitir, :metodo_de_validacion, :efector, :nomenclador, :prestacion
+  validates_presence_of :nombre, :metodo_de_validacion, :efector, :nomenclador, :prestacion
   validates_uniqueness_of :nombre
 end

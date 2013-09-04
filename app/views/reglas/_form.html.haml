@@ -7,13 +7,13 @@
     = f.select :efector_id, @efectores,{}, {:class => 'multi_select'}
   .field
     = f.label :nomenclador, 'Nomenclador'
-    = f.select :nomenclador_id, @nomencladores
+    = f.select :nomenclador_id, @nomencladores,{}, {:class => 'multi_select'}
   .field
     = f.label :prestacion, 'Prestacion'
-    = f.select :prestacion_id, @prestaciones
+    = f.select :prestacion_id, @prestaciones,{}, {:class => 'multi_select'}
   .field
     = f.label :metodo_de_validacion, 'Método de validacion'
-    = f.select :metodo_de_validacion_id, @metodos_de_validacion
+    = f.select :metodo_de_validacion_id, @metodos_de_validacion, {}, {:class => 'multi_select'}
   .field
     = f.label :permitir
     = f.check_box :permitir

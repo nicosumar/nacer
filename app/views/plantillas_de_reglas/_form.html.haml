@@ -1,0 +1,12 @@
+= form_for(@plantilla_de_reglas) do |f|
+  .field
+    = f.label :nombre, "Nombre de la plantilla"
+    = f.text_field :nombre
+  .field
+    = f.label :observaciones, "Observaciones"
+    = f.text_area :observaciones
+  .field
+    = f.label :reglas, "Incluir Reglas"
+    = collection_select :reglas_en_plantilla, :id, @reglas, :id, :nombre,{:selected => @reglas_ids}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
+  .actions
+    = f.submit

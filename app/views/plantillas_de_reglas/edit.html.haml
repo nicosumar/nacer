@@ -1,0 +1,11 @@
+- content_for :title do
+  Editar Plantilla de reglas
+
+#content-header
+  %h1 Editar Plantilla de reglas
+  #action-links
+    = link_to '<< Volver al listado', plantillas_de_reglas_path
+    = link_to 'Ver', @plantilla_de_reglas
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @plantilla_de_reglas }
+  = render 'form'
