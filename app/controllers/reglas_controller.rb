@@ -21,15 +21,33 @@ class ReglasController < ApplicationController
     @nomencladores =  Nomenclador.all.collect {|e| [e.nombre, e.id]}
     @prestaciones = Prestacion.find(:all, include: :nomencladores).collect do |p|
       p.nomencladores.collect do |n|
-        ["#{p.nombre_corto} - Cod: #{p.codigo}", p.id, {:class => n.id} ]
+        ["#{p.id}| #{p.codigo} |#{p.nombre_corto}", p.id, {:class => n.id} ]
       end
-    end.flatten! 1  
+    end.flatten!(1).uniq
+   
+    @metodos_de_validacion = MetodoDeValidacion.find(:all, include: :prestaciones).collect do |m|
+      m.prestaciones.collect do |p|
+        ["#{m.nombre}", m.id, {:class => p.id} ]
+      end
+    end.flatten!(1).uniq
   end
 
   # GET /reglas/1/edit
   def edit
     @regla = Regla.find(params[:id])
     @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+    @nomencladores =  Nomenclador.all.collect {|e| [e.nombre, e.id]}
+    @prestaciones = Prestacion.find(:all, include: :nomencladores).collect do |p|
+      p.nomencladores.collect do |n|
+        ["#{p.id}| #{p.codigo} |#{p.nombre_corto}", p.id, {:class => n.id} ]
+      end
+    end.flatten!(1).uniq
+   
+    @metodos_de_validacion = MetodoDeValidacion.find(:all, include: :prestaciones).collect do |m|
+      m.prestaciones.collect do |p|
+        ["#{m.nombre}", m.id, {:class => p.id} ]
+      end
+    end.flatten!(1).uniq
   end
 
   # POST /reglas
@@ -38,6 +56,19 @@ class ReglasController < ApplicationController
     if @regla.save
       redirect_to @regla, :flash => { :tipo => :ok, :titulo => "Se creó la regla #{@regla.nombre} correctamente" } 
     else
+      @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+      @nomencladores =  Nomenclador.all.collect {|e| [e.nombre, e.id]}
+      @prestaciones = Prestacion.find(:all, include: :nomencladores).collect do |p|
+        p.nomencladores.collect do |n|
+          ["#{p.id}| #{p.codigo} |#{p.nombre_corto}", p.id, {:class => n.id} ]
+        end
+      end.flatten!(1).uniq
+     
+      @metodos_de_validacion = MetodoDeValidacion.find(:all, include: :prestaciones).collect do |m|
+        m.prestaciones.collect do |p|
+          ["#{m.nombre}", m.id, {:class => p.id} ]
+        end
+      end.flatten!(1).uniq
       render action: "new" 
     end
   end
@@ -49,6 +80,19 @@ class ReglasController < ApplicationController
     if @regla.update_attributes(params[:regla])
       redirect_to @regla, :flash => { :tipo => :ok, :titulo => "Se actualizo la regla #{@regla.nombre} correctamente" } 
     else
+      @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+      @nomencladores =  Nomenclador.all.collect {|e| [e.nombre, e.id]}
+      @prestaciones = Prestacion.find(:all, include: :nomencladores).collect do |p|
+        p.nomencladores.collect do |n|
+          ["#{p.id}| #{p.codigo} |#{p.nombre_corto}", p.id, {:class => n.id} ]
+        end
+      end.flatten!(1).uniq
+     
+      @metodos_de_validacion = MetodoDeValidacion.find(:all, include: :prestaciones).collect do |m|
+        m.prestaciones.collect do |p|
+          ["#{m.nombre}", m.id, {:class => p.id} ]
+        end
+      end.flatten!(1).uniq
       render action: "edit" 
     end
   end

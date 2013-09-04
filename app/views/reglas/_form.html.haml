@@ -12,6 +12,9 @@
     = f.label :prestacion, 'Prestacion'
     = f.select :prestacion_id, @prestaciones
   .field
+    = f.label :metodo_de_validacion, 'Método de validacion'
+    = f.select :metodo_de_validacion_id, @metodos_de_validacion
+  .field
     = f.label :permitir
     = f.check_box :permitir
   .field
@@ -19,11 +22,3 @@
     = f.text_field :observaciones
   .actions
     = f.submit
-
-    -#%th Nombre
-    -#%th Efector
-    -#%th Nomenclador
-    -#%th Prestación
-    -#%th Método de Validación
-    -#%th Permitir
-    -#%th Observaciones

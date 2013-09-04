@@ -26,10 +26,10 @@
     %span.field_value= @regla.prestacion.nombre
   %div.field_content
     %span.field_name Metodo de validación:
-    %span.field_value= @regla.metodo_validacion.nombre
+    %span.field_value= @regla.metodo_de_validacion.nombre
   %div.field_content
     %span.field_name ¿Permitir?:
-    %span.field_value= @regla.permitir
+    %span.field_value= (@regla.permitir) ? "Si": "No"
   %div.field_content
     %span.field_name Observaciones:
     %span.field_value= @regla.observaciones

@@ -24,7 +24,7 @@
         %td= regla.nomenclador.nombre
         %td= regla.prestacion.nombre
         %td= regla.metodo_de_validacion.nombre
-        %td= regla.permitir
+        %td= (regla.permitir) ? "Si": "No"
         %td= regla.observaciones
         %td= link_to 'Ver', regla
         %td= link_to 'Editar', edit_regla_path(regla)
