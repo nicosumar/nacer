@@ -1015,4 +1015,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
     return false
   end
 
+  def embarazo_actual
+    esta_embarazada
+  end
+
 end

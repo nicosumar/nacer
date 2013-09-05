@@ -17,7 +17,8 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
 
   # Validaciones
   validates_presence_of :numero, :efector_id, :fecha_de_inicio
-  validates_uniqueness_of :efector_id, :numero
+  validates_uniqueness_of :efector_id
+  validates_uniqueness_of :numero
   validate :verificar_fechas
 
   # verificar_fechas
