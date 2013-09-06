@@ -23,7 +23,7 @@
         %td= liquidacion_sumar.concepto_de_facturacion.descripcion
         %td= liquidacion_sumar.periodo.periodo
         %td= liquidacion_sumar.formula.descripcion
-        %th= liquidacion_sumar.plantilla_de_reglas.nombre
+        %td= liquidacion_sumar.plantilla_de_reglas.nombre unless liquidacion_sumar.plantilla_de_reglas.blank?
         %td= link_to 'Ver', liquidacion_sumar
         %td= link_to 'Editar', edit_liquidacion_sumar_path(liquidacion_sumar)
         %td= link_to 'Borrar', liquidacion_sumar, method: :delete, data: { confirm: '¿Esta Seguro?' }

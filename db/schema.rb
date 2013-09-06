@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130831221733) do
+ActiveRecord::Schema.define(:version => 20130904175034) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -564,7 +564,13 @@ ActiveRecord::Schema.define(:version => 20130831221733) do
     t.datetime "created_at",                        :null => false
     t.datetime "updated_at",                        :null => false
     t.integer  "grupo_de_efectores_liquidacion_id"
+    t.integer  "plantilla_de_reglas_id"
   end
+
+  add_index "liquidaciones_sumar", ["concepto_de_facturacion_id"], :name => "liquidaciones_sumar_concepto_de_facturacion_id_idx"
+  add_index "liquidaciones_sumar", ["formula_id"], :name => "liquidaciones_sumar_formula_id_idx"
+  add_index "liquidaciones_sumar", ["grupo_de_efectores_liquidacion_id"], :name => "liquidaciones_sumar_grupo_de_efectores_liquidacion_id_idx"
+  add_index "liquidaciones_sumar", ["plantilla_de_reglas_id"], :name => "liquidaciones_sumar_plantilla_de_reglas_id_idx"
 
   create_table "metodos_de_validacion", :force => true do |t|
     t.string   "nombre"
@@ -579,6 +585,53 @@ ActiveRecord::Schema.define(:version => 20130831221733) do
     t.integer "metodo_de_validacion_id"
     t.integer "prestacion_id"
   end
+
+  create_table "migra_anexos", :id => false, :force => true do |t|
+    t.integer "id",                                   :null => false
+    t.integer "numero_fila"
+    t.integer "numero_columna_si_no"
+    t.string  "prestaciones",          :limit => 256
+    t.string  "anexo",                 :limit => 500
+    t.string  "codigo",                :limit => 256
+    t.string  "precio",                :limit => 50
+    t.string  "rural",                 :limit => 3
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_anexos", ["id"], :name => "migra_anexos_id_idx", :unique => true
+  add_index "migra_anexos", ["numero_fila"], :name => "migra_anexos_numero_fila_idx"
+
+  create_table "migra_modulos", :id => false, :force => true do |t|
+    t.integer "id",                                          :null => false
+    t.integer "numero_fila"
+    t.integer "numero_columna_si_no"
+    t.integer "grupo"
+    t.string  "subgrupo",                     :limit => 100
+    t.text    "modulo"
+    t.text    "definicion_cirugia_conceptos"
+    t.string  "codigos",                      :limit => 256
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_modulos", ["id"], :name => "migra_modulos_id_idx", :unique => true
+  add_index "migra_modulos", ["numero_fila"], :name => "migra_modulos_numero_fila_idx"
+
+  create_table "migra_prestaciones", :id => false, :force => true do |t|
+    t.integer "id",                                   :null => false
+    t.integer "numero_fila",                          :null => false
+    t.integer "numero_columna_si_no",                 :null => false
+    t.integer "grupo",                                :null => false
+    t.string  "subgrupo",              :limit => 100, :null => false
+    t.string  "nosologia",             :limit => 512, :null => false
+    t.text    "tipo_de_prestacion",                   :null => false
+    t.text    "nombre_prestacion",                    :null => false
+    t.string  "codigos",               :limit => 256
+    t.string  "precio",                :limit => 30
+    t.string  "rural",                 :limit => 3
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_prestaciones", ["numero_fila"], :name => "migra_prestaciones_numero_fila_idx"
 
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
@@ -701,6 +754,20 @@ ActiveRecord::Schema.define(:version => 20130831221733) do
     t.datetime "created_at",                        :null => false
     t.datetime "updated_at",                        :null => false
   end
+
+  create_table "plantillas_de_reglas", :force => true do |t|
+    t.string   "nombre"
+    t.text     "observaciones"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "plantillas_de_reglas_reglas", :id => false, :force => true do |t|
+    t.integer "regla_id"
+    t.integer "plantilla_de_reglas_id"
+  end
+
+  add_index "plantillas_de_reglas_reglas", ["regla_id", "plantilla_de_reglas_id"], :name => "plantilla_reglas_reglas_idx"
 
   create_table "prestaciones", :force => true do |t|
     t.integer  "area_de_prestacion_id"

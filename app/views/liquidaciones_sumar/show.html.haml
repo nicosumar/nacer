@@ -30,6 +30,12 @@
         %span.field_value= @liquidacion_sumar.periodo.periodo
     %tr
       %td 
+        %b Plantilla de reglas:
+      %td{:colspan => "2"}
+        %span.field_value= @liquidacion_sumar.plantilla_de_reglas.nombre unless @liquidacion_sumar.plantilla_de_reglas.blank?
+      %td= button_to 'Ver plantilla', @liquidacion_sumar.plantilla_de_reglas, method: "get" unless @liquidacion_sumar.plantilla_de_reglas.blank?
+    %tr
+      %td 
         %b Grupo de Efectores:
       %td{:colspan => "2"}
         %span.field_value= @liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
@@ -41,10 +47,7 @@
         %span.field_value= @liquidacion_sumar.formula.descripcion
       %td= button_to 'Ver formula de cálculo', @liquidacion_sumar.formula,:method => "get"
     %tr
-      %td &nbsp;
-      %td &nbsp;
-      %td &nbsp;
-      %td &nbsp;
+      %td{colspan: "4"} &nbsp;
     %tr
       %td &nbsp;
       %td Vaciar

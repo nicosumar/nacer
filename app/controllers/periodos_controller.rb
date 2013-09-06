@@ -18,12 +18,14 @@ class PeriodosController < ApplicationController
   def new
     @periodo = Periodo.new
     @tipos_periodos = TipoPeriodo.all.collect {|tp| [tp.descripcion, tp.id]}
+    @conceptos = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
   end
 
   # GET /periodos/1/edit
   def edit
     @periodo = Periodo.find(params[:id])
     @tipos_periodos = TipoPeriodo.all.collect {|tp| [tp.descripcion, tp.id]}
+    @conceptos = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
   end
 
   # POST /periodos
@@ -35,6 +37,7 @@ class PeriodosController < ApplicationController
       redirect_to @periodo, :flash => { :tipo => :ok, :titulo => 'Se creo el periodo correctamente' } 
     else
       @tipos_periodos = TipoPeriodo.all.collect {|tp| [tp.descripcion, tp.id]}
+      @conceptos = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
       render action: "new" 
     end
   end
@@ -47,6 +50,7 @@ class PeriodosController < ApplicationController
       redirect_to @periodo, :flash => { :tipo => :ok, :titulo => 'Se actualizo el periodo correctamente' } 
     else
       @tipos_periodos = TipoPeriodo.all.collect {|tp| [tp.descripcion, tp.id]}
+      @conceptos = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
       render action: "edit" 
     end
   end

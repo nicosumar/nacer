@@ -6,12 +6,8 @@ class LiquidacionSumar < ActiveRecord::Base
   belongs_to :plantilla_de_reglas
 
 
-  attr_accessible :descripcion, :formula_id, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id
+  attr_accessible :descripcion, :formula_id, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id, :plantilla_de_reglas_id
 
-  validates :descripcion, presence: true
-  validates :grupo_de_efectores_liquidacion, presence:true
-  validates :formula, presence: true
-  validates :concepto_de_facturacion, presence: true
-  validates :periodo, presence: true
-
+  validates_presence_of :descripcion, :grupo_de_efectores_liquidacion, :formula, :concepto_de_facturacion, :periodo
+  
 end

@@ -11,5 +11,8 @@
   .field
     = f.label :tipo_periodo, 'Tipo de periodo'
     = f.select :tipo_periodo_id, @tipos_periodos
+  .field
+    = f.label :concepto_de_facturacion, "Concepto de facturacion al que aplica este período:"
+    = f.select :concepto_de_facturacion_id, @conceptos
   .actions
     = f.submit

@@ -19,8 +19,13 @@ class LiquidacionesSumarController < ApplicationController
     @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
     @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
     
+    # Traigo los conceptos de facturacion y los periodos. Agrego la vinculacion entre
+    # el concepto y el periodo
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
     @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
+
+    @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
+
   end
 
   # GET /liquidaciones_sumar/1/edit
@@ -31,6 +36,8 @@ class LiquidacionesSumarController < ApplicationController
     
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
     @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
+
+    @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
   end
 
   # POST /liquidaciones_sumar
@@ -45,6 +52,8 @@ class LiquidacionesSumarController < ApplicationController
       
       @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
       @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
+
+      @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
       render action: "new" 
     end
   end
@@ -61,6 +70,9 @@ class LiquidacionesSumarController < ApplicationController
       
       @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
       @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
+
+      @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
+      
       render action: "edit" 
     end
   end

@@ -12,6 +12,9 @@
     = f.label :grupo_de_efectores_liquidacion, 'Grupo de Efectores a liquidar'
     = f.select :grupo_de_efectores_liquidacion_id, @grupo_de_efectores_liquidacion
   .field
+    = f.label :plantilla_de_reglas_id, '¿Desea incluir una plantilla de reglas?'
+    = f.select :plantilla_de_reglas_id, @plantillas_de_reglas, {:include_blank => 'No'}
+  .field
     = f.label :periodo, 'Formula'
     = f.select :formula_id, @formulas
   .actions
