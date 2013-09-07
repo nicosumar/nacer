@@ -55,11 +55,13 @@ class SeparadorDeNombresYSexos
     return {:sexo => :indetermindo, :prob_sexo => 0.0} unless nombres
 
     p_masculino = p_femenino = 1.0
-    nombres.split(" ").each do |n|
-      total = @masculinos[n].to_f + @femeninos[n].to_f
-      if total > 0.0
-        p_femenino *= (@femeninos[n].to_f/total)
-        p_masculino *= (@masculinos[n].to_f/total)
+    nombres.gsub(".", "").split(" ").each do |n|
+      if n.length > 1
+        total = @masculinos[n].to_f + @femeninos[n].to_f
+        if total > 0.0
+          p_femenino *= (@femeninos[n].to_f/total)
+          p_masculino *= (@masculinos[n].to_f/total)
+        end
       end
     end
 
@@ -94,11 +96,13 @@ class SeparadorDeNombresYSexos
     return 1.0 if texto.blank?
 
     p_masc = p_fem = 1.0
-    texto.split(" ").each do |n|
-      n_total = apellidos[n].to_f + masculinos[n].to_f + femeninos[n].to_f
-      if n_total > 0.0
-        p_masc *= (masculinos[n].to_f/n_total)
-        p_fem *= (femeninos[n].to_f/n_total)
+    texto.gsub(".", "").split(" ").each do |n|
+      if n.length > 1
+        n_total = apellidos[n].to_f + masculinos[n].to_f + femeninos[n].to_f
+        if n_total > 0.0
+          p_masc *= (masculinos[n].to_f/n_total)
+          p_fem *= (femeninos[n].to_f/n_total)
+        end
       end
     end
     return (p_masc > p_fem ? p_masc : p_fem)
@@ -108,10 +112,12 @@ class SeparadorDeNombresYSexos
     return 1.0 if texto.blank?
 
     p = 1.0
-    texto.split(" ").each do |n|
-      n_total = apellidos[n].to_f + masculinos[n].to_f + femeninos[n].to_f
-      if n_total > 0.0
-        p *= (apellidos[n].to_f/n_total)
+    texto.gsub(".", "").split(" ").each do |n|
+      if n.length > 1
+        n_total = apellidos[n].to_f + masculinos[n].to_f + femeninos[n].to_f
+        if n_total > 0.0
+          p *= (apellidos[n].to_f/n_total)
+        end
       end
     end
     return p
