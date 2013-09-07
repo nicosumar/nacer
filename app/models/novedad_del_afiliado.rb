@@ -505,11 +505,18 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
     end
 
-    # Verificar que tenga menos de un año si la clase de documento seleccionada es "Ajeno"
+    # Verificar que tenga menos de un año si la clase de documento seleccionada es "Ajeno" y que coincida con alguno de los documentos de los adultos responsables
     if clase_de_documento_id == ClaseDeDocumento.id_del_codigo("A")
       if fecha_de_nacimiento && fecha_de_la_novedad && edad_en_anios(fecha_de_la_novedad) > 0
         errors.add(:base,
           "No se puede crear una solicitud con documento ajeno si el niño o niña ya ha cumplido el año de vida"
+        )
+        error_de_documento = true
+      end
+      if ((!numero_de_documento_de_la_madre.blank? || !numero_de_documento_del_padre.blank? || !numero_de_documento_del_tutor.blank?) &&
+          ![numero_de_documento_de_la_madre, numero_de_documento_del_padre, numero_de_documento_del_tutor].member?(numero_de_documento))
+        errors.add(:base,
+          "El número de documento ajeno no coincide con el número de documento de ningún adulto responsable"
         )
         error_de_documento = true
       end
@@ -774,7 +781,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
         # Crear el archivo de texto de salida
         archivo_a = File.new("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uad + codigo_ci + ('%05d' % numero_secuencia)}.txt", "w")
-        #archivo_a.set_encoding("CP1252", :crlf_newline => true) # TODO: ¡¡OJO!! set_encoding solo funciona con Ruby 1.9. Averiguar cómo simular su funcionamiento con Ruby 1.8.7
+        archivo_a.set_encoding("CP1252", :crlf_newline => true)
 
         # Escribir el encabezado
         archivo_a.puts(
@@ -1006,6 +1013,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
     end
     return false
+  end
+
+  def embarazo_actual
+    esta_embarazada
   end
 
 end
