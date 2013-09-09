@@ -5,9 +5,9 @@ class AddPlantillasLiquidacionRef < ActiveRecord::Migration
   	execute <<-SQL
   	  ALTER TABLE "public"."liquidaciones_sumar"
 	    ADD COLUMN "plantilla_de_reglas_id" int4,
-		ADD FOREIGN KEY ("plantilla_de_reglas_id") 
-		  REFERENCES "public"."plantillas_de_reglas" ("id") 
-		  ON DELETE NO ACTION ON UPDATE NO ACTION;
+		  ADD FOREIGN KEY ("plantilla_de_reglas_id") 
+  		  REFERENCES "public"."plantillas_de_reglas" ("id") 
+  		  ON DELETE NO ACTION ON UPDATE NO ACTION;
 	  CREATE INDEX  ON "public"."liquidaciones_sumar" USING btree ("plantilla_de_reglas_id"  );
 
 	  ALTER TABLE "public"."liquidaciones_sumar"

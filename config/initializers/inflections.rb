@@ -293,12 +293,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("plantilla·_de·_reglas·", "plantillas_de_reglas")
   inflect.irregular("PlantillaDeReglas", "Plantillas·De·Reglas·")
   inflect.irregular("Plantilla·De·Reglas·", "PlantillasDeReglas")
+  # UAD (unidad de alta de datos)
+  inflect.irregular("uad_nombre", "uad·_nombres·")
+  inflect.irregular("uad·_nombre·", "uad_nombre")
+  inflect.irregular("UadNombre", "Uad·Nombres·")
+  inflect.irregular("Uad·Nombre·", "UadNombres")
 
-  #El articulo "de" lo trata de pluralizar
-  inflect.irregular("de", "de·")
-  inflect.irregular("de·", "de")
-  inflect.irregular("De", "De·")
-  inflect.irregular("De·", "De")
   #Informes - Uads
   inflect.irregular("informe_uad", "informes·_uads·")
   inflect.irregular("informe·_uad·", "informes_uads")

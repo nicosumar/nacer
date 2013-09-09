@@ -1,0 +1,21 @@
+<%= form_for(@parametro_liquidacion_sumar) do |f| %>
+  <% if @parametro_liquidacion_sumar.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@parametro_liquidacion_sumar.errors.count, "error") %> prohibited this parametro_liquidacion_sumar from being saved:</h2>
+
+      <ul>
+      <% @parametro_liquidacion_sumar.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :dias_de_prestacion %><br />
+    <%= f.number_field :dias_de_prestacion %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

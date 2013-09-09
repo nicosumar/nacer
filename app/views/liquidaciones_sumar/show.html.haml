@@ -41,11 +41,8 @@
         %span.field_value= @liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
       %td= button_to 'Ver grupo', @liquidacion_sumar.grupo_de_efectores_liquidacion, method: "get"
     %tr
-      %td 
-        %b Formula:
-      %td{:colspan => "2"}
-        %span.field_value= @liquidacion_sumar.formula.descripcion
-      %td= button_to 'Ver formula de cálculo', @liquidacion_sumar.formula,:method => "get"
+      %td{colspan: "4"}
+        -#= button_to 'Modificar parametros', @liquidacion_sumar.parametro_liquidacion_sumar,:method => "get"
     %tr
       %td{colspan: "4"} &nbsp;
     %tr

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130904175034) do
+ActiveRecord::Schema.define(:version => 20130908020842) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -558,18 +558,18 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
 
   create_table "liquidaciones_sumar", :force => true do |t|
     t.string   "descripcion"
-    t.integer  "formula_id"
     t.integer  "concepto_de_facturacion_id"
     t.integer  "periodo_id"
     t.datetime "created_at",                        :null => false
     t.datetime "updated_at",                        :null => false
     t.integer  "grupo_de_efectores_liquidacion_id"
     t.integer  "plantilla_de_reglas_id"
+    t.integer  "parametros_liquidacion_sumar_id"
   end
 
   add_index "liquidaciones_sumar", ["concepto_de_facturacion_id"], :name => "liquidaciones_sumar_concepto_de_facturacion_id_idx"
-  add_index "liquidaciones_sumar", ["formula_id"], :name => "liquidaciones_sumar_formula_id_idx"
   add_index "liquidaciones_sumar", ["grupo_de_efectores_liquidacion_id"], :name => "liquidaciones_sumar_grupo_de_efectores_liquidacion_id_idx"
+  add_index "liquidaciones_sumar", ["parametros_liquidacion_sumar_id"], :name => "liquidaciones_sumar_parametros_liquidacion_sumar_id_idx"
   add_index "liquidaciones_sumar", ["plantilla_de_reglas_id"], :name => "liquidaciones_sumar_plantilla_de_reglas_id_idx"
 
   create_table "metodos_de_validacion", :force => true do |t|
@@ -676,6 +676,14 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.datetime "updated_at",    :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
+  end
+
+  create_table "parametros_liquidaciones_sumar", :force => true do |t|
+    t.integer  "dias_de_prestacion", :default => 120
+    t.integer  "nomenclador_id"
+    t.integer  "formula_id"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
   end
 
   create_table "percentiles_pc_edad", :force => true do |t|
@@ -803,6 +811,35 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.integer  "creator_id"
     t.integer  "updater_id"
   end
+
+  create_table "prestaciones_incluidas", :force => true do |t|
+    t.integer  "liquidacion_id"
+    t.integer  "unidad_de_alta_de_datos_id"
+    t.string   "uad_nombre"
+    t.integer  "efector_id"
+    t.string   "efector_nombre"
+    t.integer  "nomenclador_id"
+    t.string   "nomenclador_nombre"
+    t.integer  "pretsacion_id"
+    t.string   "prestacion_nombre"
+    t.string   "prestacion_codigo"
+    t.string   "prestacion_grupo_nombre"
+    t.string   "prestacion_subgrupo_nombre"
+    t.string   "prestacion_area_nombre"
+    t.boolean  "prestacion_cobertura"
+    t.boolean  "prestacion_comunitaria"
+    t.boolean  "prestacion_requiere_hc"
+    t.string   "prestacion_concepto_nombre"
+    t.decimal  "monto"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "prestaciones_incluidas", ["efector_id"], :name => "prestaciones_incluidas_efector_id_idx"
+  add_index "prestaciones_incluidas", ["liquidacion_id"], :name => "prestaciones_incluidas_liquidacion_id_idx"
+  add_index "prestaciones_incluidas", ["nomenclador_id"], :name => "prestaciones_incluidas_nomenclador_id_idx"
+  add_index "prestaciones_incluidas", ["pretsacion_id"], :name => "prestaciones_incluidas_pretsacion_id_idx"
+  add_index "prestaciones_incluidas", ["unidad_de_alta_de_datos_id"], :name => "prestaciones_incluidas_unidad_de_alta_de_datos_id_idx"
 
   create_table "prestaciones_sexos", :id => false, :force => true do |t|
     t.integer "prestacion_id"
