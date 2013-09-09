@@ -8,14 +8,14 @@ class CreateParametrosLiquidacionesSumar < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_column :liquidaciones_sumar, :parametros_liquidacion_sumar_id, :integer
+    add_column :liquidaciones_sumar, :parametro_liquidacion_sumar_id, :integer
 
     execute <<-SQL
     	ALTER TABLE "public"."liquidaciones_sumar"
-			ADD FOREIGN KEY ("parametros_liquidacion_sumar_id") 
+			ADD FOREIGN KEY ("parametro_liquidacion_sumar_id") 
 				REFERENCES "public"."parametros_liquidaciones_sumar" ("id") 
 				ON DELETE RESTRICT ON UPDATE CASCADE;
-		CREATE INDEX  ON "public"."liquidaciones_sumar" USING btree ("parametros_liquidacion_sumar_id");
+		CREATE INDEX  ON "public"."liquidaciones_sumar" USING btree ("parametro_liquidacion_sumar_id");
     	
     	ALTER TABLE "public"."liquidaciones_sumar"
     		DROP CONSTRAINT IF EXISTS "liquidaciones_sumar_formula_id_fkey";
@@ -38,12 +38,12 @@ class CreateParametrosLiquidacionesSumar < ActiveRecord::Migration
 	    CREATE INDEX  ON "public"."liquidaciones_sumar" USING btree ("formula_id"  );
 
 	    ALTER TABLE "public"."liquidaciones_sumar"
-			DROP CONSTRAINT IF EXISTS "liquidaciones_sumar_parametros_liquidacion_sumar_id_fkey";
+			DROP CONSTRAINT IF EXISTS "liquidaciones_sumar_parametro_liquidacion_sumar_id_fkey";
 
-		DROP INDEX "public"."liquidaciones_sumar_parametros_liquidacion_sumar_id_idx";
+		DROP INDEX "public"."liquidaciones_sumar_parametro_liquidacion_sumar_id_idx";
 
   	SQL
-  	remove_column :liquidaciones_sumar, :parametros_liquidaciones_sumar_id
+  	remove_column :liquidaciones_sumar, :parametro_liquidacion_sumar_id
 
 
   	drop_table :parametros_liquidaciones_sumar

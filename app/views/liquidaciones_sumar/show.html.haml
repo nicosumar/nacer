@@ -41,12 +41,10 @@
         %span.field_value= @liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
       %td= button_to 'Ver grupo', @liquidacion_sumar.grupo_de_efectores_liquidacion, method: "get"
     %tr
-      %td{colspan: "4"}
-        -#= button_to 'Modificar parametros', @liquidacion_sumar.parametro_liquidacion_sumar,:method => "get"
-    %tr
       %td{colspan: "4"} &nbsp;
     %tr
-      %td &nbsp;
-      %td Vaciar
-      %td Procesar
-      %td Ver detalle
+      %td{colspan: "4"}
+        = button_to 'Modificar parametros', @liquidacion_sumar.parametro_liquidacion_sumar,:method => "get"
+        Vaciar
+        Procesar
+        Ver detalle
