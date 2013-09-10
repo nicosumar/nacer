@@ -15,8 +15,6 @@ class ConceptosDeFacturacionController < ApplicationController
     @concepto_de_facturacion = ConceptoDeFacturacion.new
     @prestaciones = Prestacion.all
     @prestaciones_ids = @concepto_de_facturacion.prestaciones.collect{ |p| p.id }
-    @periodos = Periodo.all
-    @periodos_ids = @concepto_de_facturacion.periodos.collect{ |p| p.id }
   end
 
   # GET /conceptos_de_facturacion/1/edit
@@ -24,8 +22,6 @@ class ConceptosDeFacturacionController < ApplicationController
     @concepto_de_facturacion = ConceptoDeFacturacion.find(params[:id])
     @prestaciones = Prestacion.all
     @prestaciones_ids = @concepto_de_facturacion.prestaciones.collect{ |p| p.id }
-    @periodos = Periodo.all
-    @periodos_ids = @concepto_de_facturacion.periodos.collect{ |p| p.id }
   end
 
   # POST /conceptos_de_facturacion
@@ -33,8 +29,6 @@ class ConceptosDeFacturacionController < ApplicationController
     @concepto_de_facturacion = ConceptoDeFacturacion.new(params[:concepto_de_facturacion])
     
     @concepto_de_facturacion.prestaciones = Prestacion.find( (params[:concepto_en_prestaciones][:id]).reject(&:blank?) || [] )
-    @concepto_de_facturacion.periodos = Periodo.find( (params[:concepto_en_periodos][:id]).reject(&:blank?) || [] )
-
 
     if @concepto_de_facturacion.save
       redirect_to @concepto_de_facturacion, :flash => { :tipo => :ok, :titulo => 'Se creo el concepto correctamente' } 
@@ -49,7 +43,6 @@ class ConceptosDeFacturacionController < ApplicationController
     @concepto_de_facturacion = ConceptoDeFacturacion.find(params[:id])
     
     @concepto_de_facturacion.prestaciones = Prestacion.find( (params[:concepto_en_prestaciones][:id]).reject(&:blank?) || [] )
-    @concepto_de_facturacion.periodos = Periodo.find( (params[:concepto_en_periodos][:id]).reject(&:blank?) || [] )
 
     if @concepto_de_facturacion.update_attributes(params[:concepto_de_facturacion])
       redirect_to @concepto_de_facturacion, :flash => { :tipo => :ok, :titulo => 'Se actualizó el concepto correctamente' } 

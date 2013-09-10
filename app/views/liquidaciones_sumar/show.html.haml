@@ -44,7 +44,7 @@
       %td{colspan: "4"} &nbsp;
     %tr
       %td{colspan: "4"}
-        = button_to 'Modificar parametros', @liquidacion_sumar.parametro_liquidacion_sumar,:method => "get"
+        = button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
         Vaciar
         Procesar
         Ver detalle
