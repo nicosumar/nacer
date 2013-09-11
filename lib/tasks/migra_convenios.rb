@@ -600,23 +600,41 @@
                          :seccion_anexo_1  => {desde: 660,hasta:  687, col_si_no: 13, tipo: 'a'}
     }
     ruta = 'lib/tasks/archproc/'
-    archivos = ['HOSPITAL CARRILLO final-des.xls',
-      'PlandeServdeSalud_Env a UEC_UltVer_May13 LAGO FINAL-des.xls',
-      'PlandeServdeSalud_Env a UEC_UltVer_May13 NOTTI FINAL-des.xls',
-      'PlandeServdeSalud_Env a UEC_UltVer_May13 PAROISSIEN-des.xls',
-      'PlandeServdeSalud_Env a UEC_UltVer_May13 PERRUPATO-des.xls',
-      'PlandeServdeSalud_Env a UEC_UltVer_May13 Schestakow-des.xls',
-      'PlandeServdeSalud Gailhac FINAL-des.xls',
-      'PlandeServdeSalud hospital LAS HERAS FINAL-des.xls',
-      'PlandeServdeSalud_May13 FINAL-des.xls',
-      'PlandeServdeSalud_May13 ok Hptal EVA PERON-des.xls',
-      'Plan deServdeSalud sumar.ILLIA Final-des.xls',
-      'Plan de Servicio_El Sauce ro-des.xls',
-      'Plan de Servicios de Salud Mayo 2013saporit-des.xls',
-      'PLAN DE SERVICIOS DE SALUD SICOLI FINAL-des.xls',
-      'PLAN SUMAR HOSPITAL MALARGUE final-des.xls',
-      'SERVICIO SALUD SUMAR final-des.xls',
-      'SUMAR Raffo Final-des.xls']
+    # archivos = ['HOSPITAL CARRILLO final-des.xls',
+    #   'PlandeServdeSalud_Env a UEC_UltVer_May13 LAGO FINAL-des.xls',
+    #   'PlandeServdeSalud_Env a UEC_UltVer_May13 NOTTI FINAL-des.xls',
+    #   'PlandeServdeSalud_Env a UEC_UltVer_May13 PAROISSIEN-des.xls',
+    #   'PlandeServdeSalud_Env a UEC_UltVer_May13 PERRUPATO-des.xls',
+    #   'PlandeServdeSalud_Env a UEC_UltVer_May13 Schestakow-des.xls',
+    #   'PlandeServdeSalud Gailhac FINAL-des.xls',
+    #   'PlandeServdeSalud hospital LAS HERAS FINAL-des.xls',
+    #   'PlandeServdeSalud_May13 FINAL-des.xls',
+    #   'PlandeServdeSalud_May13 ok Hptal EVA PERON-des.xls',
+    #   'Plan deServdeSalud sumar.ILLIA Final-des.xls',
+    #   'Plan de Servicio_El Sauce ro-des.xls',
+    #   'Plan de Servicios de Salud Mayo 2013saporit-des.xls',
+    #   'PLAN DE SERVICIOS DE SALUD SICOLI FINAL-des.xls',
+    #   'PLAN SUMAR HOSPITAL MALARGUE final-des.xls',
+    #   'SERVICIO SALUD SUMAR final-des.xls',
+    #   'SUMAR Raffo Final-des.xls']
+
+   archivos = ['PlandeServdeSalud 2013 - CS 136-des.xls',
+      'PlandeServdeSalud 2013 - CS 139-des.xls',
+      'PlandeServdeSalud 2013 - CS17-des.xls',
+      'PlandeServdeSalud 2013 - CS18-des.xls',
+      'PlandeServdeSalud 2013 - CS20-des.xls',
+      'PlandeServdeSalud 2013 - CS21-des.xls',
+      'PlandeServdeSalud 2013 - CS221-des.xls',
+      'PlandeServdeSalud 2013 - CS 226-des.xls',
+      'PlandeServdeSalud 2013 - CS 22-des.xls',
+      'PlandeServdeSalud 2013 - CS 234-des.xls',
+      'PlandeServdeSalud 2013 - CS 25-des.xls',
+      'PlandeServdeSalud 2013 - P 530-des.xls',
+      'PlandeServdeSalud 2013 - P 549-des.xls',
+      'PlandeServdeSalud Area Sanitaria Capital-des.xls',
+      'PlandeServdeSalud_cs 1 v.1-des.xls',
+      'PlandeServdeSalud_cs 2 v.1-des.xls',
+      'PlandeServdeSalud CS 62 JUNIN-des.xls']
 
     ActiveRecord::Base.connection.schema_search_path = "public"
     archivos.each do |ra|
