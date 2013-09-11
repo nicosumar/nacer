@@ -14,8 +14,5 @@
   .field
     = f.label :plantilla_de_reglas_id, '¿Desea incluir una plantilla de reglas?'
     = f.select :plantilla_de_reglas_id, @plantillas_de_reglas, {:include_blank => 'No'}
-  .field
-    = f.label :periodo, 'Formula'
-    = f.select :formula_id, @formulas
   .actions
     = f.submit

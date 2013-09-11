@@ -104,14 +104,12 @@ module UsaMultiTenant
     args.delete(:sql)
     pvalores = args.values
     parametros = psql + pvalores
-    
+    parametros = parametros.first unless parametros.count > 1 
     esquemas.each do |esq|
       begin
         set_schema(esq['nombre'])
         
-        r = self.execute(parametros)
-        resp <<= r
-        resp.flatten! 1
+        r = ActiveRecord::Base.connection.execute(parametros)
 
         ActiveRecord::Base.connection.clear_query_cache
 
@@ -121,8 +119,7 @@ module UsaMultiTenant
       end
     end
     send :include, MetodosDeInstancia
-    return resp
-
+    return true
     
   end
 

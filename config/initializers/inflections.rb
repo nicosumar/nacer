@@ -293,17 +293,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("plantilla·_de·_reglas·", "plantillas_de_reglas")
   inflect.irregular("PlantillaDeReglas", "Plantillas·De·Reglas·")
   inflect.irregular("Plantilla·De·Reglas·", "PlantillasDeReglas")
-  #Advertencia de prestacion brindada
-  inflect.irregular("advertencia_de_prestacion_brindada", "advertencias·_de·_prestaciones·_brindadas·")
-  inflect.irregular("advertencia·_de·_prestacion·_brindada·", "advertencias_de_prestaciones_brindadas")
-  inflect.irregular("AdvertenciaDePrestacionBrindada", "Advertencias·De·Prestaciones·Brindadas·")
-  inflect.irregular("Advertencia·De·Prestacion·Brindada·", "AdvertenciasDePrestacionesBrindadas")
 
   #El articulo "de" lo trata de pluralizar
   inflect.irregular("de", "de·")
   inflect.irregular("de·", "de")
   inflect.irregular("De", "De·")
   inflect.irregular("De·", "De")
+
+  # UAD (unidad de alta de datos)
+  inflect.irregular("uad_nombre", "uad·_nombres·")
+  inflect.irregular("uad·_nombre·", "uad_nombre")
+  inflect.irregular("UadNombre", "Uad·Nombres·")
+  inflect.irregular("Uad·Nombre·", "UadNombres")
 
   #Informes - Uads
   inflect.irregular("informe_uad", "informes·_uads·")

@@ -16,7 +16,6 @@ class LiquidacionesSumarController < ApplicationController
   # GET /liquidaciones_sumar/new
   def new
     @liquidacion_sumar = LiquidacionSumar.new
-    @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
     @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
     
     # Traigo los conceptos de facturacion y los periodos. Agrego la vinculacion entre
@@ -31,7 +30,6 @@ class LiquidacionesSumarController < ApplicationController
   # GET /liquidaciones_sumar/1/edit
   def edit
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
-    @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
     @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
     
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
@@ -43,19 +41,37 @@ class LiquidacionesSumarController < ApplicationController
   # POST /liquidaciones_sumar
   def create
     @liquidacion_sumar = LiquidacionSumar.new(params[:liquidacion_sumar])
+  
+    pl = crear_tabla_parametros(@liquidacion_sumar)
+  
+    if pl.save
+      @liquidacion_sumar.parametro_liquidacion_sumar_id = pl.id
+    
+      if @liquidacion_sumar.save
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se creó la liquidacion '#{@liquidacion_sumar.descripcion}' correctamente" } 
+      else
+        @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
+        
+        @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+        @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
 
-    if @liquidacion_sumar.save
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se creó la liquidacion '#{@liquidacion_sumar.descripcion}' correctamente" } 
+        @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
+        render action: "new" 
+      end
     else
-      @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
-      @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
-      
-      @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
-      @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
+      if @liquidacion_sumar.save
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se creó la liquidacion '#{@liquidacion_sumar.descripcion}' pero no se creo la tabla de parametros" } 
+      else
+        @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
+        
+        @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+        @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
 
-      @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
-      render action: "new" 
+        @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
+        render action: "new" 
+      end
     end
+
   end
 
   # PUT /liquidaciones_sumar/1
@@ -65,7 +81,6 @@ class LiquidacionesSumarController < ApplicationController
     if @liquidacion_sumar.update_attributes(params[:liquidacion_sumar])
       redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se actualizo la liquidacion '#{@liquidacion_sumar.descripcion}' correctamente" } 
     else
-      @formulas = Formula.all.collect {|f| [f.descripcion, f.id]}
       @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
       
       @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
@@ -96,4 +111,18 @@ class LiquidacionesSumarController < ApplicationController
       redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
+
+  def crear_tabla_parametros(argLiquidacion)
+    #obtengo el nomenclador mas cercano a la fecha
+    n = Nomenclador.where("activo = true and fecha_de_inicio <= ?", argLiquidacion.periodo.fecha_cierre).order('fecha_de_inicio DESC').first
+    #Obtengo la ultima formula creada
+    f = Formula.where("activa = true and created_at <= ?", argLiquidacion.periodo.fecha_cierre).order('created_at DESC').first
+    
+    pl = ParametroLiquidacionSumar.new
+    pl.nomenclador = n
+    pl.formula = f
+
+    return pl
+  end
+
 end
