@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130904175034) do
+ActiveRecord::Schema.define(:version => 20130908131209) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -164,6 +164,17 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
   add_index "busquedas", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo", :unique => true
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
 
+  create_table "busquedas_locales", :force => true do |t|
+    t.integer  "modelo_id",   :null => false
+    t.string   "modelo_type", :null => false
+    t.string   "titulo",      :null => false
+    t.text     "texto",       :null => false
+    t.tsvector "vector_fts",  :null => false
+  end
+
+  add_index "busquedas_locales", ["modelo_type", "modelo_id"], :name => "uad_111_idx_unq_modelo", :unique => true
+  add_index "busquedas_locales", ["vector_fts"], :name => "uad_111_idx_gin_on_vector_fts"
+
   create_table "categorias_de_afiliados", :force => true do |t|
     t.string "nombre", :null => false
     t.string "codigo", :null => false
@@ -182,6 +193,8 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.integer  "creator_id"
     t.integer  "updater_id"
   end
+
+  add_index "centros_de_inscripcion", ["codigo"], :name => "uniq_codigo_on_centros_de_inscripcion", :unique => true
 
   create_table "centros_de_inscripcion_unidades_de_alta_de_datos", :id => false, :force => true do |t|
     t.integer "centro_de_inscripcion_id",   :null => false
@@ -338,6 +351,19 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.string  "opciones_de_formateo"
   end
 
+  create_table "datos_reportables_asociados", :force => true do |t|
+    t.integer  "prestacion_brindada_id",                                      :null => false
+    t.integer  "dato_reportable_requerido_id",                                :null => false
+    t.integer  "valor_integer"
+    t.decimal  "valor_big_decimal",            :precision => 15, :scale => 4
+    t.date     "valor_date"
+    t.text     "valor_string"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+  end
+
   create_table "datos_reportables_requeridos", :force => true do |t|
     t.integer "prestacion_id"
     t.integer "dato_reportable_id"
@@ -371,6 +397,8 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.integer "diagnostico_id"
     t.integer "prestacion_id"
   end
+
+  add_index "diagnosticos_prestaciones", ["diagnostico_id", "prestacion_id"], :name => "uniq_diagnosticos_prestaciones", :unique => true
 
   create_table "discapacidades", :force => true do |t|
     t.string "nombre"
@@ -487,6 +515,8 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.integer "prestacion_id"
   end
 
+  add_index "grupos_poblacionales_prestaciones", ["grupo_poblacional_id", "prestacion_id"], :name => "uniq_grupos_poblacionales_prestaciones", :unique => true
+
   create_table "informes", :force => true do |t|
     t.string   "titulo"
     t.text     "sql"
@@ -586,6 +616,11 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.integer "prestacion_id"
   end
 
+  create_table "metodos_de_validacion_prestaciones_brindadas", :id => false, :force => true do |t|
+    t.integer "prestacion_brindada_id"
+    t.integer "metodo_de_validacion_id"
+  end
+
   create_table "migra_anexos", :id => false, :force => true do |t|
     t.integer "id",                                   :null => false
     t.integer "numero_fila"
@@ -651,6 +686,80 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "novedades_de_los_afiliados", :force => true do |t|
+    t.integer  "tipo_de_novedad_id",                    :null => false
+    t.integer  "estado_de_la_novedad_id",               :null => false
+    t.string   "clave_de_beneficiario",                 :null => false
+    t.string   "apellido"
+    t.string   "nombre"
+    t.integer  "clase_de_documento_id"
+    t.integer  "tipo_de_documento_id"
+    t.string   "numero_de_documento"
+    t.string   "numero_de_celular"
+    t.string   "e_mail"
+    t.integer  "categoria_de_afiliado_id"
+    t.integer  "sexo_id"
+    t.date     "fecha_de_nacimiento"
+    t.boolean  "es_menor"
+    t.integer  "pais_de_nacimiento_id"
+    t.boolean  "se_declara_indigena"
+    t.integer  "lengua_originaria_id"
+    t.integer  "tribu_originaria_id"
+    t.integer  "alfabetizacion_del_beneficiario_id"
+    t.integer  "alfab_beneficiario_anios_ultimo_nivel"
+    t.string   "domicilio_calle"
+    t.string   "domicilio_numero"
+    t.string   "domicilio_piso"
+    t.string   "domicilio_depto"
+    t.string   "domicilio_manzana"
+    t.string   "domicilio_entre_calle_1"
+    t.string   "domicilio_entre_calle_2"
+    t.string   "telefono"
+    t.string   "otro_telefono"
+    t.integer  "domicilio_departamento_id"
+    t.integer  "domicilio_distrito_id"
+    t.string   "domicilio_barrio_o_paraje"
+    t.string   "domicilio_codigo_postal"
+    t.text     "observaciones"
+    t.integer  "lugar_de_atencion_habitual_id"
+    t.string   "apellido_de_la_madre"
+    t.string   "nombre_de_la_madre"
+    t.integer  "tipo_de_documento_de_la_madre_id"
+    t.string   "numero_de_documento_de_la_madre"
+    t.integer  "alfabetizacion_de_la_madre_id"
+    t.integer  "alfab_madre_anios_ultimo_nivel"
+    t.string   "apellido_del_padre"
+    t.string   "nombre_del_padre"
+    t.integer  "tipo_de_documento_del_padre_id"
+    t.string   "numero_de_documento_del_padre"
+    t.integer  "alfabetizacion_del_padre_id"
+    t.integer  "alfab_padre_anios_ultimo_nivel"
+    t.string   "apellido_del_tutor"
+    t.string   "nombre_del_tutor"
+    t.integer  "tipo_de_documento_del_tutor_id"
+    t.string   "numero_de_documento_del_tutor"
+    t.integer  "alfabetizacion_del_tutor_id"
+    t.integer  "alfab_tutor_anios_ultimo_nivel"
+    t.boolean  "esta_embarazada"
+    t.date     "fecha_de_la_ultima_menstruacion"
+    t.date     "fecha_de_diagnostico_del_embarazo"
+    t.integer  "semanas_de_embarazo"
+    t.date     "fecha_probable_de_parto"
+    t.date     "fecha_efectiva_de_parto"
+    t.integer  "score_de_riesgo"
+    t.integer  "discapacidad_id"
+    t.date     "fecha_de_la_novedad"
+    t.integer  "centro_de_inscripcion_id"
+    t.string   "nombre_del_agente_inscriptor"
+    t.text     "observaciones_generales"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+    t.date     "mes_y_anio_de_proceso"
+    t.text     "mensaje_de_la_baja"
   end
 
   create_table "objetos_de_las_prestaciones", :force => true do |t|
@@ -804,10 +913,35 @@ ActiveRecord::Schema.define(:version => 20130904175034) do
     t.integer  "updater_id"
   end
 
+  create_table "prestaciones_brindadas", :force => true do |t|
+    t.integer  "estado_de_la_prestacion_id",                                                   :null => false
+    t.string   "clave_de_beneficiario"
+    t.string   "historia_clinica"
+    t.date     "fecha_de_la_prestacion"
+    t.integer  "efector_id",                                                                   :null => false
+    t.integer  "prestacion_id",                                                                :null => false
+    t.boolean  "es_catastrofica",                                           :default => false
+    t.integer  "diagnostico_id"
+    t.decimal  "cantidad_de_unidades",       :precision => 15, :scale => 4, :default => 1.0
+    t.text     "observaciones"
+    t.integer  "cuasi_factura_id"
+    t.integer  "nomenclador_id"
+    t.decimal  "monto_facturado",            :precision => 15, :scale => 4, :default => 0.0
+    t.decimal  "monto_liquidado",            :precision => 15, :scale => 4, :default => 0.0
+    t.string   "mensaje_de_la_baja"
+    t.date     "fecha_del_debito"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+  end
+
   create_table "prestaciones_sexos", :id => false, :force => true do |t|
     t.integer "prestacion_id"
     t.integer "sexo_id"
   end
+
+  add_index "prestaciones_sexos", ["prestacion_id", "sexo_id"], :name => "uniq_prestaciones_sexos", :unique => true
 
   create_table "provincias", :force => true do |t|
     t.string  "nombre",                          :null => false

@@ -18,9 +18,9 @@ class SeparadorDeNombresYSexos
     begin
       origen = File.open(ruta, "r")
       origen.each do |linea|
-        texto, cantidad = linea.chomp.split("\t")
+        texto, cantidad = linea.chomp.split("\t", -1)
         if texto.match(/ /)
-          texto.gsub(/ +/, " ").split(" ").each do |t|
+          texto.gsub(/ +/, " ").split(" ", -1).each do |t|
             if t.length > 1
               if resultado.has_key?(t)
                 resultado[t] = resultado[t] + cantidad.to_i
@@ -55,7 +55,7 @@ class SeparadorDeNombresYSexos
     return {:sexo => :indetermindo, :prob_sexo => 0.0} unless nombres
 
     p_masculino = p_femenino = 1.0
-    nombres.gsub(".", "").split(" ").each do |n|
+    nombres.gsub(".", "").split(" ", -1).each do |n|
       if n.length > 1
         total = @masculinos[n].to_f + @femeninos[n].to_f
         if total > 0.0
@@ -70,7 +70,7 @@ class SeparadorDeNombresYSexos
   end
 
   def separar_nombres(nombre)
-    tokens = UnicodeUtils.upcase(nombre.chomp.strip.gsub(",", "").gsub(/  /, " ")).split(" ")
+    tokens = UnicodeUtils.upcase(nombre.chomp.strip.gsub(",", "").gsub(/  /, " ")).split(" ", -1)
 
     mejor_p = 0.0
     mejor_solucion = {}
@@ -96,7 +96,7 @@ class SeparadorDeNombresYSexos
     return 1.0 if texto.blank?
 
     p_masc = p_fem = 1.0
-    texto.gsub(".", "").split(" ").each do |n|
+    texto.gsub(".", "").split(" ", -1).each do |n|
       if n.length > 1
         n_total = apellidos[n].to_f + masculinos[n].to_f + femeninos[n].to_f
         if n_total > 0.0
@@ -112,7 +112,7 @@ class SeparadorDeNombresYSexos
     return 1.0 if texto.blank?
 
     p = 1.0
-    texto.gsub(".", "").split(" ").each do |n|
+    texto.gsub(".", "").split(" ", -1).each do |n|
       if n.length > 1
         n_total = apellidos[n].to_f + masculinos[n].to_f + femeninos[n].to_f
         if n_total > 0.0
@@ -130,7 +130,7 @@ class SeparadorDeNombresYSexos
     destino = File.open(archivo_a_procesar + ".new", "w")
 
     origen.each do |linea|
-      campos = linea.chomp.split(separador)
+      campos = linea.chomp.split(separador, -1)
 
       if columna.is_a? Array
         decision = decidir(campos.slice(columna[0], columna[1]-columna[0]))

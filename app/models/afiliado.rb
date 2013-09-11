@@ -156,10 +156,13 @@ class Afiliado < ActiveRecord::Base
     # Obtener los periodos de actividad de este afiliado
     periodos = PeriodoDeActividad.where("afiliado_id = #{afiliado_id}")
     periodos.each do |p|
-      # Tomamos como fecha de inicio del periodo la que sea mayor entre la inscripción y la fecha de inicio del periodo
-      # desplazada dos meses antes (lapso ventana para la carga de la ficha de inscripción).
-      inicio = [p.fecha_de_inicio - 4.months, fecha_de_inscripcion].max
-      if ( fecha >= inicio && (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion))
+#      # Tomamos como fecha de inicio del periodo la que sea mayor entre la inscripción y la fecha de inicio del periodo
+#      # desplazada dos meses antes (lapso ventana para la carga de la ficha de inscripción).
+#      inicio = [p.fecha_de_inicio - 4.months, fecha_de_inscripcion].max
+# MODIFICADO: Ya no hay más periodo ventana. A las nuevas inscripciones se le asigna como fecha de inicio la fecha de inscripción.
+# Sino, el periodo comienza el primer día del mes de proceso.
+
+      if ( fecha >= p.fecha_de_inicio && (!p.fecha_de_finalizacion || fecha < p.fecha_de_finalizacion))
         return true
       end
     end

@@ -5,9 +5,6 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
   # Crear las funciones y disparadores que se encargan de modificar la estructura de la BB.DD.
   # cada vez que se agrega una nueva unidad de alta de datos
   execute "
-    -- Ejecutar todo dentro de una transacción
-    BEGIN TRANSACTION;
-
     -- FUNCTION: crear_esquema_para_uad
     -- La función se encarga de crear las tablas e índices requeridos cada vez que se
     -- agrega o modifica una UAD.
@@ -313,7 +310,7 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
               updater_id integer
             );
 
-            -- Crear la secuencia que genera los identificadores de la tabla de datos adicionales
+            -- Crear la secuencia que genera los identificadores de la tabla de datos reportables asociados
             CREATE SEQUENCE uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq;
             ALTER SEQUENCE uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq
               OWNED BY uad_' || NEW.codigo || '.datos_reportables_asociados.id;
@@ -321,17 +318,31 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
               ALTER COLUMN id
                 SET DEFAULT nextval(''uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq''::regclass);
 
-            -- Clave primaria para la tabla de prestaciones
+            -- Clave primaria para la tabla de datos reportables asociados
             ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
               ADD CONSTRAINT uad_' || NEW.codigo || '_datos_reportables_asociados_pkey PRIMARY KEY (id);
 
-            -- Restricciones de clave foránea para la tabla de prestaciones
+            -- Restricciones de clave foránea para la tabla de datos reportables asociados
             ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
               ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_prestaciones_brindadas
               FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEw.codigo || '.prestaciones_brindadas(id);
             ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
               ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_datos_reportables_requeridos
-              FOREIGN KEY (dato_reportable_requerido_id) REFERENCES datos_reportables_requeridos(id);';
+              FOREIGN KEY (dato_reportable_requerido_id) REFERENCES datos_reportables_requeridos(id);
+
+            -- Crear la tabla para almacenar los métodos de validación fallados por las prestaciones brindadas
+            CREATE TABLE uad_' || NEW.codigo || '.metodos_de_validacion_prestaciones_brindadas (
+              prestacion_brindada_id integer NOT NULL,
+              metodo_de_validacion_id integer NOT NULL,
+            );
+
+            -- Restricciones de clave foránea para la tabla de métodos de validación fallados
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_prestaciones_brindadas
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_mm_vv_pp_bb_prestaciones_brindadas
+              FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEw.codigo || '.prestaciones_brindadas(id);
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_prestaciones_brindadas
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_mm_vv_pp_bb_metodos_de_validacion
+              FOREIGN KEY (metodo_de_validacion_id) REFERENCES public.metodos_de_validacion(id);';
         END IF;
         RETURN NEW;
       END;

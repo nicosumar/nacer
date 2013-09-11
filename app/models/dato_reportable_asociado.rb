@@ -59,7 +59,7 @@ class DatoReportableAsociado < ActiveRecord::Base
         )
       end
       alguna_advertencia = true
-      prestacion_brindada.datos_reportables_incompletos = true
+      #prestacion_brindada.datos_reportables_incompletos = true
     end
 
     return alguna_advertencia

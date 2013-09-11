@@ -15,7 +15,7 @@ group :assets do
 end
 
 group :development do
-  gem 'hirb-unicode'
+#  gem 'hirb-unicode'
 end
 
 

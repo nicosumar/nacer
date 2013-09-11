@@ -267,7 +267,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("informe·_filtro·", "informes_filtros")
   inflect.irregular("InformeFiltro", "Informes·Filtros·")
   inflect.irregular("Informe·Filtro·", "InformesFiltros")
-  #Informes - Filtros plural a plural 
+  #Informes - Filtros plural a plural
   #A veces trata de pluralizar cuando ya esta en plural, le agrego mas reglas
   inflect.irregular("informes_filtros", "informes·_filtros·")
   inflect.irregular("informes·_filtros·", "informes_filtros")
@@ -293,12 +293,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("plantilla·_de·_reglas·", "plantillas_de_reglas")
   inflect.irregular("PlantillaDeReglas", "Plantillas·De·Reglas·")
   inflect.irregular("Plantilla·De·Reglas·", "PlantillasDeReglas")
+  #Advertencia de prestacion brindada
+  inflect.irregular("advertencia_de_prestacion_brindada", "advertencias·_de·_prestaciones·_brindadas·")
+  inflect.irregular("advertencia·_de·_prestacion·_brindada·", "advertencias_de_prestaciones_brindadas")
+  inflect.irregular("AdvertenciaDePrestacionBrindada", "Advertencias·De·Prestaciones·Brindadas·")
+  inflect.irregular("Advertencia·De·Prestacion·Brindada·", "AdvertenciasDePrestacionesBrindadas")
 
   #El articulo "de" lo trata de pluralizar
   inflect.irregular("de", "de·")
   inflect.irregular("de·", "de")
   inflect.irregular("De", "De·")
   inflect.irregular("De·", "De")
+
   #Informes - Uads
   inflect.irregular("informe_uad", "informes·_uads·")
   inflect.irregular("informe·_uad·", "informes_uads")

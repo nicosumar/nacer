@@ -3,8 +3,9 @@ class PrestacionBrindada < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks
 
+  # CAMBIADO POR UNA ASOCIACIÓN AL MODELO DE MÉTODOS DE VALIDACIÓN (LOS MÉTODOS DE VALIDACIÓN FALLADOS SE PERSISTEN A LA BB.DD.)
   # Advertencias generadas por las validaciones
-  attr_accessor :advertencias, :datos_reportables_incompletos
+  #attr_accessor :advertencias, :datos_reportables_incompletos
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :cuasi_factura_id, :diagnostico_id, :efector_id
@@ -23,7 +24,10 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :nomenclador
   belongs_to :prestacion
   has_many :datos_reportables_asociados, :inverse_of => :prestacion_brindada, :order => :id
-  accepts_nested_attributes_for :datos_reportables_asociados #, :reject_if => :dato_reportable_no_requerido?
+  has_and_belongs_to_many :metodos_de_validacion_fallados, :class_name => "MetodoDeValidacion"
+
+  # Atributos anidados
+  accepts_nested_attributes_for :datos_reportables_asociados
 
   # Validaciones
   validates_presence_of :efector_id, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :prestacion_id
@@ -37,9 +41,10 @@ class PrestacionBrindada < ActiveRecord::Base
   validate :pasa_validaciones_especificas?
   validate :validar_asociacion
 
-  # Variable de instancia para guardar las advertencias
-  @advertencias = {}
-  @datos_reportables_incompletos = false
+  # DESACTIVO LA FORMA DE GENERAR ADVERTENCIAS PARA DEJARLAS REGISTRADAS EN UNA TABLA LOCAL DEL ESQUEMA
+  # Variable de instancia para guardar las advertencias. TODO: cleanup
+  #@advertencias = {}
+  #@datos_reportables_incompletos = false
 
   #
   # self.con_estado
@@ -161,11 +166,10 @@ class PrestacionBrindada < ActiveRecord::Base
   #
   # Métodos de validación adicionales asociados al modelo de la clase MetodoDeValidacion
   def beneficiaria_embarazada?
-    beneficiaria =
-    NovedadDelAfiliado.where(
-    :clave_de_beneficiario => clave_de_beneficiario,
-    :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
-    :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+    beneficiaria = NovedadDelAfiliado.where(
+      :clave_de_beneficiario => clave_de_beneficiario,
+      :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:pendiente => true),
+      :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
     ).first
     if not beneficiaria
       beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
@@ -348,18 +352,27 @@ class PrestacionBrindada < ActiveRecord::Base
     # *** CONTINUAR AQUÍ ***
   end
 
-  #
-  # dato_reportable_no_requerido?
-  # Indica si el DatoReportableAsociado pasado en el hash de atributos es requerido por esta prestación brindada
-  #def dato_reportable_no_requerido?(dra)
-  #  if prestacion
-  #    prestacion.datos_reportables_requeridos.any? do |drr|
-  #      drr.id == dra[:dato_reportable_requerido_id].to_i && drr.fecha_de_inicio <= fecha_de_la_prestacion
-  #    end
-  #  else
-  #    true
-  #  end
-  #end
+  # Verifica si hay datos reportables asociados obligatorios que estén incompletos
+  def datos_reportables_asociados_completos?
+    datos_reportables_asociados.all?{ |dra| !dra.hay_advertencias? }
+  end
+
+  # Verifica si a la fecha de registro, la prestación se encontraba vigente
+  def prestacion_vigente?
+    return true unless persisted?
+    return fecha_de_la_prestacion >= (created_at.to_date - 120.days)
+  end
+
+  # Verifica el estado de actividad del beneficiario para la fecha de prestación
+  def beneficiario_activo?
+    # Obtener el beneficiario
+    beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+
+    # Se considera activo si la clave corresponde a un alta que aún no se encuentra en el padrón definitivo
+    return true unless beneficiario
+
+    return beneficiario.activo?(fecha_de_la_prestacion)
+  end
 
   def requiere_diagnostico?
     if prestacion
@@ -374,69 +387,94 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   def validar_asociacion
-    datos_reportables_asociados.all{ |dra| dra.valid? }
+    datos_reportables_asociados.all?{ |dra| dra.valid? }
   end
 
-  def hay_advertencias?
-
-    # Eliminar las advertencias anteriores (si hubiera alguna)
-    @advertencias = {}
-    @datos_reportables_incompletos = false
-
-    # No verificamos advertencias si hay errores presentes
-    if errors.count > 0 || (datos_reportables_asociados && datos_reportables_asociados.any?{ |dra| dra.errors.count > 0 })
-      return false
-    end
-
-    alguna_advertencia = false
-
-    # Verificar que la fecha de la prestación tenga menos de 4 meses de la fecha de hoy
-    if fecha_de_la_prestacion < (Date.today - 120.days)
-      if @advertencias.has_key? :base
-        @advertencias[:base] << "La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registro"
-      else
-        @advertencias.merge! :base => ["La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registro"]
-      end
-      alguna_advertencia = true
-    end
-
-    # Verificar el estado de actividad del beneficiario
-    beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
-    if beneficiario && !beneficiario.activo?(fecha_de_la_prestacion)
-      if @advertencias.has_key? :base
-        @advertencias[:base] << (
-          (beneficiario.sexo.codigo == "F" ? "La beneficiaria " : "El beneficiario ") +
-          "no se encontraba " + (beneficiario.sexo.codigo == "F" ? "activa " : "activo ") + "para la fecha de la prestación"
-        )
-      else
-        @advertencias.merge! :base => [(
-          (beneficiario.sexo.codigo == "F" ? "La beneficiaria " : "El beneficiario ") +
-          "no se encontraba " + (beneficiario.sexo.codigo == "F" ? "activa " : "activo ") + "para la fecha de la prestación"
-        )]
-      end
-      alguna_advertencia = true
-    end
+  # Verifica si existen métodos de validación que generan advertencias y actualiza la tabla de metodos de validación
+  # fallados en forma acorde
+  def actualizar_metodos_de_validacion_fallados
+    return true unless persisted? && prestacion
 
     if prestacion
+      metodos_fallados = []
       prestacion.metodos_de_validacion.where(:genera_error => false).each do |mv|
         if !eval('self.' + mv.metodo)
-          if @advertencias.has_key? :base
-            @advertencias[:base] << mv.mensaje
-          else
-            @advertencias.merge! :base => [mv.mensaje]
-          end
-          alguna_advertencia = true
+          metodos_fallados << mv
         end
       end
-
-      # Verificar si hay advertencias relacionadas con los datos reportables asociados
-      if datos_reportables_asociados.any?{ |dra| dra.hay_advertencias? }
-        alguna_advertencia = true
-      end
+      self.metodos_de_validacion_fallados = metodos_fallados
     end
 
-    return alguna_advertencia
+    return (metodos_fallados.size > 0 ? true : false)
   end
+
+  # Indica si la prestación brindada falló algún método de validación
+  def con_advertencias?
+    metodos_de_validacion_fallados.size > 0
+  end
+
+  # CAMBIOS: Muevo las validaciones generales a métodos de validación específicos
+  # y desactivo la generación de advertencias, las que pasan a persistirse en la base de datos. TODO: cleanup
+#  def hay_advertencias?
+#
+#    # Eliminar las advertencias anteriores (si hubiera alguna)
+#    @advertencias = {}
+#    @datos_reportables_incompletos = false
+#
+#    # No verificamos advertencias si hay errores presentes
+#    if errors.count > 0 || (datos_reportables_asociados && datos_reportables_asociados.any?{ |dra| dra.errors.count > 0 })
+#      return false
+#    end
+#
+#    alguna_advertencia = false
+#
+#    # Verificar que la fecha de la prestación tenga menos de 4 meses de la fecha de hoy
+#    if fecha_de_la_prestacion < (Date.today - 120.days)
+#      if @advertencias.has_key? :base
+#        @advertencias[:base] << "La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registro"
+#      else
+#        @advertencias.merge! :base => ["La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registro"]
+#      end
+#      alguna_advertencia = true
+#    end
+#
+#    # Verificar el estado de actividad del beneficiario
+#    beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+#    if beneficiario && !beneficiario.activo?(fecha_de_la_prestacion)
+#      if @advertencias.has_key? :base
+#        @advertencias[:base] << (
+#          (beneficiario.sexo.codigo == "F" ? "La beneficiaria " : "El beneficiario ") +
+#          "no se encontraba " + (beneficiario.sexo.codigo == "F" ? "activa " : "activo ") + "para la fecha de la prestación"
+#        )
+#      else
+#        @advertencias.merge! :base => [(
+#          (beneficiario.sexo.codigo == "F" ? "La beneficiaria " : "El beneficiario ") +
+#          "no se encontraba " + (beneficiario.sexo.codigo == "F" ? "activa " : "activo ") + "para la fecha de la prestación"
+#        )]
+#      end
+#      alguna_advertencia = true
+#    end
+#
+#    if prestacion
+#      prestacion.metodos_de_validacion.where(:genera_error => false).each do |mv|
+#        if !eval('self.' + mv.metodo)
+#          if @advertencias.has_key? :base
+#            @advertencias[:base] << mv.mensaje
+#          else
+#            @advertencias.merge! :base => [mv.mensaje]
+#          end
+#          alguna_advertencia = true
+#        end
+#      end
+#
+#      # Verificar si hay advertencias relacionadas con los datos reportables asociados
+#      if datos_reportables_asociados.any?{ |dra| dra.hay_advertencias? }
+#        alguna_advertencia = true
+#      end
+#    end
+#
+#    return alguna_advertencia
+#  end
 
   def prestacion_comunitaria?
     return true unless prestacion
