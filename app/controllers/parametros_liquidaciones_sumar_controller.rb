@@ -1,4 +1,7 @@
+# -*- encoding : utf-8 -*-
 class ParametrosLiquidacionesSumarController < ApplicationController
+  before_filter :authenticate_user!
+  before_filter :verificar_lectura
 
   # GET /parametros_liquidaciones_sumar/1
   def show
@@ -24,6 +27,14 @@ class ParametrosLiquidacionesSumarController < ApplicationController
       @formulas = Formula.all.collect {|d| [d.descipcion, d.id]}
 
       render action: "edit" 
+    end
+  end
+
+  private
+
+  def verificar_lectura
+    if cannot? :read, ParametroLiquidacionSumar
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
 
