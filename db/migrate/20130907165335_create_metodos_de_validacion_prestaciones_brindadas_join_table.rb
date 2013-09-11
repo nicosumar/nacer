@@ -50,11 +50,14 @@ class CreateMetodosDeValidacionPrestacionesBrindadasJoinTable < ActiveRecord::Mi
             ADD CONSTRAINT fk_uad_#{uad.codigo}_mm_vv_pp_bb_metodos_de_validacion
             FOREIGN KEY (metodo_de_validacion_id) REFERENCES public.metodos_de_validacion (id);
         "
-        PrestacionBrindada.find(:all).each do |p|
-          if p.actualizar_metodos_de_validacion_fallados
-            p.estado_de_la_prestacion_id = 2
-          else
-            p.estado_de_la_prestacion_id = 3
+        #TODO:sacar el id 40 del lago.
+        if uad.id == 2
+          PrestacionBrindada.find(:all).each do |p|
+            if p.actualizar_metodos_de_validacion_fallados
+              p.estado_de_la_prestacion_id = 2
+            else
+              p.estado_de_la_prestacion_id = 3
+            end
           end
         end
       end
