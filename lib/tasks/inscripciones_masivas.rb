@@ -244,12 +244,13 @@ class InscripcionMasiva
         end
 
         def es_menor_de_edad
-          if !es_menor && fecha_de_la_novedad && fecha_de_nacimiento && (fecha_de_nacimiento + 10.years) > fecha_de_la_novedad
-            errors.add(
-              :es_menor, 'debe estar marcado si aún no ha cumplido los 10 años'
-            )
-            return false
-          end
+#          if !es_menor && fecha_de_la_novedad && fecha_de_nacimiento && (fecha_de_nacimiento + 10.years) > fecha_de_la_novedad
+#            errors.add(
+#              :es_menor, 'debe estar marcado si aún no ha cumplido los 10 años'
+#            )
+#            return false
+#          end
+          return true
         end
 
         def sin_duplicados
@@ -533,24 +534,25 @@ class InscripcionMasiva
       :numero_de_documento => a_numero_de_documento(campos[4]),
       :sexo_id => hash_a_id(hash_sexos, campos[5]),
       :fecha_de_nacimiento => a_fecha(campos[6]),
+      :es_menor => a_fecha(campos[11]) && a_fecha(campos[6]) && (a_fecha(campos[6]) + 10.years) <= a_fecha(campos[11]),
       :alfabetizacion_del_beneficiario_id => hash_a_id(hash_alfabetizacion, campos[7]),
       :domicilio_calle => a_texto(campos[8]),
       :domicilio_departamento_id => hash_a_id(hash_departamentos, campos[9]),
       :domicilio_distrito_id => a_distrito_id(hash_a_id(hash_departamentos, campos[9]), a_texto(campos[10])),
       :fecha_de_la_novedad => a_fecha(campos[11]),
       :nombre_del_agente_inscriptor => a_texto(campos[12]),
-      :apellido_de_la_madre => ([1, "M", "m"].member?(a_texto(campos[13])) ? a_texto(campos[14]) : nil),
-      :nombre_de_la_madre => ([1, "M", "m"].member?(a_texto(campos[13])) ? a_texto(campos[15]) : nil),
-      :tipo_de_documento_de_la_madre_id => ([1, "M", "m"].member?(a_texto(campos[13])) ? hash_a_id(hash_tipos, campos[16]) : nil),
-      :numero_de_documento_de_la_madre => ([1, "M", "m"].member?(a_texto(campos[13])) ? a_numero_de_documento(campos[17]) : nil),
-      :apellido_del_padre => ([2, "P", "p"].member?(a_texto(campos[13])) ? a_texto(campos[14]) : nil),
-      :nombre_del_padre => ([2, "P", "p"].member?(a_texto(campos[13])) ? a_texto(campos[15]) : nil),
-      :tipo_de_documento_del_padre_id => ([2, "P", "p"].member?(a_texto(campos[13])) ? hash_a_id(hash_tipos, campos[16]) : nil),
-      :numero_de_documento_del_padre => ([2, "P", "p"].member?(a_texto(campos[13])) ? a_numero_de_documento(campos[17]) : nil),
-      :apellido_del_tutor => ([3, "T", "t"].member?(a_texto(campos[13])) ? a_texto(campos[14]) : nil),
-      :nombre_del_tutor => ([3, "T", "t"].member?(a_texto(campos[13])) ? a_texto(campos[15]) : nil),
-      :tipo_de_documento_del_tutor_id => ([3, "T", "t"].member?(a_texto(campos[13])) ? hash_a_id(hash_tipos, campos[16]) : nil),
-      :numero_de_documento_del_tutor => ([3, "T", "t"].member?(a_texto(campos[13])) ? a_numero_de_documento(campos[17]) : nil)
+      :apellido_de_la_madre => (["1", "M", "m"].member?(a_texto(campos[13])) ? a_texto(campos[14]) : nil),
+      :nombre_de_la_madre => (["1", "M", "m"].member?(a_texto(campos[13])) ? a_texto(campos[15]) : nil),
+      :tipo_de_documento_de_la_madre_id => (["1", "M", "m"].member?(a_texto(campos[13])) ? hash_a_id(hash_tipos, campos[16]) : nil),
+      :numero_de_documento_de_la_madre => (["1", "M", "m"].member?(a_texto(campos[13])) ? a_numero_de_documento(campos[17]) : nil),
+      :apellido_del_padre => (["2", "P", "p"].member?(a_texto(campos[13])) ? a_texto(campos[14]) : nil),
+      :nombre_del_padre => (["2", "P", "p"].member?(a_texto(campos[13])) ? a_texto(campos[15]) : nil),
+      :tipo_de_documento_del_padre_id => (["2", "P", "p"].member?(a_texto(campos[13])) ? hash_a_id(hash_tipos, campos[16]) : nil),
+      :numero_de_documento_del_padre => (["2", "P", "p"].member?(a_texto(campos[13])) ? a_numero_de_documento(campos[17]) : nil),
+      :apellido_del_tutor => (["3", "T", "t"].member?(a_texto(campos[13])) ? a_texto(campos[14]) : nil),
+      :nombre_del_tutor => (["3", "T", "t"].member?(a_texto(campos[13])) ? a_texto(campos[15]) : nil),
+      :tipo_de_documento_del_tutor_id => (["3", "T", "t"].member?(a_texto(campos[13])) ? hash_a_id(hash_tipos, campos[16]) : nil),
+      :numero_de_documento_del_tutor => (["3", "T", "t"].member?(a_texto(campos[13])) ? a_numero_de_documento(campos[17]) : nil)
     }
   end
 
