@@ -183,6 +183,8 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.integer  "updater_id"
   end
 
+  add_index "centros_de_inscripcion", ["codigo"], :name => "uniq_codigo_on_centros_de_inscripcion", :unique => true
+
   create_table "centros_de_inscripcion_unidades_de_alta_de_datos", :id => false, :force => true do |t|
     t.integer "centro_de_inscripcion_id",   :null => false
     t.integer "unidad_de_alta_de_datos_id", :null => false
@@ -365,6 +367,8 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.integer "prestacion_id"
   end
 
+  add_index "diagnosticos_prestaciones", ["diagnostico_id", "prestacion_id"], :name => "uniq_diagnosticos_prestaciones", :unique => true
+
   create_table "discapacidades", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -463,6 +467,45 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.integer "prestacion_id"
   end
 
+  add_index "grupos_poblacionales_prestaciones", ["grupo_poblacional_id", "prestacion_id"], :name => "uniq_grupos_poblacionales_prestaciones", :unique => true
+
+  create_table "informes", :force => true do |t|
+    t.string   "titulo"
+    t.text     "sql"
+    t.string   "formato"
+    t.string   "nombre_partial"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  create_table "informes_filtros", :force => true do |t|
+    t.integer  "posicion"
+    t.integer  "informe_id"
+    t.integer  "informe_filtro_validador_ui_id"
+    t.string   "nombre"
+    t.string   "valor_por_defecto"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "informes_filtros", ["informe_id", "informe_filtro_validador_ui_id"], :name => "indexfiltrosvalidadores"
+
+  create_table "informes_filtros_validadores_uis", :force => true do |t|
+    t.string   "tipo"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "informes_uads", :force => true do |t|
+    t.integer  "informe_id"
+    t.integer  "unidad_de_alta_de_datos_id"
+    t.integer  "incluido"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "informes_uads", ["informe_id", "unidad_de_alta_de_datos_id"], :name => "informes_uads_idx"
+
   create_table "lenguas_originarias", :force => true do |t|
     t.string "nombre"
   end
@@ -508,6 +551,53 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.integer "metodo_de_validacion_id"
     t.integer "prestacion_id"
   end
+
+  create_table "migra_anexos", :id => false, :force => true do |t|
+    t.integer "id",                                   :null => false
+    t.integer "numero_fila"
+    t.integer "numero_columna_si_no"
+    t.string  "prestaciones",          :limit => 256
+    t.string  "anexo",                 :limit => 500
+    t.string  "codigo",                :limit => 256
+    t.string  "precio",                :limit => 50
+    t.string  "rural",                 :limit => 3
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_anexos", ["id"], :name => "migra_anexos_id_idx", :unique => true
+  add_index "migra_anexos", ["numero_fila"], :name => "migra_anexos_numero_fila_idx"
+
+  create_table "migra_modulos", :id => false, :force => true do |t|
+    t.integer "id",                                          :null => false
+    t.integer "numero_fila"
+    t.integer "numero_columna_si_no"
+    t.integer "grupo"
+    t.string  "subgrupo",                     :limit => 100
+    t.text    "modulo"
+    t.text    "definicion_cirugia_conceptos"
+    t.string  "codigos",                      :limit => 256
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_modulos", ["id"], :name => "migra_modulos_id_idx", :unique => true
+  add_index "migra_modulos", ["numero_fila"], :name => "migra_modulos_numero_fila_idx"
+
+  create_table "migra_prestaciones", :id => false, :force => true do |t|
+    t.integer "id",                                   :null => false
+    t.integer "numero_fila",                          :null => false
+    t.integer "numero_columna_si_no",                 :null => false
+    t.integer "grupo",                                :null => false
+    t.string  "subgrupo",              :limit => 100, :null => false
+    t.string  "nosologia",             :limit => 512, :null => false
+    t.text    "tipo_de_prestacion",                   :null => false
+    t.text    "nombre_prestacion",                    :null => false
+    t.string  "codigos",               :limit => 256
+    t.string  "precio",                :limit => 30
+    t.string  "rural",                 :limit => 3
+    t.integer "id_subrrogada_foranea"
+  end
+
+  add_index "migra_prestaciones", ["numero_fila"], :name => "migra_prestaciones_numero_fila_idx"
 
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
@@ -655,10 +745,15 @@ ActiveRecord::Schema.define(:version => 20130801222559) do
     t.integer "sexo_id"
   end
 
+  add_index "prestaciones_sexos", ["prestacion_id", "sexo_id"], :name => "uniq_prestaciones_sexos", :unique => true
+
   create_table "provincias", :force => true do |t|
-    t.string  "nombre",           :null => false
+    t.string  "nombre",                          :null => false
     t.integer "provincia_bio_id"
+    t.integer "pais_id",          :default => 1
   end
+
+  add_index "provincias", ["pais_id"], :name => "index_provincias_on_pais_id"
 
   create_table "referentes", :force => true do |t|
     t.integer  "efector_id",            :null => false
