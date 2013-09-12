@@ -88,7 +88,7 @@ class PrestacionesBrindadasController < ApplicationController
     @beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not @beneficiario
@@ -161,7 +161,7 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
       if !@beneficiario
@@ -297,7 +297,7 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
       if not @beneficiario
@@ -340,7 +340,7 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
       if !@beneficiario
@@ -488,7 +488,7 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
       if !@beneficiario

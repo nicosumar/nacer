@@ -99,7 +99,7 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => clave_de_beneficiario,
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
       if !beneficiario || beneficiario.tipo_de_novedad.codigo == "M"
@@ -164,7 +164,7 @@ class PrestacionBrindada < ActiveRecord::Base
     beneficiaria =
     NovedadDelAfiliado.where(
       :clave_de_beneficiario => clave_de_beneficiario,
-      :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+      :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
       :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
     ).first
     if not beneficiaria
@@ -178,7 +178,7 @@ class PrestacionBrindada < ActiveRecord::Base
     @beneficiaria =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not @beneficiaria
@@ -235,7 +235,7 @@ class PrestacionBrindada < ActiveRecord::Base
     beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not beneficiario
@@ -249,7 +249,7 @@ class PrestacionBrindada < ActiveRecord::Base
     beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not beneficiario
@@ -263,7 +263,7 @@ class PrestacionBrindada < ActiveRecord::Base
     beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not beneficiario
@@ -277,7 +277,7 @@ class PrestacionBrindada < ActiveRecord::Base
     beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not beneficiario
@@ -291,7 +291,7 @@ class PrestacionBrindada < ActiveRecord::Base
     beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not beneficiario
@@ -305,7 +305,7 @@ class PrestacionBrindada < ActiveRecord::Base
     beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not beneficiario
@@ -319,7 +319,7 @@ class PrestacionBrindada < ActiveRecord::Base
     beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => "R", "P", "I"),
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
     if not beneficiario
