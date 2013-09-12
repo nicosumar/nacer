@@ -374,6 +374,8 @@ ActiveRecord::Schema.define(:version => 20130912034310) do
     t.integer "prestacion_id"
   end
 
+  add_index "diagnosticos_prestaciones", ["diagnostico_id", "prestacion_id"], :name => "uniq_diagnosticos_prestaciones", :unique => true
+
   create_table "discapacidades", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -488,6 +490,8 @@ ActiveRecord::Schema.define(:version => 20130912034310) do
     t.integer "grupo_poblacional_id"
     t.integer "prestacion_id"
   end
+
+  add_index "grupos_poblacionales_prestaciones", ["grupo_poblacional_id", "prestacion_id"], :name => "uniq_grupos_poblacionales_prestaciones", :unique => true
 
   create_table "informes", :force => true do |t|
     t.string   "titulo"
@@ -857,6 +861,8 @@ ActiveRecord::Schema.define(:version => 20130912034310) do
     t.integer "prestacion_id"
     t.integer "sexo_id"
   end
+
+  add_index "prestaciones_sexos", ["prestacion_id", "sexo_id"], :name => "uniq_prestaciones_sexos", :unique => true
 
   create_table "provincias", :force => true do |t|
     t.string  "nombre",                          :null => false

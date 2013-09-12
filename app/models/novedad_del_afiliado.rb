@@ -767,7 +767,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     # Ejecutar todo dentro de una transacción para así poder cancelar las modificaciones en la BD en caso de fallas
     archivo_a = nil
     begin
-      ActiveRecord::Base.transaction do
+#      ActiveRecord::Base.transaction do
 
         # Obtener el siguiente número en la secuencia de generación de archivos A para este CI en esta UAD
         numero_secuencia =
@@ -957,7 +957,12 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
         # Exportar los registros al archivo
         novedades.rows.each do |novedad|
-          archivo_a.puts novedad.join("\t")
+          # Agrego un bloque begin porque parece que algunos caracteres Unicode no pueden grabarse en CP1252 y falla el puts
+          begin
+            archivo_a.puts novedad.join("\t")
+          rescue
+            archivo_a.puts "D\t9999999999999999\tNo se puede grabar el registro\tHay caracteres UNICODE que no pueden convertirse"
+          end
         end
 
         # Escribir el pie
@@ -970,7 +975,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
         ActiveRecord::Base.connection.exec_query("
           SELECT nextval('uad_#{codigo_uad}.ci_#{codigo_ci}_archivo_a_seq'::regclass);
         ")
-      end
+#      end
     rescue
       return nil
     end
