@@ -469,7 +469,7 @@ class InscripcionMasiva
 
           if !novedad.valid? || novedad.advertencias.size > 0
             novedad.persistido = false
-            novedad.errores_y_advertencias = novedad.errors.full_messages.join("\n")
+            novedad.errores_y_advertencias = novedad.errors.full_messages.join(" - ") + (novedad.advertencias.size > 0 ? novedad.advertencias.join(" - ") : "")
   #          puts novedad.inspect
             novedad.estado_de_la_novedad_id = 1
             novedad.clave_de_beneficiario = "9999999999999999"
@@ -534,7 +534,7 @@ class InscripcionMasiva
       :numero_de_documento => a_numero_de_documento(campos[4]),
       :sexo_id => hash_a_id(hash_sexos, campos[5]),
       :fecha_de_nacimiento => a_fecha(campos[6]),
-      :es_menor => a_fecha(campos[11]) && a_fecha(campos[6]) && (a_fecha(campos[6]) + 10.years) <= a_fecha(campos[11]),
+      :es_menor => (a_fecha(campos[11]) && a_fecha(campos[6]) && ((a_fecha(campos[6]) + 10.years) > a_fecha(campos[11]))),
       :alfabetizacion_del_beneficiario_id => hash_a_id(hash_alfabetizacion, campos[7]),
       :domicilio_calle => a_texto(campos[8]),
       :domicilio_departamento_id => hash_a_id(hash_departamentos, campos[9]),
