@@ -15,7 +15,7 @@ group :assets do
 end
 
 group :development do
-#  gem 'hirb-unicode'
+  gem 'hirb-unicode'
 end
 
 
@@ -31,4 +31,4 @@ gem 'capistrano'
 gem 'text'
 gem 'nilify_blanks'
 gem 'spreadsheet'
-gem 'unicode_utils'
+#gem 'unicode_utils'

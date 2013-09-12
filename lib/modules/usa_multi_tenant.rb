@@ -130,6 +130,7 @@ module UsaMultiTenant
         #Ok, esta el modulo incluido en un Modelo
         ActiveRecord::Base.connection.clear_cache!
         ActiveRecord::Base.connection.schema_search_path = "#{nombre}, public"
+        logger.warn "Se cambio al esquema #{nombre}"
         return true
       end
     rescue 

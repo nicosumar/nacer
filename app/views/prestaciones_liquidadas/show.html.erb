@@ -1,0 +1,70 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Liquidacion:</b>
+  <%= @prestacion_liquidada.liquidacion_id %>
+</p>
+
+<p>
+  <b>Unidad de alta de datos:</b>
+  <%= @prestacion_liquidada.unidad_de_alta_de_datos_id %>
+</p>
+
+<p>
+  <b>Efector:</b>
+  <%= @prestacion_liquidada.efector_id %>
+</p>
+
+<p>
+  <b>Prestacion incluida:</b>
+  <%= @prestacion_liquidada.prestacion_incluida_id %>
+</p>
+
+<p>
+  <b>Fecha de la prestacion:</b>
+  <%= @prestacion_liquidada.fecha_de_la_prestacion %>
+</p>
+
+<p>
+  <b>Estado de la prestación:</b>
+  <%= @prestacion_liquidada.estado_de_la_prestacion_id %>
+</p>
+
+<p>
+  <b>Historia clinica:</b>
+  <%= @prestacion_liquidada.historia_clinica %>
+</p>
+
+<p>
+  <b>Es catastrofica:</b>
+  <%= @prestacion_liquidada.es_catastrofica %>
+</p>
+
+<p>
+  <b>Diagnostico:</b>
+  <%= @prestacion_liquidada.diagnostico_id %>
+</p>
+
+<p>
+  <b>Diagnostico nombre:</b>
+  <%= @prestacion_liquidada.diagnostico_nombre %>
+</p>
+
+<p>
+  <b>Cantidad de unidades:</b>
+  <%= @prestacion_liquidada.cantidad_de_unidades %>
+</p>
+
+<p>
+  <b>Observaciones:</b>
+  <%= @prestacion_liquidada.observaciones %>
+</p>
+
+<p>
+  <b>Clave de beneficiario:</b>
+  <%= @prestacion_liquidada.clave_de_beneficiario %>
+</p>
+
+
+<%= link_to 'Edit', edit_prestacion_liquidada_path(@prestacion_liquidada) %> |
+<%= link_to 'Back', prestaciones_liquidadas_path %>
