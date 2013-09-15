@@ -14,6 +14,8 @@ class ParametrosLiquidacionesSumarController < ApplicationController
 
     @nomencladores = Nomenclador.all.collect {|n| [n.nombre, n.id]}
     @formulas = Formula.all.collect {|d| [d.descripcion, d.id]}
+    @estados = EstadoDeLaPrestacion.all.collect {|d| [d.nombre, d.id]}
+
   end
 
   # PUT /parametros_liquidaciones_sumar/1

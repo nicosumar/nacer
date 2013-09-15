@@ -1,0 +1,60 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Liquidacion:</b>
+  <%= @prestacion_liquidada_dato.liquidacion_id %>
+</p>
+
+<p>
+  <b>Prestacion liquidada:</b>
+  <%= @prestacion_liquidada_dato.prestacion_liquidada_id %>
+</p>
+
+<p>
+  <b>Dato reportable nombre:</b>
+  <%= @prestacion_liquidada_dato.dato_reportable_nombre %>
+</p>
+
+<p>
+  <b>Precio por unidad:</b>
+  <%= @prestacion_liquidada_dato.precio_por_unidad %>
+</p>
+
+<p>
+  <b>Valor integer:</b>
+  <%= @prestacion_liquidada_dato.valor_integer %>
+</p>
+
+<p>
+  <b>Valor big decimal:</b>
+  <%= @prestacion_liquidada_dato.valor_big_decimal %>
+</p>
+
+<p>
+  <b>Valor date:</b>
+  <%= @prestacion_liquidada_dato.valor_date %>
+</p>
+
+<p>
+  <b>Valor string:</b>
+  <%= @prestacion_liquidada_dato.valor_string %>
+</p>
+
+<p>
+  <b>Adicional por prestación:</b>
+  <%= @prestacion_liquidada_dato.adicional_por_prestacion %>
+</p>
+
+<p>
+  <b>Dato reportable:</b>
+  <%= @prestacion_liquidada_dato.dato_reportable %>
+</p>
+
+<p>
+  <b>Dato reportable requerido:</b>
+  <%= @prestacion_liquidada_dato.dato_reportable_requerido %>
+</p>
+
+
+<%= link_to 'Edit', edit_prestacion_liquidada_dato_path(@prestacion_liquidada_dato) %> |
+<%= link_to 'Back', prestaciones_liquidadas_datos_path %>

@@ -1,0 +1,41 @@
+<%= form_for(@liquidacion_sumar_cuasifactura) do |f| %>
+  <% if @liquidacion_sumar_cuasifactura.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@liquidacion_sumar_cuasifactura.errors.count, "error") %> prohibited this liquidacion_sumar_cuasifactura from being saved:</h2>
+
+      <ul>
+      <% @liquidacion_sumar_cuasifactura.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :liquidacion %><br />
+    <%= f.text_field :liquidacion %>
+  </div>
+  <div class="field">
+    <%= f.label :efector %><br />
+    <%= f.text_field :efector %>
+  </div>
+  <div class="field">
+    <%= f.label :prestacion_incluida %><br />
+    <%= f.text_field :prestacion_incluida %>
+  </div>
+  <div class="field">
+    <%= f.label :estado_de_la_prestacion %><br />
+    <%= f.text_field :estado_de_la_prestacion %>
+  </div>
+  <div class="field">
+    <%= f.label :monto %><br />
+    <%= f.text_field :monto %>
+  </div>
+  <div class="field">
+    <%= f.label :observaciones %><br />
+    <%= f.text_area :observaciones %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,33 @@
+<h1>Listing liquidaciones_sumar_cuasifacturas</h1>
+
+<table>
+  <tr>
+    <th>Liquidacion</th>
+    <th>Efector</th>
+    <th>Prestacion incluida</th>
+    <th>Estado de la prestacion</th>
+    <th>Monto</th>
+    <th>Observaciones</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @liquidaciones_sumar_cuasifacturas.each do |liquidacion_sumar_cuasifactura| %>
+  <tr>
+    <td><%= liquidacion_sumar_cuasifactura.liquidacion %></td>
+    <td><%= liquidacion_sumar_cuasifactura.efector %></td>
+    <td><%= liquidacion_sumar_cuasifactura.prestacion_incluida %></td>
+    <td><%= liquidacion_sumar_cuasifactura.estado_de_la_prestacion %></td>
+    <td><%= liquidacion_sumar_cuasifactura.monto %></td>
+    <td><%= liquidacion_sumar_cuasifactura.observaciones %></td>
+    <td><%= link_to 'Show', liquidacion_sumar_cuasifactura %></td>
+    <td><%= link_to 'Edit', edit_liquidacion_sumar_cuasifactura_path(liquidacion_sumar_cuasifactura) %></td>
+    <td><%= link_to 'Destroy', liquidacion_sumar_cuasifactura, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Liquidacion sumar cuasifactura', new_liquidacion_sumar_cuasifactura_path %>

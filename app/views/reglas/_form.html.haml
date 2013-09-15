@@ -10,10 +10,10 @@
     = f.select :nomenclador_id, @nomencladores,{}, {:class => 'multi_select'}
   .field
     = f.label :prestacion, 'Prestacion'
-    = f.select :prestacion_id, @prestaciones,{}, {:class => 'multi_select'}
+    = f.select :prestacion_id, @prestaciones,{}, {:class => 'multi_select'}#, disabled: 'disabled'}
   .field
     = f.label :metodo_de_validacion, 'Método de validacion'
-    = f.select :metodo_de_validacion_id, @metodos_de_validacion, {}, {:class => 'multi_select'}
+    = f.select :metodo_de_validacion_id, @metodos_de_validacion, {}, {:class => 'multi_select'}#, disabled: 'disabled'}
   .field
     = f.label :permitir
     = f.check_box :permitir

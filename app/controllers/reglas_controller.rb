@@ -27,7 +27,7 @@ class ReglasController < ApplicationController
    
     @metodos_de_validacion = MetodoDeValidacion.find(:all, include: :prestaciones).collect do |m|
       m.prestaciones.collect do |p|
-        ["#{m.nombre}", m.id, {:class => p.id} ]
+        ["#{m.id}| #{m.nombre}", m.id, {:class => p.id} ]
       end
     end.flatten!(1).uniq
   end
@@ -45,7 +45,7 @@ class ReglasController < ApplicationController
    
     @metodos_de_validacion = MetodoDeValidacion.find(:all, include: :prestaciones).collect do |m|
       m.prestaciones.collect do |p|
-        ["#{m.nombre}", m.id, {:class => p.id} ]
+        ["#{m.id}| #{m.nombre}", m.id, {:class => p.id} ]
       end
     end.flatten!(1).uniq
   end
@@ -66,7 +66,7 @@ class ReglasController < ApplicationController
      
       @metodos_de_validacion = MetodoDeValidacion.find(:all, include: :prestaciones).collect do |m|
         m.prestaciones.collect do |p|
-          ["#{m.nombre}", m.id, {:class => p.id} ]
+          ["#{m.id}| #{m.nombre}", m.id, {:class => p.id} ]
         end
       end.flatten!(1).uniq
       render action: "new" 
@@ -90,7 +90,7 @@ class ReglasController < ApplicationController
      
       @metodos_de_validacion = MetodoDeValidacion.find(:all, include: :prestaciones).collect do |m|
         m.prestaciones.collect do |p|
-          ["#{m.nombre}", m.id, {:class => p.id} ]
+          ["#{m.id}| #{m.nombre}", m.id, {:class => p.id} ]
         end
       end.flatten!(1).uniq
       render action: "edit" 

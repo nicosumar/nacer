@@ -62,6 +62,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("ability·", "abilities")
 
   # Plurales no regulares para clases y objetos
+  inflect.irregular("sumar", "sumar·")
   inflect.irregular("convenio_de_gestion", "convenios·_de·_gestion·")
   inflect.irregular("convenio·_de·_gestion·", "convenios_de_gestion")
   inflect.irregular("ConvenioDeGestion", "Convenios·De·Gestion·")
@@ -293,7 +294,11 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("plantilla·_de·_reglas·", "plantillas_de_reglas")
   inflect.irregular("PlantillaDeReglas", "Plantillas·De·Reglas·")
   inflect.irregular("Plantilla·De·Reglas·", "PlantillasDeReglas")
-
+  #Liquidaciones Sumar
+  inflect.irregular("liquidacion_sumar_cuasifactura", "liquidaciones·_sumar·_cuasifacturas·")
+  inflect.irregular("liquidacion·_sumar·_cuasifactura·", "liquidaciones_sumar_cuasifacturas")
+  inflect.irregular("LiquidacionSumarCuasifactura", "Liquidaciones·Sumar·Cuasifacturas·")
+  inflect.irregular("Liquidacion·Sumar·Cuasifactura·", "LiquidacionesSumarCuasifacturas")
   #El articulo "de" lo trata de pluralizar
   inflect.irregular("de", "de·")
   inflect.irregular("de·", "de")

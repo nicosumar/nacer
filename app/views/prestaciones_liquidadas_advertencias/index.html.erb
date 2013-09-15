@@ -1,0 +1,29 @@
+<h1>Listing prestaciones_liquidadas_advertencias</h1>
+
+<table>
+  <tr>
+    <th>Prestacion liquidada</th>
+    <th>Metodo de validacion</th>
+    <th>Comprobacion</th>
+    <th>Mensaje</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @prestaciones_liquidadas_advertencias.each do |prestacion_liquidada_advertencia| %>
+  <tr>
+    <td><%= prestacion_liquidada_advertencia.prestacion_liquidada %></td>
+    <td><%= prestacion_liquidada_advertencia.metodo_de_validacion %></td>
+    <td><%= prestacion_liquidada_advertencia.comprobacion %></td>
+    <td><%= prestacion_liquidada_advertencia.mensaje %></td>
+    <td><%= link_to 'Show', prestacion_liquidada_advertencia %></td>
+    <td><%= link_to 'Edit', edit_prestacion_liquidada_advertencia_path(prestacion_liquidada_advertencia) %></td>
+    <td><%= link_to 'Destroy', prestacion_liquidada_advertencia, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Prestacion liquidada advertencia', new_prestacion_liquidada_advertencia_path %>

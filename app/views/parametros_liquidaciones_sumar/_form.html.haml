@@ -8,6 +8,16 @@
   .field
     = f.label :nomenclador, "Nomenclador: "
     = f.select :nomenclador_id, @nomencladores
+  .field
+    = f.label :prestacion_aceptada, "Estado de prestaciones aceptadas "
+    = f.select :aceptar_estado_de_la_prestacion_id, @estados
+  .field
+    = f.label :prestacion_rechazada, "Estado de prestaciones rechazadas "
+    = f.select :rechazar_estado_de_la_prestacion_id, @estados
+  .field
+    = f.label :prestacion_exceptuada, "Estado de prestaciones exceptuadas por regla "
+    = f.select :excepcion_estado_de_la_prestacion_id, @estados
+
   .actions
     = f.submit
 

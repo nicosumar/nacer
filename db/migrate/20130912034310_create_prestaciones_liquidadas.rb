@@ -14,6 +14,9 @@ class CreatePrestacionesLiquidadas < ActiveRecord::Migration
       t.integer :cantidad_de_unidades
       t.text :observaciones
       t.string :clave_de_beneficiario
+      t.column :codigo_area_prestacion, "char(1)"
+      t.string :nombre_area_de_prestacion
+      t.references :prestacion_brindada
 
       t.timestamps
     end

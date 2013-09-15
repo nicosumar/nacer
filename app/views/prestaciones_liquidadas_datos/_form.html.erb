@@ -1,0 +1,61 @@
+<%= form_for(@prestacion_liquidada_dato) do |f| %>
+  <% if @prestacion_liquidada_dato.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@prestacion_liquidada_dato.errors.count, "error") %> prohibited this prestacion_liquidada_dato from being saved:</h2>
+
+      <ul>
+      <% @prestacion_liquidada_dato.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :liquidacion_id %><br />
+    <%= f.number_field :liquidacion_id %>
+  </div>
+  <div class="field">
+    <%= f.label :prestacion_liquidada_id %><br />
+    <%= f.number_field :prestacion_liquidada_id %>
+  </div>
+  <div class="field">
+    <%= f.label :dato_reportable_nombre %><br />
+    <%= f.text_field :dato_reportable_nombre %>
+  </div>
+  <div class="field">
+    <%= f.label :precio_por_unidad %><br />
+    <%= f.text_field :precio_por_unidad %>
+  </div>
+  <div class="field">
+    <%= f.label :valor_integer %><br />
+    <%= f.text_field :valor_integer %>
+  </div>
+  <div class="field">
+    <%= f.label :valor_big_decimal %><br />
+    <%= f.text_field :valor_big_decimal %>
+  </div>
+  <div class="field">
+    <%= f.label :valor_date %><br />
+    <%= f.date_select :valor_date %>
+  </div>
+  <div class="field">
+    <%= f.label :valor_string %><br />
+    <%= f.text_field :valor_string %>
+  </div>
+  <div class="field">
+    <%= f.label :adicional_por_prestacion %><br />
+    <%= f.text_field :adicional_por_prestacion %>
+  </div>
+  <div class="field">
+    <%= f.label :dato_reportable %><br />
+    <%= f.text_field :dato_reportable %>
+  </div>
+  <div class="field">
+    <%= f.label :dato_reportable_requerido %><br />
+    <%= f.text_field :dato_reportable_requerido %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

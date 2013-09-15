@@ -1,0 +1,33 @@
+<%= form_for(@prestacion_liquidada_advertencia) do |f| %>
+  <% if @prestacion_liquidada_advertencia.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@prestacion_liquidada_advertencia.errors.count, "error") %> prohibited this prestacion_liquidada_advertencia from being saved:</h2>
+
+      <ul>
+      <% @prestacion_liquidada_advertencia.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :prestacion_liquidada %><br />
+    <%= f.text_field :prestacion_liquidada %>
+  </div>
+  <div class="field">
+    <%= f.label :metodo_de_validacion %><br />
+    <%= f.text_field :metodo_de_validacion %>
+  </div>
+  <div class="field">
+    <%= f.label :comprobacion %><br />
+    <%= f.text_field :comprobacion %>
+  </div>
+  <div class="field">
+    <%= f.label :mensaje %><br />
+    <%= f.text_field :mensaje %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

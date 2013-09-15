@@ -32,19 +32,22 @@
       %td 
         %b Plantilla de reglas:
       %td{:colspan => "2"}
-        %span.field_value= @liquidacion_sumar.plantilla_de_reglas.nombre unless @liquidacion_sumar.plantilla_de_reglas.blank?
-      %td= button_to 'Ver plantilla', @liquidacion_sumar.plantilla_de_reglas, method: "get" unless @liquidacion_sumar.plantilla_de_reglas.blank?
+        - unless @liquidacion_sumar.plantilla_de_reglas.blank?
+          %span.field_value= @liquidacion_sumar.plantilla_de_reglas.nombre
+        - else
+          = button_to 'Crear nueva plantilla', new_plantilla_de_reglas_path, method: "get"
+      %td{colspan: 2}= button_to 'Ver plantilla', @liquidacion_sumar.plantilla_de_reglas, method: "get" unless @liquidacion_sumar.plantilla_de_reglas.blank?
     %tr
-      %td 
+      %td
         %b Grupo de Efectores:
-      %td{:colspan => "2"}
+      %td
         %span.field_value= @liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
-      %td= button_to 'Ver grupo', @liquidacion_sumar.grupo_de_efectores_liquidacion, method: "get"
+      %td{colspan: "2"}= button_to 'Ver grupo', @liquidacion_sumar.grupo_de_efectores_liquidacion, method: "get"
     %tr
       %td{colspan: "4"} &nbsp;
     %tr
       %td{colspan: "4"}
         = button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
-        Vaciar
+        -#= button_to "Vaciar Liquidacion", { :action => "delete", :id => @liquidacion_sumar.id }, :confirm => "Esta seguro que desea vaciar la liquidacion? \\n se eliminaran tambien las cuasifacturas si fueron generadas", :method => :vaciar_liquidacion 
         Procesar
         Ver detalle

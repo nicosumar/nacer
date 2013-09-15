@@ -1,0 +1,43 @@
+<h1>Listing prestaciones_liquidadas_datos</h1>
+
+<table>
+  <tr>
+    <th>Liquidacion</th>
+    <th>Prestacion liquidada</th>
+    <th>Dato reportable nombre</th>
+    <th>Precio por unidad</th>
+    <th>Valor integer</th>
+    <th>Valor big decimal</th>
+    <th>Valor date</th>
+    <th>Valor string</th>
+    <th>Adicional por prestación</th>
+    <th>Dato reportable</th>
+    <th>Dato reportable requerido</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @prestaciones_liquidadas_datos.each do |prestacion_liquidada_dato| %>
+  <tr>
+    <td><%= prestacion_liquidada_dato.liquidacion_id %></td>
+    <td><%= prestacion_liquidada_dato.prestacion_liquidada_id %></td>
+    <td><%= prestacion_liquidada_dato.dato_reportable_nombre %></td>
+    <td><%= prestacion_liquidada_dato.precio_por_unidad %></td>
+    <td><%= prestacion_liquidada_dato.valor_integer %></td>
+    <td><%= prestacion_liquidada_dato.valor_big_decimal %></td>
+    <td><%= prestacion_liquidada_dato.valor_date %></td>
+    <td><%= prestacion_liquidada_dato.valor_string %></td>
+    <td><%= prestacion_liquidada_dato.adicional_por_prestacion %></td>
+    <td><%= prestacion_liquidada_dato.dato_reportable %></td>
+    <td><%= prestacion_liquidada_dato.dato_reportable_requerido %></td>
+    <td><%= link_to 'Show', prestacion_liquidada_dato %></td>
+    <td><%= link_to 'Edit', edit_prestacion_liquidada_dato_path(prestacion_liquidada_dato) %></td>
+    <td><%= link_to 'Destroy', prestacion_liquidada_dato, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Prestacion liquidada dato', new_prestacion_liquidada_dato_path %>

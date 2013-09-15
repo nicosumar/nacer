@@ -1,6 +1,10 @@
 # -*- encoding : utf-8 -*-
 class EstadoDeLaPrestacion < ActiveRecord::Base
 
+  has_many :parametros_liquidaciones_aceptadas, class_name: "ParametroLiquidacionSumar", foreign_key: 'aceptar_estado_de_la_prestacion_id'
+  has_many :parametros_liquidaciones_rechazadas, class_name: "ParametroLiquidacionSumar", foreign_key: 'rechazar_estado_de_la_prestacion_id'
+  has_many :parametros_liquidaciones_exceptuadas, class_name: "ParametroLiquidacionSumar", foreign_key: 'excepcion_estado_de_la_prestacion_id'
+
   # Seguridad de asignaciones masivas
   attr_accessible :codigo, :indexable, :nombre, :pendiente
 

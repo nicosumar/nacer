@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130912034310) do
+ActiveRecord::Schema.define(:version => 20130915193654) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -374,8 +374,6 @@ ActiveRecord::Schema.define(:version => 20130912034310) do
     t.integer "prestacion_id"
   end
 
-  add_index "diagnosticos_prestaciones", ["diagnostico_id", "prestacion_id"], :name => "uniq_diagnosticos_prestaciones", :unique => true
-
   create_table "discapacidades", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -491,8 +489,6 @@ ActiveRecord::Schema.define(:version => 20130912034310) do
     t.integer "prestacion_id"
   end
 
-  add_index "grupos_poblacionales_prestaciones", ["grupo_poblacional_id", "prestacion_id"], :name => "uniq_grupos_poblacionales_prestaciones", :unique => true
-
   create_table "informes", :force => true do |t|
     t.string   "titulo"
     t.text     "sql"
@@ -577,6 +573,23 @@ ActiveRecord::Schema.define(:version => 20130912034310) do
   add_index "liquidaciones_sumar", ["grupo_de_efectores_liquidacion_id"], :name => "liquidaciones_sumar_grupo_de_efectores_liquidacion_id_idx"
   add_index "liquidaciones_sumar", ["parametro_liquidacion_sumar_id"], :name => "liquidaciones_sumar_parametro_liquidacion_sumar_id_idx"
   add_index "liquidaciones_sumar", ["plantilla_de_reglas_id"], :name => "liquidaciones_sumar_plantilla_de_reglas_id_idx"
+
+  create_table "liquidaciones_sumar_cuasifacturas", :force => true do |t|
+    t.integer  "liquidacion_id"
+    t.integer  "efector_id"
+    t.integer  "prestacion_incluida_id"
+    t.integer  "estado_de_la_prestacion_id"
+    t.decimal  "monto",                      :precision => 15, :scale => 4
+    t.text     "observaciones"
+    t.integer  "cuasifactura_id"
+    t.datetime "created_at",                                                :null => false
+    t.datetime "updated_at",                                                :null => false
+  end
+
+  add_index "liquidaciones_sumar_cuasifacturas", ["efector_id"], :name => "liquidaciones_sumar_cuasifacturas_efector_id_idx"
+  add_index "liquidaciones_sumar_cuasifacturas", ["estado_de_la_prestacion_id"], :name => "liquidaciones_sumar_cuasifactura_estado_de_la_prestacion_id_idx"
+  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_id"], :name => "liquidaciones_sumar_cuasifacturas_liquidacion_id_idx"
+  add_index "liquidaciones_sumar_cuasifacturas", ["prestacion_incluida_id"], :name => "liquidaciones_sumar_cuasifacturas_prestacion_incluida_id_idx"
 
   create_table "metodos_de_validacion", :force => true do |t|
     t.string   "nombre"
@@ -685,11 +698,14 @@ ActiveRecord::Schema.define(:version => 20130912034310) do
   end
 
   create_table "parametros_liquidaciones_sumar", :force => true do |t|
-    t.integer  "dias_de_prestacion", :default => 120
+    t.integer  "dias_de_prestacion",                   :default => 120
     t.integer  "nomenclador_id"
     t.integer  "formula_id"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
+    t.integer  "rechazar_estado_de_la_prestacion_id",  :default => 6
+    t.integer  "aceptar_estado_de_la_prestacion_id",   :default => 5
+    t.integer  "excepcion_estado_de_la_prestacion_id", :default => 5
   end
 
   create_table "percentiles_pc_edad", :force => true do |t|
@@ -851,18 +867,51 @@ ActiveRecord::Schema.define(:version => 20130912034310) do
     t.integer  "cantidad_de_unidades"
     t.text     "observaciones"
     t.string   "clave_de_beneficiario"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.string   "codigo_area_prestacion",     :limit => 1
+    t.string   "nombre_area_de_prestacion"
+    t.integer  "prestacion_brindada_id"
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
   end
 
   add_index "prestaciones_liquidadas", ["liquidacion_id", "unidad_de_alta_de_datos_id", "efector_id", "prestacion_incluida_id", "fecha_de_la_prestacion", "clave_de_beneficiario"], :name => "prestaciones_liquidadas_liquidacion_id_unidad_de_alta_de_da_key", :unique => true
+
+  create_table "prestaciones_liquidadas_advertencias", :force => true do |t|
+    t.integer  "liquidacion_id"
+    t.integer  "prestacion_liquidada_id"
+    t.integer  "metodo_de_validacion_id"
+    t.string   "comprobacion"
+    t.string   "mensaje"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+  end
+
+  add_index "prestaciones_liquidadas_advertencias", ["liquidacion_id"], :name => "presta_liquida_adver_liquidacion_id_idx"
+  add_index "prestaciones_liquidadas_advertencias", ["metodo_de_validacion_id"], :name => "presta_liquida_adver_metodo_id_idx"
+  add_index "prestaciones_liquidadas_advertencias", ["prestacion_liquidada_id"], :name => "presta_liquida_adver_presta_id_idx"
+
+  create_table "prestaciones_liquidadas_datos", :force => true do |t|
+    t.integer  "liquidacion_id"
+    t.integer  "prestacion_liquidada_id"
+    t.string   "dato_reportable_nombre"
+    t.decimal  "precio_por_unidad",            :precision => 15, :scale => 4
+    t.integer  "valor_integer"
+    t.decimal  "valor_big_decimal",            :precision => 15, :scale => 4
+    t.date     "valor_date"
+    t.string   "valor_string"
+    t.decimal  "adicional_por_prestacion",     :precision => 15, :scale => 4
+    t.integer  "dato_reportable_id"
+    t.integer  "dato_reportable_requerido_id"
+    t.datetime "created_at",                                                  :null => false
+    t.datetime "updated_at",                                                  :null => false
+  end
+
+  add_index "prestaciones_liquidadas_datos", ["liquidacion_id"], :name => "indice_liquidacion_sumar_idx"
 
   create_table "prestaciones_sexos", :id => false, :force => true do |t|
     t.integer "prestacion_id"
     t.integer "sexo_id"
   end
-
-  add_index "prestaciones_sexos", ["prestacion_id", "sexo_id"], :name => "uniq_prestaciones_sexos", :unique => true
 
   create_table "provincias", :force => true do |t|
     t.string  "nombre",                          :null => false

@@ -1,9 +1,10 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :liquidaciones_sumar_cuasifacturas
+  resources :prestaciones_liquidadas_advertencias
+  resources :prestaciones_liquidadas_datos
   resources :prestaciones_liquidadas
-
-
   resources :parametros_liquidaciones_sumar
 
 
@@ -16,6 +17,7 @@ Nacer::Application.routes.draw do
   resources :liquidaciones_sumar do
     member do
       get 'proceso_liquidacion'
+      delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
     end
   end
   resources :reglas

@@ -100,6 +100,14 @@ class LiquidacionesSumarController < ApplicationController
     redirect_to liquidaciones_sumar_url 
   end
 
+  def vaciar_liquidacion
+    @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    @liquidacion_sumar.vaciar_liquidacion
+
+    redirect_to @liquidacion_sumar
+    
+  end
+
   def proceso_liquidacion
     
   end

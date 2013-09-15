@@ -27,11 +27,9 @@ class FormulasController < ApplicationController
   def create
     @formula = Formula.new(params[:formula])
 
-    #borro los espacios extras y saltos de linea
-    @formula.formula = @formula.formula.split.join(" ")
-
+   
     if @formula.save
-      redirect_to @formula, notice: 'Formula was successfully created.' 
+      redirect_to @formula, :flash => { :tipo => :ok, :titulo => "Se creó la formula '#{@formula.descripcion}'. #{@formula.crear_formula} " } 
     else
       render action: "new" 
     end
@@ -43,7 +41,7 @@ class FormulasController < ApplicationController
     @formula = Formula.find(params[:id])
 
     if @formula.update_attributes(params[:formula])
-      redirect_to @formula, notice: 'Formula was successfully updated.' 
+      redirect_to @formula, :flash => { :tipo => :ok, :titulo => "Se actualizó la formula '#{@formula.descripcion}'. #{@formula.crear_formula}" } 
     else
       render action: "edit" 
     end
@@ -56,6 +54,8 @@ class FormulasController < ApplicationController
 
     redirect_to formulas_url 
   end
+
+  private 
 
   def verificar_permisos
     if not current_user.in_group?(:coordinacion)

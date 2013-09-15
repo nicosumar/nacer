@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Liquidacion:</b>
+  <%= @liquidacion_sumar_cuasifactura.liquidacion %>
+</p>
+
+<p>
+  <b>Efector:</b>
+  <%= @liquidacion_sumar_cuasifactura.efector %>
+</p>
+
+<p>
+  <b>Prestacion incluida:</b>
+  <%= @liquidacion_sumar_cuasifactura.prestacion_incluida %>
+</p>
+
+<p>
+  <b>Estado de la prestacion:</b>
+  <%= @liquidacion_sumar_cuasifactura.estado_de_la_prestacion %>
+</p>
+
+<p>
+  <b>Monto:</b>
+  <%= @liquidacion_sumar_cuasifactura.monto %>
+</p>
+
+<p>
+  <b>Observaciones:</b>
+  <%= @liquidacion_sumar_cuasifactura.observaciones %>
+</p>
+
+
+<%= link_to 'Edit', edit_liquidacion_sumar_cuasifactura_path(@liquidacion_sumar_cuasifactura) %> |
+<%= link_to 'Back', liquidaciones_sumar_cuasifacturas_path %>
