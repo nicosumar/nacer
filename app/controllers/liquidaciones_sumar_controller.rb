@@ -108,8 +108,11 @@ class LiquidacionesSumarController < ApplicationController
     
   end
 
-  def proceso_liquidacion
+  def procesar_liquidacion
+    @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    @liquidacion_sumar.generar_snapshoot_de_liquidacion
     
+    redirect_to @liquidacion_sumar
   end
 
   private

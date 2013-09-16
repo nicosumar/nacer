@@ -47,7 +47,10 @@
       %td{colspan: "4"} &nbsp;
     %tr
       %td{colspan: "4"}
-        = button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
-        -#= button_to "Vaciar Liquidacion", { :action => "delete", :id => @liquidacion_sumar.id }, :confirm => "Esta seguro que desea vaciar la liquidacion? \\n se eliminaran tambien las cuasifacturas si fueron generadas", :method => :vaciar_liquidacion 
-        Procesar
-        Ver detalle
+        %table
+          %tr
+            %td= button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
+            %td=button_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :delete
+            %td=button_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :post
+            %td Ver detalle
+            %td Crear CuasiFactura y asignar numero

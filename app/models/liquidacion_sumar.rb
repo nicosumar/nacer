@@ -11,8 +11,6 @@ class LiquidacionSumar < ActiveRecord::Base
 
   validates_presence_of :descripcion, :grupo_de_efectores_liquidacion, :concepto_de_facturacion, :periodo, :parametro_liquidacion_sumar_id
   
-  #private 
-
   def generar_snapshoot_de_liquidacion
 
     #Traigo Grupo de efectores y nomenclador
@@ -60,6 +58,7 @@ class LiquidacionSumar < ActiveRecord::Base
       logger.warn ("Tabla de prestaciones incluidas generada")
     else
       logger.warn ("Tabla de prestaciones incluidas NO generada")
+      return false
     end
 
     cq = CustomQuery.ejecutar ({
@@ -107,6 +106,7 @@ class LiquidacionSumar < ActiveRecord::Base
       logger.warn ("Tabla de prestaciones incluidas generada")
     else
       logger.warn ("Tabla de prestaciones incluidas NO generada")
+      return false
     end
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
@@ -149,6 +149,7 @@ class LiquidacionSumar < ActiveRecord::Base
       logger.warn ("Tabla de prestaciones Liquidadas datos generada")
     else
       logger.warn ("Tabla de prestaciones Liquidadas datos NO generada")
+      return false
     end
 
     cq = CustomQuery.ejecutar ({
@@ -160,7 +161,6 @@ class LiquidacionSumar < ActiveRecord::Base
             " join metodos_de_validacion mv on mv.id = m.metodo_de_validacion_id \n"+
             " join prestaciones_liquidadas pl on pl.prestacion_brindada_id = m.prestacion_brindada_id \n"+
             "  WHERE pl.estado_de_la_prestacion_id IN (2,3) \n "+
-            "  and pl.efector_id in (#{efectores.join(", ")}) \n "+
             "  AND pl.efector_id in (select ef.id \n" +
             "                        from efectores ef \n"+
             "                          join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
@@ -171,13 +171,12 @@ class LiquidacionSumar < ActiveRecord::Base
       logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
     else
       logger.warn ("Tabla de prestaciones Liquidadas advertencias NO generada")
+      return false
     end
-
-
 
   end
 
-  def generar_cuasifactura
+  def generar_cuasifacturas
 
     nomenclador = self.parametro_liquidacion_sumar.nomenclador.id
     formula = "Formula_#{self.parametro_liquidacion_sumar.formula.id}"
@@ -267,7 +266,7 @@ class LiquidacionSumar < ActiveRecord::Base
   end
 
   def vaciar_liquidacion
-    execute "delete \n"+
+    ActiveRecord::Base.connection.execute "delete \n"+
             "from prestaciones_liquidadas_advertencias\n"+
             "where liquidacion_id = #{self.id};\n"+
             "delete \n"+
@@ -281,7 +280,5 @@ class LiquidacionSumar < ActiveRecord::Base
             "delete\n"+
             "from prestaciones_incluidas\n"+
             "where liquidacion_id = #{self.id}"
-    
-          
   end
 end

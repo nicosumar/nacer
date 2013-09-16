@@ -16,7 +16,7 @@ Nacer::Application.routes.draw do
   resources :grupos_de_efectores_liquidaciones
   resources :liquidaciones_sumar do
     member do
-      get 'proceso_liquidacion'
+      post 'procesar_liquidacion', as: :procesar_liquidacion, action: :procesar_liquidacion
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
     end
   end
