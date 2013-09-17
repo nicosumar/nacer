@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class PrestacionBrindada < ActiveRecord::Base
+
+  has_one :prestacion_liquidada #solo agregada por referencia para simplificar los querys
   # NULLificar los campos de texto en blanco
   nilify_blanks
 

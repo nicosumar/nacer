@@ -22,8 +22,6 @@ Nacer::Application.routes.draw do
   end
   resources :reglas
   resources :plantillas_de_reglas
-  resources :prestaciones_incluidas
-
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }
   devise_scope :user do

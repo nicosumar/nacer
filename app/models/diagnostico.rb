@@ -1,5 +1,8 @@
 # -*- encoding : utf-8 -*-
 class Diagnostico < ActiveRecord::Base
+
+  has_many :prestaciones_liquidadas
+
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :codigo, :nombre
 

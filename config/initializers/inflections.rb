@@ -299,6 +299,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("liquidacion·_sumar·_cuasifactura·", "liquidaciones_sumar_cuasifacturas")
   inflect.irregular("LiquidacionSumarCuasifactura", "Liquidaciones·Sumar·Cuasifacturas·")
   inflect.irregular("Liquidacion·Sumar·Cuasifactura·", "LiquidacionesSumarCuasifacturas")
+  # Liquidacion Sumar Cuasifactura detalle
+  inflect.irregular("liquidacion_sumar_cuasifactura_detalle", "liquidaciones·_sumar·_cuasifacturas·_detalles·")
+  inflect.irregular("liquidacion·_sumar·_cuasifactura·_detalle·", "liquidaciones_sumar_cuasifacturas_detalles")
+  inflect.irregular("LiquidacionSumarCuasifacturaDetalle", "Liquidaciones·Sumar·Cuasifacturas·Detalles·")
+  inflect.irregular("Liquidacion·Sumar·Cuasifactura·Detalle·", "LiquidacionesSumarCuasifacturasDetalles")
+
   #El articulo "de" lo trata de pluralizar
   inflect.irregular("de", "de·")
   inflect.irregular("de·", "de")

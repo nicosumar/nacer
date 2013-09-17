@@ -1,3 +1,31 @@
+- content_for :title do
+  Liquidaciones - Prestaciones Liquidadas 
+#content-header
+  %h1 Prestaciones liquidadas
+  #action-links
+    - if can? :read, LiquidacionSumar
+      = link_to '<<-Volver a la liquidacion', @prestaciones_liquidadas.liquidacion.id
+
+#content-body
+  %table
+    %tr
+      %th Periodo
+      %th Fecha de cierre
+      %th Fecha de recepción
+      %th Tipo de Periodo
+      %th Concepto al que aplica
+      %th{colspan: '3'} Acciones
+    - @periodos.each do |periodo|
+      %tr
+        %td= periodo.periodo
+        %td= periodo.fecha_cierre
+        %td= periodo.fecha_recepcion
+        %td= periodo.tipo_periodo.descripcion
+        %td= periodo.concepto_de_facturacion.concepto
+        %td= link_to 'Ver', periodo
+        %td= link_to 'Editar', edit_periodo_path(periodo)
+        %td= link_to 'Borrar', periodo, method: :delete, data: { confirm: "¿Esta seguro que desea eliminar el periodo '#{periodo.periodo}'?" }
+
 <p id="notice"><%= notice %></p>
 
 <p>

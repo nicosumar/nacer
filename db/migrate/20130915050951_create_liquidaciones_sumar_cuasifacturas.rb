@@ -1,6 +1,7 @@
 class CreateLiquidacionesSumarCuasifacturas < ActiveRecord::Migration
   def up
     create_table :liquidaciones_sumar_cuasifacturas do |t|
+      
       t.references :liquidacion
       t.references :efector
       t.references :prestacion_incluida

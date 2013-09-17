@@ -5,6 +5,7 @@ class LiquidacionSumar < ActiveRecord::Base
   belongs_to :periodo
   belongs_to :plantilla_de_reglas
   belongs_to :parametro_liquidacion_sumar
+  has_many   :prestaciones_liquidadas
 
 
   attr_accessible :descripcion, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id, :plantilla_de_reglas_id, :parametro_liquidacion_sumar_id
