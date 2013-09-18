@@ -1,13 +1,14 @@
 # -*- encoding : utf-8 -*-
 class PrestacionLiquidada < ActiveRecord::Base
 
-
-  belgons_to :liquidacion, class_name: "LiquidacionSumar"
+  belongs_to :liquidacion, class_name: "LiquidacionSumar"
+  belongs_to :efector
   belongs_to :unidad_de_alta_de_datos
   belongs_to :prestacion_incluida
   belongs_to :estado_de_la_prestacion
   belongs_to :diagnostico
-  belgons_to :prestacion_brindada #solo agregada por referencia para simplificar los querys
+  belongs_to :prestacion_brindada #solo agregada por referencia para simplificar los querys
+  belongs_to :afiliado, class_name: "Afiliado", foreign_key: :clave_de_beneficiario 
 
 
 

@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :liquidaciones_sumar_cuasifacturas_detalles
+
+
   resources :liquidaciones_sumar_cuasifacturas
   resources :prestaciones_liquidadas_advertencias
   resources :prestaciones_liquidadas_datos

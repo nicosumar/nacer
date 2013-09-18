@@ -5,7 +5,7 @@ class LiquidacionSumar < ActiveRecord::Base
   belongs_to :periodo
   belongs_to :plantilla_de_reglas
   belongs_to :parametro_liquidacion_sumar
-  has_many   :prestaciones_liquidadas
+  has_many   :prestaciones_liquidadas, foreign_key: :liquidacion_id
 
 
   attr_accessible :descripcion, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id, :plantilla_de_reglas_id, :parametro_liquidacion_sumar_id
@@ -21,6 +21,7 @@ class LiquidacionSumar < ActiveRecord::Base
     vigencia_perstaciones = self.parametro_liquidacion_sumar.dias_de_prestacion
     fecha_de_recepcion = self.periodo.fecha_recepcion.to_s
 
+    # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar (
       {
         esquemas: esquemas,
@@ -62,6 +63,7 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
+    # 2) Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
       sql:  "INSERT INTO public.prestaciones_liquidadas \n "+
@@ -109,6 +111,9 @@ class LiquidacionSumar < ActiveRecord::Base
       logger.warn ("Tabla de prestaciones incluidas NO generada")
       return false
     end
+
+    # 3)  Identifico los datos vinculados a las prestaciones brindadas 
+    #    que se incluyeron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
       sql:  "INSERT INTO prestaciones_liquidadas_datos \n "+
@@ -153,6 +158,8 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
+    # 4)  Identifico las advertencias que poseen las prestaciones brindadas que se  
+    #    que se incluyeron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
       sql:  "INSERT INTO prestaciones_liquidadas_advertencias \n" +
@@ -175,67 +182,68 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
-  end
+    # 5) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
+    #    de prestaciones liquidadas 
+    #    - Aca con las prestaciones aceptadas
 
-  def generar_cuasifacturas
-
-    nomenclador = self.parametro_liquidacion_sumar.nomenclador.id
     formula = "Formula_#{self.parametro_liquidacion_sumar.formula.id}"
-    efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
-    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
+    plantilla_de_reglas = self.plantilla_de_reglas_id
     estado_aceptada = self.parametro_liquidacion_sumar.prestacion_aceptada.id
     estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
     estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
+    nomenclador = self.parametro_liquidacion_sumar.nomenclador.id
 
-    # 1) hacer un insert de las que no tienen advertencias -- id 5: Aprobada para liquidación
     cq = CustomQuery.ejecutar ({
-      esquemas: esquemas,
-      sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas \n"+
-            "     (liquidacion_id, efector_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, observaciones, cuasifactura_id, created_at, updated_at) \n"+
-            "select pl.liquidacion_id, pl.efector_id, pl.prestacion_incluida_id, #{estado_aceptada} estado_de_la_prestacion_id, #{formula}(pl.id) monto, null observaciones, null cuasifactura_id, now(), now()" +
+      sql:  "UPDATE public.prestaciones_liquidadas \n"+
+            "SET monto = #{formula}(id), \n"+
+            "    estado_de_la_prestacion_liquidada_id =  #{estado_aceptada} \n"+
+            "WHERE id in \n"+
+            "(select pl.id \n" +
             " from prestaciones_liquidadas pl \n "+
             "where pl.liquidacion_id = #{self.id}\n "+
-            "and pl.id not in (select pla.prestacion_liquidada_id from prestaciones_liquidadas_advertencias pla where pla.liquidacion_id = #{self.id} )"
+            "and pl.id not in (select pla.prestacion_liquidada_id from prestaciones_liquidadas_advertencias pla where pla.liquidacion_id = #{self.id}) )"
       })
-    if cq 
-      logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
-    else
-      logger.warn ("Tabla de prestaciones Liquidadas advertencias NO generada")
-      return false
-    end
-
-    # 2) Insertar las que tienen advertencias salvadas por una regla con su observacion -- id 5: Aprobada para liquidación 
+    # 6) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
+    #    de prestaciones liquidadas 
+    #    - Aca con las prestaciones exceptuadas (aceptadas por regla), con su observacion
     cq = CustomQuery.ejecutar ({
-      esquemas: esquemas,
-      sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas \n"+
-            "     (liquidacion_id, efector_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, observaciones, cuasifactura_id, created_at, \"updated_at\") \n"+
-            "select pl.liquidacion_id, pl.efector_id, pl.prestacion_incluida_id, #{estado_exceptuada} estado_de_la_prestacion_id, #{formula}(pl.id) monto, \n"+
-            "       CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||'\" \\n ' || \n"+
-            "             'Aprobada por regla \"'|| r.nombre || '\" \\n' ||\n"+
-            "             ' Observaciones: ' || r.observaciones\n"+
-            "            as text) observaciones, null cuasifactura_id, now(), now()"+
+      sql:  "UPDATE public.prestaciones_liquidadas \n"+
+            "SET monto = #{formula}(pl.id), \n"+
+            "    estado_de_la_prestacion_liquidada_id =  #{estado_exceptuada}, \n"+
+            "    observaciones_liquidacion = CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||'\" \\n ' \n "+
+            "                         ' Aprobada por regla \"'|| regl.nombre || '\" \\n' ||\n"+
+            "                         ' Observaciones: ' || regl.observaciones\n"+
+            "                           as text)\n "+
             " from prestaciones_liquidadas_advertencias pla \n "+
             "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
             "   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
-            "   join reglas r on (r.prestacion_id = pi.prestacion_id and r.metodo_de_validacion_id = pla.metodo_de_validacion_id and r.permitir = 't' )\n "+
+            "join (\n"+
+            "     select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id\n"+
+            "    from plantillas_de_reglas pr\n"+
+            "    join plantillas_de_reglas_reglas prr on prr.plantilla_de_reglas_id = pr.id\n"+
+            "    join reglas r on (\n"+
+            "    r.id = prr.regla_id\n"+
+            "    and r.permitir = 't' )\n"+
+            "    ) as regl\n"+
+            "    on\n"+
+            "    ( regl.prestacion_id = pi.prestacion_id\n"+
+            "    and regl.metodo_de_validacion_id = pla.metodo_de_validacion_id\n"+
+            "    ) \n"+
             "where pl.liquidacion_id = #{self.id}\n "+
-            "and   pi.nomenclador_id = #{nomenclador}"
+            "and   pi.nomenclador_id = #{nomenclador} \n"+
+            "and prestaciones_liquidadas.id = pl.id \n"+
+            "and regl.id = #{plantilla_de_reglas}"
       })
-    if cq 
-      logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
-    else
-      logger.warn ("Tabla de prestaciones Liquidadas advertencias NO generada")
-      return false
-    end
-
-    # 3) Insertar las que tienen advertencias no salvadas por una regla -- ID 6: Rechazada por la UGSP
+    logger.warn("CQ--------------------------------- #{cq.inspect}")
+    # 7) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
+    #    de prestaciones liquidadas 
+    #    - Aca con las prestaciones rechazadas
     cq = CustomQuery.ejecutar ({
-      esquemas: esquemas,
-      sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas \n"+
-            "     (liquidacion_id, efector_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, observaciones, cuasifactura_id, created_at, updated_at) \n"+
-            "select pl.liquidacion_id, pl.efector_id, pl.prestacion_incluida_id, #{estado_rechazada} estado_de_la_prestacion_id, #{formula}(pl.id) monto, \n"+
-            "       CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||'\" \\n ' \n "+
-            "            as text) observaciones, null cuasifactura_id, now(), now() \n "+
+      sql:  "UPDATE public.prestaciones_liquidadas \n"+
+            "SET monto = #{formula}(pl.id), \n"+
+            "    estado_de_la_prestacion_liquidada_id =  #{estado_rechazada}, \n"+
+            "    observaciones_liquidacion = CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||'\" \\n ' \n "+
+            "                           as text)\n "+
             " from prestaciones_liquidadas_advertencias pla \n "+
             "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
             "   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
@@ -248,18 +256,71 @@ class LiquidacionSumar < ActiveRecord::Base
             "               where pla.liquidacion_id = #{self.id}\n "+
             "               and pi.nomenclador_id = #{nomenclador} \n "+
             "               EXCEPT\n "+
-            "               select pl.id --le saco las prestaciones liquidadas con advertencias que son salvadas por una regla\n "+
-            "                 from prestaciones_liquidadas_advertencias pla \n "+
-            "                   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
-            "                   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
-            "                   join reglas r on (r.prestacion_id = pi.prestacion_id and r.metodo_de_validacion_id = pla.metodo_de_validacion_id and r.permitir = 't' )\n "+
-            "               where pl.liquidacion_id = #{self.id}\n "+
-            "               and   pi.nomenclador_id = #{nomenclador}  )"
-      })
+            "               select prestacion_liquidada_id\n"+
+            "               from prestaciones_liquidadas_advertencias pla\n"+
+            "               join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n"+
+            "               join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n"+
+            "               join (\n"+
+            "                 select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id\n"+
+            "                  from plantillas_de_reglas pr\n"+
+            "                  join plantillas_de_reglas_reglas prr on prr.plantilla_de_reglas_id = pr.id\n"+
+            "                  join reglas r on (\n"+
+            "                                     r.id = prr.regla_id\n"+
+            "                                     and r.permitir = 't' )\n"+
+            "                                     ) as regl\n"+
+            "                  on\n"+
+            "                    ( regl.prestacion_id = pi.prestacion_id\n"+
+            "                      and regl.metodo_de_validacion_id = pla.metodo_de_validacion_id\n"+
+            "                    )\n"+
+            "                 where pl.liquidacion_id = #{self.id} \n"+
+            "                 and pi.nomenclador_id = #{nomenclador} \n"+
+           # "                 and prestaciones_liquidadas.id = pl.id\n".
+            "                 and regl.id = #{plantilla_de_reglas} )\n"+
+            "and prestaciones_liquidadas.id = pl.id "
+
+     })
+
+
+  end
+
+  def generar_cuasifacturas
+
+    estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
+
+    # 1) Genero las cabeceras
+    cq = CustomQuery.ejecutar ({
+      sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas  \n"+
+            "(liquidacion_sumar_id, efector_id, monto_total, created_at, updated_at)  \n"+
+            "select liquidacion_id, efector_id, sum(monto), now(), now() \n"+
+            "from prestaciones_liquidadas \n"+
+            "where liquidacion_id = #{self.id} \n"+
+            "and   estado_de_la_prestacion_liquidada_id != #{estado_rechazada} \n"+
+            "group by liquidacion_id, efector_id"
+                  })
     if cq 
-      logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
+      logger.warn ("Tabla de cuasifacturas generada")
     else
-      logger.warn ("Tabla de prestaciones Liquidadas advertencias NO generada")
+      logger.warn ("Tabla de cuasifacturas NO generada")
+      return false
+    end
+
+    # 2) Insertar las que tienen advertencias salvadas por una regla con su observacion -- id 5: Aprobada para liquidación 
+    cq = CustomQuery.ejecutar ({
+      sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas_detalles  \n"+
+            "(liquidaciones_sumar_cuasifacturas_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, observaciones, created_at, updated_at)  \n"+
+            "select lsc.id , p.prestacion_incluida_id, p.estado_de_la_prestacion_liquidada_id, p.monto, 
+             'Observaciones de la prestacion: ' ||p.observaciones || '\\n Observaciones de liquidacion: '|| p.observaciones_liquidacion
+              , now(),now() \n"+
+            "from prestaciones_liquidadas p \n"+
+            " join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n"+
+            "where p.liquidacion_id = #{self.id} \n"+
+            "and   p.estado_de_la_prestacion_liquidada_id != #{estado_rechazada}"
+      })
+
+    if cq 
+      logger.warn ("Tabla de detalle de cuasifacturas generada")
+    else
+      logger.warn ("Tabla de detalle de cuasifacturas NO generada")
       return false
     end
     return true
@@ -267,6 +328,8 @@ class LiquidacionSumar < ActiveRecord::Base
   end
 
   def vaciar_liquidacion
+
+    # TODO: comprobar que no existen cuasifacturas generadas para poder eliminar
     ActiveRecord::Base.connection.execute "delete \n"+
             "from prestaciones_liquidadas_advertencias\n"+
             "where liquidacion_id = #{self.id};\n"+

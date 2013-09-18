@@ -6,12 +6,12 @@ class Formula < ActiveRecord::Base
     
     begin
       ActiveRecord::Base.connection.execute "CREATE OR REPLACE FUNCTION public.FORMULA_#{self.id} (PRESTACION  prestaciones_liquidadas.id%TYPE)\n"+
-                  "  RETURNS liquidaciones_sumar_cuasifacturas.monto%TYPE AS  $$\n"+
+                  "  RETURNS prestaciones_liquidadas.monto%TYPE AS  $$\n"+
                   "  DECLARE\n"+
-                  "    v_total liquidaciones_sumar_cuasifacturas.monto%type;\n"+
-                  "   v_valor liquidaciones_sumar_cuasifacturas.monto%type;\n"+
-                  "   v_unidades prestaciones_liquidadas.cantidad_de_unidades%type;\n"+
-                  "   dato_adicional prestaciones_liquidadas_datos%ROWTYPE;\n"+
+                  "    v_total prestaciones_liquidadas.monto%type;\n"+
+                  "    v_valor prestaciones_liquidadas.monto%type;\n"+
+                  "    v_unidades prestaciones_liquidadas.cantidad_de_unidades%type;\n"+
+                  "    dato_adicional prestaciones_liquidadas_datos%ROWTYPE;\n"+
                   "  BEGIN\n"+
                   "  v_total := 0;\n"+
                   "  FOR dato_adicional IN (select *\n"+

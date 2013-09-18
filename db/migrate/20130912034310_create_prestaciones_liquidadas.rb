@@ -17,6 +17,9 @@ class CreatePrestacionesLiquidadas < ActiveRecord::Migration
       t.column :codigo_area_prestacion, "char(1)"
       t.string :nombre_area_de_prestacion
       t.references :prestacion_brindada
+      t.references :estado_de_la_prestacion_liquidada
+      t.column :monto, "numeric(15,4)"
+      t.text   :observaciones_liquidacion
 
       t.timestamps
     end
@@ -29,7 +32,10 @@ class CreatePrestacionesLiquidadas < ActiveRecord::Migration
       ADD FOREIGN KEY ("estado_de_la_prestacion_id") REFERENCES "public"."estados_de_las_prestaciones" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION,
       ADD FOREIGN KEY ("diagnostico_id") REFERENCES "public"."diagnosticos" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION,
       ADD FOREIGN KEY ("clave_de_beneficiario") REFERENCES "public"."afiliados" ("clave_de_beneficiario") ON DELETE RESTRICT ON UPDATE RESTRICT,
+      ADD FOREIGN KEY ("estado_de_la_prestacion_liquidada_id") REFERENCES "public"."estados_de_las_prestaciones" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT,
       ADD UNIQUE ("liquidacion_id", "unidad_de_alta_de_datos_id", "efector_id", "prestacion_incluida_id", "fecha_de_la_prestacion", "clave_de_beneficiario");
+
+      CREATE INDEX  ON "public"."prestaciones_liquidadas" ("clave_de_beneficiario");
     SQL
 
   end

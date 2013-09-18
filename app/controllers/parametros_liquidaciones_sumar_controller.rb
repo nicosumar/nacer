@@ -12,6 +12,11 @@ class ParametrosLiquidacionesSumarController < ApplicationController
   def edit
     @parametro_liquidacion_sumar = ParametroLiquidacionSumar.find(params[:id])
 
+    if @parametro_liquidacion_sumar.liquidaciones_sumar.first.prestaciones_liquidadas.count > 1
+      redirect_to @parametro_liquidacion_sumar.liquidaciones_sumar.first, :flash => { :tipo => :error, :titulo => "La liquidacion ya ha sido procesada. Los cambios no se realizarán." } 
+      return
+    end
+    
     @nomencladores = Nomenclador.all.collect {|n| [n.nombre, n.id]}
     @formulas = Formula.all.collect {|d| [d.descripcion, d.id]}
     @estados = EstadoDeLaPrestacion.all.collect {|d| [d.nombre, d.id]}
@@ -23,7 +28,7 @@ class ParametrosLiquidacionesSumarController < ApplicationController
     @parametro_liquidacion_sumar = ParametroLiquidacionSumar.find(params[:id])
 
     if @parametro_liquidacion_sumar.update_attributes(params[:parametro_liquidacion_sumar])
-      redirect_to @parametro_liquidacion_sumar, notice: 'Parametro liquidacion sumar was successfully updated.' 
+      redirect_to @parametro_liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se actualizaron los parametros correctamente" } 
     else
       @nomencladores = Nomenclador.all.collect {|n| [n.nomenclador, n.id]}
       @formulas = Formula.all.collect {|d| [d.descipcion, d.id]}

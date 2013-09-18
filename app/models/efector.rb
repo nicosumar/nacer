@@ -31,6 +31,7 @@ class Efector < ActiveRecord::Base
   belongs_to :unidad_de_alta_de_datos
   belongs_to :grupo_de_efectores_liquidacion
   has_many :reglas
+  has_many :prestaciones_liquidadas
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   default_scope where(:integrante => true)

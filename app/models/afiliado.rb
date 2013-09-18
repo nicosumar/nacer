@@ -59,6 +59,8 @@ class Afiliado < ActiveRecord::Base
   belongs_to :efector_ceb, :class_name => "Efector"
   belongs_to :prestacion_ceb, :class_name => "Prestacion"
   belongs_to :grupo_poblacional
+  # Relaciones referentes a la liquidacion
+  # has_many :prestaciones_liquidadas, foreign_key: :clave_de_beneficiario 
 
   #
   # Métodos disponibles en las instancias

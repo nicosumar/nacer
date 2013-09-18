@@ -108,17 +108,26 @@ class CustomQuery < ActiveRecord::Base
       args.delete(:except)
       args.delete(:esquemas)
       begin
-        return self.find_by_sql args.values
+        #para que primero quede el sql
+        psql = [args[:sql]]
+        args.delete(:sql)
+        pvalores = args.values
+        parametros = psql + pvalores
+        parametros = parametros.first unless parametros.count > 1 
+    
+        ActiveRecord::Base.connection.execute(parametros)
+        return true
       rescue Exception => e
         raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}"
-        return nil
+        logger.warn(parametros.inspect)
+        return false
       end
     else
       #si hay esquemas o exepct
       args[:esquemas] = args[:esquemas].collect { |s| "uad_"+ s.codigo } unless args[:esquemas].blank?
       args[:except] = args[:except].collect { |s| "uad_"+ s.codigo } unless args[:except].blank?
       begin
-    return self.multi_execute args
+        return self.multi_execute args
       rescue Exception => e
         raise "El sql puede no ser válido o no se encontro la tabla en los esquemas especificados. Detalles: #{e.message}"
       end
