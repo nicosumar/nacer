@@ -30,7 +30,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "  nomenclador_id, nomenclador_nombre, \n"+
               "  prestacion_id, prestacion_nombre, prestacion_codigo, \n"+
               "  prestacion_cobertura, prestacion_comunitaria, prestacion_requiere_hc, prestacion_concepto_nombre, created_at, updated_at) \n"+
-              " SELECT distinct #{self.id}, \n"+
+              " SELECT DISTINCT ON (nom.id, pr.id) #{self.id}, \n"+
               "               nom.id as nomenclador_id, nom.nombre as nomenclador_nombre, \n"+
               "               pr.id as prestacion_id, pr.nombre, pr.codigo as prestacion_codigo,  \n"+
               "               pr.otorga_cobertura as prestacion_cobertura, pr.comunitaria as prestacion_comunitaria, pr.requiere_historia_clinica as prestacion_requiere_hc \n"+

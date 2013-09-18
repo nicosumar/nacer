@@ -21,7 +21,7 @@
         %td= periodo.fecha_cierre
         %td= periodo.fecha_recepcion
         %td= periodo.tipo_periodo.descripcion
-        %td= periodo.concepto_de_facturacion.concepto
+        %td= periodo.concepto_de_facturacion.concepto unless periodo.concepto_de_facturacion.blank?
         %td= link_to 'Ver', periodo
         %td= link_to 'Editar', edit_periodo_path(periodo)
         %td= link_to 'Borrar', periodo, method: :delete, data: { confirm: "¿Esta seguro que desea eliminar el periodo '#{periodo.periodo}'?" }
