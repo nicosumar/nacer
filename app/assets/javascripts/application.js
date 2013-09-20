@@ -9,6 +9,7 @@
 //= require cocoon
 //= require jquery.ui.datepicker
 //= require jquery.ui.dialog
+//= require jquery.ui.tabs
 //= require chosen-jquery
 
 $(document).ready(function() {

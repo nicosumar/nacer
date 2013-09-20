@@ -1,14 +1,17 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  
   resources :liquidaciones_sumar_cuasifacturas_detalles
 
 
   resources :liquidaciones_sumar_cuasifacturas
+  resources :parametros_liquidaciones_sumar
+  
+
   resources :prestaciones_liquidadas_advertencias
   resources :prestaciones_liquidadas_datos
-  resources :prestaciones_liquidadas
-  resources :parametros_liquidaciones_sumar
+
 
 
   #Liquidaciones - Sumar
@@ -20,7 +23,11 @@ Nacer::Application.routes.draw do
   resources :liquidaciones_sumar do
     member do
       post 'procesar_liquidacion', as: :procesar_liquidacion, action: :procesar_liquidacion
+      post 'generar_cuasifacturas', as: :generar_cuasifacturas, action: :generar_cuasifacturas
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
+    end
+    collection  do
+      get 'prestaciones_liquidadas/:id' => 'PrestacionesLiquidadas#ver_prestaciones_liquidadas', as: :ver_prestaciones_liquidadas
     end
   end
   resources :reglas

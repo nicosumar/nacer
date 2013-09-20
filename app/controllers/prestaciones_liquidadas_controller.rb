@@ -1,9 +1,8 @@
 # -*- encoding : utf-8 -*-
 class PrestacionesLiquidadasController < ApplicationController
 
-  # GET /prestaciones_liquidadas/1
-  def show
-    @prestaciones_liquidadas = PrestacionLiquidada.all
+  def ver_prestaciones_liquidadas
+    @prestaciones_liquidadas = PrestacionLiquidada.where(liquidacion_id: params[:id]).paginate(:page => params[:page], :per_page => 20)
   end
 
 end

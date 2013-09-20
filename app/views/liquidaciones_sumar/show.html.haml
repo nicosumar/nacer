@@ -49,8 +49,8 @@
       %td{colspan: "4"}
         %table
           %tr
-            %td= button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
             %td=button_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :delete
+            %td= button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
             %td=button_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :post
-            %td Ver Liquidacion
-            %td Crear CuasiFactura
+            %td=button_to "Ver liquidacion",  ver_prestaciones_liquidadas_liquidaciones_sumar_path(@liquidacion_sumar.id), method: :get
+            %td=button_to "Generar cuasifacturas",  generar_cuasifacturas_liquidacion_sumar_path(@liquidacion_sumar.id), method: :post

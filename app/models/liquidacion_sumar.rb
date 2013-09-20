@@ -6,6 +6,7 @@ class LiquidacionSumar < ActiveRecord::Base
   belongs_to :plantilla_de_reglas
   belongs_to :parametro_liquidacion_sumar
   has_many   :prestaciones_liquidadas, foreign_key: :liquidacion_id
+  has_many   :liquidaciones_sumar_cuasifacturas
 
 
   attr_accessible :descripcion, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id, :plantilla_de_reglas_id, :parametro_liquidacion_sumar_id
@@ -53,7 +54,8 @@ class LiquidacionSumar < ActiveRecord::Base
               "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
               "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
               "  AND nom.id = #{nomenclador.id}     \n"+
-              "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') "
+              "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') \n"+
+              "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} ) " 
       })
 
     if cq 
@@ -279,8 +281,6 @@ class LiquidacionSumar < ActiveRecord::Base
             "and prestaciones_liquidadas.id = pl.id "
 
      })
-
-
   end
 
   def generar_cuasifacturas
@@ -324,7 +324,6 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
     return true
-
   end
 
   def vaciar_liquidacion

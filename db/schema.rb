@@ -859,6 +859,7 @@ ActiveRecord::Schema.define(:version => 20130917203615) do
     t.datetime "updated_at",                 :null => false
   end
 
+  add_index "prestaciones_incluidas", ["liquidacion_id", "nomenclador_id", "prestacion_id"], :name => "prestaciones_incluidas_liquidacion_id_nomenclador_id_presta_key", :unique => true
   add_index "prestaciones_incluidas", ["liquidacion_id"], :name => "prestaciones_incluidas_liquidacion_id_idx"
   add_index "prestaciones_incluidas", ["nomenclador_id"], :name => "prestaciones_incluidas_nomenclador_id_idx"
   add_index "prestaciones_incluidas", ["prestacion_id"], :name => "prestaciones_incluidas_prestacion_id_idx"
@@ -887,6 +888,7 @@ ActiveRecord::Schema.define(:version => 20130917203615) do
     t.datetime "updated_at",                                                                       :null => false
   end
 
+  add_index "prestaciones_liquidadas", ["clave_de_beneficiario"], :name => "prestaciones_liquidadas_clave_de_beneficiario_idx"
   add_index "prestaciones_liquidadas", ["liquidacion_id", "unidad_de_alta_de_datos_id", "efector_id", "prestacion_incluida_id", "fecha_de_la_prestacion", "clave_de_beneficiario"], :name => "prestaciones_liquidadas_liquidacion_id_unidad_de_alta_de_da_key", :unique => true
 
   create_table "prestaciones_liquidadas_advertencias", :force => true do |t|

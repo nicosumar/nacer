@@ -1,0 +1,100 @@
+# -*- encoding : utf-8 -*-
+sql_cabecera =  "select c.numero_cuasifactura cuasifactura_numero,\n"+
+                "       date(now()),    --fecha de cuasifactura\n"+
+                "       'cuit_de_efector' efector_cuit,\n"+
+                "       'condicion ante el iva' efector_iva ,\n"+
+                "       'fecha_inicio_actividades' efector_inicio_actividades,\n"+
+                "       'n_ingresos_Brutos' efector_iibb,\n"+
+                "       'Datos_bancarios' efector_datos_bancarios,\n"+
+                "       e.cuie efector_codigo,\n"+
+                "       convenios.numero efector_contrato,\n"+
+                "       convenios.firmante efector_encargado,\n"+
+                "       CAST(p.fecha_recepcion - pl.dias_de_prestacion as VARCHAR) ||' al '|| CAST(p.fecha_recepcion as VARCHAR) liquidacion_periodos,\n"+
+                "       cf.descripcion concepto_facturacion, \n"+
+                "       e.id, e.nombre "+
+                "from liquidaciones_sumar_cuasifacturas c\n"+
+                "   join liquidaciones_sumar l on l.id = c.liquidacion_sumar_id\n"+
+                "   join efectores e on e.id = c.efector_id\n"+
+                "   join convenios_de_gestion_sumar convenios on ( convenios.efector_id = e.id and fecha_de_finalizacion is null )\n"+
+                "   join parametros_liquidaciones_sumar pl on pl.id = l.parametro_liquidacion_sumar_id\n"+
+                "   join periodos p on p.id = l.periodo_id\n"+
+                "   join conceptos_de_facturacion cf on cf.id = p.concepto_de_facturacion_id\n"+
+                "where l.id = ? \n"+
+                "and c.id = ? \n"
+
+
+cq_cabecera = CustomQuery.buscar (
+{
+  :sql => sql_cabecera,
+  values: [@liquidacion_sumar_cuasifactura.liquidacion_sumar.id,@liquidacion_sumar_cuasifactura.id ]
+})
+cabecera = cq_cabecera.first
+
+sql_detalle = "select row_number() OVER () as no, \n"+
+              "       p.prestacion_nombre || ' - Cod:' || p.prestacion_codigo prestacion_nombre_y_codigo,\n"+
+              "       op.nombre prestacion_objeto,\n"+
+              "       sum(dc.monto) cantidad \n"+
+              "from liquidaciones_sumar_cuasifacturas c\n"+
+              "        join liquidaciones_sumar_cuasifacturas_detalles dc on dc.liquidaciones_sumar_cuasifacturas_id = c.id\n"+
+              "        join prestaciones_incluidas p on p.id = dc.prestacion_incluida_id\n"+
+              "        join prestaciones pp on pp.id = p.prestacion_id\n"+
+              "        join objetos_de_las_prestaciones op on op.id = pp.objeto_de_la_prestacion_id\n"+
+              "where c.id = ? \n"+
+              "group by p.prestacion_nombre || ' - Cod:' || p.prestacion_codigo, op.nombre"
+cq_detalle = CustomQuery.buscar (
+{
+  sql: sql_detalle,
+  values: [@liquidacion_sumar_cuasifactura.id]
+})
+
+report.use_layout File.join(Rails.root, 'app', 'views','liquidaciones_sumar_cuasifacturas','show.tlf') do |config|
+ # configuro la lista (:details)
+  config.list(:details) do
+    use_stores sub_total: 0, total: 0
+    # Al disparar el evento que inserta el footer
+    events.on :page_footer_insert do |e|
+      # Seteo subtotales
+      e.section.item(:sub_total).value(e.store.sub_total)
+      # que empiece en 0
+      e.store.sub_total = 0
+    end
+  
+    # disparo la insercion del footer.
+    events.on :footer_insert do |e|
+      # seteo el nuevo total
+      e.section.item(:total).value(e.store.total)
+    end
+  end
+end
+
+report.start_new_page do |page|
+  page.values(
+         cuasifactura_numero: cabecera[:cuasifactura_numero],
+         cuasifactura_fecha: cabecera[:cuasifactura_fecha] ,
+         efector_cuit: cabecera[:efector_cuit] ,
+         efector_iva: cabecera[:efector_iva] ,
+         efector_inicio_actividades: cabecera[:efector_inicio_actividades] ,
+         efector_iibb: cabecera[:efector_iibb] ,
+         efector_datos_bancarios: cabecera[:efector_datos_bancarios] ,
+         efector_codigo: cabecera[:efector_codigo] ,
+         efector_contrato: cabecera[:efector_contrato] ,
+         efector_encargado: cabecera[:efector_encargado] ,
+         liquidacion_periodos: cabecera[:liquidacion_periodos] ,
+         concepto_facturacion: cabecera[:concepto_facturacion],
+         logo: File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png"))
+   
+  cq_detalle.each do |det|
+    #agrego la fila a la lista de detalles
+    page.list(:details).add_row do |row|
+      row.values no: det.no, 
+                 prestacion_nombre_y_codigo: det.prestacion_nombre_y_codigo, 
+                 prestacion_objeto: det.prestacion_objeto, 
+                 cantidad: det.cantidad
+
+      page.list(:details) do |list|
+        list.store.sub_total += det.cantidad.to_d
+        list.store.total += det.cantidad.to_d
+      end
+    end
+  end
+end

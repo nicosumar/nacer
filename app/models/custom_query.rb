@@ -21,7 +21,7 @@ class CustomQuery < ActiveRecord::Base
   end
  
   def self.buscar(*args)
-  	args = args.extract_options!
+    args = args.extract_options!
 
     if args.class.to_s != 'Hash' 
       raise "Debe enviar un hash como parametro"

@@ -129,6 +129,23 @@ class LiquidacionesSumarController < ApplicationController
 
   end
 
+  def generar_cuasifacturas
+     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+
+    if @liquidacion_sumar.prestaciones_liquidadas.count == 0
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." } 
+    elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0 
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." } 
+    else
+      if @liquidacion_sumar.generar_cuasifacturas
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" } 
+      else
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." } 
+      end 
+    end
+    
+  end
+
   private
 
   def verificar_lectura

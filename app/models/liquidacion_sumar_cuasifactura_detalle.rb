@@ -1,5 +1,6 @@
 class LiquidacionSumarCuasifacturaDetalle < ActiveRecord::Base
-  belongs_to :liquidacion_sumar
-  belongs_to :efector
-  attr_accessible :monto, :numero_cuasifactura, :observaciones
+  belongs_to :liquidaciones_sumar_cuasifacturas
+  belongs_to :prestacion_incluida
+  belongs_to :estado_de_la_prestacion
+  attr_accessible :monto, :observaciones
 end

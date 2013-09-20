@@ -28,7 +28,8 @@ class CreatePrestacionesIncluidas < ActiveRecord::Migration
        ON DELETE NO ACTION ON UPDATE NO ACTION,
       ADD FOREIGN KEY ("liquidacion_id") 
         REFERENCES "public"."liquidaciones_sumar" ("id") 
-        ON DELETE RESTRICT ON UPDATE CASCADE;
+        ON DELETE RESTRICT ON UPDATE CASCADE
+      ADD UNIQUE ("liquidacion_id", "nomenclador_id", "prestacion_id")      ;
 
       CREATE INDEX  ON "public"."prestaciones_incluidas" USING btree ("liquidacion_id");
       CREATE INDEX  ON "public"."prestaciones_incluidas" ("nomenclador_id");

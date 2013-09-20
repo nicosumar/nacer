@@ -1,0 +1,26 @@
+- content_for :title do
+  Cuasifacturas Sumar
+#content-header
+  %h1 Cuasifacturas Sumar
+
+#content-body
+  %table
+    %tr
+      %th Periodo de liquidación
+      %th Concepto de liquidación
+      %th Monto total
+      %th Número cuasifactura
+      %th Observaciones
+      %th Acciones
+    - @liquidaciones_sumar_cuasifacturas.each do |liquidacion_sumar_cuasifactura|
+      %tr
+        %td= liquidacion_sumar_cuasifactura.liquidacion_sumar.periodo.periodo
+        %td= liquidacion_sumar_cuasifactura.liquidacion_sumar.periodo.concepto_de_facturacion.concepto
+        %td= liquidacion_sumar_cuasifactura.monto_total
+        %td= liquidacion_sumar_cuasifactura.numero_cuasifactura
+        %td= liquidacion_sumar_cuasifactura.observaciones
+        %td= link_to 'Ver', liquidacion_sumar_cuasifactura_path(liquidacion_sumar_cuasifactura, format: 'pdf')
+        
+
+
+
