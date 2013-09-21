@@ -331,18 +331,25 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
               FOREIGN KEY (dato_reportable_requerido_id) REFERENCES datos_reportables_requeridos(id);
 
             -- Crear la tabla para almacenar los métodos de validación fallados por las prestaciones brindadas
-            CREATE TABLE uad_' || NEW.codigo || '.metodos_de_validacion_prestaciones_brindadas (
+            CREATE TABLE uad_' || NEW.codigo || '.metodos_de_validacion_fallados (
               prestacion_brindada_id integer NOT NULL,
-              metodo_de_validacion_id integer NOT NULL,
+              metodo_de_validacion_id integer NOT NULL
             );
 
+
             -- Restricciones de clave foránea para la tabla de métodos de validación fallados
-            ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_prestaciones_brindadas
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_fallados
               ADD CONSTRAINT fk_uad_' || NEW.codigo || '_mm_vv_pp_bb_prestaciones_brindadas
-              FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEw.codigo || '.prestaciones_brindadas(id);
-            ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_prestaciones_brindadas
+              FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEW.codigo || '.prestaciones_brindadas(id);
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_fallados
               ADD CONSTRAINT fk_uad_' || NEW.codigo || '_mm_vv_pp_bb_metodos_de_validacion
-              FOREIGN KEY (metodo_de_validacion_id) REFERENCES public.metodos_de_validacion(id);';
+              FOREIGN KEY (metodo_de_validacion_id) REFERENCES public.metodos_de_validacion(id);
+
+            -- Trigger para evitar duplicaciones en la tabla de prestaciones brindadas
+            CREATE TRIGGER trg_uad_' || NEW.codigo || '_antes_de_cambiar_prestacion_brindada
+              BEFORE INSERT OR UPDATE ON prestaciones_brindadas
+              FOR EACH ROW EXECUTE PROCEDURE verificar_duplicacion_de_prestaciones();';
+
         END IF;
         RETURN NEW;
       END;

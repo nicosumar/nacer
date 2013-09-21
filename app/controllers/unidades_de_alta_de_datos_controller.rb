@@ -246,7 +246,7 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     @centros_de_inscripcion =
       CentroDeInscripcion.find(:all, :order => :nombre).collect{ |c| [c.codigo + " - " + c.nombre_corto, c.id]}
     @efectores =
-      Efector.where((@efector_ids.size > 1 ? "id IN (#{@efector_ids.collect{|i| i.to_i}.join(", ")}) OR " : "") +
+      Efector.where((@efector_ids.size > 0 ? "id IN (#{@efector_ids.collect{|i| i.to_i}.join(", ")}) OR " : "") +
         "unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{
         |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]
       }

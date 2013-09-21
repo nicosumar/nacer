@@ -26,7 +26,8 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :nomenclador
   belongs_to :prestacion
   has_many :datos_reportables_asociados, :inverse_of => :prestacion_brindada, :order => :id
-  has_and_belongs_to_many :metodos_de_validacion_fallados, :class_name => "MetodoDeValidacion"
+  has_many :metodos_de_validacion_fallados, :inverse_of => :prestacion_brindada
+  has_many :metodos_de_validacion, :through => :metodos_de_validacion_fallados
 
   # Atributos anidados
   accepts_nested_attributes_for :datos_reportables_asociados
@@ -36,12 +37,13 @@ class PrestacionBrindada < ActiveRecord::Base
   validates_presence_of :diagnostico_id, :if => :requiere_diagnostico?
   validates_presence_of :historia_clinica, :if => :requiere_historia_clinica?
   validates_presence_of :clave_de_beneficiario, :unless => :prestacion_comunitaria?
-  # TODO: Ver cómo hacer para que no tome en cuenta las prestaciones anuladas
-  validates_uniqueness_of(:prestacion_id,
-                          :scope => [:efector_id, :fecha_de_la_prestacion, :clave_de_beneficiario],
-                          :message => "crearía una prestación duplicada. Ya se registró una prestación con estos mismos datos.")
+  # TODO: cleanup, reemplazado por un método de validación ad-hoc
+  #validates_uniqueness_of(:prestacion_id,
+  #                        :scope => [:efector_id, :fecha_de_la_prestacion, :clave_de_beneficiario],
+  #                        :message => "crearía una prestación duplicada. Ya se registró una prestación con estos mismos datos.")
   validate :pasa_validaciones_especificas?
   validate :validar_asociacion
+  validate :sin_duplicados
 
   # DESACTIVO LA FORMA DE GENERAR ADVERTENCIAS PARA DEJARLAS REGISTRADAS EN UNA TABLA LOCAL DEL ESQUEMA
   # Variable de instancia para guardar las advertencias. TODO: cleanup
@@ -163,6 +165,56 @@ class PrestacionBrindada < ActiveRecord::Base
     end
 
     return !error_generado
+  end
+
+  #
+  # Verifica que no exista otra prestación igual para el mismo beneficiario en la misma fecha, que no esté anulada
+  def sin_duplicados
+
+    estados_no_anulados = EstadoDeLaPrestacion.where("codigo NOT IN (?)", %w( U S )).collect{|e| e.id}
+
+    return true unless (
+      clave_de_beneficiario.present? &&
+      fecha_de_la_prestacion.present? &&
+      prestacion_id.present? && (1
+        !estado_de_la_prestacion_id.present? ||
+        estados_no_anulados.member?(estado_de_la_prestacion_id)
+      )
+    )
+
+    if self.persisted?
+      duplicados = PrestacionBrindada.where(
+        "clave_de_beneficiario = ?
+         AND fecha_de_la_prestacion = ?
+         AND prestacion_id = ?
+         AND estado_de_la_prestacion_id IN (?)
+         AND id <> ?",
+         clave_de_beneficiario,
+         fecha_de_la_prestacion,
+         prestacion_id,
+         estados_no_anulados,
+         self.id
+      ).size
+    else
+      duplicados = PrestacionBrindada.where(
+        "clave_de_beneficiario = ?
+         AND fecha_de_la_prestacion = ?
+         AND prestacion_id = ?
+         AND estado_de_la_prestacion_id IN (?)",
+         clave_de_beneficiario,
+         fecha_de_la_prestacion,
+         prestacion_id,
+         estados_no_anulados,
+      ).size
+    end
+
+    if duplicados > 0
+      errors.add(:global, "No se puede guardar la prestación porque se duplicaría el registro, esta prestación ya fue registrada")
+      return false
+    else
+      return true
+    end
+
   end
 
   #
@@ -360,10 +412,9 @@ class PrestacionBrindada < ActiveRecord::Base
     datos_reportables_asociados.all?{ |dra| !dra.hay_advertencias? }
   end
 
-  # Verifica si a la fecha de registro, la prestación se encontraba vigente
+  # Verifica si al día de hoy, la prestación se encuentra vigente
   def prestacion_vigente?
-    return true unless persisted?
-    return fecha_de_la_prestacion >= (created_at.to_date - 120.days)
+    return fecha_de_la_prestacion >= (Date.today - (Parametro.valor_del_parametro(:vigencia_de_las_prestaciones) || 120).days)
   end
 
   # Verifica el estado de actividad del beneficiario para la fecha de prestación
@@ -396,24 +447,23 @@ class PrestacionBrindada < ActiveRecord::Base
   # Verifica si existen métodos de validación que generan advertencias y actualiza la tabla de metodos de validación
   # fallados en forma acorde
   def actualizar_metodos_de_validacion_fallados
-    return true unless persisted? && prestacion
+    return true unless prestacion_id.present?
 
-    if prestacion
-      metodos_fallados = []
-      prestacion.metodos_de_validacion.where(:genera_error => false).each do |mv|
-        if !eval('self.' + mv.metodo)
-          metodos_fallados << mv
-        end
+    metodos_fallados = []
+    prestacion.metodos_de_validacion.where(:genera_error => false).each do |mv|
+      if !eval('self.' + mv.metodo)
+        metodos_fallados << mv
       end
-      self.metodos_de_validacion_fallados = metodos_fallados
     end
+
+    self.metodos_de_validacion = metodos_fallados
 
     return (metodos_fallados.size > 0 ? true : false)
   end
 
   # Indica si la prestación brindada falló algún método de validación
   def con_advertencias?
-    metodos_de_validacion_fallados.size > 0
+    metodos_de_validacion.size > 0
   end
 
   # CAMBIOS: Muevo las validaciones generales a métodos de validación específicos

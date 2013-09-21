@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130917203615) do
+ActiveRecord::Schema.define(:version => 20130919215245) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -120,7 +120,17 @@ ActiveRecord::Schema.define(:version => 20130917203615) do
   end
 
   add_index "afiliados", ["afiliado_id"], :name => "index_afiliados_on_afiliado_id", :unique => true
+  add_index "afiliados", ["apellido", "nombre", "fecha_de_nacimiento", "motivo_de_la_baja_id"], :name => "idx_afiliados_3"
+  add_index "afiliados", ["clase_de_documento_id", "tipo_de_documento_id", "numero_de_documento", "motivo_de_la_baja_id"], :name => "idx_afiliados_1"
+  add_index "afiliados", ["clave_de_beneficiario", "apellido", "nombre", "fecha_de_nacimiento", "motivo_de_la_baja_id"], :name => "idx_afiliados_4"
+  add_index "afiliados", ["clave_de_beneficiario", "clase_de_documento_id", "tipo_de_documento_id", "numero_de_documento", "motivo_de_la_baja_id"], :name => "idx_afiliados_2"
+  add_index "afiliados", ["clave_de_beneficiario", "nombre", "fecha_de_nacimiento", "numero_de_documento_de_la_madre", "motivo_de_la_baja_id"], :name => "idx_afiliados_6"
   add_index "afiliados", ["clave_de_beneficiario"], :name => "index_afiliados_on_clave_de_beneficiario", :unique => true
+  add_index "afiliados", ["nombre", "fecha_de_nacimiento", "numero_de_documento_de_la_madre", "motivo_de_la_baja_id"], :name => "idx_afiliados_5"
+  add_index "afiliados", ["numero_de_documento"], :name => "index_afiliados_on_numero_de_documento"
+  add_index "afiliados", ["numero_de_documento_de_la_madre"], :name => "index_afiliados_on_numero_de_documento_de_la_madre"
+  add_index "afiliados", ["numero_de_documento_del_padre"], :name => "index_afiliados_on_numero_de_documento_del_padre"
+  add_index "afiliados", ["numero_de_documento_del_tutor"], :name => "index_afiliados_on_numero_de_documento_del_tutor"
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
@@ -374,6 +384,8 @@ ActiveRecord::Schema.define(:version => 20130917203615) do
     t.integer "prestacion_id"
   end
 
+  add_index "diagnosticos_prestaciones", ["diagnostico_id", "prestacion_id"], :name => "uniq_diagnosticos_prestaciones", :unique => true
+
   create_table "discapacidades", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -488,6 +500,8 @@ ActiveRecord::Schema.define(:version => 20130917203615) do
     t.integer "grupo_poblacional_id"
     t.integer "prestacion_id"
   end
+
+  add_index "grupos_poblacionales_prestaciones", ["grupo_poblacional_id", "prestacion_id"], :name => "uniq_grupos_poblacionales_prestaciones", :unique => true
 
   create_table "informes", :force => true do |t|
     t.string   "titulo"
@@ -859,7 +873,7 @@ ActiveRecord::Schema.define(:version => 20130917203615) do
     t.datetime "updated_at",                 :null => false
   end
 
-  add_index "prestaciones_incluidas", ["liquidacion_id", "nomenclador_id", "prestacion_id"], :name => "prestaciones_incluidas_liquidacion_id_nomenclador_id_presta_key", :unique => true
+  add_index "prestaciones_incluidas", ["liquidacion_id", "nomenclador_id", "prestacion_id"], :name => "unq_ll_nn_pp_on_prestaciones_incluidas", :unique => true
   add_index "prestaciones_incluidas", ["liquidacion_id"], :name => "prestaciones_incluidas_liquidacion_id_idx"
   add_index "prestaciones_incluidas", ["nomenclador_id"], :name => "prestaciones_incluidas_nomenclador_id_idx"
   add_index "prestaciones_incluidas", ["prestacion_id"], :name => "prestaciones_incluidas_prestacion_id_idx"
@@ -927,6 +941,8 @@ ActiveRecord::Schema.define(:version => 20130917203615) do
     t.integer "prestacion_id"
     t.integer "sexo_id"
   end
+
+  add_index "prestaciones_sexos", ["prestacion_id", "sexo_id"], :name => "uniq_prestaciones_sexos", :unique => true
 
   create_table "provincias", :force => true do |t|
     t.string  "nombre",                          :null => false

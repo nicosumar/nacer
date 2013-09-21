@@ -69,7 +69,8 @@ class PrestacionesBrindadasController < ApplicationController
       @prestacion_brindada =
         PrestacionBrindada.find(params[:id],
           :include => [
-            :estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico, :datos_reportables_asociados
+            :estado_de_la_prestacion, {:prestacion => :unidad_de_medida}, :efector, :diagnostico, :datos_reportables_asociados,
+            :metodos_de_validacion_fallados
           ]
         )
     rescue ActiveRecord::RecordNotFound
@@ -81,8 +82,9 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Verificar si hay advertencias
-    @prestacion_brindada.hay_advertencias?
+# TODO: cleanup
+#    # Verificar si hay advertencias
+#    @prestacion_brindada.hay_advertencias?
 
     # Obtener el afiliado o la novedad asociadas a la prestación
     @beneficiario =
@@ -243,11 +245,34 @@ class PrestacionesBrindadasController < ApplicationController
 
     @diagnosticos = []
 
-    # Mostrar las advertencias que se puedan haber generado en la selección de efector y fecha
-    if @prestacion_brindada.hay_advertencias?
-      flash[:tipo] = :advertencia
-      flash[:titulo] = "Advertencia"
-      flash[:mensaje] = @prestacion_brindada.advertencias[:base]
+# TODO: cleanup, no se utiliza más, solo verificaremos actividad del beneficiario y vigencia para mostrar la advertencia en
+# pantalla pero son advertencias que no se persisten en la base de datos ya que son verificadas en el momento de la liquidación
+#    # Mostrar las advertencias que se puedan haber generado en la selección de efector y fecha
+#    if @prestacion_brindada.hay_advertencias?
+#      flash[:tipo] = :advertencia
+#      flash[:titulo] = "Advertencia"
+#      flash[:mensaje] = @prestacion_brindada.advertencias[:base]
+#    end
+
+    # Mostrar advertencias en pantalla si la prestación ya está vencida o el beneficiario no está activo
+    if !@prestacion_brindada.beneficiario_activo?
+      flash.now[:tipo] = :advertencia
+      flash.now[:titulo] = "Advertencia"
+      if @beneficiario.sexo.codigo == "F"
+        flash.now[:mensaje] = ["La beneficiaria no se encontraba activa a la fecha de la prestación"]
+      else
+        flash.now[:mensaje] = ["El beneficiario no se encontraba activo a la fecha de la prestación"]
+      end
+    end
+
+    if !@prestacion_brindada.prestacion_vigente?
+      if flash.now[:tipo].present?
+        flash.now[:mensaje] << "La prestación se encuentra vencida"
+      else
+        flash.now[:tipo] = :advertencia
+        flash.now[:titulo] = "Advertencia"
+        flash.now[:mensaje] = ["La prestación se encuentra vencida"]
+      end
     end
   end
 
@@ -417,11 +442,20 @@ class PrestacionesBrindadasController < ApplicationController
       dra.updater_id = current_user.id
     end
 
-    # Verificar si hay advertencias presentes, para modificar el estado de la prestación
-    if @prestacion_brindada.hay_advertencias?
-      if !@prestacion_brindada.datos_reportables_incompletos
-        @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
-      end
+# TODO: cleanup
+#    # Verificar si hay advertencias presentes, para modificar el estado de la prestación
+#    if @prestacion_brindada.hay_advertencias?
+#      if !@prestacion_brindada.datos_reportables_incompletos
+#        @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
+#      end
+#    else
+#      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R")
+#    end
+
+    # Actualizar la información sobre métodos de validación que generan advertencias fallados y ajustar el estado de la prestación
+    @prestacion_brindada.actualizar_metodos_de_validacion_fallados
+    if @prestacion_brindada.metodos_de_validacion.size > 0
+      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
     else
       @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R")
     end
@@ -429,7 +463,7 @@ class PrestacionesBrindadasController < ApplicationController
     # Guardar la prestación y los datos reportables asociados
     @prestacion_brindada.save
 
-    if @prestacion_brindada.hay_advertencias?
+    if @prestacion_brindada.metodos_de_validacion.size > 0
       redirect_to(@prestacion_brindada,
         :flash => { :tipo => :advertencia,
           :titulo => 'La prestación brindada se registró con advertencias',
@@ -551,11 +585,20 @@ class PrestacionesBrindadasController < ApplicationController
       dra.updater_id = current_user.id
     end
 
-    # Verificar si hay advertencias presentes, para modificar el estado de la prestación
-    if @prestacion_brindada.hay_advertencias?
-      if !@prestacion_brindada.datos_reportables_incompletos
-        @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
-      end
+# TODO: cleanup
+#    Verificar si hay advertencias presentes, para modificar el estado de la prestación
+#    if @prestacion_brindada.hay_advertencias?
+#      if !@prestacion_brindada.datos_reportables_incompletos
+#        @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
+#      end
+#    else
+#      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R")
+#    end
+
+    # Actualizar la información sobre métodos de validación que generan advertencias fallados y ajustar el estado de la prestación
+    @prestacion_brindada.actualizar_metodos_de_validacion_fallados
+    if @prestacion_brindada.metodos_de_validacion.size > 0
+      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
     else
       @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R")
     end
@@ -563,7 +606,7 @@ class PrestacionesBrindadasController < ApplicationController
     # Guardar la prestación y los datos reportables asociados
     @prestacion_brindada.save
 
-    if @prestacion_brindada.hay_advertencias?
+    if @prestacion_brindada.metodos_de_validacion.size > 0
       redirect_to(@prestacion_brindada,
         :flash => { :tipo => :advertencia,
           :titulo => 'Los datos de la prestación brindada se modificaron, pero hay advertencias',

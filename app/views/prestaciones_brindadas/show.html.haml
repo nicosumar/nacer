@@ -20,11 +20,10 @@
     - elsif ["I", "F"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-advertencia.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
-        - if @prestacion_brindada.advertencias.size > 0
+        - if @prestacion_brindada.metodos_de_validacion_fallados.size > 0
           %ul
-            - @prestacion_brindada.advertencias.each do |attr, advs|
-              - advs.each do |msj|
-                %li= msj
+            - @prestacion_brindada.metodos_de_validacion.each do |mv|
+              %li= mv.mensaje
         - @prestacion_brindada.datos_reportables_asociados.each do |dra|
           - if dra.hay_advertencias?
             - if dra.advertencias.size > 0

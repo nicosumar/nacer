@@ -20,5 +20,10 @@ Parametro.create([
     :nombre => "VersionDelSistemaDeGestion",
     :tipo_postgres => "text",
     :tipo_ruby => "String",
-    :valor => "4.8" }
+    :valor => "4.8" },
+  { #:id => 5,
+    :nombre => "VigenciaDeLasPrestaciones",
+    :tipo_postgres => "int4",
+    :tipo_ruby => "Integer",
+    :valor => "120" }
 ])

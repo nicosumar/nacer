@@ -25,7 +25,7 @@
   %div.field
     = f.label :facturacion, "Módulo de facturación habilitado"
     = f.check_box :facturacion
-  
+
   %h3 Observaciones
   %div.field
     = f.text_area :observaciones, :size => "80x8"
@@ -33,12 +33,12 @@
   %h3 Centros de inscripción asociados con esta unidad de alta de datos
   %div.field
     = f.select :centro_de_inscripcion_ids, options_for_select(@centros_de_inscripcion, @centro_de_inscripcion_ids), {}, |
-      { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
+      { :multiple => true, :class => "multi_select" } |
 
   %h3 Efectores asociados con esta unidad de alta de datos para facturación
   %div.field
     = f.select :efector_ids, options_for_select(@efectores, @efector_ids), {}, |
-      { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
+      { :multiple => true, :class => "multi_select" } |
 
   %div.actions
     - if @unidad_de_alta_de_datos.new_record?

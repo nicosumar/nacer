@@ -11,6 +11,6 @@
     %div.field
       = label_tag :unidad_de_alta_de_datos_id, "Unidad de alta de datos"
       = select_tag :unidad_de_alta_de_datos_id, options_for_select(@unidades_de_alta_de_datos,
-        @unidad_de_alta_de_datos_id), :include_blank => false
+        @unidad_de_alta_de_datos_id), :include_blank => false, :class => "multi_select"
     %div.actions
       = submit_tag("Seleccionar")

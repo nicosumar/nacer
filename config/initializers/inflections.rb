@@ -263,6 +263,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("documentacion·_respaldatoria·", "documentaciones_respaldatorias")
   inflect.irregular("DocumentacionRespaldatoria", "Documentaciones·Respaldatorias·")
   inflect.irregular("Documentacion·Respaldatoria·", "DocumentacionesRespaldatorias")
+  inflect.irregular("metodo_de_validacion_fallado", "metodos·_de·_validacion·_fallados·")
+  inflect.irregular("metodo·_de·_validacion·_fallado·", "metodos_de_validacion_fallados")
+  inflect.irregular("MetodoDeValidacionFallado", "Metodos·De·Validacion·Fallados·")
+  inflect.irregular("Metodo·De·Validacion·Fallado·", "MetodosDeValidacionFallados")
   #Informes - Filtros
   inflect.irregular("informe_filtro", "informes·_filtros·")
   inflect.irregular("informe·_filtro·", "informes_filtros")

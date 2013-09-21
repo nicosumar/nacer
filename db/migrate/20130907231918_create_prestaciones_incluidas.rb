@@ -19,17 +19,19 @@ class CreatePrestacionesIncluidas < ActiveRecord::Migration
     end
 
     execute <<-SQL
+      CREATE UNIQUE INDEX "unq_ll_nn_pp_on_prestaciones_incluidas"
+        ON "public"."prestaciones_incluidas" ("liquidacion_id", "nomenclador_id", "prestacion_id");
       ALTER TABLE "public"."prestaciones_incluidas"
-      ADD FOREIGN KEY ("nomenclador_id") 
-        REFERENCES "public"."nomencladores" ("id") 
+      ADD FOREIGN KEY ("nomenclador_id")
+        REFERENCES "public"."nomencladores" ("id")
         ON DELETE NO ACTION ON UPDATE NO ACTION,
       ADD FOREIGN KEY ("prestacion_id")
-       REFERENCES "public"."prestaciones" ("id") 
+       REFERENCES "public"."prestaciones" ("id")
        ON DELETE NO ACTION ON UPDATE NO ACTION,
-      ADD FOREIGN KEY ("liquidacion_id") 
-        REFERENCES "public"."liquidaciones_sumar" ("id") 
-        ON DELETE RESTRICT ON UPDATE CASCADE
-      ADD UNIQUE ("liquidacion_id", "nomenclador_id", "prestacion_id")      ;
+      ADD FOREIGN KEY ("liquidacion_id")
+        REFERENCES "public"."liquidaciones_sumar" ("id")
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+      ADD UNIQUE USING INDEX "unq_ll_nn_pp_on_prestaciones_incluidas";
 
       CREATE INDEX  ON "public"."prestaciones_incluidas" USING btree ("liquidacion_id");
       CREATE INDEX  ON "public"."prestaciones_incluidas" ("nomenclador_id");
