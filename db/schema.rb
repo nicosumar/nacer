@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130919215245) do
+ActiveRecord::Schema.define(:version => 20130922193838) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -210,7 +210,10 @@ ActiveRecord::Schema.define(:version => 20130919215245) do
     t.string   "descripcion"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.string   "codigo"
   end
+
+  add_index "conceptos_de_facturacion", ["codigo"], :name => "index_conceptos_de_facturacion_on_codigo", :unique => true
 
   create_table "contactos", :force => true do |t|
     t.string   "nombres"
@@ -839,6 +842,8 @@ ActiveRecord::Schema.define(:version => 20130919215245) do
     t.boolean  "comunitaria",                                                :default => false
     t.boolean  "requiere_historia_clinica",                                  :default => true
     t.integer  "concepto_de_facturacion_id"
+    t.boolean  "es_catastrofica",                                            :default => false
+    t.integer  "tipo_de_tratamiento_id"
   end
 
   add_index "prestaciones", ["concepto_de_facturacion_id"], :name => "prestaciones_concepto_de_facturacion_id_idx"
@@ -1062,6 +1067,11 @@ ActiveRecord::Schema.define(:version => 20130919215245) do
   create_table "tipos_de_prestaciones", :force => true do |t|
     t.string "codigo", :null => false
     t.string "nombre", :null => false
+  end
+
+  create_table "tipos_de_tratamientos", :force => true do |t|
+    t.string "nombre"
+    t.string "codigo"
   end
 
   create_table "tipos_periodos", :force => true do |t|

@@ -65,3 +65,8 @@ load 'db/ConveniosDeAdministracionSumar_seed.rb'
 load 'db/MetodosDeValidacion_seed.rb'
 load 'db/DatosReportables_seed.rb'
 load 'db/PrestacionesSumar_seed.rb'
+load 'db/PrestacionesSumarFaltantes_seed.rb'
+load 'db/TiposDeTratamientos_seed.rb'
+
+# Datos iniciales para el módulo de liquidaciones
+load 'db/ConceptosDeFacturacion_seed.rb'

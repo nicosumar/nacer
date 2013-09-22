@@ -9,7 +9,7 @@ class Prestacion < ActiveRecord::Base
   attr_accessible :created_at, :updated_at, :comunitaria, :otorga_cobertura, :unidades_maximas
   attr_accessible :requiere_historia_clinica
   #Atributos para asignacion masiva vinculados a Liquidaciones
-  attr_accessible :conceptos_de_facturacion_id
+  attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :codigo

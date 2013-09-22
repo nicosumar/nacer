@@ -1,13 +1,14 @@
 # -*- encoding : utf-8 -*-
-class ConceptoDeFacturacion < ActiveRecord::Base
+class TipoDeTratamiento < ActiveRecord::Base
 
-  has_many :prestaciones, :inverse_of => :concepto_de_facturacion
-  has_many :periodos, :inverse_of => :concepto_de_facturacion
+  # Los atributos siguientes pueden asignarse en forma masiva
+  attr_accessible :codigo, :nombre
 
-  attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo
+  # Asociaciones
+  has_many :prestaciones, :inverse_of => :tipo_de_tratamiento
 
-  validates :concepto, presence: true
-  validates :descripcion, presence: true
+  # Validaciones
+  validates :nombre, presence: true
   validates :codigo, presence: true
 
   # Devuelve el id asociado con el código pasado
@@ -17,9 +18,9 @@ class ConceptoDeFacturacion < ActiveRecord::Base
     end
 
     # Buscar el código en la tabla y devolver su ID (si existe)
-    concepto = self.find_by_codigo(codigo.strip.upcase)
-    if concepto.present?
-      return concepto.id
+    tipo = self.find_by_codigo(codigo.strip.upcase)
+    if tipo.present?
+      return tipo.id
     else
       return nil
     end

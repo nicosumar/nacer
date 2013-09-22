@@ -7,12 +7,7 @@
 //= require si_no.js
 //= require efectores.js
 
-/* var oOpcionesPrestaciones = [];
-var sFiltroPrestaciones = "";
-var oOpcionesDiagnosticos = [];
-var sFiltroDiagnosticos = "";
-var oOpcionesFiltradas = [];
-*/
+// Actualizado 22/09/2013
 
 $(document).ready(function() {
 
