@@ -105,6 +105,17 @@
                     %h3 UTILIDADES
                     %ul
                       %li= link_to "Verificador de liquidaciones", verificador_index_path
+                  %div.col_2
+                    %h3 LIQUIDACIONES Y CUASIFACTURAS SUMAR
+                    %ul
+                      %li= link_to "Liquidaciones SUMAR", liquidaciones_sumar_path
+                      %li= link_to "Cuasifacturas SUMAR", liquidaciones_sumar_cuasifacturas_path
+                  %div.col_1
+                    %h3 PARAMETRIZACION LIQUIDACIONES SUMAR
+                    %ul
+                      %li= link_to "Grupos de efectores", grupos_de_efectores_liquidaciones_path
+                      %li= link_to "Conceptos de facturacion", conceptos_de_facturacion_path
+                      %li= link_to "Periodos", periodos_path
 
             - if can? :read, Contacto
               %li

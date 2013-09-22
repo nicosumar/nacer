@@ -101,6 +101,8 @@ class LiquidacionesSumarController < ApplicationController
   end
 
   def vaciar_liquidacion
+    tiempo_proceso = Time.now
+
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
     
     begin
@@ -109,27 +111,35 @@ class LiquidacionesSumarController < ApplicationController
       redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "No fue posible vaciar la liquidacion. Si las cuasifacturas ya han sido generadas, la liquidación no se puede vaciar. Detalles: #{e.message}" } 
       return
     end
+    logger.warn "Tiempo para vaciar la liquidacion: #{Time.now - tiempo_proceso} segundos"
     redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "La liquidacion se elimino correctamente" } 
     
     
   end
 
   def procesar_liquidacion
+    tiempo_proceso = Time.now
+
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
     
     if @liquidacion_sumar.prestaciones_liquidadas.count > 1
       redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." } 
     else
       if @liquidacion_sumar.generar_snapshoot_de_liquidacion
+        logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
         redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" } 
       else
         redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." } 
       end 
     end
+    
+    
 
   end
 
   def generar_cuasifacturas
+    tiempo_proceso = Time.now
+
      @liquidacion_sumar = LiquidacionSumar.find(params[:id])
 
     if @liquidacion_sumar.prestaciones_liquidadas.count == 0
@@ -138,6 +148,7 @@ class LiquidacionesSumarController < ApplicationController
       redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." } 
     else
       if @liquidacion_sumar.generar_cuasifacturas
+        logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
         redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" } 
       else
         redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." } 
