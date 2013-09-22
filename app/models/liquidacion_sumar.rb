@@ -13,6 +13,7 @@ class LiquidacionSumar < ActiveRecord::Base
 
   validates_presence_of :descripcion, :grupo_de_efectores_liquidacion, :concepto_de_facturacion, :periodo, :parametro_liquidacion_sumar_id
   
+  
   def generar_snapshoot_de_liquidacion
 
     #Traigo Grupo de efectores y nomenclador
@@ -40,6 +41,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "  INNER JOIN prestaciones pr ON (pr.id = pb.prestacion_id) \n"+
               "  INNER JOIN conceptos_de_facturacion cdf on (cdf.id = pr.concepto_de_facturacion_id)\n"+
               "  INNER JOIN afiliados af ON (af.clave_de_beneficiario = pb.clave_de_beneficiario) \n"+
+              "  INNER JOIN periodos_de_actividad pa on (af.afiliado_id = pa.afiliado_id ) \n"+ #solo los afiliados que tenga algun periodo de actividad 
               "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n"+
               "  INNER JOIN asignaciones_de_precios ap \n"+
               "    ON (\n"+
@@ -55,7 +57,11 @@ class LiquidacionSumar < ActiveRecord::Base
               "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
               "  AND nom.id = #{nomenclador.id}     \n"+
               "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') \n"+
-              "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} ) " 
+              "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} ) \n" +
+              "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
+              "         OR\n"+
+              "       (pb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
+              "       )"
       })
 
     if cq 
@@ -86,8 +92,9 @@ class LiquidacionSumar < ActiveRecord::Base
             "  FROM prestaciones_brindadas pb\n "+
             "  INNER JOIN prestaciones pr ON (pr.id = pb.prestacion_id) \n "+
             "  INNER JOIN prestaciones_incluidas pi on pb.prestacion_id = pi.prestacion_id\n "+
-            " INNER JOIN diagnosticos diag on diag.id = pb.diagnostico_id\n "+
+            "  INNER JOIN diagnosticos diag on diag.id = pb.diagnostico_id\n "+
             "  INNER JOIN afiliados af ON (af.clave_de_beneficiario = pb.clave_de_beneficiario) \n "+
+            "  INNER JOIN periodos_de_actividad pa on (af.afiliado_id = pa.afiliado_id ) \n"+ #solo los afiliados que tenga algun periodo de actividad
             "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n "+
             "  INNER JOIN asignaciones_de_precios ap  \n "+
             "    ON (\n "+
@@ -104,7 +111,11 @@ class LiquidacionSumar < ActiveRecord::Base
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
             "  AND nom.id = #{nomenclador.id}     \n"+
-            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') "
+            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') \n"+
+            "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
+            "         OR\n"+
+            "       (pb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
+            "       )"
       })
 
     if cq 
@@ -166,16 +177,16 @@ class LiquidacionSumar < ActiveRecord::Base
       esquemas: esquemas,
       sql:  "INSERT INTO prestaciones_liquidadas_advertencias \n" +
             " (liquidacion_id, prestacion_liquidada_id, metodo_de_validacion_id, comprobacion, mensaje, created_at, updated_at)  \n"+
-            "select '#{self.id}', pl.id prestacion_liquidada_id, m.metodo_de_validacion_id, mv.nombre comprobacion, mv.mensaje, now(), now() \n"+
-            "from metodos_de_validacion_prestaciones_brindadas m \n"+
-            " join metodos_de_validacion mv on mv.id = m.metodo_de_validacion_id \n"+
-            " join prestaciones_liquidadas pl on pl.prestacion_brindada_id = m.prestacion_brindada_id \n"+
-            "  WHERE pl.estado_de_la_prestacion_id IN (2,3) \n "+
-            "  AND pl.efector_id in (select ef.id \n" +
-            "                        from efectores ef \n"+
-            "                          join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
-            "                        where 'uad_' ||  u.codigo = current_schema() )   \n"+
-            "  AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') "
+            "SELECT '#{self.id}', pl.id prestacion_liquidada_id, m.metodo_de_validacion_id, mv.nombre comprobacion, mv.mensaje, now(), now() \n"+
+            "FROM metodos_de_validacion_fallados m \n"+
+            " INNER JOIN metodos_de_validacion mv ON (mv.id = m.metodo_de_validacion_id )\n"+
+            " INNER JOIN prestaciones_liquidadas pl ON  (pl.prestacion_brindada_id = m.prestacion_brindada_id )\n"+
+            "WHERE pl.estado_de_la_prestacion_id IN (2,3) \n "+
+            "AND pl.efector_id in (SELECT ef.id \n" +
+            "                      FROM efectores ef \n"+
+            "                          INNER JOIN unidades_de_alta_de_datos u ON ef.unidad_de_alta_de_datos_id = u.id \n"+
+            "                        WHERE 'uad_' ||  u.codigo = current_schema() )   \n"+
+            " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') "
       })
     if cq 
       logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
