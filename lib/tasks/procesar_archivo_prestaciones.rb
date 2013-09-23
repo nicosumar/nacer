@@ -115,6 +115,14 @@ class RegistroMasivoDePrestaciones
         efector_id integer,
         prestacion_id integer,
         diagnostico_id integer,
+        dato_reportable_1_id integer,
+        dato_reportable_1_valor varchar(255),
+        dato_reportable_2_id integer,
+        dato_reportable_2_valor varchar(255),
+        dato_reportable_3_id integer,
+        dato_reportable_3_valor varchar(255),
+        dato_reportable_4_id integer,
+        dato_reportable_4_valor varchar(255),
         persistido boolean,
         errores text
       );
@@ -288,33 +296,95 @@ class RegistroMasivoDePrestaciones
                   |p| p.id
                 }
               )
-            prestaciones.keep_if
-            if prestaciones.none?{|p| autorizadas_por_efector.member?(p)}
+
+            # Descartamos las prestaciones que no están autorizadas para el efector
+            prestaciones.keep_if{|p| autorizadas_por_efector.member?(p)}
+
+            # Registrar el error y continuar con la próxima línea si ninguna de las prestaciones estaba habilitada para el efector
+            if prestaciones.size == 0
               prestacion_brindada.agregar_error(
                 "La prestación no fue habilitada para el efector a la fecha de la prestación"
               )
-            else
+              prestacion_brindada.persistido = false
+              prestacion_brindada.save
+              next
             end
 
             # Verificar que esté autorizada para el sexo del beneficiario
             autorizadas_por_sexo = beneficiario.sexo.prestaciones_autorizadas
-            if !autorizadas_por_sexo.member? prestacion
+
+            # Descartamos las prestaciones que no están autorizadas para el sexo del beneficiario
+            prestaciones.keep_if{|p| autorizadas_por_sexo.member?(p)}
+
+            # Registrar el error y continuar con la próxima línea si ninguna de las prestaciones estaba habilitada para el sexo del beneficiario
+            if prestaciones.size == 0
               prestacion_brindada.agregar_error(
-                "La prestación no fue habilitada para el sexo del beneficiario (#{prestacion_brindada.sexo})"
+                "La prestación no está habilitada para el sexo del beneficiario (#{prestacion_brindada.sexo.downcase})"
               )
+              prestacion_brindada.persistido = false
+              prestacion_brindada.save
+              next
             end
 
-            # Verificar que el código de diagnóstico exista, y se pueda asociar con la prestación
-            if diagnostico.present?
-              if !prestacion.diagnosticos.member? diagnostico
-                prestacion_brindada.agregar_error(
-                  "El diagnóstico '#{diagnostico.nombre}' no está habilitado para la prestación '#{prestacion.nombre}'"
-                )
+            # Para cada una de las prestaciones que aún quedan seleccionadas, creamos una nueva prestacion_brindada y seleccionamos la que
+            # sea válida y genere menos advertencias
+            mejor_prestacion = nil
+            cantidad_de_metodos_fallados = 100
+            prestaciones.each do |p|
+              pb = PrestacionBrindada.new({
+                :estado_de_la_prestacion_id => 3,
+                :clave_de_beneficiario => prestacion_brindada.clave_de_beneficiario,
+                :historia_clinica => prestacion_brindada.historia_clinica,
+                :fecha_de_la_prestacion => prestacion_brindada.fecha_de_la_prestacion,
+                :efector_id => @efector.id,
+                :prestacion_id => p.id,
+                :es_catastrofica => p.es_catastrofica,
+                :diagnostico_id => diagnostico.id
+              })
+
+              if pb.valid?
+                pb.actualizar_metodos_de_validacion_fallados
+                if pb.metodos_de_validacion_fallados.size < cantidad_de_metodos_fallados
+                  mejor_prestacion = pb
+                  cantidad_de_metodos_fallados = pb.metodos_de_validacion_fallados.size
+                end
+              end
+            end
+
+            # Si encontramos la mejor posibilidad para individualizar la prestación, usamos esa, sino usamos la primera para generar los
+            # mensajes de error, ya que quiere decir que ninguna era válida.
+            if mejor_prestacion.present?
+              pb = mejor_prestacion
+            else
+              pb = PrestacionBrindada.new({
+                :estado_de_la_prestacion_id => 3,
+                :clave_de_beneficiario => prestacion_brindada.clave_de_beneficiario,
+                :historia_clinica => prestacion_brindada.historia_clinica,
+                :fecha_de_la_prestacion => prestacion_brindada.fecha_de_la_prestacion,
+                :efector_id => @efector.id,
+                :prestacion_id => prestaciones.first.id,
+                :es_catastrofica => prestaciones.first.es_catastrofica,
+                :diagnostico_id => diagnostico.id
+              })
+            end
+
+            if pb.valid?
+              prestacion_brindada.attributes({
+                :prestacion_id => pb.prestacion_id,
+                :diagnostico_id => pb.diagnostico_id,
+                :persistido => true
+              })
+              if pb.metodos_de_validacion_fallados.size > 0
+                pb.metodos_de_validacion.each do |mv|
+                  prestacion_brindada.agregar_error("Advertencia: " + mv.mensaje)
+                end
+                prestacion_brindada.estado_de_la_prestacion_id = 2
+              else
+                prestacion_brindada.estado_de_la_prestacion_id = 3
               end
             else
-              prestacion_brindada.agregar_error(
-                "El código de diagnóstico no existe (cadena evaluada: '#{prestacion_brindada.codigo_de_prestacion_informado[6..-1]}')"
-              )
+              prestacion_brindada.agregar_error(pb.errors.full_messages.join(" - "))
+              prestacion_brindada.persistido = false
             end
 
             # Verificar que si hay datos reportables presentes, existan y estén relacionados con la prestación
@@ -322,12 +392,16 @@ class RegistroMasivoDePrestaciones
               dato_reportable = DatoReportable.find(prestacion_brindada.id_dato_reportable_1)
               if !dato_reportable.present?
                 prestacion_brindada.agregar_error(
-                  "Advertencia: el identificador del primer dato reportable no existe ('#{prestacion_brindada.id_dato_reportable_1}'"
+                  "Advertencia: el identificador del primer dato reportable no existe " + \
+                  "('#{prestacion_brindada.id_dato_reportable_1}', se ignorará el valor asociado"
                 )
+              else
+                datos_reportables_requeridos = prestacion.datos_reportables_requeridos
+                if datos_reportables_requeridos.none? { |drr| drr.dato_reportable.id == dato_reportable.id }
               end
-              datos_reportables_requeridos = prestacion.datos_reportables_requeridos
-              if datos_reportables_requeridos.none? { |drr| drr.dato_reportable.id == dato_reportable.id }
             end
+###
+            prestacion_brindada.save
 
           end
         end
