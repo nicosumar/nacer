@@ -57,13 +57,14 @@ class Prestacion < ActiveRecord::Base
     unidad_de_medida.codigo
   end
 
-  def define_si_es_catastrofica
-    objeto_de_la_prestacion ? objeto_de_la_prestacion.define_si_es_catastrofica : true
-  end
-
-  def es_catastrofica
-    define_si_es_catastrofica && (objeto_de_la_prestacion ? objeto_de_la_prestacion.es_catastrofica : false)
-  end
+# TODO: cleanup
+# La 'catastroficidad' se define ahora por prestación, y no en el objeto de la prestación asociado
+#  def define_si_es_catastrofica
+#    objeto_de_la_prestacion ? objeto_de_la_prestacion.define_si_es_catastrofica : true
+#  end
+#  def es_catastrofica
+#    define_si_es_catastrofica && (objeto_de_la_prestacion ? objeto_de_la_prestacion.es_catastrofica : false)
+#  end
 
   # Devuelve las prestaciones que han sido autorizadas para el ID del efector que se pasa
   # como parámetro.
