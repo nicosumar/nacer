@@ -7,7 +7,7 @@
 //= require si_no.js
 //= require efectores.js
 
-// Actualizado 22/09/2013
+// Actualizado 23/09/2013
 
 $(document).ready(function() {
 

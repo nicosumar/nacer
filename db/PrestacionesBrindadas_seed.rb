@@ -27,7 +27,11 @@ class ModificarPrestacionesBrindadas < ActiveRecord::Migration
         ELSE
           old_indexable := 'f'::boolean;
         END IF;
-        SELECT indexable INTO new_indexable FROM estados_de_las_prestaciones WHERE id = NEW.estado_de_la_prestacion_id;
+        IF (TG_OP != 'DELETE') THEN
+	  SELECT indexable INTO new_indexable FROM estados_de_las_prestaciones WHERE id = NEW.estado_de_la_prestacion_id;
+        ELSE
+          new_indexable := 'f'::boolean;
+        END IF;
 
         -- Actualizar la tabla de búsquedas con los datos insertados, actualizados o eliminados.
         IF (TG_OP = 'DELETE') THEN

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130922193838) do
+ActiveRecord::Schema.define(:version => 20130923165208) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -784,7 +784,6 @@ ActiveRecord::Schema.define(:version => 20130922193838) do
   add_index "periodos_de_actividad", ["fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio", "fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_inicio_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx"
-  add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx1"
 
   create_table "periodos_de_capita", :force => true do |t|
     t.integer  "afiliado_id"

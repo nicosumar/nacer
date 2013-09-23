@@ -53,25 +53,25 @@ class RegistroMasivoDePrestaciones
 
     crear_modelo_y_tabla
     procesar_archivo
-    persistir_inscripciones
+    persistir_prestaciones
     escribir_resultados
     eliminar_tabla
   end
 
   def eliminar_tabla
     ActiveRecord::Base.connection.execute "
-      DROP TABLE IF EXISTS novedades_de_los_afiliados_temp_#{@parte};
-      DROP SEQUENCE IF EXISTS uad_#{unidad_de_alta_de_datos.codigo}.novedades_de_los_afiliados_temp_#{@parte}_id_seq;
+      DROP TABLE IF EXISTS importar_prestaciones_brindadas;
+      DROP SEQUENCE IF EXISTS uad_#{unidad_de_alta_de_datos.codigo}.importar_prestaciones_brindadas_id_seq;
     "
   end
 
   def escribir_resultados
 
-    archivo = File.open(@archivo_a_procesar + (@parte.present? ? ".part" + @parte : "") + ".out", "w")
+    archivo = File.open(@archivo_a_procesar + ".out", "w")
 
-    archivo.puts eval("NovedadDelAfiliadoTemp#{@parte.titleize}").column_names.join("\t")
+    archivo.puts ImportarPrestacionBrindada.column_names.join("\t")
 
-    eval("NovedadDelAfiliadoTemp#{@parte.titleize}").find(:all).each do |n|
+    ImportarPrestacionBrindada.find(:all).each do |n|
       archivo.puts n.attributes.values.join("\t")
     end
     archivo.close
@@ -450,11 +450,15 @@ class RegistroMasivoDePrestaciones
                   when "string"
                     dra.valor_string = dra_valor
                   when "date"
-                    dra.valor_date = a_fecha(dra_valor).strftime("%Y-%m-%d")
+                    dra.valor_date = a_fecha(dra_valor)
                   when "big_decimal"
                     dra.valor_big_decimal = dra_valor.to_f
                   when "integer"
-                    dra.valor_integer = dra_valor.to_i
+                    if drr.dato_reportable.enumerable
+                      dra.valor_integer = clase_a_id(drr.dato_reportable.clase_para_enumeracion, dra_valor)
+                    else
+                      dra.valor_integer = dra_valor.to_i
+                    end
                 end
                 dras << dra
               end
@@ -463,9 +467,9 @@ class RegistroMasivoDePrestaciones
 
             if pb.valid?
               pb.actualizar_metodos_de_validacion_fallados
-              if pb.metodos_de_validacion_fallados.size < cantidad_de_metodos_fallados
+              if pb.metodos_de_validacion.size < cantidad_de_metodos_fallados
                 mejor_prestacion = pb
-                cantidad_de_metodos_fallados = pb.metodos_de_validacion_fallados.size
+                cantidad_de_metodos_fallados = pb.metodos_de_validacion.size
               end
             end
           end
@@ -504,11 +508,15 @@ class RegistroMasivoDePrestaciones
                   when "string"
                     dra.valor_string = dra_valor
                   when "date"
-                    dra.valor_date = a_fecha(dra_valor).strftime("%Y-%m-%d")
+                    dra.valor_date = a_fecha(dra_valor)
                   when "big_decimal"
                     dra.valor_big_decimal = dra_valor.to_f
                   when "integer"
-                    dra.valor_integer = dra_valor.to_i
+                    if drr.dato_reportable.enumerable
+                      dra.valor_integer = clase_a_id(drr.dato_reportable.clase_para_enumeracion, dra_valor)
+                    else
+                      dra.valor_integer = dra_valor.to_i
+                    end
                 end
                 dras << dra
               end
@@ -517,12 +525,12 @@ class RegistroMasivoDePrestaciones
           end
 
           if pb.valid?
-            prestacion_brindada.attributes({
+            prestacion_brindada.attributes = {
               :prestacion_id => pb.prestacion_id,
               :diagnostico_id => pb.diagnostico_id,
               :persistido => true
-            })
-            if pb.metodos_de_validacion_fallados.size > 0
+            }
+            if pb.metodos_de_validacion.size > 0
               pb.metodos_de_validacion.each do |mv|
                 prestacion_brindada.agregar_error("Advertencia: " + mv.mensaje)
               end
@@ -545,28 +553,61 @@ class RegistroMasivoDePrestaciones
   end
 
   def persistir_prestaciones
-    ActiveRecord::Base.connection.execute "
-      INSERT INTO uad_#{@unidad_de_alta_de_datos.codigo}.novedades_de_los_afiliados
-          (tipo_de_novedad_id, estado_de_la_novedad_id, clave_de_beneficiario, apellido, nombre, clase_de_documento_id,
-          tipo_de_documento_id, numero_de_documento, categoria_de_afiliado_id, sexo_id, fecha_de_nacimiento, domicilio_calle,
-          domicilio_numero, domicilio_departamento_id, domicilio_distrito_id, observaciones, lugar_de_atencion_habitual_id,
-          apellido_de_la_madre, nombre_de_la_madre, tipo_de_documento_de_la_madre_id, numero_de_documento_de_la_madre,
-          apellido_del_padre, nombre_del_padre, tipo_de_documento_del_padre_id, numero_de_documento_del_padre,
-          apellido_del_tutor, nombre_del_tutor, tipo_de_documento_del_tutor_id, numero_de_documento_del_tutor,
-          fecha_de_la_novedad, centro_de_inscripcion_id, nombre_del_agente_inscriptor, created_at, updated_at, creator_id,
-          updater_id)
-        SELECT
-            tipo_de_novedad_id, estado_de_la_novedad_id, clave_de_beneficiario, apellido, nombre, clase_de_documento_id,
-            tipo_de_documento_id, numero_de_documento, categoria_de_afiliado_id, sexo_id, fecha_de_nacimiento, domicilio_calle,
-            domicilio_numero, domicilio_departamento_id, domicilio_distrito_id, observaciones, lugar_de_atencion_habitual_id,
-            apellido_de_la_madre, nombre_de_la_madre, tipo_de_documento_de_la_madre_id, numero_de_documento_de_la_madre,
-            apellido_del_padre, nombre_del_padre, tipo_de_documento_del_padre_id, numero_de_documento_del_padre,
-            apellido_del_tutor, nombre_del_tutor, tipo_de_documento_del_tutor_id, numero_de_documento_del_tutor,
-            fecha_de_la_novedad, centro_de_inscripcion_id, nombre_del_agente_inscriptor, created_at, updated_at, creator_id,
-            updater_id
-          FROM uad_#{@unidad_de_alta_de_datos.codigo}.novedades_de_los_afiliados_temp_#{@parte}
-          WHERE persistido;
-    "
+    ImportarPrestacionBrindada.where(:persistido => true).each do |pb|
+      prestacion_brindada = PrestacionBrindada.new({
+        :clave_de_beneficiario => pb.clave_de_beneficiario,
+        :historia_clinica => pb.historia_clinica,
+        :fecha_de_la_prestacion => pb.fecha_de_la_prestacion,
+        :efector_id => pb.efector_id,
+        :prestacion_id => pb.prestacion_id,
+        :diagnostico_id => pb.diagnostico_id
+      })
+      prestacion_brindada.es_catastrofica = prestacion_brindada.prestacion.es_catastrofica
+      dras = []
+      prestacion_brindada.prestacion.datos_reportables_requeridos.each do |drr|
+        if drr.dato_reportable_id == pb.dato_reportable_1_id
+          dra_valor = pb.dato_reportable_1_valor
+        elsif drr.dato_reportable_id == pb.dato_reportable_2_id
+          dra_valor = pb.dato_reportable_2_valor
+        elsif drr.dato_reportable_id == pb.dato_reportable_3_id
+          dra_valor = pb.dato_reportable_3_valor
+        elsif drr.dato_reportable_id == pb.dato_reportable_4_id
+          dra_valor = pb.dato_reportable_4_valor
+        else
+          dra_valor = nil
+        end
+        if dra_valor.present?
+          dra = DatoReportableAsociado.new({:dato_reportable_requerido_id => drr.id})
+          case drr.dato_reportable.tipo_ruby
+            when "string"
+              dra.valor_string = dra_valor
+            when "date"
+              dra.valor_date = a_fecha(dra_valor)
+            when "big_decimal"
+              dra.valor_big_decimal = dra_valor.to_f
+            when "integer"
+              if drr.dato_reportable.enumerable
+                dra.valor_integer = clase_a_id(drr.dato_reportable.clase_para_enumeracion, dra_valor)
+              else
+                dra.valor_integer = dra_valor.to_i
+              end
+          end
+          dras << dra
+        end
+      end
+      prestacion_brindada.datos_reportables_asociados = dras
+      prestacion_brindada.actualizar_metodos_de_validacion_fallados
+
+      if prestacion_brindada.metodos_de_validacion.size > 0
+        prestacion_brindada.estado_de_la_prestacion_id = 2
+      else
+        prestacion_brindada.estado_de_la_prestacion_id = 3
+      end
+
+      prestacion_brindada.creator_id = 1
+      prestacion_brindada.updater_id = 1
+      prestacion_brindada.save
+    end
   end
 
   def parsear_linea(linea)
@@ -583,7 +624,7 @@ class RegistroMasivoDePrestaciones
       :tipo_de_documento_informado => a_texto(campos[5]),
       :numero_de_documento_informado => a_numero_de_documento(campos[6]),
       :historia_clinica => a_texto(campos[7]),
-      :codigo_de_prestacion_informado => a_texto(campos[8]),
+      :codigo_de_prestacion_informado => a_codigo_de_prestacion(campos[8]),
       :id_dato_reportable_1 => a_entero(campos[9]),
       :dato_reportable_1 => a_texto(campos[10]),
       :id_dato_reportable_2 => a_entero(campos[11]),
@@ -595,9 +636,13 @@ class RegistroMasivoDePrestaciones
     }
   end
 
-  # TODO: cambiar esta función cavernícola por las otras más inteligentes "a_..." en el ApplicationController
   def a_texto(cadena)
     texto = cadena.to_s.strip.gsub(/  /, " ").gsub("NULL", "").mb_chars.upcase.to_s
+    return (texto.blank? ? nil : texto)
+  end
+
+  def a_codigo_de_prestacion(cadena)
+    texto = cadena.to_s.strip.gsub(/[ -\.,]/, "").gsub("NULL", "").upcase
     return (texto.blank? ? nil : texto)
   end
 
@@ -638,6 +683,14 @@ class RegistroMasivoDePrestaciones
     return nil if texto.blank?
     return texto.to_i if (texto.to_i > 0 && hash.values.member?(texto.to_i))
     return hash[texto]
+  end
+
+  def clase_a_id(nombre_de_clase, cadena)
+    texto = cadena.to_s.strip.gsub("NULL", "").upcase
+    return nil if texto.blank?
+    return texto.to_i if (texto.to_i > 0 && eval(nombre_de_clase).exists?(texto.to_i))
+    instancia = eval(nombre_de_clase).find_by_codigo(texto)
+    return instancia.present? ? instancia.id : nil
   end
 
   def a_distrito_id(departamento_id, cadena)
