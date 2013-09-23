@@ -308,4 +308,22 @@ ActiveRecord::Base.transaction do
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
 
+  prestacion = Prestacion.where(
+    "codigo = 'APA001' AND EXISTS (
+       SELECT * FROM diagnosticos_prestaciones JOIN diagnosticos ON (diagnosticos.id = diagnosticos_prestaciones.prestacion_id)
+         WHERE diagnosticos_prestaciones.prestacion_id = prestaciones.id AND diagnosticos.codigo = 'W78'
+     )").first
+  DatoReportableRequerido.create!({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo!("DIAGAP"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :obligatorio => false
+  })
+  DatoReportableRequerido.create!({
+    :prestacion_id => prestacion.id,
+    :dato_reportable_id => DatoReportable.id_del_codigo!("SITAM"),
+    :fecha_de_inicio => fecha_de_inicio,
+    :obligatorio => true
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_mayor_de_24_anios?")
 end
