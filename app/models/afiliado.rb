@@ -33,7 +33,7 @@ class Afiliado < ActiveRecord::Base
   # Asociaciones con otros modelos
   belongs_to :clase_de_documento
   belongs_to :tipo_de_documento
-  #belongs_to :categoria_de_afiliado    # --OBSOLETO--
+  #belongs_to :categoria_de_afiliado    # --OBSOLETO-- TODO: cleanup
   belongs_to :sexo
   has_many :periodos_de_actividad
   has_many :periodos_de_cobertura
@@ -408,7 +408,7 @@ class Afiliado < ActiveRecord::Base
 
     encontrados = []
 
-    # Primero intentamos encontrarlo por número de documento
+    # Intentamos encontrarlo por número de documento
     afiliados = Afiliado.where("(numero_de_documento = ? OR
                                 numero_de_documento_de_la_madre = ? OR
                                 numero_de_documento_del_padre = ? OR
@@ -472,15 +472,23 @@ class Afiliado < ActiveRecord::Base
       end
     end
 
-    # Eliminar los registros marcados como duplicados (que están dados de baja)
-    sin_duplicados = []
-    encontrados.each do |afiliado|
-      if !afiliado.mensaje_de_la_baja || !afiliado.mensaje_de_la_baja.downcase.match(/dupl/)
-        sin_duplicados << afiliado
+    if encontrados.size > 1
+      # Si hay más de un beneficiario entre los encontrados, ver si hay activos y dejar únicamente estos
+      if encontrados.any? {|b| b.activo?}
+        encontrados.delete_if {|b| !b.activo?}
       end
     end
 
-    return [sin_duplicados, nivel_maximo] if sin_duplicados.size > 0
+# TODO: cleanup. Los duplicados son descartados en el SELECT
+#    # Eliminar los registros marcados como duplicados (que están dados de baja)
+#    sin_duplicados = []
+#    encontrados.each do |afiliado|
+#      if !afiliado.mensaje_de_la_baja || !afiliado.mensaje_de_la_baja.downcase.match(/dupl/)
+#        sin_duplicados << afiliado
+#      end
+#    end
+
+    return [encontrados, nivel_maximo] if encontrados.size > 0
 
     ### TODO: ¿probar otros métodos para tratar de encontrar el afiliado?  (por ejemplo: buscar por nombre,
     ###       y luego verificar si el documento está mal ingresado)
@@ -621,7 +629,7 @@ class Afiliado < ActiveRecord::Base
       # (sabiendo que es un parche horrible, pero si en una versión futura del sistema de gestión se incorpora
       # el campo a la tabla SMIAfiliados, se moverá al lugar que corresponde.
       # En la provincia de Mendoza, existe un único municipio por departamento, por lo que no tiene sentido
-      # registrar # aparte el municipio.
+      # registrar aparte el municipio.
       # El campo que originalmente se utilizaba para indicar en forma textual el lugar de atención
       # habitual nunca se utilizó (siempre tuvo nulos), y lo reutilizamos para guardar el valor
       # de 'Otro teléfono' que figura en la ficha nueva de inscripción, hasta tanto se incorpore el
