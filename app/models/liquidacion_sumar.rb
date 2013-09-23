@@ -12,8 +12,8 @@ class LiquidacionSumar < ActiveRecord::Base
   attr_accessible :descripcion, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id, :plantilla_de_reglas_id, :parametro_liquidacion_sumar_id
 
   validates_presence_of :descripcion, :grupo_de_efectores_liquidacion, :concepto_de_facturacion, :periodo, :parametro_liquidacion_sumar_id
-  
-  
+
+
   def generar_snapshoot_de_liquidacion
 
     #Traigo Grupo de efectores y nomenclador
@@ -41,7 +41,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "  INNER JOIN prestaciones pr ON (pr.id = pb.prestacion_id) \n"+
               "  INNER JOIN conceptos_de_facturacion cdf on (cdf.id = pr.concepto_de_facturacion_id)\n"+
               "  INNER JOIN afiliados af ON (af.clave_de_beneficiario = pb.clave_de_beneficiario) \n"+
-              "  INNER JOIN periodos_de_actividad pa on (af.afiliado_id = pa.afiliado_id ) \n"+ #solo los afiliados que tenga algun periodo de actividad 
+              "  INNER JOIN periodos_de_actividad pa on (af.afiliado_id = pa.afiliado_id ) \n"+ #solo los afiliados que tenga algun periodo de actividad
               "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n"+
               "  INNER JOIN asignaciones_de_precios ap \n"+
               "    ON (\n"+
@@ -64,7 +64,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "       )"
       })
 
-    if cq 
+    if cq
       logger.warn ("Tabla de prestaciones incluidas generada")
     else
       logger.warn ("Tabla de prestaciones incluidas NO generada")
@@ -82,7 +82,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "        cantidad_de_unidades, observaciones, \n "+
             "        clave_de_beneficiario, codigo_area_prestacion, nombre_area_de_prestacion, prestacion_brindada_id, \n "+
             "        created_at, updated_at) \n "+
-            "SELECT distinct #{self.id} liquidacion_id, ef.unidad_de_alta_de_datos_id as unidad_de_alta_de_datos_id, pb.efector_id,\n "+
+            "SELECT DISTINCT #{self.id} liquidacion_id, ef.unidad_de_alta_de_datos_id as unidad_de_alta_de_datos_id, pb.efector_id,\n "+
             "       pi.id as prestacion_incluida_id, pb.fecha_de_la_prestacion,\n "+
             "       pb.estado_de_la_prestacion_id, pb.historia_clinica, pb.es_catastrofica, \n "+
             "       pb.diagnostico_id, diag.nombre diagnostico_nombre,\n "+
@@ -91,7 +91,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "       now(), now()\n "+
             "  FROM prestaciones_brindadas pb\n "+
             "  INNER JOIN prestaciones pr ON (pr.id = pb.prestacion_id) \n "+
-            "  INNER JOIN prestaciones_incluidas pi on pb.prestacion_id = pi.prestacion_id\n "+
+            "  INNER JOIN prestaciones_incluidas pi on (pb.prestacion_id = pi.prestacion_id AND pi.liquidacion_id = #{self.id})\n "+
             "  INNER JOIN diagnosticos diag on diag.id = pb.diagnostico_id\n "+
             "  INNER JOIN afiliados af ON (af.clave_de_beneficiario = pb.clave_de_beneficiario) \n "+
             "  INNER JOIN periodos_de_actividad pa on (af.afiliado_id = pa.afiliado_id ) \n"+ #solo los afiliados que tenga algun periodo de actividad
@@ -118,14 +118,14 @@ class LiquidacionSumar < ActiveRecord::Base
             "       )"
       })
 
-    if cq 
+    if cq
       logger.warn ("Tabla de prestaciones incluidas generada")
     else
       logger.warn ("Tabla de prestaciones incluidas NO generada")
       return false
     end
 
-    # 3)  Identifico los datos vinculados a las prestaciones brindadas 
+    # 3)  Identifico los datos vinculados a las prestaciones brindadas
     #    que se incluyeron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
@@ -135,9 +135,9 @@ class LiquidacionSumar < ActiveRecord::Base
             "   dato_reportable_id, dato_reportable_requerido_id, created_at, updated_at) \n "+
             "SELECT '#{self.id}' liquidacion_id, pl.id prestacion_liquidada_id, \n "+
             "       dr.nombre dato_reportable_nombre, ap.precio_por_unidad, dra.valor_integer, dra.valor_big_decimal, dra.valor_date, dra.valor_string, ap.adicional_por_prestacion, \n "+
-            "        dr.id dato_reportable_id, drr.id dato_reportable_requerido_id, now(), now()\n "+
+            "       dr.id dato_reportable_id, drr.id dato_reportable_requerido_id, now(), now()\n "+
             "  FROM prestaciones_incluidas pi \n "+
-            "   INNER JOIN prestaciones_liquidadas pl ON pl.prestacion_incluida_id  = pi.id \n "+
+            "   INNER JOIN prestaciones_liquidadas pl ON ( pl.prestacion_incluida_id = pi.id AND pl.liquidacion_id = #{self.id} )\n "+
             "   INNER JOIN efectores ef ON (ef.id = pl.efector_id) -- Este join es para obtener el ID y el área de prestación del efector\n "+
             "   INNER JOIN asignaciones_de_precios ap  -- Este join trae los datos de la asignación de precios correspondiente al área de prestación del efector\n "+
             "     ON (\n "+
@@ -164,14 +164,14 @@ class LiquidacionSumar < ActiveRecord::Base
             "  and ap.nomenclador_id = #{nomenclador.id} \n" +
             "  AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') "
       })
-    if cq 
+    if cq
       logger.warn ("Tabla de prestaciones Liquidadas datos generada")
     else
       logger.warn ("Tabla de prestaciones Liquidadas datos NO generada")
       return false
     end
 
-    # 4)  Identifico las advertencias que poseen las prestaciones brindadas que se  
+    # 4)  Identifico las advertencias que poseen las prestaciones brindadas que se
     #    que se incluyeron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
@@ -180,7 +180,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "SELECT '#{self.id}', pl.id prestacion_liquidada_id, m.metodo_de_validacion_id, mv.nombre comprobacion, mv.mensaje, now(), now() \n"+
             "FROM metodos_de_validacion_fallados m \n"+
             " INNER JOIN metodos_de_validacion mv ON (mv.id = m.metodo_de_validacion_id )\n"+
-            " INNER JOIN prestaciones_liquidadas pl ON  (pl.prestacion_brindada_id = m.prestacion_brindada_id )\n"+
+            " INNER JOIN prestaciones_liquidadas pl ON  (pl.prestacion_brindada_id = m.prestacion_brindada_id and pl.liquidacion_id = #{self.id} )\n"+
             "WHERE pl.estado_de_la_prestacion_id IN (2,3) \n "+
             "AND pl.efector_id in (SELECT ef.id \n" +
             "                      FROM efectores ef \n"+
@@ -188,7 +188,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                        WHERE 'uad_' ||  u.codigo = current_schema() )   \n"+
             " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') "
       })
-    if cq 
+    if cq
       logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
     else
       logger.warn ("Tabla de prestaciones Liquidadas advertencias NO generada")
@@ -196,7 +196,7 @@ class LiquidacionSumar < ActiveRecord::Base
     end
 
     # 5) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
-    #    de prestaciones liquidadas 
+    #    de prestaciones liquidadas
     #    - Aca con las prestaciones aceptadas
 
     formula = "Formula_#{self.parametro_liquidacion_sumar.formula.id}"
@@ -217,7 +217,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "and pl.id not in (select pla.prestacion_liquidada_id from prestaciones_liquidadas_advertencias pla where pla.liquidacion_id = #{self.id}) )"
       })
     # 6) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
-    #    de prestaciones liquidadas 
+    #    de prestaciones liquidadas
     #    - Aca con las prestaciones exceptuadas (aceptadas por regla), con su observacion
     cq = CustomQuery.ejecutar ({
       sql:  "UPDATE public.prestaciones_liquidadas \n"+
@@ -249,7 +249,7 @@ class LiquidacionSumar < ActiveRecord::Base
       })
     logger.warn("CQ--------------------------------- #{cq.inspect}")
     # 7) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
-    #    de prestaciones liquidadas 
+    #    de prestaciones liquidadas
     #    - Aca con las prestaciones rechazadas
     cq = CustomQuery.ejecutar ({
       sql:  "UPDATE public.prestaciones_liquidadas \n"+
@@ -308,18 +308,18 @@ class LiquidacionSumar < ActiveRecord::Base
             "and   estado_de_la_prestacion_liquidada_id != #{estado_rechazada} \n"+
             "group by liquidacion_id, efector_id"
                   })
-    if cq 
+    if cq
       logger.warn ("Tabla de cuasifacturas generada")
     else
       logger.warn ("Tabla de cuasifacturas NO generada")
       return false
     end
 
-    # 2) Insertar las que tienen advertencias salvadas por una regla con su observacion -- id 5: Aprobada para liquidación 
+    # 2) Insertar las que tienen advertencias salvadas por una regla con su observacion -- id 5: Aprobada para liquidación
     cq = CustomQuery.ejecutar ({
       sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas_detalles  \n"+
             "(liquidaciones_sumar_cuasifacturas_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, observaciones, created_at, updated_at)  \n"+
-            "select lsc.id , p.prestacion_incluida_id, p.estado_de_la_prestacion_liquidada_id, p.monto, 
+            "select lsc.id , p.prestacion_incluida_id, p.estado_de_la_prestacion_liquidada_id, p.monto,
              'Observaciones de la prestacion: ' ||p.observaciones || '\\n Observaciones de liquidacion: '|| p.observaciones_liquidacion
               , now(),now() \n"+
             "from prestaciones_liquidadas p \n"+
@@ -328,7 +328,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "and   p.estado_de_la_prestacion_liquidada_id != #{estado_rechazada}"
       })
 
-    if cq 
+    if cq
       logger.warn ("Tabla de detalle de cuasifacturas generada")
     else
       logger.warn ("Tabla de detalle de cuasifacturas NO generada")

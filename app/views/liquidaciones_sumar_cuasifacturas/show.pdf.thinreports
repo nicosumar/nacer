@@ -15,7 +15,7 @@ sql_cabecera =  "select c.numero_cuasifactura cuasifactura_numero,\n"+
                 "from liquidaciones_sumar_cuasifacturas c\n"+
                 "   join liquidaciones_sumar l on l.id = c.liquidacion_sumar_id\n"+
                 "   join efectores e on e.id = c.efector_id\n"+
-                "   join convenios_de_gestion_sumar convenios on ( convenios.efector_id = e.id and fecha_de_finalizacion is null )\n"+
+                "   join convenios_de_gestion_sumar convenios on ( convenios.efector_id = e.id )\n"+
                 "   join parametros_liquidaciones_sumar pl on pl.id = l.parametro_liquidacion_sumar_id\n"+
                 "   join periodos p on p.id = l.periodo_id\n"+
                 "   join conceptos_de_facturacion cf on cf.id = p.concepto_de_facturacion_id\n"+
@@ -58,7 +58,7 @@ report.use_layout File.join(Rails.root, 'app', 'views','liquidaciones_sumar_cuas
       # que empiece en 0
       e.store.sub_total = 0
     end
-  
+
     # disparo la insercion del footer.
     events.on :footer_insert do |e|
       # seteo el nuevo total
@@ -81,14 +81,16 @@ report.start_new_page do |page|
          efector_encargado: cabecera[:efector_encargado] ,
          liquidacion_periodos: cabecera[:liquidacion_periodos] ,
          concepto_facturacion: cabecera[:concepto_facturacion],
-         logo: File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png"))
-   
+         logo: (
+           File.exists?(File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png")) ?
+             File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png") : nil ))
+
   cq_detalle.each do |det|
     #agrego la fila a la lista de detalles
     page.list(:details).add_row do |row|
-      row.values no: det.no, 
-                 prestacion_nombre_y_codigo: det.prestacion_nombre_y_codigo, 
-                 prestacion_objeto: det.prestacion_objeto, 
+      row.values no: det.no,
+                 prestacion_nombre_y_codigo: det.prestacion_nombre_y_codigo,
+                 prestacion_objeto: det.prestacion_objeto,
                  cantidad: det.cantidad
 
       page.list(:details) do |list|

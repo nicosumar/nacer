@@ -7,15 +7,7 @@ class CreateTiposPeriodos < ActiveRecord::Migration
       t.timestamps
     end
 
-    TipoPeriodo.create! { 
-    	tipo: 'P', 
-    	descripcion: 'Periodo' 
-    }
-
-    TipoPeriodo.create! { 
-    	tipo: 'R', 
-    	descripcion: 'Retroactivo' 
-    }
+    load 'db/TiposPeriodos_seed.rb'
 
   end
 
