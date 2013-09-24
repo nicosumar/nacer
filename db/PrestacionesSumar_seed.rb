@@ -2739,6 +2739,7 @@ ActiveRecord::Base.transaction do
     :codigo => "ITE013",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("E013"),
     :nombre => 'Prematurez - RNPT de 500 a 1499 g con requerimiento de ARM o CPAP',
+    :es_catastrofica => true,
     :unidad_de_medida_id => UnidadDeMedida.id_del_codigo!("D"),
     :unidades_maximas => 30.0000,
     :created_at => ahora, :updated_at => ahora, :activa => true
@@ -2758,6 +2759,7 @@ ActiveRecord::Base.transaction do
     :codigo => "ITE014",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("E014"),
     :nombre => 'Prematurez - RNPT de 500 a 1499 g sin requerimiento de ARM o CPAP',
+    :es_catastrofica => true,
     :unidad_de_medida_id => UnidadDeMedida.id_del_codigo!("D"),
     :unidades_maximas => 30.0000,
     :created_at => ahora, :updated_at => ahora, :activa => true
@@ -2854,6 +2856,7 @@ ActiveRecord::Base.transaction do
     :codigo => "ITQ009",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("Q009"),
     :nombre => 'Malformaciones quirúrgicas - Atresia esofágica - Cualquier tipo de atresia esofágica',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -2917,6 +2920,7 @@ ActiveRecord::Base.transaction do
     :codigo => "ITQ010",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("Q010"),
     :nombre => 'Malformaciones quirúrgicas - Gastrosquisis - Defecto del cierre de la pared abdominal, excluido el onfalocele',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -2978,6 +2982,7 @@ ActiveRecord::Base.transaction do
     :codigo => "ITQ011",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("Q011"),
     :nombre => 'Malformaciones quirúrgicas - Oclusión intestinal - Todos los cuadros de oclusión intestinal, excluida la aganglionosis intestinal',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -5304,6 +5309,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK018",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K018"),
     :nombre => 'Cardiopatías congénitas - Módulo V - Corrección de canal aurículo-ventricular completo',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -5395,6 +5401,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK019",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K019"),
     :nombre => 'Cardiopatías congénitas - Módulo V - Correctora de Fallot',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -5487,6 +5494,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK020",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K020"),
     :nombre => 'Cardiopatías congénitas - Módulo V - Correctora de doble salida de ventrículo derecho',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -5580,6 +5588,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK021",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K021"),
     :nombre => 'Cardiopatías congénitas - Módulo V - Cirugía de Fontan o by-pass total',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -5677,6 +5686,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK022",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K022"),
     :nombre => 'Cardiopatías congénitas - Módulo V - Cierre de canal intra-ventricular y defecto asociado',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -5767,6 +5777,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK023",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K023"),
     :nombre => 'Cardiopatías congénitas - Módulo V - Reemplazo o plástica valvular con prótesis u homoinjerto, cirugía de Ross',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -5881,6 +5892,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK024",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K024"),
     :nombre => 'Cardiopatías congénitas - Módulo V - Cirugía de Rastelli',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -5977,6 +5989,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK025",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K025"),
     :nombre => 'Cardiopatías congénitas - Módulo VI - Switch arterial, Nikeido, doble switch',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6068,6 +6081,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK026",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K026"),
     :nombre => 'Cardiopatías congénitas - Módulo VI - Plástica o reemplazo valvular',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6159,6 +6173,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK027",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K027"),
     :nombre => 'Cardiopatías congénitas - Módulo VI - Cierre de canal intra-ventricular más colocación de homoinjerto, recambio de homoinjerto, colocación de tubo con unifocalización',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6252,6 +6267,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK028",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K028"),
     :nombre => 'Cardiopatías congénitas - Módulo VI - Correctora de tronco arterioso',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6343,6 +6359,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK029",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K029"),
     :nombre => 'Cardiopatías congénitas - Módulo VI - Correctora de ATRVP',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6443,6 +6460,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK030",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K030"),
     :nombre => 'Cardiopatías congénitas - Módulo VI - Cirugía de Stansel con anastomosis, Glenn o Sano',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6535,6 +6553,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK031",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K031"),
     :nombre => 'Cardiopatías congénitas - Módulo VI - Reconstrucción del arco aórtico',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6625,6 +6644,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK038",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K038"),
     :nombre => 'Cardiopatías congénitas - Módulo VI - Reimplante o Takeuchi',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6715,6 +6735,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK032",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K032"),
     :nombre => 'Cardiopatías congénitas - Módulo VII - Cirugía de Norwood o Sano',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6805,6 +6826,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK033",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K033"),
     :nombre => 'Cardiopatías congénitas - Módulo VII - Cirugía de Glenn',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
@@ -6895,6 +6917,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :codigo => "ITK034",
     :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K034"),
     :nombre => 'Cardiopatías congénitas - Módulo VII - Cirugía de Fontan',
+    :es_catastrofica => true,
     :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]

@@ -345,7 +345,7 @@ class AgregarMetodosDeValidacionFalladosAlTrigger < ActiveRecord::Migration
 
               -- Trigger para evitar duplicaciones en la tabla de prestaciones brindadas
               CREATE TRIGGER trg_uad_' || NEW.codigo || '_antes_de_cambiar_prestacion_brindada
-                BEFORE INSERT OR UPDATE ON prestaciones_brindadas
+                BEFORE INSERT OR UPDATE ON uad_' || NEW.codigo || '.prestaciones_brindadas
                 FOR EACH ROW EXECUTE PROCEDURE verificar_duplicacion_de_prestaciones();';
 
           END IF;

@@ -1,5 +1,16 @@
 # -*- encoding : utf-8 -*-
 ActiveRecord::Base.transaction do
+
+  # Crear nuevas restricciones de claves foráneas
+  ActiveRecord::Base.connection.execute "
+    ALTER TABLE prestaciones
+      ADD CONSTRAINT fk_prestaciones_tipos_de_tratamientos
+        FOREIGN KEY (tipo_de_tratamiento_id) REFERENCES tipos_de_tratamientos(id);
+  "
+
+  # Acabamos de añadir columnas en una migración, resetear la info en el modelo para evitar fallos
+  Prestacion.reset_column_information
+
   # Precargamos ciertos datos útiles para no ejecutar tantas consultas a la base
   um_unitaria = UnidadDeMedida.find_by_codigo!("U")
   sexo_femenino = Sexo.find_by_codigo!("F")
@@ -310,7 +321,7 @@ ActiveRecord::Base.transaction do
 
   prestacion = Prestacion.where(
     "codigo = 'APA001' AND EXISTS (
-       SELECT * FROM diagnosticos_prestaciones JOIN diagnosticos ON (diagnosticos.id = diagnosticos_prestaciones.prestacion_id)
+       SELECT * FROM diagnosticos_prestaciones JOIN diagnosticos ON (diagnosticos.id = diagnosticos_prestaciones.diagnostico_id)
          WHERE diagnosticos_prestaciones.prestacion_id = prestaciones.id AND diagnosticos.codigo = 'W78'
      )").first
   DatoReportableRequerido.create!({
