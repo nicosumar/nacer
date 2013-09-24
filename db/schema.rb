@@ -449,6 +449,11 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
     t.date     "fecha_de_addenda_perinatal"
     t.integer  "unidad_de_alta_de_datos_id"
     t.integer  "grupo_de_efectores_liquidacion_id"
+    t.string   "cuit"
+    t.string   "condicion_iva"
+    t.date     "fecha_inicio_de_actividades"
+    t.string   "condicion_iibb"
+    t.string   "datos_bancarios"
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
