@@ -7,6 +7,7 @@
   %table
     %tr
       %th Periodo de liquidación
+      %th Efector
       %th Concepto de liquidación
       %th Monto total
       %th Número cuasifactura
@@ -15,6 +16,7 @@
     - @liquidaciones_sumar_cuasifacturas.each do |liquidacion_sumar_cuasifactura|
       %tr
         %td= liquidacion_sumar_cuasifactura.liquidacion_sumar.periodo.periodo
+        %td= liquidacion_sumar_cuasifactura.efector.nombre
         %td= liquidacion_sumar_cuasifactura.liquidacion_sumar.periodo.concepto_de_facturacion.concepto
         %td= liquidacion_sumar_cuasifactura.monto_total
         %td= liquidacion_sumar_cuasifactura.numero_cuasifactura
