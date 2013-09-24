@@ -8,8 +8,9 @@ class Efector < ActiveRecord::Base
   attr_accessible :codigo_postal, :latitud, :longitud, :telefonos, :email, :grupo_de_efectores_id, :area_de_prestacion_id
   attr_accessible :camas_de_internacion, :ambientes, :dependencia_administrativa_id, :integrante, :observaciones, :alto_impacto
   attr_accessible :perinatal_de_alta_complejidad, :addenda_perinatal, :fecha_de_addenda_perinatal, :unidad_de_alta_de_datos_id
-
-  # Atributos protegidos
+  attr_accessible :cuit, :condicion_iva, :fecha_inicio_de_actividades, :condicion_iibb, :datos_bancarios
+  
+ # Atributos protegidos
   # attr_protected :cuie
 
   # Asociaciones

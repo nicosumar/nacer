@@ -91,6 +91,23 @@
     = f.label :ambientes
     = f.number_field :ambientes
 
+  %h3 Datos de facturacion
+  %div.field
+    = f.label :cuit, "CUIT"
+    = f.text_field :cuit
+  %div.field
+    = f.label :condicion_iva, "Condicion ante el IVA"
+    = f.text_field :condicion_iva
+  %div.field
+    = f.label :fecha_inicio_de_actividades, "Fecha de Inicio de Actividades"
+    = f.date_select :fecha_inicio_de_actividades
+  %div.field
+    = f.label :condicion_iibb, "Condicion ante IIBB"
+    = f.text_field :condicion_iibb
+  %div.field
+    = f.label :datos_bancarios, "Datos Bancarios"
+    = f.text_field :datos_bancarios
+
   %h3 Observaciones
   %div.field
     = f.text_area :observaciones, :size => "80x8"
