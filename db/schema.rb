@@ -738,6 +738,7 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
     t.integer  "rechazar_estado_de_la_prestacion_id",  :default => 6
     t.integer  "aceptar_estado_de_la_prestacion_id",   :default => 5
     t.integer  "excepcion_estado_de_la_prestacion_id", :default => 5
+    t.date     "utlimo_dia_habil"
   end
 
   create_table "percentiles_pc_edad", :force => true do |t|

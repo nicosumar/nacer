@@ -1,14 +1,11 @@
 # -*- encoding : utf-8 -*-
 class LiquidacionesSumarCuasifacturasController < ApplicationController
+
+  before_filter :authenticate_user!
+  
   # GET /liquidaciones_sumar_cuasifacturas
-  # GET /liquidaciones_sumar_cuasifacturas.json
   def index
     @liquidaciones_sumar_cuasifacturas = LiquidacionSumarCuasifactura.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @liquidaciones_sumar_cuasifacturas }
-    end
   end
 
   # GET /liquidaciones_sumar_cuasifacturas/1.pdf

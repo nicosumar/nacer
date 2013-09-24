@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 sql_cabecera =  "select c.numero_cuasifactura cuasifactura_numero,\n"+
-                "       date(p.fecha_cierre),    --fecha de cuasifactura\n"+
+                "       to_char(date(p.fecha_cierre), 'DD/MM/YYYY') cuasifactura_fecha,    --fecha de cuasifactura\n"+
                 "       e.cuit efector_cuit,\n"+
                 "       e.condicion_iva efector_iva ,\n"+
                 "       e.fecha_inicio_de_actividades efector_inicio_actividades,\n"+
@@ -9,8 +9,8 @@ sql_cabecera =  "select c.numero_cuasifactura cuasifactura_numero,\n"+
                 "       e.cuie efector_codigo,\n"+
                 "       convenios.numero efector_contrato,\n"+
                 "       convenios.firmante efector_encargado,\n"+
-                "       EXTRACT(YEAR FROM fecha_cierre- pl.dias_de_prestacion)||'-'||to_char(EXTRACT(MONTH FROM fecha_cierre- pl.dias_de_prestacion), '00') ||' a '|| EXTRACT(YEAR FROM fecha_cierre)||'-'||to_char(EXTRACT(MONTH FROM fecha_cierre), '00') liquidacion_periodos,\n"+
-                "       cf.descripcion concepto_facturacion, \n"+
+                "       EXTRACT(YEAR FROM fecha_recepcion - pl.dias_de_prestacion)||'-'||to_char(EXTRACT(MONTH FROM fecha_recepcion - pl.dias_de_prestacion), '00') ||' a '|| EXTRACT(YEAR FROM pl.utlimo_dia_habil)||'-'||to_char(EXTRACT(MONTH FROM pl.utlimo_dia_habil), '00') liquidacion_periodos,\n"+
+                "       cf.concepto concepto_facturacion, \n"+
                 "       e.id, e.nombre "+
                 "from liquidaciones_sumar_cuasifacturas c\n"+
                 "   join liquidaciones_sumar l on l.id = c.liquidacion_sumar_id\n"+
@@ -30,7 +30,8 @@ cq_cabecera = CustomQuery.buscar (
 })
 cabecera = cq_cabecera.first
 
-sql_detalle = "select row_number() OVER () as no, \n"+
+sql_detalle = "select row_number() OVER () as no, * from ( \n"+
+              "select  \n"+
               "       p.prestacion_nombre prestacion_nombre,\n"+
               "       p.prestacion_codigo prestacion_codigo,\n"+
               "       sum(dc.monto) cantidad, \n"+
@@ -42,7 +43,9 @@ sql_detalle = "select row_number() OVER () as no, \n"+
               "        join objetos_de_las_prestaciones op on op.id = pp.objeto_de_la_prestacion_id\n"+
               "where c.id = ? \n"+
               "group by p.prestacion_nombre,p.prestacion_codigo\n"+
-              "order by 2,3,4,5"
+              "order by 2,1,3 \n"+
+              ") as det"
+
 cq_detalle = CustomQuery.buscar (
 {
   sql: sql_detalle,

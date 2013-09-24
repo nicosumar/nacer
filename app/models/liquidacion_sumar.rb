@@ -22,6 +22,7 @@ class LiquidacionSumar < ActiveRecord::Base
     nomenclador = self.parametro_liquidacion_sumar.nomenclador
     vigencia_perstaciones = self.parametro_liquidacion_sumar.dias_de_prestacion
     fecha_de_recepcion = self.periodo.fecha_recepcion.to_s
+    utlimo_dia_habil = self.parametro_liquidacion_sumar.utlimo_dia_habil
 
     # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar (
@@ -56,7 +57,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
               "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
               "  AND nom.id = #{nomenclador.id}     \n"+
-              "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') \n"+
+              "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{utlimo_dia_habil}','yyyy-mm-dd') \n"+
               "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} ) \n" +
               "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
               "         OR\n"+
@@ -111,7 +112,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
             "  AND nom.id = #{nomenclador.id}     \n"+
-            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') \n"+
+            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{utlimo_dia_habil}','yyyy-mm-dd') \n"+
             "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
             "         OR\n"+
             "       (pb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
@@ -162,7 +163,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
             "  and ap.nomenclador_id = #{nomenclador.id} \n" +
-            "  AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') "
+            "  AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{utlimo_dia_habil}','yyyy-mm-dd') "
       })
     if cq
       logger.warn ("Tabla de prestaciones Liquidadas datos generada")
@@ -186,7 +187,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                      FROM efectores ef \n"+
             "                          INNER JOIN unidades_de_alta_de_datos u ON ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                        WHERE 'uad_' ||  u.codigo = current_schema() )   \n"+
-            " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_de_recepcion}','yyyy-mm-dd') "
+            " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{utlimo_dia_habil}','yyyy-mm-dd') "
       })
     if cq
       logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
@@ -297,6 +298,7 @@ class LiquidacionSumar < ActiveRecord::Base
   def generar_cuasifacturas
 
     estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
+    estado_aceptada  = self.parametro_liquidacion_sumar.prestacion_aceptada.id
 
     # 1) Genero las cabeceras
     cq = CustomQuery.ejecutar ({
@@ -334,6 +336,33 @@ class LiquidacionSumar < ActiveRecord::Base
       logger.warn ("Tabla de detalle de cuasifacturas NO generada")
       return false
     end
+
+    efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
+    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
+    
+    estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
+    estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
+    cq = CustomQuery.ejecutar ({
+      esquemas: esquemas,
+      sql:  "update prestaciones_brindadas \n "+
+            "   set estado_de_la_prestacion_id = #{estado_aceptada} \n "+
+            "from prestaciones_liquidadas p \n "+
+            "    join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n "+
+            "where p.liquidacion_id = #{self.id} \n "+
+            "and   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
+            "and p.efector_id in (select ef.id \n "+
+            "                                      from efectores ef \n "+
+            "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
+            "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
+            "and prestaciones_brindadas.id = p.prestacion_brindada_id"
+      })
+    if cq
+      logger.warn ("Tabla prestaciones brindadas actualizada")
+    else
+      logger.warn ("Tabla prestaciones brindadas NO actualizada")
+      return false
+    end
+
     return true
   end
 
