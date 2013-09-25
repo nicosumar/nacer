@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 set :application, "nacer"
-set :repository,  "http://github.com/sbosio/nacer"
+set :repository,  "https://github.com/sbosio/nacer"
 
 set :scm, :git
 set :deploy_to, "/var/www"
