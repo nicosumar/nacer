@@ -9,10 +9,14 @@
     = f.label :fecha_recepcion, 'Fecha de recepción'
     = f.text_field :fecha_recepcion, { :class => "jquery_fecha"}
   .field
+    = f.label :fecha_limite_prestaciones, "Fecha limite de prestacion"
+    = f.text_field :fecha_limite_prestaciones, { :class => "jquery_fecha"}
+  .field
     = f.label :tipo_periodo, 'Tipo de periodo'
     = f.select :tipo_periodo_id, @tipos_periodos
   .field
     = f.label :concepto_de_facturacion, "Concepto de facturacion al que aplica este período:"
     = f.select :concepto_de_facturacion_id, @conceptos
+
   .actions
     = f.submit

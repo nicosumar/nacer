@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130924113418) do
+ActiveRecord::Schema.define(:version => 20130926161303) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -738,7 +738,6 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
     t.integer  "rechazar_estado_de_la_prestacion_id",  :default => 6
     t.integer  "aceptar_estado_de_la_prestacion_id",   :default => 5
     t.integer  "excepcion_estado_de_la_prestacion_id", :default => 5
-    t.date     "utlimo_dia_habil"
   end
 
   create_table "percentiles_pc_edad", :force => true do |t|
@@ -771,6 +770,7 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
     t.integer  "concepto_de_facturacion_id"
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
+    t.date     "fecha_limite_prestaciones"
   end
 
   add_index "periodos", ["concepto_de_facturacion_id"], :name => "periodos_concepto_de_facturacion_id_idx"

@@ -35,13 +35,13 @@
         - unless @liquidacion_sumar.plantilla_de_reglas.blank?
           %span.field_value= @liquidacion_sumar.plantilla_de_reglas.nombre
         - else
-          = button_to 'Crear nueva plantilla', new_plantilla_de_reglas_path, method: "get"
+          %span.field_value No
       %td{colspan: 2}= button_to 'Ver plantilla', @liquidacion_sumar.plantilla_de_reglas, method: "get" unless @liquidacion_sumar.plantilla_de_reglas.blank?
     %tr
       %td
         %b Grupo de Efectores:
       %td
-        %span.field_value= @liquidacion_sumar.grupo_de_efectores_liquidacion.grupo
+        %span.field_value= link_to "#{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}", @liquidacion_sumar.grupo_de_efectores_liquidacion, {method: "get"},{style: "color: #0000FF"}
       %td{colspan: "2"}= button_to 'Ver grupo', @liquidacion_sumar.grupo_de_efectores_liquidacion, method: "get"
     %tr
       %td{colspan: "4"} &nbsp;

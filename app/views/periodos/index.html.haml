@@ -12,6 +12,7 @@
       %th Periodo
       %th Fecha de cierre
       %th Fecha de recepción
+      %th Fecha limite de prestaciones
       %th Tipo de Periodo
       %th Concepto al que aplica
       %th{colspan: '3'} Acciones
@@ -20,6 +21,7 @@
         %td= periodo.periodo
         %td= periodo.fecha_cierre
         %td= periodo.fecha_recepcion
+        %td= periodo.fecha_limite_prestaciones
         %td= periodo.tipo_periodo.descripcion
         %td= periodo.concepto_de_facturacion.concepto unless periodo.concepto_de_facturacion.blank?
         %td= link_to 'Ver', periodo
