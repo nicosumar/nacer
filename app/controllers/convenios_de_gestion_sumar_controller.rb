@@ -50,6 +50,20 @@ class ConveniosDeGestionSumarController < ApplicationController
       )
       return
     end
+
+    respond_to do |format|
+      format.odt do
+        report = ODFReport::Report.new("lib/tasks/Modelo de compromiso de gestión.odt") do |r|
+          r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
+        end
+        archivo = report.generate
+        send_file(archivo)
+      end
+
+      format.html do
+      end
+    end
+
   end
 
   # GET /convenios_de_gestion_sumar/new
@@ -68,6 +82,7 @@ class ConveniosDeGestionSumarController < ApplicationController
     @convenio_de_gestion = ConvenioDeGestionSumar.new
     @efectores = Efector.find(:all, :order => :nombre).collect{ |e| [e.nombre_corto, e.id] }
     @efector_id = nil
+    @referentes = Referente.find(:all).collect{|e| }
     @prestaciones =
       Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL").order(:codigo).collect{
         |p| [p.codigo + " - " + p.nombre_corto, p.id]
@@ -161,7 +176,7 @@ class ConveniosDeGestionSumarController < ApplicationController
       @convenio_de_gestion.efector.prestaciones_autorizadas.where("fecha_de_finalizacion IS NULL").each do |p|
         p.update_attributes(:fecha_de_finalizacion => @convenio_de_gestion.fecha_de_inicio)
       end
-      
+
       # Registrar el usuario que realiza la creación
       @convenio_de_gestion.creator_id = current_user.id
       @convenio_de_gestion.updater_id = current_user.id

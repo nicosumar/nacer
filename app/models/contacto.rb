@@ -5,10 +5,12 @@ class Contacto < ActiveRecord::Base
 
   # Seguridad de asignaciones masivas
   attr_accessible :nombres, :apellidos, :mostrado, :sexo_id, :dni, :domicilio, :email, :email_adicional
-  attr_accessible :telefono, :telefono_movil, :observaciones
+  attr_accessible :telefono, :telefono_movil, :observaciones, :tipo_de_documento_id, :firma_primera_linea
+  attr_accessible :firma_segunda_linea, :firma_tercera_linea
 
   # Asociaciones
   belongs_to :sexo
+  belongs_to :tipo_de_documento
 
   # Validaciones
   validates_presence_of :mostrado

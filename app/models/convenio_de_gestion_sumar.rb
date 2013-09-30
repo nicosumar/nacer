@@ -4,14 +4,15 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
   nilify_blanks
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :numero, :efector_id, :firmante, :email, :fecha_de_suscripcion, :fecha_de_inicio
-  attr_accessible :fecha_de_finalizacion, :observaciones
+  attr_accessible :numero, :efector_id, :email, :fecha_de_suscripcion, :fecha_de_inicio
+  attr_accessible :fecha_de_finalizacion, :observaciones, :firmante_id
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :numero, :efector_id
 
   # Asociaciones
   belongs_to :efector
+  belongs_to :firmante, :class_name => "Referente"
   has_many :prestaciones_autorizadas, :as => :autorizante_al_alta
   has_many :addendas_sumar
 

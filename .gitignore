@@ -11,3 +11,4 @@ vendor/data
 REVISION
 public/system
 lib/tasks/archproc
+lib/tasks/*.odt

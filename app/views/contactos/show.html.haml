@@ -12,6 +12,15 @@
 #content-body
   %h3 Datos personales
   %div.field_content
+    %span.field_name Nombre mostrado
+    %span.field_value= @contacto.mostrado
+  %div.field_content
+    %span.field_name Sexo
+    - if @contacto.sexo_id
+      %span.field_value= @contacto.sexo.nombre
+    - else
+      %span.field_empty No se indicó el sexo
+  %div.field_content
     %span.field_name Apellidos
     - if !@contacto.apellidos.blank?
       %span.field_value= @contacto.apellidos
@@ -24,14 +33,9 @@
     - else
       %span.field_empty No se ingresó el nombre
   %div.field_content
-    %span.field_name Nombre mostrado
-    %span.field_value= @contacto.mostrado
-  %div.field_content
-    %span.field_name Sexo
-    - if @contacto.sexo_id
-      %span.field_value= @contacto.sexo.nombre
-    - else
-      %span.field_empty No se indicó el sexo
+    %span.field_name Tipo de documento
+    - if !@contacto.tipo_de_documento_id.blank?
+      %span.field_value= @contacto.tipo_de_documento.nombre
   %div.field_content
     %span.field_name Número de documento
     - if !@contacto.dni.blank?

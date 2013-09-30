@@ -5,11 +5,13 @@
   %h1 Información detallada del convenio de gestión Sumar
   #action-links
     - if can? :update, ConvenioDeGestionSumar
-      = link_to "Modificar el convenio", edit_convenio_de_gestion_sumar_path(@convenio_de_gestion)
+      = link_to "Modificar", edit_convenio_de_gestion_sumar_path(@convenio_de_gestion)
     - if can? :read, Addenda
-      = link_to "Ver las adendas al convenio", addendas_del_convenio_de_gestion_sumar_path(@convenio_de_gestion)
+      = link_to "Ver las adendas", addendas_del_convenio_de_gestion_sumar_path(@convenio_de_gestion)
     - if can? :create, Addenda
       = link_to "Agregar una adenda", new_addenda_sumar_url(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)
+    - if can? :create, ConvenioDeGestionSumar
+      = link_to "Generar documento", convenio_de_gestion_sumar_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id, :format => :odt)
 
 = render :partial => "shared/info"
 
@@ -26,10 +28,10 @@
   %h3 Datos del firmante y fechas
   %div.field_content
     %span.field_name Firmante por el efector
-    - if !@convenio_de_gestion.firmante.blank?
-      %span.field_value= @convenio_de_gestion.firmante
+    - if !@convenio_de_gestion.firmante_id.blank?
+      %span.field_value= @convenio_de_gestion.firmante.contacto.nombre_mostrado
     - else
-      %span.field_empty No se ingresó el firmante
+      %span.field_empty No se seleccionó un referente como firmante
   %div.field_content
     %span.field_name Fecha de suscripción
     - if @convenio_de_gestion.fecha_de_suscripcion

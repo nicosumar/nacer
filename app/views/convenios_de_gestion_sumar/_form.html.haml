@@ -8,7 +8,7 @@
       = f.text_field :numero, :style => "text-transform: uppercase;"
     %div.field
       = f.label :efector, "Efector*"
-      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true }
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true, :class => "multi_select"}
   - else
     %p.note Estos datos no pueden modificarse
     %div.field_content
@@ -20,8 +20,8 @@
 
   %h3 Datos del firmante y fechas
   %div.field
-    = f.label :firmante, "Firmante por el efector"
-    = f.text_field :firmante
+    = f.label :firmante, "Referente del efector que firma"
+    = f.select :firmante_id, options_for_select(@referentes, @referente_id), {:include_blank => true, :class => "multi_select"}
   %div.field
     = f.label :fecha_de_suscripcion
     = f.date_select :fecha_de_suscripcion, |
@@ -47,7 +47,8 @@
   %h3 Prestaciones autorizadas por el convenio
   %div.field
     = f.select :prestacion_autorizada_ids, options_for_select(@prestaciones, @prestacion_autorizada_ids), {}, |
-      { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
+      { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" |
+        :class => "multi_select"} |
 
   %div.actions
     - if @convenio_de_gestion.new_record?

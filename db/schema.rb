@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130924113418) do
+ActiveRecord::Schema.define(:version => 20130927143020) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -218,7 +218,7 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
   create_table "contactos", :force => true do |t|
     t.string   "nombres"
     t.string   "apellidos"
-    t.string   "mostrado",        :null => false
+    t.string   "mostrado",             :null => false
     t.string   "dni"
     t.text     "domicilio"
     t.string   "email"
@@ -231,6 +231,10 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
     t.integer  "sexo_id"
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.integer  "tipo_de_documento_id"
+    t.string   "firma_primera_linea"
+    t.string   "firma_segunda_linea"
+    t.string   "firma_tercera_linea"
   end
 
   create_table "convenios_de_administracion", :force => true do |t|
@@ -290,7 +294,6 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
   create_table "convenios_de_gestion_sumar", :force => true do |t|
     t.string   "numero",                :null => false
     t.integer  "efector_id",            :null => false
-    t.string   "firmante"
     t.string   "email"
     t.date     "fecha_de_suscripcion",  :null => false
     t.date     "fecha_de_inicio",       :null => false
@@ -300,6 +303,7 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
     t.integer  "updater_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "firmante_id"
   end
 
   add_index "convenios_de_gestion_sumar", ["efector_id"], :name => "unq_convenios_de_gestion_sumar_efector_id", :unique => true
@@ -874,6 +878,8 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
     t.integer  "updater_id"
   end
 
+  add_index "prestaciones_autorizadas", ["autorizante_al_alta_type", "autorizante_al_alta_id", "prestacion_id"], :name => "index_prestaciones_autorizadas_unq", :unique => true
+
   create_table "prestaciones_incluidas", :force => true do |t|
     t.integer  "liquidacion_id"
     t.integer  "nomenclador_id"
@@ -952,6 +958,13 @@ ActiveRecord::Schema.define(:version => 20130924113418) do
   end
 
   add_index "prestaciones_liquidadas_datos", ["liquidacion_id"], :name => "indice_liquidacion_sumar_idx"
+
+  create_table "prestaciones_nacer_sumar", :id => false, :force => true do |t|
+    t.integer "prestacion_nacer_id", :null => false
+    t.integer "prestacion_sumar_id", :null => false
+  end
+
+  add_index "prestaciones_nacer_sumar", ["prestacion_nacer_id", "prestacion_sumar_id"], :name => "index_prestaciones_nacer_sumar_unq", :unique => true
 
   create_table "prestaciones_sexos", :id => false, :force => true do |t|
     t.integer "prestacion_id"

@@ -71,3 +71,6 @@ load 'db/TiposDeTratamientos_seed.rb'
 # Datos iniciales para el módulo de liquidaciones
 load 'db/ConceptosDeFacturacion_seed.rb'
 load 'db/ReglasPredeterminadas_seed.rb'
+
+# Datos iniciales para la generación de convenios Sumar
+load 'db/PrestacionesNacerSumar_seed.rb'
