@@ -13,13 +13,11 @@ class LiquidacionSumar < ActiveRecord::Base
 
   validates_presence_of :descripcion, :grupo_de_efectores_liquidacion, :concepto_de_facturacion, :periodo, :parametro_liquidacion_sumar_id
 
-
   def generar_snapshoot_de_liquidacion
 
-    #Traigo Grupo de efectores y nomenclador
+    #Traigo Grupo de efectores 
   	efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
     esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
-    nomenclador = self.parametro_liquidacion_sumar.nomenclador
     vigencia_perstaciones = self.parametro_liquidacion_sumar.dias_de_prestacion
     fecha_de_recepcion = self.periodo.fecha_recepcion.to_s
     fecha_limite_prestaciones = self.periodo.fecha_limite_prestaciones.to_s
@@ -56,7 +54,15 @@ class LiquidacionSumar < ActiveRecord::Base
               "                from efectores ef \n"+
               "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
               "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
-              "  AND nom.id = #{nomenclador.id}     \n"+
+              "  AND nom.id =      \n"+
+              "              (select id from nomencladores \n"+
+              "               where activo = 't' \n"+
+              "               and nomenclador_sumar = 't' \n"+
+              "               and (pb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+              "               or  \n"+
+              "               (pb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+              "               limit 1\n"+
+              "               )"+
               "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
               "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} ) \n" +
               "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
@@ -111,7 +117,15 @@ class LiquidacionSumar < ActiveRecord::Base
             "                from efectores ef \n"+
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
-            "  AND nom.id = #{nomenclador.id}     \n"+
+            "  AND nom.id =      \n"+
+            "              (select id from nomencladores \n"+
+            "               where activo = 't' \n"+
+            "               and nomenclador_sumar = 't' \n"+
+            "               and (pb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+            "               or  \n"+
+            "               (pb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+            "               limit 1\n"+
+            "               )"+
             "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
             "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
             "         OR\n"+
@@ -162,7 +176,15 @@ class LiquidacionSumar < ActiveRecord::Base
             "                from efectores ef \n"+
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
-            "  and ap.nomenclador_id = #{nomenclador.id} \n" +
+            "  and ap.nomenclador_id =  \n" +
+            "              (select id from nomencladores \n"+
+            "               where activo = 't' \n"+
+            "               and nomenclador_sumar = 't' \n"+
+            "               and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+            "               or  \n"+
+            "               (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+            "               limit 1\n"+
+            "               )"+
             "  AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
       })
     if cq
@@ -205,7 +227,6 @@ class LiquidacionSumar < ActiveRecord::Base
     estado_aceptada = self.parametro_liquidacion_sumar.prestacion_aceptada.id
     estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
     estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
-    nomenclador = self.parametro_liquidacion_sumar.nomenclador.id
 
     cq = CustomQuery.ejecutar ({
       sql:  "UPDATE public.prestaciones_liquidadas \n"+
@@ -244,7 +265,15 @@ class LiquidacionSumar < ActiveRecord::Base
             "    and regl.metodo_de_validacion_id = pla.metodo_de_validacion_id\n"+
             "    ) \n"+
             "where pl.liquidacion_id = #{self.id}\n "+
-            "and   pi.nomenclador_id = #{nomenclador} \n"+
+            "and   pi.nomenclador_id =  \n"+
+            "              (select id from nomencladores \n"+
+            "               where activo = 't' \n"+
+            "               and nomenclador_sumar = 't' \n"+
+            "               and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+            "               or  \n"+
+            "               (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+            "               limit 1\n"+
+            "               )"+
             "and prestaciones_liquidadas.id = pl.id \n"+
             "and regl.id = #{plantilla_de_reglas}"
       })
@@ -262,13 +291,29 @@ class LiquidacionSumar < ActiveRecord::Base
             "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
             "   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
             "where pl.liquidacion_id = #{self.id}\n "+
-            "and   pi.nomenclador_id = #{nomenclador} \n "+
+            "and   pi.nomenclador_id = \n "+
+            "              (select id from nomencladores \n"+
+            "               where activo = 't' \n"+
+            "               and nomenclador_sumar = 't' \n"+
+            "               and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+            "               or  \n"+
+            "               (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+            "               limit 1\n"+
+            "               )"+
             "and pl.id in (select pla.prestacion_liquidada_id --todas las prestaciones liquidadas con advertencias\n "+
             "                 from prestaciones_liquidadas_advertencias pla\n "+
             "                 join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
             "                 join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
             "               where pla.liquidacion_id = #{self.id}\n "+
-            "               and pi.nomenclador_id = #{nomenclador} \n "+
+            "               and pi.nomenclador_id = \n "+
+            "                                     (select id from nomencladores \n"+
+            "                                      where activo = 't' \n"+
+            "                                      and nomenclador_sumar = 't' \n"+
+            "                                      and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+            "                                      or  \n"+
+            "                                      (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+            "                                      limit 1\n"+
+            "                                      )"+
             "               EXCEPT\n "+
             "               select prestacion_liquidada_id\n"+
             "               from prestaciones_liquidadas_advertencias pla\n"+
@@ -287,7 +332,15 @@ class LiquidacionSumar < ActiveRecord::Base
             "                      and regl.metodo_de_validacion_id = pla.metodo_de_validacion_id\n"+
             "                    )\n"+
             "                 where pl.liquidacion_id = #{self.id} \n"+
-            "                 and pi.nomenclador_id = #{nomenclador} \n"+
+            "                 and pi.nomenclador_id = \n"+
+            "                                       (select id from nomencladores \n"+
+            "                                        where activo = 't' \n"+
+            "                                        and nomenclador_sumar = 't' \n"+
+            "                                        and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+            "                                        or  \n"+
+            "                                       (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+            "                                        limit 1\n"+
+            "                                       )"+
             "                 and regl.id = #{plantilla_de_reglas} )\n"+
             "and prestaciones_liquidadas.id = pl.id "
 

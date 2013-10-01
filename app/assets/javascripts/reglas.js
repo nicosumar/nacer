@@ -10,5 +10,6 @@ $(document).ready(function(){
  $('select#regla_prestacion_id').change(function(){
  	$("select#regla_metodo_de_validacion_id").trigger("liszt:updated");
  });
+ $('select#regla_nomenclador_id').trigger("change");
 });
 

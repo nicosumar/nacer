@@ -6,7 +6,7 @@ class ReglasController < ApplicationController
 
   # GET /reglas
   def index
-    @reglas = Regla.all
+    @reglas = Regla.paginate(:page => params[:page], :per_page => 20)
   end
 
   # GET /reglas/1

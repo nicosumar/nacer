@@ -16,7 +16,7 @@
       %th Método de Validación
       %th Permitir
       %th Observaciones
-      %th{colspan: '3'} Acciones
+      %th{colspan: 3} Acciones
     - @reglas.each do |regla|
       %tr
         %td= regla.nombre
@@ -29,3 +29,4 @@
         %td= link_to 'Ver', regla
         %td= link_to 'Editar', edit_regla_path(regla)
         %td= link_to 'Borrar', regla, method: :delete, data: { confirm: '¿Está seguro que desea borrar la regla?' }
+  = will_paginate @reglas, :inner_window => 2, :outer_window => 0

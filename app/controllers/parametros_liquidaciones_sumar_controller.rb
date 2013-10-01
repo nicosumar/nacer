@@ -17,7 +17,6 @@ class ParametrosLiquidacionesSumarController < ApplicationController
       return
     end
     
-    @nomencladores = Nomenclador.all.collect {|n| [n.nombre, n.id]}
     @formulas = Formula.all.collect {|d| [d.descripcion, d.id]}
     @estados = EstadoDeLaPrestacion.all.collect {|d| [d.nombre, d.id]}
 
@@ -30,7 +29,6 @@ class ParametrosLiquidacionesSumarController < ApplicationController
     if @parametro_liquidacion_sumar.update_attributes(params[:parametro_liquidacion_sumar])
       redirect_to @parametro_liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se actualizaron los parametros correctamente" } 
     else
-      @nomencladores = Nomenclador.all.collect {|n| [n.nomenclador, n.id]}
       @formulas = Formula.all.collect {|d| [d.descipcion, d.id]}
 
       render action: "edit" 
