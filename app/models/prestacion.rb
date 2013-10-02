@@ -32,13 +32,13 @@ class Prestacion < ActiveRecord::Base
   has_many :datos_reportables_requeridos
   has_many :datos_reportables, :through => :datos_reportables_requeridos
   has_and_belongs_to_many :documentaciones_respaldatorias
-  #Relaciones para liquidacion
+  # Relaciones para liquidacion
   belongs_to :concepto_de_facturacion
   has_many :asignaciones_de_precios
   has_many :nomencladores, through: :asignaciones_de_precios
 
   # Validaciones
-  #validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
+  # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
   validates_presence_of :codigo, :nombre, :unidad_de_medida_id
 
   # En forma predeterminada, sólo se devuelven los registros activos

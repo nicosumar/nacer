@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130930164219) do
+ActiveRecord::Schema.define(:version => 20131002151654) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -414,10 +414,16 @@ ActiveRecord::Schema.define(:version => 20130930164219) do
     t.datetime "updated_at",  :null => false
   end
 
-  create_table "documentaciones_respaldatorias_prestaciones", :id => false, :force => true do |t|
-    t.integer "documentacion_respaldatoria_id"
-    t.integer "prestacion_id"
+  create_table "documentaciones_respaldatorias_prestaciones", :force => true do |t|
+    t.integer  "documentacion_respaldatoria_id"
+    t.integer  "prestacion_id"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
+
+  add_index "documentaciones_respaldatorias_prestaciones", ["documentacion_respaldatoria_id", "prestacion_id"], :name => "documentaciones_respaldatoria_documentacion_respaldatoria_i_idx"
+  add_index "documentaciones_respaldatorias_prestaciones", ["documentacion_respaldatoria_id"], :name => "documentaciones_respaldatoria_documentacion_respaldatoria__idx1"
+  add_index "documentaciones_respaldatorias_prestaciones", ["prestacion_id"], :name => "documentaciones_respaldatorias_prestaciones_prestacion_id_idx"
 
   create_table "efectores", :force => true do |t|
     t.string   "cuie"
