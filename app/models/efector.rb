@@ -8,8 +8,10 @@ class Efector < ActiveRecord::Base
   attr_accessible :codigo_postal, :latitud, :longitud, :telefonos, :email, :grupo_de_efectores_id, :area_de_prestacion_id
   attr_accessible :camas_de_internacion, :ambientes, :dependencia_administrativa_id, :integrante, :observaciones, :alto_impacto
   attr_accessible :perinatal_de_alta_complejidad, :addenda_perinatal, :fecha_de_addenda_perinatal, :unidad_de_alta_de_datos_id
-  attr_accessible :cuit, :condicion_iva, :fecha_inicio_de_actividades, :condicion_iibb, :datos_bancarios
-  
+  attr_accessible :cuit, :condicion_iva, :fecha_inicio_de_actividades, :condicion_iibb, :datos_bancarios, :banco_cuenta_principal
+  attr_accessible :numero_de_cuenta_principal, :denominacion_cuenta_principal, :sucursal_cuenta_principal, :banco_cuenta_secundaria
+  attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria
+
  # Atributos protegidos
   # attr_protected :cuie
 
@@ -24,7 +26,7 @@ class Efector < ActiveRecord::Base
   has_one :convenio_de_administracion
   has_one :convenio_de_administracion_sumar
   has_one :administrador, :through => :convenio_de_administracion
-  has_one :administrador_sumar, :through => :convenio_de_administracion
+  has_one :administrador_sumar, :through => :convenio_de_administracion_sumar, :source => "administrador"
   has_many :prestaciones_autorizadas
   has_many :asignaciones_de_nomenclador
   has_many :referentes
@@ -35,7 +37,7 @@ class Efector < ActiveRecord::Base
   has_many :prestaciones_liquidadas
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
-  default_scope where(:integrante => true)
+  default_scope where("integrante = ?", true)
 
   # Validaciones
   validates_presence_of :nombre
@@ -102,6 +104,19 @@ class Efector < ActiveRecord::Base
         ORDER BY nombre;")
   end
 
+  # self.que_no_tengan_convenio_sumar
+  # Devuelve los efectores que no tienen convenio de gestión sumar
+  def self.que_no_tengan_convenio
+    Efector.find_by_sql("
+      SELECT *
+        FROM efectores
+        WHERE (integrante = TRUE) AND NOT EXISTS (
+          SELECT *
+            FROM convenios_de_gestion_sumar
+            WHERE convenios_de_gestion_sumar.efector_id = efectores.id)
+        ORDER BY nombre;")
+  end
+
   # self.que_tengan_convenio
   # Devuelve los efectores que tienen convenio de gestión
   def self.que_tengan_convenio
@@ -112,6 +127,19 @@ class Efector < ActiveRecord::Base
           SELECT *
             FROM convenios_de_gestion
             WHERE convenios_de_gestion.efector_id = efectores.id)
+        ORDER BY nombre;")
+  end
+
+  # self.que_tengan_convenio_sumar
+  # Devuelve los efectores que tienen convenio de gestión sumar
+  def self.que_tengan_convenio_sumar
+    Efector.find_by_sql("
+      SELECT *
+        FROM efectores
+        WHERE (integrente = TRUE) AND EXISTS (
+          SELECT *
+            FROM convenios_de_gestion_sumar
+            WHERE convenios_de_gestion_sumar.efector_id = efectores.id)
         ORDER BY nombre;")
   end
 
@@ -126,6 +154,22 @@ class Efector < ActiveRecord::Base
             FROM convenios_de_administracion
             WHERE convenios_de_administracion.efector_id = efectores.id
               OR convenios_de_administracion.administrador_id = efectores.id)
+        ORDER BY nombre;")
+  end
+
+  # self.sumar_que_no_son_administrados
+  # Devuelve los efectores que no tienen convenio de administración firmado
+  def self.sumar_que_no_son_administrados
+    Efector.find_by_sql("
+      SELECT *
+        FROM efectores
+        WHERE (integrante = TRUE) AND NOT EXISTS (
+          SELECT *
+            FROM convenios_de_administracion_sumar
+            WHERE
+              convenios_de_administracion_sumar.efector_id = efectores.id
+              OR convenios_de_administracion_sumar.administrador_id = efectores.id
+        )
         ORDER BY nombre;")
   end
 
@@ -166,6 +210,19 @@ class Efector < ActiveRecord::Base
           SELECT *
             FROM convenios_de_administracion
             WHERE convenios_de_administracion.efector_id = efectores.id)
+        ORDER BY nombre;")
+  end
+
+  # self.sumar_que_son_administrados
+  # Devuelve los efectores que tienen un convenio de administración.
+  def self.que_son_administrados
+    Efector.find_by_sql("
+      SELECT *
+        FROM efectores
+        WHERE (integrante = TRUE) AND EXISTS (
+          SELECT *
+            FROM convenios_de_administracion_sumar
+            WHERE convenios_de_administracion_sumar.efector_id = efectores.id)
         ORDER BY nombre;")
   end
 
@@ -261,6 +318,11 @@ class Efector < ActiveRecord::Base
     return nil unless convenio_actual
     convenio_actual.fecha_de_inicio
 
+  end
+
+  def es_administrado?
+    return administrador_sumar.present? if convenio_de_gestion_sumar.present?
+    return administrador.present? if convenio_de_gestion.present?
   end
 
 end

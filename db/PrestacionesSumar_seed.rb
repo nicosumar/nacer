@@ -7983,7 +7983,7 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   AsignacionDePrecios.create!({
-    :precio_por_unidad => 300.0000,
+    :precio_por_unidad => 150.0000,
     :adicional_por_prestacion => 0.0000,
     :area_de_prestacion_id => AreaDePrestacion.id_del_codigo!("R"),
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
@@ -8026,8 +8026,8 @@ f  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   AsignacionDePrecios.create!({
-    :precio_por_unidad => 2.0000,
-    :adicional_por_prestacion => 300.0000,
+    :precio_por_unidad => 1.0000,
+    :adicional_por_prestacion => 150.0000,
     :area_de_prestacion_id => AreaDePrestacion.id_del_codigo!("R"),
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })

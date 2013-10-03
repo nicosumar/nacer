@@ -72,5 +72,8 @@ load 'db/TiposDeTratamientos_seed.rb'
 load 'db/ConceptosDeFacturacion_seed.rb'
 load 'db/ReglasPredeterminadas_seed.rb'
 
+# Prestaciones faltantes
+load 'db/PrestacionesLB_IG_PR_Sumar_seed.rb'
+
 # Datos iniciales para la generación de convenios Sumar
 load 'db/PrestacionesNacerSumar_seed.rb'

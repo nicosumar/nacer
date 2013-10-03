@@ -627,6 +627,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad.estado_de_la_novedad_id = 2
       @novedad.save
 
+      # TODO: analizar otros casos, ya que una modificación en una inscripción registrada podría hacer que la prestación
+      # asociada ganara una advertencia, en vez de únicamente eliminarla
       if UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
         # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
         # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
@@ -634,7 +636,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
           :clave_de_beneficiario => @novedad.clave_de_beneficiario,
           :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
         ).each do |pb|
-          if !pb.hay_advertencias?
+          if !pb.actualizar_metodos_de_validacion_fallados
             pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
           end
         end
@@ -786,6 +788,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad.estado_de_la_novedad_id = 2
       @novedad.save
 
+      # TODO: analizar otros casos, ya que una modificación en una inscripción registrada podría hacer que la prestación
+      # asociada ganara una advertencia, en vez de únicamente eliminarla
       if UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
         # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
         # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
@@ -793,7 +797,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
           :clave_de_beneficiario => @novedad.clave_de_beneficiario,
           :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
         ).each do |pb|
-          if !pb.hay_advertencias?
+          if !pb.actualizar_metodos_de_validacion_fallados
             pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
           end
         end
@@ -858,17 +862,17 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
  def procesar_bajas
    verificar_actualizacion
-   
+
    @novedades = NovedadDelAfiliado.multi_find (
     {
       :except => ["public"],
-      :where => "where estado_de_la_novedad_id = ? and tipo_de_novedad_id = ?", 
+      :where => "where estado_de_la_novedad_id = ? and tipo_de_novedad_id = ?",
       :values => [2,2]
     })
-   
+
  end
 
- private 
+ private
 
   def verificar_lectura
     if cannot? :update, NovedadDelAfiliado

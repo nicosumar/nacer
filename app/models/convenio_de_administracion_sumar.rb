@@ -4,7 +4,7 @@ class ConvenioDeAdministracionSumar < ActiveRecord::Base
   nilify_blanks
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :numero, :efector_id, :administrador_id, :firmante, :fecha_de_suscripcion, :fecha_de_inicio
+  attr_accessible :numero, :efector_id, :administrador_id, :firmante_id, :fecha_de_suscripcion, :fecha_de_inicio
   attr_accessible :fecha_de_finalizacion, :observaciones
 
   # Los atributos siguientes solo pueden asignarse durante la creación
@@ -12,6 +12,7 @@ class ConvenioDeAdministracionSumar < ActiveRecord::Base
 
   # Asociaciones
   belongs_to :administrador, :class_name => "Efector"
+  belongs_to :firmante, :class_name => "Referente"
   belongs_to :efector
 
   # Validaciones

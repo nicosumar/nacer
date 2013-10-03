@@ -62,6 +62,10 @@ class ConveniosDeAdministracionSumarController < ApplicationController
     @convenio_de_administracion = ConvenioDeAdministracionSumar.new
     @efectores = Efector.find(:all, :order => :nombre).collect{ |e| [e.nombre_corto, e.id] }
     @efector_id = nil
+    @firmantes = Referente.find(:all, :include => :contacto).collect{ |r|
+      [r.contacto.mostrado, r.id, {:class => r.efector_id}]
+    }
+    @firmante_id = nil
     @administradores = Efector.find(:all).collect{ |a| [a.nombre_corto, a.id] }
     @administrador_id = nil
   end
@@ -89,6 +93,10 @@ class ConveniosDeAdministracionSumarController < ApplicationController
       )
       return
     end
+    @firmantes = Referente.where(:efector_id => @convenio_de_administracion.administrador_id).collect{ |r|
+      [r.contacto.mostrado, r.id, {:class => r.efector_id}]
+    }
+    @firmante_id = @convenio_de_administracion.firmante_id
   end
 
   # POST /convenios_de_administracion_sumar
@@ -119,14 +127,19 @@ class ConveniosDeAdministracionSumarController < ApplicationController
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @efectores = Efector.find(:all, :order => :nombre).collect{ |e| [e.nombre_corto, e.id] }
     @efector_id = @convenio_de_administracion.efector_id
+    @firmantes = Referente.find(:all, :include => :contacto).collect{ |r|
+      [r.contacto.mostrado, r.id, {:class => r.efector_id}]
+    }
+    @firmante_id = @convenio_de_administracion.firmante_id
     @administradores = Efector.find(:all).collect{ |a| [a.nombre_corto, a.id] }
     @administrador_id = @convenio_de_administracion.administrador_id
-    
+
     # Verificar la validez del objeto
     if @convenio_de_administracion.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
       if !( @efectores.collect{ |i| i[1] }.member?(params[:convenio_de_administracion_sumar][:efector_id].to_i) &&
-            @administradores.collect{ |i| i[1] }.member?(params[:convenio_de_administracion_sumar][:administrador_id].to_i) )
+            @administradores.collect{ |i| i[1] }.member?(params[:convenio_de_administracion_sumar][:administrador_id].to_i) &&
+            @firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -187,8 +200,23 @@ class ConveniosDeAdministracionSumarController < ApplicationController
     # Cambiar los valores de los atributos de acuerdo con los parámetros
     @convenio_de_administracion.attributes = params[:convenio_de_administracion_sumar]
 
+    # Crear los objetos necesarios para regenerar la vista si hay algún error
+    @firmantes = Referente.where(:efector_id => @convenio_de_administracion.administrador_id).collect{ |r|
+      [r.contacto.mostrado, r.id, {:class => r.efector_id}]
+    }
+    @firmante_id = @convenio_de_administracion.firmante_id
+
     # Verificar la validez del objeto
     if @convenio_de_administracion.valid?
+      # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
+      if !(@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i))
+        redirect_to(root_url,
+          :flash => { :tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre este incidente."
+          }
+        )
+        return
+      end
       # Registrar el usuario que realiza la modificación
       @convenio_de_administracion.updater_id = current_user.id
 

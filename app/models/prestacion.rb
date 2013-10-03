@@ -7,7 +7,7 @@ class Prestacion < ActiveRecord::Base
   attr_accessible :area_de_prestacion_id, :grupo_de_prestaciones_id, :subgrupo_de_prestaciones_id
   attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id, :objeto_de_la_prestacion_id
   attr_accessible :created_at, :updated_at, :comunitaria, :otorga_cobertura, :unidades_maximas
-  attr_accessible :requiere_historia_clinica
+  attr_accessible :requiere_historia_clinica, :concepto_de_facturacion_id, :tipo_de_tratamiento_id
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
 

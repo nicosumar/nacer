@@ -46,7 +46,7 @@
     = f.text_field :telefonos
   %div.field
     = f.label :email
-    = f.email_field :email
+    = f.text_field :email
 
   %h3 Categorización
   %div.field
@@ -107,6 +107,36 @@
   %div.field
     = f.label :datos_bancarios, "Datos Bancarios"
     = f.text_field :datos_bancarios
+
+  %h3 Cuentas bancarias
+
+  %h4 Cuenta bancaria principal
+  %div.field
+    = f.label :banco_cuenta_principal, "Banco"
+    = f.text_field :banco_cuenta_principal
+  %div.field
+    = f.label :numero_de_cuenta_principal, "Número de cuenta"
+    = f.text_field :numero_de_cuenta_principal
+  %div.field
+    = f.label :denominacion_cuenta_principal, "Denominación de cuenta"
+    = f.text_field :denominacion_cuenta_principal
+  %div.field
+    = f.label :sucursal_cuenta_principal, "Sucursal"
+    = f.text_field :sucursal_cuenta_principal
+
+  %h4 Cuenta bancaria secundaria
+  %div.field
+    = f.label :banco_cuenta_secundaria, "Banco"
+    = f.text_field :banco_cuenta_secundaria
+  %div.field
+    = f.label :numero_de_cuenta_secundaria, "Número de cuenta"
+    = f.text_field :numero_de_cuenta_secundaria
+  %div.field
+    = f.label :denominacion_cuenta_secundaria, "Denominación de cuenta"
+    = f.text_field :denominacion_cuenta_secundaria
+  %div.field
+    = f.label :sucursal_cuenta_secundaria, "Sucursal"
+    = f.text_field :sucursal_cuenta_secundaria
 
   %h3 Observaciones
   %div.field

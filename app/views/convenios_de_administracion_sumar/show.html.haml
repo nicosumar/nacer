@@ -25,11 +25,12 @@
 
   %h3 Datos del firmante y fechas
   %div.field_content
-    %span.field_name Firmante por el efector
-    - if @convenio_de_administracion.firmante
-      %span.field_value= @convenio_de_administracion.firmante
+  %div.field_content
+    %span.field_name Firmante por el administrador
+    - if !@convenio_de_administracion.firmante_id.blank?
+      %span.field_value= @convenio_de_administracion.firmante.contacto.mostrado
     - else
-      %span.field_empty No se ingresó el firmante
+      %span.field_empty No se seleccionó un referente como firmante
   %div.field_content
     %span.field_name Fecha de suscripción
     - if @convenio_de_administracion.fecha_de_suscripcion

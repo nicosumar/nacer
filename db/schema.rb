@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130927143020) do
+ActiveRecord::Schema.define(:version => 20131001121654) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -259,7 +259,6 @@ ActiveRecord::Schema.define(:version => 20130927143020) do
     t.string   "numero",                :null => false
     t.integer  "administrador_id",      :null => false
     t.integer  "efector_id",            :null => false
-    t.string   "firmante"
     t.date     "fecha_de_suscripcion",  :null => false
     t.date     "fecha_de_inicio",       :null => false
     t.date     "fecha_de_finalizacion"
@@ -268,6 +267,7 @@ ActiveRecord::Schema.define(:version => 20130927143020) do
     t.integer  "updater_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "firmante_id"
   end
 
   add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
@@ -458,6 +458,14 @@ ActiveRecord::Schema.define(:version => 20130927143020) do
     t.date     "fecha_inicio_de_actividades"
     t.string   "condicion_iibb"
     t.string   "datos_bancarios"
+    t.string   "banco_cuenta_principal"
+    t.string   "numero_de_cuenta_principal"
+    t.string   "denominacion_cuenta_principal"
+    t.string   "sucursal_cuenta_principal"
+    t.string   "banco_cuenta_secundaria"
+    t.string   "numero_de_cuenta_secundaria"
+    t.string   "denominacion_cuenta_secundaria"
+    t.string   "sucursal_cuenta_secundaria"
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|

@@ -8,7 +8,7 @@
       = f.text_field :numero, :style => "text-transform: uppercase;"
     %div.field
       = f.label :efector, "Efector*"
-      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true, :class => "multi_select"}
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), {:include_blank => true}, {:class => "multi_select"}
   - else
     %p.note Estos datos no pueden modificarse
     %div.field_content
@@ -20,8 +20,9 @@
 
   %h3 Datos del firmante y fechas
   %div.field
-    = f.label :firmante, "Referente del efector que firma"
-    = f.select :firmante_id, options_for_select(@referentes, @referente_id), {:include_blank => true, :class => "multi_select"}
+    = f.label :firmante_id, "Referente del efector que firma"
+    = f.select :firmante_id, options_for_select(@firmantes, @firmante_id), {:include_blank => true}, |
+      {:class => "multi_select", :"data-placeholder" => "Seleccione el referente que firma", :style => "width: 400px;"}
   %div.field
     = f.label :fecha_de_suscripcion
     = f.date_select :fecha_de_suscripcion, |
@@ -44,11 +45,17 @@
   %div.field
     = f.text_area :observaciones, :size => "80x8"
 
-  %h3 Prestaciones autorizadas por el convenio
+  %h3.header-with-note Prestaciones autorizadas por el convenio
+  %p.note Seleccione las prestaciones que el convenio autoriza
   %div.field
     = f.select :prestacion_autorizada_ids, options_for_select(@prestaciones, @prestacion_autorizada_ids), {}, |
-      { :multiple => true, :size => 15, :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" |
-        :class => "multi_select"} |
+      { :multiple => true, :size => 15, :class => "multi_select", |
+      :"data-placeholder" => "Seleccione todas las prestaciones autorizadas"} |
+
+  - if (@convenio_de_gestion.new_record? || @convenio_de_gestion.prestaciones_autorizadas.size == 0)
+    %div.field
+      = check_box_tag :migrar_prestaciones
+      = label_tag :migrar_prestaciones, "O si prefiere, autorice las prestaciones actualmente habilitadas por el convenio Nacer, marcando esta casilla"
 
   %div.actions
     - if @convenio_de_gestion.new_record?

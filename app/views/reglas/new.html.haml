@@ -1,5 +1,7 @@
-= javascript_include_tag 'jquery.chained.min'
-= javascript_include_tag 'reglas'
+- content_for :other_includes do
+  = javascript_include_tag 'jquery.chained.min'
+  = javascript_include_tag 'reglas'
+
 - content_for :title do
   Reglas de liquidacion - nuevo
 
@@ -10,5 +12,5 @@
 
 #content-body
   = render :partial => "shared/info", :locals => { :registro => @regla }
-  
+
   = render 'form'

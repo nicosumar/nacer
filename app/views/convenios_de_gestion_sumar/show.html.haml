@@ -29,7 +29,7 @@
   %div.field_content
     %span.field_name Firmante por el efector
     - if !@convenio_de_gestion.firmante_id.blank?
-      %span.field_value= @convenio_de_gestion.firmante.contacto.nombre_mostrado
+      %span.field_value= @convenio_de_gestion.firmante.contacto.mostrado
     - else
       %span.field_empty No se seleccionó un referente como firmante
   %div.field_content

@@ -12,7 +12,12 @@
     = f.text_field :nombres
   %div.field
     = f.label :sexo_id
-    = f.select :sexo_id, options_for_select(@sexos, @sexo_id), {:include_blank => true}
+    = f.select :sexo_id, options_for_select(@sexos, @sexo_id), {:include_blank => true}, |
+      {:class => "multi_select", :style => "width: 150px;", :"data-placeholder" => "Elija una opción"} |
+  %div.field
+    = f.label :tipo_de_documento_id
+    = f.select :tipo_de_documento_id, options_for_select(@tipos_de_documentos, @tipo_de_documento_id), {:include_blank => true}, |
+      {:class => "multi_select", :style => "width: 270px;", :"data-placeholder" => "Elija una opción"} |
   %div.field
     = f.label :dni
     = f.number_field :dni

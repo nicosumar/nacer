@@ -128,8 +128,8 @@ class ContactosController < ApplicationController
     # Verificar la validez del objeto
     if @contacto.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if (@sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id))
-          || @tipo_de_documento_id && !(@tipos_de_documentos.collect{|s| s[1]}.member?(@tipo_de_documento_id)))
+      if (@sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id)) ||
+          @tipo_de_documento_id && !(@tipos_de_documentos.collect{|s| s[1]}.member?(@tipo_de_documento_id)))
         redirect_to( root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre el incidente."
@@ -199,8 +199,8 @@ class ContactosController < ApplicationController
     # Verificar la validez del objeto
     if @contacto.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if (@sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id))
-          || @tipo_de_documento_id && !(@tipos_de_documentos.collect{|s| s[1]}.member?(@tipo_de_documento_id)))
+      if (@sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id)) ||
+          @tipo_de_documento_id && !(@tipos_de_documentos.collect{|s| s[1]}.member?(@tipo_de_documento_id)))
         redirect_to( root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre el incidente."
