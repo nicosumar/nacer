@@ -32,7 +32,7 @@
       %tbody
         - @convenio_de_gestion.addendas_sumar.order(:fecha_de_inicio).each do |a|
           %tr.clickable{ |
-            :onclick => "location.href=\'#{addenda_path(a)}\'", |
+            :onclick => "location.href=\'#{addenda_sumar_path(a)}\'", |
             :title => "Ver detalles de la adenda suscrita el #{a.fecha_de_suscripcion.strftime("%d/%m/%Y")}" } |
             %td= a.fecha_de_inicio.strftime("%d/%m/%Y")
             - if a.prestaciones_autorizadas_alta.any? then

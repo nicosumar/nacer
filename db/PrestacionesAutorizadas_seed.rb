@@ -11,6 +11,10 @@ class ModificarPrestacionAutorizada < ActiveRecord::Migration
       ADD CONSTRAINT fk_prestaciones_autorizadas_prestaciones
       FOREIGN KEY (prestacion_id) REFERENCES prestaciones (id);
   "
+  execute "
+    CREATE UNIQUE INDEX prestaciones_autorizadas_autorizante_prestacion_id_unq
+      ON prestaciones_autorizadas (autorizante_al_alta_type, autorizante_al_alta_id, prestacion_id);
+  "
 end
 
 # Puede ingresar aquí datos para que sean cargados al hacer el deploy
