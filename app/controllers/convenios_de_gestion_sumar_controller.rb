@@ -269,7 +269,7 @@ class ConveniosDeGestionSumarController < ApplicationController
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
       if ( !@efectores.collect{ |i| i[1] }.member?(@efector_id) ||
            @prestacion_autorizada_ids.any?{|p_id| !((@prestaciones.collect{|p| p[1]}).member?(p_id.to_i))} ||
-           !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
+           @firmante_id.present && !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -402,7 +402,7 @@ class ConveniosDeGestionSumarController < ApplicationController
     if @convenio_de_gestion.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
       if ( @prestacion_autorizada_ids.any?{|p_id| !((@prestaciones.collect{|p| p[1]}).member?(p_id.to_i))} ||
-           !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
+           @firmante_id.present && !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
