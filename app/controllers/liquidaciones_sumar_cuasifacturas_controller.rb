@@ -5,7 +5,9 @@ class LiquidacionesSumarCuasifacturasController < ApplicationController
   
   # GET /liquidaciones_sumar_cuasifacturas
   def index
-    @liquidaciones_sumar_cuasifacturas = LiquidacionSumarCuasifactura.all
+    #@liquidaciones_sumar_cuasifacturas = LiquidacionSumarCuasifactura.all
+    @liquidaciones_sumar_cuasifacturas = initialize_grid(LiquidacionSumarCuasifactura)
+
   end
 
   # GET /liquidaciones_sumar_cuasifacturas/1.pdf

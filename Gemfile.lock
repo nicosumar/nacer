@@ -88,6 +88,9 @@ GEM
       jquery-rails
       railties (>= 3.1.0)
     json (1.7.7)
+    kaminari (0.14.1)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
     libv8 (3.11.8.13)
     mail (2.5.3)
       i18n (>= 0.4.0)
@@ -180,6 +183,8 @@ GEM
     unicode-display_width (0.1.1)
     warden (1.2.1)
       rack (>= 1.0)
+    wice_grid (3.3.1)
+      kaminari (>= 0.13.0)
     will_paginate (3.0.4)
 
 PLATFORMS
@@ -208,4 +213,5 @@ DEPENDENCIES
   therubyracer
   thinreports-rails
   uglifier
+  wice_grid (>= 3.2.1)
   will_paginate

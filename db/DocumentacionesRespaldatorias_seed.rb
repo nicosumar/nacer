@@ -24,6 +24,7 @@ class NormalizarDocumentacionRespaldatoria < ActiveRecord::Migration
     :codigo => "IR",
     :descripcion => "" }
   ])
+  
   execute <<-SQL
 	insert into documentaciones_respaldatorias_prestaciones 
 	(prestacion_id, documentacion_respaldatoria_id, created_at, updated_at)

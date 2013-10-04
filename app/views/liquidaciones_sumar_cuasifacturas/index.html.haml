@@ -4,6 +4,18 @@
   %h1 Cuasifacturas Sumar
 
 #content-body
+  = grid(@liquidaciones_sumar_cuasifacturas) do |g|
+    - g.column :name => 'Número cuasifactura', :attribute => 'numero_cuasifactura'
+    - g.column :name => 'Monto total', :attribute => 'monto_total'
+    - g.column :name => 'Periodo de liquidación', :attribute => 'id'
+    -# g.column :name => 'Title', :attribute => 'title'
+    -# g.column  :name => 'Description', :attribute => 'description'
+    -# g.column  :name => 'Archived', :attribute => 'archived' do |task|
+      -# task.archived? ? 'Yes' : 'No'
+    -# g.column   do |task|
+      -# link_to('Edit', edit_task_path(task))
+
+
   %table
     %tr
       %th Periodo de liquidación
