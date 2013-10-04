@@ -12,3 +12,4 @@ REVISION
 public/system
 lib/tasks/archproc
 lib/tasks/*.odt
+lib/tasks/datos
