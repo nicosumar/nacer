@@ -61,7 +61,7 @@ class ConveniosDeGestionSumarController < ApplicationController
           return
         end
 
-        report = ODFReport::Report.new("lib/tasks/Modelo de compromiso de gestión para administrados.odt") do |r|
+        report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de compromiso de gestión para administrados.odt") do |r|
           r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
           r.add_field :nombre_administrador, @convenio_de_gestion.efector.administrador_sumar.nombre
           if @convenio_de_gestion.efector.grupo_de_efectores.tipo_de_efector == "PSB"
@@ -144,7 +144,7 @@ class ConveniosDeGestionSumarController < ApplicationController
           end
         end
 
-        archivo = report.generate
+        archivo = report.generate("lib/tasks/datos/documentos/Compromiso de gestión - #{@convenio_de_gestion.efector.nombre}.odt")
         send_file(archivo)
       end
 
