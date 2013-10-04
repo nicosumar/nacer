@@ -145,6 +145,8 @@ class ConveniosDeGestionSumarController < ApplicationController
         end
 
         archivo = report.generate("lib/tasks/datos/documentos/Compromiso de gestión - #{@convenio_de_gestion.efector.nombre}.odt")
+        File.chmod(0644, "lib/tasks/datos/documentos/Compromiso de gestión - #{@convenio_de_gestion.efector.nombre}.odt")
+
         send_file(archivo)
       end
 
