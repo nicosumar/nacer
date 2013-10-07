@@ -1,3 +1,4 @@
+= stylesheet_link_tag"entradas.css"
 - content_for :title do
   Cuasifacturas Sumar
 #content-header
@@ -7,7 +8,8 @@
   = grid(@liquidaciones_sumar_cuasifacturas) do |g|
     - g.column :name => 'Número cuasifactura', :attribute => 'numero_cuasifactura'
     - g.column :name => 'Monto total', :attribute => 'monto_total'
-    - g.column :name => 'Periodo de liquidación', :attribute => 'id'
+    - g.column :name => 'Periodo de liquidación' do |periodo|
+      - periodo.liquidacion_sumar.periodo.periodo
     -# g.column :name => 'Title', :attribute => 'title'
     -# g.column  :name => 'Description', :attribute => 'description'
     -# g.column  :name => 'Archived', :attribute => 'archived' do |task|
