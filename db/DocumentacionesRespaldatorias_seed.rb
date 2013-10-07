@@ -11,6 +11,7 @@ class NormalizarDocumentacionRespaldatoria < ActiveRecord::Migration
     :codigo => "HR",
     :descripcion => "" }
   ])
+
   DocumentacionRespaldatoria.create([
   { #:id => 2,
     :nombre => "Plantilla de Reporte de Talleres",
@@ -26,24 +27,23 @@ class NormalizarDocumentacionRespaldatoria < ActiveRecord::Migration
   ])
   
   execute <<-SQL
-	insert into documentaciones_respaldatorias_prestaciones 
-	(prestacion_id, documentacion_respaldatoria_id, created_at, updated_at)
-	select p.id, (select id from documentaciones_respaldatorias where codigo = 'RT'), now(), now()
-	from prestaciones p 
-	where codigo ilike 'TA%';
+  	insert into documentaciones_respaldatorias_prestaciones 
+  	(prestacion_id, documentacion_respaldatoria_id, fecha_de_inicio, fecha_de_finalizacion ,created_at, updated_at)
+  	select p.id, (select id from documentaciones_respaldatorias where codigo = 'RT'), '2013/08/01',null ,now(), now()
+  	from prestaciones p 
+  	where codigo ilike 'TA%';
 
-	insert into documentaciones_respaldatorias_prestaciones 
-	(prestacion_id, documentacion_respaldatoria_id, created_at, updated_at)
-	select p.id, (select id from documentaciones_respaldatorias where codigo = 'HR'), now(), now()
-	from prestaciones p 
-	where codigo ilike 'TL%';
+  	insert into documentaciones_respaldatorias_prestaciones 
+  	(prestacion_id, documentacion_respaldatoria_id, fecha_de_inicio, fecha_de_finalizacion ,created_at, updated_at)
+  	select p.id, (select id from documentaciones_respaldatorias where codigo = 'HR'), '2013/08/01',null ,now(), now()
+  	from prestaciones p 
+  	where codigo ilike 'TL%';
 
-	insert into documentaciones_respaldatorias_prestaciones 
-	(prestacion_id, documentacion_respaldatoria_id, created_at, updated_at)
-	select p.id, (select id from documentaciones_respaldatorias where codigo = 'IR'), now(), now()
-	from prestaciones p 
-	where codigo ilike 'RO%';
-
+  	insert into documentaciones_respaldatorias_prestaciones 
+  	(prestacion_id, documentacion_respaldatoria_id, fecha_de_inicio, fecha_de_finalizacion ,created_at, updated_at)
+  	select p.id, (select id from documentaciones_respaldatorias where codigo = 'IR'), '2013/08/01',null ,now(), now()
+  	from prestaciones p 
+  	where codigo ilike 'RO%';
   SQL
 
 
