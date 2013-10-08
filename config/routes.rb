@@ -1,19 +1,5 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
-
-  
-  resources :liquidaciones_sumar_cuasifacturas_detalles
-
-
-  resources :liquidaciones_sumar_cuasifacturas
-  resources :parametros_liquidaciones_sumar
-  
-
-  resources :prestaciones_liquidadas_advertencias
-  resources :prestaciones_liquidadas_datos
-
-
-
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion
   resources :periodos
@@ -32,6 +18,11 @@ Nacer::Application.routes.draw do
   end
   resources :reglas
   resources :plantillas_de_reglas
+  resources :liquidaciones_sumar_anexos_administrativos
+  resources :liquidaciones_sumar_cuasifacturas_detalles
+  resources :liquidaciones_sumar_cuasifacturas
+  resources :parametros_liquidaciones_sumar
+
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }
   devise_scope :user do

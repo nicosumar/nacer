@@ -63,6 +63,7 @@ ActiveSupport::Inflector.inflections do |inflect|
 
   # Plurales no regulares para clases y objetos
   inflect.irregular("sumar", "sumar·")
+  inflect.irregular("Sumar·", "Sumar·")
   inflect.irregular("convenio_de_gestion", "convenios·_de·_gestion·")
   inflect.irregular("convenio·_de·_gestion·", "convenios_de_gestion")
   inflect.irregular("ConvenioDeGestion", "Convenios·De·Gestion·")
@@ -312,6 +313,16 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("liquidacion·_sumar·_cuasifactura·_detalle·", "liquidaciones_sumar_cuasifacturas_detalles")
   inflect.irregular("LiquidacionSumarCuasifacturaDetalle", "Liquidaciones·Sumar·Cuasifacturas·Detalles·")
   inflect.irregular("Liquidacion·Sumar·Cuasifactura·Detalle·", "LiquidacionesSumarCuasifacturasDetalles")
+  # Estados de los procesos 
+  inflect.irregular("estado_del_proceso", "estados·_de·_los·_procesos·")
+  inflect.irregular("estado·_del·_proceso·", "estados_de_los_procesos")
+  inflect.irregular("EstadoDelProceso", "Estados·De·Los·Procesos·")
+  inflect.irregular("Estado·Del·Proceso·", "EstadosDeLosProcesos")
+  # Liquidacion Sumar Anexo Administrativo
+  inflect.irregular("liquidacion_sumar_anexo_administrativo", "liquidaciones·_sumar·_anexos·_administrativos·")
+  inflect.irregular("liquidacion·_sumar·_anexo·_administrativo·", "liquidaciones_sumar_anexos_administrativos")
+  inflect.irregular("LiquidacionSumarAnexoAdministrativo", "Liquidaciones·Sumar·Anexos·Administrativos·")
+  inflect.irregular("Liquidacion·Sumar·Anexo·Administrativo·", "LiquidacionesSumarAnexosAdministrativos")
 
   #El articulo "de" lo trata de pluralizar
   inflect.irregular("de", "de·")

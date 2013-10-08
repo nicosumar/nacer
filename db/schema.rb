@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131002151654) do
+ActiveRecord::Schema.define(:version => 20131008162431) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -477,6 +477,13 @@ ActiveRecord::Schema.define(:version => 20131002151654) do
     t.string  "codigo"
     t.boolean "pendiente", :default => false
     t.boolean "indexable", :default => false
+  end
+
+  create_table "estados_de_los_procesos", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo",     :limit => 1
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   create_table "formulas", :force => true do |t|
