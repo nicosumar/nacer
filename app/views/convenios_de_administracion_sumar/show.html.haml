@@ -3,9 +3,12 @@
 
 #content-header
   %h1 Información detallada del convenio de administración Sumar
-  - if can? :update, ConvenioDeAdministracionSumar
-    #action-links
+  #action-links
+    - if can? :update, ConvenioDeAdministracionSumar
       = link_to "Modificar el convenio", edit_convenio_de_administracion_sumar_path(@convenio_de_administracion)
+    - if can? :create, ConvenioDeAdministracionSumar
+      = link_to "Generar documento", convenio_de_administracion_sumar_path(@convenio_de_administracion, :format => :odt)
+
 
 = render :partial => "shared/info"
 
@@ -49,6 +52,16 @@
       %span.field_value= @convenio_de_administracion.fecha_de_finalizacion.strftime("%d/%m/%Y")
     - else
       %span.field_empty No se indicó la fecha de finalización
+
+  %h3 Direcciones de correo electrónico para notificaciones fehacientes al administrador
+  %div.field_content
+    - if !@convenio_de_administracion.email.blank?
+      %span.field_value_multiline
+        - @convenio_de_administracion.email.split(',').each do |email|
+          = mail_to(email.strip, email.strip)
+          %br/
+    - else
+      %span.field_empty No se ingresó la dirección de correo electrónico
 
   %h3 Observaciones
   %div.field_content

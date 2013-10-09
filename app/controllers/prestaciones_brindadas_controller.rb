@@ -195,12 +195,23 @@ class PrestacionesBrindadasController < ApplicationController
       @efectores = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.order(:nombre).collect{
         |e| [e.cuie + " - " + e.nombre, e.id]
       }
+
+      # Obtener el último registro cargado por este usuario en esta misma sesión, para prestablecer los valores de efector y fecha
+      ultimo_registro =
+        PrestacionBrindada.where(
+          "creator_id = ? AND created_at > ?",
+          current_user.id,
+          current_user.current_sign_in_at
+        ).order("created_at DESC").limit(1)
+
       if @efectores.size == 1
         # Fijar el efector si la UAD solo tiene asociado un efector para facturación
         @prestacion_brindada.efector_id = @efectores.first[1]
       else
-        @prestacion_brindada.efector_id = nil
+        @prestacion_brindada.efector_id = (ultimo_registro.first ? ultimo_registro.first.efector_id : nil)
       end
+      @prestacion_brindada.fecha_de_la_prestacion = (ultimo_registro.first ? ultimo_registro.first.fecha_de_la_prestacion : nil)
+
       render :action => "efector_y_fecha"
       return
     else
@@ -214,11 +225,6 @@ class PrestacionesBrindadasController < ApplicationController
         @efectores = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.order(:nombre).collect{
           |e| [e.cuie + " - " + e.nombre, e.id]
         }
-        if @efectores.size == 1
-          @prestacion_brindada.efector_id = @efectores.first[1]
-        else
-          @prestacion_brindada.efector_id = nil
-        end
         render :action => "efector_y_fecha"
         return
       end

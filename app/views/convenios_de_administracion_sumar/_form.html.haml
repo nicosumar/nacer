@@ -44,6 +44,11 @@
     = f.date_select :fecha_de_finalizacion, |
       {:start_year => 2013, :end_year => Date.today.year + 10, :include_blank => true} |
 
+  %h3.header-with-note Direcciones de correo electrónico para notificaciones fehacientes al administrador
+  %p.note Puede ingresar más de una dirección separándolas con comas (,)
+  %div.field
+    = f.text_field :email
+
   %h3 Observaciones
   %div.field
     = f.text_area :observaciones, :size => "80x8"

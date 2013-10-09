@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class ConveniosDeGestionSumarController < ApplicationController
+  include ActionView::Helpers::NumberHelper
+
   before_filter :authenticate_user!
 
   # GET /convenios_de_gestion_sumar
@@ -53,93 +55,170 @@ class ConveniosDeGestionSumarController < ApplicationController
 
     respond_to do |format|
       format.odt do
-        # Verificar que tengamos un modelo para este tipo de convenio
-        if !@convenio_de_gestion.efector.es_administrado?
-          redirect_to(@convenio_de_gestion,
-            :flash => { :tipo => :advertencia, :titulo => 'No hay un documento modelo para efectores no administrados.' }
-          )
-          return
-        end
-
-        report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de compromiso de gestión para administrados.odt") do |r|
-          r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
-          r.add_field :nombre_administrador, @convenio_de_gestion.efector.administrador_sumar.nombre
-          if @convenio_de_gestion.efector.grupo_de_efectores.tipo_de_efector == "PSB"
-            r.add_field :efector_articulo, "la"
-            r.add_field :o_a, "a"
-          else
-            r.add_field :efector_articulo, "el"
-            r.add_field :o_a, "o"
-          end
-          r.add_field :efector_nombre, @convenio_de_gestion.efector.nombre
-          if @convenio_de_gestion.firmante.present?
-            if @convenio_de_gestion.firmante.contacto.sexo.present?
-              if @convenio_de_gestion.firmante.contacto.sexo.codigo == "F"
-                r.add_field :articulo_contacto, "la"
-              else
-                r.add_field :articulo_contacto, "el"
+        if @convenio_de_gestion.efector.es_administrado?
+          report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de compromiso de gestión para administrados.odt") do |r|
+            r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
+            r.add_field :nombre_administrador, @convenio_de_gestion.efector.administrador_sumar.nombre
+            if @convenio_de_gestion.efector.grupo_de_efectores.tipo_de_efector == "PSB"
+              r.add_field :efector_articulo, "la"
+              r.add_field :o_a, "a"
+            else
+              r.add_field :efector_articulo, "el"
+              r.add_field :o_a, "o"
+            end
+            r.add_field :efector_nombre, @convenio_de_gestion.efector.nombre
+            if @convenio_de_gestion.firmante.present?
+              if @convenio_de_gestion.firmante.contacto.sexo.present?
+                if @convenio_de_gestion.firmante.contacto.sexo.codigo == "F"
+                  r.add_field :articulo_contacto, "la"
+                else
+                  r.add_field :articulo_contacto, "el"
+                end
+              end
+              r.add_field :contacto_mostrado, @convenio_de_gestion.firmante.contacto.mostrado
+              if @convenio_de_gestion.firmante.contacto.tipo_de_documento.present?
+                r.add_field :tipo_de_documento_codigo, @convenio_de_gestion.firmante.contacto.tipo_de_documento.codigo
+              end
+              if !@convenio_de_gestion.firmante.contacto.dni.blank?
+                r.add_field :contacto_dni, number_with_delimiter(@convenio_de_gestion.firmante.contacto.dni, {:delimiter => "."})
+              end
+              if !@convenio_de_gestion.firmante.contacto.firma_primera_linea.blank?
+                r.add_field :contacto_firma_primera_linea, @convenio_de_gestion.firmante.contacto.firma_primera_linea.strip
+              end
+              if !@convenio_de_gestion.firmante.contacto.firma_segunda_linea.blank?
+                r.add_field :contacto_firma_segunda_linea, @convenio_de_gestion.firmante.contacto.firma_segunda_linea.strip
+              end
+              if !@convenio_de_gestion.firmante.contacto.firma_tercera_linea.blank?
+                r.add_field :contacto_firma_tercera_linea, @convenio_de_gestion.firmante.contacto.firma_tercera_linea.strip
               end
             end
-            r.add_field :contacto_mostrado, @convenio_de_gestion.firmante.contacto.mostrado
-            if @convenio_de_gestion.firmante.contacto.tipo_de_documento.present?
-              r.add_field :tipo_de_documento_codigo, @convenio_de_gestion.firmante.contacto.tipo_de_documento.codigo
+            if !@convenio_de_gestion.efector.domicilio.blank?
+              r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.to_s.strip.gsub(".", ",")
             end
-            if !@convenio_de_gestion.firmante.contacto.dni.blank?
-              r.add_field :contacto_dni, @convenio_de_gestion.firmante.contacto.dni
+            if !@convenio_de_gestion.email.blank?
+              r.add_field :cgs_correo_electronico, @convenio_de_gestion.email.strip
             end
-            if !@convenio_de_gestion.firmante.contacto.firma_primera_linea.blank?
-              r.add_field :contacto_firma_primera_linea, @convenio_de_gestion.firmante.contacto.firma_primera_linea
+            if !@convenio_de_gestion.efector.telefonos.blank?
+              r.add_field :efector_fax, @convenio_de_gestion.efector.telefonos.strip
             end
-            if !@convenio_de_gestion.firmante.contacto.firma_segunda_linea.blank?
-              r.add_field :contacto_firma_segunda_linea, @convenio_de_gestion.firmante.contacto.firma_segunda_linea
+            if !@convenio_de_gestion.efector.codigo_postal.blank?
+              r.add_field :efector_codigo_postal, @convenio_de_gestion.efector.codigo_postal.strip
             end
-            if !@convenio_de_gestion.firmante.contacto.firma_tercera_linea.blank?
-              r.add_field :contacto_firma_tercera_linea, @convenio_de_gestion.firmante.contacto.firma_tercera_linea
+            if !@convenio_de_gestion.efector.administrador.numero_de_cuenta_principal.blank?
+              r.add_field :administrador_cuenta_principal, @convenio_de_gestion.efector.administrador.numero_de_cuenta_principal.strip
             end
-          end
-          if !@convenio_de_gestion.efector.domicilio.blank?
-            r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.gsub(".", ",")
-          end
-          if !@convenio_de_gestion.email.blank?
-            r.add_field :cgs_correo_electronico, @convenio_de_gestion.email
-          end
-          if !@convenio_de_gestion.efector.telefonos.blank?
-            r.add_field :efector_fax, @convenio_de_gestion.efector.telefonos
-          end
-          if !@convenio_de_gestion.efector.codigo_postal.blank?
-            r.add_field :efector_codigo_postal, @convenio_de_gestion.efector.codigo_postal
-          end
-          if !@convenio_de_gestion.efector.administrador.numero_de_cuenta_principal.blank?
-            r.add_field :administrador_cuenta_principal, @convenio_de_gestion.efector.administrador.numero_de_cuenta_principal
-          end
-          if !@convenio_de_gestion.efector.administrador.denominacion_cuenta_principal.blank?
-            r.add_field :administrador_denominacion_principal, @convenio_de_gestion.efector.administrador.denominacion_cuenta_principal
-          end
-          if !@convenio_de_gestion.efector.administrador.banco_cuenta_principal.blank?
-            r.add_field :administrador_banco_principal, @convenio_de_gestion.efector.administrador.banco_cuenta_principal
-          end
-          if !@convenio_de_gestion.efector.administrador.sucursal_cuenta_principal.blank?
-            r.add_field :administrador_sucursal_principal, @convenio_de_gestion.efector.administrador.sucursal_cuenta_principal
-          end
-          if !@convenio_de_gestion.efector.administrador.banco_cuenta_secundaria.blank?
-            otra_cuenta =
-              " y de la cuenta bancaria " + \
-              @convenio_de_gestion.efector.administrador.numero_de_cuenta_secundaria.to_s + " " + \
-              @convenio_de_gestion.efector.administrador.denominacion_cuenta_secundaria.to_s + " abierta en la entidad " + \
-              @convenio_de_gestion.efector.administrador.banco_cuenta_secundaria + ", sucursal " + \
-              @convenio_de_gestion.efector.administrador.sucursal_cuenta_secundaria
-            r.add_field :otra_cuenta, otra_cuenta
-          else
-            r.add_field :otra_cuenta, ""
-          end
-          r.add_field :cgs_suscripcion_mes_y_anio, I18n.l(@convenio_de_gestion.fecha_de_suscripcion, :format => :month_and_year)
-
-          autorizadas_ids = @convenio_de_gestion.prestaciones_autorizadas.collect{|p| p.prestacion_id}
-          Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL", :order => :id).each do |p|
-            if autorizadas_ids.member?(p.id)
-              r.add_field ("p" + p.id.to_s).to_sym, "SI"
+            if !@convenio_de_gestion.efector.administrador.denominacion_cuenta_principal.blank?
+              r.add_field :administrador_denominacion_principal, @convenio_de_gestion.efector.administrador.denominacion_cuenta_principal.strip
+            end
+            if !@convenio_de_gestion.efector.administrador.banco_cuenta_principal.blank?
+              r.add_field :administrador_banco_principal, @convenio_de_gestion.efector.administrador.banco_cuenta_principal.strip
+            end
+            if !@convenio_de_gestion.efector.administrador.sucursal_cuenta_principal.blank?
+              r.add_field :administrador_sucursal_principal, @convenio_de_gestion.efector.administrador.sucursal_cuenta_principal.strip
+            end
+            if !@convenio_de_gestion.efector.administrador.numero_de_cuenta_secundaria.blank?
+              otra_cuenta =
+                " y de la cuenta bancaria Nº " + \
+                @convenio_de_gestion.efector.administrador.numero_de_cuenta_secundaria.strip + " “" + \
+                @convenio_de_gestion.efector.administrador.denominacion_cuenta_secundaria.to_s.strip + "” abierta en la entidad " + \
+                @convenio_de_gestion.efector.administrador.banco_cuenta_secundaria.to_s.strip + ", sucursal " + \
+                @convenio_de_gestion.efector.administrador.sucursal_cuenta_secundaria.to_s.strip
+              r.add_field :otra_cuenta, otra_cuenta
             else
-              r.add_field ("p" + p.id.to_s).to_sym, "NO"
+              r.add_field :otra_cuenta, ""
+            end
+            r.add_field :cgs_suscripcion_mes_y_anio, I18n.l(@convenio_de_gestion.fecha_de_suscripcion, :format => :month_and_year)
+
+            autorizadas_ids = @convenio_de_gestion.prestaciones_autorizadas.collect{|p| p.prestacion_id}
+            Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL", :order => :id).each do |p|
+              if autorizadas_ids.member?(p.id)
+                r.add_field ("p" + p.id.to_s).to_sym, "SI"
+              else
+                r.add_field ("p" + p.id.to_s).to_sym, "NO"
+              end
+            end
+          end
+        else
+          # Efector no administrado
+          report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de compromiso de gestión para no administrados.odt") do |r|
+            r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
+            if @convenio_de_gestion.efector.grupo_de_efectores.tipo_de_efector == "HOS"
+              r.add_field :efector_articulo, "el"
+              r.add_field :o_a, "o"
+            else
+              r.add_field :efector_articulo, "la"
+              r.add_field :o_a, "a"
+            end
+            r.add_field :efector_nombre, @convenio_de_gestion.efector.nombre
+            if @convenio_de_gestion.firmante.present?
+              if @convenio_de_gestion.firmante.contacto.sexo.present?
+                if @convenio_de_gestion.firmante.contacto.sexo.codigo == "F"
+                  r.add_field :articulo_contacto, "la"
+                else
+                  r.add_field :articulo_contacto, "el"
+                end
+              end
+              r.add_field :contacto_mostrado, @convenio_de_gestion.firmante.contacto.mostrado.strip
+              if @convenio_de_gestion.firmante.contacto.tipo_de_documento.present?
+                r.add_field :tipo_de_documento_codigo, @convenio_de_gestion.firmante.contacto.tipo_de_documento.codigo
+              end
+              if !@convenio_de_gestion.firmante.contacto.dni.blank?
+                r.add_field :contacto_dni, number_with_delimiter(@convenio_de_gestion.firmante.contacto.dni, {:delimiter => "."})
+              end
+              if !@convenio_de_gestion.firmante.contacto.firma_primera_linea.blank?
+                r.add_field :contacto_firma_primera_linea, @convenio_de_gestion.firmante.contacto.firma_primera_linea.strip
+              end
+              if !@convenio_de_gestion.firmante.contacto.firma_segunda_linea.blank?
+                r.add_field :contacto_firma_segunda_linea, @convenio_de_gestion.firmante.contacto.firma_segunda_linea.strip
+              end
+              if !@convenio_de_gestion.firmante.contacto.firma_tercera_linea.blank?
+                r.add_field :contacto_firma_tercera_linea, @convenio_de_gestion.firmante.contacto.firma_tercera_linea.strip
+              end
+            end
+            if !@convenio_de_gestion.efector.domicilio.blank?
+              r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.gsub(".", ",").to_s.strip
+            end
+            if !@convenio_de_gestion.email.blank?
+              r.add_field :cgs_correo_electronico, @convenio_de_gestion.email.to_s.strip
+            end
+            if !@convenio_de_gestion.efector.telefonos.blank?
+              r.add_field :efector_fax, @convenio_de_gestion.efector.telefonos.to_s.strip
+            end
+            if !@convenio_de_gestion.efector.codigo_postal.blank?
+              r.add_field :efector_codigo_postal, @convenio_de_gestion.efector.codigo_postal.to_s.strip
+            end
+            if !@convenio_de_gestion.efector.numero_de_cuenta_principal.blank?
+              r.add_field :efector_cuenta_principal, @convenio_de_gestion.efector.numero_de_cuenta_principal.to_s.strip
+            end
+            if !@convenio_de_gestion.efector.denominacion_cuenta_principal.blank?
+              r.add_field :efector_denominacion_principal, @convenio_de_gestion.efector.denominacion_cuenta_principal.to_s.strip
+            end
+            if !@convenio_de_gestion.efector.banco_cuenta_principal.blank?
+              r.add_field :efector_banco_principal, @convenio_de_gestion.efector.banco_cuenta_principal.to_s.strip
+            end
+            if !@convenio_de_gestion.efector.sucursal_cuenta_principal.blank?
+              r.add_field :efector_sucursal_principal, @convenio_de_gestion.efector.sucursal_cuenta_principal.to_s.strip
+            end
+            if !@convenio_de_gestion.efector.banco_cuenta_secundaria.blank?
+              otra_cuenta =
+                " y de la cuenta bancaria Nº " + \
+                @convenio_de_gestion.efector.numero_de_cuenta_secundaria.to_s.strip + " “" + \
+                @convenio_de_gestion.efector.denominacion_cuenta_secundaria.to_s.strip + "” abierta en la entidad " + \
+                @convenio_de_gestion.efector.banco_cuenta_secundaria.to_s.strip + ", sucursal " + \
+                @convenio_de_gestion.efector.sucursal_cuenta_secundaria.to_s.strip
+              r.add_field :otra_cuenta, otra_cuenta
+            else
+              r.add_field :otra_cuenta, ""
+            end
+            r.add_field :cgs_suscripcion_mes_y_anio, I18n.l(@convenio_de_gestion.fecha_de_suscripcion, :format => :month_and_year)
+
+            autorizadas_ids = @convenio_de_gestion.prestaciones_autorizadas.collect{|p| p.prestacion_id}
+            Prestacion.where("objeto_de_la_prestacion_id IS NOT NULL", :order => :id).each do |p|
+              if autorizadas_ids.member?(p.id)
+                r.add_field ("p" + p.id.to_s).to_sym, "SI"
+              else
+                r.add_field ("p" + p.id.to_s).to_sym, "NO"
+              end
             end
           end
         end

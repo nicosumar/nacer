@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131001121654) do
+ActiveRecord::Schema.define(:version => 20131009184030) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -268,6 +268,7 @@ ActiveRecord::Schema.define(:version => 20131001121654) do
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
     t.integer  "firmante_id"
+    t.string   "email"
   end
 
   add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
@@ -887,6 +888,7 @@ ActiveRecord::Schema.define(:version => 20131001121654) do
   end
 
   add_index "prestaciones_autorizadas", ["autorizante_al_alta_type", "autorizante_al_alta_id", "prestacion_id"], :name => "index_prestaciones_autorizadas_unq", :unique => true
+  add_index "prestaciones_autorizadas", ["autorizante_al_alta_type", "autorizante_al_alta_id", "prestacion_id"], :name => "prestaciones_autorizadas_autorizante_prestacion_id_unq", :unique => true
 
   create_table "prestaciones_incluidas", :force => true do |t|
     t.integer  "liquidacion_id"
