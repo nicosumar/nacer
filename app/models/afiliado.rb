@@ -374,6 +374,8 @@ class Afiliado < ActiveRecord::Base
       return GrupoPoblacional.find_by_codigo("D")
     end
 
+    return nil
+
   end
 
   #
