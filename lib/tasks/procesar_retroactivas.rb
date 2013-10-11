@@ -41,7 +41,9 @@ class ProcesarPrestacionesRetroactivas
 
     self.archivo_a_procesar = archivo
 
-    crear_modelo_y_tabla
+    establecer_esquema
+    crear_tabla
+    crear_modelo
     procesar_archivo
     escribir_resultados
 #    eliminar_tabla
@@ -58,8 +60,11 @@ class ProcesarPrestacionesRetroactivas
 
   end
 
-  def crear_modelo_y_tabla
+  def establecer_esquema
     ActiveRecord::Base.connection.schema_search_path = "uad_007, public"
+  end
+
+  def crear_tabla
     ActiveRecord::Base.connection.execute "
       DROP TABLE IF EXISTS uad_007.procesar_prestaciones;
       CREATE TABLE uad_007.procesar_prestaciones (
@@ -97,7 +102,9 @@ class ProcesarPrestacionesRetroactivas
         errores text
       );
     "
+  end
 
+  def crear_modelo
     if !Class::constants.member?("ProcesarPrestacion")
       Object.const_set("ProcesarPrestacion", Class.new(ActiveRecord::Base) {
         set_table_name "procesar_prestaciones"
@@ -128,7 +135,18 @@ class ProcesarPrestacionesRetroactivas
 
       archivo.each_with_index do |linea, i|
         if !tiene_etiquetas_de_columnas || i != 0
-          prestacion_brindada = ProcesarPrestacion.new(parsear_linea(linea).merge :id => i)
+          prestacion_brindada = ProcesarPrestacion.new(parsear_linea(linea).merge :id => (i+1))
+
+          # Registrar un error si la fecha de la prestación no es reconocible o no se encuentra dentro del intervalo esperado
+          if !prestacion_brindada.fecha_de_la_prestacion.present?
+            prestacion_brindada.agregar_error(
+              "La fecha de la prestación no se pudo reconocer (cadena evaluada: '#{prestacion_brindada.fecha_de_la_prestacion_informado}')"
+            )
+          elsif prestacion_brindada.fecha_de_la_prestacion < Date.new(2012, 8, 1) || prestacion_brindada.fecha_de_la_prestacion > Date.new(2013, 8, 31)
+            prestacion_brindada.agregar_error(
+              "La fecha de la prestación no está dentro del periodo de facturación de prestaciones retroactivas (cadena evaluada: '#{prestacion_brindada.fecha_de_la_prestacion_informado}')"
+            )
+          end
 
           # Intentar encontrar el beneficiario al que se le brindó la prestación
           if prestacion_brindada.clave_de_beneficiario.present?
@@ -154,53 +172,59 @@ class ProcesarPrestacionesRetroactivas
               beneficiario = nil
               prestacion_brindada.agregar_error(
                 "No se encontró al beneficiario " + \
-                "'#{prestacion_brindada.nombre_informado} con documento número '#{prestacion_brindada.numero_de_documento_informado}' en el padrón"
+                "'#{prestacion_brindada.nombre_informado}' con documento número '#{prestacion_brindada.numero_de_documento_informado}' en el padrón"
               )
             end
           end
 
-          # Registrar el error y continuar con la próxima línea si no se encontró al beneficiario
-          if !beneficiario.present?
-            prestacion_brindada.aceptada = false
-            prestacion_brindada.save
-            next
-          end
+          # Guardar los datos del beneficiario si fue encontrado
+          if beneficiario.present?
+            prestacion_brindada.attributes = {
+              :clave_de_beneficiario => beneficiario.clave_de_beneficiario,
+              :apellido => beneficiario.apellido,
+              :nombre => beneficiario.nombre,
+              :clase_de_documento_id => beneficiario.clase_de_documento_id,
+              :tipo_de_documento_id => beneficiario.tipo_de_documento_id,
+              :numero_de_documento => beneficiario.numero_de_documento,
+              :sexo_id => beneficiario.sexo_id,
+              :fecha_de_nacimiento => beneficiario.fecha_de_nacimiento
+            }
 
-          prestacion_brindada.attributes = {
-            :clave_de_beneficiario => beneficiario.clave_de_beneficiario,
-            :apellido => beneficiario.apellido,
-            :nombre => beneficiario.nombre,
-            :clase_de_documento_id => beneficiario.clase_de_documento_id,
-            :tipo_de_documento_id => beneficiario.tipo_de_documento_id,
-            :numero_de_documento => beneficiario.numero_de_documento,
-            :sexo_id => beneficiario.sexo_id,
-            :fecha_de_nacimiento => beneficiario.fecha_de_nacimiento
-          }
+            # Registrar el error si el beneficiario tiene datos imprescindibles incompletos
+            # TODO: cambiar esto por verificaciones del motivo de baja
+            if !(beneficiario.sexo.present? && beneficiario.fecha_de_nacimiento.present?)
+              prestacion_brindada.agregar_error(
+                "Al registro del beneficiario en el padrón le faltan datos imprescindibles"
+              )
+            end
 
-          # TODO: cambiar esto por verificaciones del motivo de baja
-          # Registrar el error y continuar con la próxima línea si el beneficiario tiene datos imprescindibles incompletos
-          if !(beneficiario.sexo.present? && beneficiario.fecha_de_nacimiento.present?)
-            prestacion_brindada.agregar_error(
-              "No se puede evaluar la prestación porque al registro del beneficiario le faltan datos imprescindibles (sexo o fecha de nacimiento)"
-            )
-          end
+            # Verificar el estado de actividad del beneficiario
+            if prestacion_brindada.fecha_de_la_prestacion.present? && !beneficiario.activo?(prestacion_brindada.fecha_de_la_prestacion)
+              prestacion_brindada.agregar_error(
+                "El beneficiario no estaba activo a la fecha de la prestación"
+              )
+            end
 
-          # Registrar el error si la fecha de la prestación no tiene un formato reconocible
-          if !prestacion_brindada.fecha_de_la_prestacion.present?
-            prestacion_brindada.agregar_error(
-              "La fecha de la prestación no se pudo reconocer (cadena evaluada: '#{prestacion_brindada.fecha_de_la_prestacion_informado}')"
-            )
-          end
+            # Verificar si el beneficiario pertenece a uno de los grupos poblacionales del Programa
+            if prestacion_brindada.fecha_de_la_prestacion.present?
+              grupo_poblacional = beneficiario.grupo_poblacional_al_dia(prestacion_brindada.fecha_de_la_prestacion)
+              if !grupo_poblacional.present?
+                prestacion_brindada.agregar_error(
+                  "El beneficiario no integra la población objetivo del Programa Sumar (sexo: " + \
+                  "'#{beneficiario.sexo.nombre}', edad: '#{beneficiario.edad_en_anios(prestacion_brindada.fecha_de_la_prestacion)} años')"
+                )
+              else
+                prestacion_brindada.grupo_poblacional_calculado_id = grupo_poblacional.id
 
-          # Registrar un error si la fecha de la prestación no está en el intervalo esperado
-          if !prestacion_brindada.fecha_de_la_prestacion.present?
-            prestacion_brindada.agregar_error(
-              "La fecha de la prestación no se pudo reconocer (cadena evaluada: '#{prestacion_brindada.fecha_de_la_prestacion_informado}')"
-            )
-          elsif prestacion_brindada.fecha_de_la_prestacion < Date.new(2012, 8, 1) || prestacion_brindada.fecha_de_la_prestacion > Date.new(2013, 8, 31)
-            prestacion_brindada.agregar_error(
-              "La fecha de la prestación no está dentro del periodo de facturación de prestaciones retroactivas (cadena evaluada: '#{prestacion_brindada.fecha_de_la_prestacion_informado}')"
-            )
+                # Verificar si el grupo poblacional informado coincide con el grupo poblacional calculado
+                if prestacion_brindada.grupo_poblacional_informado_id.present? && grupo_poblacional.id != prestacion_brindada.grupo_poblacional_informado_id
+                  prestacion_brindada.agregar_error(
+                    "El beneficiario no pertenece al grupo poblacional informado (informado: " + \
+                    "'#{prestacion_brindada.grupo_informado}', calculado: '#{grupo_poblacional.nombre}')"
+                  )
+                end
+              end
+            end
           end
 
           # Obtener la prestación y el diagnóstico asociados con el código informado, o indicar el error si no se informó el código
@@ -208,178 +232,124 @@ class ProcesarPrestacionesRetroactivas
             prestacion_brindada.agregar_error(
               "No se informó el código de prestación"
             )
-          end
-
-          codigo_prestacion = prestacion_brindada.codigo_prestacion_informado[0..5]
-          if !Prestacion.find_by_codigo(codigo_prestacion).present?
-            prestacion_brindada.agregar_error(
-              "El código de prestación no existe (cadena evaluada: '#{codigo_prestacion}')"
-            )
-          end
-
-          codigo_diagnostico = prestacion_brindada.codigo_prestacion_informado[6..-1]
-          diagnostico = Diagnostico.find_by_codigo(codigo_diagnostico)
-          if !diagnostico.present?
-            prestacion_brindada.agregar_error(
-              "El código de diagnóstico no existe (cadena evaluada: '#{codigo_diagnostico}')"
-            )
-          end
-
-          # Continuar con la próxima línea si se produjo algún error hasta este punto del proceso
-          if !prestacion_brindada.errores.blank?
-            prestacion_brindada.aceptada = false
-            prestacion_brindada.save
-            next
-          end
-
-          # Verificación del grupo poblacional
-          grupo_poblacional = beneficiario.grupo_poblacional_al_dia(prestacion_brindada.fecha_de_la_prestacion)
-          if !grupo_poblacional.present?
-            prestacion_brindada.agregar_error(
-              "El beneficiario no integra la población objetivo del Programa Sumar (sexo: " + \
-              "'#{beneficiario.sexo.nombre}', edad: '#{beneficiario.edad_en_anios(prestacion_brindada.fecha_de_la_prestacion)} años')"
-            )
-            prestacion_brindada.aceptada = false
-            prestacion_brindada.save
-            next
-          end
-
-          if prestacion_brindada.grupo_poblacional_informado_id.present? && grupo_poblacional.id != prestacion_brindada.grupo_poblacional_informado_id
-            prestacion_brindada.agregar_error(
-              "El beneficiario no pertenece al grupo poblacional informado (informado: " + \
-              "'#{prestacion_brindada.grupo_informado}', calculado: '#{grupo_poblacional.nombre}')"
-            )
-            prestacion_brindada.aceptada = false
-            prestacion_brindada.save
-            next
-          end
-
-          # Intentar individualizar una prestación que tenga el código informado, admita el diagnóstico informado,
-          prestaciones = Prestacion.where(
-            "codigo = ?
-              AND EXISTS (
-                SELECT *
-                  FROM diagnosticos_prestaciones
-                  WHERE
-                    diagnosticos_prestaciones.prestacion_id = prestaciones.id
-                    AND diagnosticos_prestaciones.diagnostico_id = ?
+          else
+            codigo_prestacion = prestacion_brindada.codigo_prestacion_informado[0..5]
+            prestacion = Prestacion.find_by_codigo(codigo_prestacion)
+            if !prestacion.present?
+              prestacion_brindada.agregar_error(
+                "El código de prestación no existe (cadena evaluada: '#{codigo_prestacion}')"
               )
-              AND EXISTS (
-                SELECT *
-                  FROM grupos_poblacionales_prestaciones
-                  WHERE
-                    grupos_poblacionales_prestaciones.prestacion_id = prestaciones.id
-                    AND grupos_poblacionales_prestaciones.grupo_poblacional_id = ?
-              )",
-              codigo_prestacion, diagnostico.id, grupo_poblacional.id
-            )
+            end
+            codigo_diagnostico = prestacion_brindada.codigo_prestacion_informado[6..-1]
+            diagnostico = Diagnostico.find_by_codigo(codigo_diagnostico)
+            if !diagnostico.present?
+              prestacion_brindada.agregar_error(
+                "El código de diagnóstico no existe (cadena evaluada: '#{codigo_diagnostico}')"
+              )
+            else
+              prestacion_brindada.diagnostico_id = diagnostico.id
+            end
+            if prestacion.present? && diagnostico.present?
+              # Intentar individualizar una prestación que tenga el código informado y admita el diagnóstico informado
+              prestaciones = Prestacion.where(
+                "codigo = ?
+                  AND EXISTS (
+                    SELECT *
+                      FROM diagnosticos_prestaciones
+                      WHERE
+                        diagnosticos_prestaciones.prestacion_id = prestaciones.id
+                        AND diagnosticos_prestaciones.diagnostico_id = ?
+                  )",
+                  codigo_prestacion, diagnostico.id
+                )
 
-          # Registrar el error y continuar con la próxima línea si no se encuentra una prestación para esa combinación de
-          # código, grupo poblacional y diagnóstico
-          if prestaciones.size == 0
-            prestacion_brindada.agregar_error(
-              "No se encontró una prestación con código '#{codigo_prestacion}'" + \
-              " y diagnóstico '#{diagnostico.nombre} (#{codigo_diagnostico})' en el grupo poblacional '#{grupo_poblacional.nombre}'"
-            )
-            prestacion_brindada.aceptada = false
-            prestacion_brindada.save
-            next
+              # Registrar el error si no se encuentra una prestación para esa combinación de código y diagnóstico
+              if prestaciones.size == 0
+                prestacion_brindada.agregar_error(
+                  "No se encontró una prestación con código '#{codigo_prestacion}' y diagnóstico '#{diagnostico.nombre} (#{codigo_diagnostico})'"
+                )
+              else
+
+                # Mantener únicamente los códigos de prestación habilitados para facturación retroactiva
+                prestaciones_autorizadas = prestaciones.dup
+                prestaciones_autorizadas.keep_if do |p|
+                  [493, 494, 521, 538, 546, 548, 551, 553, 541, 554, 556,
+                   549, 547, 539, 552, 542, 555, 557, 523, 522, 524, 525,
+                   528, 529, 527, 526, 530, 531, 587, 560, 562, 561, 583,
+                   582, 267, 534, 533, 532].member?(p.id)
+                end
+
+                # Registrar el error si ninguna de las prestaciones estaba habilitada para facturación retroactiva
+                if prestaciones_autorizadas.size == 0
+                  prestacion_brindada.agregar_error("La prestación no está habilitada para facturarse como retroactiva")
+                else
+                  # Mantener únicamente las prestaciones que estén autorizadas para el sexo del beneficiario
+                  if beneficiario.present? && beneficiario.sexo.present?
+                    autorizadas_por_sexo = beneficiario.sexo.prestaciones_autorizadas
+
+                    # Descartamos las prestaciones que no están autorizadas para el sexo del beneficiario
+                    prestaciones_autorizadas.keep_if{|p| autorizadas_por_sexo.member?(p)}
+
+                    # Registrar el error si ninguna de las prestaciones estaba habilitada para el sexo del beneficiario
+                    if prestaciones_autorizadas.size == 0
+                      prestacion_brindada.agregar_error(
+                        "La prestación no está habilitada para el sexo del beneficiario (#{Sexo.find(prestacion_brindada.sexo_id).nombre.downcase})"
+                      )
+                    else
+                      # Mantener únicamente las prestaciones que estén autorizadas para el grupo poblacional informado (o el del beneficiario)
+                      if prestacion_brindada.grupo_poblacional_informado_id.present?
+                        grupo_poblacional = GrupoPoblacional.find(prestacion_brindada.grupo_poblacional_informado_id)
+                      end
+                      if grupo_poblacional.present?
+                        autorizadas_por_grupo = grupo_poblacional.prestaciones_autorizadas
+
+                        # Descartamos las prestaciones que no están autorizadas para el grupo poblacional del beneficiario
+                        prestaciones_autorizadas.keep_if{|p| autorizadas_por_grupo.member?(p)}
+
+                        # Registrar el error si ninguna de las prestaciones estaba habilitada para el grupo poblacional del beneficiario
+                        if prestaciones_autorizadas.size == 0
+                          prestacion_brindada.agregar_error(
+                            "La prestación no está habilitada para el grupo poblacional del beneficiario (#{grupo_poblacional.nombre.downcase})"
+                          )
+                        end
+                      end
+                    end
+                  end
+                end
+
+                if prestaciones_autorizadas.size > 0
+                  prestacion = prestaciones_autorizadas.first
+                else
+                  prestacion = prestaciones.first
+                end
+                prestacion_brindada.attributes = {
+                  :prestacion_id => prestacion.id,
+                  :monto => \
+                    Prestacion.find(prestacion.id).asignaciones_de_precios.where(:nomenclador_id => 5, :area_de_prestacion_id => 1).first.precio_por_unidad
+                }
+              end
+            end
           end
 
-          # Verificar que esté autorizada para el sexo del beneficiario
-          autorizadas_por_sexo = beneficiario.sexo.prestaciones_autorizadas
-
-          # Descartamos las prestaciones que no están autorizadas para el sexo del beneficiario
-          prestaciones.keep_if{|p| autorizadas_por_sexo.member?(p)}
-
-          # Registrar el error y continuar con la próxima línea si ninguna de las prestaciones estaba habilitada para el sexo del beneficiario
-          if prestaciones.size == 0
-            prestacion_brindada.agregar_error(
-              "La prestación no está habilitada para el sexo del beneficiario (#{Sexo.find(prestacion_brindada.sexo_id).nombre.downcase})"
-            )
-            prestacion_brindada.aceptada = false
-            prestacion_brindada.save
-            next
-          end
-
-          # Verificar si el código de prestación coincide con alguno de los requeridos para retroactivas
-          prestaciones.keep_if do |p|
-            [493, 494, 521, 538, 546, 548, 551, 553, 541, 554, 556,
-             549, 547, 539, 552, 542, 555, 557, 523, 522, 524, 525,
-             528, 529, 527, 526, 530, 531, 587, 560, 562, 561, 583,
-             582, 267, 534, 533, 532].member? p.id
-          end
-
-          # Registrar el error y continuar con la próxima línea si ninguna de las prestaciones estaba habilitada para el sexo del beneficiario
-          if prestaciones.size == 0
-            prestacion_brindada.agregar_error("La prestación no está habilitada para facturarse como retroactiva")
-            prestacion_brindada.aceptada = false
-            prestacion_brindada.save
-            next
-          end
-
-          # Para cada una de las prestaciones que aún quedan seleccionadas, creamos una nueva prestacion_brindada y seleccionamos la que
-          # sea válida y genere menos advertencias
-          mejor_prestacion = nil
-          cantidad_de_metodos_fallados = 100
-          prestaciones.each do |p|
+          if beneficiario.present? && prestacion_brindada.prestacion_id.present?
             pb = PrestacionBrindada.new({
               :estado_de_la_prestacion_id => 3,
               :clave_de_beneficiario => prestacion_brindada.clave_de_beneficiario,
               :historia_clinica => prestacion_brindada.historia_clinica,
               :fecha_de_la_prestacion => prestacion_brindada.fecha_de_la_prestacion,
               :efector_id => prestacion_brindada.efector_id,
-              :prestacion_id => p.id,
-              :es_catastrofica => p.es_catastrofica,
-              :diagnostico_id => diagnostico.id
+              :prestacion_id => prestacion_brindada.prestacion_id,
+              :diagnostico_id => prestacion_brindada.diagnostico_id
             })
-
             if pb.valid?
-              pb.actualizar_metodos_de_validacion_fallados
-              if pb.metodos_de_validacion.size < cantidad_de_metodos_fallados
-                mejor_prestacion = pb
-                cantidad_de_metodos_fallados = pb.metodos_de_validacion.size
+              if pb.metodos_de_validacion.size > 0
+                pb.metodos_de_validacion.each do |mv|
+                  prestacion_brindada.agregar_error(mv.mensaje)
+                end
               end
+            else
+              prestacion_brindada.agregar_error(pb.errors.full_messages.join(" - "))
             end
-          end
-
-          # Si encontramos la mejor posibilidad para individualizar la prestación, usamos esa, sino usamos la primera para generar los
-          # mensajes de error, ya que quiere decir que ninguna era válida.
-          if mejor_prestacion.present?
-            pb = mejor_prestacion
-          else
-            pb = PrestacionBrindada.new({
-              :estado_de_la_prestacion_id => 3,
-              :clave_de_beneficiario => prestacion_brindada.clave_de_beneficiario,
-              :historia_clinica => prestacion_brindada.historia_clinica,
-              :fecha_de_la_prestacion => prestacion_brindada.fecha_de_la_prestacion,
-              :efector_id => prestacion_brindada.efector_id,
-              :prestacion_id => prestaciones.first.id,
-              :es_catastrofica => prestaciones.first.es_catastrofica,
-              :diagnostico_id => diagnostico.id
-            })
-          end
-
-          if pb.valid?
-            prestacion_brindada.attributes = {
-              :prestacion_id => pb.prestacion_id,
-              :diagnostico_id => pb.diagnostico_id,
-              :monto => Prestacion.find(pb.prestacion_id).asignaciones_de_precios.where(:nomenclador_id => 5, :area_de_prestacion_id => 1).first.precio_por_unidad
-            }
-            if pb.metodos_de_validacion.size > 0
-              pb.metodos_de_validacion.each do |mv|
-                prestacion_brindada.agregar_error(mv.mensaje)
-              end
-            end
-          else
-            prestacion_brindada.agregar_error(pb.errors.full_messages.join(" - "))
-          end
-
-          # Verificar el estado de actividad del beneficiario
-          if !beneficiario.activo?(prestacion_brindada.fecha_de_la_prestacion)
-            prestacion_brindada.agregar_error(
-              "El beneficiario no estaba activo a la fecha de la prestación"
-            )
           end
 
           # Rechazar la prestación si se produjo algún error
@@ -418,7 +388,7 @@ class ProcesarPrestacionesRetroactivas
       grupo_informado: a_texto(campos[11]),
       codigo_prestacion_informado: a_texto(campos[12]),
       administrador_id: hash_a_id(@hash_efectores, a_texto(campos[0])),
-      efector_id: @hash_efectores[a_texto(campos[1])][:id],
+      efector_id: (@hash_efectores[a_texto(campos[1])].present? ? @hash_efectores[a_texto(campos[1])][:id] : nil),
       fecha_de_la_prestacion: a_fecha(campos[3]),
       grupo_poblacional_informado_id: a_grupo_poblacional_id(a_texto(campos[11]))
     }

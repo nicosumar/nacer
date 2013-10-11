@@ -364,6 +364,8 @@ class Afiliado < ActiveRecord::Base
 
   def grupo_poblacional_al_dia(fecha_de_la_prestacion = Date.today)
 
+    return nil unless fecha_de_nacimiento.present?
+
     if edad_en_anios(fecha_de_la_prestacion) < 6
       return GrupoPoblacional.find_by_codigo("A")
     elsif (6..9) === edad_en_anios(fecha_de_la_prestacion)
