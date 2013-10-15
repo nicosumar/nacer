@@ -2,12 +2,13 @@ class CreateLiquidacionesInformes < ActiveRecord::Migration
   def up
     create_table :liquidaciones_informes do |t|
       t.string     :numero_de_expediente
+      t.text       :observaciones
+      t.references :efector
       t.references :liquidacion_sumar
       t.references :liquidacion_sumar_cuasifactura
       t.references :liquidacion_sumar_anexo_administrativo
       t.references :liquidacion_sumar_anexo_medico
       t.references :estado_del_proceso
-      t.text       :observaciones
 
       t.timestamps
     end
@@ -30,6 +31,9 @@ class CreateLiquidacionesInformes < ActiveRecord::Migration
         ADD FOREIGN KEY ("estado_del_proceso_id") 
           REFERENCES "public"."estados_de_los_procesos" ("id") 
           ON DELETE RESTRICT ON UPDATE RESTRICT,
+        ADD FOREIGN KEY ("efector_id") 
+          REFERENCES "public"."efectores" ("id") 
+          ON DELETE RESTRICT ON UPDATE RESTRICT,
         ADD UNIQUE ("liquidacion_sumar_id", "liquidacion_sumar_cuasifactura_id");
 
       CREATE INDEX  ON "public"."liquidaciones_informes" ("liquidacion_sumar_id");
@@ -37,13 +41,14 @@ class CreateLiquidacionesInformes < ActiveRecord::Migration
       CREATE INDEX  ON "public"."liquidaciones_informes" ("liquidacion_sumar_anexo_administrativo_id");
       CREATE INDEX  ON "public"."liquidaciones_informes" ("liquidacion_sumar_anexo_medico_id");
       CREATE INDEX  ON "public"."liquidaciones_informes" ("estado_del_proceso_id");
+      CREATE INDEX  ON "public"."liquidaciones_informes" ("efector_id");
     SQL
 
     #cargo las cuasifacturas que ya existen
     execute <<-SQL
       INSERT INTO "public"."liquidaciones_informes" 
-      ("liquidacion_sumar_id", "liquidacion_sumar_cuasifactura_id", "estado_del_proceso_id", "created_at", "updated_at") 
-      SELECT ls.id, lc.id, (select id from estados_de_los_procesos where codigo = 'N'), now(), now()
+      ("efector_id", "liquidacion_sumar_id", "liquidacion_sumar_cuasifactura_id", "estado_del_proceso_id", "created_at", "updated_at") 
+      SELECT lc.efector_id, ls.id, lc.id, (select id from estados_de_los_procesos where codigo = 'N'), now(), now()
       from liquidaciones_sumar ls
         join liquidaciones_sumar_cuasifacturas lc on lc.liquidacion_sumar_id = ls.id
     SQL

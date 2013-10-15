@@ -83,15 +83,20 @@ class LiquidacionesInformesController < ApplicationController
 
     # Si se aprueba la cuasifactura, los anexos administrativos pasan a estado "En Curso"
     # de otra manera, ambos se cierran y las prestaciones se devuelven para refacturar
-    if params[:aprobar]
+    if params[:aprobar] == 'true'
       estado = EstadoDelProceso.where(codigo: "C")
     else
       estado = EstadoDelProceso.where(codigo: "B")
     end
 
     if @liquidacion_informe.update_attributes(params[:liquidacion_informe], estado_del_proceso: estado.first)
-      LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(@liquidacion_informe.id)
-      redirect_to @liquidacion_informe, notice: 'Liquidacion informe was successfully updated.' 
+      if params[:aprobar] == 'true'
+        LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(@liquidacion_informe.id)
+      else
+        LiquidacionSumarAnexoAdministrativo.generar_anexo_para_devolucion(@liquidacion_informe.id)
+        LiquidacionSumarAnexoMedico.generar_anexo_para_devolucion(@liquidacion_informe.id)
+      end
+      redirect_to @liquidacion_informe, :flash => { :tipo => :ok, :titulo => "El informe fue generado correctamente" } 
     else
       render action: "edit" 
     end

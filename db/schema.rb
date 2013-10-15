@@ -628,16 +628,18 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
 
   create_table "liquidaciones_informes", :force => true do |t|
     t.string   "numero_de_expediente"
+    t.text     "observaciones"
+    t.integer  "efector_id"
     t.integer  "liquidacion_sumar_id"
     t.integer  "liquidacion_sumar_cuasifactura_id"
     t.integer  "liquidacion_sumar_anexo_administrativo_id"
     t.integer  "liquidacion_sumar_anexo_medico_id"
     t.integer  "estado_del_proceso_id"
-    t.text     "observaciones"
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
   end
 
+  add_index "liquidaciones_informes", ["efector_id"], :name => "liquidaciones_informes_efector_id_idx"
   add_index "liquidaciones_informes", ["estado_del_proceso_id"], :name => "liquidaciones_informes_estado_del_proceso_id_idx"
   add_index "liquidaciones_informes", ["liquidacion_sumar_anexo_administrativo_id"], :name => "liquidaciones_informes_liquidacion_sumar_anexo_administrati_idx"
   add_index "liquidaciones_informes", ["liquidacion_sumar_anexo_medico_id"], :name => "liquidaciones_informes_liquidacion_sumar_anexo_medico_id_idx"
@@ -883,7 +885,6 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
   add_index "periodos_de_actividad", ["fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio", "fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_inicio_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx"
-  add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx1"
 
   create_table "periodos_de_capita", :force => true do |t|
     t.integer  "afiliado_id"
