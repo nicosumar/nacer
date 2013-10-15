@@ -57,7 +57,83 @@ class ProcesarPrestacionesRetroactivas
   end
 
   def escribir_resultados
+    administradores_ids = ProcesarPrestacion.select("DISTINCT administrador_id").collect{|pp| pp.administrador_id}
+    archivo_sumas = File.open("lib/tasks/datos/Sumas.csv", "w")
+    administradores_ids.each do |administrador_id|
+      administrador = Efector.find(administrador_id)
+      archivo_sumas.puts administrador.cuie + " - " + administrador.nombre
+      archivo_salida = File.open("lib/tasks/datos/#{Efector.find(administrador_id).cuie} - #{Efector.find(administrador_id).nombre}.csv", "w")
+      efectores_ids = ProcesarPrestacion.select("DISTINCT efector_id").where(:administrador_id => administrador_id).collect{|pp| pp.efector_id}
 
+      # Exportar aceptadas
+      archivo_salida.puts "Aceptadas:"
+      archivo_salida.puts "CUIE\tEfector\tFolio\tFecha\tApellidos\tNombres\tDocumento\tH. clínica\tCódigo prest.\tMonto\tClave beneficiario"
+      efectores_ids.each do |efector_id|
+        efector = Efector.find(efector_id)
+        prestaciones_aceptadas = ProcesarPrestacion.where(:administrador_id => administrador_id, :efector_id => efector_id, :aceptada => true)
+        prestaciones_aceptadas.each do |pa|
+          archivo_salida.puts efector.cuie +
+                              "\t" + efector.nombre +
+                              "\t" + pa.id.to_s +
+                              "\t" + pa.fecha_de_la_prestacion.strftime("%d/%m/%Y") +
+                              "\t" + pa.apellido +
+                              "\t" + pa.nombre +
+                              "\t" + pa.numero_de_documento.to_s +
+                              "\t" + pa.historia_clinica +
+                              "\t" + pa.codigo_prestacion_informado +
+                              "\t" + ("%.2f" % pa.monto).gsub(".", ",") +
+                              "\t" + pa.clave_de_beneficiario
+        end
+      end
+      archivo_salida.puts "\t\t\t\t\t\t\t\t\t" + \
+        ("%.2f" % ProcesarPrestacion.where(:administrador_id => administrador_id, :aceptada => true).sum(:monto)).gsub(".", ",")
+
+      # Exportar rechazadas
+      archivo_salida.puts
+      archivo_salida.puts "Rechazadas:"
+      archivo_salida.puts "CUIE\tEfector\tFolio\tFecha\tApellidos\tNombres\tDocumento\tH. clínica\tCódigo prest.\tMonto\tClave beneficiario\tMotivo de rechazo"
+      efectores_ids.each do |efector_id|
+        efector = Efector.find(efector_id)
+        prestaciones_rechazadas = ProcesarPrestacion.where(:administrador_id => administrador_id, :efector_id => efector_id, :aceptada => false)
+        prestaciones_rechazadas.each do |pr|
+          archivo_salida.puts efector.cuie +
+                              "\t" + efector.nombre +
+                              "\t" + pr.id.to_s +
+                              "\t" + (pr.fecha_de_la_prestacion.present? ? pr.fecha_de_la_prestacion.strftime("%d/%m/%Y") : "") +
+                              "\t" + pr.apellido.to_s +
+                              "\t" + pr.nombre.to_s +
+                              "\t" + pr.numero_de_documento.to_s +
+                              "\t" + pr.historia_clinica.to_s +
+                              "\t" + pr.codigo_prestacion_informado.to_s +
+                              "\t" + (pr.monto.present? ? ("%.2f" % pr.monto).gsub(".", ",") : "0,00") +
+                              "\t" + pr.clave_de_beneficiario.to_s +
+                              "\t" + pr.errores.to_s
+        end
+      end
+      archivo_salida.puts "\t\t\t\t\t\t\t\t\t" + \
+        ("%.2f" % ProcesarPrestacion.where(:administrador_id => administrador_id, :aceptada => false).sum(:monto)).gsub(".", ",")
+      archivo_salida.close
+
+      efectores_ids.each do |efector_id|
+        efector = Efector.find(efector_id)
+        archivo_sumas.puts efector.cuie + "\t" +
+          efector.nombre + "\t" +
+          ('%.2f' % ProcesarPrestacion.where(:administrador_id => administrador_id, :efector_id => efector_id).sum(:monto)).gsub(".", ",") + "\t" +
+          ('%.2f' % ProcesarPrestacion.where(:administrador_id => administrador_id, :efector_id => efector_id, :aceptada => false).sum(:monto)).gsub(".", ",") + "\t" +
+          ('%.2f' % ProcesarPrestacion.where(:administrador_id => administrador_id, :efector_id => efector_id, :aceptada => true).sum(:monto)).gsub(".", ",")
+      end
+      archivo_sumas.puts "Subtotal " + administrador.cuie + "\t\t" +
+        ('%.2f' % ProcesarPrestacion.where(:administrador_id => administrador_id).sum(:monto)).gsub(".", ",") + "\t" +
+        ('%.2f' % ProcesarPrestacion.where(:administrador_id => administrador_id, :aceptada => false).sum(:monto)).gsub(".", ",") + "\t" +
+        ('%.2f' % ProcesarPrestacion.where(:administrador_id => administrador_id, :aceptada => true).sum(:monto)).gsub(".", ",")
+      archivo_sumas.puts
+    end
+    archivo_sumas.puts
+    archivo_sumas.puts "TOTALES\t\t" +
+      ('%.2f' % ProcesarPrestacion.sum(:monto)).gsub(".", ",") + "\t" +
+      ('%.2f' % ProcesarPrestacion.where(:aceptada => false).sum(:monto)).gsub(".", ",") + "\t" +
+      ('%.2f' % ProcesarPrestacion.where(:aceptada => true).sum(:monto)).gsub(".", ",")
+    archivo_sumas.close
   end
 
   def establecer_esquema
