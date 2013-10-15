@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Liquidacion sumar:</b>
+  <%= @liquidacion_informe.liquidacion_sumar %>
+</p>
+
+<p>
+  <b>Liquidacion sumar cuasifactura:</b>
+  <%= @liquidacion_informe.liquidacion_sumar_cuasifactura %>
+</p>
+
+<p>
+  <b>Liquidacion sumar anexo administrativo:</b>
+  <%= @liquidacion_informe.liquidacion_sumar_anexo_administrativo %>
+</p>
+
+<p>
+  <b>Liquidacion sumar anexo medico:</b>
+  <%= @liquidacion_informe.liquidacion_sumar_anexo_medico %>
+</p>
+
+<p>
+  <b>Estado del proceso:</b>
+  <%= @liquidacion_informe.estado_del_proceso %>
+</p>
+
+
+<%= link_to 'Edit', edit_liquidacion_informe_path(@liquidacion_informe) %> |
+<%= link_to 'Back', liquidaciones_informes_path %>

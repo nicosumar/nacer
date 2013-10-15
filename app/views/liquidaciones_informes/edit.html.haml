@@ -1,0 +1,18 @@
+= javascript_include_tag 'liquidaciones_informes'
+- content_for :title do
+  Informes de Liquidación Sumar - Revisión 
+
+#content-header
+  %h1 Revisión de cuasifacturas
+  #action-links
+    = link_to '<< Volver al listado', liquidaciones_informes_path
+    = link_to 'Ver', @liquidacion_informe
+#content-body
+  %h2.first-header Datos del referente:
+  = "  Recuerde, la cuasifactura del <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.nombre}</b> ".html_safe
+  = "debe ser firmada por <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.convenio_de_gestion.firmante}</b>".html_safe
+  %br
+  %br
+  %h2.first-header Datos de aprobación:
+  = render :partial => "shared/info", :locals => { :registro => @liquidacion_informe }
+  = render 'form'

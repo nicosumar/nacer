@@ -1,0 +1,31 @@
+<h1>Listing anexos_medicos_prestaciones</h1>
+
+<table>
+  <tr>
+    <th>Liquidacion sumar anexo medico</th>
+    <th>Prestacion liquidada</th>
+    <th>Estado de la prestacion</th>
+    <th>Motivo de rechazo</th>
+    <th>Observaciones</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @anexos_medicos_prestaciones.each do |anexo_medico_prestacion| %>
+  <tr>
+    <td><%= anexo_medico_prestacion.liquidacion_sumar_anexo_medico %></td>
+    <td><%= anexo_medico_prestacion.prestacion_liquidada %></td>
+    <td><%= anexo_medico_prestacion.estado_de_la_prestacion %></td>
+    <td><%= anexo_medico_prestacion.motivo_de_rechazo %></td>
+    <td><%= anexo_medico_prestacion.observaciones %></td>
+    <td><%= link_to 'Show', anexo_medico_prestacion %></td>
+    <td><%= link_to 'Edit', edit_anexo_medico_prestacion_path(anexo_medico_prestacion) %></td>
+    <td><%= link_to 'Destroy', anexo_medico_prestacion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Anexo medico prestacion', new_anexo_medico_prestacion_path %>

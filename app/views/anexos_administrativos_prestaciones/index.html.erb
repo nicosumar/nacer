@@ -1,0 +1,29 @@
+<h1>Listing anexos_administrativos_prestaciones</h1>
+
+<table>
+  <tr>
+    <th>Liquidacion sumar anexo administrativo</th>
+    <th>Prestaciones liquidadas</th>
+    <th>Estado de la prestacion</th>
+    <th>Motivos de rechazos</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @anexos_administrativos_prestaciones.each do |anexo_administrativo_prestacion| %>
+  <tr>
+    <td><%= anexo_administrativo_prestacion.liquidacion_sumar_anexo_administrativo %></td>
+    <td><%= anexo_administrativo_prestacion.prestaciones_liquidadas %></td>
+    <td><%= anexo_administrativo_prestacion.estado_de_la_prestacion %></td>
+    <td><%= anexo_administrativo_prestacion.motivos_de_rechazos %></td>
+    <td><%= link_to 'Show', anexo_administrativo_prestacion %></td>
+    <td><%= link_to 'Edit', edit_anexo_administrativo_prestacion_path(anexo_administrativo_prestacion) %></td>
+    <td><%= link_to 'Destroy', anexo_administrativo_prestacion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Anexo administrativo prestacion', new_anexo_administrativo_prestacion_path %>

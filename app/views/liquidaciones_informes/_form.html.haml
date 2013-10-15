@@ -1,0 +1,19 @@
+= form_for(@liquidacion_informe) do |f|
+ 
+  = radio_button_tag 'aprobar', true
+  Aprobar cuasifactura y generar anexos
+  %br
+  = radio_button_tag 'aprobar', false
+  Rechazar cuasifactura por estar suscripta incorrectamente o sin suscribir.
+  %br
+  %br
+  .field
+    = f.label :numero_de_expediente, "N° de expediente:"
+    = f.text_field :numero_de_expediente, disabled: true
+  .field
+    = f.label :observaciones, "Observaciones:"
+    %br
+    = f.text_field :observaciones, {:size => "80x8", disabled: true}
+  .actions
+    = f.submit
+

@@ -5,7 +5,7 @@
   %h1 Cuasifacturas Sumar
 
 #content-body
-  = grid(@liquidaciones_sumar_cuasifacturas) do |g|
+  = grid(@liquidaciones_sumar_cuasifacturas, hide_submit_button: true, hide_reset_button: true) do |g|
     - g.column :name => 'Número cuasifactura', :attribute => 'numero_cuasifactura'
     - g.column :name => 'Monto total', :attribute => 'monto_total'
     - g.column :name => 'Periodo de liquidación' do |periodo|

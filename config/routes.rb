@@ -1,5 +1,17 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
+  resources :liquidaciones_informes
+
+
+  resources :anexos_medicos_prestaciones
+
+
+  resources :liquidaciones_sumar_anexos_medicos
+
+
+  resources :anexos_administrativos_prestaciones
+
+
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion
   resources :periodos

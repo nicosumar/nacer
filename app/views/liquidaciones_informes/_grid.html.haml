@@ -1,0 +1,24 @@
+= grid(@liquidaciones_informes) do |g|
+  -# Muestra si no se encontraron registros
+  - g.blank_slate content_tag(:div, "Nada para mostrar")
+
+  -# Fila adjunta
+  -# g.after_row do |r, number_of_columns|
+    -# content_tag(:tr, content_tag(:td, content_tag(:div, "#{r.liquidacion_sumar.descripcion}"), colspan: number_of_columns), class: 'extra-row')
+    
+  -# Columnas del grid
+  - g.column name: "Efector" do |c|
+    - c.liquidacion_sumar_cuasifactura.efector.nombre
+  - g.column name: "Numero de<br>Cuasifactura".html_safe do |c|
+    - c.liquidacion_sumar_cuasifactura.numero_cuasifactura
+  - g.column name: 'Informe' do |c|
+    - c.estado_del_proceso.blank? ? 'No iniciado' : c.estado_del_proceso.nombre
+  - g.column name: 'Expediente' do |c|
+    - c.numero_de_expediente.blank? ? "Sin asignar" : c.numero_de_expediente
+  - g.column name: "Anexo<br>Administrativo".html_safe do |c|
+    - c.liquidacion_sumar_anexo_administrativo.blank? ? 'No iniciado' : c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre
+  - g.column name: "Anexo<br>Medico".html_safe do |c|
+    - c.liquidacion_sumar_anexo_medico.blank? ? 'No iniciado': c.liquidacion_sumar_anexo_medico.estado_del_proceso.nombre
+  
+  - g.column name: 'Acciones' do |c|
+    - link_to 'Aprobaciones', edit_liquidacion_informe_path(c)

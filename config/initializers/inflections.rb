@@ -30,7 +30,7 @@ end
 ActiveSupport::Inflector.inflections do |inflect|
 
   inflect.clear(:all)
-
+  
   inflect.plural(/·([A-Z]|_| |$)/, '\1')
   inflect.plural(/([acefgikoptuw])([A-Z]|_| |$)/, '\1s\2')
   inflect.plural(/z([A-Z]|_| |$)/, 'ces\1')
@@ -62,8 +62,6 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("ability·", "abilities")
 
   # Plurales no regulares para clases y objetos
-  inflect.irregular("sumar", "sumar·")
-  inflect.irregular("Sumar·", "Sumar·")
   inflect.irregular("convenio_de_gestion", "convenios·_de·_gestion·")
   inflect.irregular("convenio·_de·_gestion·", "convenios_de_gestion")
   inflect.irregular("ConvenioDeGestion", "Convenios·De·Gestion·")
@@ -323,13 +321,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("liquidacion·_sumar·_anexo·_administrativo·", "liquidaciones_sumar_anexos_administrativos")
   inflect.irregular("LiquidacionSumarAnexoAdministrativo", "Liquidaciones·Sumar·Anexos·Administrativos·")
   inflect.irregular("Liquidacion·Sumar·Anexo·Administrativo·", "LiquidacionesSumarAnexosAdministrativos")
-
-  #El articulo "de" lo trata de pluralizar
-  inflect.irregular("de", "de·")
-  inflect.irregular("de·", "de")
-  inflect.irregular("De", "De·")
-  inflect.irregular("De·", "De")
-
+  # Liquidacion Sumar Anexo Medico
+  inflect.irregular("liquidacion_sumar_anexo_medico", "liquidaciones·_sumar·_anexos·_medicos·")
+  inflect.irregular("liquidacion·_sumar·_anexo·_medico·", "liquidaciones_sumar_anexos_medicos")
+  inflect.irregular("LiquidacionSumarAnexoMedico", "Liquidaciones·Sumar·Anexos·Medicos·")
+  inflect.irregular("Liquidacion·Sumar·Anexo·Medico·", "LiquidacionesSumarAnexosMedicos")
+    
   # UAD (unidad de alta de datos)
   inflect.irregular("uad_nombre", "uad·_nombres·")
   inflect.irregular("uad·_nombre·", "uad_nombre")

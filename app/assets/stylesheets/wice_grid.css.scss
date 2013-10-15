@@ -53,10 +53,28 @@
 
 }
 
+.table-bordered {
+  border: 1px solid #dddddd;
+}
 
 .wice-grid{
 
-
+  /*width: 100%;
+  margin-bottom: 20px;
+  //.table-bordered
+  border-top-color: rgb(221, 221, 221);
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-right-color: rgb(221, 221, 221);
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-bottom-color: rgb(221, 221, 221);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-left-color: rgb(221, 221, 221);
+  border-left-style: solid;
+  border-left-width: 1px;
+*/
   .desc,  .asc{
     padding-right: 18px;
     text-decoration:none;

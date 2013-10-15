@@ -1,0 +1,29 @@
+<%= form_for(@liquidacion_sumar_anexo_medico) do |f| %>
+  <% if @liquidacion_sumar_anexo_medico.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@liquidacion_sumar_anexo_medico.errors.count, "error") %> prohibited this liquidacion_sumar_anexo_medico from being saved:</h2>
+
+      <ul>
+      <% @liquidacion_sumar_anexo_medico.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :estados_de_los_procesos %><br />
+    <%= f.text_field :estados_de_los_procesos %>
+  </div>
+  <div class="field">
+    <%= f.label :fecha_de_inicio %><br />
+    <%= f.date_select :fecha_de_inicio %>
+  </div>
+  <div class="field">
+    <%= f.label :fecha_de_finalizacion %><br />
+    <%= f.date_select :fecha_de_finalizacion %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

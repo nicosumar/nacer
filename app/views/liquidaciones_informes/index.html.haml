@@ -1,0 +1,52 @@
+- content_for :title do
+  Informes de Liquidacion - Sumar
+#content-header
+  %h1 Informes de Liquidacion - Sumar
+  #action-links
+    -# if can? :create, LiquidacionSumar
+      -#= link_to 'Nueva Liquidacion', new_liquidacion_sumar_path
+
+#content-body
+  %h2.first-header Busqueda de Informes
+  = form_tag(liquidaciones_informes_path, method:  :get) do 
+    = dump_filter_parameters_as_hidden_fields(@liquidaciones_informes)
+    .field
+      = label_tag "Concepto de Facturación"
+      = select_tag 'concepto_de_facturacion_id', options_for_select(@conceptos_de_facturacion, @concepto_de_facturacion_id), {:class => 'multi_select'}
+    .field
+      = label_tag "Efector"
+      = select_tag 'efector_id', options_for_select(@efectores, @efector_id), {:class => 'multi_select'}
+    .field
+      = label_tag "Numero de cuasifactura"
+      = select_tag 'liquidacion_sumar_cuasifactura_id', options_for_select(@numeros_de_cuasifactura, @liquidacion_sumar_cuasifactura_id), {:class => 'multi_select', :style => "width:150px"}
+    -#.field
+      -#= label_tag "Liquidación"
+      -#= select_tag 'liquidacion_sumar_id', options_for_select(@liquidaciones_sumar, @liquidacion_sumar_id)
+
+    = submit_tag "Buscar"
+  %br
+  %br
+  %h2.first-header Informes de Liquidación - Sumar
+  = render partial: 'grid'
+
+  %table
+    %tr
+      %th Liquidacion sumar
+      %th Liquidacion sumar cuasifactura
+      %th Liquidacion sumar anexo administrativo
+      %th Liquidacion sumar anexo medico
+      %th Estado del proceso
+      %th{colspan: 3}
+    - @liquidaciones_informes.each do |liquidacion_informe|
+      %tr
+        %td= liquidacion_informe.liquidacion_sumar
+        %td= liquidacion_informe.liquidacion_sumar_cuasifactura
+        %td= liquidacion_informe.liquidacion_sumar_anexo_administrativo
+        %td= liquidacion_informe.liquidacion_sumar_anexo_medico
+        %td= liquidacion_informe.estado_del_proceso
+        %td= link_to 'Show', liquidacion_informe
+        %td= link_to 'Edit', edit_liquidacion_informe_path(liquidacion_informe)
+        %td= link_to 'Destroy', liquidacion_informe, method: :delete, data: { confirm: 'Are you sure?' }
+  %br/
+= link_to 'New Liquidacion informe', new_liquidacion_informe_path
+

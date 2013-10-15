@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Estados de los procesos:</b>
+  <%= @liquidacion_sumar_anexo_medico.estados_de_los_procesos %>
+</p>
+
+<p>
+  <b>Fecha de inicio:</b>
+  <%= @liquidacion_sumar_anexo_medico.fecha_de_inicio %>
+</p>
+
+<p>
+  <b>Fecha de finalización:</b>
+  <%= @liquidacion_sumar_anexo_medico.fecha_de_finalizacion %>
+</p>
+
+
+<%= link_to 'Edit', edit_liquidacion_sumar_anexo_medico_path(@liquidacion_sumar_anexo_medico) %> |
+<%= link_to 'Back', liquidaciones_sumar_anexos_medicos_path %>

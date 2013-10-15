@@ -1,0 +1,33 @@
+<%= form_for(@anexo_administrativo_prestacion) do |f| %>
+  <% if @anexo_administrativo_prestacion.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@anexo_administrativo_prestacion.errors.count, "error") %> prohibited this anexo_administrativo_prestacion from being saved:</h2>
+
+      <ul>
+      <% @anexo_administrativo_prestacion.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :liquidacion_sumar_anexo_administrativo %><br />
+    <%= f.text_field :liquidacion_sumar_anexo_administrativo %>
+  </div>
+  <div class="field">
+    <%= f.label :prestaciones_liquidadas %><br />
+    <%= f.text_field :prestaciones_liquidadas %>
+  </div>
+  <div class="field">
+    <%= f.label :estado_de_la_prestacion %><br />
+    <%= f.text_field :estado_de_la_prestacion %>
+  </div>
+  <div class="field">
+    <%= f.label :motivos_de_rechazos %><br />
+    <%= f.text_field :motivos_de_rechazos %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131008162431) do
+ActiveRecord::Schema.define(:version => 20131012233429) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -131,6 +131,36 @@ ActiveRecord::Schema.define(:version => 20131008162431) do
   add_index "afiliados", ["numero_de_documento_de_la_madre"], :name => "index_afiliados_on_numero_de_documento_de_la_madre"
   add_index "afiliados", ["numero_de_documento_del_padre"], :name => "index_afiliados_on_numero_de_documento_del_padre"
   add_index "afiliados", ["numero_de_documento_del_tutor"], :name => "index_afiliados_on_numero_de_documento_del_tutor"
+
+  create_table "anexos_administrativos_prestaciones", :force => true do |t|
+    t.integer  "liquidacion_sumar_anexo_administrativo_id"
+    t.integer  "prestacion_liquidada_id"
+    t.integer  "estado_de_la_prestacion_id"
+    t.integer  "motivo_de_rechazo_id"
+    t.text     "observaciones"
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
+  end
+
+  add_index "anexos_administrativos_prestaciones", ["estado_de_la_prestacion_id"], :name => "anexos_administrativos_prestacio_estado_de_la_prestacion_id_idx"
+  add_index "anexos_administrativos_prestaciones", ["liquidacion_sumar_anexo_administrativo_id"], :name => "anexos_administrativos_presta_liquidacion_sumar_anexo_admin_idx"
+  add_index "anexos_administrativos_prestaciones", ["motivo_de_rechazo_id"], :name => "anexos_administrativos_prestaciones_motivo_de_rechazo_id_idx"
+  add_index "anexos_administrativos_prestaciones", ["prestacion_liquidada_id"], :name => "anexos_administrativos_prestaciones_prestacion_liquidada_id_idx"
+
+  create_table "anexos_medicos_prestaciones", :force => true do |t|
+    t.integer  "liquidacion_sumar_anexo_medico_id"
+    t.integer  "prestacion_liquidada_id"
+    t.integer  "estado_de_la_prestacion_id"
+    t.integer  "motivo_de_rechazo_id"
+    t.text     "observaciones"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  add_index "anexos_medicos_prestaciones", ["estado_de_la_prestacion_id"], :name => "anexos_medicos_prestaciones_estado_de_la_prestacion_id_idx"
+  add_index "anexos_medicos_prestaciones", ["liquidacion_sumar_anexo_medico_id"], :name => "anexos_medicos_prestaciones_liquidacion_sumar_anexo_medico__idx"
+  add_index "anexos_medicos_prestaciones", ["motivo_de_rechazo_id"], :name => "anexos_medicos_prestaciones_motivo_de_rechazo_id_idx"
+  add_index "anexos_medicos_prestaciones", ["prestacion_liquidada_id"], :name => "anexos_medicos_prestaciones_prestacion_liquidada_id_idx"
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
@@ -596,6 +626,25 @@ ActiveRecord::Schema.define(:version => 20131008162431) do
 
   add_index "liquidaciones", ["efector_id", "anio_de_prestaciones", "mes_de_prestaciones"], :name => "unq_liquidaciones_efector_anio_y_mes", :unique => true
 
+  create_table "liquidaciones_informes", :force => true do |t|
+    t.string   "numero_de_expediente"
+    t.integer  "liquidacion_sumar_id"
+    t.integer  "liquidacion_sumar_cuasifactura_id"
+    t.integer  "liquidacion_sumar_anexo_administrativo_id"
+    t.integer  "liquidacion_sumar_anexo_medico_id"
+    t.integer  "estado_del_proceso_id"
+    t.text     "observaciones"
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
+  end
+
+  add_index "liquidaciones_informes", ["estado_del_proceso_id"], :name => "liquidaciones_informes_estado_del_proceso_id_idx"
+  add_index "liquidaciones_informes", ["liquidacion_sumar_anexo_administrativo_id"], :name => "liquidaciones_informes_liquidacion_sumar_anexo_administrati_idx"
+  add_index "liquidaciones_informes", ["liquidacion_sumar_anexo_medico_id"], :name => "liquidaciones_informes_liquidacion_sumar_anexo_medico_id_idx"
+  add_index "liquidaciones_informes", ["liquidacion_sumar_cuasifactura_id"], :name => "liquidaciones_informes_liquidacion_sumar_cuasifactura_id_idx"
+  add_index "liquidaciones_informes", ["liquidacion_sumar_id", "liquidacion_sumar_cuasifactura_id"], :name => "liquidaciones_informes_liquidacion_sumar_id_liquidacion_sum_key", :unique => true
+  add_index "liquidaciones_informes", ["liquidacion_sumar_id"], :name => "liquidaciones_informes_liquidacion_sumar_id_idx"
+
   create_table "liquidaciones_sumar", :force => true do |t|
     t.string   "descripcion"
     t.integer  "concepto_de_facturacion_id"
@@ -611,6 +660,26 @@ ActiveRecord::Schema.define(:version => 20131008162431) do
   add_index "liquidaciones_sumar", ["grupo_de_efectores_liquidacion_id"], :name => "liquidaciones_sumar_grupo_de_efectores_liquidacion_id_idx"
   add_index "liquidaciones_sumar", ["parametro_liquidacion_sumar_id"], :name => "liquidaciones_sumar_parametro_liquidacion_sumar_id_idx"
   add_index "liquidaciones_sumar", ["plantilla_de_reglas_id"], :name => "liquidaciones_sumar_plantilla_de_reglas_id_idx"
+
+  create_table "liquidaciones_sumar_anexos_administrativos", :force => true do |t|
+    t.integer  "estado_del_proceso_id"
+    t.date     "fecha_de_inicio"
+    t.date     "fecha_de_finalizacion"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "liquidaciones_sumar_anexos_administrativos", ["estado_del_proceso_id"], :name => "liquidaciones_sumar_anexos_administra_estado_del_proceso_id_idx"
+
+  create_table "liquidaciones_sumar_anexos_medicos", :force => true do |t|
+    t.integer  "estado_del_proceso_id"
+    t.date     "fecha_de_inicio"
+    t.date     "fecha_de_finalizacion"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "liquidaciones_sumar_anexos_medicos", ["estado_del_proceso_id"], :name => "liquidaciones_sumar_anexos_medicos_estado_del_proceso_id_idx"
 
   create_table "liquidaciones_sumar_cuasifacturas", :force => true do |t|
     t.integer  "liquidacion_sumar_id"
@@ -704,6 +773,7 @@ ActiveRecord::Schema.define(:version => 20131008162431) do
     t.string   "nombre"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "categoria"
   end
 
   create_table "niveles_de_instruccion", :force => true do |t|
@@ -813,6 +883,7 @@ ActiveRecord::Schema.define(:version => 20131008162431) do
   add_index "periodos_de_actividad", ["fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio", "fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_inicio_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx"
+  add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx1"
 
   create_table "periodos_de_capita", :force => true do |t|
     t.integer  "afiliado_id"

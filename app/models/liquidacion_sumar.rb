@@ -436,4 +436,5 @@ class LiquidacionSumar < ActiveRecord::Base
             "from prestaciones_incluidas\n"+
             "where liquidacion_id = #{self.id}"
   end
+
 end

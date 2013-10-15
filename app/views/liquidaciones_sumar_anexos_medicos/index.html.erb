@@ -1,0 +1,27 @@
+<h1>Listing liquidaciones_sumar_anexos_medicos</h1>
+
+<table>
+  <tr>
+    <th>Estados de los procesos</th>
+    <th>Fecha de inicio</th>
+    <th>Fecha de finalización</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @liquidaciones_sumar_anexos_medicos.each do |liquidacion_sumar_anexo_medico| %>
+  <tr>
+    <td><%= liquidacion_sumar_anexo_medico.estados_de_los_procesos %></td>
+    <td><%= liquidacion_sumar_anexo_medico.fecha_de_inicio %></td>
+    <td><%= liquidacion_sumar_anexo_medico.fecha_de_finalizacion %></td>
+    <td><%= link_to 'Show', liquidacion_sumar_anexo_medico %></td>
+    <td><%= link_to 'Edit', edit_liquidacion_sumar_anexo_medico_path(liquidacion_sumar_anexo_medico) %></td>
+    <td><%= link_to 'Destroy', liquidacion_sumar_anexo_medico, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Liquidacion sumar anexo medico', new_liquidacion_sumar_anexo_medico_path %>
