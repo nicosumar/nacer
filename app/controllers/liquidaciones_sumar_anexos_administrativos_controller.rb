@@ -1,83 +1,42 @@
 class LiquidacionesSumarAnexosAdministrativosController < ApplicationController
-  # GET /liquidaciones_sumar_anexos_administrativos
-  # GET /liquidaciones_sumar_anexos_administrativos.json
-  def index
-    @liquidaciones_sumar_anexos_administrativos = LiquidacionSumarAnexoAdministrativo.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @liquidaciones_sumar_anexos_administrativos }
-    end
-  end
+  
+  before_filter :authenticate_user!
+  before_filter :verificar_lectura
 
   # GET /liquidaciones_sumar_anexos_administrativos/1
-  # GET /liquidaciones_sumar_anexos_administrativos/1.json
   def show
     @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @liquidacion_sumar_anexo_administrativo }
-    end
+    condiciones = {}
+    #condiciones.merge!({:liquidaciones_sumar => {concepto_de_facturacion_id: @concepto_de_facturacion_id}}) if @concepto_de_facturacion_id.to_i > 0
+    #condiciones.merge!({:efectores => {id: @efector_id}}) if @efector_id.to_i > 0
+    #condiciones.merge!({:liquidaciones_sumar_cuasifacturas => {id: @liquidacion_sumar_cuasifactura_id}}) if @liquidacion_sumar_cuasifactura_id.to_i > 0
+    condiciones.merge!({liquidacion_sumar_anexo_administrativo_id: @liquidacion_sumar_anexo_administrativo.id}) if @estado_del_informe_id.to_i > 0
+
+    # Crea la instancia del grid (o lleva los resultados del model al grid)
+    @detalle_anexo = initialize_grid(
+      AnexoAdministrativoPrestacion,
+      include: [:prestacion_liquidada, :estado_de_la_prestacion],
+      joins:  "join prestaciones_liquidadas on prestaciones_liquidadas.id = anexos_administrativos_prestaciones.prestacion_liquidada_id\n"+
+              "join prestaciones_incluidas on prestaciones_incluidas.id = prestaciones_liquidadas.prestacion_incluida_id\n"+
+              "join estados_de_las_prestaciones on estados_de_las_prestaciones.id = anexos_administrativos_prestaciones.estado_de_la_prestacion_id",
+      conditions: condiciones
+      )
+
+    @estados_de_las_prestaciones = EstadoDeLaPrestacion.where(id: [5,6,7]).collect {|c| [c.nombre, c.id]}
+    @motivos_de_rechazo = MotivoDeRechazo.where(categoria: "Administrativa").collect {|c| [c.nombre, c.id]}
   end
 
-  # GET /liquidaciones_sumar_anexos_administrativos/new
-  # GET /liquidaciones_sumar_anexos_administrativos/new.json
-  def new
-    @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @liquidacion_sumar_anexo_administrativo }
-    end
+  # Cambia el estado del anexo a finalizado. El anexo en estado de finalizado bloquea las modificaciones
+  def finalizar_anexo
+    
   end
 
-  # GET /liquidaciones_sumar_anexos_administrativos/1/edit
-  def edit
-    @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id])
-  end
+  private 
 
-  # POST /liquidaciones_sumar_anexos_administrativos
-  # POST /liquidaciones_sumar_anexos_administrativos.json
-  def create
-    @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.new(params[:liquidacion_sumar_anexo_administrativo])
-
-    respond_to do |format|
-      if @liquidacion_sumar_anexo_administrativo.save
-        format.html { redirect_to @liquidacion_sumar_anexo_administrativo, notice: 'Liquidacion sumar anexo administrativo was successfully created.' }
-        format.json { render json: @liquidacion_sumar_anexo_administrativo, status: :created, location: @liquidacion_sumar_anexo_administrativo }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @liquidacion_sumar_anexo_administrativo.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PUT /liquidaciones_sumar_anexos_administrativos/1
-  # PUT /liquidaciones_sumar_anexos_administrativos/1.json
-  def update
-    @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id])
-
-    respond_to do |format|
-      if @liquidacion_sumar_anexo_administrativo.update_attributes(params[:liquidacion_sumar_anexo_administrativo])
-        format.html { redirect_to @liquidacion_sumar_anexo_administrativo, notice: 'Liquidacion sumar anexo administrativo was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @liquidacion_sumar_anexo_administrativo.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /liquidaciones_sumar_anexos_administrativos/1
-  # DELETE /liquidaciones_sumar_anexos_administrativos/1.json
-  def destroy
-    @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id])
-    @liquidacion_sumar_anexo_administrativo.destroy
-
-    respond_to do |format|
-      format.html { redirect_to liquidaciones_sumar_anexos_administrativos_url }
-      format.json { head :no_content }
+  def verificar_lectura
+    if cannot? :read, LiquidacionSumarAnexoAdministrativo
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
 end

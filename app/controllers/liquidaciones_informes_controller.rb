@@ -3,20 +3,26 @@ class LiquidacionesInformesController < ApplicationController
 
   # GET /liquidaciones_informes
   def index
-    # Variables para mantener los filtros actuales
-    @concepto_de_facturacion_id = params[:concepto_de_facturacion_id]
-    @efector_id = params[:efector_id]
-    @liquidacion_sumar_cuasifactura_id = params[:liquidacion_sumar_cuasifactura_id]
+    if params[:concepto_de_facturacion_id].blank?
+      @concepto_de_facturacion_id = @efector_id = @liquidacion_sumar_cuasifactura_id = @estado_del_informe_id = -1
+    else
+      @concepto_de_facturacion_id = params[:concepto_de_facturacion_id]
+      @efector_id = params[:efector_id]
+      @liquidacion_sumar_cuasifactura_id = params[:liquidacion_sumar_cuasifactura_id]
+      @estado_del_informe_id = params[:estado_del_informe_id]
+    end
 
     condiciones = {}
-    condiciones.merge!({:liquidaciones_sumar => {:concepto_de_facturacion_id=>@concepto_de_facturacion_id}}) if @concepto_de_facturacion_id.to_i > 0
-    condiciones.merge!({:efectores => {:id => @efector_id}}) if @efector_id.to_i > 0
+    condiciones.merge!({:liquidaciones_sumar => {concepto_de_facturacion_id: @concepto_de_facturacion_id}}) if @concepto_de_facturacion_id.to_i > 0
+    condiciones.merge!({:efectores => {id: @efector_id}}) if @efector_id.to_i > 0
     condiciones.merge!({:liquidaciones_sumar_cuasifacturas => {id: @liquidacion_sumar_cuasifactura_id}}) if @liquidacion_sumar_cuasifactura_id.to_i > 0
+    condiciones.merge!({estado_del_proceso_id: @estado_del_informe_id}) if @estado_del_informe_id.to_i > 0
+    
 
     # Crea la instancia del grid (o lleva los resultados del model al grid)
     @liquidaciones_informes = initialize_grid(
       LiquidacionInforme,
-      include: [:estado_del_proceso, :liquidacion_sumar_cuasifactura, :liquidacion_sumar],
+      include: [:estado_del_proceso, :liquidacion_sumar_cuasifactura, :liquidacion_sumar, :efector],
       joins:  "join liquidaciones_sumar on liquidaciones_sumar.id = liquidaciones_informes.liquidacion_Sumar_id\n"+
               "join liquidaciones_sumar_cuasifacturas on liquidaciones_sumar_cuasifacturas.liquidacion_sumar_id = liquidaciones_sumar.\"id\" and liquidaciones_informes.liquidacion_sumar_cuasifactura_id = liquidaciones_sumar_cuasifacturas.id\n"+
               "join efectores  on efectores.id = liquidaciones_sumar_cuasifacturas.efector_id ",
@@ -30,6 +36,9 @@ class LiquidacionesInformesController < ApplicationController
     @efectores << ['Todos', -1]
     @numeros_de_cuasifactura = LiquidacionSumarCuasifactura.order("numero_cuasifactura desc").collect {|c| [c.numero_cuasifactura, c.id]}
     @numeros_de_cuasifactura << ["Todas", -1]
+    @estados_de_los_informes = EstadoDelProceso.order("id desc").collect {|c| [c.nombre, c.id]}
+    @estados_de_los_informes << ["Todos", -1]
+
 
   end
 
@@ -83,16 +92,16 @@ class LiquidacionesInformesController < ApplicationController
 
     # Si se aprueba la cuasifactura, los anexos administrativos pasan a estado "En Curso"
     # de otra manera, ambos se cierran y las prestaciones se devuelven para refacturar
-    if params[:aprobar] == 'true'
-      estado = EstadoDelProceso.where(codigo: "C")
-    else
-      estado = EstadoDelProceso.where(codigo: "B")
-    end
+    
+    if @liquidacion_informe.update_attributes(params[:liquidacion_informe])
 
-    if @liquidacion_informe.update_attributes(params[:liquidacion_informe], estado_del_proceso: estado.first)
       if params[:aprobar] == 'true'
+        @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
+        @liquidacion_informe.save
         LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(@liquidacion_informe.id)
       else
+        @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "B").first
+        @liquidacion_informe.save
         LiquidacionSumarAnexoAdministrativo.generar_anexo_para_devolucion(@liquidacion_informe.id)
         LiquidacionSumarAnexoMedico.generar_anexo_para_devolucion(@liquidacion_informe.id)
       end
@@ -100,6 +109,7 @@ class LiquidacionesInformesController < ApplicationController
     else
       render action: "edit" 
     end
+    
   end
 
   # DELETE /liquidaciones_informes/1

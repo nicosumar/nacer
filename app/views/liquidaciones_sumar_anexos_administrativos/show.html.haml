@@ -1,0 +1,31 @@
+= javascript_include_tag 'liquidaciones_sumar_anexos_administrativos'
+- content_for :title do
+  Anexo Administrativo - Liquidaciones Sumar  
+#content-header
+  %h1 Anexo Administrativo - Liquidaciones Sumar  
+  #action-links
+    - if can? :update, LiquidacionSumarAnexoAdministrativo
+      = link_to '<< Volver al listado', tipos_periodos_path
+    -# if can? :update, TipoPeriodo
+      =# link_to 'Editar', edit_tipo_periodo_path(@tipo_periodo)
+
+= render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar_anexo_administrativo }
+#content-body
+  %div.field_content
+    %span.field_name Estado actual:
+    %span.field_value= @liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre
+
+  %div.field_content
+    %span.field_name Fecha de inicio:
+    %span.field_value= @liquidacion_sumar_anexo_administrativo.fecha_de_inicio
+
+  %div.field_content
+    %span.field_name Fecha de finalizacion:
+    %span.field_value= @liquidacion_sumar_anexo_administrativo.fecha_de_finalizacion.blank? ? "En curso" : @liquidacion_sumar_anexo_administrativo.fecha_de_finalizacion
+
+  %br
+  %br
+  %h2.first-header 
+    Detalle de prestaciones 
+    = image_tag "spinner.gif",size: "16x16", id: "spinner"
+  = render partial: 'grid'

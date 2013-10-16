@@ -1,15 +1,7 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
-  resources :liquidaciones_informes
 
 
-  resources :anexos_medicos_prestaciones
-
-
-  resources :liquidaciones_sumar_anexos_medicos
-
-
-  resources :anexos_administrativos_prestaciones
 
 
   #Liquidaciones - Sumar
@@ -29,11 +21,23 @@ Nacer::Application.routes.draw do
     end
   end
   resources :reglas
-  resources :plantillas_de_reglas
   resources :liquidaciones_sumar_anexos_administrativos
+  resources :liquidaciones_sumar_anexos_medicos
+  resources :plantillas_de_reglas
   resources :liquidaciones_sumar_cuasifacturas_detalles
   resources :liquidaciones_sumar_cuasifacturas
   resources :parametros_liquidaciones_sumar
+  resources :liquidaciones_informes
+  # rutas para la actualizacion asincronica
+  resources :anexos_medicos_prestaciones do
+    put :update_status, on: :member
+    put :update_motivo_rechazo, on: :member
+  end
+  resources :anexos_administrativos_prestaciones do
+    put :update_status, on: :member
+    put :update_motivo_rechazo, on: :member
+    put :finalizar_anexo, on: :member
+  end
 
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }

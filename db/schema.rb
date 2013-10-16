@@ -885,6 +885,7 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
   add_index "periodos_de_actividad", ["fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio", "fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_inicio_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx"
+  add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx1"
 
   create_table "periodos_de_capita", :force => true do |t|
     t.integer  "afiliado_id"

@@ -11,16 +11,19 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
   	informe_de_liquidacion = LiquidacionInforme.find(argInformeDeLiquidacionId)
   	efector = informe_de_liquidacion.liquidacion_sumar_cuasifactura.efector.id
   	liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar.id
-  	estado_del_proceso = EstadoDelProceso.where(codigo: "C")
+  	estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
 
   	anexo = LiquidacionSumarAnexoAdministrativo.create(
-  		estado_del_proceso: estado_del_proceso.id,
+  		estado_del_proceso: estado_del_proceso,
   		fecha_de_inicio:  DateTime.now()
   		)
 
+  	informe_de_liquidacion.liquidacion_sumar_anexo_administrativo = anexo
+  	informe_de_liquidacion.save!
+
   	cq = CustomQuery.ejecutar ({
       sql:  "INSERT INTO \"public\".\"anexos_administrativos_prestaciones\" \n"+
-						"(	\"liquidacion_sumar_anexo_administrativo_id\",	\"prestaciones_liquidadas_id\",	\"estado_de_la_prestacion_id\",	\"created_at\",	\"updated_at\")\n"+
+						"(	\"liquidacion_sumar_anexo_administrativo_id\",	\"prestacion_liquidada_id\",	\"estado_de_la_prestacion_id\",	\"created_at\",	\"updated_at\")\n"+
 						"SELECT	#{anexo.id} anexo_administrativo_id, p.id, p.estado_de_la_prestacion_id, now(), now()\n"+
 						"FROM\n"+
 						"	liquidaciones_sumar l\n"+
@@ -59,9 +62,15 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
   		fecha_de_inicio:  DateTime.now(),
   		fecha_de_finalizacion: DateTime.now()
   		)
+  	informe_de_liquidacion.liquidacion_sumar_anexo_administrativo = anexo
+  	informe_de_liquidacion.save!
 
     esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efector))
 
+    # Actualiza las prestaciones brindadas que hayan sido aceptadas durante la liquidación (o sea, aceptadas y exceptuadas por regla)
+    # y las marca como rechazadas para refacturar.
+    # Las prestaciones que no han sido aceptadas durante esta liquidación, se mantienen sin cambios en la tabla de prestaciones brindadas
+    # sin tomar en cuenta si el rechazo se realizo por alertas o algo similar. 
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
       sql:  "update prestaciones_brindadas \n "+
@@ -73,19 +82,19 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
             "                                      from efectores ef \n "+
             "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
             "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
+    				"and p.efector_id = #{efector}\n " +
             "and prestaciones_brindadas.id = p.prestacion_brindada_id"
       })
 
+    # Actualizo el estado de la prestacion liquidada a rechazada para refacturar, siendo este su ultimo estado durante esta liquidación.
     cq = CustomQuery.ejecutar ({
       sql:  "update prestaciones_liquidadas \n "+
-            "   set estado_de_la_prestacion_id = #{estado_rechazada_refacturar.id} \n "+
+            "   set estado_de_la_prestacion_liquidada_id = #{estado_rechazada_refacturar.id} \n "+
             "where liquidacion_id = #{liquidacion_sumar.id} \n "+
             "and   estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
-            "and efector_id in (select ef.id \n "+
-            "                                      from efectores ef \n "+
-            "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
-            "                                      where 'uad_' ||  u.codigo = current_schema() )\n "
+            "and efector_id = #{efector} "
       })
+
   end
 
 end

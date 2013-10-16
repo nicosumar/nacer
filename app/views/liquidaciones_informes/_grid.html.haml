@@ -8,7 +8,7 @@
     
   -# Columnas del grid
   - g.column name: "Efector" do |c|
-    - c.liquidacion_sumar_cuasifactura.efector.nombre
+    - c.efector.nombre
   - g.column name: "Numero de<br>Cuasifactura".html_safe do |c|
     - c.liquidacion_sumar_cuasifactura.numero_cuasifactura
   - g.column name: 'Informe' do |c|
@@ -16,9 +16,9 @@
   - g.column name: 'Expediente' do |c|
     - c.numero_de_expediente.blank? ? "Sin asignar" : c.numero_de_expediente
   - g.column name: "Anexo<br>Administrativo".html_safe do |c|
-    - c.liquidacion_sumar_anexo_administrativo.blank? ? 'No iniciado' : c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre
+    - c.liquidacion_sumar_anexo_administrativo.blank? ? 'No iniciado' : (link_to "#{c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre}",c.liquidacion_sumar_anexo_administrativo)
   - g.column name: "Anexo<br>Medico".html_safe do |c|
     - c.liquidacion_sumar_anexo_medico.blank? ? 'No iniciado': c.liquidacion_sumar_anexo_medico.estado_del_proceso.nombre
   
   - g.column name: 'Acciones' do |c|
-    - link_to 'Aprobaciones', edit_liquidacion_informe_path(c)
+    - link_to 'Aprobaciones', edit_liquidacion_informe_path(c) unless c.estado_del_proceso.id == EstadoDelProceso.where(codigo: "B").first.id
