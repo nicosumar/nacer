@@ -1,11 +1,13 @@
 = javascript_include_tag 'liquidaciones_sumar_anexos_administrativos'
+= javascript_include_tag 'jquery.chained.min'
+
 - content_for :title do
   Anexo Administrativo - Liquidaciones Sumar  
 #content-header
   %h1 Anexo Administrativo - Liquidaciones Sumar  
   #action-links
     - if can? :update, LiquidacionSumarAnexoAdministrativo
-      = link_to '<< Volver al listado', tipos_periodos_path
+      = link_to '<< Volver al listado', liquidaciones_informes_path
     -# if can? :update, TipoPeriodo
       =# link_to 'Editar', edit_tipo_periodo_path(@tipo_periodo)
 

@@ -23,7 +23,7 @@
 
   - g.column name: "Estado" do |c|
     - form_for c, url: update_status_anexo_administrativo_prestacion_path(c), remote: true do |f|
-      - f.select :estado_de_la_prestacion_id, @estados_de_las_prestaciones,{}, {:class => 'multi_select', :style => "width:100px"}
+      - f.select :estado_de_la_prestacion_id, @estados_de_las_prestaciones,{:include_blank => true}, {:class => 'multi_select', :style => "width:100px", :"data-placeholder" => "Seleccione"}
   - g.column name: "Motivo de <br>rechazo".html_safe do |c|
     - form_for c, url: update_motivo_rechazo_anexo_administrativo_prestacion_path(c), remote: true do |f|
-      - f.select :motivo_de_rechazo_id, @motivos_de_rechazo,{}, {:class => 'multi_select', :style => "width:140px"}
+      - f.select :motivo_de_rechazo_id, @motivos_de_rechazo,{:include_blank => true}, {:class => 'multi_select', :style => "width:140px", :"data-placeholder" => "Seleccione"}

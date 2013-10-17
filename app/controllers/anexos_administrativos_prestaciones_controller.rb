@@ -2,7 +2,11 @@ class AnexosAdministrativosPrestacionesController < ApplicationController
 
   def update_status
     @anexo_administrativo_prestacion = AnexoAdministrativoPrestacion.find(params[:id])
-    nuevo_estado = EstadoDeLaPrestacion.find(params[:anexo_administrativo_prestacion][:estado_de_la_prestacion_id])
+    if params[:anexo_administrativo_prestacion][:estado_de_la_prestacion_id].blank?
+      nuevo_estado = nil
+    else
+      nuevo_estado = EstadoDeLaPrestacion.find(params[:anexo_administrativo_prestacion][:estado_de_la_prestacion_id])
+    end
     @anexo_administrativo_prestacion.estado_de_la_prestacion = nuevo_estado
     @anexo_administrativo_prestacion.save
   end

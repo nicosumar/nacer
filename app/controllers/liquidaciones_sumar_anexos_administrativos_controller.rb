@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class LiquidacionesSumarAnexosAdministrativosController < ApplicationController
   
   before_filter :authenticate_user!
@@ -18,13 +19,20 @@ class LiquidacionesSumarAnexosAdministrativosController < ApplicationController
       AnexoAdministrativoPrestacion,
       include: [:prestacion_liquidada, :estado_de_la_prestacion],
       joins:  "join prestaciones_liquidadas on prestaciones_liquidadas.id = anexos_administrativos_prestaciones.prestacion_liquidada_id\n"+
-              "join prestaciones_incluidas on prestaciones_incluidas.id = prestaciones_liquidadas.prestacion_incluida_id\n"+
-              "join estados_de_las_prestaciones on estados_de_las_prestaciones.id = anexos_administrativos_prestaciones.estado_de_la_prestacion_id",
+              "join prestaciones_incluidas on prestaciones_incluidas.id = prestaciones_liquidadas.prestacion_incluida_id\n",
+              #{}"join estados_de_las_prestaciones on estados_de_las_prestaciones.id = anexos_administrativos_prestaciones.estado_de_la_prestacion_id",
       conditions: condiciones
       )
 
-    @estados_de_las_prestaciones = EstadoDeLaPrestacion.where(id: [5,6,7]).collect {|c| [c.nombre, c.id]}
-    @motivos_de_rechazo = MotivoDeRechazo.where(categoria: "Administrativa").collect {|c| [c.nombre, c.id]}
+
+    @estados_de_las_prestaciones = EstadoDeLaPrestacion.where(id: [5,6,7,nil]).collect {|c| [c.nombre, c.id]}
+    @motivos_de_rechazo = MotivoDeRechazo.where(categoria: "Administrativa").collect do |m|
+      EstadoDeLaPrestacion.where(id: [5,6,7,nil]).collect do |n|
+        [m.nombre, m.id, {:class => n.id} ] if n.id >= 6
+      end
+    end.flatten!(1).uniq
+    
+    #@motivos_de_rechazo = MotivoDeRechazo.where(categoria: "Administrativa").collect {|c| [c.nombre, c.id]}
   end
 
   # Cambia el estado del anexo a finalizado. El anexo en estado de finalizado bloquea las modificaciones
