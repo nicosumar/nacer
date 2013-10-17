@@ -463,7 +463,7 @@ class ProcesarPrestacionesRetroactivas
       diagnostico_informado: a_texto(campos[10]),
       grupo_informado: a_texto(campos[11]),
       codigo_prestacion_informado: a_texto(campos[12]),
-      administrador_id: hash_a_id(@hash_efectores, a_texto(campos[0])),
+      administrador_id: (@hash_efectores[a_texto(campos[0])].present? ? @hash_efectores[a_texto(campos[0])][:id] : nil),
       efector_id: (@hash_efectores[a_texto(campos[1])].present? ? @hash_efectores[a_texto(campos[1])][:id] : nil),
       fecha_de_la_prestacion: a_fecha(campos[3]),
       grupo_poblacional_informado_id: a_grupo_poblacional_id(a_texto(campos[11]))

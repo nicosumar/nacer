@@ -108,6 +108,7 @@ class PadronesController < ApplicationController
       rechazadas.each do |prestacion|
         archivo_salida.puts prestacion[:efector] +
                             "\t" + efectores_segun_cuie[prestacion[:efector]] +
+                            "\t" + prestacion[:nro_foja].to_s +
                             "\t" + (prestacion[:fecha_prestacion] && prestacion[:fecha_prestacion].is_a?(Date) ?
                                     prestacion[:fecha_prestacion].strftime("%d/%m/%Y") : "") +
                             "\t" + (prestacion[:apellido_afiliado] ? prestacion[:apellido_afiliado] : prestacion[:nombre]) +
@@ -551,7 +552,7 @@ class PadronesController < ApplicationController
     campos = linea.gsub!(/[\r\n]/, "").split("\t")
     return {  :administrador => valor(campos[0], :texto),
               :efector => valor(campos[1], :texto),
-              :nro_foja => valor(campos[2], :entero),
+              :nro_foja => valor(campos[2], :texto),
               :fecha_prestacion => valor(campos[3], :fecha),
               :nombre => valor(campos[4], :texto),
               :clase => valor(campos[5], :texto) == "R" ? "P" : "A",
