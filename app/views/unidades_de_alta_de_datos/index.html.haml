@@ -23,10 +23,9 @@
     %tbody
       - @unidades_de_alta_de_datos.each do |u|
         %tr.clickable{ |
-          :onclick => "location.href=\'#{unidad_de_alta_de_datos_path(u)}\'", :title => "Ver detalles de la unidad" } |
+          :onclick => "window.open(\'#{unidad_de_alta_de_datos_path(u)}\')", :title => "Ver detalles de la unidad (se abre en otra pestaña)" } |
           %td= u.codigo
           %td= u.nombre
           %td= u.centros_de_inscripcion.count
           %td= u.efectores.count
           %td= u.users.count
-  = will_paginate @unidades_de_alta_de_datos, :inner_window => 2, :outer_window => 0

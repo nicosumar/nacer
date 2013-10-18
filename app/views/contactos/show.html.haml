@@ -12,6 +12,15 @@
 #content-body
   %h3 Datos personales
   %div.field_content
+    %span.field_name Nombre mostrado
+    %span.field_value= @contacto.mostrado
+  %div.field_content
+    %span.field_name Sexo
+    - if @contacto.sexo_id
+      %span.field_value= @contacto.sexo.nombre
+    - else
+      %span.field_empty No se indicó el sexo
+  %div.field_content
     %span.field_name Apellidos
     - if !@contacto.apellidos.blank?
       %span.field_value= @contacto.apellidos
@@ -24,14 +33,11 @@
     - else
       %span.field_empty No se ingresó el nombre
   %div.field_content
-    %span.field_name Nombre mostrado
-    %span.field_value= @contacto.mostrado
-  %div.field_content
-    %span.field_name Sexo
-    - if @contacto.sexo_id
-      %span.field_value= @contacto.sexo.nombre
+    %span.field_name Tipo de documento
+    - if !@contacto.tipo_de_documento_id.blank?
+      %span.field_value= @contacto.tipo_de_documento.nombre
     - else
-      %span.field_empty No se indicó el sexo
+      %span.field_empty No se indicó el tipo de documento
   %div.field_content
     %span.field_name Número de documento
     - if !@contacto.dni.blank?
@@ -51,13 +57,28 @@
     - else
       %span.field_empty No se ingresó una dirección de correo electrónico adicional
 
+  %h3 Firma
+  %div.field_content
+    - if !@contacto.firma_primera_linea.blank? && !@contacto.firma_segunda_linea.blank? && !@contacto.firma_tercera_linea.blank?
+      %div.field_value_multiline
+        %span{:style => "font-weight: bold;"}= @contacto.mostrado
+        %br/
+        - if @contacto.firma_primera_linea.present?
+          = @contacto.firma_primera_linea
+          %br/
+        - if @contacto.firma_segunda_linea.present?
+          = @contacto.firma_segunda_linea
+          %br/
+        - if @contacto.firma_tercera_linea.present?
+          = @contacto.firma_tercera_linea
+    - else
+      %span.field_empty No se ingresó la información para la firma
+
   %h3 Domicilio
   %div.field_content
+    %span.field_name Domicilio
     - if !@contacto.domicilio.blank?
-      %div.field_value
-        - @contacto.domicilio.split("\n").each do |linea|
-          = linea
-          %br/
+      %span.field_value= @contacto.domicilio
     - else
       %span.field_empty No se ingresó el domicilio
 

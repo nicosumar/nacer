@@ -248,7 +248,7 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
   create_table "contactos", :force => true do |t|
     t.string   "nombres"
     t.string   "apellidos"
-    t.string   "mostrado",        :null => false
+    t.string   "mostrado",             :null => false
     t.string   "dni"
     t.text     "domicilio"
     t.string   "email"
@@ -261,6 +261,10 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
     t.integer  "sexo_id"
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.integer  "tipo_de_documento_id"
+    t.string   "firma_primera_linea"
+    t.string   "firma_segunda_linea"
+    t.string   "firma_tercera_linea"
   end
 
   create_table "convenios_de_administracion", :force => true do |t|
@@ -285,7 +289,6 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
     t.string   "numero",                :null => false
     t.integer  "administrador_id",      :null => false
     t.integer  "efector_id",            :null => false
-    t.string   "firmante"
     t.date     "fecha_de_suscripcion",  :null => false
     t.date     "fecha_de_inicio",       :null => false
     t.date     "fecha_de_finalizacion"
@@ -294,6 +297,8 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
     t.integer  "updater_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "firmante_id"
+    t.string   "email"
   end
 
   add_index "convenios_de_administracion_sumar", ["efector_id"], :name => "unq_convenios_de_administracion_sumar_efector_id", :unique => true
@@ -320,7 +325,6 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
   create_table "convenios_de_gestion_sumar", :force => true do |t|
     t.string   "numero",                :null => false
     t.integer  "efector_id",            :null => false
-    t.string   "firmante"
     t.string   "email"
     t.date     "fecha_de_suscripcion",  :null => false
     t.date     "fecha_de_inicio",       :null => false
@@ -330,6 +334,7 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
     t.integer  "updater_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "firmante_id"
   end
 
   add_index "convenios_de_gestion_sumar", ["efector_id"], :name => "unq_convenios_de_gestion_sumar_efector_id", :unique => true
@@ -493,6 +498,14 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
     t.date     "fecha_inicio_de_actividades"
     t.string   "condicion_iibb"
     t.string   "datos_bancarios"
+    t.string   "banco_cuenta_principal"
+    t.string   "numero_de_cuenta_principal"
+    t.string   "denominacion_cuenta_principal"
+    t.string   "sucursal_cuenta_principal"
+    t.string   "banco_cuenta_secundaria"
+    t.string   "numero_de_cuenta_secundaria"
+    t.string   "denominacion_cuenta_secundaria"
+    t.string   "sucursal_cuenta_secundaria"
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -885,7 +898,6 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
   add_index "periodos_de_actividad", ["fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio", "fecha_de_finalizacion"], :name => "periodos_de_actividad_fecha_de_inicio_fecha_de_finalizacion_idx"
   add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx"
-  add_index "periodos_de_actividad", ["fecha_de_inicio"], :name => "periodos_de_actividad_fecha_de_inicio_idx1"
 
   create_table "periodos_de_capita", :force => true do |t|
     t.integer  "afiliado_id"
@@ -970,6 +982,9 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
     t.integer  "updater_id"
   end
 
+  add_index "prestaciones_autorizadas", ["autorizante_al_alta_type", "autorizante_al_alta_id", "prestacion_id"], :name => "index_prestaciones_autorizadas_unq", :unique => true
+  add_index "prestaciones_autorizadas", ["autorizante_al_alta_type", "autorizante_al_alta_id", "prestacion_id"], :name => "prestaciones_autorizadas_autorizante_prestacion_id_unq", :unique => true
+
   create_table "prestaciones_incluidas", :force => true do |t|
     t.integer  "liquidacion_id"
     t.integer  "nomenclador_id"
@@ -1048,6 +1063,13 @@ ActiveRecord::Schema.define(:version => 20131012233429) do
   end
 
   add_index "prestaciones_liquidadas_datos", ["liquidacion_id"], :name => "indice_liquidacion_sumar_idx"
+
+  create_table "prestaciones_nacer_sumar", :id => false, :force => true do |t|
+    t.integer "prestacion_nacer_id", :null => false
+    t.integer "prestacion_sumar_id", :null => false
+  end
+
+  add_index "prestaciones_nacer_sumar", ["prestacion_nacer_id", "prestacion_sumar_id"], :name => "index_prestaciones_nacer_sumar_unq", :unique => true
 
   create_table "prestaciones_sexos", :id => false, :force => true do |t|
     t.integer "prestacion_id"

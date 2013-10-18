@@ -15,10 +15,7 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     end
 
     # Obtener el listado de convenios
-      @unidades_de_alta_de_datos =
-        UnidadDeAltaDeDatos.paginate(
-          :page => params[:page], :per_page => 20, :order => :codigo
-        )
+      @unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find(:all, :order => :codigo)
   end
 
   # GET /unidades_de_alta_de_datos/:id

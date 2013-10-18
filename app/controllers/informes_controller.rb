@@ -11,7 +11,7 @@ class InformesController < ApplicationController
     #traigo los parametros del reporte y los ordeno para el query
     valores = []
     params[:reporte][:parametros].sort.each { |p, v| valores << v} unless params[:reporte][:parametros].blank?
-    
+
     #Al ser todos o incluidos o excluidos, busco los codigos, y despues verifico si se incluye o excluye
     if @informe.informes_uads.first.incluido == 1
       @cq = CustomQuery.buscar (
@@ -29,7 +29,7 @@ class InformesController < ApplicationController
           sql: @informe.sql,
           values: valores
         })
-      
+
     end
 
     # cq = CustomQuery.buscar (
@@ -181,11 +181,11 @@ class InformesController < ApplicationController
             pa.fecha_de_inicio <= '#{@fecha_base.strftime("%Y-%m-%d")}'
             AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{@fecha_base.strftime("%Y-%m-%d")}')
             AND ef.alto_impacto
-          GROUP BY ef.nombre; 
+          GROUP BY ef.nombre;
       "
   end
 
-  def index 
+  def index
       @reportes = Informe.all
   end
 
@@ -206,7 +206,7 @@ class InformesController < ApplicationController
                 group by u.email, u.nombre, u.apellido, uad "
     })
     respond_to do |format|
-      format.html 
+      format.html
       format.js
     end
 
@@ -216,10 +216,10 @@ class InformesController < ApplicationController
                        join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
                        join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
                     where u.confirmed_at < '2014-06-01'
-                    and   (nov.created_at between '2010-04-01' and '2013-08-30' or nov.created_at is null) 
+                    and   (nov.created_at between '2010-04-01' and '2013-08-30' or nov.created_at is null)
                     and   'uad_' ||  uad.codigo = current_schema()
-                    group by u.email, u.nombre, u.apellido, uad", 
-      :titulo => 'Cargas por Usuario', 
+                    group by u.email, u.nombre, u.apellido, uad",
+      :titulo => 'Cargas por Usuario',
       :metodo_en_controller => 'novedades_usuarios',
       :formato => 'html'
 
@@ -253,14 +253,14 @@ class InformesController < ApplicationController
       unless ie.blank?
         if ie == '0'
           UnidadDeAltaDeDatos.all.each do |u|
-            @informe.informes_uads.build unidad_de_alta_de_datos_id: u.id, incluido: (params[:incluido] )  
+            @informe.informes_uads.build unidad_de_alta_de_datos_id: u.id, incluido: (params[:incluido] )
           end
         else
           @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: (params[:incluido] )
         end
-      end 
+      end
     end
-    
+
     if @informe.save
       redirect_to(:action => 'index')
     else
@@ -272,12 +272,12 @@ class InformesController < ApplicationController
       @esquemas << esquema
       @esquemas_informes = @informe.esquemas.build
       @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
-      
+
       render(:action => "new")
     end
   end
 
-  private 
+  private
 
   def verificar_permisos
     if not current_user.in_group?(:coordinacion)

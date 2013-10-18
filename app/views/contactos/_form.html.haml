@@ -2,17 +2,22 @@
 
   %h3.first-header Datos de identificación
   %div.field
+    = f.label :mostrado, "Nombre mostrado*"
+    = f.text_field :mostrado
+  %div.field
     = f.label :apellidos
     = f.text_field :apellidos
   %div.field
     = f.label :nombres
     = f.text_field :nombres
   %div.field
-    = f.label :mostrado, "Nombre mostrado*"
-    = f.text_field :mostrado
-  %div.field
     = f.label :sexo_id
-    = f.select :sexo_id, options_for_select(@sexos, @sexo_id), {:include_blank => true}
+    = f.select :sexo_id, options_for_select(@sexos, @sexo_id), {:include_blank => true}, |
+      {:class => "multi_select", :style => "width: 150px;", :"data-placeholder" => "Elija una opción"} |
+  %div.field
+    = f.label :tipo_de_documento_id
+    = f.select :tipo_de_documento_id, options_for_select(@tipos_de_documentos, @tipo_de_documento_id), {:include_blank => true}, |
+      {:class => "multi_select", :style => "width: 270px;", :"data-placeholder" => "Elija una opción"} |
   %div.field
     = f.label :dni
     = f.number_field :dni
@@ -22,6 +27,17 @@
   %div.field
     = f.label :email_adicional
     = f.email_field :email_adicional
+
+  %h3 Firma
+  %div.field
+    = f.label :firma_primera_linea
+    = f.text_field :firma_primera_linea
+  %div.field
+    = f.label :firma_segunda_linea
+    = f.text_field :firma_segunda_linea
+  %div.field
+    = f.label :firma_tercera_linea
+    = f.text_field :firma_tercera_linea
 
   %h3 Domicilio
   %div.field

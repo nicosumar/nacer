@@ -57,6 +57,8 @@ class ContactosController < ApplicationController
 
     # Crear los objetos necesarios para la vista
     @contacto = Contacto.new
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipo_de_documento_id = nil
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = nil
   end
@@ -86,6 +88,8 @@ class ContactosController < ApplicationController
     end
 
     # Crear los objetos necesarios para la vista
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipo_de_documento_id = @contacto.tipo_de_documento_id
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = @contacto.sexo_id
   end
@@ -116,13 +120,16 @@ class ContactosController < ApplicationController
     @contacto = Contacto.new(params[:contacto])
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipo_de_documento_id = @contacto.tipo_de_documento_id
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = @contacto.sexo_id
 
     # Verificar la validez del objeto
     if @contacto.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if @sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id))
+      if (@sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id)) ||
+          @tipo_de_documento_id && !(@tipos_de_documentos.collect{|s| s[1]}.member?(@tipo_de_documento_id)))
         redirect_to( root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre el incidente."
@@ -184,13 +191,16 @@ class ContactosController < ApplicationController
     @contacto.attributes = params[:contacto]
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipo_de_documento_id = @contacto.tipo_de_documento_id
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = @contacto.sexo_id
 
     # Verificar la validez del objeto
     if @contacto.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if @sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id))
+      if (@sexo_id && !(@sexos.collect{|s| s[1]}.member?(@sexo_id)) ||
+          @tipo_de_documento_id && !(@tipos_de_documentos.collect{|s| s[1]}.member?(@tipo_de_documento_id)))
         redirect_to( root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre el incidente."

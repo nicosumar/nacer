@@ -11,7 +11,8 @@
   %p.note Los datos del referente deben cargarse previamente en la libreta de contactos para poder seleccionarlo de la lista
   %div.field
     = f.label :contacto_id, "Referente*"
-    = f.select :contacto_id, options_for_select(@contactos, @referente.contacto_id), {}, {:include_blank => true}
+    = f.select :contacto_id, options_for_select(@contactos, @referente.contacto_id), {}, {:class => "multi_select", |
+      :include_blank => true} |
 
   %h3.header-with-note Periodo de actividad a cargo del efector
   %p.note Deje en blanco la fecha de finalización si es el referente actual del efector

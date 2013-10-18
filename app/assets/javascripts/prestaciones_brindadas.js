@@ -13,7 +13,7 @@ $(document).ready(function() {
 
   modificarVisibilidadDiagnosticos();
   modificarVisibilidadCantidad();
-  modificarVisibilidadEsCatastrofica();
+//  modificarVisibilidadEsCatastrofica(); TODO: cleanup
   modificarVisibilidadDatosReportables();
 
   $('#prestacion_brindada_prestacion_id').on('change', prestacion_id_changed);
@@ -126,6 +126,7 @@ $(document).ready(function() {
       }
   }
 
+/* TODO: cleanup. La 'catastroficidad' está definida en la prestación. No se solicita al usuario.
   function modificarVisibilidadEsCatastrofica() {
   	var prestacion_id = $('#prestacion_brindada_prestacion_id').val();
     for (i = 0; i < prestaciones.length; i++)
@@ -137,6 +138,7 @@ $(document).ready(function() {
         break;
       }
   }
+*/
 
   function modificarVisibilidadDatosReportables() {
     var oDatosReportablesAsociados = [];
@@ -329,7 +331,7 @@ $(document).ready(function() {
   function prestacion_id_changed() {
   	modificarSelectDiagnosticos();
     modificarInputCantidad();
-    modificarVisibilidadEsCatastrofica();
+//    modificarVisibilidadEsCatastrofica(); TODO: cleanup
     modificarVisibilidadHistoriaClinica();
     modificarVisibilidadDatosReportables();
   }
