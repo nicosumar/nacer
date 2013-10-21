@@ -566,13 +566,16 @@ class PadronesController < ApplicationController
   # TODO: cambiar esta función cavernícola por las otras más inteligentes "a_..." en el ApplicationController
   def valor(texto, tipo)
 
-    texto.strip!
+    texto.to_s.strip!
 
     begin
       case
         when tipo == :texto
           return "" if texto == "NULL"
-          return texto.gsub(/  /, " ").upcase
+          return texto.gsub(/  /, " ").mb_chars.upcase.to_s
+        when tipo == :texto_sql
+          return "" if texto == "NULL"
+          return ActiveRecord::Base.connection.quote(texto.gsub(/  /, " ").mb_chars.upcase.to_s)
         when tipo == :entero
           return 0 if texto == "NULL"
           return texto.to_i
@@ -863,7 +866,7 @@ class PadronesController < ApplicationController
         id_de_novedad = valor(campos[1], :entero)
         aceptado = valor(campos[2], :texto).upcase
         activo = valor(campos[3], :texto).upcase
-        mensaje_baja = valor(campos[5], :texto)
+        mensaje_baja = valor(campos[5], :texto_sql)
 
         if codigo_uad != ultima_uad
           # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
@@ -885,9 +888,9 @@ class PadronesController < ApplicationController
         ActiveRecord::Base.connection.execute "
           UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
             SET
-              estado_de_la_novedad_id = '#{estado}',
+              estado_de_la_novedad_id = #{estado},
               mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
-              mensaje_de_la_baja = '#{mensaje_baja ? mensaje_baja : 'NULL'}'
+              mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja}
             WHERE id = '#{id_de_novedad}';
         "
       end
