@@ -866,7 +866,7 @@ class PadronesController < ApplicationController
         id_de_novedad = valor(campos[1], :entero)
         aceptado = valor(campos[2], :texto).upcase
         activo = valor(campos[3], :texto).upcase
-        mensaje_baja = valor(campos[5], :texto)
+        mensaje_baja = valor(campos[5], :texto_sql)
 
         if codigo_uad != ultima_uad
           # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
