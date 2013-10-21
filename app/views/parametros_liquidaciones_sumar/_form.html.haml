@@ -17,10 +17,7 @@
   .field
     = f.label :prestacion_exceptuada, "Estado de prestaciones exceptuadas por regla "
     = f.select :excepcion_estado_de_la_prestacion_id, @estados
-  .field
-    = f.label :utlimo_dia_habil, "Fecha limite de prestacion"
-    = f.text_field :utlimo_dia_habil, { :class => "jquery_fecha"}
-
+  
   .actions
     = f.submit
 

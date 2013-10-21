@@ -22,7 +22,7 @@ class LiquidacionSumar < ActiveRecord::Base
     nomenclador = self.parametro_liquidacion_sumar.nomenclador
     vigencia_perstaciones = self.parametro_liquidacion_sumar.dias_de_prestacion
     fecha_de_recepcion = self.periodo.fecha_recepcion.to_s
-    utlimo_dia_habil = self.parametro_liquidacion_sumar.utlimo_dia_habil
+    fecha_limite_prestaciones = self.periodo.fecha_limite_prestaciones.to_s
 
     # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar (
@@ -57,7 +57,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
               "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
               "  AND nom.id = #{nomenclador.id}     \n"+
-              "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{utlimo_dia_habil}','yyyy-mm-dd') \n"+
+              "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
               "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} ) \n" +
               "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
               "         OR\n"+
@@ -112,7 +112,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
             "  AND nom.id = #{nomenclador.id}     \n"+
-            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{utlimo_dia_habil}','yyyy-mm-dd') \n"+
+            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
             "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
             "         OR\n"+
             "       (pb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
@@ -163,7 +163,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
             "  and ap.nomenclador_id = #{nomenclador.id} \n" +
-            "  AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{utlimo_dia_habil}','yyyy-mm-dd') "
+            "  AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
       })
     if cq
       logger.warn ("Tabla de prestaciones Liquidadas datos generada")
@@ -187,7 +187,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                      FROM efectores ef \n"+
             "                          INNER JOIN unidades_de_alta_de_datos u ON ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                        WHERE 'uad_' ||  u.codigo = current_schema() )   \n"+
-            " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{utlimo_dia_habil}','yyyy-mm-dd') "
+            " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
       })
     if cq
       logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
@@ -201,7 +201,7 @@ class LiquidacionSumar < ActiveRecord::Base
     #    - Aca con las prestaciones aceptadas
 
     formula = "Formula_#{self.parametro_liquidacion_sumar.formula.id}"
-    plantilla_de_reglas = self.plantilla_de_reglas_id
+    plantilla_de_reglas = (self.plantilla_de_reglas_id.blank?) ? -1 : self.plantilla_de_reglas_id
     estado_aceptada = self.parametro_liquidacion_sumar.prestacion_aceptada.id
     estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
     estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
@@ -288,7 +288,6 @@ class LiquidacionSumar < ActiveRecord::Base
             "                    )\n"+
             "                 where pl.liquidacion_id = #{self.id} \n"+
             "                 and pi.nomenclador_id = #{nomenclador} \n"+
-           # "                 and prestaciones_liquidadas.id = pl.id\n".
             "                 and regl.id = #{plantilla_de_reglas} )\n"+
             "and prestaciones_liquidadas.id = pl.id "
 
