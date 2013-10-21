@@ -70,7 +70,7 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
     # Actualiza las prestaciones brindadas que hayan sido aceptadas durante la liquidación (o sea, aceptadas y exceptuadas por regla)
     # y las marca como rechazadas para refacturar.
     # Las prestaciones que no han sido aceptadas durante esta liquidación, se mantienen sin cambios en la tabla de prestaciones brindadas
-    # sin tomar en cuenta si el rechazo se realizo por alertas o algo similar. 
+    # sin tomar en cuenta si el rechazo se realizo por advertencias o algo similar. 
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
       sql:  "update prestaciones_brindadas \n "+
@@ -94,7 +94,34 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
             "and   estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
             "and efector_id = #{efector} "
       })
-
   end
 
+  def finalizar_anexo
+    #busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
+    estado_del_proceso = EstadoDelProceso.find(3)
+
+    # Establezco el estado de "Aceptada para liquidación en el estado de las prestaciones que no se ha definido estado"
+    estado_por_omision = EstadoDeLaPrestacion.find(5)
+
+    transaction do
+      
+      self.anexos_administrativos_prestaciones.each do |prestacion|
+        if prestacion.estado_de_la_prestacion.blank?
+          prestacion.estado_de_la_prestacion = estado_por_omision
+          prestacion.save!
+        end
+      end
+      self.estado_del_proceso = estado_del_proceso
+      self.save!
+    end
+  end
+
+  def cerrar_anexo
+    #busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
+    estado_del_proceso = EstadoDelProceso.find(4)
+
+    self.estado_del_proceso = estado_del_proceso
+    self.save!
+  end
+  
 end

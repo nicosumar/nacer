@@ -389,6 +389,8 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
+    
+    # 3) Actualiza las prestaciones brindadas para que no sean modificadas
     efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
     esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
     
@@ -412,6 +414,16 @@ class LiquidacionSumar < ActiveRecord::Base
       logger.warn ("Tabla prestaciones brindadas actualizada")
     else
       logger.warn ("Tabla prestaciones brindadas NO actualizada")
+      return false
+    end
+
+    # 4) Creo los informes de liquidacion
+    LiquidacionInforme.generar_informes_de_liquidacion(self)
+
+    if cq
+      logger.warn ("Informes de liquidacion generados")
+    else
+      logger.warn ("Informes de liquidacion NO generados")
       return false
     end
 

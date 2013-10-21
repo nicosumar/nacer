@@ -7,20 +7,20 @@ class LiquidacionesSumarAnexosAdministrativosController < ApplicationController
   # GET /liquidaciones_sumar_anexos_administrativos/1
   def show
     @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id])
-
+    
+    if @liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo !="C"
+      flash[:tipo] = :ok
+      flash[:titulo] = "El anexo se encuentra #{@liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre}"
+    end
     condiciones = {}
-    #condiciones.merge!({:liquidaciones_sumar => {concepto_de_facturacion_id: @concepto_de_facturacion_id}}) if @concepto_de_facturacion_id.to_i > 0
-    #condiciones.merge!({:efectores => {id: @efector_id}}) if @efector_id.to_i > 0
-    #condiciones.merge!({:liquidaciones_sumar_cuasifacturas => {id: @liquidacion_sumar_cuasifactura_id}}) if @liquidacion_sumar_cuasifactura_id.to_i > 0
-    condiciones.merge!({liquidacion_sumar_anexo_administrativo_id: @liquidacion_sumar_anexo_administrativo.id}) if @estado_del_informe_id.to_i > 0
-
+    condiciones.merge!({liquidacion_sumar_anexo_administrativo_id: @liquidacion_sumar_anexo_administrativo.id}) 
+    
     # Crea la instancia del grid (o lleva los resultados del model al grid)
     @detalle_anexo = initialize_grid(
       AnexoAdministrativoPrestacion,
       include: [:prestacion_liquidada, :estado_de_la_prestacion],
       joins:  "join prestaciones_liquidadas on prestaciones_liquidadas.id = anexos_administrativos_prestaciones.prestacion_liquidada_id\n"+
               "join prestaciones_incluidas on prestaciones_incluidas.id = prestaciones_liquidadas.prestacion_incluida_id\n",
-              #{}"join estados_de_las_prestaciones on estados_de_las_prestaciones.id = anexos_administrativos_prestaciones.estado_de_la_prestacion_id",
       conditions: condiciones
       )
 
@@ -31,13 +31,16 @@ class LiquidacionesSumarAnexosAdministrativosController < ApplicationController
         [m.nombre, m.id, {:class => n.id} ] if n.id >= 6
       end
     end.flatten!(1).uniq
-    
-    #@motivos_de_rechazo = MotivoDeRechazo.where(categoria: "Administrativa").collect {|c| [c.nombre, c.id]}
+    @motivos_de_rechazo.delete nil
   end
 
   # Cambia el estado del anexo a finalizado. El anexo en estado de finalizado bloquea las modificaciones
   def finalizar_anexo
-    
+    @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id])
+
+    @liquidacion_sumar_anexo_administrativo.finalizar_anexo
+
+    redirect_to @liquidacion_sumar_anexo_administrativo,:flash => { :tipo => :ok, :titulo => "El anexo se finalizó correctamente" } 
   end
 
   private 

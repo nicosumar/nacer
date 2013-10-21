@@ -8,8 +8,8 @@
   #action-links
     - if can? :update, LiquidacionSumarAnexoAdministrativo
       = link_to '<< Volver al listado', liquidaciones_informes_path
-    -# if can? :update, TipoPeriodo
-      =# link_to 'Editar', edit_tipo_periodo_path(@tipo_periodo)
+      - if @liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "C"
+        = link_to 'Finalizar Anexo', finalizar_anexo_liquidacion_sumar_anexo_administrativo_path(@liquidacion_sumar_anexo_administrativo), method: :put, data: { confirm: "Luego de finalizar la revisión del anexo no será posible su posterior modifcación.\n¿Esta seguro que desea finalizar la revisión?" }
 
 = render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar_anexo_administrativo }
 #content-body

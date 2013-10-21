@@ -21,8 +21,12 @@ Nacer::Application.routes.draw do
     end
   end
   resources :reglas
-  resources :liquidaciones_sumar_anexos_administrativos
-  resources :liquidaciones_sumar_anexos_medicos
+  resources :liquidaciones_sumar_anexos_administrativos do
+    put :finalizar_anexo, on: :member
+  end
+  resources :liquidaciones_sumar_anexos_medicos do
+    put :finalizar_anexo, on: :member
+  end
   resources :plantillas_de_reglas
   resources :liquidaciones_sumar_cuasifacturas_detalles
   resources :liquidaciones_sumar_cuasifacturas
@@ -36,7 +40,6 @@ Nacer::Application.routes.draw do
   resources :anexos_administrativos_prestaciones do
     put :update_status, on: :member
     put :update_motivo_rechazo, on: :member
-    put :finalizar_anexo, on: :member
   end
 
 

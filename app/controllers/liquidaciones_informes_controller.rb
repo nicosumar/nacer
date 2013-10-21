@@ -86,7 +86,6 @@ class LiquidacionesInformesController < ApplicationController
   end
 
   # PUT /liquidaciones_informes/1
-  # PUT /liquidaciones_informes/1.json
   def update
     @liquidacion_informe = LiquidacionInforme.find(params[:id])
 
@@ -99,6 +98,7 @@ class LiquidacionesInformesController < ApplicationController
         @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
         @liquidacion_informe.save
         LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(@liquidacion_informe.id)
+        LiquidacionSumarAnexoMedico.generar_anexo_medico(@liquidacion_informe)
       else
         @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "B").first
         @liquidacion_informe.save

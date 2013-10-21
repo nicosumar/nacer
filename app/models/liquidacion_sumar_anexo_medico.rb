@@ -1,12 +1,36 @@
 class LiquidacionSumarAnexoMedico < ActiveRecord::Base
   
-  before_filter :authenticate_user!
-  before_filter :verificar_lectura
-
   belongs_to :estado_del_proceso
   has_one :liquidacion_informe
 
   attr_accessible :fecha_de_finalizacion, :fecha_de_inicio, :estado_del_proceso
+
+  def self.generar_anexo_medico(argInformeDeLiquidacionId)
+    # Obtengo la liquidacion
+    informe_de_liquidacion = LiquidacionInforme.find(argInformeDeLiquidacionId)
+    efector = informe_de_liquidacion.liquidacion_sumar_cuasifactura.efector
+    liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar
+    estado_del_proceso = EstadoDelProceso.where(codigo: "C").first # TODO: meter por algun lado los estados por defecto de lso procesos
+
+    anexo = LiquidacionSumarAnexoMedico.create(
+      estado_del_proceso: estado_del_proceso,
+      fecha_de_inicio:  DateTime.now()
+      )
+
+    informe_de_liquidacion.liquidacion_sumar_anexo_medico = anexo
+    informe_de_liquidacion.save!
+
+    cq = CustomQuery.ejecutar ({
+      sql:  "INSERT INTO \"public\".\"anexos_medicos_prestaciones\" \n"+
+            "(  \"liquidacion_sumar_anexo_medico_id\",  \"prestacion_liquidada_id\",  \"estado_de_la_prestacion_id\", \"created_at\", \"updated_at\")\n"+
+            "SELECT #{anexo.id} anexo_medico_id, p.id prestacion_liquidada_id, p.estado_de_la_prestacion_id, now(), now()\n"+
+            "FROM\n"+
+            " liquidaciones_sumar l\n"+
+            "JOIN prestaciones_liquidadas P ON P.liquidacion_id = l.ID \n"+
+            "WHERE  P.liquidacion_id = #{liquidacion_sumar.id}\n"+
+            "AND P .efector_id = #{efector.id}\n"
+      })
+  end
 
   def self.generar_anexo_para_devolucion(argInformeDeLiquidacionId)
 
@@ -61,14 +85,33 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
           "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
           "                                      where 'uad_' ||  u.codigo = current_schema() )\n "
     })
-
   end
 
-  private 
+  def finalizar_anexo
+    #busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
+    estado_del_proceso = EstadoDelProceso.find(3)
 
-  def verificar_lectura
-    if cannot? :read, LiquidacionSumarAnexoMedico
-      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    # Establezco el estado de "Aceptada para liquidación en el estado de las prestaciones que no se ha definido estado"
+    estado_por_omision = EstadoDeLaPrestacion.find(5)
+
+    transaction do
+      
+      self.anexos_medicos_prestaciones.each do |prestacion|
+        if prestacion.estado_de_la_prestacion.blank?
+          prestacion.estado_de_la_prestacion = estado_por_omision
+          prestacion.save!
+        end
+      end
+      self.estado_del_proceso = estado_del_proceso
+      self.save!
     end
+  end
+
+  def cerrar_anexo
+    #busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
+    estado_del_proceso = EstadoDelProceso.find(4)
+
+    self.estado_del_proceso = estado_del_proceso
+    self.save!
   end
 end

@@ -13,7 +13,12 @@ class AnexosAdministrativosPrestacionesController < ApplicationController
 
   def update_motivo_rechazo
     @anexo_administrativo_prestacion = AnexoAdministrativoPrestacion.find(params[:id])
-    nuevo_motivo = MotivoDeRechazo.find(params[:anexo_administrativo_prestacion][:motivo_de_rechazo_id])
+    if params[:anexo_administrativo_prestacion].blank? || params[:anexo_administrativo_prestacion][:motivo_de_rechazo_id].blank?
+      nuevo_motivo = nil
+    else
+      nuevo_motivo = MotivoDeRechazo.find(params[:anexo_administrativo_prestacion][:motivo_de_rechazo_id])
+    end
+
     @anexo_administrativo_prestacion.motivo_de_rechazo = nuevo_motivo
     @anexo_administrativo_prestacion.save
   end

@@ -21,4 +21,12 @@
     - c.liquidacion_sumar_anexo_medico.blank? ? 'No iniciado': c.liquidacion_sumar_anexo_medico.estado_del_proceso.nombre
   
   - g.column name: 'Acciones' do |c|
-    - link_to 'Aprobaciones', edit_liquidacion_informe_path(c) unless c.estado_del_proceso.id == EstadoDelProceso.where(codigo: "B").first.id
+    - if c.estado_del_proceso.codigo == "B"
+      - # muestra listado de pdfs a descargar
+    - elsif c.estado_del_proceso.codigo == "N"
+      - link_to 'Aprobaciones', edit_liquidacion_informe_path(c) # muestra el proceso de aprobación
+    - elsif c.estado_del_proceso.codigo == "C" && ( !c.liquidacion_sumar_anexo_administrativo.blank? && !c.liquidacion_sumar_anexo_medico.blank?)
+      - if c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && c.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F"
+        - # Link a cerrar informe
+    
+      
