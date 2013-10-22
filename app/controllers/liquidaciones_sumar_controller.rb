@@ -172,7 +172,6 @@ class LiquidacionesSumarController < ApplicationController
     f = Formula.where("activa = true and created_at <= ?", argLiquidacion.periodo.fecha_cierre).order('created_at DESC').first
     
     pl = ParametroLiquidacionSumar.new
-    pl.nomenclador = n
     pl.formula = f
 
     return pl
