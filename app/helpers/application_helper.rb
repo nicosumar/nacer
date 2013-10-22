@@ -15,18 +15,17 @@ module ApplicationHelper
 
     # Calculamos la diferencia entre los meses de ambas fechas
     diferencia_en_meses = (fecha_de_calculo.month - fecha_de_nacimiento.month)
+    if diferencia_en_meses < 0
+      # Ajustamos la cantidad de meses y años, si la cantidad de meses es negativa
+      diferencia_en_anios -= 1
+      diferencia_en_meses += 12
+    end
 
     # Calculamos la diferencia en días
     diferencia_en_dias = (fecha_de_calculo.day) - (fecha_de_nacimiento.day)
     if diferencia_en_dias < 0
       diferencia_en_meses -= 1
-      diferencia_en_dias = diferencia_en_dias.abs
-    end
-
-    if diferencia_en_meses < 0
-      # Ajustamos la cantidad de meses y años, si la cantidad de meses es negativa
-      diferencia_en_anios -= 1
-      diferencia_en_meses += 12
+      diferencia_en_dias = (fecha_de_calculo - (fecha_de_nacimiento + diferencia_en_anios.years + diferencia_en_meses.months)).to_i
     end
 
     # Si la diferencia entre fechas es de seis años o más, devolver la edad en años
