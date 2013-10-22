@@ -18,7 +18,7 @@
   - g.column name: "Anexo<br>Administrativo".html_safe do |c|
     - c.liquidacion_sumar_anexo_administrativo.blank? ? 'No iniciado' : (link_to "#{c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre}",c.liquidacion_sumar_anexo_administrativo)
   - g.column name: "Anexo<br>Medico".html_safe do |c|
-    - c.liquidacion_sumar_anexo_medico.blank? ? 'No iniciado': c.liquidacion_sumar_anexo_medico.estado_del_proceso.nombre
+    - c.liquidacion_sumar_anexo_medico.blank? ? 'No iniciado': ( link_to "#{c.liquidacion_sumar_anexo_medico.estado_del_proceso.nombre}", c.liquidacion_sumar_anexo_medico )
   
   - g.column name: 'Acciones' do |c|
     - if c.estado_del_proceso.codigo == "B"
@@ -28,5 +28,3 @@
     - elsif c.estado_del_proceso.codigo == "C" && ( !c.liquidacion_sumar_anexo_administrativo.blank? && !c.liquidacion_sumar_anexo_medico.blank?)
       - if c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && c.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F"
         - # Link a cerrar informe
-    
-      

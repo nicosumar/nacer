@@ -253,16 +253,18 @@ class LiquidacionSumar < ActiveRecord::Base
             "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
             "   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
             "join (\n"+
-            "     select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id\n"+
+            "     select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id, r.efector_id \n"+
             "    from plantillas_de_reglas pr\n"+
             "    join plantillas_de_reglas_reglas prr on prr.plantilla_de_reglas_id = pr.id\n"+
             "    join reglas r on (\n"+
             "    r.id = prr.regla_id\n"+
             "    and r.permitir = 't' )\n"+
+            "    where pr.id = #{self.plantilla_de_reglas_id} \n" +
             "    ) as regl\n"+
             "    on\n"+
             "    ( regl.prestacion_id = pi.prestacion_id\n"+
             "    and regl.metodo_de_validacion_id = pla.metodo_de_validacion_id\n"+
+            "    and regl.efector_id = pl.efector_id\n"+
             "    ) \n"+
             "where pl.liquidacion_id = #{self.id}\n "+
             "and   pi.nomenclador_id =  \n"+
@@ -320,16 +322,18 @@ class LiquidacionSumar < ActiveRecord::Base
             "               join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n"+
             "               join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n"+
             "               join (\n"+
-            "                 select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id\n"+
+            "                 select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id, r.efector_id \n"+
             "                  from plantillas_de_reglas pr\n"+
             "                  join plantillas_de_reglas_reglas prr on prr.plantilla_de_reglas_id = pr.id\n"+
             "                  join reglas r on (\n"+
             "                                     r.id = prr.regla_id\n"+
             "                                     and r.permitir = 't' )\n"+
+            "                        where pr.id = #{self.plantilla_de_reglas_id }\n"+
             "                                     ) as regl\n"+
             "                  on\n"+
             "                    ( regl.prestacion_id = pi.prestacion_id\n"+
             "                      and regl.metodo_de_validacion_id = pla.metodo_de_validacion_id\n"+
+            "                      and regl.efector_id = pl.efector_id\n"+
             "                    )\n"+
             "                 where pl.liquidacion_id = #{self.id} \n"+
             "                 and pi.nomenclador_id = \n"+

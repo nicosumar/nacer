@@ -1,6 +1,10 @@
+# -*- encoding : utf-8 -*-
 class LiquidacionesSumarAnexosMedicosController < ApplicationController
+  
+  before_filter :authenticate_user!
+  before_filter :verificar_lectura
+
   # GET /liquidaciones_sumar_anexos_medicos
-  # GET /liquidaciones_sumar_anexos_medicos.json
   def index
     @liquidaciones_sumar_anexos_medicos = LiquidacionSumarAnexoMedico.all
 
@@ -78,6 +82,14 @@ class LiquidacionesSumarAnexosMedicosController < ApplicationController
     respond_to do |format|
       format.html { redirect_to liquidaciones_sumar_anexos_medicos_url }
       format.json { head :no_content }
+    end
+  end
+
+  private 
+
+  def verificar_lectura
+    if cannot? :read, LiquidacionSumarAnexoMedico
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
 end

@@ -1,0 +1,37 @@
+= javascript_include_tag 'liquidaciones_sumar_anexos_administrativos'
+= javascript_include_tag 'jquery.chained.min'
+
+- content_for :title do
+  Anexo Medico - Liquidaciones Sumar  
+#content-header
+  %h1 Anexo Medico - Liquidaciones Sumar  
+  #action-links
+    - if can? :update, LiquidacionSumarAnexoMedico
+      = link_to '<< Volver al listado', liquidaciones_informes_path
+      - if @liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "C"
+        = link_to 'Finalizar Anexo', finalizar_anexo_liquidacion_sumar_anexo_medico_path(@liquidacion_sumar_anexo_medico), method: :put, data: { confirm: "Luego de finalizar la revisión del anexo no será posible su posterior modifcación.\n¿Esta seguro que desea finalizar la revisión?" }
+
+= render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar_anexo_medico }
+#content-body
+  %div.field_content
+    %span.field_name Estado actual:
+    %span.field_value= @liquidacion_sumar_anexo_medico.estado_del_proceso.nombre
+
+  %div.field_content
+    %span.field_name Fecha de inicio:
+    %span.field_value= @liquidacion_sumar_anexo_medico.fecha_de_inicio
+
+  %div.field_content
+    %span.field_name Fecha de finalizacion:
+    %span.field_value= @liquidacion_sumar_anexo_medico.fecha_de_finalizacion.blank? ? "En curso" : @liquidacion_sumar_anexo_medico.fecha_de_finalizacion
+
+  %br
+  %br
+  %h2.first-header 
+    Detalle de prestaciones 
+    = image_tag "spinner.gif",size: "16x16", id: "spinner"
+  =# render partial: 'grid'
+
+
+
+

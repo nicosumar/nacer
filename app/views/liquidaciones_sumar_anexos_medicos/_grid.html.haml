@@ -1,0 +1,33 @@
+= grid(@detalle_anexo) do |g|
+  -# Muestra si no se encontraron registros
+  - g.blank_slate content_tag(:div, "No existen prestaciones para vericar")
+  
+  -# Columnas del grid
+  - g.column name: "Codigo" do |c|
+    - c.prestacion_liquidada.prestacion_incluida.prestacion_codigo
+  - g.column name: "Afiliado" do |c|
+    - c.prestacion_liquidada.afiliado.nombre_completo
+  - g.column name: "Documento" do |c|
+    - c.prestacion_liquidada.afiliado.numero_de_documento
+  - g.column name: "Fecha" do |c|
+    - c.prestacion_liquidada.fecha_de_la_prestacion
+  - g.column name: "Historia<br>Clinica".html_safe do |c|
+    - c.prestacion_liquidada.historia_clinica
+  - g.column name: "Diagnostico" do |c|
+    - c.prestacion_liquidada.diagnostico_nombre
+
+  - g.column name: "Total" do |c|
+    - c.prestacion_liquidada.monto
+
+  - if @liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "C"
+    - g.column name: "Estado" do |c|
+      - form_for c, url: update_status_anexo_administrativo_prestacion_path(c), remote: true do |f|
+        - f.select :estado_de_la_prestacion_id, @estados_de_las_prestaciones,{:include_blank => true}, {id: "anexo_administrativo_prestacion_estado_de_la_prestacion_id_#{c.id}", :style => "width:100px", :"data-placeholder" => "Seleccione"}
+    - g.column name: "Motivo de <br>rechazo".html_safe do |c|
+      - form_for c, url: update_motivo_rechazo_anexo_administrativo_prestacion_path(c), remote: true do |f|
+        - f.select :motivo_de_rechazo_id, @motivos_de_rechazo,{:include_blank => true}, {id: "anexo_administrativo_prestacion_motivo_de_rechazo_id_#{c.id}", :style => "width:140px", :"data-placeholder" => "Seleccione"}
+  - else
+    - g.column name: "Estado" do |c|
+      - c.estado_de_la_prestacion.nombre
+    - g.column name: "Motivo de <br>rechazo".html_safe do |c|
+      - c.motivo_de_rechazo.blank? ? "No especificado" : c.motivo_de_rechazo.nombre
