@@ -262,6 +262,14 @@ class RegistroMasivoDePrestaciones
             )
           end
 
+          # Intentar individualizar una prestación que tenga el código informado, admita el diagnóstico informado,
+          grupo_poblacional = beneficiario.grupo_poblacional_al_dia(prestacion_brindada.fecha_de_la_prestacion)
+          if !grupo_poblacional.present?
+            prestacion_brindada.agregar_error(
+              "La persona no pertenece a un grupo poblacional cubierto por el Programa Sumar"
+            )
+          end
+
           # Continuar con la próxima línea si se produjo algún error hasta este punto del proceso
           if !prestacion_brindada.errores.blank?
             prestacion_brindada.persistido = false
@@ -269,8 +277,6 @@ class RegistroMasivoDePrestaciones
             next
           end
 
-          # Intentar individualizar una prestación que tenga el código informado, admita el diagnóstico informado,
-          grupo_poblacional = beneficiario.grupo_poblacional_al_dia(prestacion_brindada.fecha_de_la_prestacion)
           prestaciones = Prestacion.where(
             "codigo = ?
               AND EXISTS (
