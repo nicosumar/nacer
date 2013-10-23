@@ -22,6 +22,25 @@ class LiquidacionSumar < ActiveRecord::Base
     fecha_de_recepcion = self.periodo.fecha_recepcion.to_s
     fecha_limite_prestaciones = self.periodo.fecha_limite_prestaciones.to_s
 
+    # 0 ) Elimino los duplicados
+    cq = CustomQuery.ejecutar({
+      esquemas: esquemas,
+      sql: "update prestaciones_brindadas\n"+
+          "set estado_de_la_prestacion_id = 11\n"+
+          "WHERE\n"+
+          " EXISTS (\n"+
+          "   SELECT *\n"+
+          "   FROM prestaciones_brindadas pb2\n"+
+          "   WHERE prestaciones_brindadas.efector_id = pb2.efector_id\n"+
+          "   AND prestaciones_brindadas.prestacion_id = pb2.prestacion_id\n"+
+          "   AND prestaciones_brindadas.clave_de_beneficiario = pb2.clave_de_beneficiario\n"+
+          "   AND prestaciones_brindadas.fecha_de_la_prestacion = pb2.fecha_de_la_prestacion\n"+
+          "   AND pb2.id > prestaciones_brindadas.id \n"+
+          "   AND prestaciones_brindadas.estado_de_la_prestacion_id = pb2.estado_de_la_prestacion_id\n"+
+          "   AND prestaciones_brindadas.estado_de_la_prestacion_id IN (2, 3)\n"+
+          " )"
+      })
+
     # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar (
       {
@@ -229,30 +248,69 @@ class LiquidacionSumar < ActiveRecord::Base
     estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
 
     cq = CustomQuery.ejecutar ({
-      sql:  "UPDATE public.prestaciones_liquidadas \n"+
-            "SET monto = #{formula}(id), \n"+
-            "    estado_de_la_prestacion_liquidada_id =  #{estado_aceptada} \n"+
-            "WHERE id in \n"+
-            "(select pl.id \n" +
-            " from prestaciones_liquidadas pl \n "+
-            "where pl.liquidacion_id = #{self.id}\n "+
-            "and pl.id not in (select pla.prestacion_liquidada_id from prestaciones_liquidadas_advertencias pla where pla.liquidacion_id = #{self.id}) )"
+      #sql:  "UPDATE public.prestaciones_liquidadas \n"+
+      #      "SET monto = #{formula}(id), \n"+
+      #      "    estado_de_la_prestacion_liquidada_id =  #{estado_aceptada} \n"+
+      #      "WHERE id in \n"+
+      #      "(select pl.id \n" +
+      #      " from prestaciones_liquidadas pl \n "+
+      #      "where pl.liquidacion_id = #{self.id}\n "+
+      #      "and pl.id not in (select pla.prestacion_liquidada_id from prestaciones_liquidadas_advertencias pla where pla.liquidacion_id = #{self.id}) )"
+      sql:  "UPDATE prestaciones_liquidadas   \n"+
+            " SET monto = #{formula}(pl.id),   \n"+
+            " estado_de_la_prestacion_liquidada_id =  #{estado_aceptada}   \n"+
+            "from prestaciones_liquidadas pl\n"+
+            " left join prestaciones_liquidadas_advertencias pla on pl.id = pla.prestacion_liquidada_id\n"+
+            "where pla.id is null\n"+
+            "and pl.liquidacion_id = #{self.id}\n"+
+            "and prestaciones_liquidadas.id = pl.id"
       })
+
     # 6) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
     #    de prestaciones liquidadas
-    #    - Aca con las prestaciones exceptuadas (aceptadas por regla), con su observacion
+    #    - Aca con las prestaciones rechazadas, con su observacion
+    cq = CustomQuery.ejecutar ({
+      sql:    "UPDATE public.prestaciones_liquidadas \n"+
+              "            SET monto = #{formula}(pl.id), \n"+
+              "                estado_de_la_prestacion_liquidada_id =  #{estado_rechazada}, \n"+
+              "                observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || CAST(E'No cumple con la validacion de \"' || pla.comprobacion || E'\" \\n ' \n"+
+              "                                      as text)\n"+
+              "from prestaciones_incluidas pi\n"+
+              " join prestaciones_liquidadas pl on pl.prestacion_incluida_id = pi.id\n"+
+              " join prestaciones_liquidadas_advertencias pla on pla.prestacion_liquidada_id = pl.id \n"+
+              " left join (\n"+
+              "             SELECT r.*\n"+
+              "               FROM\n"+
+              "                 reglas r\n"+
+              "                 JOIN plantillas_de_reglas_reglas prr ON (r.id = prr.regla_id)\n"+
+              "                 JOIN plantillas_de_reglas pr ON (pr.id = prr.plantilla_de_reglas_id) \n"+
+              "               WHERE pr.id = #{plantilla_de_reglas}\n"+
+              "             ) sq1 ON (\n"+
+              "                       sq1.efector_id = pl.efector_id\n"+
+              "                       AND sq1.prestacion_id = pi.prestacion_id\n"+
+              "                       AND sq1.metodo_de_validacion_id = pla.metodo_de_validacion_id \n"+
+              "                      )\n"+
+              "   WHERE permitir IS NULL\n"+
+              "   and pl.liquidacion_id = #{self.id}\n"+
+              " and prestaciones_liquidadas.id = pl.id "
+    })
+
+    logger.warn("CQ--------------------------------- #{cq.inspect}")
+    # 7) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
+    #    de prestaciones liquidadas
+    #    - Aca con las prestaciones exceptuadas por regla 
     cq = CustomQuery.ejecutar ({
       sql:  "UPDATE public.prestaciones_liquidadas \n"+
             "SET monto = #{formula}(pl.id), \n"+
             "    estado_de_la_prestacion_liquidada_id =  #{estado_exceptuada}, \n"+
-            "    observaciones_liquidacion = CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||'\" \\n ' \n "+
-            "                         ' Aprobada por regla \"'|| regl.nombre || '\" \\n' ||\n"+
+            "    observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||E'\" \\n ' \n "+
+            "                         ' Aprobada por regla \"'|| regl.nombre || E'\" \\n' ||\n"+
             "                         ' Observaciones: ' || regl.observaciones\n"+
             "                           as text)\n "+
             " from prestaciones_liquidadas_advertencias pla \n "+
             "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
             "   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
-            "join (\n"+
+              "join (\n"+
             "     select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id, r.efector_id \n"+
             "    from plantillas_de_reglas pr\n"+
             "    join plantillas_de_reglas_reglas prr on prr.plantilla_de_reglas_id = pr.id\n"+
@@ -267,86 +325,8 @@ class LiquidacionSumar < ActiveRecord::Base
             "    and regl.efector_id = pl.efector_id\n"+
             "    ) \n"+
             "where pl.liquidacion_id = #{self.id}\n "+
-            "and   pi.nomenclador_id =  \n"+
-            "              (select id from nomencladores \n"+
-            "               where activo = 't' \n"+
-            "               and nomenclador_sumar = 't' \n"+
-            "               and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
-            "               or  \n"+
-            "               (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
-            "               limit 1\n"+
-            "               )"+
-            "and prestaciones_liquidadas.id = pl.id \n"+
-            "and regl.id = #{plantilla_de_reglas}"
-      })
-    logger.warn("CQ--------------------------------- #{cq.inspect}")
-    # 7) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
-    #    de prestaciones liquidadas
-    #    - Aca con las prestaciones rechazadas
-    cq = CustomQuery.ejecutar ({
-      sql:  "UPDATE public.prestaciones_liquidadas \n"+
-            "SET monto = #{formula}(pl.id), \n"+
-            "    estado_de_la_prestacion_liquidada_id =  #{estado_rechazada}, \n"+
-            "    observaciones_liquidacion = CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||'\" \\n ' \n "+
-            "                           as text)\n "+
-            " from prestaciones_liquidadas_advertencias pla \n "+
-            "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
-            "   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
-            "where pl.liquidacion_id = #{self.id}\n "+
-            "and   pi.nomenclador_id = \n "+
-            "              (select id from nomencladores \n"+
-            "               where activo = 't' \n"+
-            "               and nomenclador_sumar = 't' \n"+
-            "               and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
-            "               or  \n"+
-            "               (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
-            "               limit 1\n"+
-            "               )"+
-            "and pl.id in (select pla.prestacion_liquidada_id --todas las prestaciones liquidadas con advertencias\n "+
-            "                 from prestaciones_liquidadas_advertencias pla\n "+
-            "                 join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
-            "                 join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
-            "               where pla.liquidacion_id = #{self.id}\n "+
-            "               and pi.nomenclador_id = \n "+
-            "                                     (select id from nomencladores \n"+
-            "                                      where activo = 't' \n"+
-            "                                      and nomenclador_sumar = 't' \n"+
-            "                                      and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
-            "                                      or  \n"+
-            "                                      (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
-            "                                      limit 1\n"+
-            "                                      )"+
-            "               EXCEPT\n "+
-            "               select prestacion_liquidada_id\n"+
-            "               from prestaciones_liquidadas_advertencias pla\n"+
-            "               join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n"+
-            "               join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n"+
-            "               join (\n"+
-            "                 select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id, r.efector_id \n"+
-            "                  from plantillas_de_reglas pr\n"+
-            "                  join plantillas_de_reglas_reglas prr on prr.plantilla_de_reglas_id = pr.id\n"+
-            "                  join reglas r on (\n"+
-            "                                     r.id = prr.regla_id\n"+
-            "                                     and r.permitir = 't' )\n"+
-            "                        where pr.id = #{self.plantilla_de_reglas_id }\n"+
-            "                                     ) as regl\n"+
-            "                  on\n"+
-            "                    ( regl.prestacion_id = pi.prestacion_id\n"+
-            "                      and regl.metodo_de_validacion_id = pla.metodo_de_validacion_id\n"+
-            "                      and regl.efector_id = pl.efector_id\n"+
-            "                    )\n"+
-            "                 where pl.liquidacion_id = #{self.id} \n"+
-            "                 and pi.nomenclador_id = \n"+
-            "                                       (select id from nomencladores \n"+
-            "                                        where activo = 't' \n"+
-            "                                        and nomenclador_sumar = 't' \n"+
-            "                                        and (pl.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
-            "                                        or  \n"+
-            "                                       (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
-            "                                        limit 1\n"+
-            "                                       )"+
-            "                 and regl.id = #{plantilla_de_reglas} )\n"+
-            "and prestaciones_liquidadas.id = pl.id "
+            " and pl.estado_de_la_prestacion_id is NULL \n"+
+            " and prestaciones_liquidadas.id = pl.id "
 
      })
   end
