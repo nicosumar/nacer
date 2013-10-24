@@ -17,7 +17,7 @@ class LiquidacionesSumarController < ApplicationController
   def new
     @liquidacion_sumar = LiquidacionSumar.new
     @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
-    
+
     # Traigo los conceptos de facturacion y los periodos. Agrego la vinculacion entre
     # el concepto y el periodo
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
@@ -31,7 +31,7 @@ class LiquidacionesSumarController < ApplicationController
   def edit
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
     @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
-    
+
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
     @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
 
@@ -41,34 +41,34 @@ class LiquidacionesSumarController < ApplicationController
   # POST /liquidaciones_sumar
   def create
     @liquidacion_sumar = LiquidacionSumar.new(params[:liquidacion_sumar])
-  
+
     pl = crear_tabla_parametros(@liquidacion_sumar)
-  
+
     if pl.save
       @liquidacion_sumar.parametro_liquidacion_sumar_id = pl.id
-    
+
       if @liquidacion_sumar.save
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se creó la liquidacion '#{@liquidacion_sumar.descripcion}' correctamente" } 
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se creó la liquidacion '#{@liquidacion_sumar.descripcion}' correctamente" }
       else
         @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
-        
+
         @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
         @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
 
         @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
-        render action: "new" 
+        render action: "new"
       end
     else
       if @liquidacion_sumar.save
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se creó la liquidacion '#{@liquidacion_sumar.descripcion}' pero no se creo la tabla de parametros" } 
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se creó la liquidacion '#{@liquidacion_sumar.descripcion}' pero no se creo la tabla de parametros" }
       else
         @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
-        
+
         @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
         @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
 
         @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
-        render action: "new" 
+        render action: "new"
       end
     end
 
@@ -79,16 +79,16 @@ class LiquidacionesSumarController < ApplicationController
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
 
     if @liquidacion_sumar.update_attributes(params[:liquidacion_sumar])
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se actualizo la liquidacion '#{@liquidacion_sumar.descripcion}' correctamente" } 
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se actualizo la liquidacion '#{@liquidacion_sumar.descripcion}' correctamente" }
     else
       @grupo_de_efectores_liquidacion = GrupoDeEfectoresLiquidacion.all.collect {|g| [g.grupo, g.id]}
-      
+
       @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
       @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
 
       @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
-      
-      render action: "edit" 
+
+      render action: "edit"
     end
   end
 
@@ -97,43 +97,43 @@ class LiquidacionesSumarController < ApplicationController
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
     @liquidacion_sumar.destroy
 
-    redirect_to liquidaciones_sumar_url 
+    redirect_to liquidaciones_sumar_url
   end
 
   def vaciar_liquidacion
     tiempo_proceso = Time.now
 
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
-    
+
     begin
       @liquidacion_sumar.vaciar_liquidacion
     rescue Exception => e
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "No fue posible vaciar la liquidacion. Si las cuasifacturas ya han sido generadas, la liquidación no se puede vaciar. Detalles: #{e.message}" } 
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "No fue posible vaciar la liquidacion. Si las cuasifacturas ya han sido generadas, la liquidación no se puede vaciar. Detalles: #{e.message}" }
       return
     end
     logger.warn "Tiempo para vaciar la liquidacion: #{Time.now - tiempo_proceso} segundos"
-    redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "La liquidacion se elimino correctamente" } 
-    
-    
+    redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "La liquidacion se elimino correctamente" }
+
+
   end
 
   def procesar_liquidacion
     tiempo_proceso = Time.now
 
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
-    
+
     if @liquidacion_sumar.prestaciones_liquidadas.count > 1
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." } 
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." }
     else
       if @liquidacion_sumar.generar_snapshoot_de_liquidacion
         logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" } 
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
       else
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." } 
-      end 
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
+      end
     end
-    
-    
+
+
 
   end
 
@@ -143,18 +143,18 @@ class LiquidacionesSumarController < ApplicationController
      @liquidacion_sumar = LiquidacionSumar.find(params[:id])
 
     if @liquidacion_sumar.prestaciones_liquidadas.count == 0
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." } 
-    elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0 
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." } 
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
+    elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
     else
       if @liquidacion_sumar.generar_cuasifacturas
         logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" } 
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" }
       else
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." } 
-      end 
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
+      end
     end
-    
+
   end
 
   private
@@ -170,9 +170,9 @@ class LiquidacionesSumarController < ApplicationController
     n = Nomenclador.where("activo = true and fecha_de_inicio <= ?", argLiquidacion.periodo.fecha_cierre).order('fecha_de_inicio DESC').first
     #Obtengo la ultima formula creada
     f = Formula.where("activa = true and created_at <= ?", argLiquidacion.periodo.fecha_cierre).order('created_at DESC').first
-    
+
     pl = ParametroLiquidacionSumar.new
-    pl.nomenclador = n
+    #pl.nomenclador = n
     pl.formula = f
 
     return pl
