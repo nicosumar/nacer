@@ -709,13 +709,21 @@ ActiveRecord::Schema.define(:version => 20131023200530) do
   end
 
   create_table "nomencladores", :force => true do |t|
-    t.string   "nombre",                             :null => false
-    t.date     "fecha_de_inicio",                    :null => false
-    t.boolean  "activo",          :default => false, :null => false
+    t.string   "nombre",                                   :null => false
+    t.date     "fecha_de_inicio",                          :null => false
+    t.boolean  "activo",                :default => false, :null => false
     t.text     "observaciones"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "nomenclador_sumar",     :default => true
+    t.date     "fecha_de_finalizacion"
   end
+
+  add_index "nomencladores", ["activo"], :name => "nomencladores_activo_idx"
+  add_index "nomencladores", ["fecha_de_finalizacion"], :name => "nomencladores_fecha_de_finalizacion_idx"
+  add_index "nomencladores", ["fecha_de_inicio", "nomenclador_sumar", "fecha_de_finalizacion", "activo"], :name => "nomencladores_fecha_de_inicio_nomenclador_sumar_fecha_de_fi_idx"
+  add_index "nomencladores", ["fecha_de_inicio"], :name => "nomencladores_fecha_de_inicio_idx"
+  add_index "nomencladores", ["nomenclador_sumar"], :name => "nomencladores_nomenclador_sumar_idx"
 
   create_table "objetos_de_las_prestaciones", :force => true do |t|
     t.integer "tipo_de_prestacion_id",                        :null => false
@@ -744,7 +752,6 @@ ActiveRecord::Schema.define(:version => 20131023200530) do
 
   create_table "parametros_liquidaciones_sumar", :force => true do |t|
     t.integer  "dias_de_prestacion",                   :default => 120
-    t.integer  "nomenclador_id"
     t.integer  "formula_id"
     t.datetime "created_at",                                            :null => false
     t.datetime "updated_at",                                            :null => false

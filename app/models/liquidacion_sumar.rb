@@ -15,7 +15,7 @@ class LiquidacionSumar < ActiveRecord::Base
 
   def generar_snapshoot_de_liquidacion
 
-    #Traigo Grupo de efectores 
+    #Traigo Grupo de efectores
   	efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
     esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
     vigencia_perstaciones = self.parametro_liquidacion_sumar.dias_de_prestacion
@@ -37,7 +37,7 @@ class LiquidacionSumar < ActiveRecord::Base
           "   AND prestaciones_brindadas.fecha_de_la_prestacion = pb2.fecha_de_la_prestacion\n"+
           "   AND pb2.id > prestaciones_brindadas.id \n"+
           "   AND prestaciones_brindadas.estado_de_la_prestacion_id = pb2.estado_de_la_prestacion_id\n"+
-          "   AND prestaciones_brindadas.estado_de_la_prestacion_id IN (2, 3)\n"+
+          "   AND prestaciones_brindadas.estado_de_la_prestacion_id IN (2, 3, 7)\n"+
           " )"
       })
 
@@ -67,7 +67,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "      AND ap.area_de_prestacion_id = ef.area_de_prestacion_id\n"+
               "    )\n"+
               "  INNER JOIN nomencladores nom  ON ( nom.id = ap.nomenclador_id ) \n"+
-              "  WHERE estado_de_la_prestacion_id IN (2,3)\n"+
+              "  WHERE estado_de_la_prestacion_id IN (2,3,7)\n"+
               "  AND cdf.id = #{self.concepto_de_facturacion.id}    \n"+
               "  AND ef.id in (select ef.id \n" +
               "                from efectores ef \n"+
@@ -131,7 +131,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "  INNER JOIN nomencladores nom  \n "+
             "    ON ( nom.id = ap.nomenclador_id )\n "+
             "  \n "+
-            "  WHERE pb.estado_de_la_prestacion_id IN (2,3)\n "+
+            "  WHERE pb.estado_de_la_prestacion_id IN (2,3,7)\n "+
             "  AND ef.id in (select ef.id \n" +
             "                from efectores ef \n"+
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
@@ -190,7 +190,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "       dra.prestacion_brindada_id = pl.prestacion_brindada_id\n "+
             "       AND ap.dato_reportable_id = drr.dato_reportable_id\n "+
             "     )\n "+
-            "  WHERE pl.estado_de_la_prestacion_id IN (2,3)\n "+
+            "  WHERE pl.estado_de_la_prestacion_id IN (2,3,7)\n "+
             "  AND ef.id in (select ef.id \n" +
             "                from efectores ef \n"+
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
@@ -223,7 +223,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "FROM metodos_de_validacion_fallados m \n"+
             " INNER JOIN metodos_de_validacion mv ON (mv.id = m.metodo_de_validacion_id )\n"+
             " INNER JOIN prestaciones_liquidadas pl ON  (pl.prestacion_brindada_id = m.prestacion_brindada_id and pl.liquidacion_id = #{self.id} )\n"+
-            "WHERE pl.estado_de_la_prestacion_id IN (2,3) \n "+
+            "WHERE pl.estado_de_la_prestacion_id IN (2,3,7) \n "+
             "AND pl.efector_id in (SELECT ef.id \n" +
             "                      FROM efectores ef \n"+
             "                          INNER JOIN unidades_de_alta_de_datos u ON ef.unidad_de_alta_de_datos_id = u.id \n"+
@@ -298,7 +298,7 @@ class LiquidacionSumar < ActiveRecord::Base
     logger.warn("CQ--------------------------------- #{cq.inspect}")
     # 7) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
     #    de prestaciones liquidadas
-    #    - Aca con las prestaciones exceptuadas por regla 
+    #    - Aca con las prestaciones exceptuadas por regla
     cq = CustomQuery.ejecutar ({
       sql:  "UPDATE public.prestaciones_liquidadas \n"+
             "SET monto = #{formula}(pl.id), \n"+
@@ -373,11 +373,11 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
-    
+
     # 3) Actualiza las prestaciones brindadas para que no sean modificadas
     efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
     esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
-    
+
     estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
     estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
     cq = CustomQuery.ejecutar ({
@@ -401,15 +401,15 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
-    # 4) Creo los informes de liquidacion
-    LiquidacionInforme.generar_informes_de_liquidacion(self)
-
-    if cq
-      logger.warn ("Informes de liquidacion generados")
-    else
-      logger.warn ("Informes de liquidacion NO generados")
-      return false
-    end
+#    # 4) Creo los informes de liquidacion
+#    LiquidacionInforme.generar_informes_de_liquidacion(self)
+#
+#    if cq
+#      logger.warn ("Informes de liquidacion generados")
+#    else
+#      logger.warn ("Informes de liquidacion NO generados")
+#      return false
+#    end
 
     return true
   end

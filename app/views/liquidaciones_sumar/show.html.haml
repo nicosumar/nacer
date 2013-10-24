@@ -40,9 +40,8 @@
     %tr
       %td
         %b Grupo de Efectores:
-      %td
+      %td{colspan: "2"}
         %span.field_value= link_to "#{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}", @liquidacion_sumar.grupo_de_efectores_liquidacion, {method: "get"},{style: "color: #0000FF"}
-      %td{colspan: "2"}= button_to 'Ver grupo', @liquidacion_sumar.grupo_de_efectores_liquidacion, method: "get"
     %tr
       %td{colspan: "4"} &nbsp;
     %tr
