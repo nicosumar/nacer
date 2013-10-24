@@ -96,9 +96,9 @@ ActiveRecord::Base.transaction do
 
   ActiveRecord::Base.connection.execute "
     SET SEARCH_PATH TO uad_025, public;
-    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('Z')} WHERE id = 1708;
-    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('Z')} WHERE id = 1153;
-    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('Z')} WHERE id = 699;
+    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1708;
+    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1153;
+    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 699;
     UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 702;
                 
     SET SEARCH_PATH TO uad_012, public;
