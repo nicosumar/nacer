@@ -361,7 +361,7 @@ class ModificarUnidadesDeAltaDeDatos < ActiveRecord::Migration
 
     CREATE TRIGGER agregar_o_modificar_uad
       AFTER INSERT OR UPDATE OF inscripcion, facturacion ON unidades_de_alta_de_datos
-      FOR EACH ROW EXECUTE PROCEDURE crear_esquema_para_uad();
+      FOR EACH STATEMENT EXECUTE PROCEDURE crear_esquema_para_uad();
 
     -- Completar la transacción
     COMMIT TRANSACTION;

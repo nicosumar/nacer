@@ -22,7 +22,7 @@ EstadoDeLaPrestacion.create([
     :pendiente => false,
     :indexable => true },
   { #:id => 5,
-    :nombre => "Aprobada para liquidación",
+    :nombre => "Aprobada, pendiente de pago",
     :codigo => "L",
     :pendiente => false,
     :indexable => false },
@@ -54,6 +54,11 @@ EstadoDeLaPrestacion.create([
   { #:id => 11,
     :nombre => "Anulada por vencimiento",
     :codigo => "S",
+    :pendiente => false,
+    :indexable => false },
+  { #:id => 12,
+    :nombre => "Pagada",
+    :codigo => "G",
     :pendiente => false,
     :indexable => false }
 ])
