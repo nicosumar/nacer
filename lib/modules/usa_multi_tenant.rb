@@ -149,7 +149,6 @@ module UsaMultiTenant
     if !argEsquemas.blank?
       argEsquemas.flatten!
       argEsquemas.each {|e| esquemas << "'#{e}'"}
-      #esquemas = argEsquemas
       streEsq = esquemas.join(", ")
       sql += streEsq + ")"
     end

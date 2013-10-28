@@ -325,7 +325,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "    and regl.efector_id = pl.efector_id\n"+
             "    ) \n"+
             "where pl.liquidacion_id = #{self.id}\n "+
-            " and pl.estado_de_la_prestacion_id is NULL \n"+
+            " and pl.estado_de_la_prestacion_liquidada_id is NULL \n"+
             " and prestaciones_liquidadas.id = pl.id "
 
      })

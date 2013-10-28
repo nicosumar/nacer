@@ -23,8 +23,8 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
 
   	cq = CustomQuery.ejecutar ({
       sql:  "INSERT INTO \"public\".\"anexos_administrativos_prestaciones\" \n"+
-						"(	\"liquidacion_sumar_anexo_administrativo_id\",	\"prestacion_liquidada_id\",	\"estado_de_la_prestacion_id\",	\"created_at\",	\"updated_at\")\n"+
-						"SELECT	#{anexo.id} anexo_administrativo_id, p.id, p.estado_de_la_prestacion_id, now(), now()\n"+
+						"(	\"liquidacion_sumar_anexo_administrativo_id\",	\"prestacion_liquidada_id\", \"created_at\",	\"updated_at\")\n"+
+						"SELECT	#{anexo.id} anexo_administrativo_id, p.id, now(), now()\n"+
 						"FROM\n"+
 						"	liquidaciones_sumar l\n"+
 						"JOIN prestaciones_liquidadas P ON P .liquidacion_id = l. ID\n"+
@@ -101,17 +101,20 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
     estado_del_proceso = EstadoDelProceso.find(3)
 
     # Establezco el estado de "Aceptada para liquidación en el estado de las prestaciones que no se ha definido estado"
+    # TODO: Ver de parametrizar estos estados por algun lado
     estado_por_omision = EstadoDeLaPrestacion.find(5)
+    estado_por_defecto = EstadoDeLaPrestacion.find(4) #estado en el que esta la prestación al momento de generarse la cuasifactura (aca el estado es facturada, en proceso de liquidacion)
 
     transaction do
       
       self.anexos_administrativos_prestaciones.each do |prestacion|
-        if prestacion.estado_de_la_prestacion.blank?
+        if prestacion.estado_de_la_prestacion.blank? || prestacion.estado_de_la_prestacion == estado_por_defecto
           prestacion.estado_de_la_prestacion = estado_por_omision
           prestacion.save!
         end
       end
       self.estado_del_proceso = estado_del_proceso
+      self.fecha_de_finalizacion = Time.new
       self.save!
     end
   end

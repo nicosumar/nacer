@@ -5,19 +5,6 @@
   %h1 Cuasifacturas Sumar
 
 #content-body
-  = grid(@liquidaciones_sumar_cuasifacturas, hide_submit_button: true, hide_reset_button: true) do |g|
-    - g.column :name => 'Número cuasifactura', :attribute => 'numero_cuasifactura'
-    - g.column :name => 'Monto total', :attribute => 'monto_total'
-    - g.column :name => 'Periodo de liquidación' do |periodo|
-      - periodo.liquidacion_sumar.periodo.periodo
-    -# g.column :name => 'Title', :attribute => 'title'
-    -# g.column  :name => 'Description', :attribute => 'description'
-    -# g.column  :name => 'Archived', :attribute => 'archived' do |task|
-      -# task.archived? ? 'Yes' : 'No'
-    -# g.column   do |task|
-      -# link_to('Edit', edit_task_path(task))
-
-
   %table
     %tr
       %th Periodo de liquidación
@@ -26,7 +13,7 @@
       %th Monto total
       %th Número cuasifactura
       %th Observaciones
-      %th Acciones
+      %th{colspan: 2} Acciones
     - @liquidaciones_sumar_cuasifacturas.each do |liquidacion_sumar_cuasifactura|
       %tr
         %td= liquidacion_sumar_cuasifactura.liquidacion_sumar.periodo.periodo
@@ -35,7 +22,9 @@
         %td= liquidacion_sumar_cuasifactura.monto_total
         %td= liquidacion_sumar_cuasifactura.numero_cuasifactura
         %td= liquidacion_sumar_cuasifactura.observaciones
-        %td= link_to 'Ver', liquidacion_sumar_cuasifactura_path(liquidacion_sumar_cuasifactura, format: 'pdf')
+        %td= link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(liquidacion_sumar_cuasifactura, format: 'pdf')
+        - if (@efector_administrador_administrado.select {|administrador, efector| efector == liquidacion_sumar_cuasifactura.efector.id.to_s }).size >=1
+          %td Consolidado
         
 
 
