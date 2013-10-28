@@ -96,14 +96,16 @@ ActiveRecord::Base.transaction do
 
   ActiveRecord::Base.connection.execute "
     SET SEARCH_PATH TO uad_025, public;
-    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('Z')} WHERE id = 1708;
-    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('Z')} WHERE id = 1153;
-    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('Z')} WHERE id = 699;
+    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1708;
+    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1153;
+    UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 699;
     UPDATE uad_025.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 702;
+                
     SET SEARCH_PATH TO uad_012, public;
     UPDATE uad_012.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 551;
     UPDATE uad_012.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 620;
     UPDATE uad_012.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 424;
+        
     SET SEARCH_PATH TO uad_018, public;
     UPDATE uad_018.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1394;
     UPDATE uad_018.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1389;
@@ -113,12 +115,15 @@ ActiveRecord::Base.transaction do
     UPDATE uad_018.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1396;
     UPDATE uad_018.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1400;
     UPDATE uad_018.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 743;
+                                    
     SET SEARCH_PATH TO uad_027, public;
     UPDATE uad_027.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1047;
     UPDATE uad_027.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 3410;
     UPDATE uad_027.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 3360;
+            
     SET SEARCH_PATH TO uad_014, public;
     UPDATE uad_014.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1614;
+    
     SET SEARCH_PATH TO uad_010, public;
     UPDATE uad_010.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 631;
     UPDATE uad_010.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 230;
@@ -136,8 +141,11 @@ ActiveRecord::Base.transaction do
     UPDATE uad_010.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 635;
     UPDATE uad_010.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 228;
     UPDATE uad_010.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 636;
+
     SET SEARCH_PATH TO uad_008, public;
     UPDATE uad_008.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('Z')} WHERE id = 1090;
+    UPDATE uad_008.prestaciones_brindadas SET estado_de_la_prestacion_id = #{EstadoDeLaPrestacion.id_del_codigo!('V')} WHERE id = 1094;
+
   "
 
 end
