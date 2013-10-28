@@ -92,7 +92,7 @@ report.start_new_page do |page|
          efector_datos_bancarios: cabecera[:efector_datos_bancarios] ,
          efector_codigo: cabecera[:efector_codigo] ,
          efector_contrato: cabecera[:efector_contrato] ,
-         efector_encargado: cabecera[:efector_encargado] ,
+         efector_encargado: cabecera[:sello_mostrado] ,
          liquidacion_periodos: cabecera[:liquidacion_periodos] ,
          concepto_facturacion: cabecera[:concepto_facturacion],
          referente_mostrado: cabecera[:sello_mostrado],
