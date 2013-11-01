@@ -41,7 +41,7 @@ class LiquidacionSumar < ActiveRecord::Base
           " )"
       })
 
-    # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
+    # 1) a -  Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
     cq = CustomQuery.ejecutar (
       {
         esquemas: esquemas,
@@ -97,7 +97,58 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
-    # 2) Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
+    # 1) b -  Identifico los TIPOS de prestaciones que no requieren un beneficiario que se brindaron en esta liquidacion y genero el snapshoot de las mismas
+    cq = CustomQuery.ejecutar (
+      {
+        esquemas: esquemas,
+        sql:  "INSERT INTO public.prestaciones_incluidas\n"+
+              "( liquidacion_id, \n"+
+              "  nomenclador_id, nomenclador_nombre, \n"+
+              "  prestacion_id, prestacion_nombre, prestacion_codigo, \n"+
+              "  prestacion_cobertura, prestacion_comunitaria, prestacion_requiere_hc, prestacion_concepto_nombre, created_at, updated_at) \n"+
+              " SELECT DISTINCT ON (nom.id, pr.id) #{self.id}, \n"+
+              "               nom.id as nomenclador_id, nom.nombre as nomenclador_nombre, \n"+
+              "               pr.id as prestacion_id, pr.nombre, pr.codigo as prestacion_codigo,  \n"+
+              "               pr.otorga_cobertura as prestacion_cobertura, pr.comunitaria as prestacion_comunitaria, pr.requiere_historia_clinica as prestacion_requiere_hc \n"+
+              "              ,cdf.concepto as prestacion_concepto_nombre,now(), now()\n"+
+              "FROM prestaciones_brindadas pb\n"+
+              "  INNER JOIN prestaciones pr ON (pr.id = pb.prestacion_id) \n"+
+              "  INNER JOIN conceptos_de_facturacion cdf on (cdf.id = pr.concepto_de_facturacion_id)\n"+
+              "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n"+
+              "  INNER JOIN asignaciones_de_precios ap \n"+
+              "    ON (\n"+
+              "      ap.prestacion_id = pb.prestacion_id\n"+
+              "      AND ap.area_de_prestacion_id = ef.area_de_prestacion_id\n"+
+              "    )\n"+
+              "  INNER JOIN nomencladores nom  ON ( nom.id = ap.nomenclador_id ) \n"+
+              "  WHERE estado_de_la_prestacion_id IN (2,3,7)\n"+
+              "  AND cdf.id = #{self.concepto_de_facturacion.id}    \n"+
+              "  AND ef.id in (select ef.id \n" +
+              "                from efectores ef \n"+
+              "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
+              "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
+              "  AND nom.id =      \n"+
+              "              (select id from nomencladores \n"+
+              "               where activo = 't' \n"+
+              "               and nomenclador_sumar = 't' \n"+
+              "               and (pb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+              "               or  \n"+
+              "               (pb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+              "               limit 1\n"+
+              "               )"+
+              "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
+              "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} ) \n" 
+      })
+
+    if cq
+      logger.warn ("Tabla de prestaciones incluidas generada")
+    else
+      logger.warn ("Tabla de prestaciones incluidas NO generada")
+      return false
+    end
+
+
+    # 2) a ) Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas 
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
       sql:  "INSERT INTO public.prestaciones_liquidadas \n "+
@@ -153,9 +204,66 @@ class LiquidacionSumar < ActiveRecord::Base
       })
 
     if cq
-      logger.warn ("Tabla de prestaciones incluidas generada")
+      logger.warn ("Tabla de prestaciones liquidadas generada")
     else
-      logger.warn ("Tabla de prestaciones incluidas NO generada")
+      logger.warn ("Tabla de prestaciones liquidadas NO generada")
+      return false
+    end
+
+    # 2) B ) Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas 
+    #        que no poseen beneficiario
+    cq = CustomQuery.ejecutar ({
+      esquemas: esquemas,
+      sql:  "INSERT INTO public.prestaciones_liquidadas \n "+
+            "       (liquidacion_id, unidad_de_alta_de_datos_id, efector_id, \n "+
+            "        prestacion_incluida_id, fecha_de_la_prestacion, \n "+
+            "        estado_de_la_prestacion_id, historia_clinica, es_catastrofica, \n "+
+            "        diagnostico_id, diagnostico_nombre, \n "+
+            "        cantidad_de_unidades, observaciones, \n "+
+            "        clave_de_beneficiario, codigo_area_prestacion, nombre_area_de_prestacion, prestacion_brindada_id, \n "+
+            "        created_at, updated_at) \n "+
+            "SELECT DISTINCT #{self.id} liquidacion_id, ef.unidad_de_alta_de_datos_id as unidad_de_alta_de_datos_id, pb.efector_id,\n "+
+            "       pi.id as prestacion_incluida_id, pb.fecha_de_la_prestacion,\n "+
+            "       pb.estado_de_la_prestacion_id, pb.historia_clinica, pb.es_catastrofica, \n "+
+            "       pb.diagnostico_id, diag.nombre diagnostico_nombre,\n "+
+            "       pb.cantidad_de_unidades, pb.observaciones,\n "+
+            "       NULL, areas.codigo codigo_area_prestacion, areas.nombre nombre_area_de_prestacion, pb.id prestacion_brindada_id, \n "+
+            "       now(), now()\n "+
+            "  FROM prestaciones_brindadas pb\n "+
+            "  INNER JOIN prestaciones pr ON (pr.id = pb.prestacion_id) \n "+
+            "  INNER JOIN prestaciones_incluidas pi on (pb.prestacion_id = pi.prestacion_id AND pi.liquidacion_id = #{self.id})\n "+
+            "  INNER JOIN diagnosticos diag on diag.id = pb.diagnostico_id\n "+
+            "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n "+
+            "  INNER JOIN asignaciones_de_precios ap  \n "+
+            "    ON (\n "+
+            "      ap.prestacion_id = pb.prestacion_id\n "+
+            "      AND ap.area_de_prestacion_id = ef.area_de_prestacion_id\n "+
+            "    )\n "+
+            "  INNER JOIN areas_de_prestacion areas on ap.area_de_prestacion_id = areas.id \n "+
+            "  INNER JOIN nomencladores nom  \n "+
+            "    ON ( nom.id = ap.nomenclador_id )\n "+
+            "  \n "+
+            "  WHERE pb.estado_de_la_prestacion_id IN (2,3,7)\n "+
+            "  AND ef.id in (select ef.id \n" +
+            "                from efectores ef \n"+
+            "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
+            "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
+            "  AND nom.id =      \n"+
+            "              (select id from nomencladores \n"+
+            "               where activo = 't' \n"+
+            "               and nomenclador_sumar = 't' \n"+
+            "               and (pb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+            "               or  \n"+
+            "               (pb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+            "               limit 1\n"+
+            "               )"+
+            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"
+      })
+
+    if cq
+      logger.warn ("Tabla de prestaciones liquidadas  (sin afiliado) generada")
+    else
+      logger.warn ("Tabla de prestaciones liquidadas  (sin afiliado) NO generada")
       return false
     end
 
@@ -248,22 +356,14 @@ class LiquidacionSumar < ActiveRecord::Base
     estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
 
     cq = CustomQuery.ejecutar ({
-      #sql:  "UPDATE public.prestaciones_liquidadas \n"+
-      #      "SET monto = #{formula}(id), \n"+
-      #      "    estado_de_la_prestacion_liquidada_id =  #{estado_aceptada} \n"+
-      #      "WHERE id in \n"+
-      #      "(select pl.id \n" +
-      #      " from prestaciones_liquidadas pl \n "+
-      #      "where pl.liquidacion_id = #{self.id}\n "+
-      #      "and pl.id not in (select pla.prestacion_liquidada_id from prestaciones_liquidadas_advertencias pla where pla.liquidacion_id = #{self.id}) )"
       sql:  "UPDATE prestaciones_liquidadas   \n"+
             " SET monto = #{formula}(pl.id),   \n"+
             " estado_de_la_prestacion_liquidada_id =  #{estado_aceptada}   \n"+
-            "from prestaciones_liquidadas pl\n"+
-            " left join prestaciones_liquidadas_advertencias pla on pl.id = pla.prestacion_liquidada_id\n"+
-            "where pla.id is null\n"+
-            "and pl.liquidacion_id = #{self.id}\n"+
-            "and prestaciones_liquidadas.id = pl.id"
+            "FROM prestaciones_liquidadas pl\n"+
+            " LEFT JOIN prestaciones_liquidadas_advertencias pla on pl.id = pla.prestacion_liquidada_id\n"+
+            "WHERE pla.id is null\n"+
+            "AND pl.liquidacion_id = #{self.id}\n"+
+            "AND prestaciones_liquidadas.id = pl.id"
       })
 
     # 6) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
@@ -275,10 +375,10 @@ class LiquidacionSumar < ActiveRecord::Base
               "                estado_de_la_prestacion_liquidada_id =  #{estado_rechazada}, \n"+
               "                observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || CAST(E'No cumple con la validacion de \"' || pla.comprobacion || E'\" \\n ' \n"+
               "                                      as text)\n"+
-              "from prestaciones_incluidas pi\n"+
+              "FROM prestaciones_incluidas pi\n"+
               " join prestaciones_liquidadas pl on pl.prestacion_incluida_id = pi.id\n"+
               " join prestaciones_liquidadas_advertencias pla on pla.prestacion_liquidada_id = pl.id \n"+
-              " left join (\n"+
+              " LEFT JOIN (\n"+
               "             SELECT r.*\n"+
               "               FROM\n"+
               "                 reglas r\n"+
