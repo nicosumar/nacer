@@ -1,3 +1,4 @@
+#~~ encoding: utf-8 ~~
 class RevertirCuasifactura
 
   # Revierte y regenera una cuasifactura des un efector.
@@ -56,6 +57,23 @@ class RevertirCuasifactura
             );
           DELETE FROM liquidaciones_sumar_cuasifacturas WHERE liquidacion_sumar_id = #{arg_liquidacion}
           AND efector_id IN( #{efectores.join(", ")});"
+          
+          ActiveRecord::Base.connection.execute "delete \n"+
+            "from prestaciones_liquidadas_advertencias\n"+
+            "where prestacion_liquidada_id in ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")} ) )  ;\n"+
+
+            "delete \n"+
+            "from prestaciones_liquidadas_datos\n"+
+            "where prestacion_liquidada_id in  ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")} ) )  \n"+
+            ";\n"+
+            "DELETE\n"+
+            "from  prestaciones_liquidadas\n"+
+            "where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")}) \n"+
+            ";\n" #+
+            #{}"delete\n"+
+            #{}"from prestaciones_incluidas\n"+
+            #{}"where liquidacion_id = #{l.id}"
+
 
         ##############################################################################################
         #liquido de nuevo esos efectores (copy paste del modulo de liquidacion )
@@ -178,7 +196,8 @@ class RevertirCuasifactura
                   "               limit 1\n"+
                   "               )"+
                   "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
-                  "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{l.id} ) \n" 
+                  "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{l.id} ) \n" +
+                  "  AND pr.comunitaria "
           })
 
         if cq
@@ -298,7 +317,8 @@ class RevertirCuasifactura
                 "               (pb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
                 "               limit 1\n"+
                 "               )"+
-                "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"
+                "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
+                "  AND pr.comunitaria "
           })
 
         if cq
@@ -426,7 +446,7 @@ class RevertirCuasifactura
                   "                 JOIN plantillas_de_reglas_reglas prr ON (r.id = prr.regla_id)\n"+
                   "                 JOIN plantillas_de_reglas pr ON (pr.id = prr.plantilla_de_reglas_id) \n"+
                   "               WHERE pr.id = #{plantilla_de_reglas}\n"+
-                  "             ) AND ON (\n"+
+                  "             ) SQ1 ON (\n"+
                   "                       sq1.efector_id = pl.efector_id\n"+
                   "                       AND sq1.prestacion_id = pi.prestacion_id\n"+
                   "                       AND sq1.metodo_de_validacion_id = pla.metodo_de_validacion_id \n"+
@@ -482,7 +502,8 @@ class RevertirCuasifactura
                 "(liquidacion_sumar_id, efector_id, monto_total, created_at, updated_at)  \n"+
                 "select liquidacion_id, efector_id, sum(monto), now(), now() \n"+
                 "from prestaciones_liquidadas \n"+
-                "where liquidacion_id = #{l.id} \n"+
+                "where prestaciones_liquidadas.liquidacion_id = #{l.id} \n"+
+                "and prestaciones_liquidadas.efector_id in (#{efectores.join(", ")})\n" +
                 "and   estado_de_la_prestacion_liquidada_id != #{estado_rechazada} \n"+
                 "group by liquidacion_id, efector_id"
                       })
@@ -503,6 +524,7 @@ class RevertirCuasifactura
                 "from prestaciones_liquidadas p \n"+
                 " join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n"+
                 "where p.liquidacion_id = #{l.id} \n"+
+                "and p.efector_id in (#{efectores.join(", ")})\n "+
                 "and   p.estado_de_la_prestacion_liquidada_id != #{estado_rechazada}"
           })
 
