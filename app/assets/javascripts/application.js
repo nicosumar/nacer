@@ -11,7 +11,7 @@
 //= require jquery.ui.dialog
 //= require jquery.ui.tabs
 //= require chosen-jquery
-//= require wice_grid
+//= require wice_grid 
 
 $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
