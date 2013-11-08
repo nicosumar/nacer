@@ -1,8 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
-  get "impresiones/cuasifacturas"
-  get "impresiones/consolidados"
+  get "documentos_electronicos/cuasifacturas"
+  get "documentos_electronicos/consolidados"
+  get "documentos_electronicos/index"
 
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion

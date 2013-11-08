@@ -1,0 +1,26 @@
+- content_for :title do
+  Documentos electronicos - Sumar
+#content-header
+  %h1 Informes de Liquidacion - Sumar
+  #action-links
+    -# if can? :create, LiquidacionSumar
+      -#= link_to 'Nueva Liquidacion', new_liquidacion_sumar_path
+
+#content-body
+  %h2.first-header Busqueda de documentos
+  = form_tag(documentos_electronicos_index_path, method:  :get) do 
+    -#= dump_filter_parameters_as_hidden_fields(@liquidaciones_informes)
+    .field
+      = label_tag "Efector:"
+      = select_tag 'efector_id', options_for_select(@efectores, @efector_id), {:class => 'multi_select'}
+    -#.field
+    -#  = label_tag "Concepto de Facturación:"
+    -#  = select_tag 'concepto_de_facturacion_id', options_for_select(@conceptos_de_facturacion, @concepto_de_facturacion_id), {:class => 'multi_select'}
+    -#.field
+      =# label_tag "Numero de cuasifactura:"
+      =# select_tag 'liquidacion_sumar_cuasifactura_id', options_for_select(@numeros_de_cuasifactura, @liquidacion_sumar_cuasifactura_id), {:class => 'multi_select', :style => "width:150px"}
+    -#.field
+      =# label_tag "Estado del informe:"
+      =# select_tag 'estado_del_informe_id', options_for_select(@estados_de_los_informes, @estado_del_informe_id), {:class => 'multi_select', :style => "width:190px"}
+
+    = submit_tag "Buscar"

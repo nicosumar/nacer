@@ -9,11 +9,11 @@
   -# Columnas del grid
   - g.column name: "Efector" do |c|
     - c.efector.nombre
-  - g.column name: "Numero de<br>Cuasifactura".html_safe do |c|
+  - g.column name: "Numero de<br>Cuasifactura".html_safe  do |c|
     - c.liquidacion_sumar_cuasifactura.numero_cuasifactura
-  - g.column name: 'Informe' do |c|
+  - g.column name: 'Informe'  do |c|
     - c.estado_del_proceso.blank? ? 'No iniciado' : c.estado_del_proceso.nombre
-  - g.column name: 'Expediente' do |c|
+  - g.column name: 'Expediente', attribute: 'numero_de_expediente' do |c|
     - c.numero_de_expediente.blank? ? "Sin asignar" : c.numero_de_expediente
   - g.column name: "Anexo<br>Administrativo".html_safe do |c|
     - c.liquidacion_sumar_anexo_administrativo.blank? ? 'No iniciado' : (link_to "#{c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre}",c.liquidacion_sumar_anexo_administrativo)
