@@ -12,19 +12,32 @@ class DocumentosElectronicosController < ApplicationController
 
   def index
   	
-  	# Valores para los dropdown
-  	if params[:efectores_id].blank?
-  		@efectores_id = -1
-  	end
+    # Valores para los dropdown
+    @efectores = Efector.order("nombre desc").collect {|c| [c.nombre, c.id]}
+    
+    # Verifico si ya hizo el filtro o no
+    if params[:efector_id].blank?
+      @efector_id = -1
+      @efector = ""
+    else
+      @efector_id = params[:efector_id]
+      @efector = Efector.find(@efector_id)
+    end
 
+    condiciones = {}
+    condiciones.merge!({:e => {id: @efector_id}}) 
 
-  	@efectores = Efector.find(:all).collect {|i| [i.nombre, i.id]}
-  	@efectores << ['Todos', -1]
-  	@concepto_de_facturacion = ConceptoDeFacturacion.find(:all).collect {|i| [i.concepto, i.id]}
-  	@periodos = Periodo.includes(:concepto_de_facturacion).find(:all).collect {|i| ["#{i.periodo} - #{i.concepto_de_facturacion.nombre}", i.id]}
-  	@periodos << ['Todos', -1]
-
-
-
+    # Crea la instancia del grid (o lleva los resultados del model al grid)
+    @efector_documentos = initialize_grid(
+      LiquidacionSumar,
+      include: [:periodo, :concepto_de_facturacion],
+      joins:  "join efectores e on e.grupo_de_efectores_id = liquidaciones_sumar.grupo_de_efectores_liquidacion_id\n"+
+              " join grupos_de_efectores_liquidaciones gel on gel.id = e.grupo_de_efectores_id and liquidaciones_sumar.grupo_de_efectores_liquidacion_id = gel.id \n"+
+              " join conceptos_de_facturacion cf on cf.id = liquidaciones_sumar.concepto_de_facturacion_id\n"+
+              " join periodos p on p.id = liquidaciones_sumar.periodo_id",
+      conditions: condiciones
+      )
+    
+    
   end
 end

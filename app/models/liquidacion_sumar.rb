@@ -8,10 +8,20 @@ class LiquidacionSumar < ActiveRecord::Base
   has_many   :prestaciones_liquidadas, foreign_key: :liquidacion_id
   has_many   :liquidaciones_sumar_cuasifacturas
 
-
   attr_accessible :descripcion, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id, :plantilla_de_reglas_id, :parametro_liquidacion_sumar_id
 
   validates_presence_of :descripcion, :grupo_de_efectores_liquidacion, :concepto_de_facturacion, :periodo, :parametro_liquidacion_sumar_id
+
+  scope :cuasifactura_de, lambda {|efector| where(efector_id: efector.id).first}
+
+  def cuasifactura_de(efector)
+    if efector.class == Efector
+      self.liquidaciones_sumar_cuasifacturas.where(efector_id: efector.id).first
+    else
+      raise "El argumento debe ser de tipo Efector"  
+      return false
+    end
+  end
 
   def generar_snapshoot_de_liquidacion
 

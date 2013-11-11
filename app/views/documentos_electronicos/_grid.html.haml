@@ -1,0 +1,28 @@
+= grid(@efector_documentos) do |g|
+  -# Muestra si no se encontraron registros
+  - g.blank_slate content_tag(:div, "-")
+
+  - g.column name: "Periodo" do |c|
+    - c.periodo.periodo
+  - g.column name: "Concepto de facturación" do |c|
+    - c.concepto_de_facturacion.concepto
+
+  -# Tipos de documentos:
+    -# Cuasifactura: Si para el efector dado la liquidación y cuasifactura existe
+    -# Consolidado: Si el efector es administrador y alguno de sus administrados posee alguna cuasifactura
+  - g.column name: 'Documentos' do |c|
+    - if c.cuasifactura_de(efector).present?
+      - link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(c.cuasifactura_de(efector), format: 'pdf')
+    - if @efector.es_administrador? and @efector.
+      - 
+    
+  
+  
+  -# g.column name: 'Acciones' do |c|
+    -# if c.estado_del_proceso.codigo == "B"
+      -# # muestra listado de pdfs a descargar
+    -# elsif c.estado_del_proceso.codigo == "N"
+      -# link_to 'Aprobaciones', edit_liquidacion_informe_path(c) # muestra el proceso de aprobación 
+    -# elsif c.estado_del_proceso.codigo == "C" && ( !c.liquidacion_sumar_anexo_administrativo.blank? && !c.liquidacion_sumar_anexo_medico.blank?)
+      -# if c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && c.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F"
+        - # Link a cerrar informe
