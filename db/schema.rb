@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131023200530) do
+ActiveRecord::Schema.define(:version => 20131111172815) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -244,6 +244,22 @@ ActiveRecord::Schema.define(:version => 20131023200530) do
   end
 
   add_index "conceptos_de_facturacion", ["codigo"], :name => "index_conceptos_de_facturacion_on_codigo", :unique => true
+
+  create_table "consolidados_sumar", :force => true do |t|
+    t.string   "numero_de_consolidado"
+    t.date     "fecha"
+    t.integer  "efector_id"
+    t.integer  "firmate_id"
+    t.integer  "periodo_id"
+    t.integer  "liquidacion_sumar_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "consolidados_sumar", ["efector_id"], :name => "index_consolidados_sumar_on_efector_id"
+  add_index "consolidados_sumar", ["firmate_id"], :name => "index_consolidados_sumar_on_firmate_id"
+  add_index "consolidados_sumar", ["liquidacion_sumar_id"], :name => "index_consolidados_sumar_on_liquidacion_sumar_id"
+  add_index "consolidados_sumar", ["periodo_id"], :name => "index_consolidados_sumar_on_periodo_id"
 
   create_table "contactos", :force => true do |t|
     t.string   "nombres"
