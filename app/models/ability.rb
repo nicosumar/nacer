@@ -56,15 +56,15 @@ class Ability
     end
 
     if user.in_group? :convenios
-      can :manage, ConvenioDeGestion
-      can :manage, ConvenioDeAdministracion
+      can :read, ConvenioDeGestion
+      can :read, ConvenioDeAdministracion
       can :manage, ConvenioDeAdministracionSumar
       can :manage, ConvenioDeGestionSumar
-      can :manage, Addenda
+      can :read, Addenda
       can :manage, AddendaSumar
       can :manage, Referente
       can :manage, Contacto
-      can :manage, Efector
+      can :read, Efector
       can :read, PrestacionAutorizada
     end
 
@@ -132,6 +132,8 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :read, UnidadDeAltaDeDatos
+      can :read, User
     end
 
   end

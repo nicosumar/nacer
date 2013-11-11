@@ -1,10 +1,20 @@
 # -*- encoding : utf-8 -*-
 class UsersController < Devise::RegistrationsController
   before_filter :authenticate_user!, :except => [:new, :create]
-  before_filter :admin_required, :only => [:index, :admin_edit, :admin_update, :destroy]
+  before_filter :admin_required, :only => [:admin_edit, :admin_update, :destroy]
 
   # GET /users
   def index
+    # Verificar los permisos del usuario
+    if cannot? :read, User
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
     @new_users = User.where(:authorized => false).order("id DESC")
     @users = User.where(:authorized => true).order("last_sign_in_at DESC")
   end
