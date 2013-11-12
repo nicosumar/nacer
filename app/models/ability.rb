@@ -44,6 +44,7 @@ class Ability
 
     if user.in_group? :auditoria_medica
       can :manage, Contacto
+      can :read, Afiliado
       can :read, Efector
       can :read, Referente
       can :read, ConvenioDeAdministracion
@@ -65,6 +66,7 @@ class Ability
       can :manage, Referente
       can :manage, Contacto
       can :read, Efector
+      can :update, Efector
       can :read, PrestacionAutorizada
     end
 

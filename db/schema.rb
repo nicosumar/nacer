@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131023200530) do
+ActiveRecord::Schema.define(:version => 20131112153601) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -322,6 +322,7 @@ ActiveRecord::Schema.define(:version => 20131023200530) do
     t.integer  "creator_id"
     t.integer  "updater_id"
     t.date     "fecha_de_emision"
+    t.integer  "nomenclador_id"
   end
 
   create_table "datos_adicionales", :force => true do |t|

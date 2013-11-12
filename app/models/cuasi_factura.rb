@@ -8,6 +8,7 @@ class CuasiFactura < ActiveRecord::Base
   # Asociaciones
   belongs_to :liquidacion
   belongs_to :efector
+  belongs_to :nomenclador
   has_many :renglones_de_cuasi_facturas
   has_many :registros_de_prestaciones
 
