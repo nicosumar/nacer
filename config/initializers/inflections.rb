@@ -331,6 +331,11 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("consolidado·_sumar·", "consolidados_sumar")
   inflect.irregular("ConsolidadoSumar", "Consolidados·Sumar·")
   inflect.irregular("Consolidado·Sumar·", "ConsolidadosSumar")
+  # Consolidado Sumar Detalle
+  inflect.irregular("consolidado_sumar_detalle", "consolidados·_sumar·_detalles·")
+  inflect.irregular("consolidado·_sumar·_detalle·", "consolidados_sumar_detalles")
+  inflect.irregular("ConsolidadoSumarDetalle", "Consolidados·Sumar·Detalles·")
+  inflect.irregular("Consolidado·Sumar·Detalle·", "ConsolidadosSumarDetalles·")
     
   # UAD (unidad de alta de datos)
   inflect.irregular("uad_nombre", "uad·_nombres·")

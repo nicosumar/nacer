@@ -37,6 +37,8 @@ class Efector < ActiveRecord::Base
   has_many :prestaciones_liquidadas
   has_many :liquidaciones_informes
   has_many :cuasifacturas, class_name: "LiquidacionSumarCuasifactura"
+  has_many :consolidados_sumar
+  
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   default_scope where("integrante = ?", true)
@@ -104,38 +106,33 @@ class Efector < ActiveRecord::Base
     return administrador_sumar.present? if convenio_de_gestion_sumar.present?
     return administrador.present? if convenio_de_gestion.present?
   end
-
-  # 
-  # Devuelve los efectores que administra
-  # 
+
+
+  # 
+  # Devuelve los efectores que administra
+  # 
   # @return [Array<Efector>] Array de efectores administrados
   def efectores_administrados
     Efector.joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id").where(["administrador_id = ?",self.id])
   end
-
-  # 
-  # Devuelve si el efector es administrador. Considera administrador al efector si:
-  # 1) No tiene convenio de administración asociado  
-  # 2) Tiene al menos un efector con convenio de administracion asociado a el como administrador
-  # 
+
+ 
+  #
+  # Devuelve si el efector es administrador. Considera administrador al efector si:
+  # 1) No tiene convenio de administración asociado  
+  # 2) Tiene al menos un efector con convenio de administracion asociado a el como administrador
+  #
   # @return [boolean] Verdadero si es administrador, falso en caso que no cumpla alguna de las dos condiciones
   def es_administrador?
-
     # 1) No tiene convenio de administración asociado  
     return false if self.convenio_de_administracion_sumar.present?
-    # 2) Tiene al menos un efector con convenio de administracion asociado a el como administrador
-    return false if self.efectores_administrados.size >= 1
-    
+    # 2) Tiene al menos un efector con convenio de administracion asociado a el como administrador
+    return false if self.efectores_administrados.size < 1
+   
     return true
   end
 
-  def method_name
-    
-  end
-
-
-
-  #--------------------------------------------------------------
+  #--------------------------------------------------------------
   #                   Metodos de clase
   #--------------------------------------------------------------
 

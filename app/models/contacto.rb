@@ -11,6 +11,7 @@ class Contacto < ActiveRecord::Base
   # Asociaciones
   belongs_to :sexo
   belongs_to :tipo_de_documento
+  has_many   :consolidados_sumar
 
   # Validaciones
   validates_presence_of :mostrado

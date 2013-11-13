@@ -7,6 +7,7 @@ class LiquidacionSumar < ActiveRecord::Base
   belongs_to :parametro_liquidacion_sumar
   has_many   :prestaciones_liquidadas, foreign_key: :liquidacion_id
   has_many   :liquidaciones_sumar_cuasifacturas
+  has_many   :consolidados_sumar
 
   attr_accessible :descripcion, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id, :plantilla_de_reglas_id, :parametro_liquidacion_sumar_id
 
@@ -258,14 +259,6 @@ class LiquidacionSumar < ActiveRecord::Base
     estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
 
     cq = CustomQuery.ejecutar ({
-      #sql:  "UPDATE public.prestaciones_liquidadas \n"+
-      #      "SET monto = #{formula}(id), \n"+
-      #      "    estado_de_la_prestacion_liquidada_id =  #{estado_aceptada} \n"+
-      #      "WHERE id in \n"+
-      #      "(select pl.id \n" +
-      #      " from prestaciones_liquidadas pl \n "+
-      #      "where pl.liquidacion_id = #{self.id}\n "+
-      #      "and pl.id not in (select pla.prestacion_liquidada_id from prestaciones_liquidadas_advertencias pla where pla.liquidacion_id = #{self.id}) )"
       sql:  "UPDATE prestaciones_liquidadas   \n"+
             " SET monto = #{formula}(pl.id),   \n"+
             " estado_de_la_prestacion_liquidada_id =  #{estado_aceptada}   \n"+
@@ -424,23 +417,84 @@ class LiquidacionSumar < ActiveRecord::Base
     return true
   end
 
+  def generar_consolidados
+    
+    efectores =  self.grupo_de_efectores_liquidacion.efectores.all
+    fecha_de_cierre = self.periodo.fecha_cierre 
+
+    efectores.each do |e|
+      if e.es_administrador?
+        # 1) Genero la cabecera de la cuasi
+        # verifico que tenga firmante:
+        if e.convenio_de_gestion_sumar.firmante.present?
+          firmante_id = e.convenio_de_gestion_sumar.firmante.id
+        else
+          # TODO: ahora le pongo null pero no deberia poder guardar el convenio si no existe el firmante. 
+          firmante_id = "NULL"
+        end
+        cq = CustomQuery.ejecutar({
+          sql: "INSERT INTO \"public\".\"consolidados_sumar\" \n"+
+          "( \"fecha\", \"efector_id\", \"firmate_id\", \"periodo_id\", \"liquidacion_sumar_id\", \"created_at\", \"updated_at\") \n"+
+          "VALUES \n"+
+          "( '#{fecha_de_cierre}', #{e.id}, \n"+
+          "#{firmante_id}, \n"+
+          "#{self.periodo.id}, \n"+
+          "#{self.id}, now(), now());"
+        })
+        if cq
+          logger.warn ("Cabecera de consolidado generada")
+        else
+          logger.warn ("Cabecera de consolidado NO generada")
+          return false
+        end
+
+        consolidado = ConsolidadoSumar.where(efector_id: e.id, liquidacion_sumar_id: self.id).first
+
+        # 2) Genero el detalle del consolidado
+        e.efectores_administrados.each do |ea|
+          if ea.cuasifacturas.where(liquidacion_sumar_id: self.id).size > 0
+            monto = ea.cuasifacturas.where(liquidacion_sumar_id: self.id).first.monto_total
+          else
+            monto = 0
+          end
+          cq = CustomQuery.ejecutar({
+            sql:  "INSERT INTO  public . consolidados_sumar_detalles  \n"+
+                  "( consolidado_sumar_id ,  efector_id ,  convenio_de_administracion_sumar_id ,  convenio_de_gestion_sumar_id ,  total ,  created_at ,  updated_at ) \n"+
+                  "VALUES \n"+
+                  "(#{consolidado.id}, #{ea.id}, #{ea.convenio_de_administracion_sumar.id}, #{ea.convenio_de_gestion_sumar.id}, #{monto}, now(), now());"
+          })
+        end
+        if cq
+          logger.warn ("Detalle de consolidado generado")
+        else
+          logger.warn ("Detalle de consolidado NO generado")
+          return false
+        end
+        
+      end
+    end
+    return true
+  end
+
   def vaciar_liquidacion
 
-    # TODO: comprobar que no existen cuasifacturas generadas para poder eliminar
-    ActiveRecord::Base.connection.execute "delete \n"+
-            "from prestaciones_liquidadas_advertencias\n"+
-            "where liquidacion_id = #{self.id};\n"+
-            "delete \n"+
-            "from prestaciones_liquidadas_datos\n"+
-            "where liquidacion_id = #{self.id}\n"+
-            ";\n"+
-            "DELETE\n"+
-            "from  prestaciones_liquidadas\n"+
-            "where liquidacion_id = #{self.id}\n"+
-            ";\n"+
-            "delete\n"+
-            "from prestaciones_incluidas\n"+
-            "where liquidacion_id = #{self.id}"
+    # Comprobar que no existen cuasifacturas generadas para poder eliminar
+    unless self.liquidaciones_sumar_cuasifacturas.size > 0
+      ActiveRecord::Base.connection.execute "delete \n"+
+              "from prestaciones_liquidadas_advertencias\n"+
+              "where liquidacion_id = #{self.id};\n"+
+              "delete \n"+
+              "from prestaciones_liquidadas_datos\n"+
+              "where liquidacion_id = #{self.id}\n"+
+              ";\n"+
+              "DELETE\n"+
+              "from  prestaciones_liquidadas\n"+
+              "where liquidacion_id = #{self.id}\n"+
+              ";\n"+
+              "delete\n"+
+              "from prestaciones_incluidas\n"+
+              "where liquidacion_id = #{self.id}"
+    end 
   end
 
 end
