@@ -2,7 +2,7 @@ class GenerarConsolidados < ActiveRecord::Migration
   def up
   	# Generlo los consolidados para los efectores que ya han sido liquidados
     LiquidacionSumar.all.each do |l|
-      l.generar_consolidados
+      ConsolidadoSumar.generar_consolidados l
     end
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131023200530) do
+ActiveRecord::Schema.define(:version => 20131112234740) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -245,6 +245,41 @@ ActiveRecord::Schema.define(:version => 20131023200530) do
 
   add_index "conceptos_de_facturacion", ["codigo"], :name => "index_conceptos_de_facturacion_on_codigo", :unique => true
 
+  create_table "consolidados_sumar", :force => true do |t|
+    t.string   "numero_de_consolidado"
+    t.date     "fecha"
+    t.integer  "efector_id"
+    t.integer  "firmante_id"
+    t.integer  "periodo_id"
+    t.integer  "liquidacion_sumar_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "consolidados_sumar", ["efector_id", "liquidacion_sumar_id"], :name => "consolidados_sumar_efector_id_liquidacion_sumar_id_key", :unique => true
+  add_index "consolidados_sumar", ["efector_id", "periodo_id"], :name => "consolidados_sumar_efector_id_periodo_id_key", :unique => true
+  add_index "consolidados_sumar", ["efector_id"], :name => "index_consolidados_sumar_on_efector_id"
+  add_index "consolidados_sumar", ["firmante_id"], :name => "index_consolidados_sumar_on_firmante_id"
+  add_index "consolidados_sumar", ["liquidacion_sumar_id"], :name => "index_consolidados_sumar_on_liquidacion_sumar_id"
+  add_index "consolidados_sumar", ["numero_de_consolidado"], :name => "consolidados_sumar_numero_de_consolidado_key", :unique => true
+  add_index "consolidados_sumar", ["periodo_id"], :name => "index_consolidados_sumar_on_periodo_id"
+
+  create_table "consolidados_sumar_detalles", :force => true do |t|
+    t.integer  "consolidado_sumar_id"
+    t.integer  "efector_id"
+    t.integer  "convenio_de_administracion_sumar_id"
+    t.integer  "convenio_de_gestion_sumar_id"
+    t.decimal  "total",                               :precision => 15, :scale => 4
+    t.datetime "created_at",                                                         :null => false
+    t.datetime "updated_at",                                                         :null => false
+  end
+
+  add_index "consolidados_sumar_detalles", ["consolidado_sumar_id", "efector_id"], :name => "consolidados_sumar_detalles_consolidado_sumar_id_efector_id_key", :unique => true
+  add_index "consolidados_sumar_detalles", ["consolidado_sumar_id"], :name => "consolidados_sumar_detalles_consolidado_sumar_id_idx"
+  add_index "consolidados_sumar_detalles", ["convenio_de_administracion_sumar_id"], :name => "consolidados_sumar_detalles_convenio_de_administracion_suma_idx"
+  add_index "consolidados_sumar_detalles", ["convenio_de_gestion_sumar_id"], :name => "consolidados_sumar_detalles_convenio_de_gestion_sumar_id_idx"
+  add_index "consolidados_sumar_detalles", ["efector_id"], :name => "consolidados_sumar_detalles_efector_id_idx"
+
   create_table "contactos", :force => true do |t|
     t.string   "nombres"
     t.string   "apellidos"
@@ -352,6 +387,7 @@ ActiveRecord::Schema.define(:version => 20131023200530) do
     t.integer  "creator_id"
     t.integer  "updater_id"
     t.date     "fecha_de_emision"
+    t.integer  "nomenclador_id"
   end
 
   create_table "datos_adicionales", :force => true do |t|
@@ -708,6 +744,13 @@ ActiveRecord::Schema.define(:version => 20131023200530) do
 
   add_index "liquidaciones_sumar_cuasifacturas", ["efector_id"], :name => "liquidaciones_sumar_cuasifacturas_efector_id_idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector__idx"
+  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector__key", :unique => true
+  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key1", :unique => true
+  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key2", :unique => true
+  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key3", :unique => true
+  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key4", :unique => true
+  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key5", :unique => true
+  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key6", :unique => true
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id"], :name => "liquidaciones_sumar_cuasifacturas_liquidacion_sumar_id_idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["numero_cuasifactura"], :name => "liquidaciones_sumar_cuasifacturas_numero_cuasifactura_key", :unique => true
 
