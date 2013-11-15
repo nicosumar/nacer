@@ -3,6 +3,7 @@
 # ARCHIVO CE
 
 archivo = File.open("lib/tasks/datos/trazadora_CE.csv", "w")
+archivo.set_encoding("CP1252", :crlf_newline => true)
 
 UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
   ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
@@ -19,8 +20,18 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         a.fecha_de_nacimiento \"Fecha de nacimiento\",
         pb.fecha_de_la_prestacion \"Fecha control\",
         dra_eg.valor_big_decimal::integer \"Edad gestacional\",
-        a.fecha_de_la_ultima_menstruacion \"Fecha de última menstruación\",
-        a.fecha_probable_de_parto \"Fecha probable de parto\",
+        (CASE
+          WHEN a.fecha_de_la_ultima_menstruacion < pb.fecha_de_la_prestacion THEN
+            a.fecha_de_la_ultima_menstruacion
+          ELSE
+            NULL::date
+          END) \"Fecha de última menstruación\",
+        (CASE
+          WHEN a.fecha_probable_de_parto > pb.fecha_de_la_prestacion THEN
+            a.fecha_probable_de_parto
+          ELSE
+            NULL::date
+          END) \"Fecha probable de parto\",
         to_char(dra_pkg.valor_big_decimal, 'FM999.099') \"Peso\",
         to_char(dra_tas.valor_integer, 'FM000') || '/'::text || to_char(dra_tad.valor_integer, 'FM000') \"Tensión arterial\",
         'S'::char(1) \"Es control\",
@@ -55,7 +66,6 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
       WHERE
         pb.prestacion_id IN (258, 259, 262, 324, 325, 326, 327, 353, 354, 369)
         AND pb.fecha_de_la_prestacion BETWEEN '2013-05-01' AND '2013-08-31'
-        AND pb.estado_de_la_prestacion_id NOT IN (10,11)
 
     UNION
 
@@ -71,8 +81,18 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         a.fecha_de_nacimiento \"Fecha de nacimiento\",
         pb.fecha_de_la_prestacion \"Fecha control\",
         dra_eg.valor_big_decimal::integer \"Edad gestacional\",
-        a.fecha_de_la_ultima_menstruacion \"Fecha de última menstruación\",
-        a.fecha_probable_de_parto \"Fecha probable de parto\",
+        (CASE
+          WHEN a.fecha_de_la_ultima_menstruacion < pb.fecha_de_la_prestacion THEN
+            a.fecha_de_la_ultima_menstruacion
+          ELSE
+            NULL::date
+          END) \"Fecha de última menstruación\",
+        (CASE
+          WHEN a.fecha_probable_de_parto > pb.fecha_de_la_prestacion THEN
+            a.fecha_probable_de_parto
+          ELSE
+            NULL::date
+          END) \"Fecha probable de parto\",
         to_char(dra_pkg.valor_big_decimal, 'FM999.099') \"Peso\",
         to_char(dra_tas.valor_integer, 'FM000') || '/'::text || to_char(dra_tad.valor_integer, 'FM000') \"Tensión arterial\",
         'N'::char(1) \"Es control\",
@@ -119,6 +139,7 @@ archivo.close
 # Archivo CN
 
 archivo = File.open("lib/tasks/datos/trazadora_CN.csv", "w")
+archivo.set_encoding("CP1252", :crlf_newline => true)
 
 UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
   ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
@@ -284,6 +305,7 @@ archivo.close
 # ARCHIVO IA
 
 archivo = File.open("lib/tasks/datos/trazadora_IA.csv", "w")
+archivo.set_encoding("CP1252", :crlf_newline => true)
 
 UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
   ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
@@ -350,6 +372,7 @@ archivo.close
 # ARCHIVO IB
 
 archivo = File.open("lib/tasks/datos/trazadora_IB.csv", "w")
+archivo.set_encoding("CP1252", :crlf_newline => true)
 
 UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
   ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
@@ -446,6 +469,7 @@ archivo.close
 # ARCHIVO CU
 
 archivo = File.open("lib/tasks/datos/trazadora_CU.csv", "w")
+archivo.set_encoding("CP1252", :crlf_newline => true)
 
 UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
   ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
