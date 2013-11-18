@@ -1,0 +1,48 @@
+# -*- encoding : utf-8 -*-
+
+report.use_layout File.join(Rails.root, 'app', 'views','consolidados_sumar','show2.tlf') do |config|
+ # configuro la lista (:details)
+  config.list(:details) do
+    use_stores sub_total: 0, total: 0
+    # Al disparar el evento que inserta el footer
+    events.on :page_footer_insert do |e|
+      # Seteo subtotales
+      e.section.item(:sub_total).value(e.store.sub_total)
+      # que empiece en 0
+      e.store.sub_total = 0
+    end
+
+    # disparo la insercion del footer.
+    events.on :footer_insert do |e|
+      # seteo el nuevo total
+      e.section.item(:total).value(e.store.total)
+    end
+  end
+end
+
+report.start_new_page do |page|
+  page.values(
+         concepto_de_facturacion: @consolidado_sumar.liquidacion_sumar.concepto_de_facturacion.concepto,
+         periodo: @consolidado_sumar.periodo.periodo,
+         efector_administrador: @consolidado_sumar.efector.nombre,
+         efector_administrador_codigo: @consolidado_sumar.efector.cuie,
+         efector_administrador_encargado: @consolidado_sumar.firmante.mostrado,
+         fecha: @consolidado_sumar.fecha
+         )
+
+  @consolidado_sumar.consolidados_sumar_detalles.each do |det|
+    #agrego la fila a la lista de detalles
+    page.list(:details).add_row do |row|
+      row.values efector_nombre: det.efector.nombre,
+                 convenio_admin_nro: det.convenio_de_administracion_sumar.numero,
+                 convenio_gestion_nro: det.convenio_de_gestion_sumar.numero,
+                 cantidad: det.total
+
+      page.list(:details) do |list|
+        list.store.sub_total += det.total.to_d
+        list.store.total += det.total.to_d
+      end
+    end
+  end
+
+end

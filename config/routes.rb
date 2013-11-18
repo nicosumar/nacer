@@ -1,8 +1,6 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
-  get "documentos_electronicos/cuasifacturas"
-  get "documentos_electronicos/consolidados"
   get "documentos_electronicos/index"
 
   #Liquidaciones - Sumar
@@ -33,6 +31,7 @@ Nacer::Application.routes.draw do
   resources :liquidaciones_sumar_cuasifacturas
   resources :parametros_liquidaciones_sumar
   resources :liquidaciones_informes
+  resources :consolidados_sumar
   # rutas para la actualizacion asincronica
   resources :anexos_medicos_prestaciones do
     put :update_status, on: :member

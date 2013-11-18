@@ -13,11 +13,20 @@ class LiquidacionSumar < ActiveRecord::Base
 
   validates_presence_of :descripcion, :grupo_de_efectores_liquidacion, :concepto_de_facturacion, :periodo, :parametro_liquidacion_sumar_id
 
-  scope :cuasifactura_de, lambda {|efector| where(efector_id: efector.id).first}
+  scope :cuasifactura_de, lambda {|efector| where(efector_id: efector.id).first}  
 
   def cuasifactura_de(efector)
     if efector.class == Efector
       self.liquidaciones_sumar_cuasifacturas.where(efector_id: efector.id).first
+    else
+      raise "El argumento debe ser de tipo Efector"  
+      return false
+    end
+  end
+
+  def consolidado_de(efector)
+    if efector.class == Efector
+      self.consolidados_sumar.where(efector_id: efector.id).first
     else
       raise "El argumento debe ser de tipo Efector"  
       return false
@@ -416,9 +425,7 @@ class LiquidacionSumar < ActiveRecord::Base
 
     return true
   end
-
  
-
   def vaciar_liquidacion
 
     # Comprobar que no existen cuasifacturas generadas para poder eliminar

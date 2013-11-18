@@ -39,7 +39,6 @@ class Efector < ActiveRecord::Base
   has_many :cuasifacturas, class_name: "LiquidacionSumarCuasifactura"
   has_many :consolidados_sumar
 
-  
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   default_scope where("integrante = ?", true)
   scope :efectores_administrados, joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id")

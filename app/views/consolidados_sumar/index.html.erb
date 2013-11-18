@@ -1,0 +1,21 @@
+<h1>Listing consolidados_sumar</h1>
+
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @consolidados_sumar.each do |consolidado_sumar| %>
+  <tr>
+    <td><%= link_to 'Show', consolidado_sumar %></td>
+    <td><%= link_to 'Edit', edit_consolidado_sumar_path(consolidado_sumar) %></td>
+    <td><%= link_to 'Destroy', consolidado_sumar, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Consolidado sumar', new_consolidado_sumar_path %>

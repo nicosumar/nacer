@@ -17,6 +17,7 @@
 
   %br
   %br
-  %h2.first-header= "#{@efector.nombre}"
-  %h2.second-header Documentos referidos a Liquidaciones Sumar
-  = render partial: 'grid', locals: {efector: @efector}
+  - if @efector.present?
+    %h2.first-header= "#{@efector.nombre}"
+    %h2.second-header Documentos referidos a Liquidaciones Sumar
+    = render partial: 'grid', locals: {efector: @efector}

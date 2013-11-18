@@ -2,6 +2,8 @@
   -# Muestra si no se encontraron registros
   - g.blank_slate content_tag(:div, "-")
 
+  - g.column name: "Id de liquidacion" do |c|
+    - c.id
   - g.column name: "Periodo" do |c|
     - c.periodo.periodo
   - g.column name: "Concepto de facturación" do |c|
@@ -9,12 +11,15 @@
 
   -# Tipos de documentos:
     -# Cuasifactura: Si para el efector dado la liquidación y cuasifactura existe
-    -# Consolidado: Si el efector es administrador y alguno de sus administrados posee alguna cuasifactura
-  - g.column name: 'Documentos' do |c|
-    - if c.cuasifactura_de(efector).present?
-      - link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(c.cuasifactura_de(efector), format: 'pdf')
-    - if @efector.es_administrador? and @efector.
-      - 
+    -# Consolidado: Si el efector es administrador verifico si tiene un consolidado 
+  - g.column name: 'Documentos' do |l|
+    - if l.cuasifactura_de(efector).present?
+      - contenido = link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(l.cuasifactura_de(efector).id, format: 'pdf').html_safe
+      - contenido += " <br> ".html_safe
+    - if @efector.es_administrador? 
+      - contenido = link_to 'Consolidado', consolidado_sumar_path(l.consolidado_de(efector).id, format: 'pdf').html_safe
+      - contenido += " <br> ".html_safe
+    - content_tag(:div, contenido)
     
   
   

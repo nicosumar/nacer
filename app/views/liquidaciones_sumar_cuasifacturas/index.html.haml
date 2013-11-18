@@ -23,8 +23,6 @@
         %td= liquidacion_sumar_cuasifactura.numero_cuasifactura
         %td= liquidacion_sumar_cuasifactura.observaciones
         %td= link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(liquidacion_sumar_cuasifactura, format: 'pdf')
-        - if (@efector_administrador_administrado.select {|administrador, efector| efector == liquidacion_sumar_cuasifactura.efector.id.to_s }).size >=1
-          %td Consolidado
         
 
 
