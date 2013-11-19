@@ -1,9 +1,8 @@
 = grid(@efector_documentos) do |g|
   -# Muestra si no se encontraron registros
   - g.blank_slate content_tag(:div, "-")
+  - contenido = "".html_safe
 
-  - g.column name: "Id de liquidacion" do |c|
-    - c.id
   - g.column name: "Periodo" do |c|
     - c.periodo.periodo
   - g.column name: "Concepto de facturación" do |c|
@@ -14,20 +13,9 @@
     -# Consolidado: Si el efector es administrador verifico si tiene un consolidado 
   - g.column name: 'Documentos' do |l|
     - if l.cuasifactura_de(efector).present?
-      - contenido = link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(l.cuasifactura_de(efector).id, format: 'pdf').html_safe
-      - contenido += " <br> ".html_safe
-    - if @efector.es_administrador? 
-      - contenido = link_to 'Consolidado', consolidado_sumar_path(l.consolidado_de(efector).id, format: 'pdf').html_safe
-      - contenido += " <br> ".html_safe
+      - contenido += link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(l.cuasifactura_de(efector).id, format: 'pdf').html_safe
+      - contenido += "<br>".html_safe
+    - if @efector.es_administrador? and l.consolidado_de(efector).present?
+      - contenido += link_to 'Consolidado', consolidado_sumar_path(l.consolidado_de(efector).id, format: 'pdf').html_safe
+      - contenido += "<br>".html_safe
     - content_tag(:div, contenido)
-    
-  
-  
-  -# g.column name: 'Acciones' do |c|
-    -# if c.estado_del_proceso.codigo == "B"
-      -# # muestra listado de pdfs a descargar
-    -# elsif c.estado_del_proceso.codigo == "N"
-      -# link_to 'Aprobaciones', edit_liquidacion_informe_path(c) # muestra el proceso de aprobación 
-    -# elsif c.estado_del_proceso.codigo == "C" && ( !c.liquidacion_sumar_anexo_administrativo.blank? && !c.liquidacion_sumar_anexo_medico.blank?)
-      -# if c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && c.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F"
-        - # Link a cerrar informe

@@ -5,10 +5,15 @@ class ConsolidadosSumarController < ApplicationController
   def show
     @consolidado_sumar = ConsolidadoSumar.find(params[:id])
 
-    respond_to do |format|
-      #format.html 
-      format.pdf { send_data render_to_string, filename: "cuasifactura#{@consolidado_sumar.numero_de_consolidado}.pdf", 
-      type: 'application/pdf', disposition: 'inline'} #'attachment'} #'inline'}
+    if  @consolidado_sumar.liquidacion_sumar.concepto_de_facturacion.present? and 
+        @consolidado_sumar.periodo.present? and 
+        @consolidado_sumar.efector.present? and
+        @consolidado_sumar.fecha.present?
+
+      respond_to do |format|
+        format.pdf { send_data render_to_string, filename: "consolidadosumar#{@consolidado_sumar.numero_de_consolidado}.pdf", 
+        type: 'application/pdf', disposition: 'inline'} #'attachment'} #'inline'}
+      end
     end
   end
 

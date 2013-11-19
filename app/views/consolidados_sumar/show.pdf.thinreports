@@ -22,14 +22,34 @@ end
 
 report.start_new_page do |page|
   page.values(
+         numero: @consolidado_sumar.numero_de_consolidado,
          concepto_de_facturacion: @consolidado_sumar.liquidacion_sumar.concepto_de_facturacion.concepto,
          periodo: @consolidado_sumar.periodo.periodo,
          efector_administrador: @consolidado_sumar.efector.nombre,
          efector_administrador_codigo: @consolidado_sumar.efector.cuie,
          efector_administrador_encargado: @consolidado_sumar.firmante.mostrado,
-         fecha: @consolidado_sumar.fecha
+         fecha: @consolidado_sumar.fecha,
+         firma_primera_linea: @consolidado_sumar.firmante.firma_primera_linea,
+         firma_segunda_linea: @consolidado_sumar.firmante.firma_segunda_linea,
+         firma_tercera_linea: @consolidado_sumar.firmante.firma_tercera_linea
          )
+  # Agrego el administrador al detalle
+  page.list(:details).add_row do |row|
+    row.values efector_nombre: @consolidado_sumar.efector.nombre,
+               convenio_admin_nro: "No corresp.",
+               convenio_gestion_nro: @consolidado_sumar.efector.convenio_de_gestion_sumar.present? ? @consolidado_sumar.efector.convenio_de_gestion_sumar.numero : "No corresp.",
+               cantidad: @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).size == 1 ?
+                @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).first.monto_total : 0
 
+  end  
+  page.list(:details) do |list|
+      list.store.sub_total += @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).size == 1 ?
+              @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).first.monto_total : 0
+      list.store.total += @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).size == 1 ?
+              @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).first.monto_total : 0
+  end
+
+  # Agrego los los efectores vinculados al administrador x convenio de administracion
   @consolidado_sumar.consolidados_sumar_detalles.each do |det|
     #agrego la fila a la lista de detalles
     page.list(:details).add_row do |row|

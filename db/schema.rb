@@ -745,12 +745,6 @@ ActiveRecord::Schema.define(:version => 20131112234740) do
   add_index "liquidaciones_sumar_cuasifacturas", ["efector_id"], :name => "liquidaciones_sumar_cuasifacturas_efector_id_idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector__idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector__key", :unique => true
-  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key1", :unique => true
-  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key2", :unique => true
-  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key3", :unique => true
-  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key4", :unique => true
-  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key5", :unique => true
-  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector_key6", :unique => true
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id"], :name => "liquidaciones_sumar_cuasifacturas_liquidacion_sumar_id_idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["numero_cuasifactura"], :name => "liquidaciones_sumar_cuasifacturas_numero_cuasifactura_key", :unique => true
 

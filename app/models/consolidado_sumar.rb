@@ -11,7 +11,6 @@ class ConsolidadoSumar < ActiveRecord::Base
     
     if liquidacion_sumar.class != LiquidacionSumar
     	raise "El argumento de generar consolidado debe ser de tipo LiquidacionSumar y el tipo es #{liquidacion_sumar.class}"
-      
     end
 
     # Traigo todos los efectores que son administrados y existen en el grupo de liquidación de la liquidación indicada
@@ -19,10 +18,10 @@ class ConsolidadoSumar < ActiveRecord::Base
                         .joins(:grupo_de_efectores_liquidacion)
                         .where(grupos_de_efectores_liquidaciones: {id: liquidacion_sumar.grupo_de_efectores_liquidacion.id})
     fecha_de_cierre = liquidacion_sumar.periodo.fecha_cierre 
-
     efectores.each do |e|
       # Busco el administrador
-      administrador = e.administrador
+      administrador = e.administrador_sumar
+      puts "liquidacion n #{liquidacion_sumar.id } - Administrador: #{administrador.inspect} - Efector. #{e.nombre} - #{e.id}"
       # Verifico que no haya generado anteriormente el consolidado de este efector administrador
       if ConsolidadoSumar.where(efector_id: administrador.id, liquidacion_sumar_id: liquidacion_sumar.id).size > 0 
         next

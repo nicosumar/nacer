@@ -24,10 +24,8 @@ class DocumentosElectronicosController < ApplicationController
     @efector_documentos = initialize_grid(
       LiquidacionSumar,
       include: [:periodo, :concepto_de_facturacion],
-      joins:  "join efectores e on e.grupo_de_efectores_id = liquidaciones_sumar.grupo_de_efectores_liquidacion_id\n"+
-              "join grupos_de_efectores_liquidaciones gel on gel.id = e.grupo_de_efectores_id and liquidaciones_sumar.grupo_de_efectores_liquidacion_id = gel.id \n",
-      #        " join conceptos_de_facturacion cf on cf.id = liquidaciones_sumar.concepto_de_facturacion_id\n"+
-      #        " join periodos p on p.id = liquidaciones_sumar.periodo_id",
+      joins:  "join efectores e on e.grupo_de_efectores_liquidacion_id = liquidaciones_sumar.grupo_de_efectores_liquidacion_id\n"+
+              "join grupos_de_efectores_liquidaciones gel on gel.id = e.grupo_de_efectores_liquidacion_id and liquidaciones_sumar.grupo_de_efectores_liquidacion_id = gel.id \n",
       conditions: condiciones
       )
     

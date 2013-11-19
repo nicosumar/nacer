@@ -107,7 +107,6 @@ class Efector < ActiveRecord::Base
     return administrador.present? if convenio_de_gestion.present?
   end
 
-
   # 
   # Devuelve los efectores que administra
   # 

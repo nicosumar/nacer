@@ -1,11 +1,7 @@
 = grid(@liquidaciones_informes) do |g|
   -# Muestra si no se encontraron registros
   - g.blank_slate content_tag(:div, "Nada para mostrar")
-
-  -# Fila adjunta
-  -# g.after_row do |r, number_of_columns|
-    -# content_tag(:tr, content_tag(:td, content_tag(:div, "#{r.liquidacion_sumar.descripcion}"), colspan: number_of_columns), class: 'extra-row')
-    
+   
   -# Columnas del grid
   - g.column name: "Efector" do |c|
     - c.efector.nombre
