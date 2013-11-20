@@ -104,25 +104,25 @@ class ConveniosDeGestionSumarController < ApplicationController
             if !@convenio_de_gestion.efector.codigo_postal.blank?
               r.add_field :efector_codigo_postal, @convenio_de_gestion.efector.codigo_postal.strip
             end
-            if !@convenio_de_gestion.efector.administrador.numero_de_cuenta_principal.blank?
-              r.add_field :administrador_cuenta_principal, @convenio_de_gestion.efector.administrador.numero_de_cuenta_principal.strip
+            if !@convenio_de_gestion.efector.administrador_sumar.numero_de_cuenta_principal.blank?
+              r.add_field :administrador_cuenta_principal, @convenio_de_gestion.efector.administrador_sumar.numero_de_cuenta_principal.strip
             end
-            if !@convenio_de_gestion.efector.administrador.denominacion_cuenta_principal.blank?
-              r.add_field :administrador_denominacion_principal, @convenio_de_gestion.efector.administrador.denominacion_cuenta_principal.strip
+            if !@convenio_de_gestion.efector.administrador_sumar.denominacion_cuenta_principal.blank?
+              r.add_field :administrador_denominacion_principal, @convenio_de_gestion.efector.administrador_sumar.denominacion_cuenta_principal.strip
             end
-            if !@convenio_de_gestion.efector.administrador.banco_cuenta_principal.blank?
-              r.add_field :administrador_banco_principal, @convenio_de_gestion.efector.administrador.banco_cuenta_principal.strip
+            if !@convenio_de_gestion.efector.administrador_sumar.banco_cuenta_principal.blank?
+              r.add_field :administrador_banco_principal, @convenio_de_gestion.efector.administrador_sumar.banco_cuenta_principal.strip
             end
-            if !@convenio_de_gestion.efector.administrador.sucursal_cuenta_principal.blank?
-              r.add_field :administrador_sucursal_principal, @convenio_de_gestion.efector.administrador.sucursal_cuenta_principal.strip
+            if !@convenio_de_gestion.efector.administrador_sumar.sucursal_cuenta_principal.blank?
+              r.add_field :administrador_sucursal_principal, @convenio_de_gestion.efector.administrador_sumar.sucursal_cuenta_principal.strip
             end
-            if !@convenio_de_gestion.efector.administrador.numero_de_cuenta_secundaria.blank?
+            if !@convenio_de_gestion.efector.administrador_sumar.numero_de_cuenta_secundaria.blank?
               otra_cuenta =
                 " y de la cuenta bancaria Nº " + \
-                @convenio_de_gestion.efector.administrador.numero_de_cuenta_secundaria.strip + " “" + \
-                @convenio_de_gestion.efector.administrador.denominacion_cuenta_secundaria.to_s.strip + "” abierta en la entidad " + \
-                @convenio_de_gestion.efector.administrador.banco_cuenta_secundaria.to_s.strip + ", sucursal " + \
-                @convenio_de_gestion.efector.administrador.sucursal_cuenta_secundaria.to_s.strip
+                @convenio_de_gestion.efector.administrador_sumar.numero_de_cuenta_secundaria.strip + " “" + \
+                @convenio_de_gestion.efector.administrador_sumar.denominacion_cuenta_secundaria.to_s.strip + "” abierta en la entidad " + \
+                @convenio_de_gestion.efector.administrador_sumar.banco_cuenta_secundaria.to_s.strip + ", sucursal " + \
+                @convenio_de_gestion.efector.administrador_sumar.sucursal_cuenta_secundaria.to_s.strip
               r.add_field :otra_cuenta, otra_cuenta
             else
               r.add_field :otra_cuenta, ""
