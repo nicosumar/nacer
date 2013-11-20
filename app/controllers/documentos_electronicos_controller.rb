@@ -17,7 +17,6 @@ class DocumentosElectronicosController < ApplicationController
     end
 
     condiciones = {}
-    #condiciones.merge!({:e => {id: @efector_id}}) 
     condiciones.merge!({:e => {id: @efector_id}}) 
 
     # Crea la instancia del grid (o lleva los resultados del model al grid)

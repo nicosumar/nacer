@@ -13,6 +13,7 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
     liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar
     estado_del_proceso = EstadoDelProceso.where(codigo: "C").first # TODO: meter por algun lado los estados por defecto de lso procesos
 
+    # Genero la cabecera del anexo
     anexo = LiquidacionSumarAnexoMedico.create(
       estado_del_proceso: estado_del_proceso,
       fecha_de_inicio:  DateTime.now()

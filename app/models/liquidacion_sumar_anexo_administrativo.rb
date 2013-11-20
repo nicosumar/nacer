@@ -13,6 +13,7 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
   	liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar.id
   	estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
 
+    #Creo la cabecera 
   	anexo = LiquidacionSumarAnexoAdministrativo.create(
   		estado_del_proceso: estado_del_proceso,
   		fecha_de_inicio:  DateTime.now()
@@ -55,7 +56,7 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
     estado_exceptuada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_exceptuada.id
     estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
     estado_rechazada_refacturar = EstadoDeLaPrestacion.find(7) # 7  | Devuelta por la UGSP para refacturar |
-  	estado_del_proceso = EstadoDelProceso.where(codigo: "B").first
+  	estado_del_proceso = EstadoDelProceso.where(codigo: "B").first # estado "Finaliazo y cerrado"
 
   	anexo = LiquidacionSumarAnexoAdministrativo.create(
   		estado_del_proceso: estado_del_proceso,
@@ -97,12 +98,12 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
   end
 
   def finalizar_anexo
-    #busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
-    estado_del_proceso = EstadoDelProceso.find(3)
+    # busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
+    estado_del_proceso = EstadoDelProceso.find(3) # Registrada, aun no se ha facturado
 
     # Establezco el estado de "Aceptada para liquidación en el estado de las prestaciones que no se ha definido estado"
     # TODO: Ver de parametrizar estos estados por algun lado
-    estado_por_omision = EstadoDeLaPrestacion.find(5)
+    estado_por_omision = EstadoDeLaPrestacion.find(5) # Aprobada pendiente de pago
     estado_por_defecto = EstadoDeLaPrestacion.find(4) #estado en el que esta la prestación al momento de generarse la cuasifactura (aca el estado es facturada, en proceso de liquidacion)
 
     transaction do

@@ -29,9 +29,14 @@ class LiquidacionInforme < ActiveRecord::Base
     return cq
   end
 
-  def self.cerrar_informe
+  def finalizar
     # Buscar las prestaciones que son comunes a ambos anexos (medico y administrativo)
-    # (en ralidad son solo las mencionadas en el anexo administrativo)
+    # (en realidad son solo las mencionadas en el anexo administrativo)
+    
+    self.liquidacion_sumar_anexo_administrativo.anexos_administrativos_prestaciones.each do |n|
+      
+    
+    end
 
     # Las comparo, si una tiene estado de rechazo en algun anexo , dejo ese estado
 

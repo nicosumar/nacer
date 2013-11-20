@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class LiquidacionesInformesController < ApplicationController
 
+  before_filter :authenticate_user!
   # GET /liquidaciones_informes
   def index
     if params[:concepto_de_facturacion_id].blank?

@@ -1,7 +1,6 @@
 = grid(@efector_documentos) do |g|
   -# Muestra si no se encontraron registros
   - g.blank_slate content_tag(:div, "-")
-  - contenido = "".html_safe
 
   - g.column name: "Periodo" do |c|
     - c.periodo.periodo
@@ -12,6 +11,7 @@
     -# Cuasifactura: Si para el efector dado la liquidación y cuasifactura existe
     -# Consolidado: Si el efector es administrador verifico si tiene un consolidado 
   - g.column name: 'Documentos' do |l|
+    - contenido = "".html_safe
     - if l.cuasifactura_de(efector).present?
       - contenido += link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(l.cuasifactura_de(efector).id, format: 'pdf').html_safe
       - contenido += "<br>".html_safe

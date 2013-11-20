@@ -22,10 +22,10 @@
   - if @liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "C"
     - g.column name: "Estado" do |c|
       - form_for c, url: update_status_anexo_medico_prestacion_path(c), remote: true do |f|
-        - f.select :estado_de_la_prestacion_id, @estados_de_las_prestaciones,{:include_blank => true}, {id: "anexo_medico_prestacion_estado_de_la_prestacion_id_#{c.id}", :style => "width:100px", :"data-placeholder" => "Seleccione"}
+        - f.select :estado_de_la_prestacion_id, @estados_de_las_prestaciones,{:include_blank => true}, {id: "anexo_medico_prestacion_estado_de_la_prestacion_id_#{c.id}", :style => "width:100px"}
     - g.column name: "Motivo de <br>rechazo".html_safe do |c|
       - form_for c, url: update_motivo_rechazo_anexo_medico_prestacion_path(c), remote: true do |f|
-        - f.select :motivo_de_rechazo_id, @motivos_de_rechazo,{:include_blank => true}, {id: "anexo_medico_prestacion_motivo_de_rechazo_id_#{c.id}", :style => "width:140px", :"data-placeholder" => "Seleccione"}
+        - f.select :motivo_de_rechazo_id, @motivos_de_rechazo,{:include_blank => true}, {id: "anexo_medico_prestacion_motivo_de_rechazo_id_#{c.id}", :style => "width:140px" }
   - else
     - g.column name: "Estado" do |c|
       - c.estado_de_la_prestacion.nombre

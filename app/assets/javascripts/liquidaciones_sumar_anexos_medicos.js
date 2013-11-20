@@ -7,9 +7,10 @@ $(document).ready(function() {
 
 		$(this).chained("select[id=anexo_medico_prestacion_estado_de_la_prestacion_id_"+id+"]");
 
-		$(this).trigger("change");
-
+		$("select[id=anexo_medico_prestacion_estado_de_la_prestacion_id_"+id+"]").trigger("change");
+		$(this).val($("select[id=anexo_medico_prestacion_motivo_de_rechazo_id_"+id+"] option[selected='selected']").attr("value"))
 	});
+
 	//Init:
 	//Oculto el spinner al inicio y disparo el change en los combos de estado para evitar que los muestre mal
 	$("#spinner").hide();
