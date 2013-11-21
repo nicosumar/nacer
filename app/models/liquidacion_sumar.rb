@@ -137,7 +137,8 @@ class LiquidacionSumar < ActiveRecord::Base
               "               limit 1\n"+
               "               )"+
               "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
-              "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} ) \n" 
+              "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{l.id} ) \n" +
+              "  AND pr.comunitaria "
       })
 
     if cq
@@ -257,7 +258,8 @@ class LiquidacionSumar < ActiveRecord::Base
             "               (pb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
             "               limit 1\n"+
             "               )"+
-            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"
+            "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
+            "  AND pr.comunitaria "
       })
 
     if cq
