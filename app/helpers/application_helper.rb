@@ -25,6 +25,11 @@ module ApplicationHelper
     diferencia_en_dias = (fecha_de_calculo.day) - (fecha_de_nacimiento.day)
     if diferencia_en_dias < 0
       diferencia_en_meses -= 1
+      if diferencia_en_meses < 0
+        # Ajustamos la cantidad de meses y años, si la cantidad de meses es negativa
+        diferencia_en_anios -= 1
+        diferencia_en_meses += 12
+      end
       diferencia_en_dias = (fecha_de_calculo - (fecha_de_nacimiento + diferencia_en_anios.years + diferencia_en_meses.months)).to_i
     end
 

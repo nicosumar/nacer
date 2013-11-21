@@ -509,4 +509,47 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
   end
 end
 
+# ARCHIVO CM
+
+archivo = File.open("lib/tasks/datos/trazadora_CM.csv", "w")
+archivo.set_encoding("CP1252", :crlf_newline => true)
+
+UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
+  ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
+  res = ActiveRecord::Base.connection.exec_query "
+    SELECT
+        e.cuie \"CUIE\",
+        pb.clave_de_beneficiario \"Clave beneficiario\",
+        cd.codigo \"Clase de documento\",
+        td.codigo \"Tipo de documento\",
+        a.numero_de_documento \"Numero de documento\",
+        a.apellido \"Apellido\",
+        a.nombre \"Nombre\",
+        s.codigo \"Sexo\",
+        a.fecha_de_nacimiento \"Fecha de nacimiento\",
+        pb.fecha_de_la_prestacion \"Fecha de diagnóstico histológico\",
+        dra_diag.valor_string \"Diagnóstico\",
+        substr(current_schema(), 5, 3) || to_char(pb.id, 'FM000000') \"Id registro provincial\"
+      FROM
+        prestaciones_brindadas pb
+        JOIN efectores e ON e.id = pb.efector_id
+        JOIN afiliados a ON a.clave_de_beneficiario = pb.clave_de_beneficiario
+        JOIN clases_de_documentos cd ON cd.id = a.clase_de_documento_id
+        JOIN tipos_de_documentos td ON td.id = a.tipo_de_documento_id
+        JOIN sexos s ON s.id = a.sexo_id
+        LEFT JOIN (
+          datos_reportables_asociados dra_diag
+          JOIN datos_reportables_requeridos drr_diag
+            ON (drr_diag.id = dra_diag.dato_reportable_requerido_id AND drr_diag.dato_reportable_id = 37)
+        ) ON (pb.id = dra_diag.prestacion_brindada_id)
+      WHERE
+        pb.prestacion_id = 585
+        AND pb.fecha_de_la_prestacion BETWEEN '2012-09-01' AND '2013-08-31'
+        AND pb.estado_de_la_prestacion_id NOT IN (10,11);
+  "
+  res.rows.each do |row|
+    archivo.puts row.join("\t")
+  end
+end
+
 archivo.close
