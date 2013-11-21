@@ -5,10 +5,18 @@
   -# Columnas del grid
   - g.column name: "Codigo" do |c|
     - c.prestacion_liquidada.prestacion_incluida.prestacion_codigo
+  -# Si Existe el afiliado
   - g.column name: "Afiliado" do |c|
-    - c.prestacion_liquidada.afiliado.nombre_completo
+    - if c.prestacion_liquidada.afiliado.present? 
+      - c.prestacion_liquidada.afiliado.nombre_completo
+    - else
+      - "Comunitaria"
+  
   - g.column name: "Documento" do |c|
-    - c.prestacion_liquidada.afiliado.numero_de_documento
+    - if c.prestacion_liquidada.afiliado.present? 
+      - c.prestacion_liquidada.afiliado.numero_de_documento
+    - else
+      - ""
   - g.column name: "Fecha" do |c|
     - c.prestacion_liquidada.fecha_de_la_prestacion
   - g.column name: "Historia<br>Clinica".html_safe do |c|

@@ -54,37 +54,12 @@ class LiquidacionesInformesController < ApplicationController
     end
   end
 
-  # GET /liquidaciones_informes/new
-  # GET /liquidaciones_informes/new.json
-  def new
-    @liquidacion_informe = LiquidacionInforme.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @liquidacion_informe }
-    end
-  end
 
   # GET /liquidaciones_informes/1/edit
   def edit
     @liquidacion_informe = LiquidacionInforme.find(params[:id])
   end
 
-  # POST /liquidaciones_informes
-  # POST /liquidaciones_informes.json
-  def create
-    @liquidacion_informe = LiquidacionInforme.new(params[:liquidacion_informe])
-
-    respond_to do |format|
-      if @liquidacion_informe.save
-        format.html { redirect_to @liquidacion_informe, notice: 'Liquidacion informe was successfully created.' }
-        format.json { render json: @liquidacion_informe, status: :created, location: @liquidacion_informe }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @liquidacion_informe.errors, status: :unprocessable_entity }
-      end
-    end
-  end
 
   # PUT /liquidaciones_informes/1
   def update
@@ -113,17 +88,21 @@ class LiquidacionesInformesController < ApplicationController
     
   end
 
-  # DELETE /liquidaciones_informes/1
-  # DELETE /liquidaciones_informes/1.json
-  def destroy
-    @liquidacion_informe = LiquidacionInforme.find(params[:id])
-    @liquidacion_informe.destroy
+  def finalizar_informe
+    tiempo_proceso = Time.now
 
-    respond_to do |format|
-      format.html { redirect_to liquidaciones_informes_url }
-      format.json { head :no_content }
+    @liquidacion_informe = LiquidacionInforme.find(params[:id])
+
+    if c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && c.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F" #Estado F = Finalizado
+      if @liquidacion_informe.finalizar
+        logger.warn "Tiempo para finalizar el informe: #{Time.now - tiempo_proceso} segundos"
+        redirect_to @liquidacion_informe, :flash => { :tipo => :ok, :titulo => "El informe se cerro exitosamente" } 
+      else
+        redirect_to @liquidacion_informe, :flash => { :tipo => :error, :titulo => "Hubieron problemas al cerrar el informe. Contacte con el departamento de sistemas." } 
+      end 
+    else
+      redirect_to @liquidacion_informe, :flash => { :tipo => :error, :titulo => "¡Los anexos no se encuentran finalizados!." } 
     end
   end
-
 
 end

@@ -32,15 +32,43 @@ class LiquidacionInforme < ActiveRecord::Base
   def finalizar
     # Buscar las prestaciones que son comunes a ambos anexos (medico y administrativo)
     # (en realidad son solo las mencionadas en el anexo administrativo)
-    
-    self.liquidacion_sumar_anexo_administrativo.anexos_administrativos_prestaciones.each do |n|
-      
-    
-    end
-
     # Las comparo, si una tiene estado de rechazo en algun anexo , dejo ese estado
+    # 
+    # El query toma como idea que el id del estado de la prestacion, mientras es mayor, el motivo de rechazo es mas negativo
 
-    # Actualizo el estado a la brindada y a la liquidada
+    # Actualizo el estado a la liquidada y de ahi la brindada
+    
+    cq = CustomQuery.ejecutar(
+    {
+      sql:  "UPDATE prestaciones_liquidadas\n"+
+            "SET estado_de_la_prestacion_liquidada_id = CASE\n"+
+            " WHEN aap.estado_de_la_prestacion_id > amp.estado_de_la_prestacion_id THEN aap.estado_de_la_prestacion_id\n"+
+            " WHEN aap.estado_de_la_prestacion_id < amp.estado_de_la_prestacion_id THEN amp.estado_de_la_prestacion_id\n"+
+            " WHEN aap.estado_de_la_prestacion_id IS NULL THEN  amp.estado_de_la_prestacion_id\n"+
+            " ELSE  aap.estado_de_la_prestacion_id\n"+
+            "END\n"+
+            "FROM  liquidaciones_informes li\n"+
+            " JOIN anexos_medicos_prestaciones amp ON amp.liquidacion_sumar_anexo_medico_id = li.liquidacion_sumar_anexo_medico_id\n"+
+            "LEFT JOIN anexos_administrativos_prestaciones aap ON amp.prestacion_liquidada_id = aap.prestacion_liquidada_id\n"+
+            "WHERE  amp.prestacion_liquidada_id = prestaciones_liquidadas.id\n"+
+            "AND li. id = #{self.id}"
+    })
+
+    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: self.efector.id))
+    cq = CustomQuery.ejecutar ({
+      esquemas: esquemas,
+      sql:  "update prestaciones_brindadas \n "+
+            "   set estado_de_la_prestacion_id = #{p.estado_de_la_prestacion_liquidada_id}, \n "+
+            "from prestaciones_liquidadas p \n "+
+            "where p.efector_id in (select ef.id \n "+
+            "                                      from efectores ef \n "+
+            "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
+            "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
+            "and prestaciones_brindadas.id = p.prestacion_brindada_id\n"+  # filtro para el update
+            "and  p.liquidacion_id = #{self.liquidacion_sumar.id} \n "+    # La liquidacion en la que se genero esta prestacion
+            "and p.efector_id = #{self.efector.id}\n "                     # El efector al cual corresponde este informe de liquidacion
+      })
+    return cq
     
   end
 end

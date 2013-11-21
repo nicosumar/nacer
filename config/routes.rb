@@ -30,7 +30,12 @@ Nacer::Application.routes.draw do
   resources :liquidaciones_sumar_cuasifacturas_detalles
   resources :liquidaciones_sumar_cuasifacturas
   resources :parametros_liquidaciones_sumar
-  resources :liquidaciones_informes
+  resources :liquidaciones_informes do
+    member do
+      post 'finalizar_informe', as: :finalizar_informe, action: :finalizar_informe
+    end
+  end
+  
   resources :consolidados_sumar
   # rutas para la actualizacion asincronica
   resources :anexos_medicos_prestaciones do
