@@ -13,7 +13,7 @@ class LiquidacionesSumarCuasifacturasController < ApplicationController
     @liquidacion_sumar_cuasifactura = LiquidacionSumarCuasifactura.find(params[:id])
 
     respond_to do |format|
-      format.pdf { send_data render_to_string, filename: "cuasifactura#{@liquidacion_sumar_cuasifactura.numero_cuasifactura}.pdf", 
+      format.pdf { send_data render_to_string, filename: "#{@liquidacion_sumar_cuasifactura.efector.nombre}-#{@liquidacion_sumar_cuasifactura.numero_cuasifactura}.pdf", 
       type: 'application/pdf', disposition: 'inline'}
     end
   end
