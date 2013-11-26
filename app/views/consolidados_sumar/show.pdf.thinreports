@@ -36,12 +36,14 @@ report.start_new_page do |page|
   # Agrego el administrador al detalle
   page.list(:details).add_row do |row|
     row.values efector_nombre: @consolidado_sumar.efector.nombre,
-               convenio_admin_nro: "No corresp.",
-               convenio_gestion_nro: @consolidado_sumar.efector.convenio_de_gestion_sumar.present? ? @consolidado_sumar.efector.convenio_de_gestion_sumar.numero : "No corresp.",
-               cantidad: @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).size == 1 ?
+              convenio_admin_nro: "No corresp.",
+              convenio_gestion_nro: @consolidado_sumar.efector.convenio_de_gestion_sumar.present? ? @consolidado_sumar.efector.convenio_de_gestion_sumar.numero : "No corresp.",
+              n_cuasifactura: @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).present? ? 
+                @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).first.numero_cuasifactura : "",
+              cantidad: @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).size == 1 ?
                 @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).first.monto_total : 0
-
   end  
+
   page.list(:details) do |list|
       list.store.sub_total += @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).size == 1 ?
               @consolidado_sumar.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).first.monto_total : 0
@@ -54,9 +56,11 @@ report.start_new_page do |page|
     #agrego la fila a la lista de detalles
     page.list(:details).add_row do |row|
       row.values efector_nombre: det.efector.nombre,
-                 convenio_admin_nro: det.convenio_de_administracion_sumar.numero,
-                 convenio_gestion_nro: det.convenio_de_gestion_sumar.numero,
-                 cantidad: det.total
+                convenio_admin_nro: det.convenio_de_administracion_sumar.numero,
+                convenio_gestion_nro: det.convenio_de_gestion_sumar.numero,
+                n_cuasifactura: det.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).present? ? 
+                  det.efector.cuasifacturas.where(liquidacion_sumar_id: @consolidado_sumar.liquidacion_sumar.id).first.numero_cuasifactura : "",
+                cantidad: det.total
 
       page.list(:details) do |list|
         list.store.sub_total += det.total.to_d

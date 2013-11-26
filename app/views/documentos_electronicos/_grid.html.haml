@@ -3,19 +3,19 @@
   - g.blank_slate content_tag(:div, "-")
 
   - g.column name: "Periodo" do |c|
-    - c.periodo.periodo
+    - c.periodo
   - g.column name: "Concepto de facturación" do |c|
     - c.concepto_de_facturacion.concepto
 
   -# Tipos de documentos:
     -# Cuasifactura: Si para el efector dado la liquidación y cuasifactura existe
     -# Consolidado: Si el efector es administrador verifico si tiene un consolidado 
-  - g.column name: 'Documentos' do |l|
+  - g.column name: 'Documentos' do |p|
     - contenido = "".html_safe
-    - if l.cuasifactura_de(efector).present?
-      - contenido += link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(l.cuasifactura_de(efector).id, format: 'pdf').html_safe
+    - if efector.cuasifactura_de_periodo(p).present?
+      - contenido += link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(efector.cuasifactura_de_periodo(p).id, format: 'pdf').html_safe
       - contenido += "<br>".html_safe
-    - if @efector.es_administrador? and l.consolidado_de(efector).present?
-      - contenido += link_to 'Consolidado', consolidado_sumar_path(l.consolidado_de(efector).id, format: 'pdf').html_safe
+    - if @efector.es_administrador? and @efector.consolidado_de_periodo(p).present?
+      - contenido += link_to 'Consolidado', consolidado_sumar_path(@efector.consolidado_de_periodo(p).id, format: 'pdf').html_safe
       - contenido += "<br>".html_safe
     - content_tag(:div, contenido)

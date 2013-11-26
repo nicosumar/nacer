@@ -127,6 +127,22 @@ class Efector < ActiveRecord::Base
     return true
   end
 
+  #
+  # Devuelve el consolidado de un periodo dado
+  #
+  # @return [LiquidacionSumarCuasifactura] 
+  def consolidado_de_periodo(argPeriodo)
+    self.consolidados_sumar.where(periodo_id: argPeriodo.id).first
+  end
+
+  #
+  # Devuelve el consolidado de un periodo dado
+  #
+  # @return [LiquidacionSumarCuasifactura] 
+  def cuasifactura_de_periodo(argPeriodo)
+    self.cuasifacturas.joins(:liquidacion_sumar).where(liquidaciones_sumar: {periodo_id: argPeriodo.id}).first
+  end
+
   #--------------------------------------------------------------
   #                   Metodos de clase
   #--------------------------------------------------------------

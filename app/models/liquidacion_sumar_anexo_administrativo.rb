@@ -68,9 +68,13 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
   	informe_de_liquidacion.save!
 
     cq = CustomQuery.ejecutar ({
-      sql:  "INSERT INTO \"public\".\"anexos_administrativos_prestaciones\" \n"+
-            "(  \"liquidacion_sumar_anexo_administrativo_id\",  \"prestacion_liquidada_id\", \"created_at\",  \"updated_at\")\n"+
-            "SELECT #{anexo.id} anexo_administrativo_id, p.id, now(), now()\n"+
+      sql:  "INSERT INTO public.anexos_administrativos_prestaciones \n"+
+            "(  liquidacion_sumar_anexo_administrativo_id, prestacion_liquidada_id, \n"+
+            " estado_de_la_prestacion_id, \n"+
+            "created_at, updated_at)\n"+
+            "SELECT #{anexo.id} anexo_administrativo_id, p.id, \n"+
+            "       #{estado_rechazada_refacturar.id}, \n"+
+            "now(), now()\n"+
             "FROM\n"+
             " liquidaciones_sumar l\n"+
             "JOIN prestaciones_liquidadas P ON P .liquidacion_id = l. ID\n"+
@@ -97,17 +101,17 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
     # sin tomar en cuenta si el rechazo se realizo por advertencias o algo similar. 
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
-      sql:  "update prestaciones_brindadas \n "+
+      sql:  "UPDATE prestaciones_brindadas \n "+
             "   set estado_de_la_prestacion_id = #{estado_rechazada_refacturar.id} \n "+
-            "from prestaciones_liquidadas p \n "+
-            "where p.liquidacion_id = #{liquidacion_sumar.id} \n "+
-            "and   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
-            "and p.efector_id in (select ef.id \n "+
+            "FROM prestaciones_liquidadas p \n "+
+            "WHERE p.liquidacion_id = #{liquidacion_sumar.id} \n "+
+            "AND   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
+            "AND p.efector_id in (select ef.id \n "+
             "                                      from efectores ef \n "+
             "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
             "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
-    				"and p.efector_id = #{efector}\n " +
-            "and prestaciones_brindadas.id = p.prestacion_brindada_id"
+    				"AND p.efector_id = #{efector}\n " +
+            "AND prestaciones_brindadas.id = p.prestacion_brindada_id"
       })
 
     # Actualizo el estado de la prestacion liquidada a rechazada para refacturar, siendo este su ultimo estado durante esta liquidación.

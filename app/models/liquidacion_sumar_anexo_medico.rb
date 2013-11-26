@@ -64,8 +64,10 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
 
     cq = CustomQuery.ejecutar ({
       sql:  "INSERT INTO \"public\".\"anexos_medicos_prestaciones\" \n"+
-            "(  \"liquidacion_sumar_anexo_medico_id\",  \"prestacion_liquidada_id\", \"created_at\", \"updated_at\")\n"+
-            "SELECT #{anexo.id} anexo_medico_id, p.id prestacion_liquidada_id, now(), now()\n"+
+            "(  \"liquidacion_sumar_anexo_medico_id\",  \"prestacion_liquidada_id\", \n"+
+            " estado_de_la_prestacion_id, \n"+
+            "\"created_at\", \"updated_at\")\n"+
+            "SELECT #{anexo.id} anexo_medico_id, p.id prestacion_liquidada_id, #{estado_rechazada_refacturar.id}, now(), now()\n"+
             "FROM\n"+
             " liquidaciones_sumar l\n"+
             "JOIN prestaciones_liquidadas P ON P.liquidacion_id = l.ID \n"+

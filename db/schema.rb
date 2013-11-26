@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131112234740) do
+ActiveRecord::Schema.define(:version => 20131126132926) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -881,8 +881,8 @@ ActiveRecord::Schema.define(:version => 20131112234740) do
     t.datetime "created_at",                                            :null => false
     t.datetime "updated_at",                                            :null => false
     t.integer  "rechazar_estado_de_la_prestacion_id",  :default => 6
-    t.integer  "aceptar_estado_de_la_prestacion_id",   :default => 5
-    t.integer  "excepcion_estado_de_la_prestacion_id", :default => 5
+    t.integer  "aceptar_estado_de_la_prestacion_id",   :default => 4
+    t.integer  "excepcion_estado_de_la_prestacion_id", :default => 4
   end
 
   create_table "percentiles_pc_edad", :force => true do |t|
