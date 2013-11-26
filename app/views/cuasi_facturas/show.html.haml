@@ -6,7 +6,7 @@
   #action-links
     - if can? :update, CuasiFactura
       = link_to "Modificar la cuasi-factura", edit_cuasi_factura_path(@cuasi_factura)
-    - if can? (:create, RenglonDeCuasiFactura) && !@cuasi_factura.renglones_de_cuasi_facturas.any?
+    - if can?(:create, RenglonDeCuasiFactura) && !@cuasi_factura.renglones_de_cuasi_facturas.any?
       = link_to "Importar detalle", importar_detalle_url(:cuasi_factura_id => @cuasi_factura.id)
     - if can?(:create, RegistroDePrestacion) && @cuasi_factura.renglones_de_cuasi_facturas.any? && |
       !@cuasi_factura.registros_de_prestaciones.any? |
@@ -37,7 +37,7 @@
   %div.field_content
     %span.field_name Número de cuasi-factura
     %span.field_value= @cuasi_factura.numero
-  %div.field_content
+  -#%div.field_content
     %span.field_name Fecha de emisión
     %span.field_value= @cuasi_factura.fecha_de_emision.strftime("%d/%m/%Y")
   %div.field_content

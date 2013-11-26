@@ -14,7 +14,7 @@ class LiquidacionesSumarCuasifacturasController < ApplicationController
 
     respond_to do |format|
       format.pdf { send_data render_to_string, filename: "cuasifactura#{@liquidacion_sumar_cuasifactura.numero_cuasifactura}.pdf", 
-      type: 'application/pdf', disposition: 'inline'} #'attachment'} #'inline'}
+      type: 'application/pdf', disposition: 'attachment'}
     end
   end
   

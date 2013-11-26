@@ -384,29 +384,52 @@ class Afiliado < ActiveRecord::Base
   # Métodos de clase para búsquedas
   #
 
-  def self.busqueda_por_documento(doc = nil)
+  # Busca un afiliado por número de documento propio
+  def self.busqueda_por_documento(numero, clase = nil, tipo = nil)
 
-    # Verificar el parámetro
-    documento = doc.to_s.strip
-    if !documento || documento.blank?
-      return nil
+    # Verificar los parámetros
+    if !(numero.is_a?(String) && (clase.nil? || clase.is_a?(ClaseDeDocumento)) && (tipo.nil? || tipo.is_a?(TipoDeDocumento)))
+      raise ArgumentError
     end
 
-    # Buscar el número de documento en cualquiera de los campos de documentos
-    afiliados = Afiliado.where("(numero_de_documento = ? OR
-                                numero_de_documento_de_la_madre = ? OR
-                                numero_de_documento_del_padre = ? OR
-                                numero_de_documento_del_tutor = ?))",
-                                documento, documento, documento,
-                                documento)
+    # Normalizar el número de documento
+    documento = numero.mb_chars.upcase.to_s.strip.gsub(/[ ,\.-]/, "")
 
-    # Devolver 'nil' si no se encontró el número de documento
-    return nil if afiliados.size < 1
-
+    # Buscar de acuerdo con la clase de documento indicada
+    # TODO: Reemplazar códigos de motivos de baja ~~HARDCODED IDs~~
+    if clase.present? && clase.id == ClaseDeDocumento.id_del_codigo!("P")
+      afiliados =
+        Afiliado.where(
+          "
+            clase_de_documento_id = #{clase.id}
+            AND numero_de_documento = ?
+            #{tipo.present? ? "AND tipo_de_documento_id = " + tipo.id.to_s : ""}
+            AND (motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83) OR motivo_de_la_baja_id IS NULL)
+          ",
+          documento
+        )
+    else
+      afiliados =
+        Afiliado.where(
+          "
+            (numero_de_documento = ?
+            #{clase.present? ? "AND clase_de_documento_id = " + clase.id.to_s : ""}
+            #{tipo.present? ? " AND tipo_de_documento_id = " + tipo.id.to_s : ""}
+            OR numero_de_documento_de_la_madre = ?
+            #{tipo.present? ? " AND tipo_de_documento_de_la_madre_id = " + tipo.id.to_s : ""}
+            OR numero_de_documento_del_padre = ?
+            #{tipo.present? ? " AND tipo_de_documento_del_padre_id = " + tipo.id.to_s : ""}
+            OR numero_de_documento_del_tutor = ?
+            #{tipo.present? ? " AND tipo_de_documento_del_tutor_id = " + tipo.id.to_s : ""})
+            AND (motivo_de_la_baja_id NOT IN (14, 51, 81, 82, 83) OR motivo_de_la_baja_id IS NULL)
+          ",
+          documento, documento, documento, documento).order("fecha_de_nacimiento DESC NULLS LAST")
+    end
     return afiliados
   end
 
   # Busca un afiliado por su número de documento y nombre, devolviendo todos los posibles candidatos.
+  # DEPRECADA --no usar más en nuevos procesos--
   def self.busqueda_por_aproximacion(documento, nombre_y_apellido)
     return nil if !(documento && nombre_y_apellido)
 
@@ -432,17 +455,17 @@ class Afiliado < ActiveRecord::Base
 
       # Verificar apellidos
       case
-#        when (apellido_afiliado.split(" ").all? { |apellido| nombre_y_apellido.index(apellido) })
-#          # Coinciden todos los apellidos
-#          nivel_actual = 8
+        when (apellido_afiliado.split(" ").all? { |apellido| nombre_y_apellido.index(apellido) })
+          # Coinciden todos los apellidos
+          nivel_actual = 8
         when (apellido_afiliado.split(" ").any? { |apellido| (nombre_y_apellido.split(" ").any? { |nomape| nomape == apellido }) })
           # Coincide algún apellido
           nivel_actual = 4
         else
           # No coincide ningún apellido, procedemos a verificar si algún apellido registrado tiene una distancia
-          # de Levenshtein menor o igual que 2 con alguno de los informados
+          # de Levenshtein menor o igual que 3 con alguno de los informados
           if (nombre_y_apellido.split(" ").any? { |nom_ape| (
-              apellido_afiliado.split(" ").any? { |apellido| Text::Levenshtein.distance(nom_ape, apellido) <= 2 }) })
+              apellido_afiliado.split(" ").any? { |apellido| Text::Levenshtein.distance(nom_ape, apellido) <= 3 }) })
             nivel_actual = 2
           else
             nivel_actual = 1
@@ -459,9 +482,9 @@ class Afiliado < ActiveRecord::Base
           nivel_actual *= 8
         else
           # No coincide ningún nombre, procedemos a verificar si algún nombre registrado tiene una distancia de Levenshtein
-          # menor o igual que 2 con alguno de los informados
+          # menor o igual que 3 con alguno de los informados
           if (nombre_y_apellido.split(" ").any? { |nom_ape| (
-              nombre_afiliado.split(" ").any? { |nombre| Text::Levenshtein.distance(nom_ape, nombre) <= 2 }) })
+              nombre_afiliado.split(" ").any? { |nombre| Text::Levenshtein.distance(nom_ape, nombre) <= 3 }) })
             nivel_actual *= 4
           else
             nivel_actual *= 1

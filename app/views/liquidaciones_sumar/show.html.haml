@@ -17,7 +17,7 @@
     %tr
       %td
         %b Liquidacion:
-      %td{:colspan => "3"}
+      %td{colspan: 3}
         %span.field_value= @liquidacion_sumar.descripcion
     %tr
       %td
@@ -31,7 +31,7 @@
     %tr
       %td 
         %b Plantilla de reglas:
-      %td{:colspan => "2"}
+      %td{colspan:2}
         - unless @liquidacion_sumar.plantilla_de_reglas.blank?
           %span.field_value= @liquidacion_sumar.plantilla_de_reglas.nombre
         - else
@@ -40,12 +40,12 @@
     %tr
       %td
         %b Grupo de Efectores:
-      %td{colspan: "2"}
+      %td{colspan: 2}
         %span.field_value= link_to "#{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}", @liquidacion_sumar.grupo_de_efectores_liquidacion, {method: "get"},{style: "color: #0000FF"}
     %tr
-      %td{colspan: "4"} &nbsp;
+      %td{colspan: 4} &nbsp;
     %tr
-      %td{colspan: "4"}
+      %td{colspan: 4}
         %table
           %tr
             %td=button_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :delete
