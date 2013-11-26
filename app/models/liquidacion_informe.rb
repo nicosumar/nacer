@@ -57,18 +57,25 @@ class LiquidacionInforme < ActiveRecord::Base
     esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: self.efector.id))
     cq = CustomQuery.ejecutar ({
       esquemas: esquemas,
-      sql:  "update prestaciones_brindadas \n "+
-            "   set estado_de_la_prestacion_id = #{p.estado_de_la_prestacion_liquidada_id}, \n "+
-            "from prestaciones_liquidadas p \n "+
-            "where p.efector_id in (select ef.id \n "+
-            "                                      from efectores ef \n "+
-            "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
-            "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
-            "and prestaciones_brindadas.id = p.prestacion_brindada_id\n"+  # filtro para el update
-            "and  p.liquidacion_id = #{self.liquidacion_sumar.id} \n "+    # La liquidacion en la que se genero esta prestacion
-            "and p.efector_id = #{self.efector.id}\n "                     # El efector al cual corresponde este informe de liquidacion
+      sql:  "UPDATE prestaciones_brindadas \n "+
+            "   SET estado_de_la_prestacion_id = #{p.estado_de_la_prestacion_liquidada_id}, \n "+
+            "FROM prestaciones_liquidadas p \n "+
+            "WHERE p.efector_id in (select ef.id \n "+
+            "                                      FROM efectores ef \n "+
+            "                                         JOIN unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
+            "                                      WHERE 'uad_' ||  u.codigo = current_schema() )\n "+
+            "AND prestaciones_brindadas.id = p.prestacion_brindada_id\n"+  # filtro para el update
+            "AND  p.liquidacion_id = #{self.liquidacion_sumar.id} \n "+    # La liquidacion en la que se genero esta prestacion
+            "AND p.efector_id = #{self.efector.id}\n "                     # El efector al cual corresponde este informe de liquidacion
       })
+
+    estado_cerrado = EstadoDelProceso.where(codigo: "B") # Estado de finalizado y cerrado
+
+    self.estado_del_proceso = estado_cerrado
+    self.save
+    
     return cq
+
     
   end
 end

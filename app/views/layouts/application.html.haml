@@ -62,7 +62,7 @@
                   %div.col_1
                     %h3 FACTURACIÓN
                     %ul
-                      %li= link_to "Cuasi-facturas", "#", {:title => "En preparación... Aún no está disponible."}
+                      %li= link_to "Documentos Electronicos", documentos_electronicos_index_path
 
             - if can? :read, Efector
               %li
@@ -74,6 +74,7 @@
                     %h3 EFECTORES
                     %ul
                       %li= link_to "Efectores", efectores_path
+                      %li= link_to "Documentos Electronicos", documentos_electronicos_index_path
                     - if can? :read, Addenda
                       %h3 ADENDAS
                       %ul
@@ -90,7 +91,7 @@
                         %li= link_to "Gestión", convenios_de_gestion_path
                         %li= link_to "Administración", convenios_de_administracion_path
 
-            - if can? :read, Liquidacion
+            - if can? :read, Liquidacion or can? :read, LiquidacionSumar
               %li
                 %a.drop{:href => "#"} LIQUIDACIONES
                 %div.dropdown_3columns
@@ -116,6 +117,12 @@
                       %li= link_to "Grupos de efectores", grupos_de_efectores_liquidaciones_path
                       %li= link_to "Conceptos de facturacion", conceptos_de_facturacion_path
                       %li= link_to "Periodos", periodos_path
+                  %div.col_2
+                    %h3 INFORMES DE LIQUIDACION SUMAR
+                    %ul
+                      %li= link_to "Informes de liquidación", liquidaciones_informes_path
+                      %li= link_to "Anexo Administrativo", liquidaciones_sumar_cuasifacturas_path
+                      %li= link_to "Anexo Administrativo", liquidaciones_sumar_cuasifacturas_path
 
             - if can? :read, Contacto
               %li

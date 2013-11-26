@@ -22,10 +22,17 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
     informe_de_liquidacion.liquidacion_sumar_anexo_medico = anexo
     informe_de_liquidacion.save!
 
+    estado_de_devolucion = EstadoDeLaPresatacion.find(7) # TODO: Parametrizar esto. Estado: "Devuelta para refacturar"
+    motivo_de_rechazo = MotivoDeRechazo.find(6)          # TODO: Parametrizar esto. Motivo: "La prestación no se acompañó por la documentación requerida"
+
     cq = CustomQuery.ejecutar ({
-      sql:  "INSERT INTO \"public\".\"anexos_medicos_prestaciones\" \n"+
-            "(  \"liquidacion_sumar_anexo_medico_id\",  \"prestacion_liquidada_id\", \"created_at\", \"updated_at\")\n"+
-            "SELECT #{anexo.id} anexo_medico_id, p.id prestacion_liquidada_id, now(), now()\n"+
+      sql:  "INSERT INTO public.anexos_medicos_prestaciones \n"+
+            "(  liquidacion_sumar_anexo_medico_id,  prestacion_liquidada_id, \n"+
+            "   esatdo_de_la_prestacion_id, motivo_de_rechazo_id, \n"+
+            "   created_at, updated_at)\n"+
+            "SELECT #{anexo.id} anexo_medico_id, p.id prestacion_liquidada_id, \n"+
+            " #{estado_de_la_prestacion.id}, #{motivo_de_rechazo.id} \n"+
+            " now(), now()\n"+
             "FROM\n"+
             " liquidaciones_sumar l\n"+
             "JOIN prestaciones_liquidadas P ON P.liquidacion_id = l.ID \n"+
@@ -37,7 +44,7 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
   def self.generar_anexo_para_devolucion(argInformeDeLiquidacionId)
 
   	informe_de_liquidacion = LiquidacionInforme.find(argInformeDeLiquidacionId)
-    efector = informe_de_liquidacion.liquidacion_sumar_cuasifactura.efector.id
+    efector = informe_de_liquidacion.liquidacion_sumar_cuasifactura.efector
     liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar
 
     # Estados
@@ -55,7 +62,18 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
     informe_de_liquidacion.liquidacion_sumar_anexo_medico = anexo
     informe_de_liquidacion.save!
 
-    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efector))
+    cq = CustomQuery.ejecutar ({
+      sql:  "INSERT INTO \"public\".\"anexos_medicos_prestaciones\" \n"+
+            "(  \"liquidacion_sumar_anexo_medico_id\",  \"prestacion_liquidada_id\", \"created_at\", \"updated_at\")\n"+
+            "SELECT #{anexo.id} anexo_medico_id, p.id prestacion_liquidada_id, now(), now()\n"+
+            "FROM\n"+
+            " liquidaciones_sumar l\n"+
+            "JOIN prestaciones_liquidadas P ON P.liquidacion_id = l.ID \n"+
+            "WHERE  P.liquidacion_id = #{liquidacion_sumar.id}\n"+
+            "AND P .efector_id = #{efector.id}\n"
+      })
+
+    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efector.id))
 
     # Actualiza las prestaciones brindadas que hayan sido aceptadas durante la liquidación (o sea, aceptadas y exceptuadas por regla)
     # y las marca como rechazadas para refacturar.
@@ -72,7 +90,7 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
             "                                      from efectores ef \n "+
             "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
             "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
-            "and p.efector_id = #{efector}\n " +
+            "and p.efector_id = #{efector.id}\n " +
             "and prestaciones_brindadas.id = p.prestacion_brindada_id"
       })
 

@@ -9,8 +9,12 @@
     = link_to 'Ver', @liquidacion_informe
 #content-body
   %h2.first-header Datos del referente:
-  = "  Recuerde, la cuasifactura del <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.nombre}</b> ".html_safe
-  = "debe ser firmada por <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.convenio_de_gestion.firmante}</b>".html_safe
+  - if @liquidacion_informe.liquidacion_sumar_cuasifactura.efector.convenio_de_gestion_sumar.firmante.present?
+    = "  Recuerde, la cuasifactura del <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.nombre}</b> ".html_safe
+    = "debe ser firmada por <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.convenio_de_gestion.firmante}</b>".html_safe
+  - else
+    = "El convenio de gestion <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.convenio_de_gestion_sumar.numero}</b> ".html_safe
+    = "del <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.nombre}</b> no posee firmante.".html_safe
   %br
   %br
   %h2.first-header Datos de aprobación:

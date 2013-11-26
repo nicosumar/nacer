@@ -2,7 +2,7 @@
 # Datos precargados al inicializar el sistema
 MotivoDeRechazo.create([
         { #:id => 6,
-          nombre: "La prestación no se acompañó por la documentación respaldatoria requerida",
+          nombre: "La prestación no se acompañó por la documentación requerida",
           categoria: "Administrativa" },
         { #:id => 7,
           :nombre => "La documentación respaldatoria se encuentra incompleta",

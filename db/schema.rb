@@ -387,7 +387,6 @@ ActiveRecord::Schema.define(:version => 20131112234740) do
     t.integer  "creator_id"
     t.integer  "updater_id"
     t.date     "fecha_de_emision"
-    t.integer  "nomenclador_id"
   end
 
   create_table "datos_adicionales", :force => true do |t|

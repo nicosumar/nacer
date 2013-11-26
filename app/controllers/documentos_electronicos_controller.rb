@@ -3,9 +3,15 @@ class DocumentosElectronicosController < ApplicationController
 	before_filter :authenticate_user!
   
   def index
-  	
-    # Valores para los dropdown
-    @efectores = Efector.order("nombre desc").collect {|c| [c.nombre, c.id]}
+
+    if current_user.in_group? [:administradores, :facturacion] 
+      # Valores para los dropdown
+      @efectores = Efector.order("nombre desc").collect {|c| [c.nombre, c.id]}
+    elsif current_user.in_group? [:facturacion_uad] and UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion 
+      uad = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual])
+      @efectores = Efector.where(unidad_de_alta_de_datos_id: uad.id).order("nombre desc").collect {|c| [c.nombre, c.id]}
+    end
+    
     
     # Verifico si ya hizo el filtro o no
     if params[:efector_id].blank?

@@ -36,6 +36,6 @@
         - f.select :motivo_de_rechazo_id, @motivos_de_rechazo,{:include_blank => true}, {id: "anexo_medico_prestacion_motivo_de_rechazo_id_#{c.id}", :style => "width:140px" }
   - else
     - g.column name: "Estado" do |c|
-      - c.estado_de_la_prestacion.nombre
+      - c.estado_de_la_prestacion.present? ? c.estado_de_la_prestacion.nombre : "No especificado"
     - g.column name: "Motivo de <br>rechazo".html_safe do |c|
       - c.motivo_de_rechazo.blank? ? "No especificado" : c.motivo_de_rechazo.nombre

@@ -166,6 +166,7 @@ class LiquidacionesSumarController < ApplicationController
   end
 
   def crear_tabla_parametros(argLiquidacion)
+    #TODO: Sigo usando el nomenclador??? Limpiar eso sino
     #obtengo el nomenclador mas cercano a la fecha
     n = Nomenclador.where("activo = true and fecha_de_inicio <= ?", argLiquidacion.periodo.fecha_cierre).order('fecha_de_inicio DESC').first
     #Obtengo la ultima formula creada
