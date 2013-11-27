@@ -2,6 +2,7 @@
 class LiquidacionesSumarController < ApplicationController
   before_filter :authenticate_user!
   before_filter :verificar_lectura
+  before_filter :verificar_creacion, only: [:create, :new]
 
   # GET /liquidaciones_sumar
   def index
@@ -161,6 +162,12 @@ class LiquidacionesSumarController < ApplicationController
 
   def verificar_lectura
     if cannot? :read, LiquidacionSumar
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    end
+  end
+
+  def verificar_creacion
+    if cannot? :create, LiquidacionSumar
       redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
