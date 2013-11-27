@@ -22,7 +22,7 @@
     - if c.estado_del_proceso.codigo == "B" #Finalizado y cerrado
       - # muestra listado de pdfs a descargar
     - elsif c.estado_del_proceso.codigo == "N" #Estado No iniciado
-      - button_to 'Aprobaciones', edit_liquidacion_informe_path(c) # muestra el proceso de aprobación 
+      - link_to 'Aprobaciones', edit_liquidacion_informe_path(c) # muestra el proceso de aprobación 
     - elsif c.estado_del_proceso.codigo == "C" && ( !c.liquidacion_sumar_anexo_administrativo.blank? && !c.liquidacion_sumar_anexo_medico.blank?)
       - if c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && c.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F" #Estado F = Finalizado
         - button_to 'Cerrar Informe', cerrar_liquidacion_informe_path(c), method: :post # Cierra el informe

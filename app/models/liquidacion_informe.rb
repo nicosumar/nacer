@@ -40,6 +40,8 @@ class LiquidacionInforme < ActiveRecord::Base
     # El query toma como idea que el id del estado de la prestacion, mientras es mayor, el motivo de rechazo es mas negativo
 
     # Actualizo el estado a la liquidada y de ahi la brindada
+    cq = false
+
     ActiveRecord::Base.transaction do
       cq = CustomQuery.ejecutar(
       {
@@ -76,9 +78,10 @@ class LiquidacionInforme < ActiveRecord::Base
 
       self.estado_del_proceso = estado_cerrado
       self.save
+      
     end
-    
     return cq
+    
 
     
   end

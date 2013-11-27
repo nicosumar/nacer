@@ -76,14 +76,14 @@ class LiquidacionesInformesController < ApplicationController
 
       if params[:aprobar] == 'true'
         @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
-        @liquidacion_informe.aprobar = true
+        @liquidacion_informe.aprobado = true
         @liquidacion_informe.save
         LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(@liquidacion_informe.id)
         LiquidacionSumarAnexoMedico.generar_anexo_medico(@liquidacion_informe)
       else
         @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "B").first
         @liquidacion_informe.save
-        @liquidacion_informe.aprobar = false
+        @liquidacion_informe.aprobado = false
         LiquidacionSumarAnexoAdministrativo.generar_anexo_para_devolucion(@liquidacion_informe.id)
         LiquidacionSumarAnexoMedico.generar_anexo_para_devolucion(@liquidacion_informe.id)
       end

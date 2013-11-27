@@ -1,3 +1,6 @@
+$azul_nacer: #0089cb;
+$item_seleccionado: #005db7;
+
 @mixin icon-dimensions {
   width: 16px;
   height: 16px;
@@ -49,6 +52,12 @@
 
 .wice-grid{
 
+  .wice-grid-title-row {
+    a {
+      color: white;
+    }
+    a:hover { text-decoration: none;};
+  }
 
   .desc,  .asc{
     padding-right: 18px;
@@ -106,6 +115,44 @@
   .pagination{
     margin: 0px;
     float: left;
+    list-style: none;
+    background: transparent;
+    cursor: default;
+    li {
+      margin: 0px;
+      padding: 0px;
+      border: none;
+      float: left;
+    }
+    a {
+      background-color: white;
+      padding: 0.2em 0.5em;
+      display: block;
+      float: left;
+      -moz-box-shadow: -2px 2px 4px #777777;
+      -webkit-box-shadow: -2px 2px 4px #777777;
+      box-shadow: -2px 2px 4px #777777;
+      margin-right: 4px;
+      text-decoration: none;
+      color: $azul_nacer;
+      border: 1px solid $azul_nacer;
+    }
+    .disabled {
+      color: #777777;
+      -moz-box-shadow: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+    .active a {
+      font-style: normal;
+      font-weight: bold;
+      background: $item_seleccionado;
+      color: white;
+      -moz-box-shadow: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      margin: -2px 5px 0px 1px;
+      border: 4px solid $item_seleccionado; }
   }
 
 
