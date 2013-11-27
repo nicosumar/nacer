@@ -55,7 +55,7 @@
         = link_to "Ver detalles del convenio", @efector.convenio_de_administracion_sumar
       %div.field_content
         %span.field_name Administrador
-        %span.field_value= @efector.administrador_sumar.cuie + " - " + @efector.administrador_sumar.nombre_corto
+        %span.field_value= @efector.administrador_sumar.cuie.to_s + " - " + @efector.administrador_sumar.nombre_corto
         = link_to "Ver detalles del efector", @efector.administrador_sumar
     - else
       %div.field_content
