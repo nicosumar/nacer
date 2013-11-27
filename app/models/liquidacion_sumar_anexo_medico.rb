@@ -22,16 +22,14 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
     informe_de_liquidacion.liquidacion_sumar_anexo_medico = anexo
     informe_de_liquidacion.save!
 
-    estado_de_devolucion = EstadoDeLaPresatacion.find(7) # TODO: Parametrizar esto. Estado: "Devuelta para refacturar"
+    estado_de_devolucion = EstadoDeLaPrestacion.find(7) # TODO: Parametrizar esto. Estado: "Devuelta para refacturar"
     motivo_de_rechazo = MotivoDeRechazo.find(6)          # TODO: Parametrizar esto. Motivo: "La prestación no se acompañó por la documentación requerida"
 
     cq = CustomQuery.ejecutar ({
       sql:  "INSERT INTO public.anexos_medicos_prestaciones \n"+
             "(  liquidacion_sumar_anexo_medico_id,  prestacion_liquidada_id, \n"+
-            "   esatdo_de_la_prestacion_id, motivo_de_rechazo_id, \n"+
             "   created_at, updated_at)\n"+
             "SELECT #{anexo.id} anexo_medico_id, p.id prestacion_liquidada_id, \n"+
-            " #{estado_de_la_prestacion.id}, #{motivo_de_rechazo.id} \n"+
             " now(), now()\n"+
             "FROM\n"+
             " liquidaciones_sumar l\n"+

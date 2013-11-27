@@ -32,7 +32,7 @@ Nacer::Application.routes.draw do
   resources :parametros_liquidaciones_sumar
   resources :liquidaciones_informes do
     member do
-      post 'finalizar_informe', as: :finalizar_informe, action: :finalizar_informe
+      post 'cerrar', as: :cerrar, action: :cerrar
     end
   end
   

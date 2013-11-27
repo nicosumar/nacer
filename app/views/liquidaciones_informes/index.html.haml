@@ -22,6 +22,9 @@
     .field
       = label_tag "Estado del informe:"
       = select_tag 'estado_del_informe_id', options_for_select(@estados_de_los_informes, @estado_del_informe_id), {:class => 'multi_select', :style => "width:190px"}
+    .field
+      = label_tag "Periodo:"
+      = select_tag 'periodo_id', options_for_select(@periodos, @periodo_id), {:class => 'multi_select', :style => "width:190px"}
 
     = submit_tag "Buscar"
   %br

@@ -16,6 +16,10 @@
       - contenido += link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(efector.cuasifactura_de_periodo(p).id, format: 'pdf').html_safe
       - contenido += "<br>".html_safe
     - if @efector.es_administrador? and @efector.consolidado_de_periodo(p).present?
-      - contenido += link_to 'Consolidado', consolidado_sumar_path(@efector.consolidado_de_periodo(p).id, format: 'pdf').html_safe
-      - contenido += "<br>".html_safe
+      - if @efector.consolidado_de_periodo(p).firmante.present? and (not @efector.consolidado_de_periodo(p).firmante.mostrado.blank?)
+        - contenido += link_to 'Consolidado', consolidado_sumar_path(@efector.consolidado_de_periodo(p).id, format: 'pdf').html_safe
+        - contenido += "<br>".html_safe
+      - else
+        - contenido += link_to_function 'Consolidado', "alert('El convenio de gestión del efector posee datos incompletos. Contacte con el area de legales del programa. ERR: FIR01')".html_safe
+        - contenido += "<br>".html_safe
     - content_tag(:div, contenido)

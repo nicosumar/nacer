@@ -5,16 +5,18 @@ class LiquidacionesInformesController < ApplicationController
   # GET /liquidaciones_informes
   def index
     if params[:concepto_de_facturacion_id].blank?
-      @concepto_de_facturacion_id = @efector_id = @liquidacion_sumar_cuasifactura_id = @estado_del_informe_id = -1
+      @periodo_id = @concepto_de_facturacion_id = @efector_id = @liquidacion_sumar_cuasifactura_id = @estado_del_informe_id = -1
     else
       @concepto_de_facturacion_id = params[:concepto_de_facturacion_id]
       @efector_id = params[:efector_id]
       @liquidacion_sumar_cuasifactura_id = params[:liquidacion_sumar_cuasifactura_id]
       @estado_del_informe_id = params[:estado_del_informe_id]
+      @periodo_id = params[:periodo_id]
     end
 
     condiciones = {}
     condiciones.merge!({:liquidaciones_sumar => {concepto_de_facturacion_id: @concepto_de_facturacion_id}}) if @concepto_de_facturacion_id.to_i > 0
+    condiciones.merge!({:liquidaciones_sumar => {periodo_id: @periodo_id}}) if @periodo_id.to_i > 0
     condiciones.merge!({:efectores => {id: @efector_id}}) if @efector_id.to_i > 0
     condiciones.merge!({:liquidaciones_sumar_cuasifacturas => {id: @liquidacion_sumar_cuasifactura_id}}) if @liquidacion_sumar_cuasifactura_id.to_i > 0
     condiciones.merge!({estado_del_proceso_id: @estado_del_informe_id}) if @estado_del_informe_id.to_i > 0
@@ -39,6 +41,8 @@ class LiquidacionesInformesController < ApplicationController
     @numeros_de_cuasifactura << ["Todas", -1]
     @estados_de_los_informes = EstadoDelProceso.order("id desc").collect {|c| [c.nombre, c.id]}
     @estados_de_los_informes << ["Todos", -1]
+    @periodos = Periodo.order("periodo asc").collect {|c| [c.periodo, c.id]}
+    @periodos << ["Todos", -1]
 
 
   end
@@ -72,12 +76,14 @@ class LiquidacionesInformesController < ApplicationController
 
       if params[:aprobar] == 'true'
         @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
+        @liquidacion_informe.aprobar = true
         @liquidacion_informe.save
         LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(@liquidacion_informe.id)
         LiquidacionSumarAnexoMedico.generar_anexo_medico(@liquidacion_informe)
       else
         @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "B").first
         @liquidacion_informe.save
+        @liquidacion_informe.aprobar = false
         LiquidacionSumarAnexoAdministrativo.generar_anexo_para_devolucion(@liquidacion_informe.id)
         LiquidacionSumarAnexoMedico.generar_anexo_para_devolucion(@liquidacion_informe.id)
       end
@@ -88,13 +94,13 @@ class LiquidacionesInformesController < ApplicationController
     
   end
 
-  def finalizar_informe
+  def cerrar
     tiempo_proceso = Time.now
 
     @liquidacion_informe = LiquidacionInforme.find(params[:id])
 
-    if c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && c.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F" #Estado F = Finalizado
-      if @liquidacion_informe.finalizar
+    if @liquidacion_informe.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && @liquidacion_informe.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F" #Estado F = Finalizado
+      if @liquidacion_informe.cerrar
         logger.warn "Tiempo para finalizar el informe: #{Time.now - tiempo_proceso} segundos"
         redirect_to @liquidacion_informe, :flash => { :tipo => :ok, :titulo => "El informe se cerro exitosamente" } 
       else

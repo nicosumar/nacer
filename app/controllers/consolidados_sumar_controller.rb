@@ -12,7 +12,7 @@ class ConsolidadosSumarController < ApplicationController
 
       respond_to do |format|
         format.pdf { send_data render_to_string, filename: "consolidadosumar#{@consolidado_sumar.numero_de_consolidado}.pdf", 
-        type: 'application/pdf', disposition: 'inline'} #'attachment'} #'inline'}
+        type: 'application/pdf', disposition: 'attachment'} #'attachment'} #'inline'}
       end
     end
   end

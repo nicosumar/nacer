@@ -3,6 +3,7 @@ class CreateLiquidacionesInformes < ActiveRecord::Migration
     create_table :liquidaciones_informes do |t|
       t.string     :numero_de_expediente
       t.text       :observaciones
+      t.boolean    :aprobado
       t.references :efector
       t.references :liquidacion_sumar
       t.references :liquidacion_sumar_cuasifactura

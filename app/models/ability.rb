@@ -25,6 +25,11 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :manage, LiquidacionSumar
+      can :manage, LiquidacionSumarAnexoAdministrativo
+      can :manage, AnexoAdministrativoPrestacion
+      can :read, LiquidacionSumarAnexoMedico
+      can :read, AnexoMedicoPrestacion
     end
 
     if user.in_group? :operaciones
@@ -54,6 +59,10 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :manage, LiquidacionSumarAnexoMedico
+      can :manage, AnexoMedicoPrestacion
+      can :read, LiquidacionSumarAnexoAdministrativo
+      can :read, AnexoAdministrativoPrestacion
     end
 
     if user.in_group? :convenios
