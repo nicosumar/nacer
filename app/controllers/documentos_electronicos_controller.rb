@@ -4,12 +4,21 @@ class DocumentosElectronicosController < ApplicationController
   
   def index
 
+    # Valores para los dropdown
     if current_user.in_group? [:administradores, :facturacion] 
-      # Valores para los dropdown
       @efectores = Efector.order("nombre desc").collect {|c| [c.nombre, c.id]}
-    elsif current_user.in_group? [:facturacion_uad] and UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion 
+    elsif current_user.in_group? [:facturacion_uad] 
       uad = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual])
-      @efectores = Efector.where(unidad_de_alta_de_datos_id: uad.id).order("nombre desc").collect {|c| [c.nombre, c.id]}
+      if uad.efector.present? 
+        if uad.efector.es_administrador?
+          @efectores = [[uad.efector.nombre, uad.efector.id]]
+          @efectores += uad.efector.efectores_administrados.order("nombre desc").collect {|c| [c.nombre, c.id]}
+        else
+          @efectores = Efector.where("unidad_de_alta_de_datos_id = '?' OR id = '?'", uad.id, uad.efector.id).order("nombre desc").collect {|c| [c.nombre, c.id]}
+        end
+      else
+        @efectores = Efector.where("unidad_de_alta_de_datos_id = '?' ", uad.id).order("nombre desc").collect {|c| [c.nombre, c.id]}
+      end
     end
     
     

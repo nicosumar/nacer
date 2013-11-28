@@ -17,6 +17,9 @@
   %div.field
     %span.field_name Nombre
     %span.field_value= @unidad_de_alta_de_datos.nombre
+  %div.field
+    %span.field_name Ubicación Fisica
+    %span.field_value= @unidad_de_alta_de_datos.efector.present? ? @unidad_de_alta_de_datos.efector.nombre : "No asignada"
 
   %h3 Autorizaciones de la unidad de alta de datos
   %div.field_content

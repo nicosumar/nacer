@@ -14,6 +14,9 @@
   %div.field
     = f.label :nombre, "Nombre*"
     = f.text_field :nombre
+  %div.field
+    = f.label :nombre, "Ubicacion Fisica*"
+    = f.select :efector_id, options_for_select(@efectores, @unidad_de_alta_de_datos.efector_id), {include_blank:true },  { :class => "multi_select" } 
 
   %h3 Autorizaciones de la unidad de alta de datos
   %div.field

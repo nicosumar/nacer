@@ -17,6 +17,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   has_many :informes_uads
   has_many :informes, :through => :informes_uads
   has_many :prestaciones_liquidadas
+  belongs_to  :efector
 
   # En forma predeterminada, sólo se devuelven los registros activos
   default_scope where(:activa => true)

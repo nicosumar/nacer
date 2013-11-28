@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131126132926) do
+ActiveRecord::Schema.define(:version => 20131128140434) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -686,6 +686,7 @@ ActiveRecord::Schema.define(:version => 20131126132926) do
     t.integer  "estado_del_proceso_id"
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
+    t.boolean  "aprobado"
   end
 
   add_index "liquidaciones_informes", ["efector_id"], :name => "liquidaciones_informes_efector_id_idx"
@@ -1262,9 +1263,11 @@ ActiveRecord::Schema.define(:version => 20131126132926) do
     t.datetime "updated_at",                       :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
+    t.integer  "efector_id"
   end
 
   add_index "unidades_de_alta_de_datos", ["codigo"], :name => "index_unidades_de_alta_de_datos_on_codigo", :unique => true
+  add_index "unidades_de_alta_de_datos", ["efector_id"], :name => "index_unidades_de_alta_de_datos_on_efector_id"
 
   create_table "unidades_de_alta_de_datos_users", :id => false, :force => true do |t|
     t.integer  "unidad_de_alta_de_datos_id",                   :null => false
