@@ -524,14 +524,20 @@ class LiquidacionSumar < ActiveRecord::Base
     end
 
     # 4) Creo los informes de liquidacion
-    LiquidacionInforme.generar_informes_de_liquidacion(self)
-
-    if cq
+    if LiquidacionInforme.generar_informes_de_liquidacion(self)
       logger.warn ("Informes de liquidacion generados")
     else
       logger.warn ("Informes de liquidacion NO generados")
-      return false
     end
+
+    # 5 ) Genero los consolidados para quienes correspondan.
+    
+    if ConsolidadoSumar.generar_consolidados self
+      logger.warn ("Consolidados de efectores generados")
+    else
+      logger.warn ("Consolidados de efectores NO generados")
+    end
+
 
     return true
   end

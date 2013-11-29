@@ -21,9 +21,47 @@ class ConsolidadoSumar < ActiveRecord::Base
     efectores.each do |e|
       # Busco el administrador
       administrador = e.administrador_sumar
-      puts "liquidacion n #{liquidacion_sumar.id } - Administrador: #{administrador.inspect} - Efector. #{e.nombre} - #{e.id}"
+      logger.warn "liquidacion n #{liquidacion_sumar.id } - Administrador: #{administrador.inspect} - Efector. #{e.nombre} - #{e.id}"
+      
       # Verifico que no haya generado anteriormente el consolidado de este efector administrador
-      if ConsolidadoSumar.where(efector_id: administrador.id, liquidacion_sumar_id: liquidacion_sumar.id).size > 0 
+      if c = ConsolidadoSumar.where(efector_id: administrador.id, liquidacion_sumar_id: liquidacion_sumar.id).size > 0
+        if c.size > 1 
+          logger.warn "Existe más de un consolidado para este efector!! - No se regenerara "
+          next
+        else
+          c_id = c.id
+        end
+        # Si ya existe el consolidado, regenero el detalle
+        
+        administrador.efectores_administrados.each do |ea|
+        
+          # Verifico si existe una cuasifactura para este efector
+          if ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0
+            monto = ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
+          else
+            monto = 0
+          end
+
+          cq = CustomQuery.ejecutar({
+            sql:  "BEGIN;\n"+
+                  "DELETE \n"+
+                  "FROM consolidados_sumar_detalles\n"+
+                  "WHERE consolidado_sumar_id =  #{c_id};\n"+
+                  "\n"+
+                  "INSERT INTO  public . consolidados_sumar_detalles  \n"+
+                  "( consolidado_sumar_id ,  efector_id ,  convenio_de_administracion_sumar_id ,  convenio_de_gestion_sumar_id ,  total ,  created_at ,  updated_at ) \n"+
+                  "VALUES \n"+
+                  "(#{c_id}, #{ea.id}, #{ea.convenio_de_administracion_sumar.id}, #{ea.convenio_de_gestion_sumar.id}, #{monto}, now(), now());\n"+
+                  "COMMIT;"
+          })
+          if cq
+            logger.warn ("Detalle de consolidado generado")
+          else
+            logger.warn ("Detalle de consolidado NO generado - liquidacion n #{liquidacion_sumar.id } - Administrador: #{administrador.inspect} - Efector. #{e.nombre} - #{e.id}")
+          end
+        end
+        
+ 
         next
       end
       # 1) Genero la cabecera del consolidado
@@ -63,8 +101,7 @@ class ConsolidadoSumar < ActiveRecord::Base
         if cq
           logger.warn ("Detalle de consolidado generado")
         else
-          logger.warn ("Detalle de consolidado NO generado")
-          return false
+          logger.warn ("Detalle de consolidado NO generado - liquidacion n #{liquidacion_sumar.id } - Administrador: #{administrador.inspect} - Efector. #{e.nombre} - #{e.id}")
         end
       end
     end
