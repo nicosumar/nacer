@@ -28,7 +28,11 @@ Nacer::Application.routes.draw do
   end
   resources :plantillas_de_reglas
   resources :liquidaciones_sumar_cuasifacturas_detalles
-  resources :liquidaciones_sumar_cuasifacturas
+  resources :liquidaciones_sumar_cuasifacturas do
+    member do
+      get 'detalle_prestaciones_cuasifactura/:id', as: :detalle_prestaciones_cuasifactura, action: :detalle_prestaciones_cuasifactura
+    end
+  end
   resources :parametros_liquidaciones_sumar
   resources :liquidaciones_informes do
     member do
