@@ -21,14 +21,20 @@ class DocumentosElectronicosController < ApplicationController
       end
     end
     
-    
     # Verifico si ya hizo el filtro o no
-    if params[:efector_id].blank?
+    if params[:efector_id].blank? 
       @efector_id = -1
       @efector = ""
     else
       @efector_id = params[:efector_id]
-      @efector = Efector.find(@efector_id)
+      # Verifico que el id del efector este entre los permitidos por su grupo (o sea, no cambio el ID de efector en la URL)
+      # Si el id de efector NO esta entre los elegidos para su grupo
+      unless @efectores.flatten.include? @efector_id.to_i
+        @efector_id = -1
+        @efector = ""
+      else
+        @efector = Efector.find(@efector_id)
+      end
     end
 
     condiciones = {}
