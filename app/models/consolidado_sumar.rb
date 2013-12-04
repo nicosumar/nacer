@@ -25,7 +25,8 @@ class ConsolidadoSumar < ActiveRecord::Base
       administrador = e.administrador_sumar
       logger.warn "liquidacion n #{liquidacion_sumar.id } - Administrador: #{administrador.inspect} - Efector. #{e.nombre} - #{e.id}"
       
-      # Verifico que no haya generado anteriormente el consolidado de este efector administrador
+      # Verifico que no haya generado anteriormente el consolidado de este efector administrador
+
       c = ConsolidadoSumar.where(efector_id: administrador.id, liquidacion_sumar_id: liquidacion_sumar.id)
       if c.size > 0
         
@@ -34,7 +35,8 @@ class ConsolidadoSumar < ActiveRecord::Base
           next
         end
         
-        # Si ya existe el consolidado, regenero el detalle y actualizo el firmante
+        # Si ya existe el consolidado, regenero el detalle y actualizo el firmante
+
         
         # verifico que tenga referente:
         referente = administrador.referentes.where(["(fecha_de_inicio <= ? and fecha_de_finalizacion is null) or ? between fecha_de_inicio and fecha_de_finalizacion",

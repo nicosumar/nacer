@@ -15,64 +15,73 @@ class RevertirCuasifactura
       liquidacion = LiquidacionSumar.where(id: arg_liquidacion)
       liquidacion.each do |l|
 
-        # 3) Actualiza las prestaciones brindadas para que no sean modificadas
-        efectores =  l.grupo_de_efectores_liquidacion.efectores.where(id: args_arr_efectores).collect {|ef| ef.id}
-        esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
+        # Si no existe la cuasifactura, que solo reliquide al efector en esa liquidacion.
+        args_arr_efectores.each do |e|
+          cuasi_facturas = LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: arg_liquidacion, efector_id: e)
+          if cuasifacturas.size > 0 
+            # 3) Actualiza las prestaciones brindadas para que no sean modificadas
+            efectores =  l.grupo_de_efectores_liquidacion.efectores.where(id: e).collect {|ef| ef.id}
+            esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
 
-        cq = CustomQuery.ejecutar ({
-          esquemas: esquemas,
-          sql:  "update prestaciones_brindadas \n "+
-                "   set estado_de_la_prestacion_id = p.estado_de_la_prestacion_id \n "+
-                "from prestaciones_liquidadas p \n "+
-                "    join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n "+
-                "where p.liquidacion_id = #{l.id} \n "+
-                "and p.efector_id in (select ef.id \n "+
-                "                                      from efectores ef \n "+
-                "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
-                "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
-                "and prestaciones_brindadas.id = p.prestacion_brindada_id"
-        })
-      
-        # Volver hacia atrás las secuencias
-        cuasi_facturas = LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: arg_liquidacion, efector_id: args_arr_efectores)
-        cuasi_facturas.each do |cf|
-          ultima_secuencia = ActiveRecord::Base.connection.exec_query("SELECT * FROM public.cuasi_factura_sumar_seq_efector_id_#{cf.efector_id};").first["last_value"].to_i
-          if ultima_secuencia > 1
+            cq = CustomQuery.ejecutar ({
+              esquemas: esquemas,
+              sql:  "update prestaciones_brindadas \n "+
+                    "   set estado_de_la_prestacion_id = p.estado_de_la_prestacion_id \n "+
+                    "from prestaciones_liquidadas p \n "+
+                    "    join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n "+
+                    "where p.liquidacion_id = #{l.id} \n "+
+                    "and p.efector_id in (select ef.id \n "+
+                    "                                      from efectores ef \n "+
+                    "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
+                    "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
+                    "and prestaciones_brindadas.id = p.prestacion_brindada_id"
+            })
+          
+            # Volver hacia atrás las secuencias
+            cuasi_facturas = LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: arg_liquidacion, efector_id: e)
+            cuasi_facturas.each do |cf|
+              ultima_secuencia = ActiveRecord::Base.connection.exec_query("SELECT * FROM public.cuasi_factura_sumar_seq_efector_id_#{cf.efector_id};").first["last_value"].to_i
+              if ultima_secuencia > 1
+                ActiveRecord::Base.connection.execute "
+                  SELECT setval('public.cuasi_factura_sumar_seq_efector_id_#{cf.efector_id}', #{ultima_secuencia - 1}, 't');
+                "
+              else
+                ActiveRecord::Base.connection.execute "
+                  SELECT setval('public.cuasi_factura_sumar_seq_efector_id_#{cf.efector_id}', 1, 'f');
+                "
+              end
+            end
+
             ActiveRecord::Base.connection.execute "
-              SELECT setval('public.cuasi_factura_sumar_seq_efector_id_#{cf.efector_id}', #{ultima_secuencia - 1}, 't');
-            "
-          else
-            ActiveRecord::Base.connection.execute "
-              SELECT setval('public.cuasi_factura_sumar_seq_efector_id_#{cf.efector_id}', 1, 'f');
-            "
+              DELETE FROM liquidaciones_sumar_cuasifacturas_detalles WHERE liquidaciones_sumar_cuasifacturas_id IN (
+                SELECT id 
+                FROM liquidaciones_sumar_cuasifacturas 
+                WHERE liquidacion_sumar_id = #{arg_liquidacion} 
+                AND efector_id IN (#{efectores.join(", ")} )
+                );
+              DELETE FROM liquidaciones_sumar_cuasifacturas WHERE liquidacion_sumar_id = #{arg_liquidacion}
+              AND efector_id IN( #{efectores.join(", ")});"
+              
+              ActiveRecord::Base.connection.execute "delete \n"+
+                "from prestaciones_liquidadas_advertencias\n"+
+                "where prestacion_liquidada_id in ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")} ) )  ;\n"+
+
+                "delete \n"+
+                "from prestaciones_liquidadas_datos\n"+
+                "where prestacion_liquidada_id in  ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")} ) )  \n"+
+                ";\n"+
+                "DELETE\n"+
+                "from  prestaciones_liquidadas\n"+
+                "where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")}) \n"+
+                ";\n" #+
+                #{}"delete\n"+
+                #{}"from prestaciones_incluidas\n"+
+                #{}"where liquidacion_id = #{l.id}"
+          
           end
         end
-
-        ActiveRecord::Base.connection.execute "
-          DELETE FROM liquidaciones_sumar_cuasifacturas_detalles WHERE liquidaciones_sumar_cuasifacturas_id IN (
-            SELECT id 
-            FROM liquidaciones_sumar_cuasifacturas 
-            WHERE liquidacion_sumar_id = #{arg_liquidacion} 
-            AND efector_id IN (#{efectores.join(", ")} )
-            );
-          DELETE FROM liquidaciones_sumar_cuasifacturas WHERE liquidacion_sumar_id = #{arg_liquidacion}
-          AND efector_id IN( #{efectores.join(", ")});"
-          
-          ActiveRecord::Base.connection.execute "delete \n"+
-            "from prestaciones_liquidadas_advertencias\n"+
-            "where prestacion_liquidada_id in ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")} ) )  ;\n"+
-
-            "delete \n"+
-            "from prestaciones_liquidadas_datos\n"+
-            "where prestacion_liquidada_id in  ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")} ) )  \n"+
-            ";\n"+
-            "DELETE\n"+
-            "from  prestaciones_liquidadas\n"+
-            "where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")}) \n"+
-            ";\n" #+
-            #{}"delete\n"+
-            #{}"from prestaciones_incluidas\n"+
-            #{}"where liquidacion_id = #{l.id}"
+        
+        
 
 
         ##############################################################################################
@@ -561,6 +570,21 @@ class RevertirCuasifactura
           puts ("Tabla prestaciones brindadas NO actualizada")
           return false
         end
+
+        # 4) Creo los informes de liquidacion
+        if LiquidacionInforme.generar_informes_de_liquidacion(self)
+          logger.warn ("Informes de liquidacion generados")
+        else
+          logger.warn ("Informes de liquidacion NO generados")
+        end
+
+        # 5 ) Genero los consolidados para quienes correspondan.
+        if ConsolidadoSumar.generar_consolidados self
+          logger.warn ("Consolidados de efectores generados")
+        else
+          logger.warn ("Consolidados de efectores NO generados")
+        end
+        
       end #end each
     end #end transaction
   end #end function
