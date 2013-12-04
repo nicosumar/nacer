@@ -6,7 +6,7 @@ class LiquidacionesSumarAnexosAdministrativosController < ApplicationController
 
   # GET /liquidaciones_sumar_anexos_administrativos/1
   def show
-    @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id])
+    @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id], :include => {:liquidacion_informe => [:liquidacion_sumar_cuasifactura, :efector]})
     
     if @liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo !="C"
       flash[:tipo] = :ok

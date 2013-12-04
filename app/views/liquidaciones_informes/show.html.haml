@@ -5,8 +5,8 @@
   %h1 Informes de Liquidacion
   #action-links
     - if can? :read, LiquidacionInforme
-      = link_to '<< Volver al listado', liquidaciones_informes_path
-    - if can? :update, LiquidacionInforme
+      = link_to 'Ir al anexo administrativo', @liquidacion_informe.liquidacion_sumar_anexo_administrativo
+    -# if can? :update, LiquidacionInforme
       =# link_to 'Editar', edit_periodo_path(@periodo)
 
 = render :partial => "shared/info", :locals => { :registro => @liquidacion_informe }

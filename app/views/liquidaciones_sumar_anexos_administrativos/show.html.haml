@@ -13,6 +13,7 @@
 
 = render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar_anexo_administrativo }
 #content-body
+  %h2= "#{@liquidacion_sumar_anexo_administrativo.liquidacion_informe.efector.nombre} - Expediente: #{@liquidacion_sumar_anexo_administrativo.liquidacion_informe.numero_de_expediente} - Cuasifactura N°: #{@liquidacion_sumar_anexo_administrativo.liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura}"
   %div.field_content
     %span.field_name Estado actual:
     %span.field_value= @liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre
