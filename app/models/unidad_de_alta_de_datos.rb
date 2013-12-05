@@ -4,7 +4,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   nilify_blanks
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :codigo, :nombre, :inscripcion, :facturacion, :activa, :observaciones
+  attr_accessible :codigo, :nombre, :inscripcion, :facturacion, :activa, :observaciones, :efector_id
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :codigo

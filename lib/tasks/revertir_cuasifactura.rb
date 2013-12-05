@@ -18,10 +18,10 @@ class RevertirCuasifactura
         # Si no existe la cuasifactura, que solo reliquide al efector en esa liquidacion.
         args_arr_efectores.each do |e|
           cuasi_facturas = LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: arg_liquidacion, efector_id: e)
-          if cuasifacturas.size > 0 
+          efectores =  l.grupo_de_efectores_liquidacion.efectores.where(id: e).collect {|ef| ef.id}
+          esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
+          if cuasi_facturas.size > 0 
             # 3) Actualiza las prestaciones brindadas para que no sean modificadas
-            efectores =  l.grupo_de_efectores_liquidacion.efectores.where(id: e).collect {|ef| ef.id}
-            esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
 
             cq = CustomQuery.ejecutar ({
               esquemas: esquemas,
@@ -79,10 +79,6 @@ class RevertirCuasifactura
                 #{}"where liquidacion_id = #{l.id}"
           
           end
-        end
-        
-        
-
 
         ##############################################################################################
         #liquido de nuevo esos efectores (copy paste del modulo de liquidacion )
@@ -572,19 +568,20 @@ class RevertirCuasifactura
         end
 
         # 4) Creo los informes de liquidacion
-        if LiquidacionInforme.generar_informes_de_liquidacion(self)
-          logger.warn ("Informes de liquidacion generados")
+        if LiquidacionInforme.generar_informes_de_liquidacion(l)
+          puts  ("Informes de liquidacion generados")
         else
-          logger.warn ("Informes de liquidacion NO generados")
+          puts  ("Informes de liquidacion NO generados")
         end
 
         # 5 ) Genero los consolidados para quienes correspondan.
-        if ConsolidadoSumar.generar_consolidados self
-          logger.warn ("Consolidados de efectores generados")
+        if ConsolidadoSumar.generar_consolidados l
+          puts  ("Consolidados de efectores generados")
         else
-          logger.warn ("Consolidados de efectores NO generados")
+          puts  ("Consolidados de efectores NO generados")
         end
         
+        end #end each efector
       end #end each
     end #end transaction
   end #end function
