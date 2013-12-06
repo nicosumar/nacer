@@ -280,7 +280,7 @@ class InformesController < ApplicationController
   private
 
   def verificar_permisos
-    if not current_user.in_group? [:coordinacion, :facturacion, :capacitacion, :comunicacion, :planificacion]
+    if not current_user.in_group? [:coordinacion, :facturacion, :capacitacion, :comunicacion, :planificacion, :convenios]
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
