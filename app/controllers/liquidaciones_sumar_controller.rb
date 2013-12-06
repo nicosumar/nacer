@@ -22,7 +22,7 @@ class LiquidacionesSumarController < ApplicationController
     # Traigo los conceptos de facturacion y los periodos. Agrego la vinculacion entre
     # el concepto y el periodo
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
-    @periodos_liquidacion = Periodo.all.collect {|p| [p.periodo, p.id, {:class => p.concepto_de_facturacion.id}]}
+    @periodos_liquidacion = Periodo.all.collect {|p| ["#{p.periodo} - #{p.tipo_periodo.descripcion}", p.id, {:class => p.concepto_de_facturacion.id}]}
 
     @plantillas_de_reglas = PlantillaDeReglas.all.collect { |p| [p.nombre, p.id] }
 

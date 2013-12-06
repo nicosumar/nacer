@@ -41,7 +41,7 @@ class LiquidacionesInformesController < ApplicationController
     @numeros_de_cuasifactura << ["Todas", -1]
     @estados_de_los_informes = EstadoDelProceso.order("id desc").collect {|c| [c.nombre, c.id]}
     @estados_de_los_informes << ["Todos", -1]
-    @periodos = Periodo.order("periodo asc").collect {|c| [c.periodo, c.id]}
+    @periodos = Periodo.joins(:tipo_periodo).order("periodo asc").collect {|c| ["#{c.periodo} - #{c.tipo_periodo.descripcion}", c.id]}
     @periodos << ["Todos", -1]
 
 

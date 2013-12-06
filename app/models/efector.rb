@@ -44,9 +44,17 @@ class Efector < ActiveRecord::Base
   # default_scope where("integrante = ?", true)
   scope :efectores_administrados, joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id")
 
+
   # Validaciones
   validates_presence_of :nombre
   validates_uniqueness_of :cuie, :allow_nil => true
+
+  def referente_al_dia(fecha=Date.today)
+    self.referentes.where(["(fecha_de_inicio <= ? and fecha_de_finalizacion is null) or ? between fecha_de_inicio and fecha_de_finalizacion",
+                                                    fecha,
+                                                    fecha
+                                                    ]).first
+  end
 
   # nombre_corto
   # Devuelve el nombre acortado a 80 caracteres (útil para listas desplegables)
