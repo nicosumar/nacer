@@ -23,8 +23,8 @@ sql_detalle = "select pi.prestacion_codigo, pi.prestacion_nombre, to_char(pl.fec
               " join prestaciones_liquidadas pl on pl.liquidacion_id = ls.id and pl.efector_id = lsc.efector_id\n"+
               " join estados_de_las_prestaciones ep on ep.id = pl.estado_de_la_prestacion_liquidada_id\n"+
               " join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n"+
-              " join afiliados a on a.clave_de_beneficiario = pl.clave_de_beneficiario\n"+
-              " join tipos_de_documentos td on td.id = a.tipo_de_documento_id\n"+
+              " left join afiliados a on a.clave_de_beneficiario = pl.clave_de_beneficiario\n"+
+              " left join tipos_de_documentos td on td.id = a.tipo_de_documento_id\n"+
               "where lsc.id = ? \n"+
               "order by estado, prestacion_codigo, fecha_de_la_prestacion, documento"
 

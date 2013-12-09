@@ -52,27 +52,83 @@ class RevertirCuasifactura
               end
             end
 
+            # Borro los informes de liquidacion
+            # 1) Obtengo los ids de anexos
+            
+            li = LiquidacionInforme.where(efector_id: e, liquidacion_sumar_id: l.id).first
+            if li.present? and  li.liquidacion_sumar_anexo_administrativo.present?
+
+              aa_id = li.liquidacion_sumar_anexo_administrativo.id
+              am_id = li.liquidacion_sumar_anexo_medico.id
+
+
+              ActiveRecord::Base.connection.execute "delete \n"+
+              "from anexos_administrativos_prestaciones\n"+
+              "where id in (\n"+
+              "   select aap.id\n"+
+              "   from liquidaciones_informes li\n"+
+              "    left join liquidaciones_sumar_anexos_administrativos aa on aa.id = li.liquidacion_sumar_anexo_administrativo_id\n"+
+              "    left join anexos_administrativos_prestaciones aap on aap.liquidacion_sumar_anexo_administrativo_id = aa.id\n"+
+              "   where li.efector_id = #{e}\n"+
+              "   and li.liquidacion_sumar_id = #{l.id}\n"+
+              ")\n"+
+              ";\n"+
+              "delete \n"+
+              "from anexos_medicos_prestaciones \n"+
+              "where id in (\n"+
+              "   select amp.id\n"+
+              "   from liquidaciones_informes li\n"+
+              "    left join liquidaciones_sumar_anexos_medicos am on am.id = li.liquidacion_sumar_anexo_medico_id\n"+
+              "    left join anexos_medicos_prestaciones amp on amp.liquidacion_sumar_anexo_medico_id = am.id\n"+
+              "   where li.efector_id = #{e}\n"+
+              "   and li.liquidacion_sumar_id = #{l.id}\n"+
+              ")\n"+
+              ";\n"
+
+              ActiveRecord::Base.connection.execute "DELETE\n"+
+              "from liquidaciones_informes\n"+
+              "where efector_id = #{e}\n"+
+              "and liquidacion_sumar_id = #{l.id}\n"+
+              ";\n"
+
+              ActiveRecord::Base.connection.execute "delete\n"+
+              "from liquidaciones_sumar_anexos_administrativos \n"+
+              "where id = #{aa_id} \n"+
+              ";\n"+
+              "delete\n"+
+              "from liquidaciones_sumar_anexos_medicos\n"+
+              "where id = #{am_id}\n"+
+              ";"
+            elsif li.present?
+              ActiveRecord::Base.connection.execute "DELETE\n"+
+              "from liquidaciones_informes\n"+
+              "where efector_id = #{e}\n"+
+              "and liquidacion_sumar_id = #{l.id}\n"+
+              ";\n"
+            end 
+
+            # borro las cuasi
             ActiveRecord::Base.connection.execute "
               DELETE FROM liquidaciones_sumar_cuasifacturas_detalles WHERE liquidaciones_sumar_cuasifacturas_id IN (
                 SELECT id 
                 FROM liquidaciones_sumar_cuasifacturas 
                 WHERE liquidacion_sumar_id = #{arg_liquidacion} 
-                AND efector_id IN (#{efectores.join(", ")} )
+                AND efector_id IN (#{e} )
                 );
               DELETE FROM liquidaciones_sumar_cuasifacturas WHERE liquidacion_sumar_id = #{arg_liquidacion}
-              AND efector_id IN( #{efectores.join(", ")});"
+              AND efector_id IN( #{e});"
               
-              ActiveRecord::Base.connection.execute "delete \n"+
+            ActiveRecord::Base.connection.execute "delete \n"+
                 "from prestaciones_liquidadas_advertencias\n"+
-                "where prestacion_liquidada_id in ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")} ) )  ;\n"+
+                "where prestacion_liquidada_id in ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{e} ) )  ;\n"+
 
                 "delete \n"+
                 "from prestaciones_liquidadas_datos\n"+
-                "where prestacion_liquidada_id in  ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")} ) )  \n"+
+                "where prestacion_liquidada_id in  ( select id from prestaciones_liquidadas where liquidacion_id = #{l.id} and efector_id in (#{e} ) )  \n"+
                 ";\n"+
                 "DELETE\n"+
                 "from  prestaciones_liquidadas\n"+
-                "where liquidacion_id = #{l.id} and efector_id in (#{efectores.join(", ")}) \n"+
+                "where liquidacion_id = #{l.id} and efector_id in (#{e}) \n"+
                 ";\n" #+
                 #{}"delete\n"+
                 #{}"from prestaciones_incluidas\n"+
@@ -124,7 +180,7 @@ class RevertirCuasifactura
                   "  INNER JOIN conceptos_de_facturacion cdf on (cdf.id = pr.concepto_de_facturacion_id)\n"+
                   "  INNER JOIN afiliados af ON (af.clave_de_beneficiario = pb.clave_de_beneficiario) \n"+
                   "  INNER JOIN periodos_de_actividad pa on (af.afiliado_id = pa.afiliado_id ) \n"+ #solo los afiliados que tenga algun periodo de actividad
-                  "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n"+
+                  "  INNER JOIN efectores ef ON (ef.id = pb.efector_id and ef.id = #{e}) \n"+
                   "  INNER JOIN asignaciones_de_precios ap \n"+
                   "    ON (\n"+
                   "      ap.prestacion_id = pb.prestacion_id\n"+
@@ -178,7 +234,7 @@ class RevertirCuasifactura
                   "FROM prestaciones_brindadas pb\n"+
                   "  INNER JOIN prestaciones pr ON (pr.id = pb.prestacion_id) \n"+
                   "  INNER JOIN conceptos_de_facturacion cdf on (cdf.id = pr.concepto_de_facturacion_id)\n"+
-                  "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n"+
+                  "  INNER JOIN efectores ef ON (ef.id = pb.efector_id and ef.id = #{e}) \n"+
                   "  INNER JOIN asignaciones_de_precios ap \n"+
                   "    ON (\n"+
                   "      ap.prestacion_id = pb.prestacion_id\n"+
@@ -237,7 +293,7 @@ class RevertirCuasifactura
                 "  INNER JOIN diagnosticos diag on diag.id = pb.diagnostico_id\n "+
                 "  INNER JOIN afiliados af ON (af.clave_de_beneficiario = pb.clave_de_beneficiario) \n "+
                 "  INNER JOIN periodos_de_actividad pa on (af.afiliado_id = pa.afiliado_id ) \n"+ #solo los afiliados que tenga algun periodo de actividad
-                "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n "+
+                "  INNER JOIN efectores ef ON (ef.id = pb.efector_id and ef.id = #{e}) \n "+
                 "  INNER JOIN asignaciones_de_precios ap  \n "+
                 "    ON (\n "+
                 "      ap.prestacion_id = pb.prestacion_id\n "+
@@ -298,7 +354,7 @@ class RevertirCuasifactura
                 "  INNER JOIN prestaciones pr ON (pr.id = pb.prestacion_id) \n "+
                 "  INNER JOIN prestaciones_incluidas pi on (pb.prestacion_id = pi.prestacion_id AND pi.liquidacion_id = #{l.id})\n "+
                 "  INNER JOIN diagnosticos diag on diag.id = pb.diagnostico_id\n "+
-                "  INNER JOIN efectores ef ON (ef.id = pb.efector_id) \n "+
+                "  INNER JOIN efectores ef ON (ef.id = pb.efector_id and ef.id = #{e}) \n "+
                 "  INNER JOIN asignaciones_de_precios ap  \n "+
                 "    ON (\n "+
                 "      ap.prestacion_id = pb.prestacion_id\n "+
@@ -346,7 +402,7 @@ class RevertirCuasifactura
                 "       dr.id dato_reportable_id, drr.id dato_reportable_requerido_id, now(), now()\n "+
                 "  FROM prestaciones_incluidas pi \n "+
                 "   INNER JOIN prestaciones_liquidadas pl ON ( pl.prestacion_incluida_id = pi.id AND pl.liquidacion_id = #{l.id} )\n "+
-                "   INNER JOIN efectores ef ON (ef.id = pl.efector_id) -- Este join es para obtener el ID y el área de prestación del efector\n "+
+                "   INNER JOIN efectores ef ON (ef.id = pl.efector_id and ef.id = #{e}) -- Este join es para obtener el ID y el área de prestación del efector\n "+
                 "   INNER JOIN asignaciones_de_precios ap  -- Este join trae los datos de la asignación de precios correspondiente al área de prestación del efector\n "+
                 "     ON (\n "+
                 "       ap.prestacion_id = pi.prestacion_id\n "+
@@ -396,7 +452,7 @@ class RevertirCuasifactura
                 "SELECT '#{l.id}', pl.id prestacion_liquidada_id, m.metodo_de_validacion_id, mv.nombre comprobacion, mv.mensaje, now(), now() \n"+
                 "FROM metodos_de_validacion_fallados m \n"+
                 " INNER JOIN metodos_de_validacion mv ON (mv.id = m.metodo_de_validacion_id )\n"+
-                " INNER JOIN prestaciones_liquidadas pl ON  (pl.prestacion_brindada_id = m.prestacion_brindada_id and pl.liquidacion_id = #{l.id} )\n"+
+                " INNER JOIN prestaciones_liquidadas pl ON  (pl.prestacion_brindada_id = m.prestacion_brindada_id and pl.liquidacion_id = #{l.id} and pl.efector_id = #{e})\n"+
                 "WHERE pl.estado_de_la_prestacion_id IN (2,3,7) \n "+
                 "AND pl.efector_id in (SELECT ef.id \n" +
                 "                      FROM efectores ef \n"+
@@ -429,6 +485,7 @@ class RevertirCuasifactura
                 " LEFT JOIN prestaciones_liquidadas_advertencias pla on pl.id = pla.prestacion_liquidada_id\n"+
                 "WHERE pla.id is null\n"+
                 "AND pl.liquidacion_id = #{l.id}\n"+
+                "AND pl.efector_id = #{e}\n"+
                 "AND prestaciones_liquidadas.id = pl.id"
           })
 
@@ -442,7 +499,7 @@ class RevertirCuasifactura
                   "                observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || CAST(E'No cumple con la validacion de \"' || pla.comprobacion || E'\" \\n ' \n"+
                   "                                      as text)\n"+
                   "FROM prestaciones_incluidas pi\n"+
-                  " join prestaciones_liquidadas pl on pl.prestacion_incluida_id = pi.id\n"+
+                  " join prestaciones_liquidadas pl on (pl.prestacion_incluida_id = pi.id  and pl.efector_id = #{e})\n"+
                   " join prestaciones_liquidadas_advertencias pla on pla.prestacion_liquidada_id = pl.id \n"+
                   " LEFT JOIN (\n"+
                   "             SELECT r.*\n"+
@@ -474,7 +531,7 @@ class RevertirCuasifactura
                 "                         ' Observaciones: ' || regl.observaciones\n"+
                 "                           as text)\n "+
                 " from prestaciones_liquidadas_advertencias pla \n "+
-                "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
+                "   join prestaciones_liquidadas pl on (pl.id = pla.prestacion_liquidada_id and pl.efector_id = #{e} ) \n "+
                 "   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
                   "join (\n"+
                 "     select r.nombre, r.observaciones, r.prestacion_id, r.metodo_de_validacion_id, pr.id, r.efector_id \n"+
@@ -508,7 +565,7 @@ class RevertirCuasifactura
                 "select liquidacion_id, efector_id, sum(monto), now(), now() \n"+
                 "from prestaciones_liquidadas \n"+
                 "where prestaciones_liquidadas.liquidacion_id = #{l.id} \n"+
-                "and prestaciones_liquidadas.efector_id in (#{efectores.join(", ")})\n" +
+                "and prestaciones_liquidadas.efector_id in (#{e})\n" +
                 "and   estado_de_la_prestacion_liquidada_id != #{estado_rechazada} \n"+
                 "group by liquidacion_id, efector_id"
                       })
@@ -529,7 +586,7 @@ class RevertirCuasifactura
                 "from prestaciones_liquidadas p \n"+
                 " join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n"+
                 "where p.liquidacion_id = #{l.id} \n"+
-                "and p.efector_id in (#{efectores.join(", ")})\n "+
+                "and p.efector_id in (#{e})\n "+
                 "and   p.estado_de_la_prestacion_liquidada_id != #{estado_rechazada}"
           })
 
@@ -568,11 +625,20 @@ class RevertirCuasifactura
         end
 
         # 4) Creo los informes de liquidacion
-        if LiquidacionInforme.generar_informes_de_liquidacion(l)
-          puts  ("Informes de liquidacion generados")
-        else
-          puts  ("Informes de liquidacion NO generados")
-        end
+        cq = CustomQuery.ejecutar(
+        {
+        sql:  "INSERT INTO \"public\".\"liquidaciones_informes\" \n"+
+              "( \"efector_id\", \"liquidacion_sumar_id\", \"liquidacion_sumar_cuasifactura_id\", \"estado_del_proceso_id\", \"created_at\", \"updated_at\") \n"+
+              "SELECT\n"+
+              " lc.efector_id, ls.id liquidacion_sumar_id, lc.id iquidacion_sumar_cuasifactura_id, ( SELECT ID FROM estados_de_los_procesos WHERE codigo = 'N'  ) estado_del_proceso_id,  now(),  now()\n"+
+              "FROM\n"+
+              " liquidaciones_sumar ls\n"+
+              "JOIN liquidaciones_sumar_cuasifacturas lc ON lc.liquidacion_sumar_id = ls.ID\n"+
+              "JOIN grupos_de_efectores_liquidaciones g ON g.id = ls.grupo_de_efectores_liquidacion_id\n"+
+              "JOIN efectores e ON e.grupo_de_efectores_liquidacion_id = g.id AND lc.efector_id = e.ID\n"+
+              "where ls.id = #{l.id}\n"+
+              "and lc.efector_id = #{e}"
+        })
 
         # 5 ) Genero los consolidados para quienes correspondan.
         if ConsolidadoSumar.generar_consolidados l
