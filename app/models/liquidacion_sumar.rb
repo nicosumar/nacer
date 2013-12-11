@@ -427,7 +427,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "    estado_de_la_prestacion_liquidada_id =  #{estado_exceptuada}, \n"+
             "    observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||E'\" \\n ' \n "+
             "                         ' Aprobada por regla \"'|| regl.nombre || E'\" \\n' ||\n"+
-            "                         ' Observaciones: ' || regl.observaciones\n"+
+            "                         ' Observaciones: ' || COALESCE(regl.observaciones, '')\n"+
             "                           as text)\n "+
             " from prestaciones_liquidadas_advertencias pla \n "+
             "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
@@ -530,7 +530,8 @@ class LiquidacionSumar < ActiveRecord::Base
       logger.warn ("Informes de liquidacion NO generados")
     end
 
-    # 5 ) Genero los consolidados para quienes correspondan.
+    # 5 ) Genero los consolidados para quienes correspondan.
+
     
     if ConsolidadoSumar.generar_consolidados self
       logger.warn ("Consolidados de efectores generados")

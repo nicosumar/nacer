@@ -138,6 +138,13 @@ class RevertirCuasifactura
 
         ##############################################################################################
         #liquido de nuevo esos efectores (copy paste del modulo de liquidacion )
+        
+        # 11/12/2013 
+        #  Tomo la fecha de creacion de la liquidacion y solo incluyo las prestaciones de las brindadas
+        # cargadas hasta la fecha de creación de esa liquidacion.
+        
+        fecha_de_liquidacion = l.created_at
+         
         vigencia_perstaciones = l.parametro_liquidacion_sumar.dias_de_prestacion
         fecha_de_recepcion = l.periodo.fecha_recepcion.to_s
         fecha_limite_prestaciones = l.periodo.fecha_limite_prestaciones.to_s
@@ -207,7 +214,8 @@ class RevertirCuasifactura
                   "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
                   "         OR\n"+
                   "       (pb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
-                  "       )"
+                  "       )\n"+
+                  " AND pb.created_at <= to_date('#{fecha_de_liquidacion}', 'yyyy-mm-dd')"
           })
 
         if cq
@@ -258,7 +266,8 @@ class RevertirCuasifactura
                   "               )"+
                   "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
                   "  AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{l.id} ) \n" +
-                  "  AND pr.comunitaria "
+                  "  AND pr.comunitaria \n"+
+                  " AND pb.created_at <= to_date('#{fecha_de_liquidacion}', 'yyyy-mm-dd')"
           })
 
         if cq
@@ -321,7 +330,8 @@ class RevertirCuasifactura
                 "  AND ( (pb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+  # La prestacion debe haber sido brindada en algun periodo de actividad vigente
                 "         OR\n"+
                 "       (pb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
-                "       )"
+                "       )\n"+
+                " AND pb.created_at <= to_date('#{fecha_de_liquidacion}', 'yyyy-mm-dd')"
           })
 
         if cq
@@ -379,7 +389,8 @@ class RevertirCuasifactura
                 "               limit 1\n"+
                 "               )"+
                 "  AND pb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
-                "  AND pr.comunitaria "
+                "  AND pr.comunitaria \n"+
+                " AND pb.created_at <= to_date('#{fecha_de_liquidacion}', 'yyyy-mm-dd')"
           })
 
         if cq

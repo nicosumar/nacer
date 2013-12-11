@@ -13,6 +13,11 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
     liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar
     estado_del_proceso = EstadoDelProceso.where(codigo: "C").first # TODO: meter por algun lado los estados por defecto de lso procesos
 
+    # Estados
+    estado_aceptada  = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_aceptada.id
+    estado_exceptuada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_exceptuada.id
+    estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
+
     # Genero la cabecera del anexo
     anexo = LiquidacionSumarAnexoMedico.create(
       estado_del_proceso: estado_del_proceso,
@@ -35,7 +40,8 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
             " liquidaciones_sumar l\n"+
             "JOIN prestaciones_liquidadas P ON P.liquidacion_id = l.ID \n"+
             "WHERE  P.liquidacion_id = #{liquidacion_sumar.id}\n"+
-            "AND P .efector_id = #{efector.id}\n"
+            "AND p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
+            "AND P.efector_id = #{efector.id}\n"
       })
   end
 
@@ -70,6 +76,7 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
             " liquidaciones_sumar l\n"+
             "JOIN prestaciones_liquidadas P ON P.liquidacion_id = l.ID \n"+
             "WHERE  P.liquidacion_id = #{liquidacion_sumar.id}\n"+
+            "AND p.estado_de_la_prestacion_liquidada_id in (#{estados_aceptados})\n"+
             "AND P .efector_id = #{efector.id}\n"
       })
 

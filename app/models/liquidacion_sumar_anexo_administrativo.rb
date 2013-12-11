@@ -13,6 +13,11 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
   	liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar.id
   	estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
 
+    # Estados
+    estado_aceptada  = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_aceptada.id
+    estado_exceptuada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_exceptuada.id
+    estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
+
     #Creo la cabecera 
   	anexo = LiquidacionSumarAnexoAdministrativo.create(
   		estado_del_proceso: estado_del_proceso,
@@ -28,11 +33,12 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
 						"SELECT	#{anexo.id} anexo_administrativo_id, p.id, now(), now()\n"+
 						"FROM\n"+
 						"	liquidaciones_sumar l\n"+
-						"JOIN prestaciones_liquidadas P ON P .liquidacion_id = l. ID\n"+
+						"JOIN prestaciones_liquidadas P ON P .liquidacion_id = l.ID\n"+
 						"JOIN prestaciones_incluidas pi ON pi. ID = P .prestacion_incluida_id\n"+
 						"JOIN prestaciones pr ON pr. ID = pi.prestacion_id\n"+
 						"JOIN documentaciones_respaldatorias_prestaciones drp ON drp.prestacion_id = pr. ID\n"+
 						"WHERE	P.liquidacion_id = #{liquidacion_sumar}\n"+
+            "AND p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
 						"AND P .efector_id = #{efector}\n"+
 						"AND (\n"+
 						"	P .fecha_de_la_prestacion BETWEEN drp.fecha_de_inicio\n"+
@@ -82,6 +88,7 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
             "JOIN prestaciones pr ON pr. ID = pi.prestacion_id\n"+
             "JOIN documentaciones_respaldatorias_prestaciones drp ON drp.prestacion_id = pr. ID\n"+
             "WHERE  P.liquidacion_id = #{liquidacion_sumar.id}\n"+
+            "AND p.estado_de_la_prestacion_liquidada_id in (#{estados_aceptados})\n"+
             "AND P .efector_id = #{efector}\n"+
             "AND (\n"+
             " P .fecha_de_la_prestacion BETWEEN drp.fecha_de_inicio\n"+
