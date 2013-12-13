@@ -14,8 +14,8 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
     estado_del_proceso = EstadoDelProceso.where(codigo: "C").first # TODO: meter por algun lado los estados por defecto de lso procesos
 
     # Estados
-    estado_aceptada  = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_aceptada.id
-    estado_exceptuada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_exceptuada.id
+    estado_aceptada  = informe_de_liquidacion.liquidacion_sumar.parametro_liquidacion_sumar.prestacion_aceptada.id
+    estado_exceptuada = informe_de_liquidacion.liquidacion_sumar.parametro_liquidacion_sumar.prestacion_exceptuada.id
     estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
 
     # Genero la cabecera del anexo
