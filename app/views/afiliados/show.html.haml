@@ -212,11 +212,11 @@
 
     - if @afiliado.menor?(@afiliado.fecha_de_inscripcion)
       %h3 Datos del adulto responsable
-      - if @afiliado.apellido_de_la_madre || @afiliado.nombre_de_la_madre
+      - if @afiliado.apellido_de_la_madre.present? || @afiliado.nombre_de_la_madre.present?
         %h4 Madre
         %div.field_content
           %span.field_name Nombre y apellido:
-          %span.field_value= @afiliado.nombre_de_la_madre + " " + @afiliado.apellido_de_la_madre
+          %span.field_value= @afiliado.nombre_de_la_madre.to_s + " " + @afiliado.apellido_de_la_madre.to_s
         - if @afiliado.numero_de_documento_de_la_madre
           %div.field_content
             %span.field_name Tipo y número de documento:
@@ -232,11 +232,11 @@
           %div.field_content
             %span.field_name Años cursados en el mayor nivel:
             %span.field_value= @afiliado.alfab_madre_anios_ultimo_nivel
-      - if @afiliado.apellido_del_padre || @afiliado.nombre_del_padre
+      - if @afiliado.apellido_del_padre.present? || @afiliado.nombre_del_padre.present?
         %h4 Padre
         %div.field_content
           %span.field_name Nombre y apellido:
-          %span.field_value= @afiliado.nombre_del_padre + " " + @afiliado.apellido_del_padre
+          %span.field_value= @afiliado.nombre_del_padre.to_s + " " + @afiliado.apellido_del_padre.to_s
         - if @afiliado.numero_de_documento_del_padre
           %div.field_content
             %span.field_name Tipo y número de documento:
@@ -252,11 +252,11 @@
           %div.field_content
             %span.field_name Años cursados en el mayor nivel:
             %span.field_value= @afiliado.alfab_padre_anios_ultimo_nivel
-      - if @afiliado.apellido_del_tutor || @afiliado.nombre_del_tutor
+      - if @afiliado.apellido_del_tutor.present? || @afiliado.nombre_del_tutor.present?
         %h4 Tutor/a
         %div.field_content
           %span.field_name Nombre y apellido:
-          %span.field_value= @afiliado.nombre_del_tutor + " " + @afiliado.apellido_del_tutor
+          %span.field_value= @afiliado.nombre_del_tutor.to_s + " " + @afiliado.apellido_del_tutor.to_s
         - if @afiliado.numero_de_documento_del_tutor
           %div.field_content
             %span.field_name Tipo y número de documento:
