@@ -14,7 +14,7 @@ class LiquidacionInforme < ActiveRecord::Base
   # Genera los informes de liquidacion por cada cuasifactura generada en la liquidacion dada
   def self.generar_informes_de_liquidacion(arg_liquidacion_sumar)
 
-    if arg_liquidacion_sumar == LiquidacionSumar 
+    if arg_liquidacion_sumar.class == LiquidacionSumar 
     	cq = CustomQuery.ejecutar(
       {
         sql:  "INSERT INTO \"public\".\"liquidaciones_informes\" \n"+
