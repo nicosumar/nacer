@@ -850,7 +850,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     end
 
     # Cambiar el estado de la novedad por el que corresponde a la anulación por el usuario
-    @novedad.estado_de_la_novedad_id = TipoDeNovedad.id_del_codigo("U")
+    @novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo!("U")
     @novedad.save(:validate => false)
 
     redirect_to( novedad_del_afiliado_path(@novedad),
