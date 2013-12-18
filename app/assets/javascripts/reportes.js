@@ -42,12 +42,15 @@ $(document).ready(function(){
                                                                             buttonImage: "/assets/calendar.gif",
                                                                             buttonImageOnly: true });  
             break;
+            case "texto":
+              $("input#reporte_parametros_"+ifiltro.posicion).autoGrowInput({
+                                                                              comfortZone: 50,
+                                                                              minWidth: 200,
+                                                                              maxWidth: 500
+                                                                          });
+              $("input#reporte_parametros_"+ifiltro.posicion).attr("readonly", false);
+            break;
           }
-          $($("input#reporte_parametros_"+ifiltro.posicion)).autoGrowInput({
-              comfortZone: 50,
-              minWidth: 200,
-              maxWidth: 500
-          });
         });
       	//abro el cuadro de dialogo
       	$( "#dialog-form" ).dialog( "open" );
