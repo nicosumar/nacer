@@ -539,6 +539,11 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
 
+    # Asignarle la fecha de nacimiento a la fecha de la novedad si la inscripción corresponde a un alta de RN menor de 4 meses
+    if tipo == :alta && @novedad.fecha_de_nacimiento.present? && @novedad.fecha_de_nacimiento >= (Date.today - 4.months)
+      @novedad.fecha_de_la_novedad = @novedad.fecha_de_nacimiento
+    end
+
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
