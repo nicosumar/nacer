@@ -93,6 +93,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "                from efectores ef \n"+
               "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
               "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
+              "  AND ef.id in ( #{efectores.join(", ")} )\n"+
               "  AND nom.id =      \n"+
               "              (select id from nomencladores \n"+
               "               where activo = 't' \n"+
@@ -147,6 +148,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "                from efectores ef \n"+
               "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
               "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
+              "  AND ef.id in ( #{efectores.join(", ")} )\n"+
               "  AND nom.id =      \n"+
               "              (select id from nomencladores \n"+
               "               where activo = 't' \n"+
@@ -208,6 +210,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                from efectores ef \n"+
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
+            "  AND ef.id in ( #{efectores.join(", ")} )\n"+
             "  AND nom.id =      \n"+
             "              (select id from nomencladores \n"+
             "               where activo = 't' \n"+
@@ -269,6 +272,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                from efectores ef \n"+
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
+            "  AND ef.id in ( #{efectores.join(", ")} )\n"+
             "  AND nom.id =      \n"+
             "              (select id from nomencladores \n"+
             "               where activo = 't' \n"+
@@ -325,6 +329,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                from efectores ef \n"+
             "                    join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                where 'uad_' ||  u.codigo = current_schema() )   \n"+
+            "  AND ef.id in ( #{efectores.join(", ")} )\n"+
             "  and ap.nomenclador_id =  \n" +
             "              (select id from nomencladores \n"+
             "               where activo = 't' \n"+
@@ -358,6 +363,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                      FROM efectores ef \n"+
             "                          INNER JOIN unidades_de_alta_de_datos u ON ef.unidad_de_alta_de_datos_id = u.id \n"+
             "                        WHERE 'uad_' ||  u.codigo = current_schema() )   \n"+
+            " AND pl.efector_id in ( #{efectores.join(", ")} )\n"+
             " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
       })
     if cq
@@ -390,7 +396,8 @@ class LiquidacionSumar < ActiveRecord::Base
 
     # 6) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
     #    de prestaciones liquidadas
-    #    - Aca con las prestaciones rechazadas, con su observacion
+    #    - Aca con las prestaciones rechazadas, con su observacion
+    
     cq = CustomQuery.ejecutar ({
       sql:    "UPDATE public.prestaciones_liquidadas \n"+
               "            SET monto = #{formula}(pl.id), \n"+
@@ -439,7 +446,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "    join reglas r on (\n"+
             "    r.id = prr.regla_id\n"+
             "    and r.permitir = 't' )\n"+
-            "    where pr.id = #{self.plantilla_de_reglas_id} \n" +
+            "    where pr.id = #{plantilla_de_reglas} \n" +
             "    ) as regl\n"+
             "    on\n"+
             "    ( regl.prestacion_id = pi.prestacion_id\n"+
@@ -478,8 +485,8 @@ class LiquidacionSumar < ActiveRecord::Base
     # 2) Insertar las que tienen advertencias salvadas por una regla con su observacion -- id 5: Aprobada para liquidación
     cq = CustomQuery.ejecutar ({
       sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas_detalles  \n"+
-            "(liquidaciones_sumar_cuasifacturas_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, observaciones, created_at, updated_at)  \n"+
-            "select lsc.id , p.prestacion_incluida_id, p.estado_de_la_prestacion_liquidada_id, p.monto,
+            "(liquidaciones_sumar_cuasifacturas_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, prestacion_liquidada_id, observaciones, created_at, updated_at)  \n"+
+            "select lsc.id , p.prestacion_incluida_id, p.estado_de_la_prestacion_liquidada_id, p.monto, p.id, 
              'Observaciones de la prestacion: ' ||p.observaciones || '\\n Observaciones de liquidacion: '|| p.observaciones_liquidacion
               , now(),now() \n"+
             "from prestaciones_liquidadas p \n"+
@@ -514,6 +521,7 @@ class LiquidacionSumar < ActiveRecord::Base
             "                                      from efectores ef \n "+
             "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
             "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
+            "  AND p.efector_id in ( #{efectores.join(", ")} )\n"+
             "and prestaciones_brindadas.id = p.prestacion_brindada_id"
       })
     if cq
