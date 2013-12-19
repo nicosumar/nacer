@@ -28,7 +28,7 @@ report.start_new_page do |page|
          efector_administrador: @consolidado_sumar.efector.nombre,
          efector_administrador_codigo: @consolidado_sumar.efector.cuie,
          efector_administrador_encargado: @consolidado_sumar.firmante.mostrado,
-         fecha: @consolidado_sumar.fecha,
+         fecha: @consolidado_sumar.periodo.fecha_cierre,
          firma_primera_linea: @consolidado_sumar.firmante.firma_primera_linea,
          firma_segunda_linea: @consolidado_sumar.firmante.firma_segunda_linea,
          firma_tercera_linea: @consolidado_sumar.firmante.firma_tercera_linea
