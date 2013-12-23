@@ -12,16 +12,20 @@
     -# Consolidado: Si el efector es administrador verifico si tiene un consolidado 
   - g.column name: 'Documentos' do |p|
     - contenido = "".html_safe
-    - if efector.cuasifactura_de_periodo(p).present?
-      - contenido += link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(efector.cuasifactura_de_periodo(p).id, format: 'pdf').html_safe
-      - contenido += " | ".html_safe
-      - contenido += link_to 'Detalle', detalle_prestaciones_cuasifactura_liquidacion_sumar_cuasifactura_path(@efector.cuasifactura_de_periodo(p).id, format: 'pdf').html_safe
-      - contenido += "<br>".html_safe
+    - if efector.cuasifactura_de_periodo(p).present? 
+      - if efector.firmante.present?
+        - contenido += link_to 'Cuasifactura', liquidacion_sumar_cuasifactura_path(efector.cuasifactura_de_periodo(p).id, format: 'pdf').html_safe
+        - contenido += " | ".html_safe
+        - contenido += link_to 'Detalle', detalle_prestaciones_cuasifactura_liquidacion_sumar_cuasifactura_path(@efector.cuasifactura_de_periodo(p).id, format: 'pdf').html_safe
+        - contenido += "<br>".html_safe
+      - else
+        - contenido += link_to_function 'Cuasifactura', "alert('El efector posee datos incompletos. Contacte con el area de legales del programa. ERR: FIR01')".html_safe
+        - contenido += "<br>".html_safe
     - if @efector.es_administrador? and @efector.consolidado_de_periodo(p).present?
       - if @efector.consolidado_de_periodo(p).firmante.present? and (not @efector.consolidado_de_periodo(p).firmante.mostrado.blank?)
         - contenido += link_to 'Consolidado', consolidado_sumar_path(@efector.consolidado_de_periodo(p).id, format: 'pdf').html_safe
         - contenido += "<br>".html_safe
       - else
-        - contenido += link_to_function 'Consolidado', "alert('El convenio de gestión del efector posee datos incompletos. Contacte con el area de legales del programa. ERR: FIR01')".html_safe
+        - contenido += link_to_function 'Consolidado', "alert('El efector posee datos incompletos. Contacte con el area de legales del programa. ERR: FIR01')".html_safe
         - contenido += "<br>".html_safe
     - content_tag(:div, contenido)
