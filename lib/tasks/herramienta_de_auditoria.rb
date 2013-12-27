@@ -21,7 +21,7 @@ class HerramientaDeAuditoria
     tabla_auditoria = "auditoria_#{tabla_original}"
 
     begin
-      ActiveRecord::Base.connection.execute ""+
+      ActiveRecord::Base.connection.execute ""+
         "CREATE TEMPORARY TABLE IF NOT EXISTS temp_op\n"+
         "(\n"+
         " op char(3),\n"+
@@ -32,7 +32,16 @@ class HerramientaDeAuditoria
         "    AS select * from temp_op, #{tabla_original}\n"+
         "    WITH NO DATA ;\n"+
         "CREATE OR REPLACE FUNCTION public.auditar_#{tabla_original}() RETURNS TRIGGER AS $#{tabla_auditoria}$\n"+
+        "    DECLARE \n"+
+        "      existe_auditoria bool;\n"+
         "    BEGIN\n"+
+        "       SELECT COUNT(*) > 0 \n"+
+        "        FROM information_schema.schemata\n"+
+        "        WHERE\n"+
+        "          schema_name = 'auditorias'\n"+
+        "      INTO existe_auditoria; \n"+
+        "\n"+
+        "      IF existe_auditoria THEN\n     "+
         "        IF (TG_OP = 'DELETE') THEN\n"+
         "            INSERT INTO auditorias.#{tabla_auditoria} SELECT 'DEL', now(), OLD.*;\n"+
         "            RETURN OLD;\n"+
@@ -45,6 +54,16 @@ class HerramientaDeAuditoria
         "            RETURN NEW;\n"+
         "        END IF;\n"+
         "        RETURN NULL; \n"+
+        "      ELSE --no existe el esquema auditoria\n"+
+        "        IF (TG_OP = 'DELETE') THEN\n"+
+        "            RETURN OLD;\n"+
+        "        ELSIF (TG_OP = 'UPDATE') THEN\n"+
+        "            RETURN NEW;\n"+
+        "        ELSIF (TG_OP = 'INSERT') THEN\n"+
+        "            RETURN NEW;\n"+
+        "        END IF;\n"+
+        "        RETURN NULL; \n"+
+        "      END IF; -- existe auditoria\n"+
         "    END;\n"+
         "$#{tabla_auditoria}$ LANGUAGE plpgsql;\n"+
         "CREATE TRIGGER trg_#{tabla_auditoria}\n"+
@@ -54,6 +73,54 @@ class HerramientaDeAuditoria
     rescue Exception => e
       puts "Ocurrrio un error creando la tabla. #{e.message}"
     end
+  end
+
+  def self.actualizar_trigger(arg_nombre_de_tabla)
+    tabla_original = arg_nombre_de_tabla
+    tabla_auditoria = "auditoria_#{tabla_original}"
+
+    begin
+      ActiveRecord::Base.connection.execute ""+
+        "CREATE OR REPLACE FUNCTION public.auditar_#{tabla_original}() RETURNS TRIGGER AS $#{tabla_auditoria}$\n"+
+        "    DECLARE \n"+
+        "      existe_auditoria bool;\n"+
+        "    BEGIN\n"+
+        "       SELECT COUNT(*) > 0 \n"+
+        "        FROM information_schema.schemata\n"+
+        "        WHERE\n"+
+        "          schema_name = 'auditorias'\n"+
+        "      INTO existe_auditoria; \n"+
+        "\n"+
+        "      IF existe_auditoria THEN\n     "+
+        "        IF (TG_OP = 'DELETE') THEN\n"+
+        "            INSERT INTO auditorias.#{tabla_auditoria} SELECT 'DEL', now(), OLD.*;\n"+
+        "            RETURN OLD;\n"+
+        "        ELSIF (TG_OP = 'UPDATE') THEN\n"+
+        "            INSERT INTO auditorias.#{tabla_auditoria} SELECT 'NEW', now(), NEW.*;\n"+
+        "            INSERT INTO auditorias.#{tabla_auditoria} SELECT 'OLD', now(), OLD.*;\n"+
+        "            RETURN NEW;\n"+
+        "        ELSIF (TG_OP = 'INSERT') THEN\n"+
+        "            INSERT INTO auditorias.#{tabla_auditoria} SELECT 'INS', now(), NEW.*;\n"+
+        "            RETURN NEW;\n"+
+        "        END IF;\n"+
+        "        RETURN NULL; \n"+
+        "      ELSE --no existe el esquema auditoria\n"+
+        "        IF (TG_OP = 'DELETE') THEN\n"+
+        "            RETURN OLD;\n"+
+        "        ELSIF (TG_OP = 'UPDATE') THEN\n"+
+        "            RETURN NEW;\n"+
+        "        ELSIF (TG_OP = 'INSERT') THEN\n"+
+        "            RETURN NEW;\n"+
+        "        END IF;\n"+
+        "        RETURN NULL; \n"+
+        "      END IF; -- existe auditoria\n"+
+        "    END;\n"+
+        "$#{tabla_auditoria}$ LANGUAGE plpgsql;\n"
+
+    rescue Exception => e
+      puts "Ocurrrio un error creando la tabla. #{e.message}"
+    end
+    
   end
 
 end
