@@ -158,7 +158,7 @@ class ConveniosDeAdministracionSumarController < ApplicationController
             r.add_field :efector_codigo_postal, @convenio_de_administracion.efector.codigo_postal.strip
           end
           if !@convenio_de_administracion.email.blank?
-            r.add_field :cas_correo_electronico, convenio_de_administracion.email.strip
+            r.add_field :cas_correo_electronico, @convenio_de_administracion.email.strip
           end
           if !@convenio_de_administracion.administrador.telefonos.blank?
             r.add_field :administrador_fax, @convenio_de_administracion.administrador.telefonos.strip
