@@ -15,13 +15,13 @@ class GruposDeEfectoresLiquidacionesController < ApplicationController
   # GET /grupos_de_efectores_liquidaciones/new
   def new
     @grupo_de_efector_liquidacion = GrupoDeEfectoresLiquidacion.new
-    @efectores = Efector.where("unidad_de_alta_de_datos_id is not null")
+    @efectores = Efector.where("unidad_de_alta_de_datos_id is not null and grupo_de_efectores_liquidacion_id is null")
   end
 
   # GET /grupos_de_efectores_liquidaciones/1/edit
   def edit
     @grupo_de_efector_liquidacion = GrupoDeEfectoresLiquidacion.find(params[:id])
-    @efectores = Efector.where("unidad_de_alta_de_datos_id is not null")
+    @efectores = Efector.where("unidad_de_alta_de_datos_id is not null and grupo_de_efectores_liquidacion_id is null")
     @efectores_ids = @grupo_de_efector_liquidacion.efectores.collect{ |p| p.id }
   end
 

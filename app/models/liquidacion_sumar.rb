@@ -396,7 +396,8 @@ class LiquidacionSumar < ActiveRecord::Base
 
     # 6) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
     #    de prestaciones liquidadas
-    #    - Aca con las prestaciones rechazadas, con su observacion
+    #    - Aca con las prestaciones rechazadas, con su observacion
+
     
     cq = CustomQuery.ejecutar ({
       sql:    "UPDATE public.prestaciones_liquidadas \n"+
@@ -539,8 +540,6 @@ class LiquidacionSumar < ActiveRecord::Base
     end
 
     # 5 ) Genero los consolidados para quienes correspondan.
-
-    
     if ConsolidadoSumar.generar_consolidados self
       logger.warn ("Consolidados de efectores generados")
     else

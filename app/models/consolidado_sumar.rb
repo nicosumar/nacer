@@ -23,7 +23,6 @@ class ConsolidadoSumar < ActiveRecord::Base
     efectores.each do |e|
       # Busco el administrador
       administrador = e.administrador_sumar
-      logger.warn "liquidacion n #{liquidacion_sumar.id } - Administrador: #{administrador.inspect} - Efector. #{e.nombre} - #{e.id}"
       
       # Verifico que no haya generado anteriormente el consolidado de este efector administrador
 
@@ -104,6 +103,9 @@ class ConsolidadoSumar < ActiveRecord::Base
           firmante_id = referente.contacto.id 
         end
 
+        #Verifico que exista la secuencia para los consolidados. Sino que la cree
+        self.generar_secuencia administrador
+
         consolidado = ConsolidadoSumar.create!({
           fecha: Date.today,
           efector_id: administrador.id,
@@ -140,6 +142,30 @@ class ConsolidadoSumar < ActiveRecord::Base
 
   end
 
+  private 
 
+  def self.existe_secuencia? arg_efector
+    if arg_efector.is_a? (Efector)
+      cq = CustomQuery.buscar (
+          {
+            sql: "SELECT * \n"+
+                 "FROM pg_class \n"+
+                 "where relname = 'consolidado_sumar_seq_efector_id_#{arg_efector.id}'" ,
+          }) 
+      return true if cq.size > 0
+    end
+    return false
+  end
+
+  def self.generar_secuencia arg_efector
+    if arg_efector.is_a? Efector and !existe_secuencia? arg_efector
+      ActiveRecord::Base.connection.execute ""+
+        "CREATE SEQUENCE public.consolidado_sumar_seq_efector_id_#{arg_efector.id}\n"+
+        " INCREMENT 1\n"+
+        " MINVALUE 1\n"+
+        " MAXVALUE 9223372036854775807;\n"+
+        "ALTER TABLE public.consolidado_sumar_seq_efector_id_#{arg_efector.id} OWNER TO nacer_adm;"
+    end
+  end
 
 end

@@ -2,6 +2,7 @@
 Nacer::Application.routes.draw do
 
   get "documentos_electronicos/index"
+  get "capacitaciones/index"
 
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion

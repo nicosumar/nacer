@@ -190,11 +190,15 @@
                   %h3 DATOS DE LA CUENTA
                   %ul
                     %li= link_to "Modificar los datos de mi cuenta", edit_user_registration_path
+                  %h3 CAPACITACION
+                  %ul
+                    %li= link_to "Ayuda", capacitaciones_index_path, { :title => "Documentos, tutoriales y talleres" }
                   %h3 SESIÓN ACTUAL
                   %ul
                     %li= link_to "Cerrar la sesión", destroy_user_session_path, :method => :delete
                     - if current_user.unidades_de_alta_de_datos.count > 1
                       %li= link_to "Cambiar la UAD actual", seleccionar_uad_url
+
         #page
           = yield
 

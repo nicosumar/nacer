@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131128140434) do
+ActiveRecord::Schema.define(:version => 20131219160919) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -678,6 +678,7 @@ ActiveRecord::Schema.define(:version => 20131128140434) do
   create_table "liquidaciones_informes", :force => true do |t|
     t.string   "numero_de_expediente"
     t.text     "observaciones"
+    t.boolean  "aprobado"
     t.integer  "efector_id"
     t.integer  "liquidacion_sumar_id"
     t.integer  "liquidacion_sumar_cuasifactura_id"
@@ -686,7 +687,6 @@ ActiveRecord::Schema.define(:version => 20131128140434) do
     t.integer  "estado_del_proceso_id"
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
-    t.boolean  "aprobado"
   end
 
   add_index "liquidaciones_informes", ["efector_id"], :name => "liquidaciones_informes_efector_id_idx"
@@ -757,6 +757,7 @@ ActiveRecord::Schema.define(:version => 20131128140434) do
     t.text     "observaciones"
     t.datetime "created_at",                                                          :null => false
     t.datetime "updated_at",                                                          :null => false
+    t.integer  "prestacion_liquidada_id"
   end
 
   add_index "liquidaciones_sumar_cuasifacturas_detalles", ["liquidaciones_sumar_cuasifacturas_id"], :name => "liquidaciones_sumar_cuasifact_liquidaciones_sumar_cuasifact_idx"
@@ -1268,6 +1269,7 @@ ActiveRecord::Schema.define(:version => 20131128140434) do
 
   add_index "unidades_de_alta_de_datos", ["codigo"], :name => "index_unidades_de_alta_de_datos_on_codigo", :unique => true
   add_index "unidades_de_alta_de_datos", ["efector_id"], :name => "index_unidades_de_alta_de_datos_on_efector_id"
+  add_index "unidades_de_alta_de_datos", ["efector_id"], :name => "unidades_de_alta_de_datos_efector_id_key", :unique => true
 
   create_table "unidades_de_alta_de_datos_users", :id => false, :force => true do |t|
     t.integer  "unidad_de_alta_de_datos_id",                   :null => false

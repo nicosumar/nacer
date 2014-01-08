@@ -27,7 +27,8 @@ class DocumentosElectronicosController < ApplicationController
       @efector = ""
     else
       @efector_id = params[:efector_id]
-      # Verifico que el id del efector este entre los permitidos por su grupo (o sea, no cambio el ID de efector en la URL)
+      # Verifico que el id del efector este entre los permitidos por su grupo (o sea, no cambio el ID de efector en la URL)
+
       # Si el id de efector NO esta entre los elegidos para su grupo
       unless @efectores.flatten.include? @efector_id.to_i
         @efector_id = -1
@@ -48,7 +49,8 @@ class DocumentosElectronicosController < ApplicationController
               " left join ( liquidaciones_sumar ls \n"+
               "             join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = ls.id and  lsc.efector_id = #{@efector_id})) sub on periodos.id = sub.periodo_id",
       conditions: " sub.liquidacion_sumar_id is not null\n"+
-                  " or cs.id is not null "
+                  " or cs.id is not null ",
+      :order => 'periodos.periodo'
       )
     
     
