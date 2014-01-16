@@ -27,43 +27,7 @@ class InformeBimestral
       cod_prestacion = cod[0..5]
       cod_diagnostico = cod[6, cod.length]
 
-      sql = "select  p.codigo, d.codigo diagnostico, count(*) total \n"+
-        "from prestaciones p\n"+
-        " join asignaciones_de_precios ap on ap.prestacion_id = p.id \n"+
-        " join nomencladores n on n.id = ap.nomenclador_id\n"+
-        " join diagnosticos_prestaciones dp on dp.prestacion_id = p.id\n"+
-        " join diagnosticos d on d.id = dp.diagnostico_id\n"+
-        " join prestaciones_brindadas pb on p.id = pb.prestacion_id\n"+
-        " join afiliados a on a.clave_de_beneficiario = pb.clave_de_beneficiario\n"+
-        " join periodos_de_embarazo pe on pe.afiliado_id = a.afiliado_id \n"+
-        " join efectores e on e.id = pb.efector_id and e.area_de_prestacion_id = ap.area_de_prestacion_id and e.id = pb.efector_id\n"+
-        " join prestaciones_liquidadas pl on pl.prestacion_brindada_id = pb.id and pl.efector_id = e.id\n"+
-        " join liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = pl.id \n"+
-        "where n.id = 5\n"+
-        "and ( (pe.fecha_de_inicio < pb.fecha_de_la_prestacion and pe.fecha_de_finalizacion is null )\n"+
-        "          or\n"+
-        "           (pb.fecha_de_la_prestacion BETWEEN pe.fecha_de_inicio and pe.fecha_de_finalizacion )\n"+
-        "          )\n"+
-        "and trim(p.codigo) = ?\n"+
-        "and trim(d.codigo) = ?\n"+
-        "and pb.estado_de_la_prestacion_id in (5, 12) --aceptada pendiente de pago, o pagada\n"+
-        "and e.id in (select ef.id \n"+ # Solo efectores para ese esquema
-        "                        from efectores ef \n"+
-        "                             join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
-        "                         where 'uad_' ||  u.codigo = current_schema() )   \n"+
-        "and extract(month from pl.fecha_de_la_prestacion )  in (8,9)\n"+ #solo prestaciones brindadas en un mes dado
-        "GROUP BY p.codigo, d.codigo"
-
-      puts "Codigo de prestacion: #{cod_prestacion}"
-      puts "Codigo de diagnostico: #{cod_diagnostico}"
-
-      cq = CustomQuery.buscar (
-        {
-          esquemas: esquemas,
-          sql: sql,
-          values: [cod_prestacion,cod_diagnostico ]
-        })
-      arr_cq << cq
+    
       puts "Resultado del query #{cq.inspect}"
       
     end
@@ -105,5 +69,76 @@ and extract(month from pl.fecha_de_la_prestacion )  in (8,9)
 and pb.diagnostico_id = d.id 
   end
 
+  def self.grupo_embarazadas(arg_efectores, arg_meses, arg_nomenclador)
+    
+    arr_cq = []
+    
+    # array con la primer dimension el id de la prestacion, la segunda un array de diagnosticos
+    prestaciones_paquete_basico_diagnostico = [
+      [[258],[45]], #CTC005W78
+      [[259],[45]], #CTC006W78
+      [[260],[45]], #CTC010W78
+      [[596],[10]], #TAT001A98
+      [[313],[50]], #ITQ001W90
+      [[313],[51]], #ITQ001W91
+      [[314],[48]], #ITQ002W88
+      [[314],[49]], #ITQ002W89
+      [[304],[36]], #ITQ005W06
+      [[306],[37]], #ITQ006W07
+      [[308],[38]], #ITQ007W08
+      [[323],[73, 78, 77, 76, 75, 74, 72, 71, 70, 69, 68, 67, 66]] #NTN006 - todos los diagnosticos
+    ]
+    prestaciones_paquete_basico_diagnostico.each do |r| 
+      r[0].each do |p|  #prestacion
+        r[1].each do |d|  #diagnostico
+          cod_prestacion = p
+          cod_diagnostico = d
+            puts "Codigo de prestacion: #{cod_prestacion}"
+            puts "Codigo de diagnostico: #{cod_diagnostico}"
+            
+            sql = "select  p.codigo, d.codigo diagnostico, count(*) total \n"+
+              "from prestaciones p\n"+
+              " join asignaciones_de_precios ap on ap.prestacion_id = p.id \n"+
+              " join nomencladores n on n.id = ap.nomenclador_id\n"+
+              " join diagnosticos_prestaciones dp on dp.prestacion_id = p.id\n"+
+              " join diagnosticos d on d.id = dp.diagnostico_id\n"+
+              " join prestaciones_brindadas pb on p.id = pb.prestacion_id\n"+
+              " join afiliados a on a.clave_de_beneficiario = pb.clave_de_beneficiario\n"+
+              " join periodos_de_embarazo pe on pe.afiliado_id = a.afiliado_id \n"+
+              " join efectores e on e.id = pb.efector_id and e.area_de_prestacion_id = ap.area_de_prestacion_id and e.id = pb.efector_id\n"+
+              " join prestaciones_liquidadas pl on pl.prestacion_brindada_id = pb.id and pl.efector_id = e.id\n"+
+              " join liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = pl.id \n"+
+              "where n.id = 5\n"+
+              "and ( (pe.fecha_de_inicio < pb.fecha_de_la_prestacion and pe.fecha_de_finalizacion is null )\n"+
+              "          or\n"+
+              "           (pb.fecha_de_la_prestacion BETWEEN pe.fecha_de_inicio and pe.fecha_de_finalizacion )\n"+
+              "          )\n"+
+              "and trim(p.codigo) = ?\n"+
+              "and trim(d.codigo) = ?\n"+
+              "and pb.estado_de_la_prestacion_id in (5, 12) --aceptada pendiente de pago, o pagada\n"+
+              "and e.id in (select ef.id \n"+ # Solo efectores para ese esquema
+              "                        from efectores ef \n"+
+              "                             join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n"+
+              "                         where 'uad_' ||  u.codigo = current_schema() )   \n"+
+              "and extract(month from pl.fecha_de_la_prestacion )  in (8,9)\n"+ #solo prestaciones brindadas en un mes dado
+              "GROUP BY p.codigo, d.codigo"
+
+
+            cq = CustomQuery.buscar (
+              {
+                esquemas: esquemas,
+                sql: sql,
+                values: [cod_prestacion,cod_diagnostico ]
+              })
+            arr_cq << cq
+           
+        end
+      end
+    end
+
+  end
+
 
 end
+
+
