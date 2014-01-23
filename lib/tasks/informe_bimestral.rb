@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spreadsheet'
 
 class InformeBimestral
@@ -8,23 +9,31 @@ class InformeBimestral
   attr_accessor :book
   attr_accessor :sheet
 
+  @@ruta_y_archivo = 'lib/tasks/datos/informes_bimestrales/2014-01/detalle_prestaciones_bimestrales.xls'
   #def initialize(template_ruta_y_archivo)
   #  @rutayarchivo = args
   #end
 
-  def self.prestaciones_priorizadas(ruta_y_archivo)
-    
-    self.
+  def self.prestaciones_priorizadas(bimestre)
     efectores = PrestacionLiquidada.select("distinct (efector_id)").collect {|ef| ef.efector_id}
-
-    res_emb = self.grupo_embarazadas(efectores, [8,9], 5)
-     
+    res_emb = self.grupo_embarazadas(bimestre, 5)
   end
 
-  def self.grupo_embarazadas(arg_efectores, arg_meses, arg_nomenclador)
+  def self.grupo_embarazadas(arg_bimestre, arg_nomenclador)
+
+    meses = case arg_bimestre
+      when 1 then [1,2].join(", ")
+      when 2 then [3,4].join(", ")
+      when 3 then [5,6].join(", ")
+      when 4 then [7,8].join(", ")
+      when 5 then [9,10].join(", ")
+      when 6 then [11, 12].join(", ")
+      else return false
+    end
     
-    meses = arg_meses.join(", ")
-    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: arg_efectores))
+    book = Spreadsheet.open @@ruta_y_archivo
+    sheet = book.worksheet 1
+
     arr_sql = []
     arr_sql_resto = ""
     
@@ -90,11 +99,28 @@ class InformeBimestral
     arr_sql_resto += "(" + arr_sql.join("\n UNION \n") + ")"
 
     cq = CustomQuery.buscar (
-              {
-                #esquemas: esquemas,
-                sql: arr_sql.join("\n UNION \n") #,
-                #values: [cod_prestacion,cod_diagnostico ]
-              })
+      {
+        sql: arr_sql.join("\n UNION \n")
+      }
+    )
+
+    # itero los resultados del query
+    cq.each do |n|
+      sheet.each 10 do |row|
+        if n.prestacion_codigo+n.diagnostico == row[1]
+          case arg_bimestre
+            when 1 then row[3] = n.cantidad_total
+            when 2 then row[4] = n.cantidad_total
+            when 3 then row[5] = n.cantidad_total
+            when 4 then row[6] = n.cantidad_total
+            when 5 then row[7] = n.cantidad_total
+            when 6 then row[8] = n.cantidad_total
+          end
+        end
+
+        break if (row.idx+1) == 35 # fin de la seccion embarazadas
+      end # end sheet
+    end #end cq 
 
     cq.each do |n|
       puts "prestacion: #{n.prestacion_codigo} - diag: #{n.diagnostico} - Cant: #{n.cantidad_total} - Total: #{n.total}"
@@ -105,14 +131,31 @@ class InformeBimestral
     puts "----------------------------------------------------------------------------------------------------------------"
 
     cq = CustomQuery.buscar (
-              {
-                #esquemas: esquemas,
-                sql: arr_sql_resto
-              })
+    {
+          sql: arr_sql_resto
+    })
+
+    # itero los resultados del query
+    total_cantidad = 0
+
+    cq.each do |n|
+      total_cantidad += n.cantidad_total.to_i
+    end #end cq 
+
+    case arg_bimestre
+      when 1 then sheet[35, 3] = total_cantidad
+      when 2 then sheet[35, 4] = total_cantidad
+      when 3 then sheet[35, 5] = total_cantidad
+      when 4 then sheet[35, 6] = total_cantidad
+      when 5 then sheet[35, 7] = total_cantidad
+      when 6 then sheet[35, 8] = total_cantidad
+    end
+    
 
     cq.each do |n|
       puts "prestacion: #{n.prestacion_codigo} - diag: #{n.diagnostico} - Cant: #{n.cantidad_total} - Total: #{n.total}"
     end
+    book.write "lib/tasks/datos/informes_bimestrales/2014-01/detalle_prestaciones_bimestrales.xls"
 
   end # end metodo
 
