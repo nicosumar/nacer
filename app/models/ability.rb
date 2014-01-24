@@ -60,6 +60,7 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :read, LiquidacionSumar
       can :manage, LiquidacionSumarAnexoMedico
       can :manage, AnexoMedicoPrestacion
       can :read, LiquidacionSumarAnexoAdministrativo
