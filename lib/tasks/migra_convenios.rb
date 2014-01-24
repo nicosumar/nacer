@@ -273,7 +273,6 @@
 
 
   def self.crear_convenios_prestaciones
-
         limites_secciones = {:seccion11  => {desde: 43 ,hasta:  55 , col_si_no: 13, tipo: 'p', grupo: '1', col_id_subrogada: 14, subgrupo: '1.1'},
                          :seccion12a => {desde: 99 ,hasta:  162, col_si_no: 13, tipo: 'p', grupo: '1', col_id_subrogada: 14, subgrupo: '1.2-a'},
                          :seccion21  => {desde: 190,hasta:  200, col_si_no: 13, tipo: 'p', grupo: '2', col_id_subrogada: 14, subgrupo: '2.1'},
@@ -332,15 +331,17 @@
                 insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
 
                 insert_ids.each do |prestacion_id|
-                  pa = PrestacionAutorizada.create!({
-                    :efector_id => convenio.efector.id,
-                    :prestacion_id => prestacion_id,
-                    :fecha_de_inicio => convenio.fecha_de_inicio,
-                    :autorizante_al_alta_id => convenio.id,
-                    :autorizante_al_alta_type => 'ConvenioDeGestionSumar',
-                    :creator_id => 1,
-                    :updater_id => 1
-                    })
+                  if !(PrestacionAutorizada.where({:efector_id => convenio.efector.id, :prestacion_id => prestacion_id, :fecha_de_finalizacion => nil}).first)
+                    pa = PrestacionAutorizada.create!({
+                      :efector_id => convenio.efector.id,
+                      :prestacion_id => prestacion_id,
+                      :fecha_de_inicio => convenio.fecha_de_inicio,
+                      :autorizante_al_alta_id => convenio.id,
+                      :autorizante_al_alta_type => 'ConvenioDeGestionSumar',
+                      :creator_id => 1,
+                      :updater_id => 1
+                      })
+                  end
                 end
               end
               break if (row.idx+1) == valores[:hasta]
