@@ -356,19 +356,18 @@ class InformeBimestral
 
   def self.migrar_nacer(ruta='', archivos=[])
 
-    ruta = 'lib/tasks/datos/informes_bimestrales/2014-01/crudo-nacer/' if ruta.blank?
+    ruta = 'lib/tasks/datos/informes_bimestrales/2014-01/crudo-nacer' if ruta.blank?
 
-    
-    archivos = [#'M00175 - Hospital José Néstor Lencinas.xls',
-                'M00080 - Micro Hospital Puente de Hierro.xls'
-              ] if archivos.blank?
-                
+    # archivos = Dir.glob("lib/tasks/datos/informes_bimestrales/2014-01/crudo-nacer/**/*") if archivos.blank?
+    archivos = Dir.glob("#{ruta}/**/*").delete_if { |a| a.count('.') == 0 } if archivos.blank?
               
 
     ActiveRecord::Base.connection.schema_search_path = "public"
     
     archivos.each do |ra|
-      @rutayarchivo = ruta + ra
+      # @rutayarchivo = ruta + ra
+      @rutayarchivo = ra
+      puts "archivo: #{@rutayarchivo}"
       ActiveRecord::Base.transaction do
 
         begin
@@ -382,7 +381,8 @@ class InformeBimestral
             
             # Busco el efector
             e = Efector.where("cuie = trim('#{row[0]}')")
-            # Busco el beneficiario
+            # Busco el beneficiario
+
             a = Afiliado.where("clave_de_beneficiario = trim('#{row[11]}')")
             # Busco la prestación
             p = Prestacion.where("codigo = trim('#{row[8]}')")
@@ -399,7 +399,7 @@ class InformeBimestral
           
         rescue Exception => e
           
-          CSV.foreach(@rutayarchivo, :headers => false, :encoding => 'ISO-8859-1', :col_sep => "\t") do |row|
+          CSV.foreach(@rutayarchivo, :headers => false, :encoding => 'ISO-8859-1', :col_sep => "\t", :quote_char => "~") do |row|
             #row = fila[0].split(/\t/)
             
             break if row[0].blank?
@@ -411,7 +411,7 @@ class InformeBimestral
               # Busco el beneficiario
 
               a = Afiliado.where("clave_de_beneficiario = trim('#{row[11]}')")
-              puts "afiliado:#{row[11]}"
+              # puts "afiliado:#{row[11]}"
               # Busco la prestación
               p = Prestacion.where("codigo = trim('#{row[8]}')")
 
