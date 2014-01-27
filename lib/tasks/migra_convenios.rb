@@ -272,7 +272,7 @@
 
 
 
-  def self.crear_convenios_prestaciones
+  def self.crear_convenios_prestaciones(periodo, paquete)
         limites_secciones = {:seccion11  => {desde: 43 ,hasta:  55 , col_si_no: 13, tipo: 'p', grupo: '1', col_id_subrogada: 14, subgrupo: '1.1'},
                          :seccion12a => {desde: 99 ,hasta:  162, col_si_no: 13, tipo: 'p', grupo: '1', col_id_subrogada: 14, subgrupo: '1.2-a'},
                          :seccion21  => {desde: 190,hasta:  200, col_si_no: 13, tipo: 'p', grupo: '2', col_id_subrogada: 14, subgrupo: '2.1'},
@@ -297,26 +297,14 @@
                          :seccion_anexo_1  => {desde: 660,hasta:  687, col_si_no: 13, tipo: 'a'}
     }
     
-    ruta = 'lib/tasks/datos/Convenios/area_gral_alvear_pre-procesados/'
+    # ruta = 'lib/tasks/datos/Convenios/2014-01/1/'
+    ruta = "lib/tasks/datos/Convenios/#{periodo.to_s}/#{paquete.to_s}" 
 
-    archivos = ['PlandeServdeSalud CAMPAMENTOS.xls',
-                'PlandeServdeSalud CANALEJAS.xls',
-                'PlandeServdeSalud CEIBO.xls',
-                'PlandeServdeSalud COCHI-CO.xls',
-                'PlandeServdeSalud COMPARTOS.xls',
-                'PlandeServdeSalud_CORRAL_DE_LORCA.xls',
-                'PlandeServdeSalud DESVIO.xls',
-                'PlandeServdeSalud ESCANDINAVA.xls',
-                'PlandeServdeSalud ISLA.xls',
-                'PlandeServdeSalud ITINERANTE.xls',
-                'PlandeServdeSalud MARZOLINA.xls',
-                'PlandeServdeSalud NEVADO.xls',
-                'PlandeServdeSalud SAN PEDRO.xls'
-              ]
+    archivos = Dir.glob("#{ruta}/**/*").delete_if { |a| a.count('.') == 0 }
 
     ActiveRecord::Base.connection.schema_search_path = "public"
     archivos.each do |ra|
-      @rutayarchivo = ruta + ra
+      @rutayarchivo = ra
       ActiveRecord::Base.transaction do
 
         book = Spreadsheet.open @rutayarchivo
