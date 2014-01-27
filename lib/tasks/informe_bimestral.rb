@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 require 'spreadsheet'
+require 'csv'
 
 class InformeBimestral
   attr_accessor :rutayarchivo
@@ -135,7 +136,8 @@ class InformeBimestral
           sql: arr_sql_resto
     })
 
-    # itero los resultados del query
+    # itero los resultados del query
+
     total_cantidad = 0
 
     cq.each do |n|
@@ -350,6 +352,83 @@ class InformeBimestral
         end # end diagnostico
       end # end prestaciones
     end # end resultado 
+  end
+
+  def self.migrar_nacer(ruta='', archivos=[])
+
+    ruta = 'lib/tasks/datos/informes_bimestrales/2014-01/crudo-nacer/' if ruta.blank?
+
+    
+    archivos = [#'M00175 - Hospital José Néstor Lencinas.xls',
+                'M00080 - Micro Hospital Puente de Hierro.xls'
+              ] if archivos.blank?
+                
+              
+
+    ActiveRecord::Base.connection.schema_search_path = "public"
+    
+    archivos.each do |ra|
+      @rutayarchivo = ruta + ra
+      ActiveRecord::Base.transaction do
+
+        begin
+          # Trato de abrirlo con spreedsheet
+          book = Spreadsheet.open @rutayarchivo
+          sheet = book.worksheet 0
+
+          sheet.each 2 do |row|
+
+            break if row[0].blank?
+            
+            # Busco el efector
+            e = Efector.where("cuie = trim('#{row[0]}')")
+            # Busco el beneficiario
+            a = Afiliado.where("clave_de_beneficiario = trim('#{row[11]}')")
+            # Busco la prestación
+            p = Prestacion.where("codigo = trim('#{row[8]}')")
+
+            efector_id = (e.size == 1 ? e.first.id : "NULL")
+            afiliado_id = (a.size == 1 ? a.first.id : "NULL")
+            prestacion_id = (p.size == 1 ? p.first.id : "NULL")
+
+            ActiveRecord::Base.connection.execute "INSERT INTO  public . migra_prestaciones_liquidadas_nacer  \n"+
+                  "( efector_id ,  prestacion_id ,  afiliado_id ,  monto ,  fecha_de_la_prestacion ) \n"+
+                  "VALUES \n"+ 
+                  "( #{efector_id}, #{prestacion_id}, #{afiliado_id}, #{row[9]}, date('#{row[3]}') );"
+          end
+          
+        rescue Exception => e
+          
+          CSV.foreach(@rutayarchivo, :headers => false, :encoding => 'ISO-8859-1', :col_sep => "\t") do |row|
+            #row = fila[0].split(/\t/)
+            
+            break if row[0].blank?
+
+            if row[0][0] == "M" # es un CUIE
+
+              # Busco el efector
+              e = Efector.where("cuie = trim('#{row[0]}')")
+              # Busco el beneficiario
+
+              a = Afiliado.where("clave_de_beneficiario = trim('#{row[11]}')")
+              puts "afiliado:#{row[11]}"
+              # Busco la prestación
+              p = Prestacion.where("codigo = trim('#{row[8]}')")
+
+              efector_id = (e.size == 1 ? e.first.id : "NULL")
+              afiliado_id = (a.size == 1 ? a.first.id : "NULL")
+              prestacion_id = (p.size == 1 ? p.first.id : "NULL")
+
+              ActiveRecord::Base.connection.execute "INSERT INTO  public . migra_prestaciones_liquidadas_nacer  \n"+
+                    "( efector_id ,  prestacion_id ,  afiliado_id ,  monto ,  fecha_de_la_prestacion ) \n"+
+                    "VALUES \n"+ 
+                    "( #{efector_id}, #{prestacion_id}, #{afiliado_id}, #{row[9].gsub(',','.')}, date('#{row[3]}') );"
+            end #end es un CUIE
+          end #end itera CSV
+        end #End rescue
+
+      end
+    end
   end
 
 end # end class
