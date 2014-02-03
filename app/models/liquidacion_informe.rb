@@ -44,7 +44,7 @@ class LiquidacionInforme < ActiveRecord::Base
     estado_finalizado = EstadoDelProceso.find(3) 
     cq = false
     
-    if self.liquidacion_sumar_anexo_administrativo.estado_del_proceso.id == estado_finalizado.id and self.liquidacion_sumar_anexo_medico.id == estado_finalizado.id 
+    if self.liquidacion_sumar_anexo_administrativo.estado_del_proceso.id == estado_finalizado.id and self.liquidacion_sumar_anexo_medico.estado_del_proceso.id == estado_finalizado.id 
 
       ActiveRecord::Base.transaction do
         cq = CustomQuery.ejecutar(
