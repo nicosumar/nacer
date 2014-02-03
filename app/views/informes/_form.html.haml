@@ -1,0 +1,55 @@
+= form_for @informe do |f|
+  %table{:border => "0", :width => "100%"}
+    %tr
+      %td{:width => "22%"} Titulo
+      %td= f.text_field(:titulo, {style: 'width: 250px'})
+    %tr
+      %td Formato de salida
+      %td= f.select :formato, @formatos, {style: 'width: 250px'}
+    %tr
+      %td Metodo del controller 
+      %td= f.select :nombre_partial, @controller_metodos
+    %tr
+      %td Incluir esquemas?
+      %td
+        = label_tag :incluir_esquema, 'Incluir'
+        = radio_button_tag :incluido, '1', true
+        = label_tag :excluir_esquema, 'Excluir'
+        = radio_button_tag :incluido, '0'
+    %tr
+      %td Esquemas
+      %td= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
+    %tr
+      %td
+        #links
+          = link_to_add_association 'Agregar Filtro', f , :informes_filtros, data: {'association-insertion-node' => 'tbody#informes_filtros', 'association-insertion-method' => 'append'}
+      %td
+        %table{:border => "0", :width => "100%", :id => 'tabla_filtros'}
+          %thead
+            %tr
+              %th{:scope => "col", width: "10px"} #
+              %th{:scope => "col"} Filtro
+              %th{:scope => "col"} Valor por defecto
+              %th{:scope => "col"} Validador de UI
+              %th{:scope => "col"} Acciones 
+          %tbody#informes_filtros
+            = f.fields_for :informes_filtros do |fi|
+              = render 'informe_filtro_fields', :f => fi
+    %tr
+      %td Lenguaje:
+      %td
+        SQL
+        = radio_button_tag :lenguaje, '1', true
+        Ruby
+        = radio_button_tag :lenguaje, '0'
+    %tr
+      %td 
+        #secccion-lenguaje SQL
+      %td{:colspan => "5", :rowspan => "2"}
+        #codigo-lenguaje-sql
+          = f.text_area :sql, {style: "width: 100%", rows: 10}
+        #codigo-lenguaje-ruby
+          = f.text_area :metodo, {style: "width: 100%", rows: 10}
+    %tr
+      %td &nbsp;
+  = f.submit 

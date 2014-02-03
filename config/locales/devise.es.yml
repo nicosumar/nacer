@@ -38,7 +38,7 @@ es:
       signed_up_but_unconfirmed: "Se envió un mensaje a su dirección de correo electrónico con un enlace de confirmación. Abra el enlace para activar su cuenta."
       update_needs_confirmation: "Se actualizó correctamente su cuenta, pero es necesario confirmar su nueva dirección de correo electrónico. Revise su cuenta de correo electrónico y haga clic en el enlace de confirmación que se le envió para terminar de confirmar su nueva dirección."
       updated: "Su cuenta se actualizó correctamente."
-    sessions:
+    user_sessions:
       signed_in: "Su sesión se inició correctamente."
       signed_out: "Su sesión se cerró correctamente."
     unlocks:

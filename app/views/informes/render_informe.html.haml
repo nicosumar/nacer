@@ -1,9 +1,9 @@
 - content_for :title do
-  = @informe.titulo
+  = @cabecera_informe.titulo
 
 #content-header
-  %h1= @informe.titulo
+  %h1= @cabecera_informe.titulo
 
 #content-body
-  %h2.first-header= @informe.titulo
-  = render(:partial => "render_"+@informe.nombre_partial, :locals => {:cq => @cq})
+  %h2.first-header= @cabecera_informe.titulo
+  = render(:partial => "render_"+@cabecera_informe.nombre_partial, :locals => {:resultado => @resultado})
