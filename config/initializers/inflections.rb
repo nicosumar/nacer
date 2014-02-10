@@ -356,6 +356,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("impide·", "impiden")
   inflect.irregular("informe", "informes·")
   inflect.irregular("informe·", "informes")
+  inflect.irregular("Informe", "Informes·")
+  inflect.irregular("Informe·", "Informes")
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")

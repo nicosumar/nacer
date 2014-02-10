@@ -30,13 +30,27 @@ class CustomQuery < ActiveRecord::Base
 
     args.symbolize_keys!
 
-    if args[:sql].blank?
-      raise "Debe definir el simbolo :sql en el hash"  
+    if args[:sql].blank? and args[:ruby].blank? 
+      raise "Debe definir el simbolo :sql o :ruby en el hash"
   	  return nil
+    end
+
+
+    if args[:ruby].present?
+      begin
+        if args[:values].present?
+          return eval( args[:ruby] + "("+args[:values].split(",")+")" )
+        else
+          return eval( args[:ruby] )
+        end
+      rescue Exception => e
+        raise "La clase o metodo ruby no pudo ser evaluada. Detalles: #{e.message}"
+        
+      end
     end
     
     #Si hay parametros  
-    if !args[:values].blank?
+    if args[:values].present?
       i = 0
       args[:values].each do |v|
         args[i.to_s+v.to_s] =  v 
@@ -48,7 +62,7 @@ class CustomQuery < ActiveRecord::Base
     #creo una vista temporal para evitar el error de que no existe la tabla del modelo
     ActiveRecord::Base.connection.execute <<-SQL 
       CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1
-  	  SQL
+      SQL
 
     #Si no existen estos parametros, busco en un solo esquema (el actual)
     if args[:except].blank? && args[:esquemas].blank?

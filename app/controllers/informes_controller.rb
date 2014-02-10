@@ -6,49 +6,9 @@ class InformesController < ApplicationController
 
   #Los renders de informes deben comenzar con "_render_"
   def render_informe
-    @informe = Informe.find(params[:reporte][:id])
 
-    #traigo los parametros del reporte y los ordeno para el query
-    valores = []
-    params[:reporte][:parametros].sort.each { |p, v| valores << v} unless params[:reporte][:parametros].blank?
-
-    #Al ser todos o incluidos o excluidos, busco los codigos, y despues verifico si se incluye o excluye
-    if @informe.informes_uads.first.incluido == 1
-      @cq = CustomQuery.buscar (
-        {
-          esquemas: @informe.esquemas,
-          #except: ["public"],
-          sql: @informe.sql,
-          values: valores
-        })
-    else
-      @cq = CustomQuery.buscar (
-        {
-          except: @informe.esquemas,
-          #except: ["public"],
-          sql: @informe.sql,
-          values: valores
-        })
-
-    end
-
-    # cq = CustomQuery.buscar (
-    # {
-    #   ( ? { esquemas: esquemas } : { except: esquemas} ),
-    #   sql: @informe.sql,
-    #   values: [],
-
-    #   #:except => ["public"],
-    #   :sql => " select u.email, u.nombre, u.apellido, uad.nombre UAD , count(nov.*)
-    #              from users u
-    #               left join novedades_de_los_afiliados nov on nov.creator_id = u.id
-    #               join unidades_de_alta_de_datos_users uadu on uadu.user_id = u.id
-    #               join unidades_de_alta_de_datos uad on uad.id = uadu.unidad_de_alta_de_datos_id
-    #             where u.confirmed_at < '2013-04-01'
-    #             and   (nov.created_at between '2013-04-01' and '2013-04-30' or nov.created_at is null) and
-    #             'uad_' ||  uad.codigo = current_schema()
-    #             group by u.email, u.nombre, u.apellido, uad "
-    # })
+    @cabecera_informe = Informe.find(params[:reporte][:id])
+    @resultado = @cabecera_informe.render(params[:reporte][:parametros])
   end
 
   def beneficiarios_activos
@@ -230,7 +190,6 @@ class InformesController < ApplicationController
 
   def new
     @informe = Informe.new
-    #@controller_metodos = (InformesController.action_methods - ApplicationController.action_methods).to_a.select{|s| s =~ /render_informe_/}
     @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
     @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
@@ -239,7 +198,56 @@ class InformesController < ApplicationController
     @esquemas << esquema
     @esquemas_informes = @informe.esquemas.build
     @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
+  end
 
+  def edit
+    @informe = Informe.find(params[:id])
+    @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
+    @formatos = ['html']
+    @esquemas = UnidadDeAltaDeDatos.all
+    esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
+    esquema.id = 0
+    @esquemas << esquema
+    @esquemas_informes = @informe.esquemas.build
+    @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
+  end
+
+  def update
+    # @informe = Informe.new(params[:informe])
+    @informe = Informe.find(params[:id])
+
+    #Elimina espacios extras y retornos de carro
+    # @informe.sql = @informe.sql.split.join(" ")
+
+    @informe.transaction do
+      @informe.informes_uads.clear
+      params[:informe_esquema][:id].each do |ie|
+        if ie.present?
+          if ie == '0'
+            UnidadDeAltaDeDatos.all.each do |u|
+              @informe.informes_uads.build unidad_de_alta_de_datos_id: u.id, incluido: (params[:incluido] )
+            end
+          else
+            @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: (params[:incluido] )
+          end
+        end
+      end
+
+      if @informe.update_attributes(params[:informe])
+        redirect_to(:action => 'index')
+      else
+        @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
+        @formatos = ['html']
+        @esquemas = UnidadDeAltaDeDatos.all
+        esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
+        esquema.id = 0
+        @esquemas << esquema
+        @esquemas_informes = @informe.esquemas.build
+        @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
+
+        render(:action => "new")
+      end
+    end #end transaction
   end
 
   def create
@@ -247,34 +255,36 @@ class InformesController < ApplicationController
     @informe = Informe.new(params[:informe])
 
     #Elimina espacios extras y retornos de carro
-    @informe.sql = @informe.sql.split.join(" ")
+    # @informe.sql = @informe.sql.split.join(" ")
 
-    params[:informe_esquema][:id].each do |ie|
-      unless ie.blank?
-        if ie == '0'
-          UnidadDeAltaDeDatos.all.each do |u|
-            @informe.informes_uads.build unidad_de_alta_de_datos_id: u.id, incluido: (params[:incluido] )
+    @informe.transaction do
+      params[:informe_esquema][:id].each do |ie|
+        if ie.present?
+          if ie == '0'
+            UnidadDeAltaDeDatos.all.each do |u|
+              @informe.informes_uads.build unidad_de_alta_de_datos_id: u.id, incluido: (params[:incluido] )
+            end
+          else
+            @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: (params[:incluido] )
           end
-        else
-          @informe.informes_uads.build unidad_de_alta_de_datos_id: ie, incluido: (params[:incluido] )
         end
       end
-    end
 
-    if @informe.save
-      redirect_to(:action => 'index')
-    else
-      @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-      @formatos = ['html']
-      @esquemas = UnidadDeAltaDeDatos.all
-      esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
-      esquema.id = 0
-      @esquemas << esquema
-      @esquemas_informes = @informe.esquemas.build
-      @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
+      if @informe.save
+        redirect_to(:action => 'index')
+      else
+        @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
+        @formatos = ['html']
+        @esquemas = UnidadDeAltaDeDatos.all
+        esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
+        esquema.id = 0
+        @esquemas << esquema
+        @esquemas_informes = @informe.esquemas.build
+        @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
 
-      render(:action => "new")
-    end
+        render(:action => "new")
+      end
+    end # end transaction
   end
 
   private
