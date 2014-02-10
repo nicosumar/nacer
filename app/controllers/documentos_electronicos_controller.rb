@@ -5,7 +5,7 @@ class DocumentosElectronicosController < ApplicationController
   def index
 
     # Valores para los dropdown
-    if current_user.in_group? [:administradores, :facturacion, :auditoria_medica, :coordinacion] 
+    if current_user.in_group? [:administradores, :facturacion, :auditoria_medica, :coordinacion, :planificacion] 
       @efectores = Efector.order("nombre desc").collect {|c| [c.nombre, c.id]}
     elsif current_user.in_group? [:facturacion_uad] 
       uad = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual])
