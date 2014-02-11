@@ -131,7 +131,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     error_de_fecha = false
 
     # Fecha de la novedad
-    if fecha_de_la_novedad
+    if fecha_de_la_novedad.present?
 
       # Fecha de nacimiento
       if fecha_de_nacimiento && fecha_de_la_novedad < fecha_de_nacimiento
@@ -176,7 +176,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end # fecha_de_la_novedad
 
     # Fecha de nacimiento
-    if fecha_de_nacimiento
+    if fecha_de_nacimiento.present?
 
       # Fecha de la última menstruación
       if esta_embarazada && fecha_de_la_ultima_menstruacion && fecha_de_nacimiento > fecha_de_la_ultima_menstruacion
@@ -205,10 +205,22 @@ class NovedadDelAfiliado < ActiveRecord::Base
         error_de_fecha = true
       end
 
+      # Fecha de inscripción original cuando es una modificación
+      if tipo_de_novedad_id == TipoDeNovedad.id_del_codigo("M")
+        afiliado = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+        if afiliado.present? && afiliado.fecha_de_inscripcion.present? && afiliado.fecha_de_inscripcion < fecha_de_nacimiento
+          errors.add(
+            :fecha_de_nacimiento,
+            "no puede ser posterior a la fecha de inscripción original (#{afiliado.fecha_de_inscripcion.strftime('%d/%m/%Y')})"
+          )
+          error_de_fecha = true
+        end
+      end
+
     end # fecha_de_nacimiento
 
     # Fecha de la última menstruación
-    if esta_embarazada && fecha_de_la_ultima_menstruacion
+    if esta_embarazada && fecha_de_la_ultima_menstruacion.present?
 
       # Fecha de diagnóstico del embarazo
       if fecha_de_diagnostico_del_embarazo && fecha_de_la_ultima_menstruacion > fecha_de_diagnostico_del_embarazo
@@ -218,7 +230,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
 
       # Fecha probable de parto
-      if fecha_probable_de_parto && fecha_de_la_ultima_menstruacion > fecha_probable_de_parto
+      if fecha_probable_de_parto.present? && fecha_de_la_ultima_menstruacion > fecha_probable_de_parto
         errors.add(:fecha_de_la_ultima_menstruacion, 'no puede ser posterior a la fecha probable de parto')
         errors.add(:fecha_probable_de_parto, 'no puede ser anterior a la fecha de la última menstruación')
         error_de_fecha = true
@@ -233,10 +245,10 @@ class NovedadDelAfiliado < ActiveRecord::Base
     end # fecha_de_la_ultima_menstruacion
 
     # Fecha de diagnóstico del embarazo
-    if esta_embarazada && fecha_de_diagnostico_del_embarazo
+    if esta_embarazada && fecha_de_diagnostico_del_embarazo.present?
 
       # Fecha probable de parto
-      if fecha_probable_de_parto && fecha_de_diagnostico_del_embarazo > fecha_probable_de_parto
+      if fecha_probable_de_parto.present? && fecha_de_diagnostico_del_embarazo > fecha_probable_de_parto
         errors.add(:fecha_de_diagnostico_del_embarazo, 'no puede ser posterior a la fecha probable de parto')
         errors.add(:fecha_probable_de_parto, 'no puede ser anterior a la fecha de diagnóstico_del_embarazo')
         error_de_fecha = true
