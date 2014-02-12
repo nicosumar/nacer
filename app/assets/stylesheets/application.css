@@ -5,6 +5,7 @@
  *= require_self
  *= require style
  *= require jquery.ui.datepicker
+ *= require jquery.ui.spinner
  *= require jquery.ui.dialog
  *= require jquery.ui.tabs
  *= require chosen
