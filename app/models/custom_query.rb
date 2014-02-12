@@ -16,7 +16,7 @@ class CustomQuery < ActiveRecord::Base
     @filtros_de_busqueda = Hash.new
   end
 
-  def nombres_columnas
+  def nombres_de_columnas
     self.attributes.keys
   end
  

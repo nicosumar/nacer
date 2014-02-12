@@ -12,6 +12,7 @@ $(document).ready(function() {
   	//muestro y oculto los textarea
   	$("textarea[name*='informe[metodo]']").hide();
   	$("textarea[name*='informe[sql]']").show();
+    $('.fila_esquemas').show().fadeIn(500);
   }
   else
   {
@@ -19,6 +20,7 @@ $(document).ready(function() {
   	//muestro y oculto los textarea
 	  $("textarea[name*='informe[sql]']").hide();
     $("textarea[name*='informe[metodo]']").show();
+    $('.fila_esquemas').hide().fadeOut(500);
   }
 
   //           BINDINGS
@@ -32,6 +34,7 @@ $(document).ready(function() {
   	  //muestro y oculto los textarea
   	  $("textarea[name*='informe[metodo]']").hide();
   	  $("textarea[name*='informe[sql]']").show();
+      $('.fila_esquemas').fadeIn(500);
     }
     else	//eligio ruby
     {
@@ -41,6 +44,7 @@ $(document).ready(function() {
       //muestro y oculto los textarea
       $("textarea[name*='informe[sql]']").hide();
       $("textarea[name*='informe[metodo]']").show();
+      $('.fila_esquemas').fadeOut(500);
     }
   });
 });

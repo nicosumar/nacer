@@ -20,7 +20,10 @@ class InformeBimestral
     res_emb = self.grupo_embarazadas(bimestre, 5)
   end
 
-  def self.grupo_embarazadas(arg_bimestre, arg_nomenclador)
+  #def self.grupo_embarazadas(arg_bimestre, arg_nomenclador)
+  def self.grupo_embarazadas()
+    arg_bimestre = 5
+    arg_nomenclador = 5 
 
     meses = case arg_bimestre
       when 1 then [1,2].join(", ")
@@ -32,9 +35,6 @@ class InformeBimestral
       else return false
     end
     
-    book = Spreadsheet.open @@ruta_y_archivo
-    sheet = book.worksheet 1
-
     arr_sql = []
     arr_sql_resto = ""
     
@@ -58,10 +58,10 @@ class InformeBimestral
         r[1].each do |d|  #diagnostico
           cod_prestacion = p
           cod_diagnostico = d
-            puts "Codigo de prestacion: #{cod_prestacion}"
-            puts "Codigo de diagnostico: #{cod_diagnostico}"
+            #puts "Codigo de prestacion: #{cod_prestacion}"
+            #puts "Codigo de diagnostico: #{cod_diagnostico}"
             
-            arr_sql << "select pi.prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, sum(p.monto) total \n"+
+            arr_sql << "select pi.prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total \n"+
                   " from prestaciones_incluidas pi\n"+
                   " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id \n"+
                   " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -79,7 +79,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    arr_sql_resto <<  "select pi.prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, sum(p.monto) total\n"+
+    arr_sql_resto <<  "select pi.prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
                       " from prestaciones_incluidas pi\n"+
                       " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id \n"+
                       " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -105,59 +105,47 @@ class InformeBimestral
       }
     )
 
-    # itero los resultados del query
+    resp = []
     cq.each do |n|
-      sheet.each 10 do |row|
-        if n.prestacion_codigo+n.diagnostico == row[1]
-          case arg_bimestre
-            when 1 then row[3] = n.cantidad_total
-            when 2 then row[4] = n.cantidad_total
-            when 3 then row[5] = n.cantidad_total
-            when 4 then row[6] = n.cantidad_total
-            when 5 then row[7] = n.cantidad_total
-            when 6 then row[8] = n.cantidad_total
-          end
-        end
+      resultado_cq = CustomQuery.new
+      resultado_cq = n
 
-        break if (row.idx+1) == 35 # fin de la seccion embarazadas
-      end # end sheet
-    end #end cq 
+      resultado_cq.class.module_eval { attr_accessor :codigo_de_prestacion}
+      resultado_cq.class.module_eval { attr_accessor :codigo_de_diagnostico}
+      resultado_cq.class.module_eval { attr_accessor :cantidad}
+      resultado_cq.class.module_eval { attr_accessor :total}
 
-    cq.each do |n|
-      puts "prestacion: #{n.prestacion_codigo} - diag: #{n.diagnostico} - Cant: #{n.cantidad_total} - Total: #{n.total}"
+      resultado_cq.codigo_de_prestacion = n.prestacion_codigo
+      resultado_cq.codigo_de_diagnostico = n.diagnostico
+      resultado_cq.cantidad = n.cantidad_total
+      resultado_cq.total = n.total
+
+      resp << resultado_cq
     end
-
-    puts "----------------------------------------------------------------------------------------------------------------"
-    puts "                                              RESTO                                                             "
-    puts "----------------------------------------------------------------------------------------------------------------"
 
     cq = CustomQuery.buscar (
     {
           sql: arr_sql_resto
     })
 
-    # itero los resultados del query
-
-    total_cantidad = 0
-
     cq.each do |n|
-      total_cantidad += n.cantidad_total.to_i
-    end #end cq 
+      resultado_cq = CustomQuery.new
+      resultado_cq = n
 
-    case arg_bimestre
-      when 1 then sheet[35, 3] = total_cantidad
-      when 2 then sheet[35, 4] = total_cantidad
-      when 3 then sheet[35, 5] = total_cantidad
-      when 4 then sheet[35, 6] = total_cantidad
-      when 5 then sheet[35, 7] = total_cantidad
-      when 6 then sheet[35, 8] = total_cantidad
-    end
-    
+      resultado_cq.class.module_eval { attr_accessor :codigo_de_prestacion}
+      resultado_cq.class.module_eval { attr_accessor :codigo_de_diagnostico}
+      resultado_cq.class.module_eval { attr_accessor :cantidad}
+      resultado_cq.class.module_eval { attr_accessor :total}
 
-    cq.each do |n|
-      puts "prestacion: #{n.prestacion_codigo} - diag: #{n.diagnostico} - Cant: #{n.cantidad_total} - Total: #{n.total}"
+      resultado_cq.codigo_de_prestacion = n.prestacion_codigo
+      resultado_cq.codigo_de_diagnostico = n.diagnostico
+      resultado_cq.cantidad = n.cantidad_total
+      resultado_cq.total = n.total
+
+      resp << resultado_cq
     end
-    book.write "lib/tasks/datos/informes_bimestrales/2014-01/detalle_prestaciones_bimestrales.xls"
+
+    return resp
 
   end # end metodo
 
@@ -358,14 +346,16 @@ class InformeBimestral
 
     ruta = 'lib/tasks/datos/informes_bimestrales/2014-01/crudo-nacer' if ruta.blank?
 
-    # archivos = Dir.glob("lib/tasks/datos/informes_bimestrales/2014-01/crudo-nacer/**/*") if archivos.blank?
+    # archivos = Dir.glob("lib/tasks/datos/informes_bimestrales/2014-01/crudo-nacer/**/*") if archivos.blank?
+
     archivos = Dir.glob("#{ruta}/**/*").delete_if { |a| a.count('.') == 0 } if archivos.blank?
               
 
     ActiveRecord::Base.connection.schema_search_path = "public"
     
     archivos.each do |ra|
-      # @rutayarchivo = ruta + ra
+      # @rutayarchivo = ruta + ra
+
       @rutayarchivo = ra
       puts "archivo: #{@rutayarchivo}"
       ActiveRecord::Base.transaction do

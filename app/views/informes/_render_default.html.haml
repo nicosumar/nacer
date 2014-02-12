@@ -1,10 +1,10 @@
 %table{:border => "0", :width => "100%", :id => 'tabla_filtros'}
   %tr
     %thead
-      - resultado.first.nombres_columnas.each do |nombre|
+      - informe.nombres_de_columna.each do |nombre|
         %th= nombre
     %tbody
       - resultado.each do |row|
         %tr
-          - row.nombres_columnas.each do |dato|
+          - row.nombres_de_columnas.each do |dato|
             %td= "#{row[dato]}"

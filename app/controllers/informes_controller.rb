@@ -6,9 +6,8 @@ class InformesController < ApplicationController
 
   #Los renders de informes deben comenzar con "_render_"
   def render_informe
-
     @cabecera_informe = Informe.find(params[:reporte][:id])
-    @resultado = @cabecera_informe.render(params[:reporte][:parametros])
+    @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
   end
 
   def beneficiarios_activos
@@ -213,7 +212,8 @@ class InformesController < ApplicationController
   end
 
   def update
-    # @informe = Informe.new(params[:informe])
+    # @informe = Informe.new(params[:informe])
+
     @informe = Informe.find(params[:id])
 
     #Elimina espacios extras y retornos de carro
