@@ -68,10 +68,12 @@ class Informe < ActiveRecord::Base
   
   def ejecutar(parametros=[])
 
+    #traigo los parametros del reporte y los ordeno para el query
+    valores = []
+    logger
+    parametros.sort.each { |p, v| valores << v} if parametros.present?
+    
     if self.sql.present?
-      #traigo los parametros del reporte y los ordeno para el query
-      valores = []
-      parametros.sort.each { |p, v| valores << v} unless parametros.blank?
 
       #Al ser todos o incluidos o excluidos, busco los codigos, y despues verifico si se incluye o excluye
       if self.informes_uads.first.incluido == 1

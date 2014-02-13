@@ -50,6 +50,9 @@ $(document).ready(function(){
                                                                           });
               $("input#reporte_parametros_"+ifiltro.posicion).attr("readonly", false);
             break;
+            case "spinner":
+              $("input#reporte_parametros_"+ifiltro.posicion).spinner();
+            break;
           }
         });
       	//abro el cuadro de dialogo

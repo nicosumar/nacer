@@ -12,7 +12,6 @@ class Sirge < ActiveRecord::Base
     ruta = "lib/tasks/datos/sirge/#{anio}-#{mes}/crudo_aplicacion_de_fondos" 
     archivos = Dir.glob("#{ruta}/**/*").delete_if { |a| a.count('.') == 0 }
 
-              
     arr_codigos_de_gastos = ['1.1','1.2','1.3',
                              '2.1','2.2','2.3',
                              '3.1','3.2',

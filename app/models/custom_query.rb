@@ -39,7 +39,7 @@ class CustomQuery < ActiveRecord::Base
     if args[:ruby].present?
       begin
         if args[:values].present?
-          return eval( args[:ruby] + "("+args[:values].split(",")+")" )
+          return eval( args[:ruby].chomp + "("+args[:values].join(", ")+")" )
         else
           return eval( args[:ruby] )
         end

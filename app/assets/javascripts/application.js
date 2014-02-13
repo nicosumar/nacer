@@ -8,6 +8,7 @@
 //= require jquery_ujs
 //= require cocoon
 //= require jquery.ui.datepicker
+//= require jquery.ui.spinner
 //= require jquery.ui.dialog
 //= require jquery.ui.tabs
 //= require chosen-jquery

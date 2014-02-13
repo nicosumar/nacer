@@ -20,10 +20,7 @@ class InformeBimestral
     res_emb = self.grupo_embarazadas(bimestre, 5)
   end
 
-  #def self.grupo_embarazadas(arg_bimestre, arg_nomenclador)
-  def self.grupo_embarazadas()
-    arg_bimestre = 5
-    arg_nomenclador = 5 
+  def self.grupo_embarazadas(arg_bimestre, arg_nomenclador)
 
     meses = case arg_bimestre
       when 1 then [1,2].join(", ")
@@ -58,8 +55,6 @@ class InformeBimestral
         r[1].each do |d|  #diagnostico
           cod_prestacion = p
           cod_diagnostico = d
-            #puts "Codigo de prestacion: #{cod_prestacion}"
-            #puts "Codigo de diagnostico: #{cod_diagnostico}"
             
             arr_sql << "select pi.prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total \n"+
                   " from prestaciones_incluidas pi\n"+
@@ -149,23 +144,56 @@ class InformeBimestral
 
   end # end metodo
 
-  def self.grupo_0_a_5(arg_efectores, arg_meses, arg_nomenclador)
+  def self.grupo_0_a_6(arg_bimestre, arg_nomenclador)
+
+    meses = case arg_bimestre
+      when 1 then [1,2].join(", ")
+      when 2 then [3,4].join(", ")
+      when 3 then [5,6].join(", ")
+      when 4 then [7,8].join(", ")
+      when 5 then [9,10].join(", ")
+      when 6 then [11, 12].join(", ")
+      else return false
+    end
     
-    meses = arg_meses.join(", ")
-    arr_cq = []
+    sql = ""
+    sql_resto = ""
+    resp = []
+    filtro_prest = []
+    
+
     prestaciones_paquete_basico_diagnostico = [
       [[455],[9]], # CTC001A97
       [[456],[9]]  # CTC001A97
     ]
+
+    # armo el array con los filtros
     prestaciones_paquete_basico_diagnostico.each do |r| 
       r[0].each do |p|  #prestacion
         r[1].each do |d|  #diagnostico
           cod_prestacion = p
           cod_diagnostico = d
-            puts "Codigo de prestacion: #{cod_prestacion}"
-            puts "Codigo de diagnostico: #{cod_diagnostico}"
-            
-            sql = "select pi.prestacion_codigo, d.codigo, count(*)\n"+
+            filtro_prest << "( pi.prestacion_id = #{cod_prestacion} and p.diagnostico_id = #{cod_diagnostico} )"
+        end # end diagnostico
+      end # end prestaciones
+    end # end resultado 
+
+    sql = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+          "from prestaciones_incluidas pi \n"+
+          " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
+          " join diagnosticos d on d.id = p.diagnostico_id \n"+
+          " join afiliados a on a.clave_de_beneficiario = p.clave_de_beneficiario\n"+
+          " join efectores e on e.id = p.efector_id --and e.area_de_prestacion_id = ap.area_de_prestacion_id \n"+
+          "  join liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = p.id \n"+
+          "where pi.nomenclador_id = #{arg_nomenclador}\n"+
+          "and  date_part('year',age(p.fecha_de_la_prestacion, a.fecha_de_nacimiento )) BETWEEN 0 and 5 --beneficiarios que tenian entre 0 y 5 al momento de la prestacion \n"+
+          "AND (\n"+ filtro_prest.join(" OR\n")  +
+          "    )\n"+
+          "and p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada\n"+
+          "and extract(month from p.fecha_de_la_prestacion )  in (#{meses})\n"+
+          "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
+
+    sql_resto = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
                   "from prestaciones_incluidas pi \n"+
                   " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                   " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -174,21 +202,63 @@ class InformeBimestral
                   "  join liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = p.id \n"+
                   "where pi.nomenclador_id = #{arg_nomenclador}\n"+
                   "and  date_part('year',age(p.fecha_de_la_prestacion, a.fecha_de_nacimiento )) BETWEEN 0 and 5 --beneficiarios que tenian entre 0 y 5 al momento de la prestacion \n"+
-                  "and pi.prestacion_id = ?\n"+
-                  "and p.diagnostico_id = ? \n"+
+                  "and pi.prestacion_id in ( select p.id \n"+
+                  "                           from migra_prestaciones mp\n"+
+                  "                             join prestaciones p on p.id = mp.id_subrrogada_foranea\n"+
+                  "                           where mp.grupo = 2\n"+                      # Solo prestaciones del grupo 2, niños de 0 a 6
+                  "                           and p.concepto_de_facturacion_id = 1)\n"+   # Solo prestaciones del paquete basico 
+                  "AND NOT (\n"+ filtro_prest.join(" OR\n")  +
+                  "        )\n"+
                   "and p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada\n"+
                   "and extract(month from p.fecha_de_la_prestacion )  in (#{meses})\n"+
-                  "GROUP BY pi.prestacion_codigo, d.codigo"
-            cq = CustomQuery.buscar (
-              {
-                sql: sql,
-                values: [cod_prestacion,cod_diagnostico ]
-              })
-            arr_cq << cq
-           
-        end # end diagnostico
-      end # end prestaciones
-    end # end resultado 
+                  "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo\n"
+
+    cq = CustomQuery.buscar (
+    {
+        sql: sql
+    })
+
+    cq.each do |n|
+      c = CustomQuery.new
+      c = n
+
+      c.class.module_eval { attr_accessor :codigo_de_prestacion}
+      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
+      c.class.module_eval { attr_accessor :cantidad}
+      c.class.module_eval { attr_accessor :total}
+
+      c.codigo_de_prestacion = n.prestacion_codigo
+      c.codigo_de_diagnostico = n.diagnostico
+      c.cantidad = n.cantidad_total
+      c.total = n.total
+
+      resp << c
+    end
+
+    cq = CustomQuery.buscar (
+    {
+        sql: sql_resto
+    })
+    
+    cq.each do |n|
+      c = CustomQuery.new
+      c = n
+
+      c.class.module_eval { attr_accessor :codigo_de_prestacion}
+      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
+      c.class.module_eval { attr_accessor :cantidad}
+      c.class.module_eval { attr_accessor :total}
+
+      c.codigo_de_prestacion = n.prestacion_codigo
+      c.codigo_de_diagnostico = n.diagnostico
+      c.cantidad = n.cantidad_total
+      c.total = n.total
+
+      resp << c
+    end
+
+    return resp
+
   end # end metodo
 
   def self.grupo_6_a_9(arg_efectores, arg_meses, arg_nomenclador)
