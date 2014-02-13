@@ -126,6 +126,19 @@ class PrestacionBrindada < ActiveRecord::Base
         )
         datos_erroneos = true
       end
+      if (
+            beneficiario.present? && beneficiario.fecha_de_nacimiento.present? &&
+            fecha_de_la_prestacion && !beneficiario.grupo_poblacional_al_dia(fecha_de_la_prestacion)
+         )
+        errors.add(
+          :global,
+          'A la fecha de la prestación ' +
+          (beneficiario.sexo.codigo == "F" ? 'la beneficiaria' : 'el beneficiario') +
+          ' ya no pertenecía a un grupo poblacional elegible para el Programa Sumar (tenía ' +
+          beneficiario.edad_en_anios(fecha_de_la_prestacion).to_s + ' años)'
+        )
+        datos_erroneos = true
+      end
     end
 
     return !campo_obligatorio_vacio && !datos_erroneos
