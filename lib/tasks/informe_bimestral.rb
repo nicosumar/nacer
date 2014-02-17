@@ -102,20 +102,7 @@ class InformeBimestral
 
     resp = []
     cq.each do |n|
-      resultado_cq = CustomQuery.new
-      resultado_cq = n
-
-      resultado_cq.class.module_eval { attr_accessor :codigo_de_prestacion}
-      resultado_cq.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      resultado_cq.class.module_eval { attr_accessor :cantidad}
-      resultado_cq.class.module_eval { attr_accessor :total}
-
-      resultado_cq.codigo_de_prestacion = n.prestacion_codigo
-      resultado_cq.codigo_de_diagnostico = n.diagnostico
-      resultado_cq.cantidad = n.cantidad_total
-      resultado_cq.total = n.total
-
-      resp << resultado_cq
+      resp << n
     end
 
     cq = CustomQuery.buscar (
@@ -124,20 +111,7 @@ class InformeBimestral
     })
 
     cq.each do |n|
-      resultado_cq = CustomQuery.new
-      resultado_cq = n
-
-      resultado_cq.class.module_eval { attr_accessor :codigo_de_prestacion}
-      resultado_cq.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      resultado_cq.class.module_eval { attr_accessor :cantidad}
-      resultado_cq.class.module_eval { attr_accessor :total}
-
-      resultado_cq.codigo_de_prestacion = n.prestacion_codigo
-      resultado_cq.codigo_de_diagnostico = n.diagnostico
-      resultado_cq.cantidad = n.cantidad_total
-      resultado_cq.total = n.total
-
-      resp << resultado_cq
+      resp << n
     end
 
     return resp
@@ -219,19 +193,6 @@ class InformeBimestral
     })
 
     cq.each do |n|
-      c = CustomQuery.new
-      c = n
-
-      c.class.module_eval { attr_accessor :codigo_de_prestacion}
-      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      c.class.module_eval { attr_accessor :cantidad}
-      c.class.module_eval { attr_accessor :total}
-
-      c.codigo_de_prestacion = n.prestacion_codigo
-      c.codigo_de_diagnostico = n.diagnostico
-      c.cantidad = n.cantidad_total
-      c.total = n.total
-
       resp << c
     end
 
@@ -241,20 +202,7 @@ class InformeBimestral
     })
     
     cq.each do |n|
-      c = CustomQuery.new
-      c = n
-
-      c.class.module_eval { attr_accessor :codigo_de_prestacion}
-      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      c.class.module_eval { attr_accessor :cantidad}
-      c.class.module_eval { attr_accessor :total}
-
-      c.codigo_de_prestacion = n.prestacion_codigo
-      c.codigo_de_diagnostico = n.diagnostico
-      c.cantidad = n.cantidad_total
-      c.total = n.total
-
-      resp << c
+      resp << n
     end
 
     return resp
@@ -336,20 +284,7 @@ class InformeBimestral
     })
 
     cq.each do |n|
-      c = CustomQuery.new
-      c = n
-
-      c.class.module_eval { attr_accessor :codigo_de_prestacion}
-      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      c.class.module_eval { attr_accessor :cantidad}
-      c.class.module_eval { attr_accessor :total}
-
-      c.codigo_de_prestacion = n.prestacion_codigo
-      c.codigo_de_diagnostico = n.diagnostico
-      c.cantidad = n.cantidad_total
-      c.total = n.total
-
-      resp << c
+      resp << n
     end
 
     cq = CustomQuery.buscar (
@@ -358,20 +293,7 @@ class InformeBimestral
     })
 
     cq.each do |n|
-      c = CustomQuery.new
-      c = n
-
-      c.class.module_eval { attr_accessor :codigo_de_prestacion}
-      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      c.class.module_eval { attr_accessor :cantidad}
-      c.class.module_eval { attr_accessor :total}
-
-      c.codigo_de_prestacion = n.prestacion_codigo
-      c.codigo_de_diagnostico = n.diagnostico
-      c.cantidad = n.cantidad_total
-      c.total = n.total
-
-      resp << c
+      resp << n
     end
 
     return resp
@@ -457,20 +379,7 @@ class InformeBimestral
     })
 
     cq.each do |n|
-      c = CustomQuery.new
-      c = n
-
-      c.class.module_eval { attr_accessor :codigo_de_prestacion}
-      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      c.class.module_eval { attr_accessor :cantidad}
-      c.class.module_eval { attr_accessor :total}
-
-      c.codigo_de_prestacion = n.prestacion_codigo
-      c.codigo_de_diagnostico = n.diagnostico
-      c.cantidad = n.cantidad_total
-      c.total = n.total
-
-      resp << c
+      resp << n
     end
 
     cq = CustomQuery.buscar (
@@ -479,20 +388,7 @@ class InformeBimestral
     })
 
     cq.each do |n|
-      c = CustomQuery.new
-      c = n
-
-      c.class.module_eval { attr_accessor :codigo_de_prestacion}
-      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      c.class.module_eval { attr_accessor :cantidad}
-      c.class.module_eval { attr_accessor :total}
-
-      c.codigo_de_prestacion = n.prestacion_codigo
-      c.codigo_de_diagnostico = n.diagnostico
-      c.cantidad = n.cantidad_total
-      c.total = n.total
-
-      resp << c
+      resp << n
     end
 
     return resp
@@ -585,20 +481,7 @@ class InformeBimestral
     })
 
     cq.each do |n|
-      c = CustomQuery.new
-      c = n
-
-      c.class.module_eval { attr_accessor :codigo_de_prestacion}
-      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      c.class.module_eval { attr_accessor :cantidad}
-      c.class.module_eval { attr_accessor :total}
-
-      c.codigo_de_prestacion = n.prestacion_codigo
-      c.codigo_de_diagnostico = n.diagnostico
-      c.cantidad = n.cantidad_total
-      c.total = n.total
-
-      resp << c
+      resp << n
     end
 
     cq = CustomQuery.buscar (
@@ -607,20 +490,7 @@ class InformeBimestral
     })
 
     cq.each do |n|
-      c = CustomQuery.new
-      c = n
-
-      c.class.module_eval { attr_accessor :codigo_de_prestacion}
-      c.class.module_eval { attr_accessor :codigo_de_diagnostico}
-      c.class.module_eval { attr_accessor :cantidad}
-      c.class.module_eval { attr_accessor :total}
-
-      c.codigo_de_prestacion = n.prestacion_codigo
-      c.codigo_de_diagnostico = n.diagnostico
-      c.cantidad = n.cantidad_total
-      c.total = n.total
-
-      resp << c
+      resp << n
     end
 
     return resp
@@ -701,7 +571,6 @@ class InformeBimestral
             end #end es un CUIE
           end #end itera CSV
         end #End rescue
-
       end
     end
   end

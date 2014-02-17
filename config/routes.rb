@@ -79,7 +79,7 @@ Nacer::Application.routes.draw do
   resources :departamentos, :except => :destroy
   resources :distritos, :except => :destroy
   resources :informes, :except => :destroy do 
-    post "informe_solicitado", on: :collection, as: :render_informe_default, action: :render_informe
+    get "informe_solicitado", on: :collection, as: :render_informe_default, action: :render_informe
   end
   resources :addendas, :except => :destroy
   resources :addendas_sumar, :except => :destroy

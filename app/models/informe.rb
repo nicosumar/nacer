@@ -92,7 +92,6 @@ class Informe < ActiveRecord::Base
           })
       end
       self.nombres_de_columna = cq.first.nombres_de_columnas
-      
 
       return cq
     else # ruby code
@@ -101,14 +100,58 @@ class Informe < ActiveRecord::Base
           values: valores
         })
 
-      self.nombres_de_columna = (cq.first.instance_variables - [:@attributes, :@relation, :@changed_attributes, 
-                                :@previously_changed, :@attributes_cache, :@association_cache, 
-                                :@aggregation_cache, :@marked_for_destruction, :@destroyed, 
-                                :@readonly, :@new_record]).map { |c| c.to_s.tr('@','').tr('_',' ').capitalize}
+      self.nombres_de_columna = cq.first.nombres_de_columnas
       return cq
     end
-
+    return nil
   end
 
+  def ejecutar_csv
+    #traigo los parametros del reporte y los ordeno para el query
+    valores = []
+    logger
+    parametros.sort.each { |p, v| valores << v} if parametros.present?
+    
+    if self.sql.present?
+
+      #Al ser todos o incluidos o excluidos, busco los codigos, y despues verifico si se incluye o excluye
+      if self.informes_uads.first.incluido == 1
+        cq = CustomQuery.buscar (
+          {
+            esquemas: self.esquemas,
+            sql: self.sql,
+            values: valores
+          })
+      else
+        cq = CustomQuery.buscar (
+          {
+            except: self.esquemas,
+            sql: self.sql,
+            values: valores
+          })
+      end
+      self.nombres_de_columna = cq.first.nombres_de_columnas
+      
+      return CustomQuery.array_a_csv(cq)
+    else # ruby code
+      cq = CustomQuery.buscar({
+          ruby: self.metodo,
+          values: valores
+        })
+
+      self.nombres_de_columna = cq.first.nombres_de_columnas
+      return CustomQuery.array_a_csv(cq)
+    end
+  end
+
+  def self.array_a_csv(arg_custom_query)
+    
+    CSV.generate do |csv|
+      csv << self.nombres_de_columnas
+        arg_custom_query.each do |r|
+          csv << r.attributes.values_at(*self.nombres_de_columnas)
+      end
+    end
+  end
 
 end

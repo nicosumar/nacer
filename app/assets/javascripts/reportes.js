@@ -7,7 +7,12 @@ $(document).ready(function(){
       modal: true,
       buttons: {
         "Buscar": function() {
-        	//poner el codigo para realizar la busqueda (que mande los parametros y ponga el resultado)
+            $('#formulario_filtro').submit();
+            $( this ).dialog( "close" );
+        },
+        "CSV": function() {
+            // cambio el action del form para poder devolver el CSV
+            $('#formulario_filtro').get(0).setAttribute('action', $('#formulario_filtro').get(0).action + ".csv");
             $('#formulario_filtro').submit();
             $( this ).dialog( "close" );
         },

@@ -6,8 +6,19 @@ class InformesController < ApplicationController
 
   #Los renders de informes deben comenzar con "_render_"
   def render_informe
-    @cabecera_informe = Informe.find(params[:reporte][:id])
-    @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
+    
+    #raise "error"
+    respond_to do |format|
+      format.html {
+        @cabecera_informe = Informe.find(params[:reporte][:id])
+        @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
+      }
+      format.csv { 
+        send_data @resultado.to_csv 
+      }
+      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
+    end   
+  
   end
 
   def beneficiarios_activos
@@ -186,6 +197,17 @@ class InformesController < ApplicationController
 
   end
 
+  def show
+    
+    @cabecera_informe = Informe.find(params[:reporte][:id])
+    @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
+
+    respond_to do |format|
+      format.html
+      format.csv { send_data @resultado.to_csv }
+      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
+    end
+  end
 
   def new
     @informe = Informe.new
