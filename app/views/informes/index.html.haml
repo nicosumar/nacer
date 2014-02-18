@@ -30,12 +30,8 @@
                     - if can? :update, Informe
                       |
                       = link_to "Editar Informe", edit_informe_path(rep)
-                      |
-                      = link_to "CSV", controller: 'informes', action: 'render_informe', format: "csv" #:controller => "paises", :action => "index"
                       
 #dialog-form{title: "Opciones de filtro"}
-  =# form_tag  '/informes/informe_solicitado', method: 'get', id: 'formulario_filtro' do
-  =# form_tag ({:controller => "informes", :action => 'render_informe'}, method: 'get', id: 'formulario_filtro') do
   = form_tag({:controller => "informes", :action => "render_informe"}, :method => "get", :id => "formulario_filtro") do
     = content_tag "div", id: "filtros", data: {repor: @reportes} do
       = ""

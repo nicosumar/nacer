@@ -7,14 +7,13 @@ class InformesController < ApplicationController
   #Los renders de informes deben comenzar con "_render_"
   def render_informe
     
-    #raise "error"
+    @cabecera_informe = Informe.find(params[:reporte][:id])
     respond_to do |format|
       format.html {
-        @cabecera_informe = Informe.find(params[:reporte][:id])
         @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
       }
       format.csv { 
-        send_data @resultado.to_csv 
+        send_data @cabecera_informe.ejecutar_csv(params[:reporte][:parametros])
       }
       #format.xls # { send_data @products.to_csv(col_sep: "\t") }
     end   
@@ -161,7 +160,6 @@ class InformesController < ApplicationController
 
   def usuarios_inscripciones
 
-
     @usrinsc = CustomQuery.buscar (
     {
       :except => ["public"],
@@ -212,7 +210,6 @@ class InformesController < ApplicationController
   def new
     @informe = Informe.new
     @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-    @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
     esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
     esquema.id = 0
@@ -224,7 +221,6 @@ class InformesController < ApplicationController
   def edit
     @informe = Informe.find(params[:id])
     @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-    @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
     esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
     esquema.id = 0
@@ -259,7 +255,6 @@ class InformesController < ApplicationController
         redirect_to(:action => 'index')
       else
         @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-        @formatos = ['html']
         @esquemas = UnidadDeAltaDeDatos.all
         esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
         esquema.id = 0
@@ -296,7 +291,6 @@ class InformesController < ApplicationController
         redirect_to(:action => 'index')
       else
         @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-        @formatos = ['html']
         @esquemas = UnidadDeAltaDeDatos.all
         esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
         esquema.id = 0
@@ -321,7 +315,4 @@ class InformesController < ApplicationController
       return
     end
   end
-
-
-
 end

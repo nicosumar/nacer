@@ -4,9 +4,6 @@
       %td{:width => "22%"} Titulo
       %td= f.text_field(:titulo, {style: 'width: 250px'})
     %tr
-      %td Formato de salida
-      %td= f.select :formato, @formatos, {style: 'width: 250px'}
-    %tr
       %td Metodo del controller 
       %td= f.select :nombre_partial, @controller_metodos
     %tr

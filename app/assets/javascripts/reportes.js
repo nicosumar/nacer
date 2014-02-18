@@ -12,9 +12,11 @@ $(document).ready(function(){
         },
         "CSV": function() {
             // cambio el action del form para poder devolver el CSV
+            var accion = $('#formulario_filtro').get(0).action;
             $('#formulario_filtro').get(0).setAttribute('action', $('#formulario_filtro').get(0).action + ".csv");
             $('#formulario_filtro').submit();
             $( this ).dialog( "close" );
+            $('#formulario_filtro').get(0).setAttribute('action', accion);
         },
         Cancelar: function() {
           $( this ).dialog( "close" );
