@@ -46,7 +46,7 @@ class CustomQuery < ActiveRecord::Base
 
 
     if args[:ruby].present?
-      #begin
+      begin
         if args[:values].present?
           return eval( args[:ruby].chomp + "("+args[:values].join(", ")+")" ).each do |c|
             c.codigo = "ruby"
@@ -56,9 +56,9 @@ class CustomQuery < ActiveRecord::Base
             c.codigo = "ruby"
           end
         end
-      #rescue Exception => e
-      #  raise "La clase o metodo ruby no pudo ser evaluada. Detalles: #{e.message}"
-      #end
+      rescue Exception => e
+        raise "La clase o metodo ruby no pudo ser evaluada. Detalles: #{e.message}"
+      end
     end
     
     #Si hay parametros
