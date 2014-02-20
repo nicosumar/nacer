@@ -49,7 +49,8 @@ class Informe < ActiveRecord::Base
             values: valores
           })
       end
-      self.nombres_de_columna = cq.first.nombres_de_columnas
+
+      self.nombres_de_columna = cq.first.nombres_de_columnas if cq.present?
 
       return cq
     else # ruby code
@@ -58,7 +59,7 @@ class Informe < ActiveRecord::Base
           values: valores
         })
 
-      self.nombres_de_columna = cq.first.nombres_de_columnas
+      self.nombres_de_columna = cq.first.nombres_de_columnas if cq.present?
       return cq
     end
     return nil

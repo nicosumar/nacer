@@ -6,4 +6,7 @@
 
 #content-body
   %h2.first-header= @cabecera_informe.titulo
-  = render(:partial => "render_"+@cabecera_informe.nombre_partial, :locals => {resultado: @resultado, informe: @cabecera_informe})
+  - if  @resultado.present?
+    = render(:partial => "render_"+@cabecera_informe.nombre_partial, :locals => {resultado: @resultado, informe: @cabecera_informe})
+  - else
+    %h3 La busqueda no encontro resultados
