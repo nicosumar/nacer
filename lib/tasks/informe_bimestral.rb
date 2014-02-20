@@ -15,7 +15,7 @@ class InformeBimestral
   #  @rutayarchivo = args
   #end
 
-  def self.prestaciones_priorizadas(bimestre)
+  def self.bimestral(arg_bimestre, arg_nomenclador, arg_anio)
     efectores = PrestacionLiquidada.select("distinct (efector_id)").collect {|ef| ef.efector_id}
     res_emb = self.grupo_embarazadas(bimestre, 5)
   end
@@ -61,7 +61,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql = "select 'Embarazadas' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           " from prestaciones_incluidas pi\n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id \n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -77,7 +77,7 @@ class InformeBimestral
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo "
 
-    sql_resto =  "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql_resto =  "select 'Embarazadas' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                       " from prestaciones_incluidas pi\n"+
                       " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id \n"+
                       " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -156,7 +156,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql = "select 'Cero a Cinco' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -172,7 +172,7 @@ class InformeBimestral
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
 
-    sql_resto = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql_resto = "select 'Cero a Cinco' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                   "from prestaciones_incluidas pi \n"+
                   " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                   " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -250,7 +250,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql = "select 'Seis a Nueve' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -266,7 +266,7 @@ class InformeBimestral
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
 
-    sql_resto = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql_resto = "select 'Seis a Nueve' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                 "from prestaciones_incluidas pi \n"+
                 " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                 " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -350,7 +350,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql = "select 'Diez a Diecinueve' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -366,7 +366,7 @@ class InformeBimestral
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
 
-    sql_resto = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql_resto = "select 'Diez a Diecinueve' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                 "from prestaciones_incluidas pi \n"+
                 " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                 " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -454,7 +454,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql = "select 'Veinte a Sesenta y cuatro' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -471,7 +471,7 @@ class InformeBimestral
           "AND a.sexo_id = 1\n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
 
-    sql_resto = "select pi.prestacion_codigo||'-'||pi.prestacion_nombre prestacion_codigo, d.codigo diagnostico, count(*) cantidad_total, round(sum(p.monto),2) total\n"+
+    sql_resto = "select 'Veinte a Sesenta y cuatro' \"Grupo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                 "from prestaciones_incluidas pi \n"+
                 " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                 " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -514,6 +514,35 @@ class InformeBimestral
     end
 
     return resp
+
+  end
+
+  def prestaciones_nacer(arg_bimestre, arg_anio)
+
+    meses = case arg_bimestre
+      when 1 then [1,2].join(", ")
+      when 2 then [3,4].join(", ")
+      when 3 then [5,6].join(", ")
+      when 4 then [7,8].join(", ")
+      when 5 then [9,10].join(", ")
+      when 6 then [11, 12].join(", ")
+      else return false
+    end
+    
+    sql = "select  p.codigo||' - '||p.nombre \"Prestación\", count(m.*) \"Cant. Pagada\", sum(m.monto) \"Total\"\n"+
+          "from migra_prestaciones_liquidadas_nacer m\n"+
+          " join prestaciones p on p.id = m.prestacion_id\n"+
+          "where extract(month from m.fecha_de_la_prestacion )  in (#{meses})\n"+
+          "and extract(year from m.fecha_de_la_prestacion ) =  ?\n"+
+          "group by p.codigo||' - '||p.nombre\n"+
+          "order by p.codigo||' - '||p.nombre"
+
+    cq = CustomQuery.buscar (
+    {
+        sql: sql,
+        values: arg_anio
+    })
+    return cq
 
   end
 

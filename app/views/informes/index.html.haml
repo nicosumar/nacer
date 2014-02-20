@@ -33,5 +33,5 @@
                       
 #dialog-form{title: "Opciones de filtro"}
   = form_tag({:controller => "informes", :action => "render_informe"}, :method => "get", :id => "formulario_filtro") do
-    = content_tag "div", id: "filtros", data: {repor: @reportes} do
+    = content_tag "div", id: "filtros" do
       = ""

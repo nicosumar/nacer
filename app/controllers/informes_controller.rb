@@ -8,6 +8,7 @@ class InformesController < ApplicationController
   def render_informe
     
     @cabecera_informe = Informe.find(params[:reporte][:id])
+
     respond_to do |format|
       format.html {
         @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
@@ -15,7 +16,6 @@ class InformesController < ApplicationController
       format.csv { 
         send_data @cabecera_informe.ejecutar_csv(params[:reporte][:parametros])
       }
-      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
     end   
   
   end

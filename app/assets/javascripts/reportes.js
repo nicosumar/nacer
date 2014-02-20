@@ -39,9 +39,17 @@ $(document).ready(function(){
         $( "#filtros" ).append('<input type="hidden" id="reporte_id" name="reporte[id]" value="'+f.id+'">');
         //Busco los filtros y creo los input y los labels y le pongo valor x defecto
       	$.each(f.informes_filtros, function(indice, ifiltro){
-      		$( "#filtros" ).append('<label for="reporte_parametros'+ifiltro.posicion+'">'+ifiltro.nombre+'</label>  ');
-      		$( "#filtros" ).append('<input id="reporte_parametros_'+ifiltro.posicion+'" name="reporte[parametros]['+ifiltro.posicion+']" value="'+ifiltro.valor_por_defecto+'" type="text" readonly><br>');
-      	//Verifico si agregaron validadores para los inputs
+      		if(ifiltro.informe_filtro_validador_ui.tipo == "LOV")
+          {
+            $( "#filtros" ).append('<label for="reporte_parametros'+ifiltro.posicion+'">'+ifiltro.nombre+'</label>  ');
+            $( "#filtros" ).append('<select id="reporte_parametros_'+ifiltro.posicion+'" name="reporte[parametros]['+ifiltro.posicion+']"></select><br>');
+          }
+          else
+          {
+            $( "#filtros" ).append('<label for="reporte_parametros'+ifiltro.posicion+'">'+ifiltro.nombre+'</label>  ');
+        		$( "#filtros" ).append('<input id="reporte_parametros_'+ifiltro.posicion+'" name="reporte[parametros]['+ifiltro.posicion+']" value="'+ifiltro.valor_por_defecto+'" type="text" readonly><br>');
+          }
+      	  //Verifico si agregaron validadores para los inputs
           switch (ifiltro.informe_filtro_validador_ui.tipo){
             case "datepicker":
               $("input#reporte_parametros_"+ifiltro.posicion).datepicker({  dateFormat: "yy-mm-dd",
@@ -59,6 +67,15 @@ $(document).ready(function(){
             break;
             case "spinner":
               $("input#reporte_parametros_"+ifiltro.posicion).spinner();
+            break;
+            case "LOV":
+              var opciones = ifiltro.valor_por_defecto;
+              for (var i = 0; i <= opciones.length - 1; i+=2) {
+                $("select#reporte_parametros_"+ifiltro.posicion).append($('<option>', { 
+                    value: opciones[i],
+                    text : opciones[i+1]
+                }));
+              };
             break;
           }
         });
