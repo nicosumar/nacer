@@ -349,6 +349,24 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("InformeUad", "Informes·Uads·")
   inflect.irregular("Informe·Uad·", "InformesUads")
 
+  #Vista global de prestaciones brindadas
+  inflect.irregular("vista_global_de_prestacion_brindada", "vista·_global·_de·_prestaciones·_brindadas·")
+  inflect.irregular("vista·_global·_de·_prestacion·_brindada·", "vista_global_de_prestaciones_brindadas")
+  inflect.irregular("VistaGlobalDePrestacionBrindada", "Vista·Global·De·Prestaciones·Brindadas·")
+  inflect.irregular("Vista·Global·De·Prestacion·Brindada·", "VistaGlobalDePrestacionesBrindadas")
+
+  #Vista global de novedades de los afiliados
+  inflect.irregular("vista_global_de_novedad_del_afiliado", "vista·_global·_de·_novedades·_de·_los·_afiliados·")
+  inflect.irregular("vista·_global·_de·_novedad·_del·_afiliado·", "vista_global_de_novedades_de_los_afiliados")
+  inflect.irregular("VistaGlobalDeNovedadDelAfiliado", "Vista·Global·De·Novedades·De·Los·Afiliados·")
+  inflect.irregular("Vista·Global·De·Novedad·Del·Afiliado", "VistaGlobalDeNovedadesDeLosAfiliados")
+
+  # Cantidad de prestaciones por periodo (tasas de uso)
+  inflect.irregular("cantidad_de_prestaciones_por_periodo", "cantidades·_de·_prestaciones·_por·_periodo·")
+  inflect.irregular("cantidad·_de·_prestaciones·_por·_periodo·", "cantidades_de_prestaciones_por_periodo")
+  inflect.irregular("CantidadDePrestacionesPorPeriodo", "Cantidades·De·Prestaciones·Por·Periodo")
+  inflect.irregular("Cantidad·De·Prestaciones·Por·Periodo", "CantidadesDePrestacionesPorPeriodo")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

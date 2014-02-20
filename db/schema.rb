@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131219160919) do
+ActiveRecord::Schema.define(:version => 20140214172851) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -203,6 +203,13 @@ ActiveRecord::Schema.define(:version => 20131219160919) do
 
   add_index "busquedas", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo", :unique => true
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
+
+  create_table "cantidades_de_prestaciones_por_periodo", :force => true do |t|
+    t.integer "prestacion_id",   :null => false
+    t.integer "cantidad_maxima", :null => false
+    t.string  "periodo"
+    t.string  "intervalo"
+  end
 
   create_table "categorias_de_afiliados", :force => true do |t|
     t.string "nombre", :null => false
@@ -613,6 +620,7 @@ ActiveRecord::Schema.define(:version => 20131219160919) do
     t.string   "nombre_partial"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+    t.string   "metodo"
   end
 
   create_table "informes_filtros", :force => true do |t|
@@ -823,6 +831,14 @@ ActiveRecord::Schema.define(:version => 20131219160919) do
 
   add_index "migra_prestaciones", ["numero_fila"], :name => "migra_prestaciones_numero_fila_idx"
 
+  create_table "migra_prestaciones_liquidadas_nacer", :force => true do |t|
+    t.integer "efector_id"
+    t.integer "prestacion_id"
+    t.integer "afiliado_id"
+    t.decimal "monto",                  :precision => 15, :scale => 4
+    t.date    "fecha_de_la_prestacion"
+  end
+
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
     t.datetime "created_at"
@@ -882,7 +898,7 @@ ActiveRecord::Schema.define(:version => 20131219160919) do
     t.integer  "formula_id"
     t.datetime "created_at",                                            :null => false
     t.datetime "updated_at",                                            :null => false
-    t.integer  "rechazar_estado_de_la_prestacion_id",  :default => 6
+    t.integer  "rechazar_estado_de_la_prestacion_id",  :default => 7
     t.integer  "aceptar_estado_de_la_prestacion_id",   :default => 4
     t.integer  "excepcion_estado_de_la_prestacion_id", :default => 4
   end
@@ -1215,6 +1231,19 @@ ActiveRecord::Schema.define(:version => 20131219160919) do
     t.boolean  "valor_bool"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "sirge", :force => true do |t|
+    t.integer  "efector_id"
+    t.date     "fecha_gasto"
+    t.string   "periodo",                  :limit => 7
+    t.string   "numero_comprobante_gasto", :limit => 7
+    t.string   "codigo_gasto",             :limit => 3
+    t.integer  "efector_cesion_id"
+    t.decimal  "monto",                                   :precision => 15, :scale => 4
+    t.string   "concepto",                 :limit => 200
+    t.datetime "created_at",                                                             :null => false
+    t.datetime "updated_at",                                                             :null => false
   end
 
   create_table "subgrupos_de_prestaciones", :force => true do |t|
