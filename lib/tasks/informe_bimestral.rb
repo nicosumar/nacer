@@ -17,6 +17,10 @@ class InformeBimestral
 
   def self.bimestral(arg_grupo, arg_bimestre, arg_nomenclador, arg_anio)
     
+    if arg_bimestre.to_i < 1 and arg_bimestre > 6
+      return []
+    end
+
     case arg_grupo
     when 1 then return self.grupo_embarazadas(arg_bimestre, arg_nomenclador, arg_anio)
     when 2 then return self.grupo_0_a_6(arg_bimestre, arg_nomenclador, arg_anio)
