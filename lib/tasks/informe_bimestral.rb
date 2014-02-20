@@ -15,9 +15,17 @@ class InformeBimestral
   #  @rutayarchivo = args
   #end
 
-  def self.bimestral(arg_bimestre, arg_nomenclador, arg_anio)
-    efectores = PrestacionLiquidada.select("distinct (efector_id)").collect {|ef| ef.efector_id}
-    res_emb = self.grupo_embarazadas(bimestre, 5)
+  def self.bimestral(arg_grupo, arg_bimestre, arg_nomenclador, arg_anio)
+    
+    case arg_grupo
+    when 1 then return self.grupo_embarazadas(arg_bimestre, arg_nomenclador, arg_anio)
+    when 2 then return self.grupo_0_a_6(arg_bimestre, arg_nomenclador, arg_anio)
+    when 3 then return self.grupo_6_a_9(arg_bimestre, arg_nomenclador, arg_anio)
+    when 4 then return self.grupo_10_a_19(arg_bimestre, arg_nomenclador, arg_anio)
+    when 5 then return self.mujeres_20_a_64(arg_bimestre, arg_nomenclador, arg_anio)
+    else return []
+    end
+
   end
 
   def self.grupo_embarazadas(arg_bimestre, arg_nomenclador, arg_anio)
@@ -579,7 +587,8 @@ class InformeBimestral
             # Busco el beneficiario
             row[11] = "0" + row[11]  if row[11].size == 15
             a = Afiliado.where("clave_de_beneficiario = trim('#{row[11]}')")
-            # Busco la prestación
+            # Busco la prestación
+
             row[8] = row[8].split('(').first
             p = Prestacion.where("codigo = trim('#{row[8]}')")
 
@@ -609,7 +618,9 @@ class InformeBimestral
               row[11] = "0" + row[11]  if row[11].size == 15
               a = Afiliado.where("clave_de_beneficiario = trim('#{row[11]}')")
 
-              # Busco la prestación
+              # Busco la prestación
+
+
               row[8] = row[8].split('(').first
               p = Prestacion.where("codigo = trim('#{ row[8] }')")
 
