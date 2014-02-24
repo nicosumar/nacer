@@ -355,6 +355,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("ExpedienteSumar", "Expedientes·Sumar·")
   inflect.irregular("Expediente·Sumar·", "ExpedientesSumar")
 
+  #Tipos de expedientes
+  inflect.irregular("tipo_de_expediente", "tipos·_de·_expedientes·")
+  inflect.irregular("tipo·_de·_expediente·", "tipos_de_expedientes")
+  inflect.irregular("TipoDeExpediente", "Tipos·De·Expedientes·")
+  inflect.irregular("Tipo·De·Expediente·", "TiposDeExpedientes")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

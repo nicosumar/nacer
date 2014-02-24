@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :expedientes_sumar
+
+
   get "documentos_electronicos/index"
   get "capacitaciones/index"
 

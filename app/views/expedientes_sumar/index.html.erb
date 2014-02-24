@@ -1,0 +1,33 @@
+<h1>Listing expedientes_sumar</h1>
+
+<table>
+  <tr>
+    <th>Número</th>
+    <th>Liquidacion sumar</th>
+    <th>Periodo</th>
+    <th>Efector</th>
+    <th>Concepto de facturacion</th>
+    <th>Tipo de expediente</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @expedientes_sumar.each do |expediente_sumar| %>
+  <tr>
+    <td><%= expediente_sumar.numero %></td>
+    <td><%= expediente_sumar.liquidacion_sumar %></td>
+    <td><%= expediente_sumar.periodo %></td>
+    <td><%= expediente_sumar.efector %></td>
+    <td><%= expediente_sumar.concepto_de_facturacion %></td>
+    <td><%= expediente_sumar.tipo_de_expediente %></td>
+    <td><%= link_to 'Show', expediente_sumar %></td>
+    <td><%= link_to 'Edit', edit_expediente_sumar_path(expediente_sumar) %></td>
+    <td><%= link_to 'Destroy', expediente_sumar, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Expediente sumar', new_expediente_sumar_path %>

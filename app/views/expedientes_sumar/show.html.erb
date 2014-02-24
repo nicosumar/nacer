@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Número:</b>
+  <%= @expediente_sumar.numero %>
+</p>
+
+<p>
+  <b>Liquidacion sumar:</b>
+  <%= @expediente_sumar.liquidacion_sumar %>
+</p>
+
+<p>
+  <b>Periodo:</b>
+  <%= @expediente_sumar.periodo %>
+</p>
+
+<p>
+  <b>Efector:</b>
+  <%= @expediente_sumar.efector %>
+</p>
+
+<p>
+  <b>Concepto de facturacion:</b>
+  <%= @expediente_sumar.concepto_de_facturacion %>
+</p>
+
+<p>
+  <b>Tipo de expediente:</b>
+  <%= @expediente_sumar.tipo_de_expediente %>
+</p>
+
+
+<%= link_to 'Edit', edit_expediente_sumar_path(@expediente_sumar) %> |
+<%= link_to 'Back', expedientes_sumar_path %>

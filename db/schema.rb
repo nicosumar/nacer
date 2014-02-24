@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140219152940) do
+ActiveRecord::Schema.define(:version => 20140224152748) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -565,6 +565,15 @@ ActiveRecord::Schema.define(:version => 20140219152940) do
     t.datetime "updated_at",              :null => false
   end
 
+  create_table "expedientes_sumar", :force => true do |t|
+    t.text     "numero"
+    t.integer  "tipo_de_expediente_id"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "expedientes_sumar", ["tipo_de_expediente_id"], :name => "index_expedientes_sumar_on_tipo_de_expediente_id"
+
   create_table "formulas", :force => true do |t|
     t.string   "descripcion"
     t.text     "formula"
@@ -621,7 +630,7 @@ ActiveRecord::Schema.define(:version => 20140219152940) do
     t.integer  "informe_id"
     t.integer  "informe_filtro_validador_ui_id"
     t.string   "nombre"
-    t.string   "valor_por_defecto"
+    t.text     "valor_por_defecto"
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
   end
@@ -1249,6 +1258,14 @@ ActiveRecord::Schema.define(:version => 20140219152940) do
   create_table "tipos_de_documentos", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
+  end
+
+  create_table "tipos_de_expedientes", :force => true do |t|
+    t.text     "nombre"
+    t.text     "codigo"
+    t.text     "nombre_de_secuencia"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
   end
 
   create_table "tipos_de_novedades", :force => true do |t|
