@@ -1,7 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
-  resources :expedientes_sumar
+  resources :expedientes_sumar do
+    get 'generar_caratulas_expedientes_por_liquidacion', as: :generar_caratulas_expedientes_por_liquidacion, action: :generar_caratulas_expedientes_por_liquidacion, on: :member
+  end
 
 
   get "documentos_electronicos/index"
@@ -15,8 +17,8 @@ Nacer::Application.routes.draw do
   resources :grupos_de_efectores_liquidaciones
   resources :liquidaciones_sumar do
     member do
-      post 'procesar_liquidacion', as: :procesar_liquidacion, action: :procesar_liquidacion
-      post 'generar_cuasifacturas', as: :generar_cuasifacturas, action: :generar_cuasifacturas
+      post   'procesar_liquidacion', as: :procesar_liquidacion, action: :procesar_liquidacion
+      post   'generar_cuasifacturas', as: :generar_cuasifacturas, action: :generar_cuasifacturas
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
     end
     collection  do

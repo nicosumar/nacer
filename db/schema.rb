@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140224152748) do
+ActiveRecord::Schema.define(:version => 20140224170959) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -697,10 +697,12 @@ ActiveRecord::Schema.define(:version => 20140224152748) do
     t.integer  "estado_del_proceso_id"
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
+    t.integer  "expediente_sumar_id"
   end
 
   add_index "liquidaciones_informes", ["efector_id"], :name => "liquidaciones_informes_efector_id_idx"
   add_index "liquidaciones_informes", ["estado_del_proceso_id"], :name => "liquidaciones_informes_estado_del_proceso_id_idx"
+  add_index "liquidaciones_informes", ["expediente_sumar_id"], :name => "liquidaciones_informes_expediente_sumar_id_idx"
   add_index "liquidaciones_informes", ["liquidacion_sumar_anexo_administrativo_id"], :name => "liquidaciones_informes_liquidacion_sumar_anexo_administrati_idx"
   add_index "liquidaciones_informes", ["liquidacion_sumar_anexo_medico_id"], :name => "liquidaciones_informes_liquidacion_sumar_anexo_medico_id_idx"
   add_index "liquidaciones_informes", ["liquidacion_sumar_cuasifactura_id"], :name => "liquidaciones_informes_liquidacion_sumar_cuasifactura_id_idx"
@@ -1264,6 +1266,7 @@ ActiveRecord::Schema.define(:version => 20140224152748) do
     t.text     "nombre"
     t.text     "codigo"
     t.text     "nombre_de_secuencia"
+    t.text     "mascara"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
   end

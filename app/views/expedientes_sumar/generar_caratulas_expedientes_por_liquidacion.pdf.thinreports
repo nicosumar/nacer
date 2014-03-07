@@ -1,0 +1,55 @@
+# -*- encoding : utf-8 -*-
+sql_detalle = "select con.concepto, e.numero, ef.nombre, p.periodo, c.numero_cuasifactura\n"+
+              "from liquidaciones_sumar l\n"+
+              " join liquidaciones_informes  li on li.liquidacion_sumar_id = l.id \n"+
+              " join expedientes_sumar e on e.id = li.expediente_sumar_id\n"+
+              " join efectores ef on ef.id = li.efector_id\n"+
+              " join periodos p on p.id = l.periodo_id \n"+
+              " join liquidaciones_sumar_cuasifacturas c on c.id = li.liquidacion_sumar_cuasifactura_id\n"+
+              " join conceptos_de_facturacion con on con.id = l.concepto_de_facturacion_id\n"+
+              "where l.id = ? \n"
+
+cq_detalle = CustomQuery.buscar(
+{
+  sql: sql_detalle,
+  values: @liquidacion_sumar.id
+})
+
+report.use_layout File.join(Rails.root, 'app', 'reports', 'generar_caratulas_expedientes_por_liquidacion.tlf') do |config|
+end
+
+report.start_new_page do |page|
+  impar = true
+  i = 0
+  fila = []
+  cq_detalle.each do |det|
+    #agrego la fila a la lista de detalles
+    if impar
+      fila << ({img_cabecera: File.join(Rails.root, 'app', 'assets','images',"cabecera_expedientes.png"),
+                   efector: det.nombre,
+                   cuasi_consolidado: det.numero_cuasifactura ,
+                   periodo: det.periodo,
+                   expediente: det.numero,
+                   tipo: "Cuasifactura N°:",
+                   concepto: det.concepto
+                 })
+    else #par
+      fila[i].merge!({img_cabecera2: File.join(Rails.root, 'app', 'assets','images',"cabecera_expedientes.png"),
+                           efector2: det.nombre,
+                           cuasi_consolidado2: det.numero_cuasifactura ,
+                           periodo2: det.periodo,
+                           expediente2: det.numero,
+                           tipo2: "Cuasifactura N°:",
+                           concepto2: det.concepto}
+                      )
+    end #end if
+    impar = not(impar)
+    i += 1 if impar
+  end #end detalle each
+
+  fila.each do |f|
+    page.list(:columna1).add_row do |row|
+      row.values f
+    end #end page list
+  end #end each fila
+end
