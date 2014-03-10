@@ -69,6 +69,7 @@ class LiquidacionInforme < ActiveRecord::Base
           sql:  "UPDATE prestaciones_brindadas \n "+
                 "   SET estado_de_la_prestacion_id = p.estado_de_la_prestacion_liquidada_id \n "+
                 "FROM prestaciones_liquidadas p \n "+
+                " JOIN anexos_medicos_prestaciones amp on amp.prestacion_liquidada_id = p.id "
                 "WHERE p.efector_id in (select ef.id \n "+
                 "                                      FROM efectores ef \n "+
                 "                                         JOIN unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
