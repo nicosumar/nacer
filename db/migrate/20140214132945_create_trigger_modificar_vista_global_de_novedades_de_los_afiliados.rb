@@ -45,6 +45,9 @@ class CreateTriggerModificarVistaGlobalDeNovedadesDeLosAfiliados < ActiveRecord:
         EXECUTE PROCEDURE modificar_vista_global_de_novedades_de_los_afiliados();
     "
 
+    execute "
+      UPDATE unidades_de_alta_de_datos SET inscripcion = inscripcion, facturacion = facturacion WHERE id = 2;
+    "
   end
 
   def down

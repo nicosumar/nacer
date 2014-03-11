@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140214172851) do
+ActiveRecord::Schema.define(:version => 20140220160149) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -628,7 +628,7 @@ ActiveRecord::Schema.define(:version => 20140214172851) do
     t.integer  "informe_id"
     t.integer  "informe_filtro_validador_ui_id"
     t.string   "nombre"
-    t.string   "valor_por_defecto"
+    t.text     "valor_por_defecto"
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
   end
@@ -838,6 +838,8 @@ ActiveRecord::Schema.define(:version => 20140214172851) do
     t.decimal "monto",                  :precision => 15, :scale => 4
     t.date    "fecha_de_la_prestacion"
   end
+
+  add_index "migra_prestaciones_liquidadas_nacer", ["fecha_de_la_prestacion"], :name => "migra_prestaciones_liquidadas_nacer_fecha_de_la_prestacion_idx"
 
   create_table "motivos_de_rechazos", :force => true do |t|
     t.string   "nombre"
