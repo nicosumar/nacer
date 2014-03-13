@@ -5,6 +5,7 @@ class Periodo < ActiveRecord::Base
   belongs_to :concepto_de_facturacion
   has_many :liquidaciones_sumar
   has_many :consolidados_sumar
+  has_many :expedientes_sumar
   
   attr_accessible :fecha_cierre, :fecha_recepcion, :periodo, :tipo_periodo_id, :concepto_de_facturacion_id, :fecha_limite_prestaciones
 

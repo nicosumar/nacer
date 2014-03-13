@@ -6,10 +6,10 @@ class LiquidacionInforme < ActiveRecord::Base
   belongs_to :liquidacion_sumar_anexo_medico
   belongs_to :estado_del_proceso
   belongs_to :efector
+  belongs_to :expediente_sumar
   
-  attr_accessible :numero_de_expediente, :observaciones
+  attr_accessible :observaciones
 
-  validates_presence_of :numero_de_expediente
 
   # Genera los informes de liquidacion por cada cuasifactura generada en la liquidacion dada
   def self.generar_informes_de_liquidacion(arg_liquidacion_sumar)

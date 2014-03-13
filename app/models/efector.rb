@@ -145,7 +145,7 @@ class Efector < ActiveRecord::Base
   end
 
   #
-  # Devuelve el consolidado de un periodo dado
+  # Devuelve la cuasifactura de un periodo dado
   #
   # @return [LiquidacionSumarCuasifactura] 
   def cuasifactura_de_periodo(argPeriodo)

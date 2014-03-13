@@ -305,12 +305,13 @@
     ActiveRecord::Base.connection.schema_search_path = "public"
     archivos.each do |ra|
       @rutayarchivo = ra
+      puts "Procesando #{@rutayarchivo}"
       ActiveRecord::Base.transaction do
 
         book = Spreadsheet.open @rutayarchivo
         sheet = book.worksheet 0
         id=0
-        convenio = ConvenioDeGestionSumar.find_by_numero!(sheet.row(34)[5])
+        convenio = ConvenioDeGestionSumar.find_by_numero!(sheet.row(34)[5].upcase)
 
         limites_secciones.each do |seccion, valores|
           if valores[:tipo] == 'p'
