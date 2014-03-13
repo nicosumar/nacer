@@ -1,13 +1,18 @@
 # -*- encoding : utf-8 -*-
-sql_detalle = "select con.concepto, e.numero, ef.nombre, p.periodo, c.numero_cuasifactura\n"+
-              "from liquidaciones_sumar l\n"+
-              " join liquidaciones_informes  li on li.liquidacion_sumar_id = l.id \n"+
-              " join expedientes_sumar e on e.id = li.expediente_sumar_id\n"+
-              " join efectores ef on ef.id = li.efector_id\n"+
-              " join periodos p on p.id = l.periodo_id \n"+
-              " join liquidaciones_sumar_cuasifacturas c on c.id = li.liquidacion_sumar_cuasifactura_id\n"+
-              " join conceptos_de_facturacion con on con.id = l.concepto_de_facturacion_id\n"+
-              "where l.id = ? \n"
+sql_detalle = "select  es.numero numero_de_expediente, e.nombre, \n"+
+              "  (CASE WHEN consolidados.id  is null  THEN 'Cuasifactura N°' ELSE 'Consolidado N°'  END) \"roturlo_cuasi_con\",\n"+
+              "  (CASE WHEN consolidados.id is null  THEN c.numero_cuasifactura ELSE consolidados.numero_de_consolidado END) \"numero\",\n"+
+              "  p.periodo, con.concepto\n"+
+              "from expedientes_sumar es\n"+
+              "  join liquidaciones_sumar l on l.id = es.liquidacion_sumar_id\n"+
+              "  join periodos p on p.id = l.periodo_id\n"+
+              "  join efectores e on e.id = es.efector_id\n"+
+              "  JOIN conceptos_de_facturacion con on con.id = l.concepto_de_facturacion_id \n"+
+              "  LEFT JOIN liquidaciones_sumar_cuasifacturas c on c.liquidacion_sumar_id = l.id  and c.efector_id = e.id\n"+
+              "  LEFT JOIN consolidados_sumar consolidados on consolidados.liquidacion_sumar_id = l.id  and consolidados.efector_id = e.id\n"+
+              "where l.id = ?\n"+
+              "--and e.nombre ilike '%Coordinación Departamental de General Alvear%'\n"+
+              "order by 2,1"
 
 cq_detalle = CustomQuery.buscar(
 {
@@ -27,29 +32,31 @@ report.start_new_page do |page|
     if impar
       fila << ({img_cabecera: File.join(Rails.root, 'app', 'assets','images',"cabecera_expedientes.png"),
                    efector: det.nombre,
-                   cuasi_consolidado: det.numero_cuasifactura ,
+                   cuasi_consolidado: det.numero ,
                    periodo: det.periodo,
-                   expediente: det.numero,
-                   tipo: "Cuasifactura N°:",
+                   expediente: det.numero_de_expediente,
+                   tipo: det.roturlo_cuasi_con,
                    concepto: det.concepto
                  })
     else #par
       fila[i].merge!({img_cabecera2: File.join(Rails.root, 'app', 'assets','images',"cabecera_expedientes.png"),
                            efector2: det.nombre,
-                           cuasi_consolidado2: det.numero_cuasifactura ,
+                           cuasi_consolidado2: det.numero ,
                            periodo2: det.periodo,
-                           expediente2: det.numero,
-                           tipo2: "Cuasifactura N°:",
+                           expediente2: det.numero_de_expediente,
+                           tipo2: det.roturlo_cuasi_con,
                            concepto2: det.concepto}
                       )
     end #end if
     impar = not(impar)
     i += 1 if impar
-  end #end detalle each
 
+  end #end detalle each
+  i= 1
   fila.each do |f|
     page.list(:columna1).add_row do |row|
       row.values f
+      i +=1 
     end #end page list
   end #end each fila
 end

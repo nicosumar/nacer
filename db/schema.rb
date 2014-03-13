@@ -568,8 +568,13 @@ ActiveRecord::Schema.define(:version => 20140224170959) do
   create_table "expedientes_sumar", :force => true do |t|
     t.text     "numero"
     t.integer  "tipo_de_expediente_id"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
+    t.integer  "efector_id"
+    t.integer  "periodo_id"
+    t.integer  "liquidacion_sumar_cuasifactura_id"
+    t.integer  "consolidado_sumar_id"
+    t.integer  "liquidacion_sumar_id"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
   end
 
   add_index "expedientes_sumar", ["tipo_de_expediente_id"], :name => "index_expedientes_sumar_on_tipo_de_expediente_id"

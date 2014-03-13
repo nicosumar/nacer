@@ -3,6 +3,11 @@ class CreateExpedientesSumar < ActiveRecord::Migration
     create_table :expedientes_sumar do |t|
       t.text :numero
       t.references :tipo_de_expediente
+      t.references :efector
+      t.references :periodo
+      t.references :liquidacion_sumar_cuasifactura
+      t.references :consolidado_sumar
+      t.references :liquidacion_sumar
 
       t.timestamps
     end

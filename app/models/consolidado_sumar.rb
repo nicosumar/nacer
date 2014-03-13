@@ -4,6 +4,7 @@ class ConsolidadoSumar < ActiveRecord::Base
   belongs_to :firmante, class_name: "Contacto"
   belongs_to :periodo
   belongs_to :liquidacion_sumar
+  has_one :expediente_sumar
 
   has_many :consolidados_sumar_detalles
   attr_accessible :fecha, :numero_de_consolidado, :efector_id, :firmante_id, :periodo_id, :liquidacion_sumar_id
