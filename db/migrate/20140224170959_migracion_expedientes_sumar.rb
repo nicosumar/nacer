@@ -63,8 +63,9 @@ class MigracionExpedientesSumar < ActiveRecord::Migration
     end
 
     execute <<-SQL
-      ALTER TABLE "public"."liquidaciones_informes"
+      /*ALTER TABLE "public"."liquidaciones_informes"
         DROP COLUMN "numero_de_expediente";
+      */
     SQL
   end
 
