@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :informes_debitos_prestacionales
+
+
   resources :detalles_de_debitos_prestacionales
 
 

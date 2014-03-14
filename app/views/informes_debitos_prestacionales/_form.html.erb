@@ -1,0 +1,41 @@
+<%= form_for(@inform_debito_prestacional) do |f| %>
+  <% if @inform_debito_prestacional.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@inform_debito_prestacional.errors.count, "error") %> prohibited this inform_debito_prestacional from being saved:</h2>
+
+      <ul>
+      <% @inform_debito_prestacional.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :informado_sirge %><br />
+    <%= f.check_box :informado_sirge %>
+  </div>
+  <div class="field">
+    <%= f.label :procesado_para_debito %><br />
+    <%= f.check_box :procesado_para_debito %>
+  </div>
+  <div class="field">
+    <%= f.label :concepto_de_facturacion %><br />
+    <%= f.text_field :concepto_de_facturacion %>
+  </div>
+  <div class="field">
+    <%= f.label :efector %><br />
+    <%= f.text_field :efector %>
+  </div>
+  <div class="field">
+    <%= f.label :tipo_de_debito_prestacional %><br />
+    <%= f.text_field :tipo_de_debito_prestacional %>
+  </div>
+  <div class="field">
+    <%= f.label :estado_del_proceso %><br />
+    <%= f.text_field :estado_del_proceso %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

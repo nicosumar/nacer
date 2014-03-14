@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Informado sirge:</b>
+  <%= @inform_debito_prestacional.informado_sirge %>
+</p>
+
+<p>
+  <b>Procesado para debito:</b>
+  <%= @inform_debito_prestacional.procesado_para_debito %>
+</p>
+
+<p>
+  <b>Concepto de facturacion:</b>
+  <%= @inform_debito_prestacional.concepto_de_facturacion %>
+</p>
+
+<p>
+  <b>Efector:</b>
+  <%= @inform_debito_prestacional.efector %>
+</p>
+
+<p>
+  <b>Tipo de debito prestacional:</b>
+  <%= @inform_debito_prestacional.tipo_de_debito_prestacional %>
+</p>
+
+<p>
+  <b>Estado del proceso:</b>
+  <%= @inform_debito_prestacional.estado_del_proceso %>
+</p>
+
+
+<%= link_to 'Edit', edit_inform_debito_prestacional_path(@inform_debito_prestacional) %> |
+<%= link_to 'Back', informes_debitos_prestacionales_path %>
