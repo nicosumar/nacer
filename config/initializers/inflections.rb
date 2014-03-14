@@ -60,8 +60,9 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("User·Group·User·", "UserGroupsUsers")
   inflect.irregular("ability", "abilities·")
   inflect.irregular("ability·", "abilities")
-
+  
   # Plurales no regulares para clases y objetos
+
   inflect.irregular("convenio_de_gestion", "convenios·_de·_gestion·")
   inflect.irregular("convenio·_de·_gestion·", "convenios_de_gestion")
   inflect.irregular("ConvenioDeGestion", "Convenios·De·Gestion·")
@@ -360,6 +361,19 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("tipo·_de·_expediente·", "tipos_de_expedientes")
   inflect.irregular("TipoDeExpediente", "Tipos·De·Expedientes·")
   inflect.irregular("Tipo·De·Expediente·", "TiposDeExpedientes")
+
+  #Detalles de debitos prestacionales
+  inflect.irregular("detalle_de_debito_prestacional", "detalles·_de·_debitos·_prestacionales·")
+  inflect.irregular("detalle·_de·_debito·_prestacional·", "detalles_de_debitos_prestacionales")
+  inflect.irregular("DetalleDeDebitoPrestacional", "Detalles·De·Debitos·Prestacionales·")
+  inflect.irregular("Detalle·De·Debito·Prestacional·", "DetallesDeDebitosPrestacionales")
+
+  #Tipo de debito prestacional
+  inflect.irregular("tipo_de_debito_prestacional", "tipos·_de·_debitos·_prestacionales·")
+  inflect.irregular("tipo·_de·_debito·_prestacional·", "tipos_de_debitos_prestacionales")
+  inflect.irregular("TipoDeDebitoPrestacional", "Tipos·De·Debitos·Prestacionales·")
+  inflect.irregular("Tipo·De·Debito·Prestacional·", "TiposDeDebitosPrestacionales")
+  
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

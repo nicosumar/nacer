@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140224170959) do
+ActiveRecord::Schema.define(:version => 20140314002421) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -448,6 +448,21 @@ ActiveRecord::Schema.define(:version => 20140224170959) do
     t.string "tipo_de_dependencia"
   end
 
+  create_table "detalles_de_debitos_prestacionales", :force => true do |t|
+    t.date     "fecha_de_debito"
+    t.integer  "prestacion_liquidada_id"
+    t.integer  "motivo_de_rechazo_id"
+    t.boolean  "procesado_para_debito"
+    t.boolean  "informado_sirge"
+    t.text     "observaciones"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+  end
+
+  add_index "detalles_de_debitos_prestacionales", ["motivo_de_rechazo_id"], :name => "detalles_de_debitos_prestacionales_motivo_de_rechazo_id_idx"
+  add_index "detalles_de_debitos_prestacionales", ["prestacion_liquidada_id"], :name => "detalles_de_debitos_prestacionales_prestacion_liquidada_id_idx", :unique => true
+  add_index "detalles_de_debitos_prestacionales", ["prestacion_liquidada_id"], :name => "detalles_de_debitos_prestacionales_prestacion_liquidada_id_key", :unique => true
+
   create_table "diagnosticos", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -542,6 +557,9 @@ ActiveRecord::Schema.define(:version => 20140224170959) do
     t.string   "numero_de_cuenta_secundaria"
     t.string   "denominacion_cuenta_secundaria"
     t.string   "sucursal_cuenta_secundaria"
+    t.string   "categoria_obstetrica"
+    t.string   "categoria_neonatal"
+    t.boolean  "internet",                          :default => false
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -1260,6 +1278,10 @@ ActiveRecord::Schema.define(:version => 20140224170959) do
   create_table "subgrupos_de_prestaciones", :force => true do |t|
     t.integer "grupo_de_prestaciones_id", :null => false
     t.string  "nombre",                   :null => false
+  end
+
+  create_table "tipos_de_debitos_prestacionales", :force => true do |t|
+    t.string "nombre"
   end
 
   create_table "tipos_de_documentos", :force => true do |t|

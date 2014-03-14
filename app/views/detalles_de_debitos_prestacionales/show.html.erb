@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Fecha de debito:</b>
+  <%= @detalle_de_debito_prestacional.fecha_de_debito %>
+</p>
+
+<p>
+  <b>Prestacion liquidada:</b>
+  <%= @detalle_de_debito_prestacional.prestacion_liquidada %>
+</p>
+
+<p>
+  <b>Motivo de rechazo:</b>
+  <%= @detalle_de_debito_prestacional.motivo_de_rechazo %>
+</p>
+
+<p>
+  <b>Informado sirge:</b>
+  <%= @detalle_de_debito_prestacional.informado_sirge %>
+</p>
+
+<p>
+  <b>Observaciones:</b>
+  <%= @detalle_de_debito_prestacional.observaciones %>
+</p>
+
+
+<%= link_to 'Edit', edit_detalle_de_debito_prestacional_path(@detalle_de_debito_prestacional) %> |
+<%= link_to 'Back', detalles_de_debitos_prestacionales_path %>

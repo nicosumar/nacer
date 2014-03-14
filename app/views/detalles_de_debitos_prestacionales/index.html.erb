@@ -1,0 +1,31 @@
+<h1>Listing detalles_de_debitos_prestacionales</h1>
+
+<table>
+  <tr>
+    <th>Fecha de debito</th>
+    <th>Prestacion liquidada</th>
+    <th>Motivo de rechazo</th>
+    <th>Informado sirge</th>
+    <th>Observaciones</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @detalles_de_debitos_prestacionales.each do |detalle_de_debito_prestacional| %>
+  <tr>
+    <td><%= detalle_de_debito_prestacional.fecha_de_debito %></td>
+    <td><%= detalle_de_debito_prestacional.prestacion_liquidada %></td>
+    <td><%= detalle_de_debito_prestacional.motivo_de_rechazo %></td>
+    <td><%= detalle_de_debito_prestacional.informado_sirge %></td>
+    <td><%= detalle_de_debito_prestacional.observaciones %></td>
+    <td><%= link_to 'Show', detalle_de_debito_prestacional %></td>
+    <td><%= link_to 'Edit', edit_detalle_de_debito_prestacional_path(detalle_de_debito_prestacional) %></td>
+    <td><%= link_to 'Destroy', detalle_de_debito_prestacional, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Detalle de debito prestacional', new_detalle_de_debito_prestacional_path %>
