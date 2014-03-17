@@ -6,23 +6,23 @@ class InformesController < ApplicationController
 
   #Los renders de informes deben comenzar con "_render_"
   def render_informe
-    
+
     @cabecera_informe = Informe.find(params[:reporte][:id])
 
     respond_to do |format|
       format.html {
         @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
       }
-      format.csv { 
+      format.csv {
         send_data @cabecera_informe.ejecutar_csv(params[:reporte][:parametros])
       }
-    end   
-  
+    end
+
   end
 
   def beneficiarios_activos
     # Verificar los permisos del usuario
-    if not current_user.in_group?(:coordinacion)
+    if not current_user.in_group?([:coordinacion, :planificacion, :comunicacion])
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -67,7 +67,7 @@ class InformesController < ApplicationController
 
   def tablero_de_comandos_alto_impacto
     # Verificar los permisos del usuario
-    if not current_user.in_group?(:coordinacion)
+    if not current_user.in_group?([:coordinacion, :planificacion, :comunicacion])
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -196,7 +196,7 @@ class InformesController < ApplicationController
   end
 
   def show
-    
+
     @cabecera_informe = Informe.find(params[:reporte][:id])
     @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
 
