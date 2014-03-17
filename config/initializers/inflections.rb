@@ -373,6 +373,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("tipo·_de·_debito·_prestacional·", "tipos_de_debitos_prestacionales")
   inflect.irregular("TipoDeDebitoPrestacional", "Tipos·De·Debitos·Prestacionales·")
   inflect.irregular("Tipo·De·Debito·Prestacional·", "TiposDeDebitosPrestacionales")
+
+  #Informes debitos prestacionales
+  inflect.irregular("informe_debito_prestacional", "informes·_debitos·_prestacionales·")
+  inflect.irregular("informe·_debito·_prestacional·", "informes_debitos_prestacionales")
+  inflect.irregular("InformeDebitoPrestacionales", "Informes·Debitos·Prestacionales·")
+  inflect.irregular("Informe·Debito·Prestacionales·", "InformesDebitosPrestacionales")
   
 
   # Plurales para verbos y otros

@@ -3,6 +3,7 @@ class ConceptoDeFacturacion < ActiveRecord::Base
 
   has_many :prestaciones, :inverse_of => :concepto_de_facturacion
   has_many :periodos, :inverse_of => :concepto_de_facturacion
+  has_many :informes_debitos_prestacionales
 
   attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo
 

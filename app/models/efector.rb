@@ -39,6 +39,8 @@ class Efector < ActiveRecord::Base
   has_many :cuasifacturas, class_name: "LiquidacionSumarCuasifactura"
   has_many :consolidados_sumar
   has_one  :unidad_de_alta_de_datos_administrada, class_name: "UnidadDeAltaDeDatos"
+  #Asociaciones referentes a informes de debitos
+  has_many :informes_debitos_prestacionales
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   # default_scope where("integrante = ?", true)
