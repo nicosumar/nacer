@@ -1294,7 +1294,458 @@ CantidadDePrestacionesPorPeriodo.create!(
     :prestacion_id => prestacion.id,
     :cantidad_maxima => 2,
     :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Control en niños y niñas de 6 a 9 años").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
     :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 494, :codigo => "CTC009", :nombre => "Control de salud individual para población indígena en terreno").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 495, :codigo => "CTC010", :nombre => "Control odontológico").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 496, :codigo => "CTC011", :nombre => "Control oftalmológico").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 497, :codigo => "CAW003", :nombre => "Búsqueda activa de niñas y niños con abandono de controles por agente sanitario o personal de salud").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 498, :codigo => "CAW006", :nombre => "Consulta para confirmación diagnóstica en población indígena con riesgo detectado en terreno").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 505, :codigo => "PRP026", :nombre => "Inactivación de caries").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 2,
+    :periodo => "1.year",
+    :intervalo => "1.week"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "PRP025", :nombre => "Barniz fluorado de surcos").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 2,
+    :periodo => "1.year",
+    :intervalo => "1.week"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "PRP024", :nombre => "Sellado de surcos").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 2,
+    :periodo => "1.year",
+    :intervalo => "1.week"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Anemia leve y moderada (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Anemia leve y moderada (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Asma bronquial (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 511, :codigo => "CTC012", :nombre => "Asma bronquial (urgencia)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 2,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 512, :codigo => "CTC001", :nombre => "Consulta diagnóstica y de seguimiento de leucemia (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 513, :codigo => "CTC002", :nombre => "Consulta diagnóstica y de seguimiento de leucemia (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 5,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 514, :codigo => "CTC001", :nombre => "Consulta diagnóstica y de seguimiento de linfoma (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 515, :codigo => "CTC002", :nombre => "Consulta diagnóstica y de seguimiento de linfoma (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 5,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Consulta de obesidad (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Consulta de obesidad (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Consulta de sobrepeso (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Consulta de sobrepeso (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "NTN002", :nombre => "Notificación de inicio de tratamiento en tiempo oportuno (leucemia/linfoma)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Examen periódico de salud del adolescente").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 522, :codigo => "CTC009", :nombre => "Control de salud individual para población indígena en terreno").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 523, :codigo => "CTC008", :nombre => "Control ginecológico").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC010", :nombre => "Consulta odontológica").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 525, :codigo => "CTC011", :nombre => "Control oftalmológico").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 532, :codigo => "COT018", :nombre => "Consejería post-aborto").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "COT016", :nombre => "Consejería en salud sexual (en terreno)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "COT015", :nombre => "Consejería en salud sexual para adolescentes").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CAW005", :nombre => "Búsqueda activa de adolescentes para valoración integral").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CAW004", :nombre => "Búsqueda activa de embarazadas adolescentes por agente sanitario o personal de salud").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 537, :codigo => "CAW006", :nombre => "Consulta para confirmación diagnóstica en población indígena con riesgo detectado en terreno").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Anemia leve y moderada en mujeres (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Anemia leve y moderada en mujeres (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 540, :codigo => "CTC012", :nombre => "Asma bronquial (urgencia)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 541, :codigo => "CTC001", :nombre => "Asma bronquial (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 542, :codigo => "CTC002", :nombre => "Asma bronquial (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC012", :nombre => "Consumo episódico excesivo de alcohol y/u otras sustancias psicoactivas (urgencia/consultorio externo)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 2,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC012", :nombre => "Intento de suicidio (urgencia)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 2,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 545, :codigo => "CTC012", :nombre => "Víctima de violencia sexual (urgencia)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 2,
+    :periodo => "1.year",
+    :intervalo => "1.month"
   }
 )
 prestacion.metodos_de_validacion << mv_cantidad
