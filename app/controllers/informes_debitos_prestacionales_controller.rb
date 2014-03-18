@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class InformesDebitosPrestacionalesController < ApplicationController
   # GET /informes_debitos_prestacionales
   def index
@@ -12,14 +13,12 @@ class InformesDebitosPrestacionalesController < ApplicationController
   end
 
   # GET /informes_debitos_prestacionales/new
-  # GET /informes_debitos_prestacionales/new.json
   def new
-    @inform_debito_prestacional = InformeDebitoPrestacional.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @inform_debito_prestacional }
-    end
+    @informe_debito_prestacional = InformeDebitoPrestacional.new
+    @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+    @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+    @tipos_de_debitos = TipoDeDebitoPrestacional.all.collect {|td| [td.nombre, td.id]}
+    @estados_de_los_procesos = EstadoDelProceso.all.collect {|ep| [ep.nombre, ep.id]}
   end
 
   # GET /informes_debitos_prestacionales/1/edit

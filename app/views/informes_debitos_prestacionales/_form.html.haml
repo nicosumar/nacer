@@ -1,0 +1,12 @@
+= form_for(@informe_debito_prestacional) do |f|
+  .field
+    = f.label "Efector"
+    = f.select :efector_id, @efectores, {},{class:'multi_select', }
+  .field
+    = f.label "Concepto de facturación"
+    = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion
+  .field
+    = f.label :tipo_de_debito_prestacional
+    = f.select :tipo_de_debito_prestacional_id, @tipos_de_debitos
+  .actions
+    = f.submit

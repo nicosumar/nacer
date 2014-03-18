@@ -38,7 +38,7 @@ class LiquidacionSumar < ActiveRecord::Base
 
     #Traigo Grupo de efectores
     efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
-    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
+    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores)).uniq
     vigencia_perstaciones = self.parametro_liquidacion_sumar.dias_de_prestacion
     fecha_de_recepcion = self.periodo.fecha_recepcion.to_s
     fecha_limite_prestaciones = self.periodo.fecha_limite_prestaciones.to_s
@@ -549,7 +549,8 @@ class LiquidacionSumar < ActiveRecord::Base
         logger.warn ("Consolidados de efectores NO generados")
       end
 
-      # 5) Genero los expedientes de la liquidacion
+      # 5) Genero los expedientes de la liquidacion
+
       if ExpedienteSumar.generar_expedientes_desde_liquidacion(self)
         logger.warn ("Expedientes Generados")
       else

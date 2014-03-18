@@ -1,0 +1,8 @@
+#content-header
+  %h1 Nuevo informe de debito
+  #action-links
+    = link_to '<< Volver al listado', informes_debitos_prestacionales_path
+
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @informe_debito_prestacional }
+  = render 'form'

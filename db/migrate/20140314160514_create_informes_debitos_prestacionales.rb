@@ -16,7 +16,10 @@ class CreateInformesDebitosPrestacionales < ActiveRecord::Migration
         ADD FOREIGN KEY ("concepto_de_facturacion_id") REFERENCES "public"."conceptos_de_facturacion" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION,
         ADD FOREIGN KEY ("efector_id") REFERENCES "public"."efectores" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION,
         ADD FOREIGN KEY ("tipo_de_debito_prestacional_id") REFERENCES "public"."tipos_de_debitos_prestacionales" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION,
-        ADD FOREIGN KEY ("estado_del_proceso_id") REFERENCES "public"."estados_de_los_procesos" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
+        ADD FOREIGN KEY ("estado_del_proceso_id") REFERENCES "public"."estados_de_los_procesos" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION,
+        ALTER COLUMN "informado_sirge" SET DEFAULT false,
+        ALTER COLUMN "procesado_para_debito" SET DEFAULT false,
+        ALTER COLUMN "estado_del_proceso_id" SET DEFAULT 1;
 
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("concepto_de_facturacion_id"  );
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("efector_id"  );

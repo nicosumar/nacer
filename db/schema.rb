@@ -452,6 +452,7 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
     t.date     "fecha_de_debito"
     t.integer  "prestacion_liquidada_id"
     t.integer  "motivo_de_rechazo_id"
+    t.integer  "afiliado_id"
     t.boolean  "procesado_para_debito"
     t.boolean  "informado_sirge"
     t.text     "observaciones"
@@ -460,6 +461,7 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
     t.integer  "tipo_de_debito_prestacional_id"
   end
 
+  add_index "detalles_de_debitos_prestacionales", ["afiliado_id"], :name => "detalles_de_debitos_prestacionales_afiliado_id_idx"
   add_index "detalles_de_debitos_prestacionales", ["motivo_de_rechazo_id"], :name => "detalles_de_debitos_prestacionales_motivo_de_rechazo_id_idx"
   add_index "detalles_de_debitos_prestacionales", ["prestacion_liquidada_id"], :name => "detalles_de_debitos_prestacionales_prestacion_liquidada_id_idx", :unique => true
   add_index "detalles_de_debitos_prestacionales", ["prestacion_liquidada_id"], :name => "detalles_de_debitos_prestacionales_prestacion_liquidada_id_key", :unique => true
