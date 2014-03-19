@@ -1,13 +1,15 @@
 # -*- encoding : utf-8 -*-
 class InformesDebitosPrestacionalesController < ApplicationController
+  before_filter :authenticate_user!
+  before_filter :verificar_lectura
+  before_filter :verificar_creacion, only: [:create, :new]
+
   # GET /informes_debitos_prestacionales
   def index
     @informes_debitos_prestacionales = InformeDebitoPrestacional.includes(:concepto_de_facturacion, :efector, :estado_del_proceso).all
-
   end
 
   # GET /informes_debitos_prestacionales/1
-  # GET /informes_debitos_prestacionales/1.json
   def show
     @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
   end
@@ -18,43 +20,39 @@ class InformesDebitosPrestacionalesController < ApplicationController
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
     @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
     @tipos_de_debitos = TipoDeDebitoPrestacional.all.collect {|td| [td.nombre, td.id]}
-    @estados_de_los_procesos = EstadoDelProceso.all.collect {|ep| [ep.nombre, ep.id]}
   end
 
   # GET /informes_debitos_prestacionales/1/edit
   def edit
-    @inform_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
+    @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
+    @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+    @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+    @tipos_de_debitos = TipoDeDebitoPrestacional.all.collect {|td| [td.nombre, td.id]}
   end
 
   # POST /informes_debitos_prestacionales
   # POST /informes_debitos_prestacionales.json
   def create
-    @inform_debito_prestacional = InformeDebitoPrestacional.new(params[:inform_debito_prestacional])
+    @informe_debito_prestacional = InformeDebitoPrestacional.new(params[:informe_debito_prestacional])
 
-    respond_to do |format|
-      if @inform_debito_prestacional.save
-        format.html { redirect_to @inform_debito_prestacional, notice: 'Informe debito prestacional was successfully created.' }
-        format.json { render json: @inform_debito_prestacional, status: :created, location: @inform_debito_prestacional }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @inform_debito_prestacional.errors, status: :unprocessable_entity }
-      end
+    if @informe_debito_prestacional.save
+      redirect_to @informe_debito_prestacional, :flash => { :tipo => :ok, :titulo => "Se creó el informe N° #{@informe_debito_prestacional.id}" }
+    else
+      @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
+      @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+      @tipos_de_debitos = TipoDeDebitoPrestacional.all.collect {|td| [td.nombre, td.id]}
+      render action: "new" 
     end
   end
 
   # PUT /informes_debitos_prestacionales/1
-  # PUT /informes_debitos_prestacionales/1.json
   def update
-    @inform_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
+    @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
 
-    respond_to do |format|
-      if @inform_debito_prestacional.update_attributes(params[:inform_debito_prestacional])
-        format.html { redirect_to @inform_debito_prestacional, notice: 'Informe debito prestacional was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @inform_debito_prestacional.errors, status: :unprocessable_entity }
-      end
+    if @informe_debito_prestacional.update_attributes(params[:informe_debito_prestacional])
+      redirect_to @informe_debito_prestacional, :flash => { :tipo => :ok, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} se actualizó correctamente" }
+    else
+      render action: "edit" 
     end
   end
 
@@ -69,4 +67,19 @@ class InformesDebitosPrestacionalesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  private
+
+  def verificar_lectura
+    if cannot? :read, LiquidacionSumar
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    end
+  end
+
+  def verificar_creacion
+    if cannot? :create, LiquidacionSumar
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    end
+  end
+
 end

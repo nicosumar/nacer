@@ -16,9 +16,6 @@
       %th Estado del proceso
       %th Procesado para debito
       %th Informado sirge
-      %th
-      %th
-      %th
     - @informes_debitos_prestacionales.each do |informe_debitos_prestacionales|
       %tr.clickable{ :onclick => "location.href=\'#{informe_debito_prestacional_path(informe_debitos_prestacionales)}\'", :title => "Modificar las autorizaciones de esta cuenta" }
         %td= informe_debitos_prestacionales.id
@@ -26,8 +23,6 @@
         %td= informe_debitos_prestacionales.efector.nombre
         %td= informe_debitos_prestacionales.tipo_de_debito_prestacional.nombre
         %td= informe_debitos_prestacionales.estado_del_proceso.nombre
-        %td= informe_debitos_prestacionales.procesado_para_debito
-        %td= informe_debitos_prestacionales.informado_sirge
-        %td= link_to 'Ver', informe_debito_prestacional_path(informe_debitos_prestacionales)
-        %td= link_to 'Editar', edit_informe_debito_prestacional_path(informe_debitos_prestacionales)
+        %td= informe_debitos_prestacionales.procesado_para_debito ? 'Si' : 'No'
+        %td= informe_debitos_prestacionales.informado_sirge ? 'Si' : 'No'
 %br/

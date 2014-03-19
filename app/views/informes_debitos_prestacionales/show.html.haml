@@ -1,0 +1,40 @@
+#content-header
+  %h1 Informes de debitos prestacionales - Detalle
+  #action-links
+    - if can? :read, InformeDebitoPrestacional
+      = link_to '<< Volver al listado', informes_debitos_prestacionales_path
+    - if can? :update, InformeDebitoPrestacional
+      = link_to 'Editar', edit_informe_debito_prestacional_path(@informe_debito_prestacional)
+
+= render :partial => "shared/info", :locals => { :registro => @informe_debito_prestacional }
+
+#content-body
+  %div.field_content 
+    %span.field_name Efector:
+    %span.field_value= @informe_debito_prestacional.efector.nombre
+
+  %div.field_content 
+    %span.field_name Concepto de facturación:
+    %span.field_value= @informe_debito_prestacional.concepto_de_facturacion.concepto
+  
+  %div.field_content 
+    %span.field_name Tipo de débito prestacional:
+    %span.field_value= @informe_debito_prestacional.tipo_de_debito_prestacional.nombre
+  
+  %div.field_content 
+    %span.field_name Estado del proceso:
+    %span.field_value= @informe_debito_prestacional.estado_del_proceso.nombre
+
+  %div.field_content
+    %span.field_name Informado SIRGE:
+    %span.field_value=  @informe_debito_prestacional.informado_sirge ? 'Si' : 'No'
+
+  %div.field_content 
+    %span.field_name Procesado para débito:
+    %span.field_value= @informe_debito_prestacional.procesado_para_debito ? 'Si' : 'No'
+  
+  
+
+
+
+
