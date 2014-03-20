@@ -428,7 +428,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         JOIN tipos_de_documentos td ON td.id = a.tipo_de_documento_id
         JOIN sexos s ON s.id = a.sexo_id
       WHERE
-        pb.prestacion_id IN (465, 502)
+        pb.prestacion_id IN (465, 502, 765)
         AND (a.fecha_de_nacimiento + '7 years'::interval)::date BETWEEN '2013-09-01' AND '2013-12-31'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11)
 
