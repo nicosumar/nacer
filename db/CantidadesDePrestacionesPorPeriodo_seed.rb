@@ -1745,7 +1745,480 @@ CantidadDePrestacionesPorPeriodo.create!(
     :prestacion_id => prestacion.id,
     :cantidad_maxima => 2,
     :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 546, :codigo => "CTC001", :nombre => "Consulta diagnóstica y de seguimiento de leucemia (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 547, :codigo => "CTC002", :nombre => "Consulta diagnóstica y de seguimiento de leucemia (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 5,
+    :periodo => "1.year",
     :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 548, :codigo => "CTC001", :nombre => "Consulta diagnóstica y de seguimiento de linfoma (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 549, :codigo => "CTC002", :nombre => "Consulta diagnóstica y de seguimiento de linfoma (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 5,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC003", :nombre => "Consulta de diagnóstico temprano y confidencial de embarazo en adolescente").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Seguimiento por consumo episódico excesivo de alcohol y/u otras sustancias psicoactivas (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Seguimiento por consumo episódico excesivo de alcohol y/u otras sustancias psicoactivas (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Seguimiento por intento de suicidio").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Consulta por obesidad (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Consulta por obesidad (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Consulta por sobrepeso (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Consulta por sobrepeso (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "PRP003", :nombre => "Colocación de DIU").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "NTN002", :nombre => "Notificación de inicio de tratamiento en tiempo oportuno (linfoma/leucemia)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Examen periódico de salud").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 561, :codigo => "CTC009", :nombre => "Control de salud individual para población indígena en terreno").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 562, :codigo => "CTC008", :nombre => "Control ginecológico").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 563, :codigo => "CTC010", :nombre => "Control odontológico").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC004", :nombre => "Control preconcepcional (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC013", :nombre => "Control preconcepcional (seguimiento)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 4,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 569, :codigo => "COT018", :nombre => "Consejería post-aborto").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "COT020", :nombre => "Consejería en salud sexual y procreación responsable").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:id => 571, :codigo => "CAW006", :nombre => "Consulta para confirmación diagnóstica en población indígena con riesgo detectado en terreno").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "3.months"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Anemia leve y moderada en mujeres de 20 a 49 años (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Anemia leve y moderada en mujeres de 20 a 49 años (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC012", :nombre => "Víctima de violencia sexual (urgencia)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 2,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Consulta diagnóstica y de seguimiento de cáncer cérvico-uterino (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Consulta diagnóstica y de seguimiento de cáncer cérvico-uterino (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC001", :nombre => "Consulta diagnóstica y de seguimiento de cáncer de mama (inicial)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "CTC002", :nombre => "Consulta diagnóstica y de seguimiento de cáncer de mama (ulterior)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 3,
+    :periodo => "1.year",
+    :intervalo => "1.month"
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "PRP007", :nombre => "Biopsia para las mujeres con mamografía BIRADS 4 y 5 (cáncer de mama)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "PRP002", :nombre => "Colposcopía de lesión en cuello uterino, realizada por especialista en ASC-H, H-SIL, cáncer (CA cérvico-uterino)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "PRP007", :nombre => "Biopsia de lesión en cuello uterino, realizada por especialista en ASC-H, H-SIL, cáncer (CA cérvico-uterino)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "PRP018", :nombre => "Toma de muestra citológica en mujeres de 25 a 64 años (tamizaje de CA cérvico-uterino)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "IGR014", :nombre => "Mamografía bilateral, craneocaudal y oblicua, con proyección axilar en mujeres mayores de 49 años").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "IGR015", :nombre => "Mamografía, variedad magnificada").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "APA002", :nombre => "Anatomía patológica de biopsia (CA de mama)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "APA002", :nombre => "Diagnóstico por biopsia en laboratorio de anatomía patológica, para mujeres con citología ASC-H, H-SIL, cáncer (CA cérvico-uterino)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "APA001", :nombre => "Lectura de muestra tomada en mujeres de 25 a 64 años, en laboratorio de anatomía patológica / citología, con diagnóstico firmado por anátomo patólogo matriculado (tamizaje de CA cérvico-uterino)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "NTN001", :nombre => "Notificación de caso positivo al responsable del servicio donde se realizó la toma de muestra para PAP (CA cérvico-uterino)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "NTN003", :nombre => "Notificación de caso positivo al responsable del servicio donde se realizó la toma de muestra para biopsia (CA cérvico-uterino)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "NTN002", :nombre => "Notificación de inicio de tratamiento en tiempo oportuno ASC-H, H-SIL, cáncer (CA cérvico-uterino)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
+  }
+)
+prestacion.metodos_de_validacion << mv_cantidad
+
+prestacion = Prestacion.where(:codigo => "NTN002", :nombre => "Notificación de inicio de tratamiento en tiempo oportuno (CA de mama)").first
+CantidadDePrestacionesPorPeriodo.create!(
+  {
+    :prestacion_id => prestacion.id,
+    :cantidad_maxima => 1,
+    :periodo => "1.year",
+    :intervalo => nil
   }
 )
 prestacion.metodos_de_validacion << mv_cantidad
