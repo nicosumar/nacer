@@ -58,6 +58,13 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   #
+  # self.del_beneficiario
+  # Devuelve los registros filtrados de acuerdo con la clave de beneficiario pasada como parámetro
+  def self.del_beneficiario(clave_de_beneficiario)
+    where(:clave_de_beneficiario => clave_de_beneficiario)
+  end
+
+  #
   # pendiente?
   # Indica si la prestación brindada está pendiente (aún no ha sido facturada ni anulada).
   def pendiente?
@@ -343,6 +350,20 @@ class PrestacionBrindada < ActiveRecord::Base
     end
 
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 2) < 1
+  end
+
+  def de_un_anio_o_mas?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 0) >= 1
   end
 
   def mayor_de_53_meses?

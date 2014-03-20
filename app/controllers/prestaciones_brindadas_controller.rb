@@ -14,42 +14,72 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Preparar los objetos necesarios para la vista
-    @estados_de_las_prestaciones =
-      [["En cualquier estado", nil]] +
-      EstadoDeLaPrestacion.find(:all, :order => :id).collect{ |e| ["En estado '" + e.nombre + "'", e.id] }
+    # Verificar si se solicitó el historial de un beneficiario en particular o todas las prestaciones registradas en esta UAD
+    if params[:clave_de_beneficiario].present?
+      # Obtener el afiliado o la novedad asociadas a la prestación
+      @beneficiario =
+        NovedadDelAfiliado.where(
+          :clave_de_beneficiario => params[:clave_de_beneficiario],
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+          :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+        ).first
+      if not @beneficiario
+        @beneficiario = Afiliado.find_by_clave_de_beneficiario(params[:clave_de_beneficiario])
+      end
 
-    # Verificar si hay un parámetro para filtrar las novedades
-    if params[:estado_de_la_prestacion_id].blank?
-      # No hay filtro, devolver todas las prestaciones brindadas
-      @prestaciones_brindadas =
-        PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico],
-          :order => "updated_at DESC"
-        )
-      @estado_de_la_prestacion_id = nil
-      @descripcion_del_estado = 'registradas'
-    else
-      @estado_de_la_prestacion_id = params[:estado_de_la_prestacion_id].to_i
-      # Verificar que el parámetro sea un estado válido
-      if @estado_de_la_prestacion_id && !@estados_de_las_prestaciones.collect{|i| i[1]}.member?(@estado_de_la_prestacion_id)
-        redirect_to(root_url,
-          :flash => { :tipo => :error, :titulo => "La petición no es válida",
-           :mensaje => "Se informará al administrador del sistema sobre este incidente."
+      if @beneficiario.nil?
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
           }
         )
         return
       end
-      @descripcion_del_estado = EstadoDeLaPrestacion.find(@estado_de_la_prestacion_id).nombre
 
-      # Obtener las novedades filtradas de acuerdo con el parámetro
+      # Obtener las prestaciones filtradas para esta clave de beneficiario
       @prestaciones_brindadas =
-        PrestacionBrindada.con_estado(@estado_de_la_prestacion_id).paginate(:page => params[:page], :per_page => 20,
-          :include => [:prestacion, :diagnostico], :order => "updated_at DESC"
+        PrestacionBrindada.del_beneficiario(@beneficiario.clave_de_beneficiario).paginate(:page => params[:page], :per_page => 20,
+          :include => [:prestacion, :diagnostico], :order => "fecha_de_la_prestacion DESC"
         )
+    else
+      # Preparar los objetos necesarios para la vista
+      @estados_de_las_prestaciones =
+        [["En cualquier estado", nil]] +
+        EstadoDeLaPrestacion.find(:all, :order => :id).collect{ |e| ["En estado '" + e.nombre + "'", e.id] }
 
-      @mostrar_efector = (UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.size > 1)
+      # Verificar si hay un parámetro para filtrar las novedades
+      if params[:estado_de_la_prestacion_id].blank?
+        # No hay filtro, devolver todas las prestaciones brindadas
+        @prestaciones_brindadas =
+          PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico],
+            :order => "updated_at DESC"
+          )
+        @estado_de_la_prestacion_id = nil
+        @descripcion_del_estado = 'registradas'
+      else
+        @estado_de_la_prestacion_id = params[:estado_de_la_prestacion_id].to_i
+        # Verificar que el parámetro sea un estado válido
+        if @estado_de_la_prestacion_id && !@estados_de_las_prestaciones.collect{|i| i[1]}.member?(@estado_de_la_prestacion_id)
+          redirect_to(root_url,
+            :flash => { :tipo => :error, :titulo => "La petición no es válida",
+             :mensaje => "Se informará al administrador del sistema sobre este incidente."
+            }
+          )
+          return
+        end
+        @descripcion_del_estado = EstadoDeLaPrestacion.find(@estado_de_la_prestacion_id).nombre
+
+        # Obtener las prestaciones filtradas de acuerdo con el parámetro
+        @prestaciones_brindadas =
+          PrestacionBrindada.con_estado(@estado_de_la_prestacion_id).paginate(:page => params[:page], :per_page => 20,
+            :include => [:prestacion, :diagnostico], :order => "updated_at DESC"
+          )
+      end
     end
 
+    # Si la UAD centraliza datos de más de un efector, mostrar la columna 'Efector' en la vista
+    @mostrar_efector = (UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).efectores.size > 1)
   end
 
   # GET /prestaciones_brindadas/:id

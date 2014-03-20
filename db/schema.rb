@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140224170959) do
+ActiveRecord::Schema.define(:version => 20140320134352) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -542,6 +542,9 @@ ActiveRecord::Schema.define(:version => 20140224170959) do
     t.string   "numero_de_cuenta_secundaria"
     t.string   "denominacion_cuenta_secundaria"
     t.string   "sucursal_cuenta_secundaria"
+    t.string   "categoria_obstetrica"
+    t.string   "categoria_neonatal"
+    t.boolean  "internet",                          :default => false
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -1359,7 +1362,7 @@ ActiveRecord::Schema.define(:version => 20140224170959) do
     t.string   "apellido",                                  :null => false
     t.date     "fecha_de_nacimiento"
     t.integer  "sexo_id"
-    t.text     "observaciones"
+    t.text     "observaciones",                             :null => false
     t.boolean  "authorized",             :default => false, :null => false
     t.datetime "authorized_at"
     t.integer  "authorized_by"
