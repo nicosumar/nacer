@@ -27,6 +27,7 @@ class Ability
       can :read, PrestacionAutorizada
       can :manage, LiquidacionSumar
       can :manage, LiquidacionSumarAnexoAdministrativo
+      can :manage, Periodo
       can :manage, AnexoAdministrativoPrestacion
       can :read, LiquidacionSumarAnexoMedico
       can :read, AnexoMedicoPrestacion
