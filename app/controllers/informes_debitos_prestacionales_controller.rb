@@ -11,7 +11,7 @@ class InformesDebitosPrestacionalesController < ApplicationController
 
   # GET /informes_debitos_prestacionales/1
   def show
-    @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
+    @informe_debito_prestacional = InformeDebitoPrestacional.includes(detalles_de_debitos_prestacionales: [{afiliado: :tipo_de_documento}, :estado_del_proceso]).find(params[:id])
   end
 
   # GET /informes_debitos_prestacionales/new
@@ -27,11 +27,10 @@ class InformesDebitosPrestacionalesController < ApplicationController
     @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|cf| [cf.concepto, cf.id]}
     @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
-    @tipos_de_debitos = TipoDeDebitoPrestacional.all.collect {|td| [td.nombre, td.id]}
+    @tipos_de_debitos = TipoDeDebitoPrestacional.all.collect {|td| [td.nombre , td.id]}
   end
 
   # POST /informes_debitos_prestacionales
-  # POST /informes_debitos_prestacionales.json
   def create
     @informe_debito_prestacional = InformeDebitoPrestacional.new(params[:informe_debito_prestacional])
 

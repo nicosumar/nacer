@@ -11,6 +11,8 @@ class CreateInformesDebitosPrestacionales < ActiveRecord::Migration
       t.timestamps
     end
 
+    add_column :detalles_de_debitos_prestacionales, :informe_debito_prestacional_id, "int4"
+
     execute <<-SQL
       ALTER TABLE "public"."informes_debitos_prestacionales"
         ADD FOREIGN KEY ("concepto_de_facturacion_id") REFERENCES "public"."conceptos_de_facturacion" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION,
@@ -21,10 +23,16 @@ class CreateInformesDebitosPrestacionales < ActiveRecord::Migration
         ALTER COLUMN "procesado_para_debito" SET DEFAULT false,
         ALTER COLUMN "estado_del_proceso_id" SET DEFAULT 1;
 
+      ALTER TABLE "public"."detalles_de_debitos_prestacionales"
+        ADD FOREIGN KEY ("informe_debito_prestacional_id") 
+          REFERENCES "public"."informes_debitos_prestacionales" ("id") 
+          ON DELETE RESTRICT ON UPDATE NO ACTION;
+      
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("concepto_de_facturacion_id"  );
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("efector_id"  );
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("tipo_de_debito_prestacional_id"  );
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("estado_del_proceso_id"  );
+      CREATE INDEX  ON "public"."detalles_de_debitos_prestacionales" ("informe_debito_prestacional_id");
     SQL
   end
 

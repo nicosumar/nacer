@@ -3,6 +3,7 @@ class InformeDebitoPrestacional < ActiveRecord::Base
   belongs_to :efector
   belongs_to :tipo_de_debito_prestacional
   belongs_to :estado_del_proceso
+  has_many   :detalles_de_debitos_prestacionales
 
   attr_accessible :informado_sirge, :procesado_para_debito
   attr_accessible :concepto_de_facturacion_id, :efector_id, :tipo_de_debito_prestacional_id, :estado_del_proceso_id

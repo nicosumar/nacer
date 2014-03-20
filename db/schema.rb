@@ -459,9 +459,11 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
     t.integer  "tipo_de_debito_prestacional_id"
+    t.integer  "informe_debito_prestacional_id"
   end
 
   add_index "detalles_de_debitos_prestacionales", ["afiliado_id"], :name => "detalles_de_debitos_prestacionales_afiliado_id_idx"
+  add_index "detalles_de_debitos_prestacionales", ["informe_debito_prestacional_id"], :name => "detalles_de_debitos_prestacio_informe_debito_prestacional_i_idx"
   add_index "detalles_de_debitos_prestacionales", ["motivo_de_rechazo_id"], :name => "detalles_de_debitos_prestacionales_motivo_de_rechazo_id_idx"
   add_index "detalles_de_debitos_prestacionales", ["prestacion_liquidada_id"], :name => "detalles_de_debitos_prestacionales_prestacion_liquidada_id_idx", :unique => true
   add_index "detalles_de_debitos_prestacionales", ["prestacion_liquidada_id"], :name => "detalles_de_debitos_prestacionales_prestacion_liquidada_id_key", :unique => true
@@ -653,14 +655,14 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
   end
 
   create_table "informes_debitos_prestacionales", :force => true do |t|
-    t.boolean  "informado_sirge"
-    t.boolean  "procesado_para_debito"
+    t.boolean  "informado_sirge",                :default => false
+    t.boolean  "procesado_para_debito",          :default => false
     t.integer  "concepto_de_facturacion_id"
     t.integer  "efector_id"
     t.integer  "tipo_de_debito_prestacional_id"
-    t.integer  "estado_del_proceso_id"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.integer  "estado_del_proceso_id",          :default => 1
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at",                                        :null => false
   end
 
   add_index "informes_debitos_prestacionales", ["concepto_de_facturacion_id"], :name => "informes_debitos_prestacionales_concepto_de_facturacion_id_idx"
