@@ -15,6 +15,9 @@
       -
       = link_to("Registrar prestación", |
         new_prestacion_brindada_path(:clave_de_beneficiario => @novedad.clave_de_beneficiario)) |
+    - if can? :read, PrestacionBrindada
+      = link_to("Historial de prestaciones", |
+        prestaciones_brindadas_path(:clave_de_beneficiario => @novedad.clave_de_beneficiario)) |
 
 = render :partial => "shared/info", :locals => { :registro => @novedad }
 

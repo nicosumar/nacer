@@ -16,6 +16,8 @@ end
 
 group :development do
   gem 'hirb-unicode'
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
 
@@ -33,5 +35,5 @@ gem 'nilify_blanks'
 gem 'spreadsheet'
 gem 'thinreports-rails'
 gem 'wice_grid', '>=3.4.0'
-gem 'unicode_utils'
+#gem 'unicode_utils'
 gem 'odf-report'

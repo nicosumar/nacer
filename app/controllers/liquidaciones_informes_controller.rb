@@ -44,7 +44,6 @@ class LiquidacionesInformesController < ApplicationController
     @periodos = Periodo.joins(:tipo_periodo).order("periodo asc").collect {|c| ["#{c.periodo} - #{c.tipo_periodo.descripcion}", c.id]}
     @periodos << ["Todos", -1]
 
-
   end
 
   # GET /liquidaciones_informes/1

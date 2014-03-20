@@ -16,7 +16,7 @@
   %table
     %tr
       %td
-        %b Liquidacion:
+        %b Liquidación:
       %td{colspan: 3}
         %span.field_value= @liquidacion_sumar.descripcion
     %tr
@@ -31,16 +31,16 @@
     %tr
       %td 
         %b Plantilla de reglas:
-      %td{colspan:2}
+      %td{colspan:3}
         - unless @liquidacion_sumar.plantilla_de_reglas.blank?
           %span.field_value= @liquidacion_sumar.plantilla_de_reglas.nombre
         - else
           %span.field_value No
-      %td{colspan: 2}= button_to 'Ver plantilla', @liquidacion_sumar.plantilla_de_reglas, method: "get" unless @liquidacion_sumar.plantilla_de_reglas.blank?
+      -#%td{colspan: 2}= button_to 'Ver plantilla', @liquidacion_sumar.plantilla_de_reglas, method: "get" unless @liquidacion_sumar.plantilla_de_reglas.blank?
     %tr
       %td
         %b Grupo de Efectores:
-      %td{colspan: 2}
+      %td{colspan: 3}
         %span.field_value= link_to "#{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}", @liquidacion_sumar.grupo_de_efectores_liquidacion, {method: "get"},{style: "color: #0000FF"}
     %tr
       %td{colspan: 4} &nbsp;
@@ -49,7 +49,7 @@
         %table
           %tr
             %td=button_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :delete
-            %td= button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
+            %td=button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
             %td=button_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :post
-            %td=button_to "Ver liquidacion",  ver_prestaciones_liquidadas_liquidaciones_sumar_path(@liquidacion_sumar.id), method: :get
             %td=button_to "Generar cuasifacturas",  generar_cuasifacturas_liquidacion_sumar_path(@liquidacion_sumar.id), method: :post
+            %td=button_to 'Generar expedientes', generar_caratulas_expedientes_por_liquidacion_expediente_sumar_path(@liquidacion_sumar.id, format: 'pdf'), method: "get"

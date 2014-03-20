@@ -6,10 +6,10 @@ class LiquidacionInforme < ActiveRecord::Base
   belongs_to :liquidacion_sumar_anexo_medico
   belongs_to :estado_del_proceso
   belongs_to :efector
+  belongs_to :expediente_sumar
   
-  attr_accessible :numero_de_expediente, :observaciones
+  attr_accessible :observaciones
 
-  validates_presence_of :numero_de_expediente
 
   # Genera los informes de liquidacion por cada cuasifactura generada en la liquidacion dada
   def self.generar_informes_de_liquidacion(arg_liquidacion_sumar)
@@ -69,6 +69,7 @@ class LiquidacionInforme < ActiveRecord::Base
           sql:  "UPDATE prestaciones_brindadas \n "+
                 "   SET estado_de_la_prestacion_id = p.estado_de_la_prestacion_liquidada_id \n "+
                 "FROM prestaciones_liquidadas p \n "+
+                " JOIN anexos_medicos_prestaciones amp on amp.prestacion_liquidada_id = p.id \n"+
                 "WHERE p.efector_id in (select ef.id \n "+
                 "                                      FROM efectores ef \n "+
                 "                                         JOIN unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+

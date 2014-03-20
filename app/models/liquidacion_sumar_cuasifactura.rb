@@ -2,6 +2,7 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
   
   belongs_to :liquidacion_sumar
   belongs_to :efector
+  has_one :expediente_sumar
 
   scope :para, lambda {|efector, liquidacion| where(efector_id: efector.id, liquidacion_id: liquidacion.id)}
 

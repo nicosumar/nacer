@@ -4,21 +4,8 @@
       %td{:width => "22%"} Titulo
       %td= f.text_field(:titulo, {style: 'width: 250px'})
     %tr
-      %td Formato de salida
-      %td= f.select :formato, @formatos, {style: 'width: 250px'}
-    %tr
       %td Metodo del controller 
       %td= f.select :nombre_partial, @controller_metodos
-    %tr
-      %td Incluir esquemas?
-      %td
-        = label_tag :incluir_esquema, 'Incluir'
-        = radio_button_tag :incluido, '1', true
-        = label_tag :excluir_esquema, 'Excluir'
-        = radio_button_tag :incluido, '0'
-    %tr
-      %td Esquemas
-      %td= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
     %tr
       %td
         #links
@@ -42,6 +29,16 @@
         = radio_button_tag :lenguaje, '1', true
         Ruby
         = radio_button_tag :lenguaje, '0'
+    %tr{class: 'fila_esquemas'}
+      %td Esquemas
+      %td
+        %table{:border => "0", :width => "100%", id: 'tabla_esquemas'}
+          %tr
+            %td= label_tag :incluir_esquema, 'Incluir'
+            %td= radio_button_tag :incluido, '1', true
+            %td= label_tag :excluir_esquema, 'Excluir'
+            %td= radio_button_tag :incluido, '0'
+            %td= collection_select :informe_esquema, :id, @esquemas, :id, :nombre,{}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
     %tr
       %td 
         #secccion-lenguaje SQL

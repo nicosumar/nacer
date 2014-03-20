@@ -133,9 +133,6 @@ class LiquidacionesSumarController < ApplicationController
         redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
       end
     end
-
-
-
   end
 
   def generar_cuasifacturas
@@ -155,7 +152,6 @@ class LiquidacionesSumarController < ApplicationController
         redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
       end
     end
-
   end
 
   private

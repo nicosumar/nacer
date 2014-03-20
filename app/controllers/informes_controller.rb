@@ -8,12 +8,21 @@ class InformesController < ApplicationController
   def render_informe
 
     @cabecera_informe = Informe.find(params[:reporte][:id])
-    @resultado = @cabecera_informe.render(params[:reporte][:parametros])
+
+    respond_to do |format|
+      format.html {
+        @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
+      }
+      format.csv {
+        send_data @cabecera_informe.ejecutar_csv(params[:reporte][:parametros])
+      }
+    end
+
   end
 
   def beneficiarios_activos
     # Verificar los permisos del usuario
-    if not current_user.in_group?(:coordinacion)
+    if not current_user.in_group?([:coordinacion, :planificacion, :comunicacion])
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -58,7 +67,7 @@ class InformesController < ApplicationController
 
   def tablero_de_comandos_alto_impacto
     # Verificar los permisos del usuario
-    if not current_user.in_group?(:coordinacion)
+    if not current_user.in_group?([:coordinacion, :planificacion, :comunicacion])
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -151,7 +160,6 @@ class InformesController < ApplicationController
 
   def usuarios_inscripciones
 
-
     @usrinsc = CustomQuery.buscar (
     {
       :except => ["public"],
@@ -187,11 +195,21 @@ class InformesController < ApplicationController
 
   end
 
+  def show
+
+    @cabecera_informe = Informe.find(params[:reporte][:id])
+    @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
+
+    respond_to do |format|
+      format.html
+      format.csv { send_data @resultado.to_csv }
+      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
+    end
+  end
 
   def new
     @informe = Informe.new
     @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-    @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
     esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
     esquema.id = 0
@@ -203,7 +221,6 @@ class InformesController < ApplicationController
   def edit
     @informe = Informe.find(params[:id])
     @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-    @formatos = ['html']
     @esquemas = UnidadDeAltaDeDatos.all
     esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
     esquema.id = 0
@@ -213,7 +230,8 @@ class InformesController < ApplicationController
   end
 
   def update
-    # @informe = Informe.new(params[:informe])
+    # @informe = Informe.new(params[:informe])
+
     @informe = Informe.find(params[:id])
 
     #Elimina espacios extras y retornos de carro
@@ -237,7 +255,6 @@ class InformesController < ApplicationController
         redirect_to(:action => 'index')
       else
         @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-        @formatos = ['html']
         @esquemas = UnidadDeAltaDeDatos.all
         esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
         esquema.id = 0
@@ -274,7 +291,6 @@ class InformesController < ApplicationController
         redirect_to(:action => 'index')
       else
         @controller_metodos = (Dir.glob("**/app/views*/informes/_render_**")).collect { |s| (s.split "/").last.split(".").first.split("_").last }
-        @formatos = ['html']
         @esquemas = UnidadDeAltaDeDatos.all
         esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
         esquema.id = 0
@@ -299,7 +315,4 @@ class InformesController < ApplicationController
       return
     end
   end
-
-
-
 end

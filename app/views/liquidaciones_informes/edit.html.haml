@@ -11,10 +11,11 @@
   %h2.first-header Datos del referente:
   - if @liquidacion_informe.liquidacion_sumar_cuasifactura.efector.convenio_de_gestion_sumar.firmante.present?
     = "  Recuerde, la cuasifactura del <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.nombre}</b> ".html_safe
-    = "debe ser firmada por <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.referente_al_dia(@liquidacion_informe.liquidacion_sumar.periodo.fecha_cierre).contacto.mostrado}</b>".html_safe
+    = "debe ser firmada por <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.referente_al_dia(@liquidacion_informe.liquidacion_sumar.periodo.fecha_cierre).contacto.mostrado}</b>.".html_safe
   - else
     = "El efector <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.nombre}</b> ".html_safe
     = "no posee referente al dia del cierre de la liquidación <b>".html_safe
+  = "<br><br>La cuasifactura <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura}</b> debe ser proveida en el expediente <b>#{@liquidacion_informe.expediente_sumar.numero}</b>.".html_safe
   %br
   %br
   %h2.first-header Datos de aprobación:

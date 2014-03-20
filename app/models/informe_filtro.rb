@@ -11,4 +11,24 @@ class InformeFiltro < ActiveRecord::Base
   #Atributos
   attr_accessible :nombre, :valor_por_defecto, :informe_filtro_validador_ui_id, :posicion
 
+  def valor_por_defecto
+
+    if informe_filtro_validador_ui.tipo == "LOV"
+      resp = []
+    	cq = CustomQuery.buscar({
+    		sql: self[:valor_por_defecto]
+    	})
+
+      cq.each do |n|
+        resp << n.valor
+        resp << n.texto
+      end
+      
+      return resp
+    else
+      return self[:valor_por_defecto]
+    end
+  	
+  end
+
 end

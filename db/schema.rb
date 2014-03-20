@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140311171130) do
+ActiveRecord::Schema.define(:version => 20140320134352) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -575,6 +575,20 @@ ActiveRecord::Schema.define(:version => 20140311171130) do
     t.datetime "updated_at",              :null => false
   end
 
+  create_table "expedientes_sumar", :force => true do |t|
+    t.text     "numero"
+    t.integer  "tipo_de_expediente_id"
+    t.integer  "efector_id"
+    t.integer  "periodo_id"
+    t.integer  "liquidacion_sumar_cuasifactura_id"
+    t.integer  "consolidado_sumar_id"
+    t.integer  "liquidacion_sumar_id"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  add_index "expedientes_sumar", ["tipo_de_expediente_id"], :name => "index_expedientes_sumar_on_tipo_de_expediente_id"
+
   create_table "formulas", :force => true do |t|
     t.string   "descripcion"
     t.text     "formula"
@@ -698,10 +712,12 @@ ActiveRecord::Schema.define(:version => 20140311171130) do
     t.integer  "estado_del_proceso_id"
     t.datetime "created_at",                                :null => false
     t.datetime "updated_at",                                :null => false
+    t.integer  "expediente_sumar_id"
   end
 
   add_index "liquidaciones_informes", ["efector_id"], :name => "liquidaciones_informes_efector_id_idx"
   add_index "liquidaciones_informes", ["estado_del_proceso_id"], :name => "liquidaciones_informes_estado_del_proceso_id_idx"
+  add_index "liquidaciones_informes", ["expediente_sumar_id"], :name => "liquidaciones_informes_expediente_sumar_id_idx"
   add_index "liquidaciones_informes", ["liquidacion_sumar_anexo_administrativo_id"], :name => "liquidaciones_informes_liquidacion_sumar_anexo_administrati_idx"
   add_index "liquidaciones_informes", ["liquidacion_sumar_anexo_medico_id"], :name => "liquidaciones_informes_liquidacion_sumar_anexo_medico_id_idx"
   add_index "liquidaciones_informes", ["liquidacion_sumar_cuasifactura_id"], :name => "liquidaciones_informes_liquidacion_sumar_cuasifactura_id_idx"
@@ -1261,6 +1277,15 @@ ActiveRecord::Schema.define(:version => 20140311171130) do
     t.string "codigo"
   end
 
+  create_table "tipos_de_expedientes", :force => true do |t|
+    t.text     "nombre"
+    t.text     "codigo"
+    t.text     "nombre_de_secuencia"
+    t.text     "mascara"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
   create_table "tipos_de_novedades", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -1344,7 +1369,7 @@ ActiveRecord::Schema.define(:version => 20140311171130) do
     t.string   "apellido",                                  :null => false
     t.date     "fecha_de_nacimiento"
     t.integer  "sexo_id"
-    t.text     "observaciones"
+    t.text     "observaciones",                             :null => false
     t.boolean  "authorized",             :default => false, :null => false
     t.datetime "authorized_at"
     t.integer  "authorized_by"
