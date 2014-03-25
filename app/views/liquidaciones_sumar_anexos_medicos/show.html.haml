@@ -12,7 +12,8 @@
         = link_to 'Finalizar Anexo', finalizar_anexo_liquidacion_sumar_anexo_medico_path(@liquidacion_sumar_anexo_medico), method: :put, data: { confirm: "Luego de finalizar la revisión del anexo no será posible su posterior modifcación.\n¿Está seguro que desea finalizar la revisión?" }
 
 = render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar_anexo_medico }
-#content-body
+#content-body
+  %h2= "#{@liquidacion_sumar_anexo_medico.liquidacion_informe.efector.nombre} - Expediente: #{@liquidacion_sumar_anexo_medico.liquidacion_informe.numero_de_expediente} - Cuasifactura N°: #{@liquidacion_sumar_anexo_medico.liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura}"
   %div.field_content
     %span.field_name Estado actual:
     %span.field_value= @liquidacion_sumar_anexo_medico.estado_del_proceso.nombre
@@ -31,7 +32,3 @@
     Detalle de prestaciones 
     = image_tag "spinner.gif",size: "16x16", id: "spinner"
   = render partial: 'grid'
-
-
-
-
