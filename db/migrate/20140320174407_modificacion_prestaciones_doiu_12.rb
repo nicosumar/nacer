@@ -15,9 +15,6 @@ class ModificacionPrestacionesDoiu12 < ActiveRecord::Migration
     # Determinar la hora y fecha actual
     ahora = DateTime.now()
 
-    # Fecha de publicación de la DOIU Nº 12
-    fecha_de_inicio = Date.new(2013, 12, 27)
-
     # Obtener el nomenclador
     nomenclador_sumar = Nomenclador.find(5)
 
