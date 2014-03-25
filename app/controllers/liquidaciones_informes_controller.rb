@@ -1,7 +1,10 @@
 # -*- encoding : utf-8 -*-
 class LiquidacionesInformesController < ApplicationController
-
   before_filter :authenticate_user!
+  before_filter :verificar_lectura
+  before_filter :verificar_creacion, only: [:create, :new]
+
+
   # GET /liquidaciones_informes
   def index
     if params[:concepto_de_facturacion_id].blank?
@@ -107,6 +110,20 @@ class LiquidacionesInformesController < ApplicationController
       end 
     else
       redirect_to @liquidacion_informe, :flash => { :tipo => :error, :titulo => "¡Los anexos no se encuentran finalizados!." } 
+    end
+  end
+
+  private
+
+  def verificar_lectura
+    if cannot? :read, LiquidacionInforme
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    end
+  end
+
+  def verificar_creacion
+    if cannot? :create, LiquidacionInforme
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
 

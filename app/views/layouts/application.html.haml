@@ -91,7 +91,7 @@
                         %li= link_to "Gestión", convenios_de_gestion_path
                         %li= link_to "Administración", convenios_de_administracion_path
 
-            - if can? :read, LiquidacionSumar
+            - if can? :read, LiquidacionSumar or can? :read, LiquidacionInforme
               %li
                 %a.drop{:href => "#"} LIQUIDACIONES
                 %div.dropdown_2columns
