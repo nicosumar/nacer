@@ -1,9 +1,7 @@
 class DetallesDeDebitosPrestacionalesController < ApplicationController
   before_filter :get_informe_de_debito
-
-  def get_informe_de_debito
-    @informe_de_debito = InformeDeDebito.find(params[:informe_de_debito_id])
-  end
+  before_filter :verificar_lectura
+  before_filter :verificar_creacion, only: [:create, :new]
 
   # GET /detalles_de_debitos_prestacionales
   def index
@@ -73,6 +71,24 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to detalles_de_debitos_prestacionales_url }
       format.json { head :no_content }
+    end
+  end
+
+  private
+
+  def get_informe_de_debito
+    @informe_de_debito = InformeDeDebito.find(params[:informe_de_debito_id])
+  end
+
+  def verificar_lectura
+    if cannot? :read, DetalleDeDebitoPrestacional
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    end
+  end
+
+  def verificar_creacion
+    if cannot? :create, DetalleDeDebitoPrestacional
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
 end

@@ -1,0 +1,53 @@
+#content-header
+  %h1 Informe de debito prestacional - Detalle de debitos
+  #action-links
+    - if can? :create, DetalleDeDebitoPrestacional
+      =# link_to "Nuevo Informe", new_informe_debito_prestacional_path
+
+#content-body
+  %div.field_content 
+    %span.field_name Efector:
+    %span.field_value= @informe_debito_prestacional.efector.nombre
+
+  %div.field_content 
+    %span.field_name Concepto de facturación:
+    %span.field_value= @informe_debito_prestacional.concepto_de_facturacion.concepto
+  
+  %div.field_content 
+    %span.field_name Tipo de débito prestacional:
+    %span.field_value= @informe_debito_prestacional.tipo_de_debito_prestacional.nombre
+  
+  %div.field_content 
+    %span.field_name Estado del proceso:
+    %span.field_value= @informe_debito_prestacional.estado_del_proceso.nombre
+
+  %div.field_content
+    %span.field_name Informado SIRGE:
+    %span.field_value=  @informe_debito_prestacional.informado_sirge ? 'Si' : 'No'
+
+  %div.field_content 
+    %span.field_name Procesado para débito:
+    %span.field_value= @informe_debito_prestacional.procesado_para_debito ? 'Si' : 'No'
+  %br/
+
+  %h2 Debitos
+    %table
+      %tr
+        %th Fecha
+        %th Afiliado
+        %th Efector
+        %th Prestación
+        %th Estado del proceso
+        %th Procesado para debito
+        %th Informado en sirge
+      - @detalles_de_debitos_prestacionales.each do |detalle|
+        %tr
+          %td= detalle.fecha_de_debito
+          %td= detalle.afiliado.numero_de_documento + "-" + detalle.afiliado.apellido + ", " + detalle.afiliado.nombre
+          %td= detalle.prestacion_liquidada.prestacion_incluida.prestacion_codigo + "-" + detalle.prestacion_liquidada.prestacion_incluida.prestacion_nombre
+          %td= detalle.observaciones
+          %td= detalle.motivo_de_rechazo.nombre
+          %td= detalle.procesado_para_debito ? "Si" : "No"
+          %td= detalle.informado_sirge ? "Si" : "No"
+
+=# link_to 'New Detalle de debito prestacional', new_detalle_de_debito_prestacional_path

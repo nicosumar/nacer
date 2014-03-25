@@ -661,6 +661,9 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
     t.integer  "efector_id"
     t.integer  "tipo_de_debito_prestacional_id"
     t.integer  "estado_del_proceso_id",          :default => 1
+    t.date     "fecha_inicio"
+    t.date     "fecha_finalizacion"
+    t.date     "fecha_de_proceso"
     t.datetime "created_at",                                        :null => false
     t.datetime "updated_at",                                        :null => false
   end

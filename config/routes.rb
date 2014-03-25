@@ -3,6 +3,7 @@ Nacer::Application.routes.draw do
 
   resources :informes_debitos_prestacionales do
     resources :detalles_de_debitos_prestacionales
+    put :iniciar, on: :member
   end
 
   resources :expedientes_sumar do
