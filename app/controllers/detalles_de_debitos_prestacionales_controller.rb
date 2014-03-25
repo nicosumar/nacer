@@ -1,24 +1,19 @@
 class DetallesDeDebitosPrestacionalesController < ApplicationController
-  # GET /detalles_de_debitos_prestacionales
-  # GET /detalles_de_debitos_prestacionales.json
-  def index
-    @detalles_de_debitos_prestacionales = DetalleDeDebitoPrestacional.all
+  before_filter :get_informe_de_debito
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @detalles_de_debitos_prestacionales }
-    end
+  def get_informe_de_debito
+    @informe_de_debito = InformeDeDebito.find(params[:informe_de_debito_id])
+  end
+
+  # GET /detalles_de_debitos_prestacionales
+  def index
+    @detalles_de_debitos_prestacionales = @informe_de_debito.detalles_de_debitos_prestacionales
   end
 
   # GET /detalles_de_debitos_prestacionales/1
-  # GET /detalles_de_debitos_prestacionales/1.json
   def show
-    @detalle_de_debito_prestacional = DetalleDeDebitoPrestacional.find(params[:id])
+    @detalle_de_debito_prestacional = @informe_de_debito.detalles_de_debitos_prestacionales.find(params[:id])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @detalle_de_debito_prestacional }
-    end
   end
 
   # GET /detalles_de_debitos_prestacionales/new

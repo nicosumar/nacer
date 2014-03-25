@@ -8,8 +8,7 @@ class PrestacionLiquidada < ActiveRecord::Base
   belongs_to :estado_de_la_prestacion
   belongs_to :diagnostico
   belongs_to :prestacion_brindada #solo agregada por referencia para simplificar los querys
-  belongs_to :afiliado, class_name: "Afiliado", foreign_key: :clave_de_beneficiario
-                                              , primary_key: :clave_de_beneficiario 
+  belongs_to :afiliado, class_name: "Afiliado", foreign_key: :clave_de_beneficiario, primary_key: :clave_de_beneficiario 
   has_many   :prestaciones_liquidadas_datos
   has_one    :detalle_de_debito_prestacional
 

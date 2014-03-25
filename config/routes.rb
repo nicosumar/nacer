@@ -1,11 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
-  resources :informes_debitos_prestacionales
-
-
-  resources :detalles_de_debitos_prestacionales
-
+  resources :informes_debitos_prestacionales do
+    resources :detalles_de_debitos_prestacionales
+  end
 
   resources :expedientes_sumar do
     get 'generar_caratulas_expedientes_por_liquidacion', as: :generar_caratulas_expedientes_por_liquidacion, action: :generar_caratulas_expedientes_por_liquidacion, on: :member
