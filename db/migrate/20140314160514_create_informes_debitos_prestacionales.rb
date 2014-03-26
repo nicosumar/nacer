@@ -7,8 +7,8 @@ class CreateInformesDebitosPrestacionales < ActiveRecord::Migration
       t.references :efector
       t.references :tipo_de_debito_prestacional
       t.references :estado_del_proceso
-      t.date :fecha_inicio
-      t.date :fecha_finalizacion
+      t.date :fecha_de_inicio
+      t.date :fecha_de_finalizacion
       t.date :fecha_de_proceso
 
       t.timestamps
@@ -54,6 +54,6 @@ class CreateInformesDebitosPrestacionales < ActiveRecord::Migration
 
       DROP TABLE "informes_debitos_prestacionales" CASCADE;
     SQL
-    drop_column :detalles_de_debitos_prestacionales, :informe_debito_prestacional_id, "int4"
+    remove_column :detalles_de_debitos_prestacionales, :informe_debito_prestacional_id
   end
 end

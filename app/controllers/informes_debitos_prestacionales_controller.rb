@@ -69,8 +69,9 @@ class InformesDebitosPrestacionalesController < ApplicationController
 
   def iniciar
     @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
+
     if @informe_debito_prestacional.iniciar
-      redirect_to @informe_debito_prestacional, :flash => { :tipo => :ok, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} inicio correctamente" }
+      redirect_to informe_debito_prestacional_detalles_de_debitos_prestacionales_path(@informe_debito_prestacional) , :flash => { :tipo => :ok, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} inicio correctamente" }
     else
       redirect_to @informe_debito_prestacional, :flash => { :tipo => :error, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} no pudo iniciarse" }
     end

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class DetallesDeDebitosPrestacionalesController < ApplicationController
   before_filter :get_informe_de_debito
   before_filter :verificar_lectura
@@ -8,39 +9,14 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
     @detalles_de_debitos_prestacionales = @informe_de_debito.detalles_de_debitos_prestacionales
   end
 
-  # GET /detalles_de_debitos_prestacionales/1
-  def show
-    @detalle_de_debito_prestacional = @informe_de_debito.detalles_de_debitos_prestacionales.find(params[:id])
-
-  end
-
-  # GET /detalles_de_debitos_prestacionales/new
-  # GET /detalles_de_debitos_prestacionales/new.json
-  def new
-    @detalle_de_debito_prestacional = DetalleDeDebitoPrestacional.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @detalle_de_debito_prestacional }
-    end
-  end
-
-  # GET /detalles_de_debitos_prestacionales/1/edit
-  def edit
-    @detalle_de_debito_prestacional = DetalleDeDebitoPrestacional.find(params[:id])
-  end
-
-  # POST /detalles_de_debitos_prestacionales
   # POST /detalles_de_debitos_prestacionales.json
   def create
-    @detalle_de_debito_prestacional = DetalleDeDebitoPrestacional.new(params[:detalle_de_debito_prestacional])
+    @detalle_de_debito_prestacional = @informe_de_debito.detalles_de_debitos_prestacionales.new(params[:detalle_de_debito_prestacional])
 
     respond_to do |format|
       if @detalle_de_debito_prestacional.save
-        format.html { redirect_to @detalle_de_debito_prestacional, notice: 'Detalle de debito prestacional was successfully created.' }
         format.json { render json: @detalle_de_debito_prestacional, status: :created, location: @detalle_de_debito_prestacional }
       else
-        format.html { render action: "new" }
         format.json { render json: @detalle_de_debito_prestacional.errors, status: :unprocessable_entity }
       end
     end
@@ -69,15 +45,14 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
     @detalle_de_debito_prestacional.destroy
 
     respond_to do |format|
-      format.html { redirect_to detalles_de_debitos_prestacionales_url }
-      format.json { head :no_content }
+      format.js
     end
   end
 
   private
 
   def get_informe_de_debito
-    @informe_de_debito = InformeDeDebito.find(params[:informe_de_debito_id])
+    @informe_de_debito = InformeDebitoPrestacional.find(params[:informe_debito_prestacional_id])
   end
 
   def verificar_lectura

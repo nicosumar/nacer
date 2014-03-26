@@ -2,7 +2,7 @@
 Nacer::Application.routes.draw do
 
   resources :informes_debitos_prestacionales do
-    resources :detalles_de_debitos_prestacionales
+    resources :detalles_de_debitos_prestacionales, only: [:index, :update, :create, :destroy] 
     put :iniciar, on: :member
   end
 

@@ -7,9 +7,9 @@
       = link_to 'Editar', edit_informe_debito_prestacional_path(@informe_debito_prestacional)
     - if can? [:create, :update], DetalleDeDebitoPrestacional
       - if @informe_debito_prestacional.estado_del_proceso.codigo =='N' #Si no se ha iniciado el proceso
-        = link_to 'Iniciar y cargar debitos', iniciar_informe_debito_prestacional_path(@informe_debito_prestacional)
+        = link_to 'Iniciar y cargar debitos', iniciar_informe_debito_prestacional_path(@informe_debito_prestacional), method: :put
       - elsif @informe_debito_prestacional.estado_del_proceso.codigo =='C'
-        = link_to 'Cargar débitos', edit_informe_debito_prestacional_path(@informe_debito_prestacional)
+        = link_to 'Cargar débitos', informe_debito_prestacional_detalles_de_debitos_prestacionales_path(@informe_debito_prestacional)
 
 = render :partial => "shared/info", :locals => { :registro => @informe_debito_prestacional }
 
@@ -18,7 +18,7 @@
     %span.field_name Efector:
     %span.field_value= @informe_debito_prestacional.efector.nombre
 
-  %div.field_content 
+  %div.field_content
     %span.field_name Concepto de facturación:
     %span.field_value= @informe_debito_prestacional.concepto_de_facturacion.concepto
   

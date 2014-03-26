@@ -1,3 +1,4 @@
+= stylesheet_link_tag"entradas.css"
 #content-header
   %h1 Informe de debito prestacional - Detalle de debitos
   #action-links
@@ -5,49 +6,84 @@
       =# link_to "Nuevo Informe", new_informe_debito_prestacional_path
 
 #content-body
-  %div.field_content 
-    %span.field_name Efector:
-    %span.field_value= @informe_debito_prestacional.efector.nombre
 
-  %div.field_content 
-    %span.field_name Concepto de facturación:
-    %span.field_value= @informe_debito_prestacional.concepto_de_facturacion.concepto
-  
-  %div.field_content 
-    %span.field_name Tipo de débito prestacional:
-    %span.field_value= @informe_debito_prestacional.tipo_de_debito_prestacional.nombre
-  
-  %div.field_content 
-    %span.field_name Estado del proceso:
-    %span.field_value= @informe_debito_prestacional.estado_del_proceso.nombre
-
-  %div.field_content
-    %span.field_name Informado SIRGE:
-    %span.field_value=  @informe_debito_prestacional.informado_sirge ? 'Si' : 'No'
-
-  %div.field_content 
-    %span.field_name Procesado para débito:
-    %span.field_value= @informe_debito_prestacional.procesado_para_debito ? 'Si' : 'No'
+  %table
+    %tr
+      %td
+        %div.field_content
+          %span.field_name Efector:
+          %span.field_value= @informe_de_debito.efector.nombre
+      %td
+        %div.field_content
+          %span.field_name Concepto de facturación:
+          %span.field_value= @informe_de_debito.concepto_de_facturacion.concepto
+    %tr
+      %td
+        %div.field_content 
+          %span.field_name Tipo de débito prestacional:
+          %span.field_value= @informe_de_debito.tipo_de_debito_prestacional.nombre
+      %td
+        %div.field_content 
+          %span.field_name Estado del proceso:
+          %span.field_value= @informe_de_debito.estado_del_proceso.nombre
+    %tr
+      %td
+        %div.field_content
+          %span.field_name Informado SIRGE:
+          %span.field_value=  @informe_de_debito.informado_sirge ? 'Si' : 'No'
+      %td
+        %div.field_content 
+          %span.field_name Procesado para débito:
+          %span.field_value= @informe_de_debito.procesado_para_debito ? 'Si' : 'No'
   %br/
+  
+  = form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
+    .field
+      = f.label :fecha_de_debito
+      = f.date_select :fecha_de_debito
+      = "\t"
+      = f.label :prestacion_liquidada
+      = f.text_field :prestacion_liquidada
+    .field
+    .field
+      = f.label :motivo_de_rechazo
+      = f.text_field :motivo_de_rechazo
+    .field
+      = f.label :afiliado
+      = f.text_field :afiliado
+    .field
+      = f.label :informado_sirge
+      = f.check_box :informado_sirge
+    .field
+      = f.label :observaciones
+      = f.text_area :observaciones
+    .actions
+      = f.submit
+
+  "tipo_de_debito_prestacional_id" int4,
+  "informe_debito_prestacional_id" int4,
 
   %h2 Debitos
-    %table
+  - @detalles_de_debitos_prestacionales.each do |detalle|
+    = render partial: 'detalle_de_debito_prestacional', locals: {detalle: detalle}
+
+  %table
+    %tr
+      %th Fecha
+      %th Afiliado
+      %th Efector
+      %th Prestación
+      %th Estado del proceso
+      %th Procesado para debito
+      %th Informado en sirge
+    - @detalles_de_debitos_prestacionales.each do |detalle|
       %tr
-        %th Fecha
-        %th Afiliado
-        %th Efector
-        %th Prestación
-        %th Estado del proceso
-        %th Procesado para debito
-        %th Informado en sirge
-      - @detalles_de_debitos_prestacionales.each do |detalle|
-        %tr
-          %td= detalle.fecha_de_debito
-          %td= detalle.afiliado.numero_de_documento + "-" + detalle.afiliado.apellido + ", " + detalle.afiliado.nombre
-          %td= detalle.prestacion_liquidada.prestacion_incluida.prestacion_codigo + "-" + detalle.prestacion_liquidada.prestacion_incluida.prestacion_nombre
-          %td= detalle.observaciones
-          %td= detalle.motivo_de_rechazo.nombre
-          %td= detalle.procesado_para_debito ? "Si" : "No"
-          %td= detalle.informado_sirge ? "Si" : "No"
+        %td= detalle.fecha_de_debito
+        %td= detalle.afiliado.numero_de_documento + "-" + detalle.afiliado.apellido + ", " + detalle.afiliado.nombre
+        %td= detalle.prestacion_liquidada.prestacion_incluida.prestacion_codigo + "-" + detalle.prestacion_liquidada.prestacion_incluida.prestacion_nombre
+        %td= detalle.observaciones
+        %td= detalle.motivo_de_rechazo.nombre
+        %td= detalle.procesado_para_debito ? "Si" : "No"
+        %td= detalle.informado_sirge ? "Si" : "No"
 
 =# link_to 'New Detalle de debito prestacional', new_detalle_de_debito_prestacional_path

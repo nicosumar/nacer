@@ -61,6 +61,7 @@ class Afiliado < ActiveRecord::Base
   belongs_to :grupo_poblacional
   # Relaciones referentes a la liquidacion
   has_many :prestaciones_liquidadas, foreign_key: :clave_de_beneficiario, primary_key: :clave_de_beneficiario
+  has_many :detalles_de_debitos_prestacionales
 
   #
   # Métodos disponibles en las instancias
