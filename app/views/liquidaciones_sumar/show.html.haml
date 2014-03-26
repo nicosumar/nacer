@@ -44,12 +44,13 @@
         %span.field_value= link_to "#{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}", @liquidacion_sumar.grupo_de_efectores_liquidacion, {method: "get"},{style: "color: #0000FF"}
     %tr
       %td{colspan: 4} &nbsp;
-    %tr
-      %td{colspan: 4}
-        %table
-          %tr
-            %td=button_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :delete
-            %td=button_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
-            %td=button_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :post
-            %td=button_to "Generar cuasifacturas",  generar_cuasifacturas_liquidacion_sumar_path(@liquidacion_sumar.id), method: :post
-            %td=button_to 'Generar expedientes', generar_caratulas_expedientes_por_liquidacion_expediente_sumar_path(@liquidacion_sumar.id, format: 'pdf'), method: "get"
+  #action-links{style: "float:right; margin-right: 120px;"}
+    = link_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :delete
+    = link_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
+    = link_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :post
+    = link_to "Generar cuasifacturas",  generar_cuasifacturas_liquidacion_sumar_path(@liquidacion_sumar.id), method: :post
+    = link_to 'Generar expedientes', generar_caratulas_expedientes_por_liquidacion_expediente_sumar_path(@liquidacion_sumar.id, format: 'pdf'), method: "get"
+  %br
+  %br
+  %br
+  %br

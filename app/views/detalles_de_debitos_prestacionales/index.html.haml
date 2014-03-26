@@ -10,34 +10,29 @@
   %table
     %tr
       %td
-        %div.field_content
-          %span.field_name Efector:
-          %span.field_value= @informe_de_debito.efector.nombre
+        %span.field_name Efector:
+        %span.field_value= @informe_de_debito.efector.nombre
       %td
-        %div.field_content
-          %span.field_name Concepto de facturación:
-          %span.field_value= @informe_de_debito.concepto_de_facturacion.concepto
+        %span.field_name Concepto de facturación:
+        %span.field_value= @informe_de_debito.concepto_de_facturacion.concepto
     %tr
       %td
-        %div.field_content 
-          %span.field_name Tipo de débito prestacional:
-          %span.field_value= @informe_de_debito.tipo_de_debito_prestacional.nombre
+        %span.field_name Tipo de débito prestacional:
+        %span.field_value= @informe_de_debito.tipo_de_debito_prestacional.nombre
       %td
-        %div.field_content 
-          %span.field_name Estado del proceso:
-          %span.field_value= @informe_de_debito.estado_del_proceso.nombre
+        %span.field_name Estado del proceso:
+        %span.field_value= @informe_de_debito.estado_del_proceso.nombre
     %tr
       %td
-        %div.field_content
-          %span.field_name Informado SIRGE:
-          %span.field_value=  @informe_de_debito.informado_sirge ? 'Si' : 'No'
+        %span.field_name Informado SIRGE:
+        %span.field_value=  @informe_de_debito.informado_sirge ? 'Si' : 'No'
       %td
-        %div.field_content 
-          %span.field_name Procesado para débito:
-          %span.field_value= @informe_de_debito.procesado_para_debito ? 'Si' : 'No'
+        %span.field_name Procesado para débito:
+        %span.field_value= @informe_de_debito.procesado_para_debito ? 'Si' : 'No'
   %br/
   
-  = form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
+  
+  -#* form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
     .field
       = f.label :fecha_de_debito
       = f.date_select :fecha_de_debito
@@ -60,8 +55,8 @@
     .actions
       = f.submit
 
-  "tipo_de_debito_prestacional_id" int4,
-  "informe_debito_prestacional_id" int4,
+  -#{}"tipo_de_debito_prestacional_id" int4,
+  -#{}"informe_debito_prestacional_id" int4,
 
   %h2 Debitos
   - @detalles_de_debitos_prestacionales.each do |detalle|
@@ -77,7 +72,7 @@
       %th Procesado para debito
       %th Informado en sirge
     - @detalles_de_debitos_prestacionales.each do |detalle|
-      %tr
+      %tr{id: "detalle_"+detalle.id.to_s}
         %td= detalle.fecha_de_debito
         %td= detalle.afiliado.numero_de_documento + "-" + detalle.afiliado.apellido + ", " + detalle.afiliado.nombre
         %td= detalle.prestacion_liquidada.prestacion_incluida.prestacion_codigo + "-" + detalle.prestacion_liquidada.prestacion_incluida.prestacion_nombre

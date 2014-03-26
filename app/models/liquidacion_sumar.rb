@@ -581,6 +581,8 @@ class LiquidacionSumar < ActiveRecord::Base
               "delete\n"+
               "from prestaciones_incluidas\n"+
               "where liquidacion_id = #{self.id}"
+    else
+      raise "Las cuasifacturas ya han sido generadas!"
     end 
   end
 
