@@ -11,7 +11,11 @@ class InformesDebitosPrestacionalesController < ApplicationController
 
   # GET /informes_debitos_prestacionales/1
   def show
-    @informe_debito_prestacional = InformeDebitoPrestacional.includes(detalles_de_debitos_prestacionales: [{afiliado: :tipo_de_documento}, :estado_del_proceso]).find(params[:id])
+    begin
+      @informe_debito_prestacional = InformeDebitoPrestacional.includes([{detalles_de_debitos_prestacionales: [{afiliado: :tipo_de_documento}]}, :estado_del_proceso] ).find(params[:id])
+    rescue Exception => e
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "El informe solicitado no existe", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    end
   end
 
   # GET /informes_debitos_prestacionales/new
@@ -56,15 +60,16 @@ class InformesDebitosPrestacionalesController < ApplicationController
   end
 
   # DELETE /informes_debitos_prestacionales/1
-  # DELETE /informes_debitos_prestacionales/1.json
   def destroy
-    @inform_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
-    @inform_debito_prestacional.destroy
-
-    respond_to do |format|
-      format.html { redirect_to informes_debitos_prestacionales_url }
-      format.json { head :no_content }
+    begin
+      @inform_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
+      id = @inform_debito_prestacional.id
+      @inform_debito_prestacional.destroy
+      redirect_to informes_debitos_prestacionales_path, :flash => { :tipo => :ok, :titulo => "El informe de debito N°#{id} se eliminó correctamente" }
+    rescue Exception => e
+      redirect_to informes_debitos_prestacionales_path, :flash => { :tipo => :error, :titulo => "El informe solicitado no existe", :mensaje => "#{e.message}"} 
     end
+
   end
 
   def iniciar

@@ -10,7 +10,6 @@ Nacer::Application.routes.draw do
     get 'generar_caratulas_expedientes_por_liquidacion', as: :generar_caratulas_expedientes_por_liquidacion, action: :generar_caratulas_expedientes_por_liquidacion, on: :member
   end
 
-
   get "documentos_electronicos/index"
   get "capacitaciones/index"
 

@@ -7,6 +7,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require cocoon
+//= require select2
 //= require jquery.ui.datepicker
 //= require jquery.ui.spinner
 //= require jquery.ui.dialog

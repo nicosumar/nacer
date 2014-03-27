@@ -449,7 +449,6 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
   end
 
   create_table "detalles_de_debitos_prestacionales", :force => true do |t|
-    t.date     "fecha_de_debito"
     t.integer  "prestacion_liquidada_id"
     t.integer  "motivo_de_rechazo_id"
     t.integer  "afiliado_id"

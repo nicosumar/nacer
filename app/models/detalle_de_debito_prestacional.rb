@@ -5,5 +5,5 @@ class DetalleDeDebitoPrestacional < ActiveRecord::Base
   belongs_to :afiliado
 
   attr_accessible :prestacion_liquidada, :motivo_de_rechazo
-  attr_accessible :fecha_de_debito, :informado_sirge, :observaciones, :procesado_para_debito
+  attr_accessible :informado_sirge, :observaciones, :procesado_para_debito
 end

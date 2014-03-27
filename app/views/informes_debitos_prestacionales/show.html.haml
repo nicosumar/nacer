@@ -10,6 +10,8 @@
         = link_to 'Iniciar y cargar debitos', iniciar_informe_debito_prestacional_path(@informe_debito_prestacional), method: :put
       - elsif @informe_debito_prestacional.estado_del_proceso.codigo =='C'
         = link_to 'Cargar débitos', informe_debito_prestacional_detalles_de_debitos_prestacionales_path(@informe_debito_prestacional)
+    - if can? :delete, InformeDebitoPrestacional and @informe_debito_prestacional.estado_del_proceso.codigo =='N'
+      = link_to 'Eliminar informe', @informe_debito_prestacional, method: :delete, data: { confirm: '¿Está seguro que desea eliminar la prestación del informe de debito?' }
 
 = render :partial => "shared/info", :locals => { :registro => @informe_debito_prestacional }
 

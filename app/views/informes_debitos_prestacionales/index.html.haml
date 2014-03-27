@@ -4,6 +4,8 @@
     - if can? :create, InformeDebitoPrestacional
       = link_to "Nuevo Informe",new_informe_debito_prestacional_path
 
+= render :partial => "shared/info"
+
 -# Lista todos los informes disponibles
 #content-body
   %h2 Listado de informes de debitos prestacionales

@@ -1,7 +1,6 @@
 class CreateDetallesDeDebitosPrestacionales < ActiveRecord::Migration
   def up
     create_table :detalles_de_debitos_prestacionales do |t|
-      t.date :fecha_de_debito
       t.references :prestacion_liquidada
       t.references :motivo_de_rechazo
       t.references :afiliado

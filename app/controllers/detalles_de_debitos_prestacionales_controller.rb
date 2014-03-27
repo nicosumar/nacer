@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class DetallesDeDebitosPrestacionalesController < ApplicationController
   before_filter :get_informe_de_debito
+  before_filter :authenticate_user!
   before_filter :verificar_lectura
   before_filter :verificar_creacion, only: [:create, :new]
 
@@ -38,21 +39,20 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
     end
   end
 
-  # DELETE /detalles_de_debitos_prestacionales/1
-  # DELETE /detalles_de_debitos_prestacionales/1.json
   def destroy
     @detalle_de_debito_prestacional = DetalleDeDebitoPrestacional.find(params[:id])
-    @detalle_de_debito_prestacional.destroy
-
-    respond_to do |format|
-      format.js
-    end
+    #@detalle_de_debito_prestacional.destroy
   end
 
   private
 
   def get_informe_de_debito
-    @informe_de_debito = InformeDebitoPrestacional.find(params[:informe_debito_prestacional_id])
+    
+    begin
+      @informe_de_debito = InformeDebitoPrestacional.find(params[:informe_debito_prestacional_id])
+    rescue Exception => e
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})  
+    end
   end
 
   def verificar_lectura
