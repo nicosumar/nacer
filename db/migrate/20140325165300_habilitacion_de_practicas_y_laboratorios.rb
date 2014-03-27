@@ -15,6 +15,8 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
     # Área rural
     rural_id = AreaDePrestacion.id_del_codigo!("R")
 
+
+    # Cateterización
     prestacion = Prestacion.where(:codigo => "PRP001").first
     prestacion.sexos << [sexo_femenino, sexo_masculino]
     prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
