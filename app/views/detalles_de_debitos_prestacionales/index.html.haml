@@ -35,7 +35,8 @@
   = form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
     .field
       = f.label :afiliado
-      = f.select :afiliado_id,[], {include_blank: true}
+      =# f.select :afiliado_id,[], {include_blank: true}
+      = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados' }
     .field
       = f.label :prestacion_liquidada
       = f.text_field :prestacion_liquidada

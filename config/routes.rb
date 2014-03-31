@@ -114,7 +114,9 @@ Nacer::Application.routes.draw do
     post 'baja', :on => :collection, :as => :create_baja, :action => :create_baja
     post 'modificacion', :on => :collection, :as => :create_modificacion, :action => :create_modificacion
   end
-  resources :afiliados, :only => [:show]
+  resources :afiliados, :only => [:show] do
+    get :busqueda_por_aproximacion, on: :collection
+  end
   resources :unidades_de_alta_de_datos, :except => :destroy
   resources :prestaciones_brindadas
   match "informe_de_beneficiarios_activos" => "informes#beneficiarios_activos"

@@ -25,4 +25,31 @@ class AfiliadosController < ApplicationController
 
   end
 
+  def busqueda_por_aproximacion
+    # Obtengo los parametros enviados por el form ajax
+    cadena = params[:q].split(" ")
+
+    numero = nil
+    nombres = []
+
+    cadena.each do |lexema|
+      if lexema.to_i.to_s == lexema and numero.blank?
+        numero = lexema
+      elsif lexema.to_i.to_s == lexema and numero.present?
+        next
+      else
+        nombres << lexema
+      end
+    end
+
+    @afiliados = Afiliado.busqueda_por_aproximacion(numero, nombres.join(" "))
+    respond_to do |format|
+      if @afiliados.present? and @afiliados[0].size > 0
+        format.json { render json: {afiliados: @afiliados[0].map { |af| {id: af.afiliado_id, text: "#{af.nombre} (#{af.numero_de_documento})"}}} }
+      else
+        format.json { render json: []  }
+      end
+    end
+  end
+
 end
