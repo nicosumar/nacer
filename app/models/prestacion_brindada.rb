@@ -436,6 +436,20 @@ class PrestacionBrindada < ActiveRecord::Base
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 23) > 24
   end
 
+  def menor_de_tres_meses?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_meses(fecha_de_la_prestacion) || 4) < 3
+  end
+
   def total_de_dias_postquirurgicos_valido?
     self.datos_reportables_asociados.each do |dra|
       if dra.dato_reportable_requerido.dato_reportable.codigo = 'DEPOSTQU'

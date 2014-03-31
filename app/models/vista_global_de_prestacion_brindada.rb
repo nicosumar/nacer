@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class VistaGlobalDePrestacionBrindada < ActiveRecord::Base
 
   # Todos los atributos son solo para lectura porque es un modelo "falso" que referencia una vista y no una tabla

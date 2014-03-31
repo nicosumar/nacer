@@ -610,7 +610,7 @@ ActiveRecord::Base.transaction do
     :precio_por_unidad => 10.0000,
     :adicional_por_prestacion => 0.0000,
     :area_de_prestacion_id => rural_id,
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
 
   # TODO: indicar a qué grupos, sexos y diagnósticos está referida
