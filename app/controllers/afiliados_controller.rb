@@ -2,6 +2,8 @@
 class AfiliadosController < ApplicationController
   before_filter :authenticate_user!
 
+  require 'will_paginate/array'
+
   def show
     # Verificar los permisos del usuario
     if cannot? :read, Afiliado
@@ -28,6 +30,8 @@ class AfiliadosController < ApplicationController
   def busqueda_por_aproximacion
     # Obtengo los parametros enviados por el form ajax
     cadena = params[:q].split(" ")
+    x = params[:page]
+    y = params[:per]
 
     numero = nil
     nombres = []
@@ -43,11 +47,16 @@ class AfiliadosController < ApplicationController
     end
 
     @afiliados = Afiliado.busqueda_por_aproximacion(numero, nombres.join(" "))
+    if @afiliados[0].present? and @afiliados[0].size > 0
+      @afiliados[0].map!{ |af| {id: af.afiliado_id, text: "#{af.nombre}, #{af.apellido} (#{af.tipo_de_documento.codigo}: #{af.numero_de_documento})"}}
+    end
+    #.paginate(:page => x, :per_page => y)
     respond_to do |format|
-      if @afiliados.present? and @afiliados[0].size > 0
-        format.json { render json: {afiliados: @afiliados[0].map { |af| {id: af.afiliado_id, text: "#{af.nombre} (#{af.numero_de_documento})"}}} }
+      if @afiliados[0].present? and @afiliados[0].size > 0
+        format.json { 
+          render json: {total: @afiliados[0].size ,afiliados: @afiliados[0].paginate(:page => x, :per_page => y) } }
       else
-        format.json { render json: []  }
+        format.json { render json: {total: 0, afiliados: []}  }
       end
     end
   end

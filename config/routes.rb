@@ -13,6 +13,8 @@ Nacer::Application.routes.draw do
   get "documentos_electronicos/index"
   get "capacitaciones/index"
 
+  get 'buscar_prestacion_liquidada/:action' => 'prestaciones_liquidadas#:action'
+
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion
   resources :periodos

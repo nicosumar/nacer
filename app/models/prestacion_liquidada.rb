@@ -12,6 +12,9 @@ class PrestacionLiquidada < ActiveRecord::Base
   has_many   :prestaciones_liquidadas_datos
   has_one    :detalle_de_debito_prestacional
 
+  scope :pagadas_por_efector, lambda {|efector| where(efector_id: efector.id, estado_de_la_prestacion_liquidada_id: 12)}  
+
+
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :diagnostico_id, :diagnostico_nombre
   attr_accessible :efector_id, :es_catastrofica, :estado_de_la_prestacion_id, :fecha_de_la_prestacion
   attr_accessible :historia_clinica, :liquidacion_id, :observaciones, :prestacion_incluida_id

@@ -8,6 +8,7 @@
 //= require jquery_ujs
 //= require cocoon
 //= require select2
+//= require select2_locale_es
 //= require jquery.ui.datepicker
 //= require jquery.ui.spinner
 //= require jquery.ui.dialog
@@ -31,9 +32,9 @@ $(document).ready(function() {
       options.ajax = {
         url: select.data('source'),
         dataType: 'json',
-        quietMillis: 750,
+        quietMillis: 700,
         data: function(term, page) { return { q: term, page: page, per: 10 } },
-        results: function(data, page) { return { results: eval("data." + select.data('coleccion'))} }
+        results: function(data, page) { return { more: data.total > (page * 10), results: eval("data." + select.data('coleccion'))} }
       }
       options.dropdownCssClass = "bigdrop";
     }
