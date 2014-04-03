@@ -20,12 +20,13 @@ $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
 });
 
+//TODO: Para browsers mas viejos usar "void 0" en lugar de la keyword undefined. Testearlo despues
 $(document).ready(function() {
   $('.select2').each(function(i, e){
     var select = $(e);
     options = {
-      placeholder: select.data('placeholder'),
-      minimumInputLength: select.data('caracteresminimos')
+      placeholder: (select.data('placeholder') == undefined) ? '' : select.data('placeholder'),
+      minimumInputLength: (select.data('caracteresminimos') == undefined) ? '0' : select.data('caracteresminimos')
     };
     ;
     if (select.hasClass('ajax')) {
@@ -33,12 +34,43 @@ $(document).ready(function() {
         url: select.data('source'),
         dataType: 'json',
         quietMillis: 700,
-        data: function(term, page) { return { q: term, page: page, per: 10 } },
+        //data: function(term, page) { return { q: term, page: page, per: 10, poronga: {efector: 2, lala: 3}  } },
+        data: function(term, page) { 
+          return { 
+            q: term, 
+            page: page, 
+            per: 10, 
+            parametros_adicionales: (select.data('parametros-adicionales') == undefined) ? '' : eval("({"+ select.data('parametros-adicionales') + "})")
+          } 
+        },
         results: function(data, page) { return { more: data.total > (page * 10), results: eval("data." + select.data('coleccion'))} }
       }
       options.dropdownCssClass = "bigdrop";
     }
     select.select2(options);
+    
+    if(select.hasClass('encadenado') && select.data('id-padre') != undefined && select.data('parametro') !== undefined ){
+
+      select.select2('enable', false);
+      padre = $('#'+select.data('id-padre'));
+      padre.change(function(){
+
+        if (padre.val()=="")
+        {
+          select.select2('enable', false);
+          select.data('parametros-adicionales[valor_encadenado]', padre.val() );
+        }
+        else
+        {
+          select.select2('enable', true);
+          select.data('parametros-adicionales[valor_encadenado]', '' );
+          select.select2.val("val","");
+        }
+         //cambio o agrego el parametro adicional de este select para que envie el id del padre
+
+        
+      });
+    }
   })    
 });
 

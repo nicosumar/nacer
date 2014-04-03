@@ -29,6 +29,14 @@ class AfiliadosController < ApplicationController
 
   def busqueda_por_aproximacion
     # Obtengo los parametros enviados por el form ajax
+    logger.warn "-----------------------------------------------------------------------------------------"
+    logger.warn "#{params.inspect}"
+    logger.warn "-----------------------------------------------------------------------------------------"
+    #params[:parametros_adicionales].inspect
+    logger.warn "#{params[:parametros_adicionales].inspect}"
+    logger.warn "----------------------------------------------------------------------------------------- El de abajo OK"
+    #logger.warn "#{params[:parametros_adicionales][:efector] .inspect}"
+    logger.warn "-----------------------------------------------------------------------------------------"
     cadena = params[:q].split(" ")
     x = params[:page]
     y = params[:per]
@@ -50,11 +58,12 @@ class AfiliadosController < ApplicationController
     if @afiliados[0].present? and @afiliados[0].size > 0
       @afiliados[0].map!{ |af| {id: af.afiliado_id, text: "#{af.nombre}, #{af.apellido} (#{af.tipo_de_documento.codigo}: #{af.numero_de_documento})"}}
     end
-    #.paginate(:page => x, :per_page => y)
+
     respond_to do |format|
       if @afiliados[0].present? and @afiliados[0].size > 0
         format.json { 
-          render json: {total: @afiliados[0].size ,afiliados: @afiliados[0].paginate(:page => x, :per_page => y) } }
+          render json: {total: @afiliados[0].size ,afiliados: @afiliados[0].paginate(:page => x, :per_page => y) } 
+        }
       else
         format.json { render json: {total: 0, afiliados: []}  }
       end

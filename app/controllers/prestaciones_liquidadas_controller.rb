@@ -5,9 +5,12 @@ class PrestacionesLiquidadasController < ApplicationController
   #   @prestaciones_liquidadas = PrestacionLiquidada.where(liquidacion_id: params[:id]).paginate(:page => params[:page], :per_page => 20)
   # end
 
-  def por_afiliado
+  def por_afiliado_efector
 
-    if params[:afiliado_id]
+    logger.warn "PRESTACIONES LIQUIDADAS------------------------------------------------------------------"
+    logger.warn "#{params.inspect}"
+    logger.warn "-----------------------------------------------------------------------------------------"
+    if params[:parametros_adicionales][:efector_id]
       @prestaciones_liquidadas = Afiliado.includes(:prestaciones_liquidadas).find(params[:afiliado_id]).prestaciones_liquidadas.where(estado_de_la_prestacion_liquidada_id: 12)
       if @prestaciones_liquidadas.present? and @prestaciones_liquidadas.size > 0
         @prestaciones_liquidadas.map!{ |p| {id:p.id, text: "#{p.codigo}" }}

@@ -35,11 +35,10 @@
   = form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
     .field
       = f.label :afiliado
-      =# f.select :afiliado_id,[], {include_blank: true}
-      = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados' }
+      = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados', :'parametros-adicionales' => 'efector: 2, lala: 3' }
     .field
-      = f.label :prestacion_liquidada
-      = f.text_field :prestacion_liquidada
+      = f.label :prestacion_liquidada 
+      = f.hidden_field :prestacion_liquidada_id, class: 'select2 ajax encadenado', data: { source: prestaciones_liquidadas_por_afiliado_efector_path, placeholder: 'Seleccione la prestación a debitar', coleccion: 'afiliados', id_padre: 'detalle_de_debito_prestacional_afiliado_id', parametro: 'afiliado_id', :'parametros-adicionales' => 'efector: 2, lala: 3' }
     .field
       = f.label :motivo_de_rechazo
       = f.text_field :motivo_de_rechazo
