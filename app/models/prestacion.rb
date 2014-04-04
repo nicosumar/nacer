@@ -36,6 +36,7 @@ class Prestacion < ActiveRecord::Base
   belongs_to :concepto_de_facturacion
   has_many :asignaciones_de_precios
   has_many :nomencladores, through: :asignaciones_de_precios
+  has_many :prestaciones_incluidas
 
   # Validaciones
   # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO

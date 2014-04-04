@@ -8,6 +8,7 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
   # GET /detalles_de_debitos_prestacionales
   def index
     @detalles_de_debitos_prestacionales = @informe_de_debito.detalles_de_debitos_prestacionales
+    @motivos_de_rechazo = MotivoDeRechazo.where(categoria: @informe_de_debito.tipo_de_debito_prestacional.nombre).collect {|m| [m.nombre, m.id]}
   end
 
   # POST /detalles_de_debitos_prestacionales.json

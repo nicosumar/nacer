@@ -24,6 +24,32 @@ class CreateTiposDeDebitosPrestacionales < ActiveRecord::Migration
         nombre: "Auditoría Interna - Posterior al pago"
       }]
     )
+    MotivoDeRechazo.create([
+      { #ID: 16
+        nombre: "La prestación no está autorizada para este efector.",
+        categoria: "Auditoría Interna - Posterior al pago"
+      },
+      { #ID: 17
+        nombre: "El efector no posee la documentación correspondiente.",
+        categoria: "Auditoría Interna - Posterior al pago"
+      },
+      { #ID: 18
+        nombre: "Otros",
+        categoria: "Auditoría Interna - Posterior al pago"
+      },
+      { #ID: 19
+        nombre: "La prestación no está autorizada para este efector.",
+        categoria: "Auditoría Concurrente Externa"
+      },
+      { #ID: 20
+        nombre: "El efector no posee la documentación correspondiente.",
+        categoria: "Auditoría Concurrente Externa"
+      },
+      { #ID: 21
+        nombre: "Otros",
+        categoria: "Auditoría Concurrente Externa"
+      },
+    ])
   end
 
   def down
@@ -32,6 +58,12 @@ class CreateTiposDeDebitosPrestacionales < ActiveRecord::Migration
       ALTER TABLE "public"."detalles_de_debitos_prestacionales"
         DROP CONSTRAINT "detalles_de_debitos_prestacio_tipo_de_debito_prestacional__fkey",
         DROP COLUMN "tipo_de_debito_prestacional_id";
+    SQL
+
+    execute <<-SQL
+      DELETE from motivos_de_rechazos
+      where categoria = 'Auditoría Concurrente Externa'
+      or categoria = 'Auditoría Interna - Posterior al pago'
     SQL
     
     drop_table :tipos_de_debitos_prestacionales

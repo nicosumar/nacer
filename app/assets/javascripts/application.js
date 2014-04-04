@@ -26,7 +26,8 @@ $(document).ready(function() {
     var select = $(e);
     options = {
       placeholder: (select.data('placeholder') == undefined) ? '' : select.data('placeholder'),
-      minimumInputLength: (select.data('caracteresminimos') == undefined) ? '0' : select.data('caracteresminimos')
+      minimumInputLength: (select.data('caracteresminimos') == undefined) ? '0' : select.data('caracteresminimos'),
+      allowClear: true
     };
     ;
     if (select.hasClass('ajax')) {
@@ -34,7 +35,6 @@ $(document).ready(function() {
         url: select.data('source'),
         dataType: 'json',
         quietMillis: 700,
-        //data: function(term, page) { return { q: term, page: page, per: 10, poronga: {efector: 2, lala: 3}  } },
         data: function(term, page) { 
           return { 
             q: term, 
@@ -52,19 +52,44 @@ $(document).ready(function() {
     if(select.hasClass('encadenado') && select.data('id-padre') != undefined && select.data('parametro') !== undefined ){
 
       select.select2('enable', false);
+      select.data('parametros-adicionales', select.data('parametros-adicionales') + ', valor_encadenado: -1')
       padre = $('#'+select.data('id-padre'));
       padre.change(function(){
 
+        var parametros_adicionales = [];
+
         if (padre.val()=="")
         {
+          $.each(select.data('parametros-adicionales').split(","), function(indice, valor){
+            
+            var parametros = valor.split(":");
+           
+            if($.trim(parametros[0]) != $.trim('valor_encadenado'))
+              parametros_adicionales.push(valor +" ");
+            else
+              parametros_adicionales.push(valor +" ");
+          });
+          select.data('parametros-adicionales', parametros_adicionales.join(",") );
+          select.select2("val","");
           select.select2('enable', false);
-          select.data('parametros-adicionales[valor_encadenado]', padre.val() );
+          //select.data('parametros-adicionales[valor_encadenado]', padre.val() );
         }
         else
         {
+
+          $.each(select.data('parametros-adicionales').split(","), function(indice, valor){
+            var parametros = valor.split(":");
+            //Verifico si es un parametro adicional, o el que encadena los combos
+            if($.trim(parametros[0]) == $.trim('valor_encadenado'))
+              parametros_adicionales.push('valor_encadenado: '+ padre.val() + " ");
+            else
+              parametros_adicionales.push(valor +" ");
+          });
+          
+          select.data('parametros-adicionales', parametros_adicionales.join(",") );
           select.select2('enable', true);
-          select.data('parametros-adicionales[valor_encadenado]', '' );
-          select.select2.val("val","");
+
+          //select.select2.val("val","");
         }
          //cambio o agrego el parametro adicional de este select para que envie el id del padre
 

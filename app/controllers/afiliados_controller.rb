@@ -28,43 +28,41 @@ class AfiliadosController < ApplicationController
   end
 
   def busqueda_por_aproximacion
-    # Obtengo los parametros enviados por el form ajax
-    logger.warn "-----------------------------------------------------------------------------------------"
-    logger.warn "#{params.inspect}"
-    logger.warn "-----------------------------------------------------------------------------------------"
-    #params[:parametros_adicionales].inspect
-    logger.warn "#{params[:parametros_adicionales].inspect}"
-    logger.warn "----------------------------------------------------------------------------------------- El de abajo OK"
-    #logger.warn "#{params[:parametros_adicionales][:efector] .inspect}"
-    logger.warn "-----------------------------------------------------------------------------------------"
-    cadena = params[:q].split(" ")
-    x = params[:page]
-    y = params[:per]
+    begin
+      cadena = params[:q].split(" ")
+      x = params[:page]
+      y = params[:per]
 
-    numero = nil
-    nombres = []
+      numero = nil
+      nombres = []
 
-    cadena.each do |lexema|
-      if lexema.to_i.to_s == lexema and numero.blank?
-        numero = lexema
-      elsif lexema.to_i.to_s == lexema and numero.present?
-        next
-      else
-        nombres << lexema
+      cadena.each do |lexema|
+        if lexema.to_i.to_s == lexema and numero.blank?
+          numero = lexema
+        elsif lexema.to_i.to_s == lexema and numero.present?
+          next
+        else
+          nombres << lexema
+        end
       end
-    end
 
-    @afiliados = Afiliado.busqueda_por_aproximacion(numero, nombres.join(" "))
-    if @afiliados[0].present? and @afiliados[0].size > 0
-      @afiliados[0].map!{ |af| {id: af.afiliado_id, text: "#{af.nombre}, #{af.apellido} (#{af.tipo_de_documento.codigo}: #{af.numero_de_documento})"}}
-    end
-
-    respond_to do |format|
+      @afiliados = Afiliado.busqueda_por_aproximacion(numero, nombres.join(" "))
       if @afiliados[0].present? and @afiliados[0].size > 0
-        format.json { 
-          render json: {total: @afiliados[0].size ,afiliados: @afiliados[0].paginate(:page => x, :per_page => y) } 
-        }
-      else
+        @afiliados[0].map!{ |af| {id: af.afiliado_id, text: "#{af.nombre}, #{af.apellido} (#{af.tipo_de_documento.codigo}: #{af.numero_de_documento})"}}
+      end
+
+      respond_to do |format|
+        if @afiliados[0].present? and @afiliados[0].size > 0
+          format.json { 
+            render json: {total: @afiliados[0].size ,afiliados: @afiliados[0].paginate(:page => x, :per_page => y) } 
+          }
+        else
+          format.json { render json: {total: 0, afiliados: []}  }
+        end
+      end
+      
+    rescue Exception => e
+      respond_to do |format|
         format.json { render json: {total: 0, afiliados: []}  }
       end
     end
