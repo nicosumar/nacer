@@ -1,5 +1,5 @@
+= javascript_include_tag 'detalles_de_debitos_prestacionales.js'
 = stylesheet_link_tag "entradas.css"
-= javascript_include_tag 'detalles_de_debitos_prestacionales'
 #content-header
   %h1 Informe de debito prestacional - Detalle de debitos
   #action-links
@@ -33,20 +33,21 @@
   %br/
 
   = form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
-    .field
-      = f.label :afiliado
-      = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados' }
-    .field
-      = f.label :prestacion_liquidada 
-      = f.hidden_field :prestacion_liquidada_id, class: 'select2 ajax encadenado', data: { source: prestaciones_liquidadas_por_afiliado_efector_path, placeholder: 'Seleccione la prestación a debitar', coleccion: 'prestaciones', id_padre: 'detalle_de_debito_prestacional_afiliado_id', parametro: 'afiliado_id', parametros_adicionales: "efector_id: #{@informe_de_debito.efector.id}, concepto_de_facturacion_id: #{@informe_de_debito.concepto_de_facturacion.id}" }
-    .field
-      = f.label :motivo_de_rechazo
-      = f.select :motivo_de_rechazo, @motivos_de_rechazo,{}, {class: 'select2', data: {placeholder: 'Seleccione el motivo de rechazo', :include_blank => true}}
-    .field
+    = field_set_tag 'Cargar débito' do
+      .field
+        = f.label :afiliado
+        = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados' }
+      .field
+        = f.label :prestacion_liquidada 
+        = f.hidden_field :prestacion_liquidada_id, class: 'select2 ajax encadenado', data: { source: prestaciones_liquidadas_por_afiliado_efector_path, placeholder: 'Seleccione la prestación a debitar', coleccion: 'prestaciones', id_padre: 'detalle_de_debito_prestacional_afiliado_id', parametro: 'afiliado_id', parametros_adicionales: "efector_id: #{@informe_de_debito.efector.id}, concepto_de_facturacion_id: #{@informe_de_debito.concepto_de_facturacion.id}" }
+      .field
+        = f.label :motivo_de_rechazo
+        = f.select :motivo_de_rechazo, @motivos_de_rechazo,{:include_blank => true}, {class: 'select2', data: {placeholder: 'Seleccione el motivo de rechazo' }}
       = f.label :observaciones
-      = f.text_area :observaciones, :size => "70x8"
-    .actions
-      = f.submit
+      .field
+        = f.text_area :observaciones, :size => "70x8"
+      .actions
+        = f.submit
 
   %h2 Debitos
   %table

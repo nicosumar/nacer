@@ -27,14 +27,16 @@ $(document).ready(function() {
     options = {
       placeholder: (select.data('placeholder') == undefined) ? '' : select.data('placeholder'),
       minimumInputLength: (select.data('caracteresminimos') == undefined) ? '0' : select.data('caracteresminimos'),
-      allowClear: true
+      allowClear: true,
+      dropdownCssClass: "bigdrop",
+      width: 'resolve'
     };
     ;
     if (select.hasClass('ajax')) {
       options.ajax = {
         url: select.data('source'),
         dataType: 'json',
-        quietMillis: 700,
+        quietMillis: 70,
         data: function(term, page) { 
           return { 
             q: term, 
@@ -45,8 +47,8 @@ $(document).ready(function() {
         },
         results: function(data, page) { return { more: data.total > (page * 10), results: eval("data." + select.data('coleccion'))} }
       }
-      options.dropdownCssClass = "bigdrop";
     }
+    options.dropdownCssClass = "bigdrop";
     select.select2(options);
     
     if(select.hasClass('encadenado') && select.data('id-padre') != undefined && select.data('parametro') !== undefined ){
