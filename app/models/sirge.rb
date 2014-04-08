@@ -33,6 +33,8 @@ class Sirge < ActiveRecord::Base
           book = Spreadsheet.open @rutayarchivo
           sheet = book.worksheet 0
 
+          pag = 1
+          ele = 1
           sheet.each 3 do |row|
 
             # -------------------------------------------------
@@ -51,9 +53,13 @@ class Sirge < ActiveRecord::Base
               end
 
               begin
-                puts "fila #{row.idx} procesada"
-                puts "row 2 : #{ row[2]}"
-                puts "row 3 : #{ row[3]}"
+                ele +=1
+                if ele == pag * 100
+                  puts "fila #{row.idx} procesada"
+                  puts "row 2 : #{ row[2]}"
+                  puts "row 3 : #{ row[3]}"
+                  pag +=1
+                end
 
                 #fecha_gasto = "2013-"+ row[2].to_s + "-" + Time.days_in_month(row[2], row[3]) #el ultimo dia de cada periodo de rendicion
                 if Time.days_in_month(row[2], row[3]) == 29
@@ -66,7 +72,7 @@ class Sirge < ActiveRecord::Base
                 periodo = row[3].to_s+"-"+row[2].to_s
                 numero_comprobante_gasto = "NULL"
               rescue Exception => ex
-                fecha_gasto = Time.days_in_month(row[2].to_s.gsub(/[^0-9]/i, ''), row[3].to_s.gsub(/[^0-9]/i, '')) #el ultimo dia de cada periodo de rendicion
+                fecha_gasto = Time.days_in_month(row[2].to_s.gsub(/[^0-9]/i, '').to_i, row[3].to_s.gsub(/[^0-9]/i, '').to_i) #el ultimo dia de cada periodo de rendicion
                 periodo = row[3].to_s.gsub(/[^0-9]/i, '')+" "+row[2].to_s.gsub(/[^0-9]/i, '')
               end
     #  Sirge.cargar_aplicacion_de_fondos("2014", "01")
@@ -76,12 +82,25 @@ class Sirge < ActiveRecord::Base
                 codigo_gasto = arr_codigos_de_gastos[i-4]
                 efector_cesion = ""
                 monto = row[i].present? ? row[i] : "NULL"
+                if monto.class == Spreadsheet::Formula
+                  monto = monto.value
+                end
 
                 ActiveRecord::Base.connection.execute "INSERT INTO  public.sirge  \n"+
-                      "( efector_id, fecha_gasto,           periodo, numero_comprobante_gasto, codigo_gasto, efector_cesion_id, monto, concepto, created_at, updated_at ) \n"+
-                      "VALUES \n"+ 
-                      "( #{efector_id}, date('2013-#{row[2]}-#{fecha_gasto}'), '#{periodo}', NULL                     ,'#{codigo_gasto}', NULL           , #{monto}, ''   , now()     , now() );"
-
+                      "( efector_id        , fecha_gasto,                               periodo      , numero_comprobante_gasto, codigo_gasto     , efector_cesion_id, monto, concepto, created_at, updated_at ) \n"+
+                      "SELECT #{efector_id}, date('#{row[3]}-#{row[2].to_s.gsub(/[^0-9]/i, '')}-#{fecha_gasto}'), '#{periodo}', NULL                     ,'#{codigo_gasto}', NULL           , #{monto}, ''     , now()     , now() \n"+
+                      "WHERE NOT EXISTS ( \n" +
+                      " SELECT *  \n"+
+                      " FROM public.sirge\n "+
+                      " WHERE efector_id = #{efector_id}\n"+
+                      " and fecha_gasto = date('#{row[3]}-#{row[2].to_s.gsub(/[^0-9]/i, '')}-#{fecha_gasto}') \n"+
+                      " and periodo = '#{periodo}' \n"+
+                      " and numero_comprobante_gasto = NULL \n"+
+                      " and codigo_gasto = '#{codigo_gasto}'\n"+
+                      " and efector_cesion_id = NULL\n"+
+                      " and monto = #{monto}\n"+
+                      " and concepto = ''\n"+
+                      ");"
                 i+= 1
               end
 
