@@ -48,14 +48,14 @@ class AfiliadosController < ApplicationController
 
       @afiliados = Afiliado.busqueda_por_aproximacion(numero, nombres.join(" "))
       if @afiliados[0].present? and @afiliados[0].size > 0
-        #@afiliados[0].map!{ |af| {id: af.afiliado_id, text: "#{af.nombre}, #{af.apellido} (#{af.tipo_de_documento.codigo}: #{af.numero_de_documento})"}}
+
         @afiliados[0].map! do |af| 
           { 
             id: af.afiliado_id, 
             nombre: "#{af.apellido}, #{af.nombre}",
             documento: "#{af.tipo_de_documento.codigo}: #{af.numero_de_documento}",
             fecha_de_nacimiento: "#{af.fecha_de_nacimiento}",
-            edad: "#{af.edad}",
+            edad: "#{af.edad_en_anios} años",
             nombre_madre: "#{af.nombre_de_la_madre}, #{af.apellido_de_la_madre}",
             documento_madre:  af.tipo_de_documento_de_la_madre.present? ? "#{af.tipo_de_documento_de_la_madre.codigo}: #{af.numero_de_documento_de_la_madre}" : nil ,
             nombre_padre: "#{af.nombre_del_padre}, #{af.apellido_del_padre}",
