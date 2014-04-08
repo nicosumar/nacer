@@ -36,6 +36,17 @@ class PrestacionLiquidada < ActiveRecord::Base
              "and estado_de_la_prestacion_liquidada_id = 12 ", concepto, efector, afiliado.clave_de_beneficiario)
 
     }
+  scope :pagadas_por_efector_y_concepto_comunitarias, 
+    lambda{ |efector, concepto| 
+      joins(" join prestaciones_incluidas on prestaciones_incluidas.id = prestaciones_liquidadas.prestacion_incluida_id\n"+ 
+            " join prestaciones on prestaciones.id = prestaciones_incluidas.prestacion_id\n")
+      .includes(:prestacion_incluida, :efector)
+      .where("prestaciones.concepto_de_facturacion_id = ? \n"+
+             "and prestaciones_liquidadas.efector_id = ? \n"+
+             "and prestaciones_liquidadas.clave_de_beneficiario IS NULL \n"+
+             "and estado_de_la_prestacion_liquidada_id = 12 ", concepto, efector )
+
+    }
   
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :diagnostico_id, :diagnostico_nombre
   attr_accessible :efector_id, :es_catastrofica, :estado_de_la_prestacion_id, :fecha_de_la_prestacion

@@ -18,7 +18,7 @@ table tr {
 
 table td {
   background: none repeat scroll 0 0 transparent;
-  border-bottom: 2px solid #FFFFFF;
+  border-bottom: 2px solid transparent;
   border-top: 1px solid transparent;
   color: #1A1A1A;
   padding: 8px;
@@ -30,7 +30,7 @@ table td {
     text-align: right; } }
 
 table tr:hover td {
-  background: none repeat scroll 0 0 #FFFFFF; }
+  background: none repeat scroll 0 0 transparent; }
   
 
 

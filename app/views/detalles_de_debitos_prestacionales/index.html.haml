@@ -7,47 +7,53 @@
       =# link_to "Nuevo Informe", new_informe_debito_prestacional_path
 
 #content-body
+  %hr{width: "100%"}
+  #info{align: "center"}
+    %table
+      %tr
+        %td
+          %span.field_name Efector:
+          %span.field_value= @informe_de_debito.efector.nombre
+        %td
+          %span.field_name Concepto de facturación:
+          %span.field_value= @informe_de_debito.concepto_de_facturacion.concepto
+      %tr
+        %td
+          %span.field_name Tipo de débito prestacional:
+          %span.field_value= @informe_de_debito.tipo_de_debito_prestacional.nombre
+        %td
+          %span.field_name Estado del proceso:
+          %span.field_value= @informe_de_debito.estado_del_proceso.nombre
+      %tr
+        %td
+          %span.field_name Informado SIRGE:
+          %span.field_value=  @informe_de_debito.informado_sirge ? 'Si' : 'No'
+        %td
+          %span.field_name Procesado para débito:
+          %span.field_value= @informe_de_debito.procesado_para_debito ? 'Si' : 'No'
 
-  %table
-    %tr
-      %td
-        %span.field_name Efector:
-        %span.field_value= @informe_de_debito.efector.nombre
-      %td
-        %span.field_name Concepto de facturación:
-        %span.field_value= @informe_de_debito.concepto_de_facturacion.concepto
-    %tr
-      %td
-        %span.field_name Tipo de débito prestacional:
-        %span.field_value= @informe_de_debito.tipo_de_debito_prestacional.nombre
-      %td
-        %span.field_name Estado del proceso:
-        %span.field_value= @informe_de_debito.estado_del_proceso.nombre
-    %tr
-      %td
-        %span.field_name Informado SIRGE:
-        %span.field_value=  @informe_de_debito.informado_sirge ? 'Si' : 'No'
-      %td
-        %span.field_name Procesado para débito:
-        %span.field_value= @informe_de_debito.procesado_para_debito ? 'Si' : 'No'
+  %hr{width: "100%"}
   %br/
 
   = form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
-    = field_set_tag 'Cargar débito' do
-      .field
-        = f.label :afiliado
-        = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados' }
-      .field
-        = f.label :prestacion_liquidada 
-        = f.hidden_field :prestacion_liquidada_id, class: 'select2 ajax encadenado', data: { source: prestaciones_liquidadas_por_afiliado_efector_path, placeholder: 'Seleccione la prestación a debitar', coleccion: 'prestaciones', id_padre: 'detalle_de_debito_prestacional_afiliado_id', parametro: 'afiliado_id', parametros_adicionales: "efector_id: #{@informe_de_debito.efector.id}, concepto_de_facturacion_id: #{@informe_de_debito.concepto_de_facturacion.id}" }
-      .field
-        = f.label :motivo_de_rechazo
-        = f.select :motivo_de_rechazo, @motivos_de_rechazo,{:include_blank => true}, {class: 'select2', data: {placeholder: 'Seleccione el motivo de rechazo' }}
-      = f.label :observaciones
-      .field
-        = f.text_area :observaciones, :size => "70x8"
-      .actions
-        = f.submit
+    .field
+      = f.label :afiliado
+      = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados', funcion_de_formato: "maquetaAfiliado", funcion_de_formato_seleccionada: "seleccionaAfiliado" }
+      ¿Prestación comunitaria?
+      = check_box_tag "es_comunitaria", 1, false
+    .field
+      = f.label "Prestación" 
+      = f.hidden_field :prestacion_liquidada_id, class: 'select2 ajax encadenado', data: { source: prestaciones_liquidadas_por_afiliado_efector_concepto_path, placeholder: 'Seleccione la prestación a debitar', coleccion: 'prestaciones', id_padre: 'detalle_de_debito_prestacional_afiliado_id', parametro: 'afiliado_id', parametros_adicionales: "efector_id: #{@informe_de_debito.efector.id}, concepto_de_facturacion_id: #{@informe_de_debito.concepto_de_facturacion.id}", funcion_de_formato: "maquetaPrestaciones", funcion_de_formato_seleccionada: "seleccionaPrestacion" }
+    .field
+      = f.label :motivo_de_rechazo
+      = f.select :motivo_de_rechazo, @motivos_de_rechazo,{:include_blank => true}, {class: 'select2', data: {placeholder: 'Seleccione el motivo de rechazo' }}
+    = f.label :observaciones
+    .field
+      = f.text_area :observaciones, style: "width:100%", size: "70x8"
+    .actions
+      = f.submit "Guardar"
+  
+  %hr{width: "100%"}
 
   %h2 Debitos
   %table

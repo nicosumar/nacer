@@ -14,7 +14,7 @@ Nacer::Application.routes.draw do
   get "capacitaciones/index"
 
   get 'buscar_prestacion_liquidada/:action' => 'prestaciones_liquidadas#:action'
-  get 'buscar_prestacion_liquidada/por_afiliado_efector' => 'prestaciones_liquidadas#por_afiliado_efector', as: :prestaciones_liquidadas_por_afiliado_efector
+  get 'buscar_prestacion_liquidada/por_afiliado_concepto_y_efector' => 'prestaciones_liquidadas#por_afiliado_concepto_y_efector', as: :prestaciones_liquidadas_por_afiliado_efector_concepto
 
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion

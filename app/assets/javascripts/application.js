@@ -29,9 +29,14 @@ $(document).ready(function() {
       minimumInputLength: (select.data('caracteresminimos') == undefined) ? '0' : select.data('caracteresminimos'),
       allowClear: true,
       dropdownCssClass: "bigdrop",
-      width: 'resolve'
+      width: 'resolve',
+      dropdownAutoWidth : true
     };
     ;
+    if(select.data('funcion-de-formato') != undefined) {
+      options.formatResult = eval(select.data('funcion-de-formato'));
+      options.formatSelection = eval(select.data('funcion-de-formato-seleccionada'));
+    } 
     if (select.hasClass('ajax')) {
       options.ajax = {
         url: select.data('source'),

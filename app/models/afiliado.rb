@@ -1006,4 +1006,33 @@ class Afiliado < ActiveRecord::Base
 
   end
 
+  def edad(fecha_de_calculo = Date.today)
+
+    # Imposible calcular la edad con una fecha de cálculo anterior a la de nacimiento
+    return nil if (!self.fecha_de_nacimiento || fecha_de_calculo < self.fecha_de_nacimiento)
+
+    # Calculamos la diferencia entre los años de ambas fechas
+    diferencia_en_anios = (fecha_de_calculo.year - self.fecha_de_nacimiento.year)
+
+    # Calculamos la diferencia entre los meses de ambas fechas
+    diferencia_en_meses = (fecha_de_calculo.month - self.fecha_de_nacimiento.month)
+    if diferencia_en_meses < 0
+      # Ajustamos la cantidad de meses y años, si la cantidad de meses es negativa
+      diferencia_en_anios -= 1
+      diferencia_en_meses += 12
+    end
+
+    # Calculamos la diferencia en días
+    diferencia_en_dias = (fecha_de_calculo.day) - (self.fecha_de_nacimiento.day)
+    if diferencia_en_dias < 0
+      diferencia_en_meses -= 1
+      if diferencia_en_meses < 0
+        # Ajustamos la cantidad de meses y años, si la cantidad de meses es negativa
+        diferencia_en_anios -= 1
+        diferencia_en_meses += 12
+      end
+      diferencia_en_dias = (fecha_de_calculo - (self.fecha_de_nacimiento + diferencia_en_anios.years + diferencia_en_meses.months)).to_i
+    end
+  end
+
 end
