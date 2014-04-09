@@ -9,6 +9,7 @@
  *= require jquery.ui.spinner
  *= require jquery.ui.dialog
  *= require jquery.ui.tabs
+ *= require jquery.ui.tooltip
  *= require chosen
  *= require wice_grid
 */

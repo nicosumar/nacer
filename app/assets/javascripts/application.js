@@ -13,6 +13,7 @@
 //= require jquery.ui.spinner
 //= require jquery.ui.dialog
 //= require jquery.ui.tabs
+//= require jquery.ui.tooltip
 //= require chosen-jquery
 //= require wice_grid 
 
