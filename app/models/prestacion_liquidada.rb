@@ -53,4 +53,8 @@ class PrestacionLiquidada < ActiveRecord::Base
   attr_accessible :historia_clinica, :liquidacion_id, :observaciones, :prestacion_incluida_id
   attr_accessible :unidad_de_alta_de_datos_id, :detalle_de_debito_prestacional
 
+  def prestacion_liquidada_nombre
+    self.prestacion_incluida.prestacion_codigo + " - "+ self.prestacion_incluida.nombre_corto
+  end
+
 end

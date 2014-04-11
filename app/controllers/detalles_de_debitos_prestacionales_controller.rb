@@ -21,6 +21,7 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
       else
         format.json { render json: @detalle_de_debito_prestacional.errors, status: :unprocessable_entity }
       end
+      format.js
     end
   end
 

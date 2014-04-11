@@ -283,6 +283,10 @@ class Afiliado < ActiveRecord::Base
     return nil
   end
 
+  def documento_y_tipo
+    self.tipo_de_documento.codigo + ": "+self.numero_de_documento
+  end
+  
   def nombre_completo
 
     nombre_completo = nombre + " " + apellido

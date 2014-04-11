@@ -6,4 +6,9 @@ class DetalleDeDebitoPrestacional < ActiveRecord::Base
 
   attr_accessible :prestacion_liquidada, :motivo_de_rechazo
   attr_accessible :informado_sirge, :observaciones, :procesado_para_debito
+
+  validates :prestacion_liquidada_id, presence: true 
+  validates :motivo_de_rechazo_id, presence: true 
+  validates :informe_debito_prestacional_id, presence: true 
+  validates :tipo_de_debito_prestacional_id, presence: true
 end

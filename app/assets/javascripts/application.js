@@ -14,6 +14,7 @@
 //= require jquery.ui.dialog
 //= require jquery.ui.tabs
 //= require jquery.ui.tooltip
+//= require jquery.ui.effect-highlight
 //= require chosen-jquery
 //= require wice_grid 
 
