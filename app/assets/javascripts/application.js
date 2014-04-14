@@ -63,7 +63,7 @@ $(document).ready(function() {
       select.select2('enable', false);
       select.data('parametros-adicionales', select.data('parametros-adicionales') + ', valor_encadenado: -1')
       padre = $('#'+select.data('id-padre'));
-      padre.change(function(){
+      padre.on('change', function(e){
 
         var parametros_adicionales = [];
 

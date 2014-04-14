@@ -1,8 +1,9 @@
 $(document).ready(function(){
   //inicializo los combos desactivados
   $("#es_comunitaria").attr('checked', false);
-  $("#detalle_de_debito_prestacional_motivo_de_rechazo").select2('enable', false);
+  $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('enable', false);
 
+  //Cada vez que carga el combo de afiliado, crea los tooltips para cada div que crea el select 2 con las opciones
   $("#detalle_de_debito_prestacional_afiliado_id").on("select2-loaded", function(e){
     $(function() {
       $( document ).tooltip({
@@ -16,6 +17,21 @@ $(document).ready(function(){
           }
         }
       });
+    });
+  });
+
+  //Creo el modal
+  $(function() {
+    $( "#errores" ).dialog({
+      modal: true,
+      autoOpen: false,
+      width: 810,
+      height: 250,
+      buttons: {
+        Cerrar: function() {
+          $( this ).dialog( "close" );
+        }
+      }
     });
   });
     
@@ -33,12 +49,41 @@ $(document).ready(function(){
 
     if(prestacion.select2('val') == "")
     {
-      $("#detalle_de_debito_prestacional_motivo_de_rechazo").select2('enable', false);
-      $("#detalle_de_debito_prestacional_motivo_de_rechazo").select2('val',"");
+      $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('enable', false);
+      $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('val',"");
     }
     else
-      $("#detalle_de_debito_prestacional_motivo_de_rechazo").select2('enable', true);
+      $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('enable', true);
   });
+  
+  $("#detalle_de_debito_prestacional_prestacion_liquidada_id").on("select2-removed", function(e){
+    $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('enable', false);
+    $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('val',"");
+  });
+
+  //Cuando cambie el afiliado
+  $("#detalle_de_debito_prestacional_afiliado_id").on("change", function(e){
+    prestacion = $("#detalle_de_debito_prestacional_afiliado_id");
+
+    if(prestacion.select2('val') == "")
+    {
+      $("#detalle_de_debito_prestacional_prestacion_liquidada_id").select2('enable', false);
+      $("#detalle_de_debito_prestacional_prestacion_liquidada_id").select2('val',"");
+      $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('enable', false);
+      $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('val',"");
+    }
+    else
+      $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('enable', true);
+      $("#detalle_de_debito_prestacional_prestacion_liquidada_id").select2('enable', true);
+  });
+  
+  $("#detalle_de_debito_prestacional_afiliado_id").on("select2-removed", function(e){
+    $("#detalle_de_debito_prestacional_prestacion_liquidada_id").select2('enable', false);
+    $("#detalle_de_debito_prestacional_prestacion_liquidada_id").select2('val',"");
+    $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('enable', false);
+    $("#detalle_de_debito_prestacional_motivo_de_rechazo_id").select2('val',"");
+  });
+
 });
 
 function maquetaPrestaciones(prestacion) {
@@ -99,6 +144,7 @@ function maquetaAfiliado(afiliado) {
 
     return markup;
 }
+
 function seleccionaAfiliado(afiliado) {
     return "<b>"+afiliado.nombre+"</b> ("+afiliado.documento+")";
 }

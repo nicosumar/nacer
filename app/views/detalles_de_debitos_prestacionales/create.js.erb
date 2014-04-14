@@ -1,10 +1,17 @@
-var tabla = "";
-talba += "<tr id= '"+<%= "detalle_"+@detalle_de_debito_prestacional.id.to_s %>+"'>";
-tabla += "  <td>"+ <%= @detalle_de_debito_prestacional.motivo_de_rechazo.nombre %>+"</td>";
-tabla += "  <td>"+ <%= @detalle_de_debito_prestacional.afiliado.nombre_completo + " ("+@detalle_de_debito_prestacional.afiliado.documento_y_tipo +")" %>+"</td>";
-tabla += "  <td>"+ <%= @detalle_de_debito_prestacional.prestacion_liquidada.prestacion_liquidada_nombre %>+"</td>";
-tabla += "  <td>"+ <%= @detalle_de_debito_prestacional.observaciones %>+"</td>";
-tabla += "  <td>"+ <%= link_to "Eliminar", [@informe_de_debito, @detalle_de_debito_prestacional], method: :delete, remote: true, data: { confirm: '¿Está seguro que desea eliminar la prestación del informe de debito?' } %>+"</td>";
-tabla += "</tr>";
-$('#tabla_detalle tr:first').after(tabla);
-$('#<%="detalle_"+@detalle_de_debito_prestacional.id.to_s %>').effect('highlight');
+<% if @detalle_de_debito_prestacional.new_record? %>
+	$("#errores").empty();
+	$("#errores").append("<p><%= escape_javascript(render partial: '/shared/info', :locals => { :registro => @detalle_de_debito_prestacional }) %></p>");
+	$("#errores").dialog("open");
+
+<% else %>	
+	var tabla = "";
+	tabla += "<tr id= 'detalle_<%= @detalle_de_debito_prestacional.id.to_s %>'>";
+	tabla += "  <td><%= @detalle_de_debito_prestacional.motivo_de_rechazo.nombre %></td>";
+	tabla += '  <td><%= "#{@detalle_de_debito_prestacional.afiliado.nombre_completo} (#{@detalle_de_debito_prestacional.afiliado.documento_y_tipo })" %></td>';
+	tabla += "  <td><%= @detalle_de_debito_prestacional.prestacion_liquidada.prestacion_liquidada_nombre %></td>";
+	tabla += "  <td><%= @detalle_de_debito_prestacional.observaciones %></td>";
+	tabla += '  <td><%= link_to "Eliminar", [@informe_de_debito, @detalle_de_debito_prestacional], method: :delete, remote: true, data: { confirm: "¿Está seguro que desea eliminar la prestación del informe de debito?" } %></td>';
+	tabla += "</tr>";
+	$('#tabla_detalle tr:first').after(tabla);
+	$('#<%="detalle_"+@detalle_de_debito_prestacional.id.to_s %>').effect('highlight');
+<% end %>

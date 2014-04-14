@@ -33,7 +33,7 @@ class CreateInformesDebitosPrestacionales < ActiveRecord::Migration
       
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("concepto_de_facturacion_id"  );
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("efector_id"  );
-      CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("tipo_de_debito_prestacional_id"  );
+      --CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("tipo_de_debito_prestacional_id"  );
       CREATE INDEX  ON "public"."informes_debitos_prestacionales" ("estado_del_proceso_id"  );
       CREATE INDEX  ON "public"."detalles_de_debitos_prestacionales" ("informe_debito_prestacional_id");
     SQL

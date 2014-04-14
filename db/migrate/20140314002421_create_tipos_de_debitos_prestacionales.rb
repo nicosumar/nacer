@@ -5,15 +5,16 @@ class CreateTiposDeDebitosPrestacionales < ActiveRecord::Migration
       t.string :nombre
     end
 
-    add_column :detalles_de_debitos_prestacionales, :tipo_de_debito_prestacional_id, "int4"
+    #add_column :detalles_de_debitos_prestacionales, :tipo_de_debito_prestacional_id, "int4"
 
     execute <<-SQL
-      ALTER TABLE "public"."detalles_de_debitos_prestacionales"
+      /*ALTER TABLE "public"."detalles_de_debitos_prestacionales"
         ADD FOREIGN KEY ("tipo_de_debito_prestacional_id") 
           REFERENCES "public"."tipos_de_debitos_prestacionales" ("id") 
           ON DELETE RESTRICT ON UPDATE NO ACTION;
 
         CREATE INDEX  ON "public"."detalles_de_debitos_prestacionales" ("tipo_de_debito_prestacional_id"  );
+        */
     SQL
 
     TipoDeDebitoPrestacional.create([
@@ -54,10 +55,12 @@ class CreateTiposDeDebitosPrestacionales < ActiveRecord::Migration
 
   def down
     execute <<-SQL
+      /*
       DROP INDEX "public"."detalles_de_debitos_prestacio_tipo_de_debito_prestacional_i_idx";
       ALTER TABLE "public"."detalles_de_debitos_prestacionales"
         DROP CONSTRAINT "detalles_de_debitos_prestacio_tipo_de_debito_prestacional__fkey",
         DROP COLUMN "tipo_de_debito_prestacional_id";
+      */
     SQL
 
     execute <<-SQL

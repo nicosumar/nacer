@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140314160514) do
+ActiveRecord::Schema.define(:version => 20140320134352) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -457,7 +457,6 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
     t.text     "observaciones"
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
-    t.integer  "tipo_de_debito_prestacional_id"
     t.integer  "informe_debito_prestacional_id"
   end
 
@@ -466,7 +465,6 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
   add_index "detalles_de_debitos_prestacionales", ["motivo_de_rechazo_id"], :name => "detalles_de_debitos_prestacionales_motivo_de_rechazo_id_idx"
   add_index "detalles_de_debitos_prestacionales", ["prestacion_liquidada_id"], :name => "detalles_de_debitos_prestacionales_prestacion_liquidada_id_idx", :unique => true
   add_index "detalles_de_debitos_prestacionales", ["prestacion_liquidada_id"], :name => "detalles_de_debitos_prestacionales_prestacion_liquidada_id_key", :unique => true
-  add_index "detalles_de_debitos_prestacionales", ["tipo_de_debito_prestacional_id"], :name => "detalles_de_debitos_prestacio_tipo_de_debito_prestacional_i_idx"
 
   create_table "diagnosticos", :force => true do |t|
     t.string "nombre"
@@ -670,7 +668,6 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
   add_index "informes_debitos_prestacionales", ["concepto_de_facturacion_id"], :name => "informes_debitos_prestacionales_concepto_de_facturacion_id_idx"
   add_index "informes_debitos_prestacionales", ["efector_id"], :name => "informes_debitos_prestacionales_efector_id_idx"
   add_index "informes_debitos_prestacionales", ["estado_del_proceso_id"], :name => "informes_debitos_prestacionales_estado_del_proceso_id_idx"
-  add_index "informes_debitos_prestacionales", ["tipo_de_debito_prestacional_id"], :name => "informes_debitos_prestacional_tipo_de_debito_prestacional_i_idx"
 
   create_table "informes_filtros", :force => true do |t|
     t.integer  "posicion"
@@ -1405,7 +1402,7 @@ ActiveRecord::Schema.define(:version => 20140314160514) do
     t.string   "apellido",                                  :null => false
     t.date     "fecha_de_nacimiento"
     t.integer  "sexo_id"
-    t.text     "observaciones"
+    t.text     "observaciones",                             :null => false
     t.boolean  "authorized",             :default => false, :null => false
     t.datetime "authorized_at"
     t.integer  "authorized_by"

@@ -3,8 +3,8 @@
 #content-header
   %h1 Informe de debito prestacional - Detalle de debitos
   #action-links
-    - if can? :create, DetalleDeDebitoPrestacional
-      =# link_to "Nuevo Informe", new_informe_debito_prestacional_path
+    - if can? :read, InformeDebitoPrestacional
+      = link_to '<< Volver al listado', informes_debitos_prestacionales_path
 
 #content-body
   %hr{width: "100%"}
@@ -32,28 +32,27 @@
           %span.field_name Procesado para débito:
           %span.field_value= @informe_de_debito.procesado_para_debito ? 'Si' : 'No'
 
-  %hr{width: "100%"}
   %br/
-
-  = form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
-    .field
-      = f.label :afiliado
-      = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados', funcion_de_formato: "maquetaAfiliado", funcion_de_formato_seleccionada: "seleccionaAfiliado" }
-      ¿Prestación comunitaria?
-      = check_box_tag "es_comunitaria", 1, false
-    .field
-      = f.label "Prestación" 
-      = f.hidden_field :prestacion_liquidada_id, class: 'select2 ajax encadenado', data: { source: prestaciones_liquidadas_por_afiliado_efector_concepto_path, placeholder: 'Seleccione la prestación a debitar', coleccion: 'prestaciones', id_padre: 'detalle_de_debito_prestacional_afiliado_id', parametro: 'afiliado_id', parametros_adicionales: "efector_id: #{@informe_de_debito.efector.id}, concepto_de_facturacion_id: #{@informe_de_debito.concepto_de_facturacion.id}", funcion_de_formato: "maquetaPrestaciones", funcion_de_formato_seleccionada: "seleccionaPrestacion" }
-    .field
-      = f.label :motivo_de_rechazo
-      = f.select :motivo_de_rechazo, @motivos_de_rechazo,{:include_blank => true}, {class: 'select2', data: {placeholder: 'Seleccione el motivo de rechazo' }}
-    = f.label :observaciones
-    .field
-      = f.text_area :observaciones, style: "width:100%", size: "70x8"
-    .actions
-      = f.submit "Guardar"
-  
-  %hr{width: "100%"}
+  - if @detalle_editable == true
+    %hr{width: "100%"}
+    = form_for([@informe_de_debito, DetalleDeDebitoPrestacional.new], remote: true) do |f|
+      .field
+        = f.label :afiliado
+        = f.hidden_field :afiliado_id, class: 'select2 ajax', data: { source: busqueda_por_aproximacion_afiliados_path, placeholder: 'Ingrese el documento y nombre del afiliado a buscar', caracteresminimos: '5', coleccion: 'afiliados', funcion_de_formato: "maquetaAfiliado", funcion_de_formato_seleccionada: "seleccionaAfiliado" }
+        ¿Prestación comunitaria?
+        = check_box_tag "es_comunitaria", 1, false
+      .field
+        = f.label "Prestación" 
+        = f.hidden_field :prestacion_liquidada_id, class: 'select2 ajax encadenado', data: { source: prestaciones_liquidadas_por_afiliado_efector_concepto_path, placeholder: 'Seleccione la prestación a debitar', coleccion: 'prestaciones', id_padre: 'detalle_de_debito_prestacional_afiliado_id', parametro: 'afiliado_id', parametros_adicionales: "efector_id: #{@informe_de_debito.efector.id}, concepto_de_facturacion_id: #{@informe_de_debito.concepto_de_facturacion.id}", funcion_de_formato: "maquetaPrestaciones", funcion_de_formato_seleccionada: "seleccionaPrestacion" }
+      .field
+        = f.label :motivo_de_rechazo
+        = f.select :motivo_de_rechazo_id, @motivos_de_rechazo,{:include_blank => true}, {class: 'select2', data: {placeholder: 'Seleccione el motivo de rechazo' }}
+      = f.label :observaciones
+      .field
+        = f.text_area :observaciones, style: "width:100%", size: "70x8"
+      .actions
+        = f.submit "Guardar"
+    %hr{width: "100%"}
 
   %h2 Debitos
   %table{id: "tabla_detalle"}
@@ -71,4 +70,7 @@
         %td= detalle.observaciones
         %td= link_to "Eliminar", [@informe_de_debito, detalle], method: :delete, remote: true, data: { confirm: '¿Está seguro que desea eliminar la prestación del informe de debito?' }
 
+  #errores{title: "No se pudo guardar su debito"}
+
+    
 =# link_to 'New Detalle de debito prestacional', new_detalle_de_debito_prestacional_path

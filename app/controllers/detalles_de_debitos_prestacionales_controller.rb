@@ -9,19 +9,31 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
   def index
     @detalles_de_debitos_prestacionales = @informe_de_debito.detalles_de_debitos_prestacionales
     @motivos_de_rechazo = MotivoDeRechazo.where(categoria: @informe_de_debito.tipo_de_debito_prestacional.nombre).collect {|m| [m.nombre, m.id]}
+    @detalle_editable = @informe_de_debito.estado_del_proceso.id == EstadoDelProceso.where(codigo: 'C').first.id ? true : false
   end
 
-  # POST /detalles_de_debitos_prestacionales.json
+  # POST /detalles_de_debitos_prestacionales.js
   def create
-    @detalle_de_debito_prestacional = @informe_de_debito.detalles_de_debitos_prestacionales.new(params[:detalle_de_debito_prestacional])
 
-    respond_to do |format|
-      if @detalle_de_debito_prestacional.save
-        format.json { render json: @detalle_de_debito_prestacional, status: :created, location: @detalle_de_debito_prestacional }
-      else
-        format.json { render json: @detalle_de_debito_prestacional.errors, status: :unprocessable_entity }
+    # El detalle es solo se guarda si el estado del proceso esta en curso
+    @detalle_de_debito_prestacional = @informe_de_debito.detalles_de_debitos_prestacionales.new(params[:detalle_de_debito_prestacional])
+    
+    if @informe_de_debito.estado_del_proceso.id == EstadoDelProceso.where(codigo: 'C').first.id 
+      respond_to do |format|
+        begin
+          @detalle_de_debito_prestacional.save
+        
+        rescue ActiveRecord::RecordNotUnique
+          @detalle_de_debito_prestacional.errors.add(:duplicado, "La prestación seleccionada ya ha sido cargada para ser debitada")
+        rescue Exception => e
+          @detalle_de_debito_prestacional.errors.add(:otro, e.message)
+        end
+        format.js
       end
-      format.js
+    else
+      respond_to do |format|
+        format.js
+      end
     end
   end
 
