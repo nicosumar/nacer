@@ -9,7 +9,7 @@
     = link_to 'Ver', @liquidacion_informe
 #content-body
   %h2.first-header Datos del referente:
-  - if @liquidacion_informe.liquidacion_sumar_cuasifactura.efector.convenio_de_gestion_sumar.firmante.present?
+  - if @liquidacion_informe.liquidacion_sumar_cuasifactura.efector.referente_al_dia(@liquidacion_informe.liquidacion_sumar.periodo.fecha_cierre).present?
     = "  Recuerde, la cuasifactura del <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.nombre}</b> ".html_safe
     = "debe ser firmada por <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.referente_al_dia(@liquidacion_informe.liquidacion_sumar.periodo.fecha_cierre).contacto.mostrado}</b>.".html_safe
   - else
