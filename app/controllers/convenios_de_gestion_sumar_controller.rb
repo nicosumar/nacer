@@ -493,15 +493,18 @@ class ConveniosDeGestionSumarController < ApplicationController
       # Registrar el usuario que realiza la modificación
       @convenio_de_gestion.updater_id = current_user.id
 
-      # Modificar los registros dependientes
-      @convenio_de_gestion.prestaciones_autorizadas.destroy_all
-      @convenio_de_gestion.prestaciones_autorizadas.build(
-        @prestacion_autorizada_ids.collect{
-          |p| { :efector_id => @convenio_de_gestion.efector.id, :prestacion_id => p,
-            :fecha_de_inicio => @convenio_de_gestion.fecha_de_inicio
-          }
-        }
-      )
+# TODO: esto está mal, si se modifican datos legales, se destruye la info de las prestaciones autorizadas y se recrea, cuando esa
+# información se está agregando por procesos automatizados y no por los usuarios. Además afectaría las bajas dadas por adenda, en
+# caso que existieran
+#      Modificar los registros dependientes
+#      @convenio_de_gestion.prestaciones_autorizadas.destroy_all
+#      @convenio_de_gestion.prestaciones_autorizadas.build(
+#        @prestacion_autorizada_ids.collect{
+#          |p| { :efector_id => @convenio_de_gestion.efector.id, :prestacion_id => p,
+#            :fecha_de_inicio => @convenio_de_gestion.fecha_de_inicio
+#          }
+#        }
+#      )
 
       # Guardar el convenio
       @convenio_de_gestion.save

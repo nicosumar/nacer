@@ -34,17 +34,118 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
     prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97")
 
-    # Añado A97 a los códigos de ECG en menores de 6 años
+    # Colposcopía
+    prestacion = Prestacion.where(:id => 268, :codigo => "PRP002").first
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("W84")
+
+    # Añado diagnósticos al ECG en embarazo
+    prestacion = Prestacion.where(:id => 317, :codigo => "PRP004").first
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O10.0")
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O10.4")
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O16")
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O47")
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O72.1")
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O72.2")
+
+    # Añado y quito diagnósticos al ECG en menores de 6 años
     prestacion = Prestacion.where(:id => 483, :codigo => "PRP004").first
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97")
+    prestacion.diagnosticos.delete(Diagnostico.find_by_codigo!("D11"))
+    prestacion.diagnosticos.delete(Diagnostico.find_by_codigo!("D60"))
 
+    # Electrocardiagrama en niños de 6 a 9
     prestacion = Prestacion.where(:id => 621, :codigo => "PRP004").first
     prestacion.sexos << [sexo_femenino, sexo_masculino]
-    prestacion.grupos_poblacionales << [de_6_a_9, adolescentes, mujeres_20_a_64]
-    prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97")
+    prestacion.grupos_poblacionales << de_6_a_9
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72") # Linfomas
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73") # Leucemia
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B78") # Anemias hereditarias
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("R96") # Asma
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T79") # Sobrepeso con factores de riesgo
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T82") # Obesidad
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T83") # Sobrepeso
+    AsignacionDePrecios.create!({
+      :precio_por_unidad => 10.0000,
+      :adicional_por_prestacion => 0.0000,
+      :area_de_prestacion_id => rural_id,
+      :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora,
+    })
+
+    # Electrocardiograma en adolescentes
+    prestacion = Prestacion.create!({
+      :codigo => "PRP004",
+      :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("P004"),
+      :nombre => 'Electrocardiograma',
+      :requiere_historia_clinica => true,
+      :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true,
+      :concepto_de_facturacion_id => paquete_basico_id, :es_catastrofica => false,
+      :tipo_de_tratamiento_id => ambulatorio_id
+    })
+    prestacion.sexos << [sexo_femenino, sexo_masculino]
+    prestacion.grupos_poblacionales << adolescentes
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72") # Linfomas
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73") # Leucemia
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B78") # Anemias hereditarias
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("R96") # Asma
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T79") # Sobrepeso con factores de riesgo
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T82") # Obesidad
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T83") # Sobrepeso
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("P20") # Abuso agudo de alcohol
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("P23") # Abuso agudo de fármacos
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("P24") # Abuso agudo de drogas
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("P98") # Suicidio / Intento de suicidio
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("Z31") # Víctima de violencia sexual
+    AsignacionDePrecios.create!({
+      :precio_por_unidad => 10.0000,
+      :adicional_por_prestacion => 0.0000,
+      :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+    })
+    AsignacionDePrecios.create!({
+      :precio_por_unidad => 10.0000,
+      :adicional_por_prestacion => 0.0000,
+      :area_de_prestacion_id => rural_id,
+      :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora,
+    })
+
+    # Electrocardiograma en mujeres de 20 a 64
+    prestacion = Prestacion.create!({
+      :codigo => "PRP004",
+      :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("P004"),
+      :nombre => 'Electrocardiograma',
+      :requiere_historia_clinica => true,
+      :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true,
+      :concepto_de_facturacion_id => paquete_basico_id, :es_catastrofica => false,
+      :tipo_de_tratamiento_id => ambulatorio_id
+    })
+    prestacion.sexos << sexo_femenino
+    prestacion.grupos_poblacionales << mujeres_20_a_64
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("Z31") # Víctima de violencia sexual
+    AsignacionDePrecios.create!({
+      :precio_por_unidad => 10.0000,
+      :adicional_por_prestacion => 0.0000,
+      :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+    })
+    AsignacionDePrecios.create!({
+      :precio_por_unidad => 10.0000,
+      :adicional_por_prestacion => 0.0000,
+      :area_de_prestacion_id => rural_id,
+      :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora,
+    })
 
     # Cambio la descripción del código PRP005
     Prestacion.where(:id => 402, :codigo => "PRP005").first.update_attributes({:nombre => "Ergometría (en pacientes con cardiopatía congénita)"})
+
+    # Ergometría (niños de 6 a 9 y adolescentes)
+    prestacion = Prestacion.where(:id => 622, :codigo => "PRP005").first
+    prestacion.sexos << [sexo_femenino, sexo_masculino]
+    prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("R96") # Asma
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T79") # Sobrepeso con factores de riesgo
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T82") # Obesidad
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("T83") # Sobrepeso
 
     # Espirometría
     prestacion = Prestacion.where(:codigo => "PRP006").first
@@ -82,8 +183,11 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
     # Medicina física / rehabilitación
     prestacion = Prestacion.where(:id => 628, :codigo => "PRP011").first
     prestacion.sexos << [sexo_femenino, sexo_masculino]
-    prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
-    prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
+    prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72") # Linfomas
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73") # Leucemia
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B78") # Anemias hereditarias
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("R96") # Asma
 
     # Pruebas de sensibilización
     prestacion = Prestacion.where(:codigo => "PRP014").first
@@ -128,7 +232,7 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73") # Leucemia
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("B78") # Anemias hemolíticas
 
-    # Punción de médula ósea
+    # Uso de tirillas reactivas
     prestacion = Prestacion.where(:id => 636, :codigo => "PRP030").first
     prestacion.sexos << sexo_femenino
     prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
@@ -136,40 +240,9 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("W84") # Embarazo de alto riesgo
 
     # Monitoreo fetal anteparto
-#    prestacion = Prestacion.create!({
-#      :codigo => "PRP031",
-#      :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("P031"),
-#      :nombre => 'Monitoreo fetal anteparto',
-#      :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true,
-#      :concepto_de_facturacion_id => paquete_basico_id,
-#      :tipo_de_tratamiento_id => internacion_id
-#    })
-#    prestacion.sexos << sexo_femenino
-#    prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
-#    prestacion.diagnosticos << Diagnostico.find_by_codigo!("")
-#    AsignacionDePrecios.create!({
-#      :precio_por_unidad => 15.0000,
-#      :adicional_por_prestacion => 0.0000,
-#      :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
-#    })
-
-    # Tartrectomía y cepillado mecánico
-#    prestacion = Prestacion.create!({
-#      :codigo => "PRP033",
-#      :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("P033"),
-#      :nombre => 'Tartrectomía y cepillado mecánico',
-#      :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true,
-#      :concepto_de_facturacion_id => paquete_basico_id,
-#      :tipo_de_tratamiento_id => ambulatorio_id
-#    })
-#    prestacion.sexos << sexo_femenino
-#    prestacion.grupos_poblacionales << []
-#    prestacion.diagnosticos << Diagnostico.find_by_codigo!("")
-#    AsignacionDePrecios.create!({
-#      :precio_por_unidad => 15.0000,
-#      :adicional_por_prestacion => 0.0000,
-#      :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
-#    })
+    prestacion = Prestacion.where(:codigo => "PRP031").first
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("W78") # Embarazo
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("W84") # Embarazo de alto riesgo
 
     # Cambio la descripción del código PRP034
     Prestacion.where(:codigo => "PRP034").first.update_attributes({:nombre => "Holter de 24 hs (en pacientes con cardiopatía congénita)"})
@@ -254,6 +327,8 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
       }
     )
     prestacion = Prestacion.where(:codigo => "IGR005").first
+    prestacion.diagnosticos.delete(Diagnostico.where(:codigo => ["A40", "A41", "A42", "A44", "A46", "B72", "B73", "B80", "B90", "D11", "D60", "D72", "H86", "R25", "R74", "R78", "R81", "T91", "U71"]))
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("L30") # Displasia congénita de cadera
     prestacion.metodos_de_validacion << metodo
 
@@ -491,6 +566,7 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
 
     # Rx de huesos cortos en menores de 6 años
     prestacion = Prestacion.where(:codigo => "IGR017").first
+    prestacion.diagnosticos.delete(Diagnostico.where(:codigo => ["D11", "D60", "H86", "R25", "R74", "R78", "R81", "U71"]))
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("L31") # Pie bot
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("L74") # Fractura de carpo / tarso / mano /pie
@@ -554,6 +630,7 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
 
     # Rx de cráneo (menores de 6 años)
     prestacion = Prestacion.where(:id => 489, :codigo => "IGR022").first
+    prestacion.diagnosticos.delete(Diagnostico.where(:codigo => ["D11", "D60", "D72", "H86", "R25", "R74", "R78", "R81", "U71"]))
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("L32") # Fisura labiopalatina
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("R87") # Cuerpo extraño en nariz / laringe / bronquios
@@ -596,6 +673,7 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
 
     # Rx de huesos largos... (menores de 6 años)
     prestacion = Prestacion.where(:codigo => "IGR025").first
+    prestacion.diagnosticos.delete(Diagnostico.where(:codigo => ["B80", "D11", "D60", "R25", "R74", "R78", "R81", "U71"]))
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("L72") # Fractura de cúbito / radio
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("L73") # Fractura de tibia / peroné
@@ -627,6 +705,7 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
 
     # Rx de tórax (menores de 6 años)
     prestacion = Prestacion.where(:id => 488, :codigo => "IGR026").first
+    prestacion.diagnosticos.delete(Diagnostico.where(:codigo => ["D11", "D60", "H86", "U71"]))
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("R03") # Respiración jadeante / sibilante
     prestacion.diagnosticos << Diagnostico.find_by_codigo!("R72") # Faringitis / amigdalitis estreptocócica
@@ -654,11 +733,43 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
     # Cambio la descripción del código IGR030
     Prestacion.where(:id => 407, :codigo => "IGR030").first.update_attributes({:nombre => "Tomografía axial computada (en pacientes con cardiopatía congénita)"})
 
-    # Tomografía axial computada
+    # Tomografía axial computada (niños de 6 a 9 y adolescentes)
     prestacion = Prestacion.where(:id => 656, :codigo => "IGR030").first
     prestacion.sexos << [sexo_femenino, sexo_masculino]
-    prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
-    prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
+    prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B02") # Adenopatías / dolor ganglio linfático
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72") # Linfomas
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73") # Leucemia
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("B78") # Anemias hemolíticas
+
+    # Tomografía axial computada (mujeres de 20 a 64)
+    prestacion = Prestacion.create!({
+      :codigo => "IGR030",
+      :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("R030"),
+      :nombre => 'Tomografía axial computada (TAC)',
+      :requiere_historia_clinica => false,
+      :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true,
+      :concepto_de_facturacion_id => paquete_basico_id, :es_catastrofica => false,
+      :tipo_de_tratamiento_id => ambulatorio_id
+    })
+    prestacion.sexos << sexo_femenino
+    prestacion.grupos_poblacionales << mujeres_20_a_64
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("X75") # Neoplasia maligna cuello
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("X76") # Neoplasia maligna mama
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("X79") # Neoplasia benigna mama
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("X80") # Neoplasia benigna cuello
+    AsignacionDePrecios.create!({
+      :precio_por_unidad => 150.0000,
+      :adicional_por_prestacion => 0.0000,
+      :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+    })
+
+    # Ecografía obstétrica (alto riesgo)
+    prestacion = Prestacion.where(:id => 348, :codigo => "IGR031").first
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O47") # Falso trabajo de parto
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O72.1") # Otras hemorragias posparto inmediatas
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O72.2") # Hemorragia posparto secundaria o tardía
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O98.4") # Retardo de crecimiento intrauterino
 
     # Ecografía abdominal (de 6 a 9 años)
     prestacion = Prestacion.where(:codigo => "IGR032").first
@@ -725,6 +836,14 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
       :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
     })
 
+    # Ecodoppler fetal
+    prestacion = Prestacion.where(:codigo => "IGR037").first
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O24.4") # Diabetes mellitus que se origina con el embarazo
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O47") # Falso trabajo de parto
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O72.1") # Otras hemorragias posparto inmediatas
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O72.2") # Hemorragia posparto secundaria o tardía
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("O98.4") # Retardo de crecimiento intrauterino
+    prestacion.diagnosticos << Diagnostico.find_by_codigo!("P05") # Hemorragia posparto secundaria o tardía
 
     # ANATOMÍA PATOLÓGICA
 
@@ -870,7 +989,7 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
       :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
     })
 
-    # Cambio la descripción del código LBL012
+    # Cambio la descripción del código LBL023
     Prestacion.where(:id => 336, :codigo => "LBL023").first.update_attributes({:nombre => "Coagulograma con fibrinógeno: Cuantificación de fibrinógeno (embarazo de alto riesgo)"})
 
     prestacion = Prestacion.create!({
@@ -1589,6 +1708,27 @@ class HabilitacionDePracticasYLaboratorios < ActiveRecord::Migration
       :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
     })
 
+    # Definir una tasa de uso estándar de dos prestaciones por año con un intervalo de 1 mes para todas las prestaciones de los grupos de
+    # prácticas, imagenología, anatomía patológica y laboratorio que no tengan ya definida su tasa de uso
+    mv_cantidad = MetodoDeValidacion.find_by_metodo("no_excede_la_cantidad_de_prestaciones_por_periodo?")
+    Prestacion.where("
+      (codigo LIKE 'PR%' OR codigo LIKE 'IG%' OR codigo LIKE 'AP%' OR codigo LIKE 'LB%')
+      AND NOT EXISTS (
+        SELECT *
+          FROM cantidades_de_prestaciones_por_periodo cpp
+          WHERE cpp.prestacion_id = prestaciones.id
+      )
+    ").each do |prestacion|
+      CantidadDePrestacionesPorPeriodo.create!(
+        {
+          :prestacion_id => prestacion.id,
+          :cantidad_maxima => 2,
+          :periodo => "1.year",
+          :intervalo => "1.month"
+        }
+      )
+      prestacion.metodos_de_validacion << mv_cantidad
+    end
   end
 
   def down
