@@ -17,7 +17,7 @@
   #
 
   def initialize(template_ruta_y_archivo)
-    @rutayarchivo = args
+    @rutayarchivo = template_ruta_y_archivo
   end
 
   def cargar_datos
@@ -296,9 +296,9 @@
                          :seccion_anexo_1  => {desde: 572,hasta:  569, col_si_no: 13, tipo: 'a'},
                          :seccion_anexo_1  => {desde: 660,hasta:  687, col_si_no: 13, tipo: 'a'}
     }
-    
+
     # ruta = 'lib/tasks/datos/Convenios/2014-01/1/'
-    ruta = "lib/tasks/datos/Convenios/#{periodo.to_s}/#{paquete.to_s}" 
+    ruta = "lib/tasks/datos/Convenios/#{periodo.to_s}/#{paquete.to_s}"
 
     archivos = Dir.glob("#{ruta}/**/*").delete_if { |a| a.count('.') == 0 }
 
