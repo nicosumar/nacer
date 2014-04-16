@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140320134352) do
+ActiveRecord::Schema.define(:version => 20140325165300) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -203,6 +203,13 @@ ActiveRecord::Schema.define(:version => 20140320134352) do
 
   add_index "busquedas", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo", :unique => true
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
+
+  create_table "cantidades_de_prestaciones_por_periodo", :force => true do |t|
+    t.integer "prestacion_id",   :null => false
+    t.integer "cantidad_maxima", :null => false
+    t.string  "periodo"
+    t.string  "intervalo"
+  end
 
   create_table "categorias_de_afiliados", :force => true do |t|
     t.string "nombre", :null => false

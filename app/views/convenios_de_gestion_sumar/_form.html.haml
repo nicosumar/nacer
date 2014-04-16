@@ -46,11 +46,21 @@
     = f.text_area :observaciones, :size => "80x8"
 
   %h3.header-with-note Prestaciones autorizadas por el convenio
-  %p.note Seleccione las prestaciones que el convenio autoriza
+  - if (@convenio_de_gestion.new_record? || @convenio_de_gestion.prestaciones_autorizadas.size == 0)
+    %p.note Seleccione las prestaciones que el convenio autoriza
+  - else
+    %p.note
+      Las prestaciones autorizadas por el convenio no pueden modificarse,
+      si hay un error de carga, solicite asistencia al área de sistemas
   %div.field
-    = f.select :prestacion_autorizada_ids, options_for_select(@prestaciones, @prestacion_autorizada_ids), {}, |
-      { :multiple => true, :size => 15, :class => "multi_select", |
-      :"data-placeholder" => "Seleccione todas las prestaciones autorizadas"} |
+    - if (@convenio_de_gestion.new_record? || @convenio_de_gestion.prestaciones_autorizadas.size == 0)
+      = f.select :prestacion_autorizada_ids, options_for_select(@prestaciones, @prestacion_autorizada_ids), {}, |
+        { :multiple => true, :size => 15, :class => "multi_select", |
+        :"data-placeholder" => "Seleccione todas las prestaciones autorizadas" } |
+    - else
+      = f.select :prestacion_autorizada_ids, options_for_select(@prestaciones, @prestacion_autorizada_ids), {}, |
+        { :disabled => "disabled", :multiple => true, :size => 15, :class => "multi_select", |
+        :"data-placeholder" => "Seleccione todas las prestaciones autorizadas" } |
 
   - if (@convenio_de_gestion.new_record? || @convenio_de_gestion.prestaciones_autorizadas.size == 0)
     %div.field

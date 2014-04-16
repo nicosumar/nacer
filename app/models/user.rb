@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   has_many :unidades_de_alta_de_datos, :through => :unidades_de_alta_de_datos_users
 
   # Validaciones
-  validates_presence_of :nombre, :apellido
+  validates_presence_of :nombre, :apellido, :observaciones
 
   def in_group?(group)
     if group && group.is_a?(Array)
