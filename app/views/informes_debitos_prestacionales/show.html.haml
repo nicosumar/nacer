@@ -8,8 +8,11 @@
     - if can? [:create, :update], DetalleDeDebitoPrestacional
       - if @informe_debito_prestacional.estado_del_proceso.codigo =='N' #Si no se ha iniciado el proceso
         = link_to 'Iniciar y cargar debitos', iniciar_informe_debito_prestacional_path(@informe_debito_prestacional), method: :put
-      - elsif @informe_debito_prestacional.estado_del_proceso.codigo =='C'
+      - elsif @informe_debito_prestacional.estado_del_proceso.codigo =='C' # Si esta en curso, se puede finalizar
         = link_to 'Cargar débitos', informe_debito_prestacional_detalles_de_debitos_prestacionales_path(@informe_debito_prestacional)
+        = link_to 'Finalizar el informe', finalizar_informe_debito_prestacional_path(@informe_debito_prestacional), method: :put
+      - elsif @informe_debito_prestacional.estado_del_proceso.codigo =='F' # Si esta finalizado se puede cerrar
+        = link_to 'Cerrar informe', '#' #, cerrar_informe_debito_prestacional_path(@informe_debito_prestacional), method: :put
     - if can? :delete, InformeDebitoPrestacional and @informe_debito_prestacional.estado_del_proceso.codigo =='N'
       = link_to 'Eliminar informe', @informe_debito_prestacional, method: :delete, data: { confirm: '¿Está seguro que desea eliminar la prestación del informe de debito?' }
 

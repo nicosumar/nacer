@@ -98,11 +98,7 @@ $(document).ready(function() {
           select.data('parametros-adicionales', parametros_adicionales.join(",") );
           select.select2('enable', true);
 
-          //select.select2.val("val","");
         }
-         //cambio o agrego el parametro adicional de este select para que envie el id del padre
-
-        
       });
     }
   })    

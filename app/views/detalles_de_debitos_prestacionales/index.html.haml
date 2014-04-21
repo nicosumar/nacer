@@ -5,6 +5,7 @@
   #action-links
     - if can? :read, InformeDebitoPrestacional
       = link_to '<< Volver al listado', informes_debitos_prestacionales_path
+      = link_to 'Finalizar el informe', finalizar_informe_debito_prestacional_path(@informe_de_debito), method: :put
 
 #content-body
   %hr{width: "100%"}
@@ -52,7 +53,7 @@
         = f.text_area :observaciones, style: "width:100%", size: "70x8"
       .actions
         = f.submit "Guardar"
-    %hr{width: "100%"}
+  %hr{width: "100%"}
 
   %h2 Debitos
   %table{id: "tabla_detalle"}

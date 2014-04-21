@@ -5,8 +5,8 @@ class CreateDetallesDeDebitosPrestacionales < ActiveRecord::Migration
       t.references :motivo_de_rechazo
       t.references :afiliado
       t.boolean :procesado_para_debito
-      t.boolean :informado_sirge
-      t.text :observaciones
+      t.boolean :informado_sirge, default: false
+      t.text :observaciones, default: false
 
       t.timestamps
     end         

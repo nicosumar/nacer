@@ -15,9 +15,39 @@ class InformeDebitoPrestacional < ActiveRecord::Base
 
   # Actualiza el estado del informe a "En Curso". Ademas guarda la fecha en la que se inicio
   def iniciar
-    self.estado_del_proceso = EstadoDelProceso.find(2) #Estado En curso
-    self.fecha_de_inicio = Date.today
-    self.save
+    if self.estado_del_proceso == EstadoDelProceso.find(1) #Estado "No iniciado"
+      self.estado_del_proceso = EstadoDelProceso.find(2) #Estado En curso
+      self.fecha_de_inicio = Date.today
+      self.save
+    else
+      return false
+    end
+  end
+
+  def finalizar
+    if self.estado_del_proceso == EstadoDelProceso.find(2) #Estado En curso
+      self.estado_del_proceso = EstadoDelProceso.find(3) #Estado Finalizado
+      self.fecha_de_finalizacion = Date.today
+      self.save
+    else
+      return false
+    end
+  end
+
+  def cerrar
+    if self.estado_del_proceso == EstadoDelProceso.find(2) #Estado En curso
+      ActiveRecord::Base.transaction do
+        
+
+        # Cambio el estado del informe
+        self.estado_del_proceso = EstadoDelProceso.find(3) #Estado Finalizado
+        self.fecha_de_finalizacion = Date.today
+        self.save
+
+      end
+    else
+      return false
+    end
   end
 
 end

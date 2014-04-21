@@ -7,9 +7,17 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
 
   # GET /detalles_de_debitos_prestacionales
   def index
-    @detalles_de_debitos_prestacionales = @informe_de_debito.detalles_de_debitos_prestacionales
-    @motivos_de_rechazo = MotivoDeRechazo.where(categoria: @informe_de_debito.tipo_de_debito_prestacional.nombre).collect {|m| [m.nombre, m.id]}
+    # Solo si el informe esta en curso muestro las prestaciones
     @detalle_editable = @informe_de_debito.estado_del_proceso.id == EstadoDelProceso.where(codigo: 'C').first.id ? true : false
+
+    if @detalle_editable
+      @detalles_de_debitos_prestacionales = @informe_de_debito.detalles_de_debitos_prestacionales
+      @motivos_de_rechazo = MotivoDeRechazo.where(categoria: @informe_de_debito.tipo_de_debito_prestacional.nombre).collect {|m| [m.nombre, m.id]}
+    else
+      redirect_to @informe_de_debito
+    end
+
+
   end
 
   # POST /detalles_de_debitos_prestacionales.js
@@ -37,25 +45,13 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
     end
   end
 
-  # PUT /detalles_de_debitos_prestacionales/1
-  # PUT /detalles_de_debitos_prestacionales/1.json
-  def update
-    @detalle_de_debito_prestacional = DetalleDeDebitoPrestacional.find(params[:id])
-
-    respond_to do |format|
-      if @detalle_de_debito_prestacional.update_attributes(params[:detalle_de_debito_prestacional])
-        format.html { redirect_to @detalle_de_debito_prestacional, notice: 'Detalle de debito prestacional was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @detalle_de_debito_prestacional.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   def destroy
     @detalle_de_debito_prestacional = DetalleDeDebitoPrestacional.find(params[:id])
-    #@detalle_de_debito_prestacional.destroy
+    if @informe_de_debito.estado_del_proceso == EstadoDelProceso.find(2)
+      @detalle_de_debito_prestacional.destroy
+    else
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})  
+    end
   end
 
   private

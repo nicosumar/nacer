@@ -10,5 +10,4 @@ class DetalleDeDebitoPrestacional < ActiveRecord::Base
   validates :prestacion_liquidada_id, presence: true 
   validates :motivo_de_rechazo_id, presence: true 
   validates :informe_debito_prestacional_id, presence: true 
-  # validates :tipo_de_debito_prestacional_id, presence: true
 end

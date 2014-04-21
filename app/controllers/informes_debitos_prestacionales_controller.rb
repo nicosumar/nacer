@@ -71,7 +71,8 @@ class InformesDebitosPrestacionalesController < ApplicationController
     end
 
   end
-
+  
+  # PUT /informes_debitos_prestacionales/1
   def iniciar
     @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
 
@@ -81,6 +82,31 @@ class InformesDebitosPrestacionalesController < ApplicationController
       redirect_to @informe_debito_prestacional, :flash => { :tipo => :error, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} no pudo iniciarse" }
     end
   end
+
+  # PUT /informes_debitos_prestacionales/1
+  # Cambia el estado del informe a finalizado para no poder cargar mas prestaciones
+  def finalizar
+    @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
+
+    if @informe_debito_prestacional.finalizar
+      redirect_to @informe_debito_prestacional , :flash => { :tipo => :ok, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} se finalizó correctamente" }
+    else
+      redirect_to @informe_debito_prestacional, :flash => { :tipo => :error, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} no pudo finalizarse" }
+    end
+    
+  end
+
+  # PUT /informes_debitos_prestacionales/1
+  def cerrar
+    @informe_debito_prestacional = InformeDebitoPrestacional.find(params[:id])
+
+    if @informe_debito_prestacional.cerrar
+      redirect_to @informe_debito_prestacional, :flash => { :tipo => :ok, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} se cerró correctamente" }
+    else
+      redirect_to @informe_debito_prestacional, :flash => { :tipo => :error, :titulo => "El informe de debito N°#{@informe_debito_prestacional.id} no pudo cerrarse" }
+    end
+
+  end  
 
   private
 
