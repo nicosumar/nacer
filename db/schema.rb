@@ -919,16 +919,16 @@ ActiveRecord::Schema.define(:version => 20140424205417) do
   add_index "nomencladores", ["nomenclador_sumar"], :name => "nomencladores_nomenclador_sumar_idx"
 
   create_table "notas_de_debito", :force => true do |t|
-    t.string   "numero"
-    t.integer  "efector_id"
-    t.integer  "concepto_de_facturacion_id"
-    t.integer  "tipo_de_nota_debito_id"
-    t.text     "observaciones"
-    t.decimal  "monto",                      :precision => 15, :scale => 4
-    t.decimal  "remanente",                  :precision => 15, :scale => 4
-    t.decimal  "reservado",                  :precision => 15, :scale => 4
-    t.datetime "created_at",                                                :null => false
-    t.datetime "updated_at",                                                :null => false
+    t.string   "numero",                                                                     :null => false
+    t.integer  "efector_id",                                                                 :null => false
+    t.integer  "concepto_de_facturacion_id",                                                 :null => false
+    t.integer  "tipo_de_nota_debito_id",                                                     :null => false
+    t.text     "observaciones",                                                              :null => false
+    t.decimal  "monto",                      :precision => 15, :scale => 4,                  :null => false
+    t.decimal  "remanente",                  :precision => 15, :scale => 4,                  :null => false
+    t.decimal  "reservado",                  :precision => 15, :scale => 4, :default => 0.0, :null => false
+    t.datetime "created_at",                                                                 :null => false
+    t.datetime "updated_at",                                                                 :null => false
   end
 
   add_index "notas_de_debito", ["concepto_de_facturacion_id"], :name => "index_notas_de_debito_on_concepto_de_facturacion_id"

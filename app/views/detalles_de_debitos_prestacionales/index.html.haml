@@ -66,7 +66,7 @@
     - @detalles_de_debitos_prestacionales.each do |detalle|
       %tr{id: "detalle_"+detalle.id.to_s}
         %td= truncate(detalle.motivo_de_rechazo.nombre, lenght: 40, separator: ' ')
-        %td= detalle.afiliado.tipo_de_documento.codigo + ":" + detalle.afiliado.numero_de_documento + " - " + detalle.afiliado.apellido + ", " + detalle.afiliado.nombre
+        %td= detalle.afiliado.present? ? detalle.afiliado.tipo_de_documento.codigo + ":" + detalle.afiliado.numero_de_documento + " - " + detalle.afiliado.apellido + ", " + detalle.afiliado.nombre : "Comunitaria"
         %td= truncate(detalle.prestacion_liquidada.prestacion_incluida.prestacion_codigo + "-" + detalle.prestacion_liquidada.prestacion_incluida.prestacion_nombre, :length => 30, :separator => ' ')
         %td= detalle.observaciones
         %td= link_to "Eliminar", [@informe_de_debito, detalle], method: :delete, remote: true, data: { confirm: '¿Está seguro que desea eliminar la prestación del informe de debito?' }

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class InformeDebitoPrestacional < ActiveRecord::Base
   belongs_to :concepto_de_facturacion
   belongs_to :efector
@@ -35,12 +36,15 @@ class InformeDebitoPrestacional < ActiveRecord::Base
   end
 
   def cerrar
-    if self.estado_del_proceso == EstadoDelProceso.find(2) #Estado En curso
+
+    if self.estado_del_proceso == EstadoDelProceso.find(3) #Estado En_id curso self.ef
+      
       ActiveRecord::Base.transaction do
-        
+
+        NotaDeDebito.nueva_desde_informe(self)
 
         # Cambio el estado del informe
-        self.estado_del_proceso = EstadoDelProceso.find(3) #Estado Finalizado
+        self.estado_del_proceso = EstadoDelProceso.find(4) #Estado Finalizado y cerrado 
         self.fecha_de_finalizacion = Date.today
         self.save
 

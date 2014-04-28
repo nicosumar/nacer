@@ -6,18 +6,12 @@ class NotasDeDebitoController < ApplicationController
 
   # GET /notas_de_debito
   def index
-    @notas_de_debito = NotaDeDebito.all
+    @notas_de_debito = NotaDeDebito.includes(:efector, :tipo_de_nota_debito, :concepto_de_facturacion).all
   end
 
   # GET /notas_de_debito/1
-  # GET /notas_de_debito/1.json
   def show
-    @nota_de_debito = NotaDeDebito.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @nota_de_debito }
-    end
+    @nota_de_debito = NotaDeDebito.includes(:efector, :tipo_de_nota_debito, :concepto_de_facturacion).find(params[:id])
   end
 
   # GET /notas_de_debito/new
@@ -31,6 +25,9 @@ class NotasDeDebitoController < ApplicationController
   # GET /notas_de_debito/1/edit
   def edit
     @nota_de_debito = NotaDeDebito.find(params[:id])
+    @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+    @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
+    @tipos_de_notas = TipoDeNotaDebito.all.collect {|t| [t.nombre, t.id]}
   end
 
   # POST /notas_de_debito
@@ -49,30 +46,17 @@ class NotasDeDebitoController < ApplicationController
   end
 
   # PUT /notas_de_debito/1
-  # PUT /notas_de_debito/1.json
   def update
     @nota_de_debito = NotaDeDebito.find(params[:id])
 
-    respond_to do |format|
-      if @nota_de_debito.update_attributes(params[:nota_de_debito])
-        format.html { redirect_to @nota_de_debito, notice: 'Nota de debito was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @nota_de_debito.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+    if @nota_de_debito.update_attributes(params[:nota_de_debito])
+      redirect_to @nota_de_debito, :flash => { :tipo => :ok, :titulo => "Se actualizó la nota de debito N° #{@nota_de_debito.numero}" }
+    else
+      @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
+      @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
+      @tipos_de_notas = TipoDeNotaDebito.all.collect {|t| [t.nombre, t.id]}
 
-  # DELETE /notas_de_debito/1
-  # DELETE /notas_de_debito/1.json
-  def destroy
-    @nota_de_debito = NotaDeDebito.find(params[:id])
-    @nota_de_debito.destroy
-
-    respond_to do |format|
-      format.html { redirect_to notas_de_debito_url }
-      format.json { head :no_content }
+      render action: "edit" 
     end
   end
 

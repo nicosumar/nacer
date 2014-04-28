@@ -1,0 +1,43 @@
+- content_for :title do
+  Notas de debito
+#content-header
+  %h1 Notas de debito
+  #action-links
+    = link_to '<< Volver al listado', notas_de_debito_path
+    - if can?(:update, NotaDeDebito) and @nota_de_debito.monto == @nota_de_debito.remanente and @nota_de_debito.reservado == 0
+      = link_to 'Editar', edit_nota_de_debito_path(@nota_de_debito) if @nota_de_debito.monto == @nota_de_debito.remanente and @nota_de_debito.reservado == 0 and @nota_de_debito.tipo_de_nota_debito.id != 1
+     
+= render :partial => "shared/info", :locals => { :registro => @nota_de_debito }
+
+#content-body
+  %h2 Nota de Debito - Detalle
+  %div.field_content
+    %span.field_name Numero:
+    %span.field_value= @nota_de_debito.numero
+
+  %div.field_content
+    %span.field_name Efector:
+    %span.field_value= @nota_de_debito.efector.nombre
+
+  %div.field_content
+    %span.field_name Concepto de Facturación:
+    %span.field_value= @nota_de_debito.concepto_de_facturacion.concepto
+  
+  %div.field_content
+    %span.field_name Tipo de debito:
+    %span.field_value= @nota_de_debito.tipo_de_nota_debito.nombre
+  
+  %div.field_content
+    %span.field_name Monto:
+    %span.field_value= @nota_de_debito.monto
+
+  %div.field_content
+    %span.field_name Remanente:
+    %span.field_value= @nota_de_debito.remanente
+  
+  %div.field_content
+    %span.field_name Reservado:
+    %span.field_value= @nota_de_debito.reservado
+  
+
+  %br
