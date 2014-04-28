@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :notas_de_debito
+
+
   resources :informes_debitos_prestacionales do
     resources :detalles_de_debitos_prestacionales, only: [:index, :create, :destroy] 
     put :iniciar, on: :member

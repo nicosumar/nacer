@@ -379,7 +379,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("informe·_debito·_prestacional·", "informes_debitos_prestacionales")
   inflect.irregular("InformeDebitoPrestacionales", "Informes·Debitos·Prestacionales·")
   inflect.irregular("Informe·Debito·Prestacionales·", "InformesDebitosPrestacionales")
-  
+
+  # Tipos De notas De Debito
+  inflect.irregular("tipo_de_nota_debito", "tipos·_de·_notas·_debito·")
+  inflect.irregular("tipo·_de·_nota·_debito·", "tipos_de_notas_debito")
+  inflect.irregular("TipoDeNotaDebito", "Tipos·De·Notas·Debito·")
+  inflect.irregular("Tipo·De·Nota·Debito·", "TiposDeNotasDebito")
+
+  # Notas de debito
+  inflect.irregular("nota_de_debito", "notas·_de·_debito·")
+  inflect.irregular("nota·_de·_debito·", "notas_de_debito")
+  inflect.irregular("NotaDeDebito", "Notas·De·Debito·")
+  inflect.irregular("Nota·De·Debito·", "NotasDeDebito")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

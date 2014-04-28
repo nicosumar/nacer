@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140320134352) do
+ActiveRecord::Schema.define(:version => 20140424205417) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -918,6 +918,23 @@ ActiveRecord::Schema.define(:version => 20140320134352) do
   add_index "nomencladores", ["fecha_de_inicio"], :name => "nomencladores_fecha_de_inicio_idx"
   add_index "nomencladores", ["nomenclador_sumar"], :name => "nomencladores_nomenclador_sumar_idx"
 
+  create_table "notas_de_debito", :force => true do |t|
+    t.string   "numero"
+    t.integer  "efector_id"
+    t.integer  "concepto_de_facturacion_id"
+    t.integer  "tipo_de_nota_debito_id"
+    t.text     "observaciones"
+    t.decimal  "monto",                      :precision => 15, :scale => 4
+    t.decimal  "remanente",                  :precision => 15, :scale => 4
+    t.decimal  "reservado",                  :precision => 15, :scale => 4
+    t.datetime "created_at",                                                :null => false
+    t.datetime "updated_at",                                                :null => false
+  end
+
+  add_index "notas_de_debito", ["concepto_de_facturacion_id"], :name => "index_notas_de_debito_on_concepto_de_facturacion_id"
+  add_index "notas_de_debito", ["efector_id"], :name => "index_notas_de_debito_on_efector_id"
+  add_index "notas_de_debito", ["tipo_de_nota_debito_id"], :name => "index_notas_de_debito_on_tipo_de_nota_debito_id"
+
   create_table "objetos_de_las_prestaciones", :force => true do |t|
     t.integer "tipo_de_prestacion_id",                        :null => false
     t.string  "codigo",                                       :null => false
@@ -1317,6 +1334,15 @@ ActiveRecord::Schema.define(:version => 20140320134352) do
     t.text     "mascara"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+  end
+
+  create_table "tipos_de_notas_debito", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo",              :limit => 3
+    t.text     "nombre_de_secuencia"
+    t.text     "mascara"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   create_table "tipos_de_novedades", :force => true do |t|

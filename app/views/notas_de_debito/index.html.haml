@@ -1,0 +1,35 @@
+#content-header
+  %h1 Informes de debitos prestacionales
+  #action-links
+    - if can? :create, NotaDeDebito
+      = link_to 'Nueva Nota de debito', new_nota_de_debito_path
+
+= render :partial => "shared/info"
+
+%h1 Listado de notas de debito
+- if @notas_de_debito.size == 0
+  No hay notas de debito disponibles
+- else
+  %table
+    %tr
+      %th Número
+      %th Efector
+      %th Concepto
+      %th Tipo
+      %th Monto
+      %th Remanente
+      %th Reservado
+      %th{colspan: 2} Acciones
+    - @notas_de_debito.each do |nota_de_debito|
+      %tr.clickable{ :onclick => "location.href=\'#{nota_de_debito_path(nota_de_debito)}\'", :title => "Ver detalles de la nota" }
+        %td= nota_de_debito.numero
+        %td= nota_de_debito.efector.nombre
+        %td= nota_de_debito.concepto_de_facturacion.concepto
+        %td= nota_de_debito.tipo_de_nota_debito.nombre
+        %td= nota_de_debito.monto
+        %td= nota_de_debito.remanente
+        %td= nota_de_debito.reservado
+        %td= link_to 'Ver', nota_de_debito
+        %td= link_to 'Editar', edit_nota_de_debito_path(nota_de_debito) if nota_de_debito.monto == nota_de_debito.remanente and nota_de_debito.reservado == 0
+        -#%td= link_to 'Borrar', nota_de_debito, method: :delete, data: { confirm: 'Are you sure?' }
+%br/
