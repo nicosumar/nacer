@@ -9,7 +9,7 @@ class ExpedientesSumarController < ApplicationController
     
     if LiquidacionInforme.where(liquidacion_sumar_id: @liquidacion_sumar.id).size >=1
       respond_to do |format|
-        format.pdf { send_data render_to_string, filename: "caratulas_expedientes.pdf", type: 'application/pdf', disposition: 'attachment'}
+        format.pdf { send_data render_to_string, filename: "Rotulos Exptes Per #{@liquidacion_sumar.periodo.periodo}_#{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}.pdf", type: 'application/pdf', disposition: 'attachment'}
       end
     else
       redirect_to( @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Debe generar las cuasifacturas primero"})
@@ -18,7 +18,7 @@ class ExpedientesSumarController < ApplicationController
 
   private
 
-  def verificar_lectura
+  def verificar_lectura 
     if cannot? :read, LiquidacionSumar
       redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
