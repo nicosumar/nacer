@@ -45,6 +45,7 @@ class InformeDebitoPrestacional < ActiveRecord::Base
 
         # Cambio el estado del informe
         self.estado_del_proceso = EstadoDelProceso.find(4) #Estado Finalizado y cerrado 
+        self.procesado_para_debito = true # Marco como procesado para ser debitado.
         self.fecha_de_finalizacion = Date.today
         self.save
 
