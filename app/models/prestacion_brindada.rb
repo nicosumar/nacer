@@ -58,6 +58,13 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   #
+  # self.del_beneficiario
+  # Devuelve los registros filtrados de acuerdo con la clave de beneficiario pasada como parámetro
+  def self.del_beneficiario(clave_de_beneficiario)
+    where(:clave_de_beneficiario => clave_de_beneficiario)
+  end
+
+  #
   # pendiente?
   # Indica si la prestación brindada está pendiente (aún no ha sido facturada ni anulada).
   def pendiente?
@@ -345,6 +352,20 @@ class PrestacionBrindada < ActiveRecord::Base
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 2) < 1
   end
 
+  def de_un_anio_o_mas?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 0) >= 1
+  end
+
   def mayor_de_53_meses?
     beneficiario =
       NovedadDelAfiliado.where(
@@ -415,6 +436,20 @@ class PrestacionBrindada < ActiveRecord::Base
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 23) > 24
   end
 
+  def menor_de_tres_meses?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return (beneficiario.edad_en_meses(fecha_de_la_prestacion) || 4) < 3
+  end
+
   def total_de_dias_postquirurgicos_valido?
     self.datos_reportables_asociados.each do |dra|
       if dra.dato_reportable_requerido.dato_reportable.codigo = 'DEPOSTQU'
@@ -432,6 +467,160 @@ class PrestacionBrindada < ActiveRecord::Base
     end
 
     # *** CONTINUAR AQUÍ ***
+  end
+
+  #
+  # Métodos de validación asociados con tasas de uso
+  def no_excede_la_cantidad_de_prestaciones_por_periodo?
+    return true unless prestacion_id.present? && fecha_de_la_prestacion.present?
+    return true if !prestacion.comunitaria? && clave_de_beneficiario.nil?
+    return true if prestacion.comunitaria? && efector_id.nil?
+
+    tasa_de_uso = CantidadDePrestacionesPorPeriodo.find_by_prestacion_id(prestacion_id)
+
+    if prestacion.comunitaria?
+      return self.verificar_tasa_de_uso_por_efector(tasa_de_uso.cantidad_maxima, tasa_de_uso.periodo, tasa_de_uso.intervalo)
+    else
+      return self.verificar_tasa_de_uso_por_beneficiario(tasa_de_uso.cantidad_maxima, tasa_de_uso.periodo, tasa_de_uso.intervalo)
+    end
+  end
+
+  def control_pediatrico_no_excede_la_cantidad_de_prestaciones_por_periodo?
+    return true unless prestacion_id.present? && clave_de_beneficiario.present? && fecha_de_la_prestacion.present?
+
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    if beneficiario.edad_en_meses(self.fecha_de_la_prestacion) == 0
+      cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_menores_de_1_mes)
+      intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_menores_de_1_mes)
+      periodo = (self.fecha_de_la_prestacion - beneficiario.fecha_de_nacimiento).to_i.to_s + ".days"
+    elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 6
+      cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_1_a_6_meses)
+      intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_1_a_6_meses)
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 1.months)).to_i.to_s + ".days"
+    elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 12
+      cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_6_a_12_meses)
+      intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_6_a_12_meses)
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 6.months)).to_i.to_s + ".days"
+    elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 18
+      cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_12_a_18_meses)
+      intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_12_a_18_meses)
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+    elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 36
+      cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_18_a_36_meses)
+      intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_18_a_36_meses)
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+    elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 72
+      cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_36_a_72_meses)
+      intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_36_a_72_meses)
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+    else
+      return true # ¿Qué mierda? No debería pasar...
+    end
+
+    return self.verificar_tasa_de_uso_por_beneficiario(cantidad_maxima, periodo, intervalo)
+  end
+
+  def verificar_tasa_de_uso_por_beneficiario(cantidad_maxima, periodo = nil, intervalo = nil)
+
+    # Verificar si la cantidad de prestaciones en el periodo definido superan el máximo permitido
+    sql_where = "
+      prestacion_id = #{self.prestacion_id}
+      AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
+      AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+    "
+    if periodo.present?
+      sql_where += "
+        AND fecha_de_la_prestacion >= '#{(self.fecha_de_la_prestacion - eval(periodo)).strftime("%Y-%m-%d")}'
+      "
+    end
+    if self.persisted?
+      sql_where += "
+        AND NOT (
+          esquema = '#{ActiveRecord::Base::connection.exec_query("SELECT current_schema();").rows[0][0]}'
+          AND id = '#{self.id}'
+        )
+      "
+    end
+    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > cantidad_maxima
+
+    # Si se ha definido un intervalo mínimo entre prestaciones, verificar que se haya cumplido
+    if intervalo.present?
+      sql_where = "
+        prestacion_id = #{self.prestacion_id}
+        AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
+        AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+        AND fecha_de_la_prestacion BETWEEN
+          '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
+          AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+      "
+      if self.persisted?
+        sql_where += "
+          AND NOT (
+            esquema = '#{ActiveRecord::Base::connection.exec_query("SELECT current_schema();").rows[0][0]}'
+            AND id = '#{self.id}'
+          )
+        "
+      end
+      return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > 0
+    end
+
+    return true
+  end
+
+  def verificar_tasa_de_uso_por_efector(cantidad_maxima, periodo = nil, intervalo = nil)
+
+    # Verificar si la cantidad de prestaciones en el periodo definido superan el máximo permitido
+    sql_where = "
+      prestacion_id = #{self.prestacion_id}
+      AND efector_id = '#{self.efector_id}'
+      AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+    "
+    if periodo.present?
+      sql_where += "
+        AND fecha_de_la_prestacion >= '#{(self.fecha_de_la_prestacion - eval(periodo)).strftime("%Y-%m-%d")}'
+      "
+    end
+    if self.persisted?
+      sql_where += "
+        AND NOT (
+          esquema = '#{ActiveRecord::Base::connection.exec_query("SELECT current_schema();").rows[0][0]}'
+          AND id = '#{self.id}'
+        )
+      "
+    end
+    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > tasa_de_uso.cantidad_maxima
+
+    # Si se ha definido un intervalo mínimo entre prestaciones, verificar que se haya cumplido
+    if intervalo.present?
+      sql_where = "
+        prestacion_id = #{self.prestacion_id}
+        AND efector_id = '#{self.efector_id}'
+        AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+        AND fecha_de_la_prestacion BETWEEN
+          '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
+          AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+      "
+      if self.persisted?
+        sql_where += "
+          AND NOT (
+            esquema = '#{ActiveRecord::Base::connection.exec_query("SELECT current_schema();").rows[0][0]}'
+            AND id = '#{self.id}'
+          )
+        "
+      end
+      return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > 0
+    end
+
+    return true
   end
 
   # Verifica si hay datos reportables asociados obligatorios que estén incompletos
@@ -492,69 +681,6 @@ class PrestacionBrindada < ActiveRecord::Base
   def con_advertencias?
     metodos_de_validacion.size > 0
   end
-
-  # CAMBIOS: Muevo las validaciones generales a métodos de validación específicos
-  # y desactivo la generación de advertencias, las que pasan a persistirse en la base de datos. TODO: cleanup
-#  def hay_advertencias?
-#
-#    # Eliminar las advertencias anteriores (si hubiera alguna)
-#    @advertencias = {}
-#    @datos_reportables_incompletos = false
-#
-#    # No verificamos advertencias si hay errores presentes
-#    if errors.count > 0 || (datos_reportables_asociados && datos_reportables_asociados.any?{ |dra| dra.errors.count > 0 })
-#      return false
-#    end
-#
-#    alguna_advertencia = false
-#
-#    # Verificar que la fecha de la prestación tenga menos de 4 meses de la fecha de hoy
-#    if fecha_de_la_prestacion < (Date.today - 120.days)
-#      if @advertencias.has_key? :base
-#        @advertencias[:base] << "La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registro"
-#      else
-#        @advertencias.merge! :base => ["La prestación brindada tiene más de 120 días de antigüedad con respecto a la fecha de registro"]
-#      end
-#      alguna_advertencia = true
-#    end
-#
-#    # Verificar el estado de actividad del beneficiario
-#    beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
-#    if beneficiario && !beneficiario.activo?(fecha_de_la_prestacion)
-#      if @advertencias.has_key? :base
-#        @advertencias[:base] << (
-#          (beneficiario.sexo.codigo == "F" ? "La beneficiaria " : "El beneficiario ") +
-#          "no se encontraba " + (beneficiario.sexo.codigo == "F" ? "activa " : "activo ") + "para la fecha de la prestación"
-#        )
-#      else
-#        @advertencias.merge! :base => [(
-#          (beneficiario.sexo.codigo == "F" ? "La beneficiaria " : "El beneficiario ") +
-#          "no se encontraba " + (beneficiario.sexo.codigo == "F" ? "activa " : "activo ") + "para la fecha de la prestación"
-#        )]
-#      end
-#      alguna_advertencia = true
-#    end
-#
-#    if prestacion
-#      prestacion.metodos_de_validacion.where(:genera_error => false).each do |mv|
-#        if !eval('self.' + mv.metodo)
-#          if @advertencias.has_key? :base
-#            @advertencias[:base] << mv.mensaje
-#          else
-#            @advertencias.merge! :base => [mv.mensaje]
-#          end
-#          alguna_advertencia = true
-#        end
-#      end
-#
-#      # Verificar si hay advertencias relacionadas con los datos reportables asociados
-#      if datos_reportables_asociados.any?{ |dra| dra.hay_advertencias? }
-#        alguna_advertencia = true
-#      end
-#    end
-#
-#    return alguna_advertencia
-#  end
 
   def prestacion_comunitaria?
     return true unless prestacion

@@ -86,7 +86,7 @@
                         %li= link_to "Gestión", convenios_de_gestion_sumar_path
                         %li= link_to "Administración", convenios_de_administracion_sumar_path
 
-            - if can? :read, LiquidacionSumar
+            - if can? :read, LiquidacionSumar or can? :read, LiquidacionInforme
               %li
                 %a.drop{:href => "#"} LIQUIDACIONES
                 %div.dropdown_2columns
@@ -127,19 +127,21 @@
                 %div.dropdown_2columns
                   %div.col_2
                     %h2 Informes y estadística
-                  %div.col_1
-                    %h3 BENEFICIARIOS
-                    %ul
-                      %li= link_to "Beneficiarios activos", informe_de_beneficiarios_activos_url
-                  %div.col_2
-                    %h3 PLANIFICACIÓN
-                    %ul
-                      %li= link_to "Tablero de comandos EAI", tablero_de_comandos_alto_impacto_path
+                  - if current_user.in_group? [:coordinacion, :capacitacion, :comunicacion, :planificacion]
+                    %div.col_1
+                      %h3 BENEFICIARIOS
+                      %ul
+                        %li= link_to "Beneficiarios activos", informe_de_beneficiarios_activos_url
+                  - if current_user.in_group? [:coordinacion, :planificacion]
+                    %div.col_1
+                      %h3 PLANIFICACIÓN
+                      %ul
+                        %li= link_to "Tablero de comandos EAI", tablero_de_comandos_alto_impacto_path
                   %div.col_2
                     %h3 INFORMES PARAMETRIZADOS
                     %ul
                       %li= link_to "Informes parametrizados", informes_path
-                      
+
             - if current_user.in_group?(:capacitacion) && !current_user.in_group?(:administradores)
               %li
                 %a.drop{:href => "#"} ADMINISTRACIÓN

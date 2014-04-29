@@ -17,7 +17,7 @@
   #
 
   def initialize(template_ruta_y_archivo)
-    @rutayarchivo = args
+    @rutayarchivo = template_ruta_y_archivo
   end
 
   def cargar_datos
@@ -57,12 +57,12 @@
         	sheet.each valores[:desde] do |row|
 
             if row[valores[:col_id_subrogada]].to_s.match /p/
-              row[14].split('p').each do | ids |
+              row[valores[:col_id_subrogada]].split('p').each do | ids |
                 ActiveRecord::Base.connection.execute "
                   INSERT INTO migra_prestaciones
                   ( id ,  numero_fila ,  numero_columna_si_no ,  grupo              ,  subgrupo           ,  nosologia  ,  tipo_de_prestacion ,  nombre_prestacion ,  codigos                 ,  precio   ,  rural ,id_subrrogada_foranea)
                   VALUES
-                  (#{id}, #{row.idx+1} , #{valores[:col_si_no]}, #{valores[:grupo]}, #{valores[:subgrupo]},    '#{row[0]}',            '#{row[1]}',           '#{row[2]}', '#{row[8] + ' ' + row[10]}', '#{row[11]}', '#{row[12]}', #{ids});"
+                  (#{id}, #{row.idx+1} , #{valores[:col_si_no]}, '#{valores[:grupo]}', '#{valores[:subgrupo]}',    '#{row[0]}',            '#{row[1]}',           '#{row[2]}', '#{row[8] + ' ' + row[10]}', '#{row[11]}', '#{row[12]}', #{ids});"
                 id+=1
                 if (row.idx+1) == valores[:hasta]
                   break
@@ -74,7 +74,7 @@
                 INSERT INTO migra_prestaciones
                 ( id ,  numero_fila ,  numero_columna_si_no ,  grupo ,  subgrupo ,  nosologia  ,  tipo_de_prestacion ,  nombre_prestacion ,  codigos                 ,  precio   ,  rural ,id_subrrogada_foranea)
                 VALUES
-                (#{id}, #{row.idx+1} , #{valores[:col_si_no]}, #{valores[:grupo]}, #{valores[:subgrupo]},    '#{row[0]}',            '#{row[1]}',           '#{row[2]}', '#{row[8] + ' ' + row[10]}', '#{row[11]}', '#{row[12]}', #{row[valores[:col_id_subrogada]]});"
+                (#{id}, #{row.idx+1} , #{valores[:col_si_no]}, '#{valores[:grupo]}', '#{valores[:subgrupo]}',    '#{row[0]}',            '#{row[1]}',           '#{row[2]}', '#{row[8] + ' ' + row[10]}', '#{row[11]}', '#{row[12]}', #{row[valores[:col_id_subrogada]]});"
               id+=1
               if (row.idx+1) == 95
                 break
@@ -92,11 +92,21 @@
       limites_secciones.each do |seccion, valores|
         if valores[:tipo]=='m'
           sheet.each valores[:desde] do |row|
-            ActiveRecord::Base.connection.execute "
-              INSERT INTO migra_modulos
-              ( id   ,  numero_fila ,  numero_columna_si_no ,  grupo             ,  subgrupo            ,   modulo ,  definicion_cirugia_conceptos ,  codigos   , id_subrrogada_foranea )
-              VALUES
-              (#{idm},#{row.idx+1}  , #{valores[:col_si_no]},  #{valores[:grupo]}, #{valores[:subgrupo]}, '#{row[2]}',                         NULL, '#{row[7]}','#{row[valores[:col_id_subrogada]]}' );"
+            if row[valores[:col_id_subrogada]].to_s.match /p/
+              row[valores[:col_id_subrogada]].split('p').each do | ids |
+                ActiveRecord::Base.connection.execute "
+                  INSERT INTO migra_modulos
+                  ( id   ,  numero_fila ,  numero_columna_si_no ,  grupo             ,  subgrupo            ,   modulo ,  definicion_cirugia_conceptos ,  codigos   , id_subrrogada_foranea )
+                  VALUES
+                  (#{idm},#{row.idx+1}  , #{valores[:col_si_no]},  '#{valores[:grupo]}', '#{valores[:subgrupo]}', '#{row[2]}',                         NULL, '#{row[7]}','#{ids}' );"
+              end
+            else
+              ActiveRecord::Base.connection.execute "
+                INSERT INTO migra_modulos
+                ( id   ,  numero_fila ,  numero_columna_si_no ,  grupo             ,  subgrupo            ,   modulo ,  definicion_cirugia_conceptos ,  codigos   , id_subrrogada_foranea )
+                VALUES
+                (#{idm},#{row.idx+1}  , #{valores[:col_si_no]},  '#{valores[:grupo]}', '#{valores[:subgrupo]}', '#{row[2]}',                         NULL, '#{row[7]}','#{row[valores[:col_id_subrogada]]}' );"
+            end
             idm+=1
             if (row.idx+1) == valores[:hasta]
               break
@@ -113,11 +123,21 @@
       limites_secciones.each do |seccion, valores|
         if valores[:tipo] == 'a'
           sheet.each valores[:desde] do |row|
-            ActiveRecord::Base.connection.execute "
-              INSERT INTO migra_anexos
-              ( id ,   numero_fila ,  numero_columna_si_no ,  prestaciones ,  anexo ,     codigo, id_subrrogada_foranea )
-              VALUES
-              (#{ida}, #{row.idx+1},         13            , '#{row[0]}'     , '#{row[1]}', '#{row[10]}', #{row[14]});"
+            if row[14].to_s.match /p/
+              row[14].split('p').each do | ids |
+                ActiveRecord::Base.connection.execute "
+                  INSERT INTO migra_anexos
+                  ( id ,   numero_fila ,  numero_columna_si_no ,  prestaciones ,  anexo ,     codigo, id_subrrogada_foranea )
+                  VALUES
+                  (#{ida}, #{row.idx+1},         13            , '#{row[0]}'     , '#{row[1]}', '#{row[10]}', #{ids});"
+              end
+            else
+              ActiveRecord::Base.connection.execute "
+                INSERT INTO migra_anexos
+                ( id ,   numero_fila ,  numero_columna_si_no ,  prestaciones ,  anexo ,     codigo, id_subrrogada_foranea )
+                VALUES
+                (#{ida}, #{row.idx+1},         13            , '#{row[0]}'     , '#{row[1]}', '#{row[10]}', #{row[14]});"
+            end
             ida+=1
             if (row.idx+1) == valores[:hasta]
               break
@@ -296,9 +316,9 @@
                          :seccion_anexo_1  => {desde: 572,hasta:  569, col_si_no: 13, tipo: 'a'},
                          :seccion_anexo_1  => {desde: 660,hasta:  687, col_si_no: 13, tipo: 'a'}
     }
-    
+
     # ruta = 'lib/tasks/datos/Convenios/2014-01/1/'
-    ruta = "lib/tasks/datos/Convenios/#{periodo.to_s}/#{paquete.to_s}" 
+    ruta = "lib/tasks/datos/Convenios/#{periodo.to_s}/#{paquete.to_s}"
 
     archivos = Dir.glob("#{ruta}/**/*").delete_if { |a| a.count('.') == 0 }
 

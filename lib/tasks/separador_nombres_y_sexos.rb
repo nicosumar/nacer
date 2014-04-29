@@ -99,7 +99,10 @@ class SeparadorDeNombresYSexos
     texto.gsub(".", "").split(" ", -1).each do |n|
       if n.length > 1
         n_total = apellidos[n].to_f + masculinos[n].to_f + femeninos[n].to_f
-        if n_total > 0.0
+        if n_total == 0.0
+          p_masc *= 0.5
+          p_fem *= 0.5
+        elsif n_total > 0.0
           p_masc *= (masculinos[n].to_f/n_total)
           p_fem *= (femeninos[n].to_f/n_total)
         end

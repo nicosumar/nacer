@@ -25,12 +25,18 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
-      can :manage, LiquidacionSumar
       can :manage, LiquidacionSumarAnexoAdministrativo
       can :manage, AnexoAdministrativoPrestacion
       can :read, LiquidacionSumarAnexoMedico
       can :read, AnexoMedicoPrestacion
       can :manage, LiquidacionInforme
+    end
+
+    if user.in_group? :liquidacion_ugsp
+      can :manage, LiquidacionSumar
+      can :manage, LiquidacionSumarAnexoAdministrativo
+      can :manage, Periodo
+      can :manage, ParametroLiquidacionSumar
     end
 
     if user.in_group? :operaciones
@@ -61,6 +67,7 @@ class Ability
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
       can :read, LiquidacionSumar
+      can :manage, LiquidacionInforme
       can :manage, LiquidacionSumarAnexoMedico
       can :manage, AnexoMedicoPrestacion
       can :read, LiquidacionSumarAnexoAdministrativo

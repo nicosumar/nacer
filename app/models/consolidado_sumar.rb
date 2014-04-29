@@ -104,6 +104,18 @@ class ConsolidadoSumar < ActiveRecord::Base
           firmante_id = referente.contacto.id 
         end
 
+        # 2) Genero el detalle y cabecera si la suma de las cuasifacturas de los administrados es mayor a cero
+        total_consolidado = 0
+        administrador.efectores_administrados.each do |ea|
+          if ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0
+            total_consolidado += ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
+          end
+        end
+        if total_consolidado == 0 
+          logger.warn "El consolidado para el efector #{administrador.nombre} es cero. No se generará el consolidado"
+          next
+        end
+
         #Verifico que exista la secuencia para los consolidados. Sino que la cree
         self.generar_secuencia administrador
 
@@ -115,7 +127,7 @@ class ConsolidadoSumar < ActiveRecord::Base
           liquidacion_sumar_id: liquidacion_sumar.id
         })
 
-        # 2) Genero el detalle del consolidado
+        # 3) Genero el detalle del consolidado
         administrador.efectores_administrados.each do |ea|
           
           # Verifico si existe una cuasifactura para este efector

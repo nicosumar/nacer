@@ -93,6 +93,9 @@
     %span.field_name Fecha en que se brindó la prestación
     %span.field_value= @prestacion_brindada.fecha_de_la_prestacion.strftime("%d/%m/%Y")
   %div.field_content
+    %span.field_name Número de historia clínica, registro o informe
+    %span.field_value= @prestacion_brindada.historia_clinica
+  %div.field_content
     %span.field_name Código de prestación
     %span.field_value= @prestacion_brindada.prestacion.codigo + (@prestacion_brindada.diagnostico ? |
       @prestacion_brindada.diagnostico.codigo : '') |
