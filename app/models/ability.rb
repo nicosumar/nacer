@@ -52,6 +52,7 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :read, VistaGlobalDePrestacionBrindada
     end
 
     if user.in_group? :auditoria_medica

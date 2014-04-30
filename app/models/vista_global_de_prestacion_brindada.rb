@@ -6,7 +6,7 @@ class VistaGlobalDePrestacionBrindada < ActiveRecord::Base
   attr_readonly :cantidad_de_unidades, :clave_de_beneficiario, :cuasi_factura_id, :diagnostico_id, :efector_id
   attr_readonly :es_catastrofica, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :fecha_del_debito, :mensaje_de_la_baja
   attr_readonly :monto_facturado, :monto_liquidado, :nomenclador_id, :observaciones, :prestacion_id
-  attr_readonly :historia_clinica, :clave_de_beneficiario, :efector_id, :fecha_de_la_prestacion, :prestacion_id
+  attr_readonly :historia_clinica, :clave_de_beneficiario, :efector_id, :fecha_de_la_prestacion, :prestacion_id, :esquema
 
   # Asociaciones
   belongs_to :diagnostico
@@ -28,6 +28,10 @@ class VistaGlobalDePrestacionBrindada < ActiveRecord::Base
     end
 
     return beneficiario
+  end
+
+  def unidad_de_alta_de_datos
+    UnidadDeAltaDeDatos.find_by_codigo(self.esquema[4,3])
   end
 
 end

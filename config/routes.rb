@@ -124,6 +124,7 @@ Nacer::Application.routes.draw do
   end
   resources :afiliados, :only => [:show] do
     get :busqueda_por_aproximacion, on: :collection
+    get 'prestaciones_brindadas', :on => :member, :as => :prestaciones_brindadas_al
   end
   resources :unidades_de_alta_de_datos, :except => :destroy
   resources :prestaciones_brindadas
