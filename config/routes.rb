@@ -1,6 +1,12 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :documentos_generables_por_conceptos
+
+
+  resources :documentos_generables
+
+
   resources :notas_de_debito
 
 

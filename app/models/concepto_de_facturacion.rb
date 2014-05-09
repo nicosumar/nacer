@@ -5,6 +5,8 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   has_many :periodos, :inverse_of => :concepto_de_facturacion
   has_many :informes_debitos_prestacionales
   has_many :notas_de_debito
+  has_many :documentos_generables_por_conceptos
+  has_many :documentos_generables, through: :documentos_generables_por_conceptos
 
   attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo
 

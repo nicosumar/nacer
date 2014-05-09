@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140424205417) do
+ActiveRecord::Schema.define(:version => 20140508173648) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -203,6 +203,13 @@ ActiveRecord::Schema.define(:version => 20140424205417) do
 
   add_index "busquedas", ["modelo_type", "modelo_id"], :name => "idx_unq_modelo", :unique => true
   add_index "busquedas", ["vector_fts"], :name => "idx_gin_on_vector_fts"
+
+  create_table "cantidades_de_prestaciones_por_periodo", :force => true do |t|
+    t.integer "prestacion_id",   :null => false
+    t.integer "cantidad_maxima", :null => false
+    t.string  "periodo"
+    t.string  "intervalo"
+  end
 
   create_table "categorias_de_afiliados", :force => true do |t|
     t.string "nombre", :null => false
@@ -452,11 +459,11 @@ ActiveRecord::Schema.define(:version => 20140424205417) do
     t.integer  "prestacion_liquidada_id"
     t.integer  "motivo_de_rechazo_id"
     t.integer  "afiliado_id"
-    t.boolean  "procesado_para_debito"
-    t.boolean  "informado_sirge"
+    t.boolean  "procesado_para_debito",          :default => false
+    t.boolean  "informado_sirge",                :default => false
     t.text     "observaciones"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at",                                        :null => false
     t.integer  "informe_debito_prestacional_id"
   end
 
@@ -516,6 +523,27 @@ ActiveRecord::Schema.define(:version => 20140424205417) do
   add_index "documentaciones_respaldatorias_prestaciones", ["documentacion_respaldatoria_id"], :name => "documentaciones_respaldatoria_documentacion_respaldatoria__idx1"
   add_index "documentaciones_respaldatorias_prestaciones", ["fecha_de_inicio", "fecha_de_finalizacion"], :name => "documentaciones_respaldatoria_fecha_de_inicio_fecha_de_fina_idx"
   add_index "documentaciones_respaldatorias_prestaciones", ["prestacion_id"], :name => "documentaciones_respaldatorias_prestaciones_prestacion_id_idx"
+
+  create_table "documentos_generables", :force => true do |t|
+    t.string   "nombre",     :null => false
+    t.string   "modelo",     :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "documentos_generables_por_conceptos", :force => true do |t|
+    t.integer  "concepto_de_facturacion_id", :null => false
+    t.integer  "documento_generable_id",     :null => false
+    t.integer  "tipo_de_agrupacion_id",      :null => false
+    t.string   "report_layout"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id", "documento_generable_id"], :name => "documentos_generables_por_con_concepto_de_facturacion_id_do_key", :unique => true
+  add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id"], :name => "documentos_generables_por_concep_concepto_de_facturacion_id_idx"
+  add_index "documentos_generables_por_conceptos", ["documento_generable_id"], :name => "documentos_generables_por_conceptos_documento_generable_id_idx"
+  add_index "documentos_generables_por_conceptos", ["tipo_de_agrupacion_id"], :name => "documentos_generables_por_conceptos_tipo_de_agrupacion_id_idx"
 
   create_table "efectores", :force => true do |t|
     t.string   "cuie"
@@ -1149,6 +1177,7 @@ ActiveRecord::Schema.define(:version => 20140424205417) do
     t.text     "observaciones_liquidacion"
     t.datetime "created_at",                                                                       :null => false
     t.datetime "updated_at",                                                                       :null => false
+    t.string   "esquema"
   end
 
   add_index "prestaciones_liquidadas", ["clave_de_beneficiario"], :name => "prestaciones_liquidadas_clave_de_beneficiario_idx"
@@ -1316,6 +1345,13 @@ ActiveRecord::Schema.define(:version => 20140424205417) do
   create_table "subgrupos_de_prestaciones", :force => true do |t|
     t.integer "grupo_de_prestaciones_id", :null => false
     t.string  "nombre",                   :null => false
+  end
+
+  create_table "tipos_de_agrupacion", :force => true do |t|
+    t.string   "nombre",                  :null => false
+    t.string   "codigo",     :limit => 3, :null => false
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   create_table "tipos_de_debitos_prestacionales", :force => true do |t|

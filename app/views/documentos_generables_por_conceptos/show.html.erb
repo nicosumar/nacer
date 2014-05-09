@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Concepto de facturacion:</b>
+  <%= @documento_generable_por_concepto.concepto_de_facturacion %>
+</p>
+
+<p>
+  <b>Documento generable:</b>
+  <%= @documento_generable_por_concepto.documento_generable %>
+</p>
+
+<p>
+  <b>Tipo de agrupacion:</b>
+  <%= @documento_generable_por_concepto.tipo_de_agrupacion %>
+</p>
+
+<p>
+  <b>Report layout:</b>
+  <%= @documento_generable_por_concepto.report_layout %>
+</p>
+
+
+<%= link_to 'Edit', edit_documento_generable_por_concepto_path(@documento_generable_por_concepto) %> |
+<%= link_to 'Back', documentos_generables_por_conceptos_path %>

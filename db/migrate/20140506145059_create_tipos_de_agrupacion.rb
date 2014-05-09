@@ -1,0 +1,30 @@
+class CreateTiposDeAgrupacion < ActiveRecord::Migration
+  def up
+    create_table :tipos_de_agrupacion do |t|
+
+      t.string :nombre, null: false
+      t.column :codigo, "char(3)", null: false
+
+      t.timestamps
+    end
+
+    TipoDeAgrupacion.create([
+      { #ID: 1
+        nombre: "Efector Administrador/Hospital",
+        codigo: "EAH"
+      },
+      { #ID: 2
+        nombre: "Efector",
+        codigo: "E"
+      },
+      { #ID: 3
+        nombre: "Afiliado",
+        codigo: "A"
+      }
+    ])
+  end
+
+  def down
+    drop_table :tipos_de_agrupacion
+  end
+end

@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Nombre:</b>
+  <%= @documento_generable.nombre %>
+</p>
+
+<p>
+  <b>Modelo:</b>
+  <%= @documento_generable.modelo %>
+</p>
+
+
+<%= link_to 'Edit', edit_documento_generable_path(@documento_generable) %> |
+<%= link_to 'Back', documentos_generables_path %>
