@@ -33,7 +33,48 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
   end
+=begin
+  
+begin
+my_threads = []
+for i in 1..100 do
+    puts "Creating thread #{i}"
+    my_threads << Thread.new(i) do |j|
+        sleep 3
+        puts "Thread #{j} done"
+    end
+end
+puts "#{Thread.list.size} threads"
 
+my_threads.each do |t|
+    t.join
+end
+end
+
+
+    for i in 1..100 do
+      logger.warn "Creating thread #{i}"
+      threads << Thread.new(i) do |j|
+        sleep 3
+        logger.warn "Thread #{j} done"
+      end
+    end
+    logger.warn "Se crearon #{Thread.list.size} threads"
+
+    # NEW
+    efectores =  self.grupo_de_efectores_liquidacion.efectores
+    threads = []
+
+    efectores.each do |e|
+      threads << Thread.new do |t|
+      end
+    end
+
+    threads.each do |t|
+      t.join
+    end
+  
+=end
 
   # 
   #  Guarda las prestaciones brindadas, datos adicionales y advertencias,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140508173648) do
+ActiveRecord::Schema.define(:version => 20140511164806) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -245,9 +245,11 @@ ActiveRecord::Schema.define(:version => 20140508173648) do
   create_table "conceptos_de_facturacion", :force => true do |t|
     t.string   "concepto"
     t.string   "descripcion"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.string   "codigo"
+    t.integer  "formula_id"
+    t.integer  "dias_de_prestacion", :default => 120
   end
 
   add_index "conceptos_de_facturacion", ["codigo"], :name => "index_conceptos_de_facturacion_on_codigo", :unique => true
@@ -989,10 +991,8 @@ ActiveRecord::Schema.define(:version => 20140508173648) do
   end
 
   create_table "parametros_liquidaciones_sumar", :force => true do |t|
-    t.integer  "dias_de_prestacion",                   :default => 120
-    t.integer  "formula_id"
-    t.datetime "created_at",                                            :null => false
-    t.datetime "updated_at",                                            :null => false
+    t.datetime "created_at",                                          :null => false
+    t.datetime "updated_at",                                          :null => false
     t.integer  "rechazar_estado_de_la_prestacion_id",  :default => 7
     t.integer  "aceptar_estado_de_la_prestacion_id",   :default => 4
     t.integer  "excepcion_estado_de_la_prestacion_id", :default => 4

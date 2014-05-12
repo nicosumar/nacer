@@ -686,11 +686,12 @@ class PrestacionBrindada < ActiveRecord::Base
     return true unless prestacion
     prestacion.comunitaria
   end
-
-  # 
-  # Busca todas las prestaciones sin facturar y vencidas al periodo indicado y las marca como vencidas
+
+
+  # 
+  # Busca todas las prestaciones sin facturar y vencidas al periodo indicado y las marca como vencidas
   # @param periodo [Periodo] Periodo en cual se estan venciendo las prestaciones
-  # 
+  # 
   # @return [Fixnum] Cantidad de prestaciones vencidas
   def self.marcar_prestaciones_vencidas(periodo)
 
@@ -736,9 +737,10 @@ class PrestacionBrindada < ActiveRecord::Base
 
     #a.cmd_tuples
   end
-
-  # 
-  # Marca las prestaciones brindadas de baja cuyo beneficiario no presentara periodo de actividad al momento de tomar la prestación.
+
+
+  # 
+  # Marca las prestaciones brindadas de baja cuyo beneficiario no presentara periodo de actividad al momento de tomar la prestación.
   # @param periodo [Periodo] Periodo en cual se estan venciendo las prestaciones
   # 
   # @return [Fixnum] Cantidad de prestaciones vencidas
@@ -788,8 +790,8 @@ class PrestacionBrindada < ActiveRecord::Base
                   "          OR\n"+
                   "          vpb.fecha_de_la_prestacion  > to_date('fecha_limite_prestaciones','yyyy-mm-dd') \n"+
                   "        )\n"+
-                  " AND     ( CASE WHEN pa.afiliado_id IS NULL THEN TRUE\n"+
-                  "               WHEN pa.afiliado_id IS NOT NULL THEN \n"+
+                  " AND     ( CASE WHEN pa.afiliado_id IS NULL THEN TRUE\n"+  # Cuando periodo de actividad para el beneficiario no existe
+                  "               WHEN pa.afiliado_id IS NOT NULL THEN \n"+   # o la prestacion se brindo en un periodo no comprendido en el periodo de actividad,  la excluyo
                   "                   NOT ((vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+
                   "                         OR\n"+
                   "                        (vpb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+

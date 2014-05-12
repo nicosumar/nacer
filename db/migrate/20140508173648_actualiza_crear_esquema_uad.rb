@@ -15,8 +15,8 @@ def change
       FOR uad IN esquemas_de_uads LOOP
         sql_text := 'ALTER TABLE "'||uad.table_schema||'"."prestaciones_brindadas" '||
           ' ADD COLUMN "estado_de_la_prestacion_liquidada_id" int4, '||
-          ' ADD COLUMN "observaciones_de_liquidacion" text; '||
-          ' ADD CONSTRAINT fk_uad_' || NEW.codigo || '.prestaciones_brindadas '||
+          ' ADD COLUMN "observaciones_de_liquidacion" text, '||
+          ' ADD CONSTRAINT fk_uad_' || uad.table_schema || '_prestaciones_brindadas '||
           '    FOREIGN KEY (estado_de_la_prestacion_liquidada_id) REFERENCES estados_de_las_prestaciones(id);'||
           ' CREATE INDEX  ON "'||uad.table_schema||'"."prestaciones_brindadas" ("efector_id"  ); '||
           ' CREATE INDEX  ON "'||uad.table_schema||'"."prestaciones_brindadas" ("fecha_de_la_prestacion"  ); '||
@@ -391,7 +391,8 @@ def change
       $$ LANGUAGE plpgsql;
     "
 
-    # Agrego el estado de vencida a los estados de las prestaciones
+    # Agrego el estado de vencida a los estados de las prestaciones
+
     EstadoDeLaPrestacion.create([
       { #ID: 13
         nombre: "Vencida",
