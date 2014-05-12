@@ -33,24 +33,26 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
   end
-
-  # 
-  #  Guarda las prestaciones brindadas, datos adicionales y advertencias,
-  # inculadas a un grupo de efectores en un periodo dado, eliminando prestaciones duplicadas.
-  # 
+
+
+  # 
+  #  Guarda las prestaciones brindadas, datos adicionales y advertencias,
+  # inculadas a un grupo de efectores en un periodo dado, eliminando prestaciones duplicadas.
+  # 
   # @return boolean 
   def generar_snapshoot_de_liquidacion
 
-
+    # Busco y marco prestaciones vencidas al momento de liquidar
+    PrestacionBrindada.marcar_prestaciones_vencidas self
+    
     #Traigo Grupo de efectores
-    # OLD
     efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
-    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores)).uniq
-    vigencia_perstaciones = self.parametro_liquidacion_sumar.dias_de_prestacion
+    vigencia_perstaciones = self.concepto_de_facturacion.dias_de_prestacion
     fecha_de_recepcion = self.periodo.fecha_recepcion.to_s
     fecha_limite_prestaciones = self.periodo.fecha_limite_prestaciones.to_s
 
-    # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
+    # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
+
     cq = CustomQuery.ejecutar (
       {
         sql:  "INSERT INTO public.prestaciones_incluidas\n"+
@@ -95,7 +97,8 @@ class LiquidacionSumar < ActiveRecord::Base
               " AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{self.id} )"
     })
 
-    # 2) Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas 
+    # 2) Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas 
+
     cq = CustomQuery.ejecutar ({
       sql:  "INSERT INTO public.prestaciones_liquidadas \n "+
             "       (liquidacion_id, esquema, unidad_de_alta_de_datos_id, efector_id, \n "+
@@ -230,7 +233,7 @@ class LiquidacionSumar < ActiveRecord::Base
     #    de prestaciones liquidadas
     #    - Aca con las prestaciones aceptadas
 
-    formula = "Formula_#{self.parametro_liquidacion_sumar.formula.id}"
+    formula = "Formula_#{self.concepto_de_facturacion.formula.id}"
     plantilla_de_reglas = (self.plantilla_de_reglas_id.blank?) ? -1 : self.plantilla_de_reglas_id
     estado_aceptada = self.parametro_liquidacion_sumar.prestacion_aceptada.id
     estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
@@ -274,7 +277,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "                      )\n"+
               "   WHERE permitir IS NULL\n"+
               "   AND pl.liquidacion_id = #{self.id}\n"+
-              " AND prestaciones_liquidadas.id = pl.id "
+              " AND prestaciones_liquidadas.id = pl.id\n "+
               " AND pl.efector_id in ( #{efectores.join(", ")} )\n"
     })
 

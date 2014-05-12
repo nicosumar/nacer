@@ -19,6 +19,7 @@ def change
           ' ADD CONSTRAINT fk_uad_' || NEW.codigo || '.prestaciones_brindadas '||
           '    FOREIGN KEY (estado_de_la_prestacion_liquidada_id) REFERENCES estados_de_las_prestaciones(id);'||
           ' CREATE INDEX  ON "'||uad.table_schema||'"."prestaciones_brindadas" ("efector_id"  ); '||
+          ' CREATE INDEX  ON "'||uad.table_schema||'"."prestaciones_brindadas" ("fecha_de_la_prestacion"  ); '||
           ' CREATE INDEX  ON "'||uad.table_schema||'"."prestaciones_brindadas" ("estado_de_la_prestacion_id"  ); ';
          --raise INFO 'texto: %',sql_text; 
          execute sql_text;
@@ -326,6 +327,7 @@ def change
             
             --Crear indices para prestaciones brindadas
             CREATE INDEX  ON uad_' || NEW.codigo || '.prestaciones_brindadas (efector_id );
+            CREATE INDEX  ON uad_' || NEW.codigo || '.prestaciones_brindadas (fecha_de_la_prestacion );
 		        CREATE INDEX  ON uad_' || NEW.codigo || '.prestaciones_brindadas (estado_de_la_prestacion_id );
 
 
@@ -388,5 +390,14 @@ def change
         END;
       $$ LANGUAGE plpgsql;
     "
+
+    # Agrego el estado de vencida a los estados de las prestaciones
+    EstadoDeLaPrestacion.create([
+      { #ID: 13
+        nombre: "Vencida",
+        codigo: "W",
+        pendiente: false,
+        indexable: false
+      }])
   end
 end

@@ -7,12 +7,14 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   has_many :notas_de_debito
   has_many :documentos_generables_por_conceptos
   has_many :documentos_generables, through: :documentos_generables_por_conceptos
+  belongs_to :formula
 
-  attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo
+  attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo, :formula_id, :dias_de_prestacion
 
   validates :concepto, presence: true
   validates :descripcion, presence: true
   validates :codigo, presence: true
+  validates :formula_id, presence: true
 
   # Devuelve el id asociado con el código pasado
   def self.id_del_codigo(codigo)
