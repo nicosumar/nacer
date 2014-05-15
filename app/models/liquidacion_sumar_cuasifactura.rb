@@ -14,11 +14,41 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
   # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
   # 
   # @return [Boolean] confirmación de la generación de las cuasifacturas
-  def generar(liquidacion_sumar)
+  def self.generar_desde_liquidacion(liquidacion_sumar, agrupacion)
+
+    if not (liquidacion_sumar.is_a?(LiquidacionSumar) and agrupacion.is_a?(TipoDeAgrupacion) )
+      return false
+    end
+
+    cabeceras = []
+    detalles = []
+    ActiveRecord::Base.transaction do
+      agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, p, cabecera |
+        if cabecera 
+          #"INSERT INTO public.liquidaciones_sumar_cuasifacturas  \n"+
+          #"(liquidacion_sumar_id, efector_id, created_at, updated_at)
+          cabeceras.push "(#{liquidacion_sumar.id}, #{e.id}, now(), now())"
+        end
+        #"INSERT INTO public.liquidaciones_sumar_cuasifacturas_detalles  \n"+
+        # "(liquidaciones_sumar_cuasifacturas_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, prestacion_liquidada_id, observaciones, created_at, updated_at)  \n"+
+        detalles.push "(#{liquidacion_sumar.id})"
+
+      end
+    end
+    
+
+
+
+    documento_generable = liquidacion_sumar.concepto_de_facturacion
+                                           .documentos_generables_por_conceptos
+                                           .where(documento_generable_id: DocumentoGenerable.where(modelo: self.class.to_s).first.id)
+
+    
+
     ActiveRecord::Base.transaction do
 
-      estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
-      estado_aceptada  = self.parametro_liquidacion_sumar.prestacion_aceptada.id
+      estado_rechazada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_rechazada.id
+      estado_aceptada  = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_aceptada.id
 
       # 1) Genero las cabeceras
       cq = CustomQuery.ejecutar ({

@@ -38,4 +38,21 @@ class ConceptoDeFacturacion < ActiveRecord::Base
     return codigo_id
   end
 
+  # 
+  # Genera los documentos asociados al concepto para una liquidación dada
+  # @param  liquidacion [LiquidacionSumar] Objeto de la liquidación en curso
+  # 
+  # @return [Boolean] Si pudo generar todos los documentos.
+  def generar_documentos(liquidacion)
+
+    documentos_a_generar = self.documentos_generables_por_conceptos
+
+    documentos_generables.each do |dgpc|
+      eval("#{dgpc.documentos_generables.modelo}.generar_desde_liquidacion(liquidacion, dgpc.tipo_de_agrupacion)")
+    end
+
+
+    
+  end
+
 end

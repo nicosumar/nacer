@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140511164806) do
+ActiveRecord::Schema.define(:version => 20140514164703) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -831,7 +831,6 @@ ActiveRecord::Schema.define(:version => 20140511164806) do
 
   add_index "liquidaciones_sumar_cuasifacturas", ["efector_id"], :name => "liquidaciones_sumar_cuasifacturas_efector_id_idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector__idx"
-  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector__key", :unique => true
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id"], :name => "liquidaciones_sumar_cuasifacturas_liquidacion_sumar_id_idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["numero_cuasifactura"], :name => "liquidaciones_sumar_cuasifacturas_numero_cuasifactura_key", :unique => true
 

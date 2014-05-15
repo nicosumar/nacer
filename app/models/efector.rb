@@ -48,6 +48,7 @@ class Efector < ActiveRecord::Base
   scope :efectores_administrados, joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id")
 
 
+
   # Validaciones
   validates_presence_of :nombre
   validates_uniqueness_of :cuie, :allow_nil => true
@@ -154,12 +155,33 @@ class Efector < ActiveRecord::Base
   def cuasifactura_de_periodo(argPeriodo)
     self.cuasifacturas.joins(:liquidacion_sumar).where(liquidaciones_sumar: {periodo_id: argPeriodo.id}).first
   end
+
+  # 
+  # Devuelve las prestaciones liquidadas para unaliquidacion dada de este efector
+  # @param  argLiquidacion [LiquidacionSumar] La liquidacion de la cual deben obtenerse las prestaciones
+  # @param  solo_aceptadas = true [Boolean] Indica si solo debe devolver las prestaciones aceptadas, o todas
+  # 
+  # @return [PrestacionLiquidada] Las prestaciones liquidadas para ese efector en la liquidacion que se envio como parametro
+  def prestaciones_liquidadas_por_liquidacion(argLiquidacion, solo_aceptadas = true)
+    
+    unless (solo_aceptadas.is_a? TrueClass or solo_aceptadas.is_a? FalseClass) and argLiquidacion.is_a? LiquidacionSumar
+       return nil
+    end 
+
+    estados_aceptados = [argLiquidacion.parametro_liquidacion_sumar.prestacion_aceptada.id, argLiquidacion.parametro_liquidacion_sumar.prestacion_exceptuada.id]
+    
+    if solo_aceptadas
+      self.prestaciones_liquidadas.where(liquidacion_id: argLiquidacion.id, estado_de_la_prestacion_liquidada_id: estados_aceptados)
+    else
+      self.prestaciones_liquidadas.where(liquidacion_id: argLiquidacion.id)
+    end
+    
+  end
 
   #--------------------------------------------------------------
   #                   Metodos de clase
   #--------------------------------------------------------------
 
-  # self.que_no_tengan_convenio
   # Devuelve los efectores que no tienen convenio de gestión
   def self.que_no_tengan_convenio
     Efector.find_by_sql("
@@ -334,6 +356,27 @@ class Efector < ActiveRecord::Base
                 FROM convenios_de_gestion
                 WHERE convenios_de_gestion.efector_id = efectores.id
           ))) ORDER BY nombre;")
+  end
+
+  # Devuelve los efectores que administran a otros, o bien que tienen suscrito un convenio de gestión y no son administrados
+  # por un tercero.
+  def self.administradores_y_autoadministrados_sumar
+    Efector.where("(efectores.integrante = TRUE) AND
+          EXISTS (
+            SELECT *
+              FROM convenios_de_administracion_sumar
+              WHERE convenios_de_administracion_sumar.administrador_id = efectores.id
+          ) OR (
+          NOT EXISTS (
+            SELECT *
+              FROM convenios_de_administracion_sumar
+              WHERE convenios_de_administracion_sumar.efector_id = efectores.id
+          ) AND (
+            EXISTS (
+              SELECT *
+                FROM convenios_de_gestion_sumar
+                WHERE convenios_de_gestion_sumar.efector_id = efectores.id
+          ))) ")
   end
 
   # Devuelve el id asociado con el CUIE pasado

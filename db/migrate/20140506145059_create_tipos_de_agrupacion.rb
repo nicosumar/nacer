@@ -18,8 +18,8 @@ class CreateTiposDeAgrupacion < ActiveRecord::Migration
         codigo: "E"
       },
       { #ID: 3
-        nombre: "Afiliado",
-        codigo: "A"
+        nombre: "Efector y Afiliado",
+        codigo: "EA"
       }
     ])
   end

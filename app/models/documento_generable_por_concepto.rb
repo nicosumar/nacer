@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class DocumentoGenerablePorConcepto < ActiveRecord::Base
   belongs_to :concepto_de_facturacion
   belongs_to :documento_generable
@@ -11,7 +12,7 @@ class DocumentoGenerablePorConcepto < ActiveRecord::Base
   # @return [type] [description]
   def generar
 
-  	eval(self.documento_generable.modelo).
-  	
+    eval(self.documento_generable.modelo).
+
   end
 end
