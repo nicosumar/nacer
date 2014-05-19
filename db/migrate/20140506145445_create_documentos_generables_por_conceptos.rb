@@ -5,6 +5,8 @@ class CreateDocumentosGenerablesPorConceptos < ActiveRecord::Migration
       t.references :documento_generable, null: false
       t.references :tipo_de_agrupacion, null: false
       t.string :report_layout
+      t.boolean :genera_numeracion, null: false, default: false
+      t.string  :funcion_de_numeracion
 
       t.timestamps
     end
@@ -35,25 +37,33 @@ class CreateDocumentosGenerablesPorConceptos < ActiveRecord::Migration
         concepto_de_facturacion_id: concepto_id,
         documento_generable_id: documento_cuasi_id,
         tipo_de_agrupacion_id: agrupacion_efector,
-        report_layout: "cuasifactura_bas"
+        report_layout: "cuasifactura_bas",
+        genera_numeracion: true,
+        funcion_de_numeracion: "generar_numero_cuasifactura"
       },
       { #ID: 2
         concepto_de_facturacion_id: concepto_id,
         documento_generable_id: documento_consolidado_id,
         tipo_de_agrupacion_id: agrupacion_efector,
-        report_layout: "consolidado_bas"
+        report_layout: "consolidado_bas",
+        genera_numeracion: true,
+        funcion_de_numeracion: "generar_numero_consolidado"
       },
       { #ID: 3
         concepto_de_facturacion_id: concepto_id,
         documento_generable_id: documento_expediente_id,
         tipo_de_agrupacion_id: agrupacion_efector_administrador,
-        report_layout: "expediente_sumar_bas"
+        report_layout: "expediente_sumar_bas",
+        genera_numeracion: true,
+        funcion_de_numeracion: "generar_numero_de_expediente"
       },
       { #ID: 4
         concepto_de_facturacion_id: concepto_id,
         documento_generable_id: documento_informe_id,
         tipo_de_agrupacion_id: agrupacion_efector,
-        report_layout: nil
+        report_layout: nil,
+        genera_numeracion: false,
+        funcion_de_numeracion: ""
       }
     ])
 
