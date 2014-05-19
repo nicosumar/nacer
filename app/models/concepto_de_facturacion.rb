@@ -47,7 +47,7 @@ class ConceptoDeFacturacion < ActiveRecord::Base
 
     documentos_a_generar = self.documentos_generables_por_conceptos
 
-    documentos_generables.each do |dgpc|
+    documentos_a_generar.each do |dgpc|
       eval("#{dgpc.documentos_generables.modelo}.generar_desde_liquidacion(liquidacion, dgpc.tipo_de_agrupacion)")
     end
 

@@ -155,12 +155,13 @@ class Efector < ActiveRecord::Base
   def cuasifactura_de_periodo(argPeriodo)
     self.cuasifacturas.joins(:liquidacion_sumar).where(liquidaciones_sumar: {periodo_id: argPeriodo.id}).first
   end
-
-  # 
+
+
+  # 
   # Devuelve las prestaciones liquidadas para unaliquidacion dada de este efector
   # @param  argLiquidacion [LiquidacionSumar] La liquidacion de la cual deben obtenerse las prestaciones
   # @param  solo_aceptadas = true [Boolean] Indica si solo debe devolver las prestaciones aceptadas, o todas
-  # 
+  # 
   # @return [PrestacionLiquidada] Las prestaciones liquidadas para ese efector en la liquidacion que se envio como parametro
   def prestaciones_liquidadas_por_liquidacion(argLiquidacion, solo_aceptadas = true)
     
