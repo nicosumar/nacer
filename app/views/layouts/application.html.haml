@@ -156,7 +156,7 @@
                     %ul
                       %li= link_to "Ver las UADs", unidades_de_alta_de_datos_url
 
-            - if current_user.in_group? :administradores
+            - if current_user.in_group? [:administradores, :usuarios_uads_verificacion]
               %li
                 %a.drop{:href => "#"} ADMINISTRACION
                 %div.dropdown_2columns
@@ -165,19 +165,21 @@
                   %div.col_1
                     %h3 USUARIOS Y GRUPOS
                     %ul
-                      %li= link_to "Gestionar los usuarios", users_url
-                      %li= link_to "Gestionar los grupos", "#", { :title => "En preparación... Aún no disponible." }
+                      %li= link_to "Gestionar los usuarios", users_url if current_user.in_group? :usuarios_uads_verificacion
+                      %li= link_to "Gestionar los grupos", "#", { :title => "En preparación... Aún no disponible." } if current_user.in_group? :administradores
                     %h3 UADs y CIs
                     %ul
-                      %li= link_to "Gestionar las UADs", unidades_de_alta_de_datos_url
-                      %li= link_to "Gestionar los CIs", "#", { :title => "En preparación... Aún no disponible." }
+                      %li= link_to "Gestionar las UADs", unidades_de_alta_de_datos_url if current_user.in_group? :usuarios_uads_verificacion
+                      %li= link_to "Gestionar los CIs", "#", { :title => "En preparación... Aún no disponible." } if current_user.in_group? :administradores
                   %div.col_1
-                    %h3 TABLAS AUXILIARES
-                    %ul
-                      %li= link_to "Gestionar tablas auxiliares", paises_path, { :title => "En preparación... Aún no disponible." }
-                    %h3 PROCESOS
-                    %ul
-                      %li= link_to "Procesos relacionados con padrones", padrones_url
+                    - if current_user.in_group? :administradores
+                      %h3 TABLAS AUXILIARES 
+                      %ul
+                        %li= link_to "Gestionar tablas auxiliares", paises_path, { :title => "En preparación... Aún no disponible." } 
+                    - if current_user.in_group? :administradores
+                      %h3 PROCESOS
+                      %ul
+                        %li= link_to "Procesos relacionados con padrones", padrones_url if current_user.in_group? :administradores
 
             %li.menu_right
               %a.drop{:href => "#"} MI CUENTA

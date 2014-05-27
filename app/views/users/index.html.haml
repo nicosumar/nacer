@@ -20,21 +20,33 @@
       %tbody
         - @new_users.each do |u|
           - if u.confirmed_at
-            %tr.clickable{ :onclick => "location.href=\'#{edit_user_path(u)}\'", :title => "Modificar las autorizaciones de esta cuenta" }
-              %td= (u.nombre + " " + u.apellido).mb_chars.titleize.to_s
-              %td= u.email
-              %td
-                Confirmada el
-                = u.confirmed_at.strftime("%d/%m/%Y %H:%M:%S")
-              %td= u.confirmation_sent_at.strftime("%d/%m/%Y %H:%M:%S")
+            - if can? :manage, User
+              %tr.clickable{ :onclick => "location.href=\'#{edit_user_path(u)}\'", :title => "Modificar las autorizaciones de esta cuenta" }
+                %td= (u.nombre + " " + u.apellido).mb_chars.titleize.to_s
+                %td= u.email
+                %td
+                  Confirmada el
+                  = u.confirmed_at.strftime("%d/%m/%Y %H:%M:%S")
+                %td= u.confirmation_sent_at.strftime("%d/%m/%Y %H:%M:%S")
+            - else
+              %tr
+                %td= (u.nombre + " " + u.apellido).mb_chars.titleize.to_s
+                %td= u.email
+                %td
+                  Confirmada el
+                  = u.confirmed_at.strftime("%d/%m/%Y %H:%M:%S")
+                %td= u.confirmation_sent_at.strftime("%d/%m/%Y %H:%M:%S")
           - else
             %tr
               %td= (u.nombre + " " + u.apellido).mb_chars.titleize.to_s
               %td= u.email
               %td
-                Sin confirmar, puede ser
-                = link_to "eliminada", u, :method => :delete, |
+                - if can? :manage, User
+                  Sin confirmar, puede ser
+                  = link_to "eliminada", u, :method => :delete, |
                   :confirm => "¿Confirma la eliminación de la cuenta?" |
+                - if can? :read, User
+                  Sin Confirmar
               %td= u.confirmation_sent_at.strftime("%d/%m/%Y %H:%M:%S")
 
     %h2 Usuarios registrados
@@ -51,15 +63,29 @@
         %th Último ingreso
     %tbody
       - @users.each do |u|
-        %tr.clickable{ :onclick => "location.href=\'#{edit_user_path(u)}\'", :title => "Modificar las autorizaciones de esta cuenta" }
-          %td= (u.nombre + " " + u.apellido).mb_chars.titleize.to_s
-          %td= u.email
-          %td= u.user_groups.collect{ |ug| [ug.user_group_name]}.join(", ")
-          %td= u.unidades_de_alta_de_datos.collect{ |ug| [ug.nombre]}.join(", ")
-          %td
-            - if u.current_sign_in_at.nil? then
-              No registra ningún ingreso
-            - else
-              = u.current_sign_in_at.strftime("%d/%m/%Y")
-              - if not u.current_sign_in_ip.nil? then
-                = " (" + u.current_sign_in_ip + ")"
+        - if can? :manage, User
+          %tr.clickable{ :onclick => "location.href=\'#{edit_user_path(u)}\'", :title => "Modificar las autorizaciones de esta cuenta" }
+            %td= (u.nombre + " " + u.apellido).mb_chars.titleize.to_s
+            %td= u.email
+            %td= u.user_groups.collect{ |ug| [ug.user_group_name]}.join(", ")
+            %td= u.unidades_de_alta_de_datos.collect{ |ug| [ug.nombre]}.join(", ")
+            %td
+              - if u.current_sign_in_at.nil? then
+                No registra ningún ingreso
+              - else
+                = u.current_sign_in_at.strftime("%d/%m/%Y")
+                - if not u.current_sign_in_ip.nil? then
+                  = " (" + u.current_sign_in_ip + ")"
+        - else
+          %tr
+            %td= (u.nombre + " " + u.apellido).mb_chars.titleize.to_s
+            %td= u.email
+            %td= u.user_groups.collect{ |ug| [ug.user_group_name]}.join(", ")
+            %td= u.unidades_de_alta_de_datos.collect{ |ug| [ug.nombre]}.join(", ")
+            %td
+              - if u.current_sign_in_at.nil? then
+                No registra ningún ingreso
+              - else
+                = u.current_sign_in_at.strftime("%d/%m/%Y")
+                - if not u.current_sign_in_ip.nil? then
+                  = " (" + u.current_sign_in_ip + ")"

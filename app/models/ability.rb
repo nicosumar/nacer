@@ -157,5 +157,10 @@ class Ability
       can :read, User
     end
 
+    if user.in_group? :usuarios_uads_verificacion
+      can :read, User
+      can :read, UnidadDeAltaDeDatos
+    end
+
   end
 end

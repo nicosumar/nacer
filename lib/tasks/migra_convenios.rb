@@ -150,9 +150,9 @@
               puts "idx fila: #{row.idx} - col 0: #{row[0].to_s} -  col 1: #{row[1].to_s} "
               ActiveRecord::Base.connection.execute "
                 INSERT INTO migra_anexos
-                ( id ,   numero_fila , numero_columna_si_no ,  prestaciones ,  anexo ,     codigo, id_subrrogada_foranea )
+                ( id ,   numero_fila , numero_columna_si_no ,  prestaciones ,  anexo ,     codigo, id_subrrogada_foranea, rural )
                 VALUES
-                (#{ida}, #{row.idx+1}, #{valores[:col_si_no]}, '#{row[0]}'     , '#{row[1]}', '#{row[10]}', #{row[valores[:col_id_subrogada]]});"
+                (#{ida}, #{row.idx+1}, #{valores[:col_si_no]}, '#{row[0]}'     , '#{row[1]}', '#{row[10]}', #{row[valores[:col_id_subrogada]]}, '#{row[12]}' );"
             end
             ida+=1
             if (row.idx+1) == valores[:hasta]
@@ -350,12 +350,17 @@
         sheet = book.worksheet 0
         id=0
         convenio = ConvenioDeGestionSumar.find_by_numero!(sheet.row(34)[5].upcase)
+        es_rural = convenio.efector.area_de_prestacion_id == 2
 
         limites_secciones.each do |seccion, valores|
           if valores[:tipo] == 'p'
             sheet.each (valores[:desde]-1) do |row|
-              if row[valores[:col_si_no]].to_s.match /s/i
-                insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
+              if row[valores[:col_si_no]].to_s.match /s/i 
+                if es_rural 
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1} and rural ilike '%R%' ;").rows.collect{|r| r[0]}
+                else
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
+                end
 
                 insert_ids.each do |prestacion_id|
                   if !(PrestacionAutorizada.where({:efector_id => convenio.efector.id, :prestacion_id => prestacion_id, :fecha_de_finalizacion => nil}).first)
@@ -386,7 +391,11 @@
           if valores[:tipo] == 'm'
             sheet.each (valores[:desde]-1) do |row|
               if row[valores[:col_si_no]].to_s.match /s/i
-                insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_modulos WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
+                if es_rural 
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1} and rural ilike '%R%' ;").rows.collect{|r| r[0]}
+                else
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
+                end
 
                 insert_ids.each do |prestacion_id|
                   if !(PrestacionAutorizada.where({:efector_id => convenio.efector.id, :prestacion_id => prestacion_id, :fecha_de_finalizacion => nil}).first)
@@ -417,7 +426,11 @@
           if valores[:tipo] == 'a'
             sheet.each (valores[:desde]-1) do |row|
               if row[valores[:col_si_no]].to_s.match /s/i
-                insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_anexos WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
+                if es_rural 
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1} and rural ilike '%R%' ;").rows.collect{|r| r[0]}
+                else
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
+                end
 
                 insert_ids.each do |prestacion_id|
                   if !(PrestacionAutorizada.where({:efector_id => convenio.efector.id, :prestacion_id => prestacion_id, :fecha_de_finalizacion => nil}).first)
