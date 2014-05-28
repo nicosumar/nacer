@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140514164703) do
+ActiveRecord::Schema.define(:version => 20140527180851) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -534,12 +534,14 @@ ActiveRecord::Schema.define(:version => 20140514164703) do
   end
 
   create_table "documentos_generables_por_conceptos", :force => true do |t|
-    t.integer  "concepto_de_facturacion_id", :null => false
-    t.integer  "documento_generable_id",     :null => false
-    t.integer  "tipo_de_agrupacion_id",      :null => false
+    t.integer  "concepto_de_facturacion_id",                    :null => false
+    t.integer  "documento_generable_id",                        :null => false
+    t.integer  "tipo_de_agrupacion_id",                         :null => false
     t.string   "report_layout"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.boolean  "genera_numeracion",          :default => false, :null => false
+    t.string   "funcion_de_numeracion"
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
   end
 
   add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id", "documento_generable_id"], :name => "documentos_generables_por_con_concepto_de_facturacion_id_do_key", :unique => true

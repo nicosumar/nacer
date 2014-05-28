@@ -33,48 +33,6 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
   end
-=begin
-  
-begin
-my_threads = []
-for i in 1..100 do
-    puts "Creating thread #{i}"
-    my_threads << Thread.new(i) do |j|
-        sleep 3
-        puts "Thread #{j} done"
-    end
-end
-puts "#{Thread.list.size} threads"
-
-my_threads.each do |t|
-    t.join
-end
-end
-
-
-    for i in 1..100 do
-      logger.warn "Creating thread #{i}"
-      threads << Thread.new(i) do |j|
-        sleep 3
-        logger.warn "Thread #{j} done"
-      end
-    end
-    logger.warn "Se crearon #{Thread.list.size} threads"
-
-    # NEW
-    efectores =  self.grupo_de_efectores_liquidacion.efectores
-    threads = []
-
-    efectores.each do |e|
-      threads << Thread.new do |t|
-      end
-    end
-
-    threads.each do |t|
-      t.join
-    end
-  
-=end
 
   # 
   #  Guarda las prestaciones brindadas, datos adicionales y advertencias,
@@ -359,6 +317,10 @@ end
      })
   end
 
+  def generar_documentos
+    self.concepto_de_facturacion.generar_documentos(self) 
+  end
+
   def generar_cuasifacturas
 
     ActiveRecord::Base.transaction do
@@ -462,7 +424,6 @@ end
   def vaciar_liquidacion
 
     # Comprobar que no existen cuasifacturas generadas para poder eliminar
-
     unless self.liquidaciones_sumar_cuasifacturas.size > 0
       ActiveRecord::Base.connection.execute "delete \n"+
               "from prestaciones_liquidadas_advertencias\n"+

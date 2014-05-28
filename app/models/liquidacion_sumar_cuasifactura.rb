@@ -11,10 +11,11 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
 
   # 
   # Genera las cuasifacturas desde una liquidación dada
-  # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
+  # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
+  # @param  documento_generable [DocumentoGenerablePorConcepto] Especificación de la generación del documento
   # 
   # @return [Boolean] confirmación de la generación de las cuasifacturas
-  def self.generar_desde_liquidacion(liquidacion_sumar, agrupacion)
+  def self.generar_desde_liquidacion(liquidacion_sumar, documento_generable)
 
     return false if not (liquidacion_sumar.is_a?(LiquidacionSumar) and agrupacion.is_a?(TipoDeAgrupacion) )
       
@@ -22,14 +23,18 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
 
     ActiveRecord::Base.transaction do
       begin
-        agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas |
+        documento_generable.tipo_de_agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas |
 
-          # 1) Creo la cabecera de la cuasifactura
+          # 1) Creo la cabecera de la cuasifactura
           total_cuasifactura = pliquidadas.sum(:monto)
           cuasifactura = LiquidacionSumarCuasifactura.create( liquidacion_sumar: liquidacion_sumar, efector: e, monto_total: total_cuasifactura)
           cuasifactura.save
+          
+          # 2) Obtengo el numero de cuasifactura si corresponde para este tipo de documento
+          cuasifactura.numero_cuasifactura = documento_generable.obtener_numeracion(cuasifactura.id)
+          cuasifactura.save
 
-          # 2) Creo el detalle para esta cuasifactura
+          # 3) Creo el detalle para esta cuasifactura
           ActiveRecord::Base.connection.execute "--Creo el detalle para esta cuasifactura\n"+
             "INSERT INTO public.liquidaciones_sumar_cuasifacturas_detalles  \n"+
              "(liquidaciones_sumar_cuasifacturas_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, prestacion_liquidada_id, observaciones, created_at, updated_at)  \n"+
@@ -41,7 +46,6 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
         return false
       end #en begin/rescue
     end #End active base transaction
-
     return true
   end
 
