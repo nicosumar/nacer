@@ -78,13 +78,13 @@
                   ( id ,  numero_fila ,  numero_columna_si_no ,  grupo ,  subgrupo ,  nosologia  ,  tipo_de_prestacion ,  nombre_prestacion ,  codigos                 ,  precio   ,  rural ,id_subrrogada_foranea)
                   VALUES
                   (#{id}, #{row.idx+1} , #{valores[:col_si_no]}, '#{valores[:grupo]}', '#{valores[:subgrupo]}',    '#{row[0]}',            '#{row[1]}',           '#{row[2]}', '#{row[8] + ' ' + row[10]}', '#{row[11]}', '#{row[12]}', #{row[valores[:col_id_subrogada]]});"
-                
+
               rescue Exception => e
                 puts "#{id.inspect}, #{row.idx} , #{row[valores[:col_id_subrogada]]});"
                 puts "--------------------------------------------------------------------"
                 puts e.message
               end
-              
+
               id+=1
               if (row.idx+1) == valores[:hasta]
                 break
@@ -144,7 +144,7 @@
                   ( id ,   numero_fila ,  numero_columna_si_no  ,  prestaciones ,  anexo ,     codigo, id_subrrogada_foranea )
                   VALUES
                   (#{ida}, #{row.idx+1},  #{valores[:col_si_no]}, '#{row[0]}'     , '#{row[1]}', '#{row[10]}', #{ids});"
-                ida+=1    
+                ida+=1
               end
             else
               puts "idx fila: #{row.idx} - col 0: #{row[0].to_s} -  col 1: #{row[1].to_s} "
@@ -355,8 +355,8 @@
         limites_secciones.each do |seccion, valores|
           if valores[:tipo] == 'p'
             sheet.each (valores[:desde]-1) do |row|
-              if row[valores[:col_si_no]].to_s.match /s/i 
-                if es_rural 
+              if row[valores[:col_si_no]].to_s.match /s/i
+                if es_rural
                   insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1} and rural ilike '%R%' ;").rows.collect{|r| r[0]}
                 else
                   insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
@@ -391,10 +391,10 @@
           if valores[:tipo] == 'm'
             sheet.each (valores[:desde]-1) do |row|
               if row[valores[:col_si_no]].to_s.match /s/i
-                if es_rural 
-                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1} and rural ilike '%R%' ;").rows.collect{|r| r[0]}
+                if es_rural
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_modulos WHERE numero_fila = #{row.idx+1} and rural ilike '%R%' ;").rows.collect{|r| r[0]}
                 else
-                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_modulos WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
                 end
 
                 insert_ids.each do |prestacion_id|
@@ -426,10 +426,10 @@
           if valores[:tipo] == 'a'
             sheet.each (valores[:desde]-1) do |row|
               if row[valores[:col_si_no]].to_s.match /s/i
-                if es_rural 
-                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1} and rural ilike '%R%' ;").rows.collect{|r| r[0]}
+                if es_rural
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_anexos WHERE numero_fila = #{row.idx+1} and rural ilike '%R%' ;").rows.collect{|r| r[0]}
                 else
-                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_prestaciones WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
+                  insert_ids = ActiveRecord::Base.connection.exec_query("SELECT id_subrrogada_foranea FROM migra_anexos WHERE numero_fila = #{row.idx+1};").rows.collect{|r| r[0]}
                 end
 
                 insert_ids.each do |prestacion_id|
