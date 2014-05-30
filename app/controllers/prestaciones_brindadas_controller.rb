@@ -112,10 +112,6 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-# TODO: cleanup
-#    # Verificar si hay advertencias
-#    @prestacion_brindada.hay_advertencias?
-
     # Obtener el afiliado o la novedad asociadas a la prestación
     @beneficiario =
       NovedadDelAfiliado.where(
@@ -280,15 +276,6 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     @diagnosticos = []
-
-# TODO: cleanup, no se utiliza más, solo verificaremos actividad del beneficiario y vigencia para mostrar la advertencia en
-# pantalla pero son advertencias que no se persisten en la base de datos ya que son verificadas en el momento de la liquidación
-#    # Mostrar las advertencias que se puedan haber generado en la selección de efector y fecha
-#    if @prestacion_brindada.hay_advertencias?
-#      flash[:tipo] = :advertencia
-#      flash[:titulo] = "Advertencia"
-#      flash[:mensaje] = @prestacion_brindada.advertencias[:base]
-#    end
 
     # Mostrar advertencias en pantalla si la prestación ya está vencida o el beneficiario no está activo
     if !@prestacion_brindada.beneficiario_activo?
@@ -478,16 +465,6 @@ class PrestacionesBrindadasController < ApplicationController
       dra.updater_id = current_user.id
     end
 
-# TODO: cleanup
-#    # Verificar si hay advertencias presentes, para modificar el estado de la prestación
-#    if @prestacion_brindada.hay_advertencias?
-#      if !@prestacion_brindada.datos_reportables_incompletos
-#        @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
-#      end
-#    else
-#      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R")
-#    end
-
     # Actualizar la información sobre métodos de validación que generan advertencias fallados y ajustar el estado de la prestación
     @prestacion_brindada.actualizar_metodos_de_validacion_fallados
     if @prestacion_brindada.metodos_de_validacion.size > 0
@@ -498,6 +475,50 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Guardar la prestación y los datos reportables asociados
     @prestacion_brindada.save
+
+    # Verificar si la prestación guardada es una prestación que puede modificar el lugar de atención habitual del beneficiario
+    # Las prestaciones que pueden modificar el lugar de atención no son comunitarias por lo cual debe existir el beneficiario
+    if @prestacion_brindada.prestacion.modifica_lugar_de_atencion && @beneficiario.lugar_de_atencion_habitual_id != @prestacion_brindada.efector_id
+      # Verificar el historial de prestaciones de este beneficiario. Si en el último año no registra prestaciones de este mismo tipo
+      # que hayan sido brindadas por el efector de atención habitual, se genera automáticamente una modificación de datos que cambia
+      # el lugar de atención habitual por este efector que brindó la prestación.
+      if VistaGlobalDePrestacionBrindada.where("
+          clave_de_beneficiario = '#{@beneficiario.clave_de_beneficiario}'
+          AND fecha_de_la_prestacion > '#{(@prestacion_brindada.fecha_de_la_prestacion - 1.year).strftime("%Y-%m-%d")}'
+          AND prestacion_id IN (SELECT id FROM prestaciones WHERE modifica_lugar_de_atencion)
+          AND efector_id = '#{@beneficiario.lugar_de_atencion_habitual_id}'
+          AND estado_de_la_prestacion_id NOT IN (SELECT id FROM estados_de_las_prestaciones WHERE codigo IN ('U', 'S'))
+        ").size == 0 then
+        # La variable @beneficiario puede ser una novedad ingresada para este beneficiario, o bien un registro del padrón
+        if @beneficiario.is_a? Afiliado
+          # Si es un registro del padrón, creamos una nueva novedad (solicitud de modificación de datos)
+          novedad = NovedadDelAfiliado.new
+          novedad.copiar_atributos_del_afiliado(@beneficiario)
+          novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("M")
+          novedad.categoria_de_afiliado_id = novedad.categorizar
+          novedad.apellido = novedad.apellido.mb_chars.upcase.to_s
+          novedad.nombre = novedad.nombre.mb_chars.upcase.to_s
+          novedad.generar_advertencias
+          novedad.creator_id = current_user.id
+          novedad.updater_id = current_user.id
+          if novedad.advertencias && novedad.advertencias.size > 0
+            novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo("I")
+          else
+            novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo("R")
+          end
+          novedad.lugar_de_atencion_habitual_id = @prestacion_brindada.efector_id
+          novedad.fecha_de_la_novedad = @prestacion_brindada.fecha_de_la_prestacion
+          # TODO: HARDCODED, debería ser un CI asociado a la UAD del usuario, pero quizás no es mala idea que sea el de
+          # procedimientos internos
+          novedad.centro_de_inscripcion_id = 316
+          puts novedad.inspect
+          novedad.save
+        else
+          # Si era una novedad pendiente, modificamos el campo lugar_de_atencion_habitual_id
+          @beneficiario.update_attributes({:lugar_de_atencion_habitual_id => @prestacion_brindada.efector_id})
+        end
+      end
+    end
 
     if @prestacion_brindada.metodos_de_validacion.size > 0
       redirect_to(@prestacion_brindada,
@@ -512,7 +533,7 @@ class PrestacionesBrindadasController < ApplicationController
     end
   end
 
-  # PUT /addendas/:id
+  # PUT /prestaciones_brindadas/:id
   def update
     # Verificar los permisos del usuario
     if cannot? :update, PrestacionBrindada
@@ -593,9 +614,6 @@ class PrestacionesBrindadasController < ApplicationController
     # Actualizar los atributos de la prestación
     @prestacion_brindada.attributes = params[:prestacion_brindada]
 
-    # Marcar la prestación brindada como incompleta, hasta tanto se completen las validaciones.
-    @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("I")
-
     # Generar el listado de diagnósticos válidos para esta prestación
     @diagnosticos = @prestacion_brindada.prestacion.diagnosticos.collect{|d| [d.nombre_y_codigo, d.id]}.sort
 
@@ -620,16 +638,6 @@ class PrestacionesBrindadasController < ApplicationController
     @prestacion_brindada.datos_reportables_asociados.each do |dra|
       dra.updater_id = current_user.id
     end
-
-# TODO: cleanup
-#    Verificar si hay advertencias presentes, para modificar el estado de la prestación
-#    if @prestacion_brindada.hay_advertencias?
-#      if !@prestacion_brindada.datos_reportables_incompletos
-#        @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
-#      end
-#    else
-#      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R")
-#    end
 
     # Actualizar la información sobre métodos de validación que generan advertencias fallados y ajustar el estado de la prestación
     @prestacion_brindada.actualizar_metodos_de_validacion_fallados
