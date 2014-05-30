@@ -449,7 +449,8 @@ class ConveniosDeGestionSumarController < ApplicationController
     end
 
     # Guardar las prestaciones seleccionadas para luego rellenar la tabla asociada si se graba correctamente
-    @prestacion_autorizada_ids = params[:convenio_de_gestion_sumar].delete(:prestacion_autorizada_ids).reject(&:blank?) || []
+    # TODO: CLEANUP. No se pueden modificar las prestaciones desde la interfaz de usuario
+    #@prestacion_autorizada_ids = params[:convenio_de_gestion_sumar].delete(:prestacion_autorizada_ids).reject(&:blank?) || []
     migrar_prestaciones = params[:migrar_prestaciones]
 
     # Obtener el convenio
