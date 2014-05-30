@@ -481,8 +481,10 @@ class ConveniosDeGestionSumarController < ApplicationController
     # Verificar la validez del objeto
     if @convenio_de_gestion.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if ( @prestacion_autorizada_ids.any?{|p_id| !((@prestaciones.collect{|p| p[1]}).member?(p_id.to_i))} ||
-           @firmante_id.present? && !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
+      # TODO: CLEANUP. Las prestaciones autorizadas no pueden modificarse desde la interfaz.
+      #if ( @prestacion_autorizada_ids.any?{|p_id| !((@prestaciones.collect{|p| p[1]}).member?(p_id.to_i))} ||
+      #     @firmante_id.present? && !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
+      if ( @firmante_id.present? && !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
