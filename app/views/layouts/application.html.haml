@@ -196,7 +196,7 @@
                   %h3 SESIÓN ACTUAL
                   %ul
                     %li= link_to "Cerrar la sesión", destroy_user_session_path, :method => :delete
-                    - if current_user.unidades_de_alta_de_datos.count > 1
+                    - if current_user.unidades_de_alta_de_datos.count > 1 || current_user.in_group?(:administradores)
                       %li= link_to "Cambiar la UAD actual", seleccionar_uad_url
 
         #page
