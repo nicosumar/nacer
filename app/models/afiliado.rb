@@ -586,7 +586,7 @@ class Afiliado < ActiveRecord::Base
       :cobertura_efectiva_basica => SiNo.valor_bool_del_codigo(self.valor(campos[93], :texto)),
       :efector_ceb_id => Efector.id_del_cuie(self.valor(campos[94], :texto)),
       :fecha_de_la_ultima_prestacion => self.valor(campos[95], :fecha),
-      :prestacion_ceb_id => Prestacion.id_del_codigo(self.valor(campos[96], :texto)),
+      :prestacion_ceb_id => Prestacion.id_del_codigo(self.valor(campos[96], :texto), Afiliado.find_by_afiliado_id(self.valor(campos[0], :entero)), self.valor(campos[95], :fecha)),
       :devenga_capita => SiNo.valor_bool_del_codigo(self.valor(campos[97], :texto)),
       :devenga_cantidad_de_capitas => self.valor(campos[98], :entero),
       :grupo_poblacional_id => GrupoPoblacional.id_del_codigo(self.valor(campos[99], :texto))

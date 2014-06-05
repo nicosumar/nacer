@@ -37,6 +37,8 @@ class Prestacion < ActiveRecord::Base
   has_many :asignaciones_de_precios
   has_many :nomencladores, through: :asignaciones_de_precios
   has_many :prestaciones_incluidas
+  has_many :prestaciones_autorizadas
+  has_and_belongs_to_many :prestaciones_pdss
 
   # Validaciones
   # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
@@ -157,21 +159,74 @@ class Prestacion < ActiveRecord::Base
   end
 
   # Devuelve el id asociado con el código pasado
-  def self.id_del_codigo(codigo)
-    if !codigo || codigo.strip.empty?
+  def self.id_del_codigo(codigo, afiliado = nil, fecha = nil)
+    if codigo.nil? || codigo.strip.empty?
       return nil
     end
 
-    # Buscar el código en la tabla y devolver su ID (si existe)
+    # Buscar el código completo en la tabla y devolver su ID (si existe)
     prestacion = self.find_by_codigo(codigo.strip.upcase.gsub(/ /, ''))
-    if prestacion
-      return prestacion.id
-    else
-      return nil
-    end
+    return prestacion.id unless prestacion.nil?
+
+    # Buscar todas las prestaciones con código coincidente en los primeros 6 caracteres (códigos Sumar)
+    prestaciones = self.where(:codigo => codigo.strip.upcase.gsub(/ /, '')[0..5])
+    return nil if prestaciones.size < 1
+    return prestaciones.first.id if prestaciones.size == 1
+
+    # Nos siguen quedando varias opciones, filtrar de acuerdo al diagnóstico
+    diagnostico = Diagnostico.find_by_codigo(codigo.strip.upcase.gsub(/ /, '')[6..-1])
+    return nil unless diagnostico.present?
+    prestaciones = prestaciones.where("
+      EXISTS (
+        SELECT *
+          FROM \"diagnosticos_prestaciones\"
+          WHERE
+            \"diagnosticos_prestaciones\".\"diagnostico_id\" = #{diagnostico.id}
+            AND \"diagnosticos_prestaciones\".\"prestacion_id\" = \"prestaciones\".\"id\"
+      )
+    ")
+    return nil if prestaciones.size < 1
+    return prestaciones.first.id if prestaciones.size == 1
+
+    # Si aún quedan varias opciones, filtrar de acuerdo al sexo y grupo poblacional del beneficiario
+    # a la fecha de la prestación
+    return nil unless afiliado.present? && afiliado.sexo_id.present? && afiliado.fecha_de_nacimiento.present? && fecha.present?
+    prestaciones = prestaciones.where("
+      EXISTS (
+        SELECT *
+          FROM \"prestaciones_sexos\"
+          WHERE
+            \"prestaciones_sexos\".\"sexo_id\" = #{afiliado.sexo_id}
+            AND \"prestaciones_sexos\".\"prestacion_id\" = \"prestaciones\".\"id\"
+      )
+      AND EXISTS (
+        SELECT *
+          FROM \"grupos_poblacionales_prestaciones\"
+          WHERE
+            \"grupos_poblacionales_prestaciones\".\"grupo_poblacional_id\" = #{afiliado.grupo_poblacional_al_dia(fecha).id}
+            AND \"grupos_poblacionales_prestaciones\".\"prestacion_id\" = \"prestaciones\".\"id\"
+      )
+    ")
+    return nil if prestaciones.size < 1
+    return prestaciones.first.id if prestaciones.size == 1
+
+    # Si seguimos teniendo más de un id de prestación posible, revisar el histórico de prestaciones brindadas, para extraer
+    # de ahí el ID de prestación (lento)
+    pb = VistaGlobalDePrestacionBrindada.where("
+      clave_de_beneficiario = '#{afiliado.clave_de_beneficiario}'
+      AND fecha_de_la_prestacion = '#{fecha.strftime("%Y-%m-%d")}'
+      AND prestacion_id IN (#{prestaciones.collect{|p| p.id}.join(', ')})
+      AND estado_de_la_prestacion_id NOT IN (6, 10, 11)" # TODO: ¡HARDCODED ids!
+    ).first
+
+    return pb.prestacion_id unless pb.nil?
+
+    return nil
+
   end
-  def self.id_del_codigo!(codigo)
-    codigo_id = self.id_del_codigo(codigo)
+
+  def self.id_del_codigo!(codigo, afiliado = nil, fecha = nil)
+    codigo_id = self.id_del_codigo(codigo, afiliado, fecha)
     raise ActiveRecord::RecordNotFound if codigo_id.nil?
     return codigo_id
   end
