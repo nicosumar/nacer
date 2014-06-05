@@ -190,7 +190,7 @@ class Prestacion < ActiveRecord::Base
 
     # Si aún quedan varias opciones, filtrar de acuerdo al sexo y grupo poblacional del beneficiario
     # a la fecha de la prestación
-    return nil unless afiliado.present? && afiliado.sexo_id.present? && afiliado.fecha_de_nacimiento.present? && fecha.present?
+    return nil unless afiliado.present? && afiliado.sexo_id.present? && afiliado.grupo_poblacional_al_dia(fecha).present?
     prestaciones = prestaciones.where("
       EXISTS (
         SELECT *
