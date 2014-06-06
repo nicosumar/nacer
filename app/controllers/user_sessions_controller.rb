@@ -39,7 +39,7 @@ class UserSessionsController < Devise::SessionsController
   # Permite al usuario seleccionar la UAD con la que va a trabajar
   def seleccionar_uad
     # Verificar que el usuario realmente posea más de una UAD habilitada
-    if current_user.unidades_de_alta_de_datos.size < 2
+    if current_user.unidades_de_alta_de_datos.size < 2 && !current_user.in_group?(:administradores)
       redirect_to(root_url,
         :flash => {:tipo => :error, :titulo => "No está autorizado",
           :mensaje => "La petición no es válida. Se ha notificado a los administradores del sistema acerca de este incidente."
