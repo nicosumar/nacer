@@ -597,7 +597,7 @@ class PrestacionBrindada < ActiveRecord::Base
         )
       "
     end
-    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > tasa_de_uso.cantidad_maxima
+    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > cantidad_maxima
 
     # Si se ha definido un intervalo mínimo entre prestaciones, verificar que se haya cumplido
     if intervalo.present?
