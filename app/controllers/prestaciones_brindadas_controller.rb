@@ -192,6 +192,17 @@ class PrestacionesBrindadasController < ApplicationController
           :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
+
+      if @beneficiario.present? && @beneficiario.estado_de_la_novedad.codigo == "I"
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "Los datos del beneficiario están incompletos",
+            :mensaje => "No se pueden registrar prestaciones a beneficiarios que poseen una inscripción con datos incompletos. Complete la información faltante en la solicitud de alta o modificación de datos del padrón."
+          }
+        )
+        return
+      end
+
       if !@beneficiario
         @beneficiario =
           Afiliado.find_by_clave_de_beneficiario(
@@ -345,12 +356,24 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
-      if not @beneficiario
+
+      if !@beneficiario.present?
         @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
       end
+
+      if !@beneficiario.present?
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
+        return
+      end
+
     end
 
     # Generar el listado de diagnósticos válidos para la prestación
@@ -388,17 +411,18 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
-      if !@beneficiario
+
+      if !@beneficiario.present?
         @beneficiario =
           Afiliado.find_by_clave_de_beneficiario(
             params[:prestacion_brindada][:clave_de_beneficiario]
           )
       end
 
-      if !@beneficiario
+      if !@beneficiario.present?
         redirect_to(
           root_url,
           :flash => {:tipo => :error, :titulo => "La petición no es válida",
@@ -486,7 +510,7 @@ class PrestacionesBrindadasController < ApplicationController
           clave_de_beneficiario = '#{@beneficiario.clave_de_beneficiario}'
           AND fecha_de_la_prestacion > '#{(@prestacion_brindada.fecha_de_la_prestacion - 1.year).strftime("%Y-%m-%d")}'
           AND prestacion_id IN (SELECT id FROM prestaciones WHERE modifica_lugar_de_atencion)
-          AND efector_id = '#{@beneficiario.lugar_de_atencion_habitual_id}'
+          AND efector_id = '#{(@beneficiario.lugar_de_atencion_habitual_id.present? ? @beneficiario.lugar_de_atencion_habitual_id : 0)}'
           AND estado_de_la_prestacion_id NOT IN (SELECT id FROM estados_de_las_prestaciones WHERE codigo IN ('U', 'S'))
         ").size == 0 then
         # La variable @beneficiario puede ser una novedad ingresada para este beneficiario, o bien un registro del padrón
@@ -579,17 +603,18 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
-      if !@beneficiario
+
+      if !@beneficiario.present?
         @beneficiario =
           Afiliado.find_by_clave_de_beneficiario(
             params[:prestacion_brindada][:clave_de_beneficiario]
           )
       end
 
-      if !@beneficiario
+      if !@beneficiario.present?
         redirect_to(
           root_url,
           :flash => {:tipo => :error, :titulo => "La petición no es válida",
