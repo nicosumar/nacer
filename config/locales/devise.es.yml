@@ -45,6 +45,9 @@ es:
       send_instructions: "Recibirá un correo electrónico con instrucciones para desbloquear su cuenta en algunos minutos."
       send_paranoid_instructions: "Si su cuenta existe, recibirá un correo electrónico con instrucciones para desbloquear su cuenta en algunos minutos."
       unlocked: "Su cuenta se desbloqueó correctamente. Inicie la sesión para continuar."
+    users:
+      user:
+        signed_up_but_unconfirmed: "Se envió un mensaje a su dirección de correo electrónico con un enlace de confirmación. Abra el enlace para activar su cuenta."
   errors:
     messages:
       already_confirmed: "ya fue confirmada, intente iniciar la sesión"
