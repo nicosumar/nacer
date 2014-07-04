@@ -690,50 +690,43 @@ class PrestacionBrindada < ActiveRecord::Base
 
   # 
   # Busca todas las prestaciones sin facturar y vencidas al periodo indicado y las marca como vencidas
-  # @param periodo [Periodo] Periodo en cual se estan venciendo las prestaciones
+  # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
   # 
   # @return [Fixnum] Cantidad de prestaciones vencidas
-  def self.marcar_prestaciones_vencidas(periodo)
+  def self.marcar_prestaciones_vencidas(liquidacion)
 
-    vigencia_perstaciones = periodo.dias_de_prestacion
-    fecha_de_recepcion = periodo.fecha_recepcion.to_s
-    fecha_limite_prestaciones = periodo.fecha_limite_prestaciones.to_s
+    vigencia_perstaciones = liquidacion.periodo.dias_de_prestacion
+    fecha_de_recepcion = liquidacion.periodo.fecha_recepcion.to_s
+    fecha_limite_prestaciones = liquidacion.periodo.fecha_limite_prestaciones.to_s
+    prestaciones_ids = liquidacion.periodo.concepto_de_facturacion.prestaciones.collect {|r| r.id }.join(", ")
+    efectores = liquidacion.grupo_de_efectores_liquidacion.efectores.collect {|e| e.id}.join(", ")
 
     cq = CustomQuery.buscar({
         sql:  "SELECT DISTINCT vpb.esquema\n"+
               "FROM vista_global_de_prestaciones_brindadas vpb\n"+
-              "WHERE NOT ( vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones}) AND to_date('fecha_limite_prestaciones','yyyy-mm-dd')\n"+
-              "            OR \n"+
-              "            vpb.fecha_de_la_prestacion  > to_date('fecha_limite_prestaciones','yyyy-mm-dd') \n"+
-              "          ) \n"+
-              "and estado_de_la_prestacion_id in (1,2,3)"
+              "WHERE  vpb.fecha_de_la_prestacion < (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones})\n"+
+              "AND  vpb.prestacion_id in (#{prestaciones_ids} ) \n"+
+              "AND vpb.efector_id in (#{efectores})\n"+
+              "and vpb.estado_de_la_prestacion_id in (1,2,3,7)"
       })
-    threads = []
 
     cq.each do |r|
-      threads << Thread.new do
         upd = CustomQuery.ejecutar({
             sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
                   "SET estado_de_la_prestacion_id = 11, \n"+
-                  "    estado_de_la_prestacion_liquidada_id = 13, \n"
-                  "    observaciones_de_liquidacion = 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo}', \n"+
-                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas IS NULL THEN 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo}' \n"+
-                  "                                        WHEN #{r[:esquema]}.prestaciones_brindadas IS NOT NULL THEN  #{r[:esquema]}.prestaciones_brindadas ||  (E' \\n La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo}') ,\n"+
+                  "    estado_de_la_prestacion_liquidada_id = 13, \n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo}' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo}') \n"+
                   "                                   END \n"+
-                  "    updated_at = now()\n"+
                   "FROM vista_global_de_prestaciones_brindadas vpb \n"+
-                  "WHERE NOT ( vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones}) AND to_date('fecha_limite_prestaciones','yyyy-mm-dd')\n"+
-                  "            OR \n"+
-                  "            vpb.fecha_de_la_prestacion  > to_date('fecha_limite_prestaciones','yyyy-mm-dd') \n"+
-                  "          ) \n"+
-                  "AND estado_de_la_prestacion_id in (1,2,3) \n"+
+                  "WHERE  vpb.fecha_de_la_prestacion < (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones})\n"+
+                  "AND vpb.prestacion_id in (#{prestaciones_ids} ) \n"+
+                  "AND vpb.estado_de_la_prestacion_id in (1,2,3,7) \n"+
+                  "AND vpb.efector_id in (#{efectores})\n"+
                   "AND vpb.esquema = '#{r[:esquema]}' \n"+
                   "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id "
           })
-      end
     end
-
-    threads.each(&:join)
 
     #a.cmd_tuples
   end
@@ -741,70 +734,57 @@ class PrestacionBrindada < ActiveRecord::Base
 
   # 
   # Marca las prestaciones brindadas de baja cuyo beneficiario no presentara periodo de actividad al momento de tomar la prestación.
-  # @param periodo [Periodo] Periodo en cual se estan venciendo las prestaciones
+  # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
   # 
   # @return [Fixnum] Cantidad de prestaciones vencidas
-  def self.marcar_prestaciones_sin_periodo_de_actividad(periodo)
+  def self.marcar_prestaciones_sin_periodo_de_actividad(liquidacion)
 
-    vigencia_perstaciones = periodo.dias_de_prestacion
-    fecha_de_recepcion = periodo.fecha_recepcion.to_s
-    fecha_limite_prestaciones = periodo.fecha_limite_prestaciones.to_s
+    vigencia_perstaciones = liquidacion.periodo.dias_de_prestacion
+    fecha_de_recepcion = liquidacion.periodo.fecha_recepcion.to_s
+    fecha_limite_prestaciones = liquidacion.periodo.fecha_limite_prestaciones.to_s
+    efectores = liquidacion.grupo_de_efectores_liquidacion.efectores.collect {|e| e.id}.join(", ")
+    prestaciones_ids = liquidacion.periodo.concepto_de_facturacion.prestaciones.collect {|r| r.id }.join(", ")
     
     cq = CustomQuery.buscar({
       sql:  "SELECT DISTINCT esquema \n"+
             "FROM vista_global_de_prestaciones_brindadas vpb\n"+
             " INNER JOIN     afiliados af ON (af.clave_de_beneficiario = vpb.clave_de_beneficiario) \n"+
-            " LEFT  JOIN     periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id ) --solo los afiliados que tenga algun periodo de actividad\n"+
-            "WHERE vpb.estado_de_la_prestacion_id IN (2,3,7)\n"+
-            "AND NOT ( vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones}) AND to_date('fecha_limite_prestaciones','yyyy-mm-dd') \n"+
-            "          OR\n"+
-            "          vpb.fecha_de_la_prestacion  > to_date('fecha_limite_prestaciones','yyyy-mm-dd') \n"+
-            "        )\n"+
-            " AND     ( CASE WHEN pa.afiliado_id IS NULL THEN TRUE\n"+
-            "               WHEN pa.afiliado_id IS NOT NULL THEN \n"+
-            "                   NOT ((vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+
+            "WHERE vpb.estado_de_la_prestacion_id IN (1,2,3,7)\n"+
+            "AND vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd')\n"+
+            "AND NOT EXISTS (SELECT * FROM periodos_de_actividad pa WHERE\n"+
+            "                   vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio AND (pa.fecha_de_finalizacion is null \n"+
             "                         OR\n"+
-            "                        (vpb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
+            "                        pa.fecha_de_finalizacion > vpb.fecha_de_la_prestacion )\n"+
             "                       )\n"+
-            "          END\n"+
-            "        )"
+            "AND vpb.efector_id in (#{efectores})\n"+
+            "AND  vpb.prestacion_id in (#{prestaciones_ids} ) \n"
       })
-    threads = []
 
     cq.each do |r|
-      threads << Thread.new do
         upd = CustomQuery.ejecutar({
             sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
-                  "SET estado_de_la_prestacion_id = 11, \n"+
-                  "    estado_de_la_prestacion_liquidada_id = 11, \n"
-                  "    observaciones_de_liquidacion = 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo}', \n"+
-                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas IS NULL THEN 'La prestación brindada al beneficiario no posee periodo de actividad al periodo #{liquidacion.periodo.periodo}' \n"+
-                  "                                        WHEN #{r[:esquema]}.prestaciones_brindadas IS NOT NULL THEN  #{r[:esquema]}.prestaciones_brindadas ||  (E' \\n La prestación brindada al beneficiario no posee periodo de actividad al periodo #{liquidacion.periodo.periodo}') ,\n"+
+                  "SET estado_de_la_prestacion_liquidada_id = 14, \n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación brindada al beneficiario no posee periodo de actividad al periodo #{liquidacion.periodo.periodo}' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La prestación brindada al beneficiario no posee periodo de actividad al periodo #{liquidacion.periodo.periodo}') ,\n"+
                   "                                   END \n"+
                   "    updated_at = now()\n"+
                   "FROM vista_global_de_prestaciones_brindadas vpb\n"+
                   " INNER JOIN     afiliados af ON (af.clave_de_beneficiario = vpb.clave_de_beneficiario) \n"+
-                  " LEFT  JOIN     periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id ) \n"+
-                  "WHERE vpb.estado_de_la_prestacion_id IN (2,3,7)\n"+
-                  "AND NOT ( vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones}) AND to_date('fecha_limite_prestaciones','yyyy-mm-dd') \n"+
-                  "          OR\n"+
-                  "          vpb.fecha_de_la_prestacion  > to_date('fecha_limite_prestaciones','yyyy-mm-dd') \n"+
-                  "        )\n"+
-                  " AND     ( CASE WHEN pa.afiliado_id IS NULL THEN TRUE\n"+  # Cuando periodo de actividad para el beneficiario no existe
-                  "               WHEN pa.afiliado_id IS NOT NULL THEN \n"+   # o la prestacion se brindo en un periodo no comprendido en el periodo de actividad,  la excluyo
-                  "                   NOT ((vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+
+                  "WHERE vpb.estado_de_la_prestacion_id IN (1,2,3,7)\n"+
+                  "AND vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd')\n"+
+                  "AND NOT EXISTS (SELECT * FROM periodos_de_actividad pa WHERE\n"+
+                  "                    af.afiliado_id = pa.afiliado_id\n"+
+                  "                   AND vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio AND (pa.fecha_de_finalizacion is null \n"+
                   "                         OR\n"+
-                  "                        (vpb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
+                  "                        pa.fecha_de_finalizacion > vpb.fecha_de_la_prestacion )\n"+
                   "                       )\n"+
-                  "          END\n"+
-                  "        )\n"+
                   "AND vpb.esquema = '#{r[:esquema]}' \n"+
+                  "AND vpb.efector_id in (#{efectores})\n"+
+                  "AND  vpb.prestacion_id in (#{prestaciones_ids} ) \n"+
                   "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id "
           })
-      end
     end
 
-    threads.each(&:join)
 
   end
 end

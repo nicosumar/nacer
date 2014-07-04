@@ -72,7 +72,6 @@ class LiquidacionesSumarController < ApplicationController
         render action: "new"
       end
     end
-
   end
 
   # PUT /liquidaciones_sumar/1
@@ -135,6 +134,7 @@ class LiquidacionesSumarController < ApplicationController
     end
   end
 
+
   def generar_cuasifacturas
     tiempo_proceso = Time.now
 
@@ -145,7 +145,16 @@ class LiquidacionesSumarController < ApplicationController
     elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
       redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
     else
+      
+=begin
       if @liquidacion_sumar.generar_cuasifacturas
+        logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" }
+      else
+        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
+      end
+=end
+      if @liquidacion_sumar.generar_documentos
         logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
         redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" }
       else
@@ -170,12 +179,7 @@ class LiquidacionesSumarController < ApplicationController
 
   def crear_tabla_parametros(argLiquidacion)
 
-    #Obtengo la ultima formula creada
-    f = Formula.where("activa = true and created_at <= ?", argLiquidacion.periodo.fecha_cierre).order('created_at DESC').first
-
     pl = ParametroLiquidacionSumar.new
-
-    pl.formula = f
 
     return pl
   end

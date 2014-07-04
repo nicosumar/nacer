@@ -20,6 +20,10 @@ class CreateTiposDeAgrupacion < ActiveRecord::Migration
       { #ID: 3
         nombre: "Efector y Afiliado",
         codigo: "EA"
+      },
+      { #ID: 4
+        nombre: "Solo Efectores Administradores",
+        codigo: "SEA"
       }
     ])
   end

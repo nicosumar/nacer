@@ -6,6 +6,12 @@
     = f.label :descripcion
     = f.text_field :descripcion
   .field
+    = f.label "Formula"
+    = f.select :formula_id, @formulas,{} ,{class: 'select2'}
+    .field
+    = f.label "Tipo de Expediente"
+    = f.select :tipo_de_expediente_id, @tipos_de_expedientes,{} ,{class: 'select2'}
+  .field
     = f.label :prestaciones, "Prestaciones incluidas en este concepto:"
     = collection_select :concepto_en_prestaciones, :id, @prestaciones, :id, :nombre,{:selected => @prestaciones_ids}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}
   .actions

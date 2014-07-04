@@ -3,7 +3,6 @@ class MigraFormulaAConceptoDeFacturacion < ActiveRecord::Migration
     execute <<-SQL
       ALTER TABLE "public"."conceptos_de_facturacion"
         ADD COLUMN "formula_id" int4,
-        ADD COLUMN "dias_de_prestacion" int4 DEFAULT 120,
         ADD FOREIGN KEY ("formula_id") REFERENCES "public"."formulas" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
       ALTER TABLE "public"."parametros_liquidaciones_sumar"
@@ -11,11 +10,20 @@ class MigraFormulaAConceptoDeFacturacion < ActiveRecord::Migration
         DROP COLUMN "formula_id";
 
     SQL
+
+    execute <<-SQL
+      ALTER TABLE "public"."periodos"
+        ADD COLUMN "dias_de_prestacion" int4 DEFAULT 120;
+    SQL
     ConceptoDeFacturacion.all.each do |c|
-      c.dias_de_prestacion = 120
       c.formula_id = 1
       c.save
     end
+    Periodo.all.each do |p|
+      p.dias_de_prestacion = 120
+      p.save
+    end
+
   end
 
   def down

@@ -140,6 +140,22 @@ class Efector < ActiveRecord::Base
     return true
   end
 
+
+  # 
+
+  # Devuelve si el efector es autoadministrado
+
+  # 
+
+  # @return [Boolean] Verdadero si es autoadministrado
+  def es_autoadministrado?
+    if Efector.administradores_y_autoadministrados_sumar.where(id: self.id).size == 1
+      return true
+    else
+      return false
+    end
+  end
+
   #
   # Devuelve el consolidado de un periodo dado
   #
@@ -149,11 +165,11 @@ class Efector < ActiveRecord::Base
   end
 
   #
-  # Devuelve la cuasifactura de un periodo dado
+  # Devuelve las cuasifactura de un periodo dado
   #
   # @return [LiquidacionSumarCuasifactura] 
   def cuasifactura_de_periodo(argPeriodo)
-    self.cuasifacturas.joins(:liquidacion_sumar).where(liquidaciones_sumar: {periodo_id: argPeriodo.id}).first
+    self.cuasifacturas.joins(:liquidacion_sumar).where(liquidaciones_sumar: {periodo_id: argPeriodo.id})
   end
 
 
@@ -421,6 +437,31 @@ class Efector < ActiveRecord::Base
         GROUP BY efectores.id, efectores.nombre
         ORDER BY \"frecuencia\" DESC, efectores.nombre ASC;
     ")
+  end
+
+  # 
+  # Devuelve las prestaciones liquidadas para unaliquidacion dada de este efector
+  # @param  argLiquidacion [LiquidacionSumar] La liquidacion de la cual deben obtenerse las prestaciones
+  # @param  solo_aceptadas = true [Boolean] Indica si solo debe devolver las prestaciones aceptadas, o todas
+
+  # @param  efectores = [] [Array] Array de efectores que deben incluirse en la busqueda
+  # 
+  # @return [PrestacionLiquidada] Las prestaciones liquidadas para ese efector en la liquidacion que se envio como parametro
+  def self.prestaciones_liquidadas_por_liquidacion(argLiquidacion, solo_aceptadas = true, efectores = [])
+    
+    unless (solo_aceptadas.is_a? TrueClass or solo_aceptadas.is_a? FalseClass) and argLiquidacion.is_a? LiquidacionSumar and efectores.is_a? ActiveRecord::Relation and efectores.first.is_a? Efector
+       raise "Los parametros no son corerctos"
+       return nil
+    end 
+
+    estados_aceptados = [argLiquidacion.parametro_liquidacion_sumar.prestacion_aceptada.id, argLiquidacion.parametro_liquidacion_sumar.prestacion_exceptuada.id]
+    
+    if solo_aceptadas
+      PrestacionLiquidada.where(liquidacion_id: argLiquidacion.id, estado_de_la_prestacion_liquidada_id: estados_aceptados, efector_id: (efectores.collect {|e| e.id} + [efectores.first.administrador_sumar.id]) ) 
+    else
+      PrestacionLiquidada.where(liquidacion_id: argLiquidacion.id, efector_id: (efectores.collect {|e| e.id} + [efectores.first.administrador_sumar.id]))
+    end
+    
   end
 
 

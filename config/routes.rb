@@ -1,9 +1,6 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
-  resources :documentos_generables_por_conceptos
-
-
   resources :documentos_generables
 
 
@@ -28,7 +25,9 @@ Nacer::Application.routes.draw do
   get 'buscar_prestacion_liquidada/por_afiliado_concepto_y_efector' => 'prestaciones_liquidadas#por_afiliado_concepto_y_efector', as: :prestaciones_liquidadas_por_afiliado_efector_concepto
 
   #Liquidaciones - Sumar
-  resources :conceptos_de_facturacion
+  resources :conceptos_de_facturacion do
+    resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy] 
+  end
   resources :periodos
   resources :tipos_periodos
   resources :formulas

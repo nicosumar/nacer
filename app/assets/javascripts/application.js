@@ -106,7 +106,16 @@ $(document).ready(function() {
 
 //Usar la clase "jquery_fecha" para cambiar un input text a jquery con calendar
 $(document).ready(function() {
-  $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true });  
+  $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true }); 
+
+  $(".solo_numeros").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+    
+    if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57) && event.which != 8) 
+      event.preventDefault();
+  });
+
+
 });
 
 jQuery(function($){

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140527180851) do
+ActiveRecord::Schema.define(:version => 20140618185908) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -245,11 +245,11 @@ ActiveRecord::Schema.define(:version => 20140527180851) do
   create_table "conceptos_de_facturacion", :force => true do |t|
     t.string   "concepto"
     t.string   "descripcion"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
     t.string   "codigo"
     t.integer  "formula_id"
-    t.integer  "dias_de_prestacion", :default => 120
+    t.integer  "tipo_de_expediente_id"
   end
 
   add_index "conceptos_de_facturacion", ["codigo"], :name => "index_conceptos_de_facturacion_on_codigo", :unique => true
@@ -540,6 +540,7 @@ ActiveRecord::Schema.define(:version => 20140527180851) do
     t.string   "report_layout"
     t.boolean  "genera_numeracion",          :default => false, :null => false
     t.string   "funcion_de_numeracion"
+    t.integer  "orden"
     t.datetime "created_at",                                    :null => false
     t.datetime "updated_at",                                    :null => false
   end
@@ -622,12 +623,9 @@ ActiveRecord::Schema.define(:version => 20140527180851) do
     t.text     "numero"
     t.integer  "tipo_de_expediente_id"
     t.integer  "efector_id"
-    t.integer  "periodo_id"
-    t.integer  "liquidacion_sumar_cuasifactura_id"
-    t.integer  "consolidado_sumar_id"
     t.integer  "liquidacion_sumar_id"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
 
   add_index "expedientes_sumar", ["tipo_de_expediente_id"], :name => "index_expedientes_sumar_on_tipo_de_expediente_id"
@@ -1027,9 +1025,10 @@ ActiveRecord::Schema.define(:version => 20140527180851) do
     t.date     "fecha_recepcion"
     t.integer  "tipo_periodo_id"
     t.integer  "concepto_de_facturacion_id"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
     t.date     "fecha_limite_prestaciones"
+    t.integer  "dias_de_prestacion",         :default => 120
   end
 
   add_index "periodos", ["concepto_de_facturacion_id"], :name => "periodos_concepto_de_facturacion_id_idx"
@@ -1114,6 +1113,7 @@ ActiveRecord::Schema.define(:version => 20140527180851) do
     t.integer  "concepto_de_facturacion_id"
     t.boolean  "es_catastrofica",                                            :default => false
     t.integer  "tipo_de_tratamiento_id"
+    t.boolean  "modifica_lugar_de_atencion",                                 :default => false
   end
 
   add_index "prestaciones", ["concepto_de_facturacion_id"], :name => "prestaciones_concepto_de_facturacion_id_idx"

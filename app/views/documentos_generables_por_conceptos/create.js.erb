@@ -1,0 +1,27 @@
+<% if @documento_generable_por_concepto.new_record? %>
+  $("#errores").empty();
+  $("#errores").append("<p><%= escape_javascript(render partial: '/shared/info', :locals => { :registro => @documento_generable_por_concepto }) %></p>");
+  $("#errores").dialog("open");
+
+<% else %>  
+  var tabla = "";
+  tabla += "<tr id= 'detalle_<%= @documento_generable_por_concepto.id.to_s %>'>";
+  tabla += "  <td style='text-align: center;'><%= @documento_generable_por_concepto.orden %></td>";
+  tabla += '  <td><%= @documento_generable_por_concepto.documento_generable.nombre %></td>';
+  tabla += "  <td><%= @documento_generable_por_concepto.tipo_de_agrupacion.nombre %></td>";
+  tabla += "  <td style='text-align: center;'><%= @documento_generable_por_concepto.genera_numeracion ? 'Si' : 'No' %></td>";
+  tabla += "  <td><%= @documento_generable_por_concepto.funcion_de_numeracion.present? ? @documento_generable_por_concepto.funcion_de_numeracion : 'Ninguna' %></td>";
+  tabla += "  <td><%= @documento_generable_por_concepto.report_layout.present? ? @documento_generable_por_concepto.report_layout : 'Ninguno' %></td>";
+  tabla += '  <td><%= link_to "Eliminar", [@documento_generable_por_concepto.concepto_de_facturacion, @documento_generable_por_concepto], method: :delete, remote: true, data: { confirm: "¿Está seguro que desea eliminar la generación de este documento?" } %></td>';
+  tabla += "</tr>";
+  $('#tabla_detalle tr:last').after(tabla);
+  $('#<%="detalle_"+@documento_generable_por_concepto.id.to_s %>').effect('highlight');
+
+  $('#documento_generable_por_concepto_orden').val('');
+  $('#documento_generable_por_concepto_documento_generable_id').select2('val', "");
+  $('#documento_generable_por_concepto_tipo_de_agrupacion_id').select2('val', "");
+  $('#documento_generable_por_concepto_genera_numeracion').val('');
+  $('#documento_generable_por_concepto_funcion_de_numeracion').val('');
+  $('#documento_generable_por_concepto_report_layout').val('');
+  
+<% end %>

@@ -8,28 +8,73 @@ class LiquidacionInforme < ActiveRecord::Base
   belongs_to :efector
   belongs_to :expediente_sumar
   
-  attr_accessible :observaciones
+  attr_accessible :observaciones, :liquidacion_sumar, :estado_del_proceso, :expediente_sumar, :liquidacion_sumar_cuasifactura
+  attr_accessible :efector_id, :liquidacion_sumar_cuasifactura_id, :liquidacion_sumar_id, :expediente_sumar_id, :estado_del_proceso_id
 
+  # 
+  # Genera los informes de liquidacion para los efectores de una liquidación dada
+  # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
+  # @param  documento_generable [DocumentoGenerablePorConcepto] Especificación de la generación del documento
+  # 
+  # @return [Boolean] confirmación de la generación de las cuasifacturas
+  def self.generar_desde_liquidacion(liquidacion_sumar, documento_generable)
 
-  # Genera los informes de liquidacion por cada cuasifactura generada en la liquidacion dada
-  def self.generar_informes_de_liquidacion(arg_liquidacion_sumar)
+    return false if not (liquidacion_sumar.is_a?(LiquidacionSumar) and documento_generable.is_a?(DocumentoGenerablePorConcepto) )
+      
+    return false  if LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: liquidacion_sumar.id).size == 0 # devuelve falso si no se generaron las cuasifacturas de esta liquidación
 
-    if arg_liquidacion_sumar.class == LiquidacionSumar 
-    	cq = CustomQuery.ejecutar(
-      {
-        sql:  "INSERT INTO \"public\".\"liquidaciones_informes\" \n"+
-              "( \"efector_id\", \"liquidacion_sumar_id\", \"liquidacion_sumar_cuasifactura_id\", \"estado_del_proceso_id\", \"created_at\", \"updated_at\") \n"+
-              "SELECT\n"+
-              " lc.efector_id, ls.id liquidacion_sumar_id, lc.id iquidacion_sumar_cuasifactura_id, ( SELECT ID FROM estados_de_los_procesos WHERE codigo = 'N'  ) estado_del_proceso_id,  now(),  now()\n"+
-              "FROM\n"+
-              " liquidaciones_sumar ls\n"+
-              "JOIN liquidaciones_sumar_cuasifacturas lc ON lc.liquidacion_sumar_id = ls.ID\n"+
-              "JOIN grupos_de_efectores_liquidaciones g ON g.id = ls.grupo_de_efectores_liquidacion_id\n"+
-              "JOIN efectores e ON e.grupo_de_efectores_liquidacion_id = g.id AND lc.efector_id = e.ID\n"+
-              "where ls.id = #{arg_liquidacion_sumar.id}"
-        })
-      return cq
-    end
+    ActiveRecord::Base.transaction do
+      begin
+        documento_generable.tipo_de_agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas |
+
+          # Si el efector no liquido prestaciones
+          next if pliquidadas.size == 0
+
+          logger.warn "Creando informe para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} - Administrador: #{e.nombre}"
+          
+          
+          # Solo los efectores administradores o autoadministrados generan expediente
+          # por lo que en el informe debe asignarse expediente del administrador a los efectores administrados
+          if e.es_administrador? or e.es_autoadministrado?
+
+            # Si solo hay un expediente, generado, todos los informes llevan ese numero
+            if ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} "]).size == 1
+              expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} "]).first.id
+            else
+              expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} " +
+                                                            "AND expedientes_sumar.id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
+            end
+          else
+            if ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} "]).size == 1
+              expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} "]).first.id
+            else
+              expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} " +
+                                                            "AND expedientes_sumar.id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
+            end
+          end
+
+          cuasifactura_id = LiquidacionSumarCuasifactura.joins(:liquidaciones_sumar_cuasifacturas_detalles).
+                                                         where(liquidaciones_sumar_cuasifacturas_detalles: {prestacion_liquidada_id: pliquidadas.first.id}).first.id
+
+          # 1) Creo la cabecera del informe de liquidacion
+          liquidacion = LiquidacionInforme.create!(
+            { 
+              efector_id: e.id,
+              liquidacion_sumar_id: liquidacion_sumar.id,
+              liquidacion_sumar_cuasifactura_id: cuasifactura_id, 
+              expediente_sumar_id: expediente_sumar_id,
+              estado_del_proceso_id: EstadoDelProceso.where(codigo: 'N').first.id #estado No iniciado
+          })
+          liquidacion.save
+
+        end # end itera segun agrupacion
+
+      rescue Exception => e
+        raise "Ocurrio un problema: #{e.message}"
+        return false
+      end #en begin/rescue
+    end #End active base transaction
+    return true
   end
 
   def cerrar

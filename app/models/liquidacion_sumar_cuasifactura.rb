@@ -3,7 +3,7 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
   
   belongs_to :liquidacion_sumar
   belongs_to :efector
-  has_one :expediente_sumar
+  has_many :liquidaciones_sumar_cuasifacturas_detalles, foreign_key: :liquidaciones_sumar_cuasifacturas_id
 
   scope :para, lambda {|efector, liquidacion| where(efector_id: efector.id, liquidacion_id: liquidacion.id)}
 
@@ -11,15 +11,16 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
 
   # 
   # Genera las cuasifacturas desde una liquidación dada
-  # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
+  # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
+
   # @param  documento_generable [DocumentoGenerablePorConcepto] Especificación de la generación del documento
   # 
   # @return [Boolean] confirmación de la generación de las cuasifacturas
   def self.generar_desde_liquidacion(liquidacion_sumar, documento_generable)
 
-    return false if not (liquidacion_sumar.is_a?(LiquidacionSumar) and agrupacion.is_a?(TipoDeAgrupacion) )
+    return false if not (liquidacion_sumar.is_a?(LiquidacionSumar) and documento_generable.is_a?(DocumentoGenerablePorConcepto) )
       
-    return false  if LiquidacionSumarCuasifactura.where(liquidacion_sumar: liquidacion_sumar).size > 0 # devuelve falso si ya se generaron las cuasifacturas de esta liquidación
+    return false  if LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0 # devuelve falso si ya se generaron las cuasifacturas de esta liquidación
 
     ActiveRecord::Base.transaction do
       begin
@@ -27,6 +28,10 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
 
           # 1) Creo la cabecera de la cuasifactura
           total_cuasifactura = pliquidadas.sum(:monto)
+          
+          # Si el monto de la cuasi es cero, sigo con el prox efector
+          next if total_cuasifactura == 0
+          
           cuasifactura = LiquidacionSumarCuasifactura.create( liquidacion_sumar: liquidacion_sumar, efector: e, monto_total: total_cuasifactura)
           cuasifactura.save
           
@@ -41,6 +46,7 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
              pliquidadas.select(["#{cuasifactura.id}", :prestacion_incluida_id, :estado_de_la_prestacion_liquidada_id, :monto, :id, :observaciones, "now() as created_at", "now() as updated_at"]).to_sql
 
         end # end itera segun agrupacion
+        logger.warn  "Se generaron las cuasifacturas"
       rescue Exception => e
         raise "Ocurrio un problema: #{e.message}"
         return false

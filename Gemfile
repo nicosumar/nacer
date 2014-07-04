@@ -17,6 +17,7 @@ group :development do
   gem 'hirb-unicode'
   gem "better_errors"
   gem "binding_of_caller"
+  gem 'thin'
 end
 
 gem 'jquery-rails'
@@ -39,3 +40,4 @@ gem 'cocoon', '>= 1.2'
 gem 'wice_grid', '>=3.4.0'
 gem 'chosen-rails', '~> 1.1.0'
 gem "select2-rails"
+

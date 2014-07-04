@@ -1,9 +1,24 @@
+= javascript_include_tag 'jstree.min.js'
+= javascript_include_tag 'documentos_electronicos.js'
+= stylesheet_link_tag 'jstree/style.min.css'
 - content_for :title do
   Documentos electronicos - Sumar
 #content-header
   %h1 Informes de Liquidacion - Sumar
 
+
 #content-body
+  #arbol
+    %ul
+      %li
+        Root node 1
+        %ul
+          %li#child_node_1 Child node 1
+          %li Child node 2
+      %li Root node 2
+
+
+
   %h2.first-header Buscar documentos electronicos
   = form_tag(documentos_electronicos_index_path, method:  :get) do 
     = dump_filter_parameters_as_hidden_fields(@efector_documentos)

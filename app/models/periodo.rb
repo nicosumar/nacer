@@ -8,6 +8,7 @@ class Periodo < ActiveRecord::Base
   has_many :expedientes_sumar
   
   attr_accessible :fecha_cierre, :fecha_recepcion, :periodo, :tipo_periodo_id, :concepto_de_facturacion_id, :fecha_limite_prestaciones
+  attr_accessible :dias_de_prestacion
 
   validates :fecha_cierre, presence: true
   validates :periodo, presence: true

@@ -7,9 +7,11 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   has_many :notas_de_debito
   has_many :documentos_generables_por_conceptos
   has_many :documentos_generables, through: :documentos_generables_por_conceptos
+  belongs_to :tipo_de_expediente
   belongs_to :formula
 
   attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo, :formula_id, :dias_de_prestacion
+  attr_accessible :tipo_de_expediente, :tipo_de_expediente_id
 
   validates :concepto, presence: true
   validates :descripcion, presence: true
@@ -45,16 +47,19 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   # @return [Boolean] Si pudo generar todos los documentos.
   def generar_documentos(liquidacion)
 
-    documentos_a_generar = self.documentos_generables_por_conceptos
+    documentos_a_generar = self.documentos_generables_por_conceptos.order(:orden)
 
-    documentos_a_generar.each do |dgpc|
-      ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
+      documentos_a_generar.each do |dgpc|
         if dgpc.generar(liquidacion) == false
-          raise ActiveRecord::Rollback, "No se pudo generar el documento del modelo #{dgpc.modelo} para la liquidacion #{liquidacion.descripcion}"
+          logger.warn "----------------------------------------------------------------------------------------------------------------------------"
+          logger.warn "No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
+          logger.warn "----------------------------------------------------------------------------------------------------------------------------"
+          raise ActiveRecord::Rollback, "No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
           return false
         end
-      end # End transaction
-    end # End itera documentos a generar
+      end # End itera documentos a generar
+    end # End transaction
     return true
   end
 

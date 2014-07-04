@@ -12,7 +12,7 @@ sql_cabecera =  "select c.numero_cuasifactura cuasifactura_numero,\n"+
                 "       co.firma_primera_linea,\n"+
                 "       co.firma_segunda_linea,\n"+
                 "       co.firma_tercera_linea,\n"+
-                "       EXTRACT(YEAR FROM fecha_recepcion - pl.dias_de_prestacion)||'-'||to_char(EXTRACT(MONTH FROM fecha_recepcion - pl.dias_de_prestacion), '00') ||' a '|| EXTRACT(YEAR FROM p.fecha_limite_prestaciones)||'-'||to_char(EXTRACT(MONTH FROM p.fecha_limite_prestaciones), '00') liquidacion_periodos,\n"+
+                "       EXTRACT(YEAR FROM p.fecha_recepcion - p.dias_de_prestacion)||'-'||to_char(EXTRACT(MONTH FROM p.fecha_recepcion - p.dias_de_prestacion), '00') ||' a '|| EXTRACT(YEAR FROM p.fecha_limite_prestaciones)||'-'||to_char(EXTRACT(MONTH FROM p.fecha_limite_prestaciones), '00') liquidacion_periodos,\n"+
                 "       cf.concepto concepto_facturacion, \n"+
                 "       e.id, e.nombre "+
                 "from liquidaciones_sumar_cuasifacturas c\n"+
