@@ -140,13 +140,9 @@ class Efector < ActiveRecord::Base
     return true
   end
 
-
   # 
-
   # Devuelve si el efector es autoadministrado
-
   # 
-
   # @return [Boolean] Verdadero si es autoadministrado
   def es_autoadministrado?
     if Efector.administradores_y_autoadministrados_sumar.where(id: self.id).size == 1
@@ -154,6 +150,39 @@ class Efector < ActiveRecord::Base
     else
       return false
     end
+  end
+
+  # 
+  # Devuelve los efectores que administra solo si estos poseen prestaciones liquidadas
+  # 
+  # @return [Array<Efector>] Array de efectores administrados
+  def administrados_con_prestaciones_liquidadas
+    if self.es_administrador?
+      self.efectores_administrados
+          .where("EXISTS (select id from prestaciones_liquidadas where prestaciones_liquidadas.efector_id = efectores.id)")
+    end 
+  end
+
+  # 
+  # Devuelve los conceptos que alguna vez ha facturado
+  # 
+  # @return [Array<ConceptoDeFacturacion>] Array de conceptos de facturación
+  def conceptos_que_facturo
+    ConceptoDeFacturacion.select("DISTINCT conceptos_de_facturacion.*")
+              .joins("JOIN liquidaciones_sumar l on l.concepto_de_facturacion_id = conceptos_de_facturacion.id\n"+
+                     "JOIN prestaciones_liquidadas pl on pl.liquidacion_id = l.id")
+              .where("pl.efector_id = #{self.id}")
+  end
+
+  def periodos_facturados( arg_concepto = [])
+    if arg_concepto.empty?
+      arg_concepto = ConceptoDeFacturacion.all.map {|c| c.id}
+    end
+    Periodo.select("DISTINCT periodos.*")
+           .joins("join liquidaciones_sumar l on l.periodo_id = periodos.id\n"+ 
+                  "join prestaciones_liquidadas pl on pl.liquidacion_id = l.id ")
+           .where("pl.efector_id = #{self.id}\n"+
+                  "AND l.concepto_de_facturacion_id IN (#{arg_concepto.join(', ') })")
   end
 
   #

@@ -7,17 +7,25 @@
   %h1 Informes de Liquidacion - Sumar
 
 
-#content-body
-  #arbol
-    %ul
-      %li
-        Root node 1
-        %ul
-          %li#child_node_1 Child node 1
-          %li Child node 2
-      %li Root node 2
-
-
+#content-body
+  #arbol
+    = text_field_tag 'busqueda'
+    - @arbol_de_efectores.each do |admin_u_hospital|
+      %ul
+        %li{id: "#{admin_u_hospital[:id]}"}
+          = admin_u_hospital[:rotulo]
+          - admin_u_hospital[:hijos].each do |administrado|
+            %ul
+              %li{id: "#{administrado[:id]}"}
+                = administrado[:rotulo]
+                - administrado[:hijos].each do |concepto|
+                  %ul
+                    %li{id: "#{concepto[:id]}"}
+                      = concepto[:rotulo]
+                      -concepto[:hijos].each do |periodo|
+                        %ul
+                          %li{id: "#{periodo[:id]}"}
+                            = periodo[:rotulo]
 
   %h2.first-header Buscar documentos electronicos
   = form_tag(documentos_electronicos_index_path, method:  :get) do 
