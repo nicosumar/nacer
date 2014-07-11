@@ -535,7 +535,7 @@ class PrestacionBrindada < ActiveRecord::Base
     sql_where = "
       prestacion_id = #{self.prestacion_id}
       AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
-      AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+      AND estado_de_la_prestacion_id IN (2, 4, 5, 12)
     "
     if periodo.present?
       sql_where += "
@@ -550,14 +550,14 @@ class PrestacionBrindada < ActiveRecord::Base
         )
       "
     end
-    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > cantidad_maxima
+    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size >= cantidad_maxima
 
     # Si se ha definido un intervalo mínimo entre prestaciones, verificar que se haya cumplido
     if intervalo.present?
       sql_where = "
         prestacion_id = #{self.prestacion_id}
         AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
-        AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+        AND estado_de_la_prestacion_id IN (2, 4, 5, 12)
         AND fecha_de_la_prestacion BETWEEN
           '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
           AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
