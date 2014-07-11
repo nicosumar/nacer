@@ -8,26 +8,28 @@
 
 
 #content-body
-  #arbol
-    = text_field_tag 'busqueda'
+  %h2.first-header Buscar documentos electronicos
+  = text_field_tag 'arbol_q', nil, {placeholder: "Ingrese los terminos a buscar", style: "display:block; border-radius:4px; border:1px solid silver;", size: 70}
+  %br
+
+  #arbol
     - @arbol_de_efectores.each do |admin_u_hospital|
       %ul
-        %li{id: "#{admin_u_hospital[:id]}"}
+        %li{id: "#{admin_u_hospital[:id]}", "data-jstree" =>  '{"icon": "'+ image_path(admin_u_hospital[:imagen]) +'"}'}
           = admin_u_hospital[:rotulo]
           - admin_u_hospital[:hijos].each do |administrado|
             %ul
-              %li{id: "#{administrado[:id]}"}
+              %li{id: "#{administrado[:id]}", "data-jstree" =>  '{"icon": "'+ image_path(administrado[:imagen]) +'"}'}
                 = administrado[:rotulo]
                 - administrado[:hijos].each do |concepto|
                   %ul
-                    %li{id: "#{concepto[:id]}"}
+                    %li{id: "#{concepto[:id]}", "data-jstree" =>  '{"icon": "'+ image_path(concepto[:imagen]) +'"}'}
                       = concepto[:rotulo]
                       -concepto[:hijos].each do |periodo|
                         %ul
-                          %li{id: "#{periodo[:id]}"}
+                          %li{id: "#{periodo[:id]}", "data-jstree" =>  '{"icon": "'+ image_path(periodo[:imagen]) +'"}'}
                             = periodo[:rotulo]
 
-  %h2.first-header Buscar documentos electronicos
   = form_tag(documentos_electronicos_index_path, method:  :get) do 
     = dump_filter_parameters_as_hidden_fields(@efector_documentos)
     .field

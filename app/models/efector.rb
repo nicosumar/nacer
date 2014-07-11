@@ -162,10 +162,14 @@ class Efector < ActiveRecord::Base
           .where("EXISTS (select id from prestaciones_liquidadas where prestaciones_liquidadas.efector_id = efectores.id)")
     end 
   end
-
-  # 
-  # Devuelve los conceptos que alguna vez ha facturado
-  # 
+
+
+  # 
+
+  # Devuelve los conceptos que alguna vez ha facturado
+
+  # 
+
   # @return [Array<ConceptoDeFacturacion>] Array de conceptos de facturación
   def conceptos_que_facturo
     ConceptoDeFacturacion.select("DISTINCT conceptos_de_facturacion.*")
@@ -197,7 +201,7 @@ class Efector < ActiveRecord::Base
   # Devuelve las cuasifactura de un periodo dado
   #
   # @return [LiquidacionSumarCuasifactura] 
-  def cuasifactura_de_periodo(argPeriodo)
+  def cuasifacturas_de_un_periodo(argPeriodo)
     self.cuasifacturas.joins(:liquidacion_sumar).where(liquidaciones_sumar: {periodo_id: argPeriodo.id})
   end
 

@@ -1,7 +1,7 @@
 $(document).ready(function(){
   $('#arbol').jstree(
   {
-    "plugins" : [ "wholerow", "search" ]
+    "plugins" : [ "search" ]
   });
   
   $('#arbol').on('select_node.jstree', function(event, data){
@@ -9,17 +9,18 @@ $(document).ready(function(){
   });
 
   var to = false;
-  $('#busqueda').keyup(function () {
+  $('#arbol_q').keyup(function () {
     if(to)
     { 
       clearTimeout(to); 
     }
     to = setTimeout(function () {
-      var v = $('#busqueda').val();
+      var v = $('#arbol_q').val();
       $('#arbol').jstree(true).search(v);
-    }, 250);
+    }, 1000);
   });
 });
+
 
 
 

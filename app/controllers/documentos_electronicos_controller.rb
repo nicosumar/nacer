@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class DocumentosElectronicosController < ApplicationController
 
 	before_filter :authenticate_user!
@@ -20,7 +21,8 @@ class DocumentosElectronicosController < ApplicationController
   a_attr      : {}  // attributes for the generated A node
 =end
 
-    # Valores para los dropdown
+    # Valores para los dropdown
+
     
     if current_user.in_group? [:administradores, :facturacion, :auditoria_medica, :coordinacion, :planificacion, :auditoria_control, :capacitacion] and false
       #@arbol_de_efectores = Efector.select([:nombre, :id]).order("nombre desc").collect {|c| [c.nombre, c.id]}
@@ -47,54 +49,102 @@ class DocumentosElectronicosController < ApplicationController
         administrados = []
         conceptos = []
         periodos = []
+        documentos = []
+        i = 0
 
-        uad.efector
-          .administrador_sumar
-          .administrados_con_prestaciones_liquidadas
-          .order("nombre desc")
-          .each do |ea|
+        uad.efector.administrador_sumar.administrados_con_prestaciones_liquidadas.order("nombre desc").each do |ea|
 
-            ea.conceptos_que_facturo
-              .order(:concepto)
-              .each do |concepto|
-                ea.periodos_facturados([concepto.id])
-                  .order(:periodo)
-                  .each do |periodo|
-                    periodos << {
-                      id: periodo.id,
-                      rotulo: periodo.periodo,
-                      tipo: 'Periodo'
-                    }
-                  end #end each periodo
-                  # raise "despues de iterar periodos"
-                conceptos << {
-                  id: concepto.id,
-                  rotulo: concepto.concepto,
-                  tipo: 'Concepto',
-                  hijos: periodos
+          ea.conceptos_que_facturo.order(:concepto).each do |concepto|
+            ea.periodos_facturados([concepto.id]).order(:periodo).each do |periodo|
+              # ---------------------------------------------------------------
+              # Iterar para obtener los documentos referentes a este periodo.
+              # ---------------------------------------------------------------
+              # Cuasifacturas - (muchas x periodo y concepto) para un efector
+              # Detalle de Cuasifactura - (muchas x periodo y concepto) para un efector
+              # Consolidados  - Solo P.Basico, Uno por periodo, efector
+              
+              # Cuasifacturas 
+              ea.cuasifacturas_de_un_periodo(periodo).each do |cuasi|
+                documentos << {
+                  id:     "#{i}--#{cuasi.id}",
+                  rotulo: "Cuasifactura N° #{cuasi.numero_cuasifactura}",
+                  tipo:   'Cuasifactura',
+                  imagen: "file-pdf-o.png"
                 }
-              end #end each concepto de facturacion
-              #raise "despues de iterar conceptos"
-              periodos = []
-              administrados << {
-                id: ea.id,
-                rotulo: ea.nombre,
-                tipo: 'EfectorAdministrado',
-                hijos: conceptos
-              }
-              #raise "antes de borrar conceptos"
-              conceptos = []
-          end #end each efector administrado
+                i+= 1
 
-        @arbol_de_efectores = [{
-                  id: uad.efector.administrador_sumar.id,
-                  rotulo: uad.efector.administrador_sumar.nombre,
-                  tipo: 'EfectorAdministrador',
-                  hijos: administrados
-                 }]
-        administrados = []
+                documentos << {
+                  id:     "#{i}--#{cuasi.id}",
+                  rotulo: "Detalle de Cuasifactura N° #{cuasi.numero_cuasifactura}",
+                  tipo:   'DetalleDeCuasifactura',
+                  imagen: "file-pdf-o.png"
+                }
+                i+= 1
+              end
+
+                #ea.consolidado_de_periodo(periodo).each do |consolidado|
+                #  documentos << {
+                #    id:     "#{i}--#{cuasi.id}",
+                #    rotulo: "Consolidado N° #{consolidado.numero_de_consolidado}",
+                #    tipo:   'DetalleDeCuasifactura',
+                #    imagen: "file-pdf-o.png"
+                #  }
+                #  i+= 1
+                #end
+
+                periodos << {
+                  id: "#{i}--#{periodo.id}",
+                  rotulo: periodo.periodo,
+                  tipo: 'Periodo',
+                  imagen: "calendar.png",
+                  hijos: documentos
+                }
+                documentos = []
+                i+= 1
+            end #end each periodo
+
+            case concepto.id
+            when 1    
+              imagen = "stethoscope.png"
+            when 2..3 
+              imagen = "suero.png"
+            when 4..5 
+              imagen = "heart-o.png"
+            end
+
+            conceptos << {
+              id: "#{i}--#{concepto.id}",
+              rotulo: concepto.concepto,
+              tipo: 'Concepto',
+              hijos: periodos,
+              imagen: imagen
+            }
+            i+= 1
+            periodos = []
+          end #end each concepto de facturacion
+          administrados << {
+            id: "#{i}--#{ea.id}",
+            rotulo: ea.nombre,
+            tipo: 'EfectorAdministrado',
+            hijos: conceptos,
+            imagen: "building-o.png"
+          }
+          i+= 1
+          conceptos = []
+        end #end each efector administrado
+
         
 
+        @arbol_de_efectores = [{
+                  id: "#{i}--#{uad.efector.administrador_sumar.id}",
+                  rotulo: uad.efector.administrador_sumar.nombre,
+                  tipo: 'EfectorAdministrador',
+                  hijos: administrados,
+                  imagen: "building.png"
+                 }]
+        administrados = []
+        i+= 1
+        
         #@efectores = [uad.efector.administrador_sumar.nombre,  uad.efector.administrador_sumar.id]
         #@efectores += uad.efector.administrador_sumar.efectores_administrados.order("nombre desc").collect {|c| [c.nombre, c.id]}
 
