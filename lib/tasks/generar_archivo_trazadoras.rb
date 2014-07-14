@@ -65,7 +65,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         ) ON (pb.id = dra_tad.prestacion_brindada_id)
       WHERE
         pb.prestacion_id IN (258, 259, 262, 324, 325, 326, 327, 353, 354, 369)
-        AND pb.fecha_de_la_prestacion BETWEEN '2013-09-01' AND '2013-12-31'
+        AND pb.fecha_de_la_prestacion BETWEEN '2014-01-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11)
 
     UNION
@@ -127,8 +127,8 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         ) ON (pb.id = dra_tad.prestacion_brindada_id)
       WHERE
         pb.prestacion_id IN (320, 348)
-        AND pb.fecha_de_la_prestacion BETWEEN '2013-09-01' AND '2013-12-31'
-        AND pb.estado_de_la_prestacion_id NOT IN (10,11);
+        AND pb.fecha_de_la_prestacion BETWEEN '2014-01-01' AND '2014-04-30'
+        AND pb.estado_de_la_prestacion_id NOT IN (10, 11);
   "
   res.rows.each do |row|
     archivo.puts row.join("\t")
@@ -191,7 +191,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         ) ON (pb.id = dra_pc.prestacion_brindada_id)
       WHERE
         pb.prestacion_id IN (455)
-        AND pb.fecha_de_la_prestacion BETWEEN '2013-05-01' AND '2013-12-31'
+        AND pb.fecha_de_la_prestacion BETWEEN '2013-09-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11)
 
     UNION
@@ -237,7 +237,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         ) ON (pb.id = dra_tcm.prestacion_brindada_id)
       WHERE
         pb.prestacion_id IN (456, 493, 494)
-        AND pb.fecha_de_la_prestacion BETWEEN '2013-05-01' AND '2013-12-31'
+        AND pb.fecha_de_la_prestacion BETWEEN '2013-09-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11)
 
     UNION
@@ -293,7 +293,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         ) ON (pb.id = dra_tad.prestacion_brindada_id)
       WHERE
         pb.prestacion_id IN (516, 517, 518, 519, 521, 522, 554, 555, 556, 557)
-        AND pb.fecha_de_la_prestacion BETWEEN '2013-05-01' AND '2013-12-31'
+        AND pb.fecha_de_la_prestacion BETWEEN '2013-09-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11);
   "
   res.rows.each do |row|
@@ -333,7 +333,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         JOIN sexos s ON s.id = a.sexo_id
       WHERE
         pb.prestacion_id IN (460, 462)
-        AND (a.fecha_de_nacimiento + '24 months'::interval)::date BETWEEN '2013-09-01' AND '2013-12-31'
+        AND (a.fecha_de_nacimiento + '24 months'::interval)::date BETWEEN '2014-01-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11)
 
     UNION
@@ -360,7 +360,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         JOIN sexos s ON s.id = a.sexo_id
       WHERE
         pb.prestacion_id IN (464, 501)
-        AND (a.fecha_de_nacimiento + '24 months'::interval)::date BETWEEN '2013-09-01' AND '2013-12-31'
+        AND (a.fecha_de_nacimiento + '24 months'::interval)::date BETWEEN '2014-01-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11);
   "
   res.rows.each do |row|
@@ -401,7 +401,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         JOIN sexos s ON s.id = a.sexo_id
       WHERE
         pb.prestacion_id = 463
-        AND (a.fecha_de_nacimiento + '7 years'::interval)::date BETWEEN '2013-09-01' AND '2013-12-31'
+        AND (a.fecha_de_nacimiento + '7 years'::interval)::date BETWEEN '2014-01-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11)
 
     UNION
@@ -429,7 +429,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         JOIN sexos s ON s.id = a.sexo_id
       WHERE
         pb.prestacion_id IN (465, 502, 765)
-        AND (a.fecha_de_nacimiento + '7 years'::interval)::date BETWEEN '2013-09-01' AND '2013-12-31'
+        AND (a.fecha_de_nacimiento + '7 years'::interval)::date BETWEEN '2014-01-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11)
 
     UNION
@@ -457,7 +457,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         JOIN sexos s ON s.id = a.sexo_id
       WHERE
         pb.prestacion_id IN (464, 501)
-        AND (a.fecha_de_nacimiento + '7 years'::interval)::date BETWEEN '2013-09-01' AND '2013-12-31'
+        AND (a.fecha_de_nacimiento + '7 years'::interval)::date BETWEEN '2014-01-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11);
   "
   res.rows.each do |row|
@@ -503,13 +503,15 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         ) ON (pb.id = dra_diag.prestacion_brindada_id)
       WHERE
         pb.prestacion_id = 586
-        AND pb.fecha_de_la_prestacion BETWEEN '2013-01-01' AND '2013-12-31'
+        AND pb.fecha_de_la_prestacion BETWEEN '2013-05-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11);
   "
   res.rows.each do |row|
     archivo.puts row.join("\t")
   end
 end
+
+archivo.close
 
 # ARCHIVO CM
 
@@ -551,7 +553,7 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         ) ON (pb.id = dra_diag.prestacion_brindada_id)
       WHERE
         pb.prestacion_id = 585
-        AND pb.fecha_de_la_prestacion BETWEEN '2013-01-01' AND '2013-12-31'
+        AND pb.fecha_de_la_prestacion BETWEEN '2013-05-01' AND '2014-04-30'
         AND pb.estado_de_la_prestacion_id NOT IN (10, 11);
   "
   res.rows.each do |row|
