@@ -73,7 +73,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select 'Embarazadas' \"Grupo\", 'Tipo' \"Priorizadas\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql = "select 'Embarazadas' \"Grupo\", 'Priorizadas' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           " from prestaciones_incluidas pi\n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id \n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -89,7 +89,7 @@ class InformeBimestral
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo "
 
-    sql_resto =  "select 'Embarazadas' \"Grupo\",'Tipo' \"Resto\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql_resto =  "select 'Embarazadas' \"Grupo\",'Resto' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                       " from prestaciones_incluidas pi\n"+
                       " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id \n"+
                       " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -168,7 +168,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select 'Cero a Cinco' \"Grupo\", 'Tipo' \"Priorizadas\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql = "select 'Cero a Cinco' \"Grupo\", 'Priorizadas' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -184,7 +184,7 @@ class InformeBimestral
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
 
-    sql_resto = "select 'Cero a Cinco' \"Grupo\", 'Tipo' \"Resto\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql_resto = "select 'Cero a Cinco' \"Grupo\", 'Resto' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                   "from prestaciones_incluidas pi \n"+
                   " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                   " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -262,7 +262,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select 'Seis a Nueve' \"Grupo\", 'Tipo' \"Priorizadas\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql = "select 'Seis a Nueve' \"Grupo\", 'Priorizadas' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -278,7 +278,7 @@ class InformeBimestral
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
 
-    sql_resto = "select 'Seis a Nueve' \"Grupo\", 'Tipo' \"Resto\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql_resto = "select 'Seis a Nueve' \"Grupo\", 'Resto' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                 "from prestaciones_incluidas pi \n"+
                 " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                 " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -362,7 +362,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select 'Diez a Diecinueve' \"Grupo\", 'Tipo' \"Priorizadas\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql = "select 'Diez a Diecinueve' \"Grupo\", 'Priorizadas' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -378,7 +378,7 @@ class InformeBimestral
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
 
-    sql_resto = "select 'Diez a Diecinueve' \"Grupo\", 'Tipo' \"Resto\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql_resto = "select 'Diez a Diecinueve' \"Grupo\", 'Resto' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                 "from prestaciones_incluidas pi \n"+
                 " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                 " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -466,7 +466,7 @@ class InformeBimestral
       end # end prestaciones
     end # end resultado 
 
-    sql = "select 'Veinte a Sesenta y cuatro' \"Grupo\", 'Tipo' \"Priorizadas\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql = "select 'Veinte a Sesenta y cuatro' \"Grupo\", 'Priorizadas' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
@@ -483,7 +483,7 @@ class InformeBimestral
           "AND a.sexo_id = 1\n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo"
 
-    sql_resto = "select 'Veinte a Sesenta y cuatro' \"Grupo\", 'Tipo' \"Resto\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
+    sql_resto = "select 'Veinte a Sesenta y cuatro' \"Grupo\", 'Resto' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
                 "from prestaciones_incluidas pi \n"+
                 " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
                 " join diagnosticos d on d.id = p.diagnostico_id \n"+
