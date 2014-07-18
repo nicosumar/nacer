@@ -12,7 +12,7 @@ class Efector < ActiveRecord::Base
   attr_accessible :numero_de_cuenta_principal, :denominacion_cuenta_principal, :sucursal_cuenta_principal, :banco_cuenta_secundaria
   attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria
 
- # Atributos protegidos
+  # Atributos protegidos
   # attr_protected :cuie
 
   # Asociaciones
@@ -165,20 +165,42 @@ class Efector < ActiveRecord::Base
 
 
   # 
-
   # Devuelve los conceptos que alguna vez ha facturado
-
   # 
-
   # @return [Array<ConceptoDeFacturacion>] Array de conceptos de facturación
   def conceptos_que_facturo
     ConceptoDeFacturacion.select("DISTINCT conceptos_de_facturacion.*")
               .joins("JOIN liquidaciones_sumar l on l.concepto_de_facturacion_id = conceptos_de_facturacion.id\n"+
                      "JOIN prestaciones_liquidadas pl on pl.liquidacion_id = l.id")
-              .where("pl.efector_id = #{self.id}")
+              .where("pl.efector_id = #{self.id}").order(:concepto)
   end
 
+
+  # 
+  # Devuelve los conceptos que ha facturado o consolidado
+  # 
+  # @return [Array<ConceptoDeFacturacion>] Array de conceptos de facturación
+  def conceptos_facturados_o_consolidados
+    
+    if self.es_administrador?
+      self.consolidados_sumar.present?
+      return (self.conceptos_que_facturo.collect {|cf| cf } + [ConceptoDeFacturacion.find(1)]).uniq.sort! { |a,b| a.periodo <=> b.periodo }
+    else
+      return self.conceptos_que_facturo.collect {|cf| cf }
+    end
+    
+  end
+
+  # 
+  # Devuelve los periodos que alguna vez ha facturado
+  # 
+  # @return [Array<Periodo>] Array con los conceptos de facturacion
   def periodos_facturados( arg_concepto = [])
+
+    if arg_concepto.is_a? ConceptoDeFacturacion
+      arg_concepto = [arg_concepto]
+    end
+
     if arg_concepto.empty?
       arg_concepto = ConceptoDeFacturacion.all.map {|c| c.id}
     end
@@ -186,15 +208,51 @@ class Efector < ActiveRecord::Base
            .joins("join liquidaciones_sumar l on l.periodo_id = periodos.id\n"+ 
                   "join prestaciones_liquidadas pl on pl.liquidacion_id = l.id ")
            .where("pl.efector_id = #{self.id}\n"+
-                  "AND l.concepto_de_facturacion_id IN (#{arg_concepto.join(', ') })")
+                  "AND l.concepto_de_facturacion_id IN (#{arg_concepto.join(', ') })").order(:periodo)
+  end
+
+
+  # 
+
+  # Devuelve los periodos que ha facturado o consolidado
+
+  # @param arg_concepto = [] [ConcdeptoDeFacturacion] [Filtro para un concepto en particular ]
+
+  # 
+
+  # @return [Array<Periodo>] [Array con los periodos que ha facturado o consolidado]
+  def periodos_facturados_o_consoliados(arg_concepto = [])
+    if arg_concepto.is_a? ConceptoDeFacturacion
+      arg_concepto = [arg_concepto]
+    end
+
+    if arg_concepto.empty?
+      arg_concepto = ConceptoDeFacturacion.all.map {|c| c.id}
+    end
+
+    pc = Periodo.select("DISTINCT periodos.*").
+                      joins("JOIN consolidados_sumar c on c.periodo_id = periodos.id").
+                      where("periodos.concepto_de_facturacion_id = 1").
+                      where("c.efector_id = #{self.id}").order(:periodo).collect {|p| p }
+
+    if pc.present?
+      return (self.periodos_facturados(arg_concepto).collect {|pf| pf } + pc).uniq.sort! { |a,b| a.periodo <=> b.periodo }
+    else
+      return self.periodos_facturados(arg_concepto).collect {|pf| pf }
+    end
+   
   end
 
   #
   # Devuelve el consolidado de un periodo dado
   #
-  # @return [LiquidacionSumarCuasifactura] 
+  # @return [ConsolidadoSumar] 
   def consolidado_de_periodo(argPeriodo)
-    self.consolidados_sumar.where(periodo_id: argPeriodo.id).first
+    if self.consolidados_sumar.where(periodo_id: argPeriodo.id).blank?
+      return []
+    else
+      self.consolidados_sumar.where(periodo_id: argPeriodo.id)
+    end
   end
 
   #

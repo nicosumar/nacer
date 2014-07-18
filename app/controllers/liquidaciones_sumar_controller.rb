@@ -135,6 +135,8 @@ class LiquidacionesSumarController < ApplicationController
   end
 
 
+
+
   def generar_cuasifacturas
     tiempo_proceso = Time.now
 
@@ -160,6 +162,56 @@ class LiquidacionesSumarController < ApplicationController
       else
         redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
       end
+    end
+  end
+
+  # GET /liquidaciones_sumar_cuasifacturas/1.pdf
+  def detalle_de_prestaciones_liquidadas
+    
+    
+    if params[:periodo_id].blank? or params[:efector_id].blank?
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    end
+
+    @periodo = Periodo.find(params[:periodo_id])
+    @efector = Efector.find(params[:efector_id])
+
+    uad = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual])
+    efector_actual = uad.efector
+    permitir_reporte = true
+    if current_user.in_group? [:administradores, :facturacion, :auditoria_medica, :coordinacion, :planificacion, :auditoria_control, :capacitacion]
+      permitir_reporte = true
+    elsif current_user.in_group? [:liquidacion_adm]
+      if efector_actual.es_administrador? 
+       # si es administrador y quiere consultar sobre un efector que no es o bien el mismo o alguno de los administrados, lo redirijo
+        permitir_reporte = false if efector_actual != @efector or efector_actual.efectores_administrados.include? @efector 
+      elsif efector_actual.es_autoadministrado?
+        permitir_reporte = false if efector_actual != @efector 
+      elsif efector_actual.es_administrado?
+        # si es administrado y quiere consultar sobre un efector que no es o bien su administrador o alguno de sus administrados, lo redirijo
+        permitir_reporte = false if efector_actual.administrador_sumar.efectores_administrados.include? @efector or efector_actual.administrador_sumar != @efector
+      end
+    elsif current_user.in_group? [:facturacion_uad] 
+      if uad.efector.es_administrador? 
+        permitir_reporte = false if efector_actual != @efector or efector_actual.efectores_administrados.include? @efector 
+      elsif uad.efector.es_autoadministrado?
+        permitir_reporte = false if efector_actual != @efector 
+      elsif uad.efector.es_administrado? 
+        permitir_reporte = false  if Efector.where("unidad_de_alta_de_datos_id = '?' OR id = '?'", uad.id, efector_actual.id).include? @efector or efector_actual.administrador_sumar != @efector
+      end
+    end
+
+    if permitir_reporte 
+      redirect_to( root_url, 
+          :flash => { :tipo => :error, 
+                      :titulo => "No está autorizado para acceder a esta página", 
+                      :mensaje => "Se informará al administrador del sistema sobre este incidente."
+                    })
+    end
+
+    respond_to do |format|
+      format.pdf { send_data render_to_string, filename: "detalle_de_prestaciones_#{@periodo.periodo}_#{@efector.nombre}.pdf", 
+      type: 'application/pdf', disposition: 'attachment'}
     end
   end
 

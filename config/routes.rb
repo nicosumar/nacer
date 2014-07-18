@@ -2,10 +2,7 @@
 Nacer::Application.routes.draw do
 
   resources :documentos_generables
-
-
   resources :notas_de_debito
-
 
   resources :informes_debitos_prestacionales do
     resources :detalles_de_debitos_prestacionales, only: [:index, :create, :destroy] 
@@ -37,6 +34,7 @@ Nacer::Application.routes.draw do
       post   'procesar_liquidacion', as: :procesar_liquidacion, action: :procesar_liquidacion
       post   'generar_cuasifacturas', as: :generar_cuasifacturas, action: :generar_cuasifacturas
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
+      get    'detalle_de_prestaciones_liquidadas/:id', action: :detalle_de_prestaciones_liquidadas
     end
     collection  do
       get 'prestaciones_liquidadas/:id' => 'PrestacionesLiquidadas#ver_prestaciones_liquidadas', as: :ver_prestaciones_liquidadas
