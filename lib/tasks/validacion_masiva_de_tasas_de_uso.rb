@@ -8,7 +8,7 @@ archivo.puts "Codigo UAD\tID prestación brindada\tClave de beneficiario\tID pre
       if pb.estado_de_la_prestacion_id == 2 && pb.metodos_de_validacion_fallados.any?{|mvf| [15, 16].member? mvf.metodo_de_validacion_id}
         pb.actualizar_metodos_de_validacion_fallados
         if pb.metodos_de_validacion_fallados.size == 0
-          pb.save(:validate => false)
+          pb.save
           archivo.puts "#{u.codigo}\t#{pb.id}\t#{pb.clave_de_beneficiario}\t#{pb.prestacion_id}\tAdvertencia de tasa de uso eliminada"
           archivo.flush
         end
@@ -16,7 +16,7 @@ archivo.puts "Codigo UAD\tID prestación brindada\tClave de beneficiario\tID pre
         pb.actualizar_metodos_de_validacion_fallados
         if pb.metodos_de_validacion_fallados.size > 0
           pb.estado_de_la_prestacion_id = 2
-          pb.save(:validate => false)
+          pb.save
           archivo.puts "#{u.codigo}\t#{pb.id}\t#{pb.clave_de_beneficiario}\t#{pb.prestacion_id}\tAdvertencia de tasa de uso agregada"
           archivo.flush
         end

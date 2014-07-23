@@ -256,21 +256,21 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   def diagnostico_de_embarazo_del_primer_trimestre?
-    @beneficiaria =
+    beneficiaria =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
         :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
-    if not @beneficiaria
-      @beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    if not beneficiaria
+      beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
     return true unless beneficiaria.present?
 
-    return false unless @beneficiaria.embarazo_actual && @beneficiaria.semanas_de_embarazo
+    return false unless beneficiaria.embarazo_actual && beneficiaria.semanas_de_embarazo
 
-    return (@beneficiaria.semanas_de_embarazo < 20)
+    return (beneficiaria.semanas_de_embarazo < 20)
   end
 
   def tension_arterial_valida?
