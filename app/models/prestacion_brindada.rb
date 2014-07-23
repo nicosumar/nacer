@@ -246,9 +246,11 @@ class PrestacionBrindada < ActiveRecord::Base
       :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
       :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
     ).first
-    if not beneficiaria
+    if not beneficiaria.present?
       beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiaria.present?
 
     return beneficiaria.estaba_embarazada?(fecha_de_la_prestacion)
   end
@@ -263,6 +265,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not @beneficiaria
       @beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiaria.present?
 
     return false unless @beneficiaria.embarazo_actual && @beneficiaria.semanas_de_embarazo
 
@@ -321,6 +325,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) < 7
   end
 
@@ -334,6 +340,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) < 28
   end
@@ -349,6 +357,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 2) < 1
   end
 
@@ -362,6 +372,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 0) >= 1
   end
@@ -377,6 +389,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_meses(fecha_de_la_prestacion) || 0) > 53
   end
 
@@ -390,6 +404,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return beneficiario.se_declara_indigena
   end
@@ -405,6 +421,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 51) < 50
   end
 
@@ -418,6 +436,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 48) > 49
   end
@@ -433,6 +453,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 23) > 24
   end
 
@@ -446,6 +468,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return (beneficiario.edad_en_meses(fecha_de_la_prestacion) || 4) < 3
   end
@@ -497,6 +521,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     if beneficiario.edad_en_meses(self.fecha_de_la_prestacion) == 0
       cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_menores_de_1_mes)
