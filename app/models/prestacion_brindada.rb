@@ -513,15 +513,15 @@ class PrestacionBrindada < ActiveRecord::Base
     elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 18
       cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_12_a_18_meses)
       intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_12_a_18_meses)
-      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 1.year)).to_i.to_s + ".days"
     elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 36
       cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_18_a_36_meses)
       intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_18_a_36_meses)
-      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 18.months)).to_i.to_s + ".days"
     elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 72
       cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_36_a_72_meses)
       intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_36_a_72_meses)
-      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 3.years)).to_i.to_s + ".days"
     else
       return true # ¿Qué mierda? No debería pasar...
     end
@@ -535,7 +535,7 @@ class PrestacionBrindada < ActiveRecord::Base
     sql_where = "
       prestacion_id = #{self.prestacion_id}
       AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
-      AND estado_de_la_prestacion_id IN (2, 4, 5, 12)
+      AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
     "
     if periodo.present?
       sql_where += "
@@ -554,14 +554,25 @@ class PrestacionBrindada < ActiveRecord::Base
 
     # Si se ha definido un intervalo mínimo entre prestaciones, verificar que se haya cumplido
     if intervalo.present?
-      sql_where = "
-        prestacion_id = #{self.prestacion_id}
-        AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
-        AND estado_de_la_prestacion_id IN (2, 4, 5, 12)
-        AND fecha_de_la_prestacion BETWEEN
-          '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
-          AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
-      "
+      if periodo.present? && eval(periodo) < eval(intervalo)
+        sql_where = "
+          prestacion_id = #{self.prestacion_id}
+          AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
+          AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
+          AND fecha_de_la_prestacion BETWEEN
+            '#{(self.fecha_de_la_prestacion - eval(periodo)).strftime("%Y-%m-%d")}'
+            AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+        "
+      else
+        sql_where = "
+          prestacion_id = #{self.prestacion_id}
+          AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
+          AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
+          AND fecha_de_la_prestacion BETWEEN
+            '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
+            AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+        "
+      end
       if self.persisted?
         sql_where += "
           AND NOT (
@@ -582,7 +593,7 @@ class PrestacionBrindada < ActiveRecord::Base
     sql_where = "
       prestacion_id = #{self.prestacion_id}
       AND efector_id = '#{self.efector_id}'
-      AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+      AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
     "
     if periodo.present?
       sql_where += "
@@ -601,14 +612,25 @@ class PrestacionBrindada < ActiveRecord::Base
 
     # Si se ha definido un intervalo mínimo entre prestaciones, verificar que se haya cumplido
     if intervalo.present?
-      sql_where = "
-        prestacion_id = #{self.prestacion_id}
-        AND efector_id = '#{self.efector_id}'
-        AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
-        AND fecha_de_la_prestacion BETWEEN
-          '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
-          AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
-      "
+      if periodo.present? && eval(periodo) < eval(intervalo)
+        sql_where = "
+          prestacion_id = #{self.prestacion_id}
+          AND efector_id = '#{self.efector_id}'
+          AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
+          AND fecha_de_la_prestacion BETWEEN
+            '#{(self.fecha_de_la_prestacion - eval(periodo)).strftime("%Y-%m-%d")}'
+            AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+        "
+      else
+        sql_where = "
+          prestacion_id = #{self.prestacion_id}
+          AND efector_id = '#{self.efector_id}'
+          AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
+          AND fecha_de_la_prestacion BETWEEN
+            '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
+            AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+        "
+      end
       if self.persisted?
         sql_where += "
           AND NOT (
