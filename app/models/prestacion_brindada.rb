@@ -65,6 +65,32 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   #
+  # self.sin_advertencias
+  # Devuelve los registros filtrados en estado aún no se ha facturado, o que tienen advertencias que no son visibles para
+  # el usuario
+  def self.sin_advertencias
+    where('
+      estado_de_la_prestacion_id = 3
+      OR estado_de_la_prestacion_id = 2 AND NOT EXISTS (
+        SELECT *
+          FROM
+            metodos_de_validacion_fallados mvf
+            JOIN metodos_de_validacion mv ON (mvf.metodo_de_validacion_id = mv.id)
+          WHERE
+            mvf.prestacion_brindada_id = prestaciones_brindadas.id
+            AND mv.visible
+      )'
+    )
+  end
+
+  #
+  # self.con_advertencias_visibles
+  # Devuelve los registros filtrados cuando tienen advertencias que son visibles para el usuario
+  def self.con_advertencias_visibles
+    where(:estado_de_la_prestacion_id => 2).joins(:metodos_de_validacion).where('"metodos_de_validacion"."visible"').uniq
+  end
+
+  #
   # pendiente?
   # Indica si la prestación brindada está pendiente (aún no ha sido facturada ni anulada).
   def pendiente?

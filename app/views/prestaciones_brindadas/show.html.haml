@@ -18,24 +18,35 @@
       #info.infobox-ok.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
     - elsif ["I", "F"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
-      #info.infobox-advertencia.no-margin
-        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
-        - if @prestacion_brindada.metodos_de_validacion_fallados.size > 0
-          %ul
-            - @prestacion_brindada.metodos_de_validacion.each do |mv|
-              %li= mv.mensaje
-        - @prestacion_brindada.datos_reportables_asociados.each do |dra|
-          - if dra.hay_advertencias?
-            - if dra.advertencias.size > 0
-              %ul
-                - dra.advertencias.each do |attr, advs|
-                  - advs.each do |msj|
-                    %li= msj
-    - elsif ["U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+      - if @prestacion_brindada.metodos_de_validacion_fallados.size > 0 && @prestacion_brindada.metodos_de_validacion.all?{|mv| !mv.visible}
+        -# Si ninguno de los métodos de validación fallados por la prestación deben mostrarse al usuario, se muestra el mensaje
+        -# como si no se hubieran generado advertencias
+        #info.infobox-ok.no-margin
+          %h2= EstadoDeLaPrestacion.find_by_codigo("R").nombre
+      - else
+        #info.infobox-advertencia.no-margin
+          %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+          - if @prestacion_brindada.metodos_de_validacion_fallados.size > 0
+            %ul
+              - @prestacion_brindada.metodos_de_validacion.each do |mv|
+                %li= mv.mensaje
+          - @prestacion_brindada.datos_reportables_asociados.each do |dra|
+            - if dra.hay_advertencias?
+              - if dra.advertencias.size > 0
+                %ul
+                  - dra.advertencias.each do |attr, advs|
+                    - advs.each do |msj|
+                      %li= msj
+    - elsif @prestacion_brindada.estado_de_la_prestacion.codigo == "U"
       #info.infobox-advertencia.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
         %ul
           %li La prestación no podrá ser facturada.
+    - elsif @prestacion_brindada.estado_de_la_prestacion.codigo == "S"
+      #info.infobox-advertencia.no-margin
+        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        %ul
+          %li La prestación está vencida.
     - else
       #info.infobox-error.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre

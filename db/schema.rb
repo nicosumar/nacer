@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140529202404) do
+ActiveRecord::Schema.define(:version => 20140724161750) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -832,6 +832,7 @@ ActiveRecord::Schema.define(:version => 20140529202404) do
     t.boolean  "genera_error", :default => false
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
+    t.boolean  "visible",      :default => true
   end
 
   create_table "metodos_de_validacion_prestaciones", :id => false, :force => true do |t|
@@ -852,6 +853,7 @@ ActiveRecord::Schema.define(:version => 20140529202404) do
   end
 
   add_index "migra_anexos", ["id"], :name => "migra_anexos_id_idx", :unique => true
+  add_index "migra_anexos", ["id_subrrogada_foranea"], :name => "migra_anexos_id_subrrogada_foranea_idx"
   add_index "migra_anexos", ["numero_fila"], :name => "migra_anexos_numero_fila_idx"
 
   create_table "migra_modulos", :id => false, :force => true do |t|
@@ -884,7 +886,9 @@ ActiveRecord::Schema.define(:version => 20140529202404) do
     t.integer "id_subrrogada_foranea"
   end
 
+  add_index "migra_prestaciones", ["id_subrrogada_foranea"], :name => "migra_prestaciones_id_subrrogada_foranea_idx"
   add_index "migra_prestaciones", ["numero_fila"], :name => "migra_prestaciones_numero_fila_idx"
+  add_index "migra_prestaciones", ["rural"], :name => "migra_prestaciones_rural_idx"
 
   create_table "migra_prestaciones_liquidadas_nacer", :force => true do |t|
     t.integer "efector_id"

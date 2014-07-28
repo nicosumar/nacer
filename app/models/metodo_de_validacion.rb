@@ -2,7 +2,7 @@
 class MetodoDeValidacion < ActiveRecord::Base
 
   # Seguridad de asignaciones masivas
-  attr_accessible :genera_error, :mensaje, :metodo, :nombre
+  attr_accessible :genera_error, :mensaje, :metodo, :nombre, :visible
 
   # Asociaciones
   has_one :regla

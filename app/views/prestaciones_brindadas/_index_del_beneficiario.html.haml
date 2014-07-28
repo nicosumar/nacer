@@ -62,7 +62,11 @@
             %td= p.fecha_de_la_prestacion.strftime("%d/%m/%Y")
             %td= p.prestacion.codigo.to_s + (p.diagnostico ? p.diagnostico.codigo.to_s : '')
             %td= p.prestacion.nombre_corto
-            %td= p.estado_de_la_prestacion.nombre
+            %td
+              - if p.estado_de_la_prestacion.codigo == "F" && p.metodos_de_validacion.all?{|mv| !mv.visible}
+                = EstadoDeLaPrestacion.find_by_codigo("R").nombre
+              - else
+                = p.estado_de_la_prestacion.nombre
     = will_paginate @prestaciones_brindadas, :inner_window => 2, :outer_window => 0
   - else
     %p
