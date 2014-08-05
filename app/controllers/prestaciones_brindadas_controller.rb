@@ -581,7 +581,7 @@ class PrestacionesBrindadasController < ApplicationController
       end
     end
 
-    if @prestacion_brindada.metodos_de_validacion.size > 0
+    if @prestacion_brindada.metodos_de_validacion.any?{|mv| mv.visible}
       redirect_to(@prestacion_brindada,
         :flash => { :tipo => :advertencia,
           :titulo => 'La prestación brindada se registró con advertencias',
