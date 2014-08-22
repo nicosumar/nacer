@@ -30,10 +30,14 @@ gem 'will_paginate'
 gem 'capistrano'
 gem 'text'
 gem 'nilify_blanks'
+#gem 'unicode_utils'
+
+# Reports gems
+gem 'odf-report'
 gem 'spreadsheet'
 gem 'thinreports-rails'
-#gem 'unicode_utils'
-gem 'odf-report'
+gem 'axlsx'
+gem 'axlsx_rails'
 
 # UI Gems
 gem 'cocoon', '>= 1.2'

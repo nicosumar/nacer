@@ -32,7 +32,7 @@ module DocumentosElectronicosHelper
     when 'Cuasifactura'
       link_to nodo[:rotulo], liquidacion_sumar_cuasifactura_path(id, format: 'pdf')
     when 'DetalleDeCuasifactura'
-      link_to(nodo[:rotulo], detalle_prestaciones_cuasifactura_liquidacion_sumar_cuasifactura_path(id, format: 'pdf'))
+      link_to(nodo[:rotulo], liquidacion_sumar_detalle_de_prestaciones_liquidadas_por_efector_path(liquidacion_sumar_id: id[0], id: id[1], format: 'xlsx'))
     when 'ConsolidadoSumar'
       link_to nodo[:rotulo], consolidado_sumar_path(id, format: 'pdf')
     else

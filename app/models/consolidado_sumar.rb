@@ -8,7 +8,7 @@ class ConsolidadoSumar < ActiveRecord::Base
   has_many :consolidados_sumar_detalles
   attr_accessible :fecha, :numero_de_consolidado, :efector_id, :firmante_id, :periodo_id, :liquidacion_sumar_id
 
-  def self.generar_desde_liquidacion(liquidacion_sumar, documento_generable)
+  def self.generar_desde_liquidacion!(liquidacion_sumar, documento_generable)
 
     return false if not (liquidacion_sumar.is_a?(LiquidacionSumar) and documento_generable.is_a?(DocumentoGenerablePorConcepto) )
       
@@ -18,7 +18,8 @@ class ConsolidadoSumar < ActiveRecord::Base
       begin
         documento_generable.tipo_de_agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas |
 
-          # Busco el administrador
+          # Busco el administrador
+
           if e.es_administrado? 
             administrador = e.administrador_sumar
           else

@@ -146,7 +146,7 @@ class LiquidacionesSumarController < ApplicationController
       redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
     elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
       redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
-    else
+    end
       
 =begin
       if @liquidacion_sumar.generar_cuasifacturas
@@ -156,29 +156,30 @@ class LiquidacionesSumarController < ApplicationController
         redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
       end
 =end
-      if @liquidacion_sumar.generar_documentos
-        logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" }
-      else
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
-      end
+    if @liquidacion_sumar.generar_documentos
+      logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" }
+    else
+      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
     end
+    
   end
 
-  # GET /liquidaciones_sumar_cuasifacturas/1.pdf
-  def detalle_de_prestaciones_liquidadas
-    
-    
-    if params[:periodo_id].blank? or params[:efector_id].blank?
+  # GET /liquidaciones_sumar/1/efector/1.pdf
+  def detalle_de_prestaciones_liquidadas_por_efector
+        
+    if params[:liquidacion_sumar_id].blank? or params[:id].blank?
       redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
-
-    @periodo = Periodo.find(params[:periodo_id])
-    @efector = Efector.find(params[:efector_id])
+    
+    @liquidacion_sumar = LiquidacionSumar.find(params[:liquidacion_sumar_id])
+    @efector = Efector.find(params[:id])
 
     uad = UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual])
     efector_actual = uad.efector
+
     permitir_reporte = true
+
     if current_user.in_group? [:administradores, :facturacion, :auditoria_medica, :coordinacion, :planificacion, :auditoria_control, :capacitacion]
       permitir_reporte = true
     elsif current_user.in_group? [:liquidacion_adm]
@@ -201,7 +202,7 @@ class LiquidacionesSumarController < ApplicationController
       end
     end
 
-    if permitir_reporte 
+    unless permitir_reporte 
       redirect_to( root_url, 
           :flash => { :tipo => :error, 
                       :titulo => "No está autorizado para acceder a esta página", 
@@ -212,6 +213,31 @@ class LiquidacionesSumarController < ApplicationController
     respond_to do |format|
       format.pdf { send_data render_to_string, filename: "detalle_de_prestaciones_#{@periodo.periodo}_#{@efector.nombre}.pdf", 
       type: 'application/pdf', disposition: 'attachment'}
+
+      format.xlsx {
+        render xlsx: 'detalle_de_prestaciones_liquidadas_por_efector',
+        filename:  "detalle_de_prestaciones_#{@liquidacion_sumar.periodo.periodo}_#{@liquidacion_sumar.concepto_de_facturacion.codigo}.xlsx"
+      }
+      
+    end
+  end
+
+  def prueba_cont
+    #raise 'llala'
+    l = LiquidacionSumar.find(params[:id])
+   
+    res = {
+      tipo: :ok,
+      titulo: "Todo bien",
+      mensaje: "Todo salio bien"
+    }
+
+    sleep 10
+
+    respond_to do |format|
+      format.json do
+        render json: res.to_json
+      end
     end
   end
 

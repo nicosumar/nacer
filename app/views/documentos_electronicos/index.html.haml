@@ -6,7 +6,8 @@
 #content-header
   %h1 Informes de Liquidacion - Sumar
 
-#content-body
+#content-body
+
   %h2.first-header Buscar documentos electronicos
   - if @efectores.present?
     = form_tag(documentos_electronicos_index_path, method:  :get) do 
@@ -24,6 +25,6 @@
       = check_box_tag "expandir", 1, false
   %br
 
-  #arbol
+  #arbol
     - render_arbol(@arbol_de_efectores)
 

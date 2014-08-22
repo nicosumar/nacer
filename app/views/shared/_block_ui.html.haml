@@ -1,0 +1,11 @@
+= javascript_include_tag 'jquery.blockUI.min.js'
+= javascript_include_tag 'block_ui_sumar.js'
+
+#blockUI_div{style: 'display: none; '}
+  = image_tag( 'spinner.gif', id: 'blockUI_div_spinner')
+  %br
+  %h2{id: 'blockUI_div_titulo'}
+  %br
+  %h2{id: 'blockUI_div_mensaje'}
+  %br
+  = button_tag('Cerrar', type: 'button', id: "blockUI_div_aceptar", name: 'blockUI_div_aceptar')

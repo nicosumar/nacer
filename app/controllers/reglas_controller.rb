@@ -3,7 +3,6 @@ class ReglasController < ApplicationController
   before_filter :authenticate_user!
   before_filter :verificar_lectura
 
-
   # GET /reglas
   def index
     @reglas = Regla.paginate(:page => params[:page], :per_page => 20)

@@ -31,6 +31,13 @@ GEM
       multi_json (~> 1.0)
     afm (0.2.0)
     arel (3.0.2)
+    axlsx (2.0.0)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (= 0.9.9)
+    axlsx_rails (0.1.5)
+      axlsx
+      rails (>= 3.1)
     bcrypt-ruby (3.0.1)
     bcrypt-ruby (3.0.1-x86-mingw32)
     better_errors (1.1.0)
@@ -89,6 +96,7 @@ GEM
     hirb-unicode (0.0.5)
       hirb (~> 0.5)
       unicode-display_width (~> 0.1.1)
+    htmlentities (4.3.2)
     i18n (0.6.1)
     journey (1.0.4)
     jquery-rails (2.2.1)
@@ -214,6 +222,8 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
+  axlsx
+  axlsx_rails
   better_errors
   binding_of_caller
   cancan

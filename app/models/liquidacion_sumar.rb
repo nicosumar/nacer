@@ -34,6 +34,85 @@ class LiquidacionSumar < ActiveRecord::Base
     end
   end
 
+
+  def self.liquidacion_de(efector, periodo, concepto)
+    unless efector.is_a? Efector
+      raise "El argumento debe ser de tipo Efector"  
+      return false
+    end
+    unless periodo.is_a? Periodo
+      raise "El argumento debe ser de tipo Periodo"  
+      return false
+    end
+    unless concepto.is_a? ConceptoDeFacturacion 
+      raise "El argumento debe ser de tipo Periodo"  
+      return false
+    end
+
+    l = PrestacionLiquidada.select("DISTINCT liquidacion_id").
+                            joins(" join liquidaciones_sumar l on l.id = prestaciones_liquidadas.liquidacion_id").
+                            where(["prestaciones_liquidadas.efector_id = ?\n"+
+                                   "and l.periodo_id = ?\n"+
+                                   "and l.concepto_de_facturacion_id = ?", efector.id,  periodo.id, concepto.id]).collect {|r| r.liquidacion_id}
+    LiquidacionSumar.find l
+  end
+
+  # 
+  # Devuelve las prestaciones liquidadas para un efector dado
+  # @param efector [Efector] Efector a buscar
+  # 
+  # @return [CustomQuery] Array con el resultado de la busqueda
+  def prestaciones_liquidadas_de(efector)
+    unless efector.is_a? Efector
+      raise "El argumento debe ser de tipo Efector"  
+      return false
+    end
+
+    sql = "select pi.prestacion_codigo,pi.prestacion_nombre, d.codigo codigo_de_diagnostico, pl.fecha_de_la_prestacion, \n"+
+          "           td.codigo||': '|| a.numero_de_documento documento, a.apellido || ', '|| a.nombre nombre_y_apellido, \n"+
+          "           pl.id, pl.prestacion_brindada_id, \n"+
+          "           cuasi.numero_cuasifactura, amp.prestacion_liquidada_id, \n"+
+          "          estado_li.nombre estado_informe_liquidacion, \n"+
+          "          CASE WHEN  estado_prestacion_aa.id IS NULL AND aa.id IS NULL THEN 'En proceso de liquidación'  \n"+
+          "                     WHEN  estado_prestacion_aa.id IS NULL AND aa.id IS  NOT NULL THEN 'No evalúa'  \n"+
+          "                     ELSE  estado_prestacion_aa.nombre END estado_prestacion_aa,  motivo_rechazo_aa.nombre motivo_rechazo_aa ,\n"+
+          "           CASE WHEN  estado_prestacion_am.id IS NULL AND am.id IS NULL THEN 'En proceso de liquidación'  \n"+
+          "                     WHEN  estado_prestacion_am.id IS NULL AND am.id IS  NOT NULL THEN 'No evalúa'  \n"+
+          "                     ELSE  estado_prestacion_am.nombre END estado_prestacion_am, motivo_rechazo_am.nombre motivo_rechazo_am,\n"+
+          "          ep.nombre estado, pl.observaciones_liquidacion\n"+
+          "from liquidaciones_sumar l\n"+
+          " join prestaciones_liquidadas pl on pl.liquidacion_id = l.id \n"+
+          " join prestaciones_incluidas pi on pl.prestacion_incluida_id = pi.id \n"+
+          " join estados_de_las_prestaciones ep on ep.id = pl.estado_de_la_prestacion_liquidada_id\n"+
+          " join efectores e on e.\"id\" = pl.efector_id \n"+
+          " join diagnosticos d on d.id = pl.diagnostico_id\n"+
+          " join liquidaciones_informes li on li.efector_id = e.id and li.liquidacion_sumar_id = l.id \n"+
+          " join estados_de_los_procesos estado_li on li.estado_del_proceso_id = estado_li.id \n"+
+          " left join liquidaciones_sumar_anexos_administrativos aa on li.liquidacion_sumar_anexo_administrativo_id = aa.id and aa.estado_del_proceso_id = 3 --estado finalizado\n"+
+          " left join anexos_administrativos_prestaciones aap on aap.prestacion_liquidada_id = pl.id \n"+
+          " left join estados_de_las_prestaciones estado_prestacion_aa on estado_prestacion_aa.id = aap.estado_de_la_prestacion_id\n"+
+          " left join motivos_de_rechazos motivo_rechazo_aa on motivo_rechazo_aa.id = aap.motivo_de_rechazo_id \n"+
+          " LEFT JOIN liquidaciones_sumar_anexos_medicos am on li.liquidacion_sumar_anexo_medico_id = am.id and am.estado_del_proceso_id = 3 --estado finalizado\n"+
+          " left join anexos_medicos_prestaciones amp on amp.prestacion_liquidada_id = pl.id \n"+
+          " left join estados_de_las_prestaciones estado_prestacion_am on estado_prestacion_am.id = amp.estado_de_la_prestacion_id\n"+
+          " left join motivos_de_rechazos motivo_rechazo_am on motivo_rechazo_am.id = amp.motivo_de_rechazo_id \n"+
+          " LEFT JOIN afiliados a on a.clave_de_beneficiario = pl.clave_de_beneficiario\n"+
+          " left JOIN tipos_de_documentos td on td.id = a.tipo_de_documento_id\n"+
+          " left join (liquidaciones_sumar_cuasifacturas lsc \n"+
+          "              join liquidaciones_sumar_cuasifacturas_detalles lscd on lscd.liquidaciones_sumar_cuasifacturas_id = lsc.id ) cuasi on cuasi.prestacion_liquidada_id = pl.id \n"+
+          "where e.id = ?\n"+
+          "and l.id = ?\n"+
+          "order by  numero_cuasifactura desc, estado, prestacion_codigo, fecha_de_la_prestacion, documento"
+    
+    cq = CustomQuery.buscar (
+    {
+      :sql => sql,
+      values: [efector.id, self.id ]
+    })
+
+
+  end
+
   # 
   #  Guarda las prestaciones brindadas, datos adicionales y advertencias,
   # inculadas a un grupo de efectores en un periodo dado, eliminando prestaciones duplicadas.

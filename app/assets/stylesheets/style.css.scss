@@ -517,6 +517,56 @@ div.field_with_warnings {
   margin: 0;
 }
 
+/* INFOBOX AJAX */
+#info-ajax {
+  clear: both;
+}
+
+.infobox-ajax-advertencia,
+.infobox-ajax-ok,
+.infobox-ajax-error {
+  border: none; 
+  padding: 15px;
+  background-color: #000;
+  border-radius: 5px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  color: '#fff';
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  h2 {
+    margin: 0;
+    padding: 4px 0px 2px 0px;
+    font-weight: bold;
+  }
+  ul {
+    padding-left: 15px;
+  }
+}
+
+.infobox-ajax-advertencia {
+  color: #9F6000;
+  background-color: #ffe9ad;
+  background-image: image-url("info-yellow.png");
+}
+
+.infobox-ajax-ok {
+  color: #4F8A10;
+  background-color: #effeb9;
+  background-image: image-url("info-green.png");
+}
+
+.infobox-ajax-error {
+  color: #D8000C;
+  background-color: #fccac1;
+  background-image: image-url("info-red.png");
+}
+
+.no-margin {
+  margin: 0;
+}
+
+
 /* NUEVO MENÚ */
 
 #newmenu {

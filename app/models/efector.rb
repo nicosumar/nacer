@@ -4,20 +4,24 @@ class Efector < ActiveRecord::Base
   nilify_blanks
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :codigo_de_efector_sissa, :codigo_de_efector_bio, :nombre, :domicilio, :departamento_id, :distrito_id
+  attr_accessible :codigo_de_efector_sissa, :codigo_de_efector_bio, :nombre, :domicilio, :departamento_id, :distrito_id, :provincia_id, :provincia
   attr_accessible :codigo_postal, :latitud, :longitud, :telefonos, :email, :grupo_de_efectores_id, :area_de_prestacion_id
   attr_accessible :camas_de_internacion, :ambientes, :dependencia_administrativa_id, :integrante, :observaciones, :alto_impacto
   attr_accessible :perinatal_de_alta_complejidad, :addenda_perinatal, :fecha_de_addenda_perinatal, :unidad_de_alta_de_datos_id
   attr_accessible :cuit, :condicion_iva, :fecha_inicio_de_actividades, :condicion_iibb, :datos_bancarios, :banco_cuenta_principal
   attr_accessible :numero_de_cuenta_principal, :denominacion_cuenta_principal, :sucursal_cuenta_principal, :banco_cuenta_secundaria
-  attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria
+  attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria, :cuie
 
   # Atributos protegidos
-  # attr_protected :cuie
+  # attr_protected :cuie
+
+  # Atributos solo lectura
+  attr_readonly :cuie
 
   # Asociaciones
   has_one :convenio_de_gestion
   has_one :convenio_de_gestion_sumar
+  belongs_to :provincia
   belongs_to :departamento
   belongs_to :distrito
   belongs_to :grupo_de_efectores
@@ -44,10 +48,7 @@ class Efector < ActiveRecord::Base
   has_many :notas_de_debito
 
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
-  # default_scope where("integrante = ?", true)
   scope :efectores_administrados, joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id")
-
-
 
   # Validaciones
   validates_presence_of :nombre
@@ -213,13 +214,9 @@ class Efector < ActiveRecord::Base
 
 
   # 
-
   # Devuelve los periodos que ha facturado o consolidado
-
   # @param arg_concepto = [] [ConcdeptoDeFacturacion] [Filtro para un concepto en particular ]
-
   # 
-
   # @return [Array<Periodo>] [Array con los periodos que ha facturado o consolidado]
   def periodos_facturados_o_consoliados(arg_concepto = [])
     if arg_concepto.is_a? ConceptoDeFacturacion

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140618185908) do
+ActiveRecord::Schema.define(:version => 20140811164213) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -546,6 +546,7 @@ ActiveRecord::Schema.define(:version => 20140618185908) do
   end
 
   add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id", "documento_generable_id"], :name => "documentos_generables_por_con_concepto_de_facturacion_id_do_key", :unique => true
+  add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id", "orden"], :name => "documentos_generables_por_con_concepto_de_facturacion_id_or_key", :unique => true
   add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id"], :name => "documentos_generables_por_concep_concepto_de_facturacion_id_idx"
   add_index "documentos_generables_por_conceptos", ["documento_generable_id"], :name => "documentos_generables_por_conceptos_documento_generable_id_idx"
   add_index "documentos_generables_por_conceptos", ["tipo_de_agrupacion_id"], :name => "documentos_generables_por_conceptos_tipo_de_agrupacion_id_idx"
@@ -596,7 +597,14 @@ ActiveRecord::Schema.define(:version => 20140618185908) do
     t.string   "categoria_obstetrica"
     t.string   "categoria_neonatal"
     t.boolean  "internet",                          :default => false
+    t.integer  "provincia_id",                      :default => 9,     :null => false
   end
+
+  add_index "efectores", ["cuie"], :name => "efectores_cuie_idx"
+  add_index "efectores", ["cuie"], :name => "efectores_cuie_idx1"
+  add_index "efectores", ["cuie"], :name => "efectores_cuie_idx2"
+  add_index "efectores", ["cuie"], :name => "efectores_cuie_idx3"
+  add_index "efectores", ["provincia_id"], :name => "efectores_provincia_id_idx"
 
   create_table "estados_de_las_novedades", :force => true do |t|
     t.string  "nombre"
@@ -794,6 +802,7 @@ ActiveRecord::Schema.define(:version => 20140618185908) do
     t.integer  "parametro_liquidacion_sumar_id"
   end
 
+  add_index "liquidaciones_sumar", ["concepto_de_facturacion_id", "periodo_id", "grupo_de_efectores_liquidacion_id"], :name => "liquidaciones_sumar_concepto_de_facturacion_id_periodo_id_g_key", :unique => true
   add_index "liquidaciones_sumar", ["concepto_de_facturacion_id"], :name => "liquidaciones_sumar_concepto_de_facturacion_id_idx"
   add_index "liquidaciones_sumar", ["grupo_de_efectores_liquidacion_id"], :name => "liquidaciones_sumar_grupo_de_efectores_liquidacion_id_idx"
   add_index "liquidaciones_sumar", ["parametro_liquidacion_sumar_id"], :name => "liquidaciones_sumar_parametro_liquidacion_sumar_id_idx"
@@ -822,11 +831,12 @@ ActiveRecord::Schema.define(:version => 20140618185908) do
   create_table "liquidaciones_sumar_cuasifacturas", :force => true do |t|
     t.integer  "liquidacion_sumar_id"
     t.integer  "efector_id"
-    t.decimal  "monto_total",          :precision => 15, :scale => 4
+    t.decimal  "monto_total",                :precision => 15, :scale => 4
     t.string   "numero_cuasifactura"
     t.text     "observaciones"
-    t.datetime "created_at",                                          :null => false
-    t.datetime "updated_at",                                          :null => false
+    t.datetime "created_at",                                                :null => false
+    t.datetime "updated_at",                                                :null => false
+    t.integer  "concepto_de_facturacion_id",                                :null => false
   end
 
   add_index "liquidaciones_sumar_cuasifacturas", ["efector_id"], :name => "liquidaciones_sumar_cuasifacturas_efector_id_idx"

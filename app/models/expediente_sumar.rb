@@ -12,7 +12,7 @@ class ExpedienteSumar < ActiveRecord::Base
   # @param  documento_generable [DocumentoGenerablePorConcepto] Especificación de la generación del documento
   # 
   # @return [Boolean] confirmación de la generación de las cuasifacturas
-  def self.generar_desde_liquidacion(liquidacion_sumar, documento_generable)
+  def self.generar_desde_liquidacion!(liquidacion_sumar, documento_generable)
 
     return false if not (liquidacion_sumar.is_a?(LiquidacionSumar) and documento_generable.is_a?(DocumentoGenerablePorConcepto) )
       

@@ -1,5 +1,15 @@
 = form_for(@liquidacion_informe) do |f|
- 
+
+  - if @liquidacion_informe.requiere_numero_de_expediente?
+    .field
+      = f.label :numero_de_expediente, "N° de expediente"
+      = text_field_tag :numero_de_expediente
+
+  - if @liquidacion_informe.requiere_numero_de_cuasi?
+    .field
+      = f.label :numero_de_cuasifactura, "N° de cuasifactura recibida:"
+      = text_field_tag :numero_de_cuasifactura
+
   = radio_button_tag 'aprobar', true
   Aprobar cuasifactura y generar anexos
   %br

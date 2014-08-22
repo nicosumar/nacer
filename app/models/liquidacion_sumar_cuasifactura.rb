@@ -3,12 +3,16 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
   
   belongs_to :liquidacion_sumar
   belongs_to :efector
+  belongs_to :concepto_de_facturacion
   has_many :liquidaciones_sumar_cuasifacturas_detalles, foreign_key: :liquidaciones_sumar_cuasifacturas_id
 
   scope :para, lambda {|efector, liquidacion| where(efector_id: efector.id, liquidacion_id: liquidacion.id)}
 
   attr_accessible :monto_total, :numero_cuasifactura, :observaciones, :liquidacion_sumar, :efector, :liquidacion_id, :efector_id
+  attr_accessible :concepto_de_facturacion, :concepto_de_facturacion_id
 
+  validates :concepto_de_facturacion, presence: true
+  
   # 
   # Genera las cuasifacturas desde una liquidación dada
   # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
@@ -16,7 +20,7 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
   # @param  documento_generable [DocumentoGenerablePorConcepto] Especificación de la generación del documento
   # 
   # @return [Boolean] confirmación de la generación de las cuasifacturas
-  def self.generar_desde_liquidacion(liquidacion_sumar, documento_generable)
+  def self.generar_desde_liquidacion!(liquidacion_sumar, documento_generable)
 
     return false if not (liquidacion_sumar.is_a?(LiquidacionSumar) and documento_generable.is_a?(DocumentoGenerablePorConcepto) )
       
@@ -32,7 +36,10 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
           # Si el monto de la cuasi es cero, sigo con el prox efector
           next if total_cuasifactura == 0
           
-          cuasifactura = LiquidacionSumarCuasifactura.create( liquidacion_sumar: liquidacion_sumar, efector: e, monto_total: total_cuasifactura)
+          cuasifactura = LiquidacionSumarCuasifactura.create( liquidacion_sumar: liquidacion_sumar, 
+                                                              efector: e, 
+                                                              monto_total: total_cuasifactura, 
+                                                              concepto_de_facturacion: liquidacion_sumar.concepto_de_facturacion)
           cuasifactura.save
           
           # 2) Obtengo el numero de cuasifactura si corresponde para este tipo de documento

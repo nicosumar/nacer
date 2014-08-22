@@ -18,16 +18,4 @@ class LiquidacionesSumarCuasifacturasController < ApplicationController
     end
   end
 
-  # GET /liquidaciones_sumar_cuasifacturas/1.pdf
-  def detalle_prestaciones_cuasifactura
-    @liquidacion_sumar_cuasifactura = LiquidacionSumarCuasifactura.find(params[:id])
-    
-
-    respond_to do |format|
-      format.pdf { send_data render_to_string, filename: "detalle_prestaciones_#{@liquidacion_sumar_cuasifactura.numero_cuasifactura}.pdf", 
-      type: 'application/pdf', disposition: 'attachment'}
-    end
-    
-  end
-  
 end

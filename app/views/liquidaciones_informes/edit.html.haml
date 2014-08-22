@@ -15,7 +15,14 @@
   - else
     = "El efector <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.efector.nombre}</b> ".html_safe
     = "no posee referente al dia del cierre de la liquidación <b>".html_safe
-  = "<br><br>La cuasifactura <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura}</b> debe ser proveida en el expediente <b>#{@liquidacion_informe.expediente_sumar.numero}</b>.".html_safe
+  - if @liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura.present? and @liquidacion_informe.expediente_sumar.numero.present?
+    = "<br><br>La cuasifactura <b>#{@liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura}</b> debe ser proveida en el expediente <b>#{@liquidacion_informe.expediente_sumar.numero}</b>.".html_safe
+  - elsif @liquidacion_informe.expediente_sumar.numero.present?
+    = "<br><br> Debe indicar el número de cuasifactura recibida y consignarla al expediente <b>#{@liquidacion_informe.expediente_sumar.numero}</b>.".html_safe
+  - elsif @liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura.present?
+    = "<br><br> Debe indicar el número de expediente que generará e incluir la cuasifactura <b>N° #{@liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura}</b> al mismo.".html_safe
+  - else
+    = "<br><br> Debe indicar el numero de cuasifactura recibida. Asi mismo, debe generar un expediente para la misma. Recuerde que <b>tanto el numero de cuasifactura como el expediente deben ser unicos sobre los existentes en el sistema</b>.".html_safe
   %br
   %br
   %h2.first-header Datos de aprobación:

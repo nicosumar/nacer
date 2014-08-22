@@ -5,7 +5,8 @@ class DocumentosElectronicosController < ApplicationController
   
   def index
 
-    # Valores para los dropdown
+    # Valores para los dropdown
+
     # Verifico si ya hizo el filtro o no
     if params[:efector_id].blank? 
       @efector_id = -1
@@ -22,8 +23,8 @@ class DocumentosElectronicosController < ApplicationController
           @arbol_de_efectores = crear_arbol(@efector, @efector.efectores_administrados.order("nombre desc"), true )
         elsif @efector.es_administrado?
           @arbol_de_efectores = crear_arbol(@efector.administrador_sumar, @efector.administrador_sumar.efectores_administrados.order("nombre desc"), true )
-        elsif uad.efector.es_autoadministrado?
-          @arbol_de_efectores = crear_arbol(uad.efector, [], true)
+        elsif @efector.es_autoadministrado?
+          @arbol_de_efectores = crear_arbol(@efector, [], true)
         end
       end
     elsif current_user.in_group? [:liquidacion_adm]
@@ -100,17 +101,9 @@ class DocumentosElectronicosController < ApplicationController
               tipo_id: "#{cuasi.id}",
               imagen:  "file-pdf-o.png"
             }
-
-            documentos << {
-              rotulo:  "Detalle de Cuasifactura N° #{cuasi.numero_cuasifactura}",
-              tipo:    'DetalleDeCuasifactura',
-              tipo_id: "#{cuasi.id}",
-              imagen:  "file-pdf-o.png"
-            }
           end #end cuasifacturas y detalles
           
           efector.consolidado_de_periodo(periodo).each do |consolidado|
-                      #raise 'lña'
             documentos << {
               rotulo: "Consolidado N° #{consolidado.numero_de_consolidado}",
               tipo:   'ConsolidadoSumar',
@@ -118,6 +111,16 @@ class DocumentosElectronicosController < ApplicationController
               imagen: "file-pdf-o.png"
             }
           end
+
+          LiquidacionSumar.liquidacion_de(efector, periodo, concepto).each do |l|
+            documentos << {
+                rotulo:  "Detalle de prestaciones liquidadas #{periodo.periodo}",
+                tipo:    'DetalleDeCuasifactura',
+                tipo_id: ["#{l.id}", "#{efector.id}"],
+                imagen:  "file-pdf-o.png"
+              }
+          end
+          
 
           periodos << {
             rotulo: periodo.periodo,

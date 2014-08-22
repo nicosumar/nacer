@@ -17,7 +17,7 @@ class LiquidacionInforme < ActiveRecord::Base
   # @param  documento_generable [DocumentoGenerablePorConcepto] Especificación de la generación del documento
   # 
   # @return [Boolean] confirmación de la generación de las cuasifacturas
-  def self.generar_desde_liquidacion(liquidacion_sumar, documento_generable)
+  def self.generar_desde_liquidacion!(liquidacion_sumar, documento_generable)
 
     return false if not (liquidacion_sumar.is_a?(LiquidacionSumar) and documento_generable.is_a?(DocumentoGenerablePorConcepto) )
       
@@ -85,7 +85,6 @@ class LiquidacionInforme < ActiveRecord::Base
     # El query toma como idea que el id del estado de la prestacion, mientras es mayor, el motivo de rechazo es mas negativo
 
     # Actualizo el estado a la liquidada y de ahi la brindada
-    
     estado_finalizado = EstadoDelProceso.find(3) 
     cq = false
     
@@ -132,8 +131,42 @@ class LiquidacionInforme < ActiveRecord::Base
       end
     end
     return cq
+  end
 
+  def requiere_numero_de_cuasi?
+    if self.liquidacion_sumar_cuasifactura.numero_cuasifactura.blank? 
+      return true
+    else
+      return false
+    end
+  end
 
-    
+  def requiere_numero_de_expediente?
+    if self.expediente_sumar.numero.blank?
+      return true
+    else
+      return false
+    end
+  end
+
+  def generar_anexos!(numero_cuasifactura, numero_expediente, aprobado)
+    transaction do
+      self.aprobado = aprobado
+      self.save
+      # Si deberia indicar el numero de expediente
+      self.expediente_sumar.numero = numero_expediente if numero_expediente.present?
+      self.expediente_sumar.save!
+      # Si deberia indicar el numero de cuasifactura
+      self.liquidacion_sumar_cuasifactura.numero_cuasifactura = numero_cuasifactura if numero_cuasifactura.present?
+      self.liquidacion_sumar_cuasifactura.save!
+      
+      # Si se aprueba la cuasifactura, los anexos administrativos pasan a estado "En Curso"
+      # de otra manera, ambos se cierran y las prestaciones se devuelven para refacturar
+      LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(self, aprobado)
+      LiquidacionSumarAnexoMedico.generar_anexo_medico(self, aprobado)
+
+      self.cerrar unless aprobado
+      
+    end    
   end
 end

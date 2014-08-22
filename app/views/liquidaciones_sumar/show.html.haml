@@ -1,6 +1,10 @@
+=# javascript_include_tag 'liquidaciones_sumar_procesar.js'
 = stylesheet_link_tag"entradas.css"
+
 - content_for :title do
   Liquidaciones Sumar - Ver
+
+-# bloquear_ui ["prueba"]
 
 #content-header
   %h1 Liquidaciones Sumar - Ver
@@ -11,6 +15,7 @@
       = link_to 'Editar', edit_liquidacion_sumar_path(@liquidacion_sumar)
 
 = render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar }
+= render :partial => "shared/block_ui"
 
 #content-body
   %table
@@ -50,7 +55,9 @@
     = link_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :post
     = link_to "Generar cuasifacturas",  generar_cuasifacturas_liquidacion_sumar_path(@liquidacion_sumar.id), method: :post
     = link_to 'Generar expedientes', generar_caratulas_expedientes_por_liquidacion_expediente_sumar_path(@liquidacion_sumar.id, format: 'pdf'), method: "get"
+    = link_to "prueba", prueba_cont_liquidacion_sumar_path(@liquidacion_sumar, format: 'json'), method: :post, remote: true, id:'prueba', data: {block_ui: {id: @liquidacion_sumar.id} }
   %br
   %br
   %br
   %br
+
