@@ -647,7 +647,7 @@ class Afiliado < ActiveRecord::Base
 
     # Si no coincide con el embarazo actual, verificar si existe algún periodo de embarazo registrado que coincida con la fecha
     self.periodos_de_embarazo.each do |pe|
-      return true if (fecha >= (pe.fecha_probable_de_parto - 40.weeks) && fecha < (pe.fecha_probable_de_parto + 6.weeks))
+      return true if pe.fecha_probable_de_parto && (fecha >= (pe.fecha_probable_de_parto - 40.weeks) && fecha < (pe.fecha_probable_de_parto + 6.weeks))
     end
 
     return false
