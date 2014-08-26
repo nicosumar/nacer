@@ -53,7 +53,7 @@ class UsersController < Devise::RegistrationsController
 
   # GET /users/:id/edit
   def admin_edit
-    @user = User.find(params[:id], :include => [:user_groups, :sexo])
+    @user = User.unscoped.find(params[:id], :include => [:user_groups, :sexo])
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
     @user_group_ids = @user.user_groups.collect{ |ug| ug.id }
     @unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find(:all).collect{ |uad| [uad.nombre, uad.id] }
@@ -63,7 +63,7 @@ class UsersController < Devise::RegistrationsController
   # PUT /users/:id
   def admin_update
     # Obtener el usuario
-    user = User.find(params[:id], :include => [:user_groups, :unidades_de_alta_de_datos])
+    user = User.unscoped.find(params[:id], :include => [:user_groups, :unidades_de_alta_de_datos])
 
     # Verificar si se autorizó al usuario a iniciar sesión y registrar la hora y el administrador que autoriza
     if !user.authorized? && params[:user][:authorized] == "1"
@@ -75,6 +75,18 @@ class UsersController < Devise::RegistrationsController
       user.authorized = false
       user.authorized_at = nil
       user.authorized_by = nil
+      user.save
+    end
+      
+    # Verificar si se solicitó la eliminación de la cuenta (soft delete)
+    if !user.cuenta_eliminada? && params[:user][:cuenta_eliminada] == "1"
+      user.cuenta_eliminada = true
+      user.authorized = false
+      user.authorized_at = nil
+      user.authorized_by = nil
+      user.save
+    elsif user.cuenta_eliminada? && params[:user][:cuenta_eliminada] == "0"
+      user.cuenta_eliminada = false
       user.save
     end
       
