@@ -410,6 +410,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("NotaDeDebito", "Notas·De·Debito·")
   inflect.irregular("Nota·De·Debito·", "NotasDeDebito")
 
+  # Tipos de procesos
+  inflect.irregular("tipo_de_proceso", "tipos·_de·_procesos·")
+  inflect.irregular("tipo·_de·_proceso·", "tipos_de_procesos")
+  inflect.irregular("TipoDeProceso", "Tipos·De·Procesos·")
+  inflect.irregular("Tipo·De·Proceso·", "TiposDeProcesos")
+
+  # Tipos de procesos
+  inflect.irregular("proceso_de_datos_externos", "procesos·_de·_datos·_externos·")
+  inflect.irregular("proceso·_de·_datos_externos·", "procesos_de_datos_externos")
+  inflect.irregular("ProcesoDeDatosExternos", "Procesos·De·Datos·Externos·")
+  inflect.irregular("Proceso·De·Datos·Externos·", "ProcesosDeDatosExternos")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

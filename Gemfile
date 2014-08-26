@@ -33,6 +33,9 @@ gem 'spreadsheet'
 gem 'thinreports-rails'
 #gem 'unicode_utils'
 gem 'odf-report'
+gem 'delayed_job_active_record'
+gem 'daemons'
+gem 'paperclip'
 
 # UI Gems
 gem 'cocoon', '>= 1.2'
