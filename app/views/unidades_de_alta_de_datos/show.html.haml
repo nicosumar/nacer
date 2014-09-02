@@ -40,6 +40,12 @@
       %span.field_value Sí
     - else
       %span.field_value No
+  %div.field_content
+    %span.field_name Habilitada para procesos de datos externos
+    - if @unidad_de_alta_de_datos.proceso_de_datos
+      %span.field_value Sí
+    - else
+      %span.field_value No
 
   %h3 Observaciones
   %div.field_content

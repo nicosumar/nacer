@@ -4,7 +4,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   nilify_blanks
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :codigo, :nombre, :inscripcion, :facturacion, :activa, :observaciones, :efector_id
+  attr_accessible :codigo, :nombre, :inscripcion, :facturacion, :activa, :observaciones, :efector_id, :proceso_de_datos
 
   # Los atributos siguientes solo pueden asignarse durante la creación
   attr_readonly :codigo
@@ -17,7 +17,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   has_many :informes_uads
   has_many :informes, :through => :informes_uads
   has_many :prestaciones_liquidadas
-  belongs_to  :efector
+  belongs_to :efector
 
   # En forma predeterminada, sólo se devuelven los registros activos
   default_scope where(:activa => true)

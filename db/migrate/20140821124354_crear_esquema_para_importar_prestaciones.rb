@@ -1,4 +1,4 @@
-class CrearEsquemaProcesos < ActiveRecord::Migration
+class CrearEsquemaParaImportarPrestaciones < ActiveRecord::Migration
   def up
     execute "
       CREATE SCHEMA procesos;

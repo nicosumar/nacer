@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140724161750) do
+ActiveRecord::Schema.define(:version => 20140901155220) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -161,6 +161,17 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
   add_index "anexos_medicos_prestaciones", ["liquidacion_sumar_anexo_medico_id"], :name => "anexos_medicos_prestaciones_liquidacion_sumar_anexo_medico__idx"
   add_index "anexos_medicos_prestaciones", ["motivo_de_rechazo_id"], :name => "anexos_medicos_prestaciones_motivo_de_rechazo_id_idx"
   add_index "anexos_medicos_prestaciones", ["prestacion_liquidada_id"], :name => "anexos_medicos_prestaciones_prestacion_liquidada_id_idx"
+
+  create_table "apartados_pdss", :force => true do |t|
+    t.string   "nombre"
+    t.integer  "subgrupo_pdss_id"
+    t.string   "codigo"
+    t.integer  "orden"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "apartados_pdss", ["subgrupo_pdss_id"], :name => "index_apartados_pdss_on_subgrupo_pdss_id"
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
@@ -442,6 +453,22 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
     t.decimal "maximo",                :precision => 15, :scale => 4
   end
 
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0, :null => false
+    t.integer  "attempts",   :default => 0, :null => false
+    t.text     "handler",                   :null => false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
   create_table "departamentos", :force => true do |t|
     t.string  "nombre",                :null => false
     t.integer "provincia_id",          :null => false
@@ -632,6 +659,14 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
 
   create_table "grupos_de_prestaciones", :force => true do |t|
     t.string "nombre", :null => false
+  end
+
+  create_table "grupos_pdss", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo"
+    t.integer  "orden"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "grupos_poblacionales", :force => true do |t|
@@ -929,6 +964,13 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
   add_index "nomencladores", ["fecha_de_inicio"], :name => "nomencladores_fecha_de_inicio_idx"
   add_index "nomencladores", ["nomenclador_sumar"], :name => "nomencladores_nomenclador_sumar_idx"
 
+  create_table "nosologias", :force => true do |t|
+    t.string   "nombre"
+    t.string   "codigo"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "notas_de_debito", :force => true do |t|
     t.string   "numero",                                                                     :null => false
     t.integer  "efector_id",                                                                 :null => false
@@ -1205,6 +1247,35 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
 
   add_index "prestaciones_nacer_sumar", ["prestacion_nacer_id", "prestacion_sumar_id"], :name => "index_prestaciones_nacer_sumar_unq", :unique => true
 
+  create_table "prestaciones_pdss", :force => true do |t|
+    t.string   "nombre",                                   :null => false
+    t.string   "codigo",                                   :null => false
+    t.integer  "orden",                                    :null => false
+    t.integer  "grupo_pdss_id",                            :null => false
+    t.integer  "subgrupo_pdss_id"
+    t.integer  "apartado_pdss_id"
+    t.integer  "nosologia_id"
+    t.integer  "tipo_de_prestacion_id"
+    t.boolean  "rural",                 :default => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+  end
+
+  add_index "prestaciones_pdss", ["apartado_pdss_id"], :name => "index_prestaciones_pdss_on_apartado_pdss_id"
+  add_index "prestaciones_pdss", ["grupo_pdss_id"], :name => "index_prestaciones_pdss_on_grupo_pdss_id"
+  add_index "prestaciones_pdss", ["nosologia_id"], :name => "index_prestaciones_pdss_on_nosologia_id"
+  add_index "prestaciones_pdss", ["subgrupo_pdss_id"], :name => "index_prestaciones_pdss_on_subgrupo_pdss_id"
+  add_index "prestaciones_pdss", ["tipo_de_prestacion_id"], :name => "index_prestaciones_pdss_on_tipo_de_prestacion_id"
+
+  create_table "prestaciones_prestaciones_pdss", :id => false, :force => true do |t|
+    t.integer "prestacion_pdss_id", :null => false
+    t.integer "prestacion_id",      :null => false
+  end
+
+  add_index "prestaciones_prestaciones_pdss", ["prestacion_id"], :name => "index_prestaciones_prestaciones_pdss_on_prestacion_id"
+  add_index "prestaciones_prestaciones_pdss", ["prestacion_pdss_id", "prestacion_id"], :name => "prestaciones_prestaciones_pdss_uniq", :unique => true
+  add_index "prestaciones_prestaciones_pdss", ["prestacion_pdss_id"], :name => "index_prestaciones_prestaciones_pdss_on_prestacion_pdss_id"
+
   create_table "prestaciones_sexos", :id => false, :force => true do |t|
     t.integer "prestacion_id"
     t.integer "sexo_id"
@@ -1299,6 +1370,19 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
     t.integer  "updater_id"
   end
 
+  create_table "secuencias_de_autorizaciones", :force => true do |t|
+    t.integer  "tipo_de_solicitud_id",                :null => false
+    t.integer  "orden_de_autorizacion",               :null => false
+    t.string   "responsable_de_la_autorizacion_type", :null => false
+    t.integer  "responsable_de_la_autorizacion_id",   :null => false
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+  end
+
+  add_index "secuencias_de_autorizaciones", ["tipo_de_solicitud_id"], :name => "index_secuencias_de_autorizaciones_on_tipo_de_solicitud_id"
+
   create_table "sexos", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -1329,6 +1413,17 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
     t.integer "grupo_de_prestaciones_id", :null => false
     t.string  "nombre",                   :null => false
   end
+
+  create_table "subgrupos_pdss", :force => true do |t|
+    t.string   "nombre"
+    t.integer  "grupo_pdss_id"
+    t.string   "codigo"
+    t.integer  "orden"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "subgrupos_pdss", ["grupo_pdss_id"], :name => "index_subgrupos_pdss_on_grupo_pdss_id"
 
   create_table "tipos_de_debitos_prestacionales", :force => true do |t|
     t.string "nombre"
@@ -1362,9 +1457,32 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
     t.string "codigo"
   end
 
+  create_table "tipos_de_operaciones", :force => true do |t|
+    t.string  "nombre"
+    t.string  "codigo"
+    t.string  "metodo_asociado"
+    t.boolean "metodo_de_clase", :default => false
+  end
+
   create_table "tipos_de_prestaciones", :force => true do |t|
     t.string "codigo", :null => false
     t.string "nombre", :null => false
+  end
+
+  create_table "tipos_de_procesos", :force => true do |t|
+    t.string "codigo"
+    t.string "nombre"
+    t.string "modelo_de_datos"
+  end
+
+  create_table "tipos_de_solicitudes", :force => true do |t|
+    t.string   "nombre"
+    t.string   "modelo"
+    t.integer  "user_group_id"
+    t.integer  "creator_id"
+    t.integer  "updater_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "tipos_de_tratamientos", :force => true do |t|
@@ -1384,17 +1502,18 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
   end
 
   create_table "unidades_de_alta_de_datos", :force => true do |t|
-    t.string   "nombre",                           :null => false
-    t.string   "codigo",                           :null => false
-    t.boolean  "inscripcion",   :default => false
-    t.boolean  "facturacion",   :default => false
-    t.boolean  "activa",        :default => true
+    t.string   "nombre",                              :null => false
+    t.string   "codigo",                              :null => false
+    t.boolean  "inscripcion",      :default => false
+    t.boolean  "facturacion",      :default => false
+    t.boolean  "activa",           :default => true
     t.text     "observaciones"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
     t.integer  "efector_id"
+    t.boolean  "proceso_de_datos", :default => false
   end
 
   add_index "unidades_de_alta_de_datos", ["codigo"], :name => "index_unidades_de_alta_de_datos_on_codigo", :unique => true
@@ -1460,6 +1579,7 @@ ActiveRecord::Schema.define(:version => 20140724161750) do
     t.integer  "failed_attempts",        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.boolean  "cuenta_eliminada",       :default => false
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
