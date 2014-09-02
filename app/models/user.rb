@@ -1,15 +1,14 @@
 # -*- encoding : utf-8 -*-
 class User < ActiveRecord::Base
   # Definir esta clase como base para autenticación de usuarios usando Devise
-  devise :database_authenticatable, :registerable, :recoverable, :trackable,
-    :validatable, :timeoutable, :lockable, :confirmable
+  devise :database_authenticatable, :registerable, :recoverable, :trackable, :validatable, :timeoutable, :lockable, :confirmable
 
   # NULLificar blancos
   nilify_blanks
 
   # Seguridad para asignaciones masivas
   attr_accessible :nombre, :apellido, :sexo_id, :fecha_de_nacimiento
-  attr_accessible :email, :password, :password_confirmation, :observaciones
+  attr_accessible :email, :password, :password_confirmation, :observaciones, :cuenta_eliminada
   attr_readonly :observaciones
 
   # Asociaciones
@@ -18,6 +17,9 @@ class User < ActiveRecord::Base
   has_many :user_groups, :through => :user_groups_users
   has_many :unidades_de_alta_de_datos_users
   has_many :unidades_de_alta_de_datos, :through => :unidades_de_alta_de_datos_users
+
+  # No mostrar cuentas de usuario eliminadas
+  default_scope where(:cuenta_eliminada => false)
 
   # Validaciones
   validates_presence_of :nombre, :apellido, :observaciones
