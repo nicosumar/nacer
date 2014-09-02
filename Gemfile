@@ -31,6 +31,7 @@ gem 'capistrano'
 gem 'text'
 gem 'nilify_blanks'
 #gem 'unicode_utils'
+gem "paperclip", "~> 4.1"
 
 # Reports gems
 gem 'odf-report'

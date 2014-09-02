@@ -23,6 +23,7 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :diagnostico
   belongs_to :efector
   belongs_to :estado_de_la_prestacion
+  belongs_to :estado_de_la_prestacion_liquidada, class_name: EstadoDeLaPrestacion
   belongs_to :nomenclador
   belongs_to :prestacion
   has_many :datos_reportables_asociados, :inverse_of => :prestacion_brindada, :order => :id
@@ -715,9 +716,10 @@ class PrestacionBrindada < ActiveRecord::Base
             sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
                   "SET estado_de_la_prestacion_id = 11, \n"+
                   "    estado_de_la_prestacion_liquidada_id = 13, \n"+
-                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo}' \n"+
-                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo}') \n"+
-                  "                                   END \n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo};' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo} ;' \n"+
+                  "                                   END, \n"+
+                  "    updated_at = now() \n"+
                   "FROM vista_global_de_prestaciones_brindadas vpb \n"+
                   "WHERE  vpb.fecha_de_la_prestacion < (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones})\n"+
                   "AND vpb.prestacion_id in (#{prestaciones_ids} ) \n"+

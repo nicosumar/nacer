@@ -14,7 +14,7 @@
     %th Función de Numeración
     %th Reporte - Layout
     %th Accciones
-  = form_for([@concepto_de_facturacion, DocumentoGenerablePorConcepto.new], remote: true) do |f|
+  = form_for([@concepto_de_facturacion, @documento_generable_por_concepto], remote: true) do |f|
     %tr
       %td= f.text_field :orden, size: 1
       %td= f.select :documento_generable_id, @documentos_generables,{include_blank: true}, {class: 'select2', style: "width: 150px", data: {placeholder: 'Seleccione el documento a generar' }}

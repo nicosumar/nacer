@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140811164213) do
+ActiveRecord::Schema.define(:version => 20140826150341) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -601,9 +601,6 @@ ActiveRecord::Schema.define(:version => 20140811164213) do
   end
 
   add_index "efectores", ["cuie"], :name => "efectores_cuie_idx"
-  add_index "efectores", ["cuie"], :name => "efectores_cuie_idx1"
-  add_index "efectores", ["cuie"], :name => "efectores_cuie_idx2"
-  add_index "efectores", ["cuie"], :name => "efectores_cuie_idx3"
   add_index "efectores", ["provincia_id"], :name => "efectores_provincia_id_idx"
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -831,12 +828,16 @@ ActiveRecord::Schema.define(:version => 20140811164213) do
   create_table "liquidaciones_sumar_cuasifacturas", :force => true do |t|
     t.integer  "liquidacion_sumar_id"
     t.integer  "efector_id"
-    t.decimal  "monto_total",                :precision => 15, :scale => 4
+    t.decimal  "monto_total",                         :precision => 15, :scale => 4
     t.string   "numero_cuasifactura"
     t.text     "observaciones"
-    t.datetime "created_at",                                                :null => false
-    t.datetime "updated_at",                                                :null => false
-    t.integer  "concepto_de_facturacion_id",                                :null => false
+    t.datetime "created_at",                                                         :null => false
+    t.datetime "updated_at",                                                         :null => false
+    t.integer  "concepto_de_facturacion_id",                                         :null => false
+    t.string   "cuasifactura_escaneada_file_name"
+    t.string   "cuasifactura_escaneada_content_type"
+    t.integer  "cuasifactura_escaneada_file_size"
+    t.datetime "cuasifactura_escaneada_updated_at"
   end
 
   add_index "liquidaciones_sumar_cuasifacturas", ["efector_id"], :name => "liquidaciones_sumar_cuasifacturas_efector_id_idx"
@@ -864,6 +865,7 @@ ActiveRecord::Schema.define(:version => 20140811164213) do
     t.boolean  "genera_error", :default => false
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
+    t.boolean  "visible",      :default => true
   end
 
   create_table "metodos_de_validacion_prestaciones", :id => false, :force => true do |t|
@@ -884,6 +886,7 @@ ActiveRecord::Schema.define(:version => 20140811164213) do
   end
 
   add_index "migra_anexos", ["id"], :name => "migra_anexos_id_idx", :unique => true
+  add_index "migra_anexos", ["id_subrrogada_foranea"], :name => "migra_anexos_id_subrrogada_foranea_idx"
   add_index "migra_anexos", ["numero_fila"], :name => "migra_anexos_numero_fila_idx"
 
   create_table "migra_modulos", :id => false, :force => true do |t|
@@ -916,7 +919,9 @@ ActiveRecord::Schema.define(:version => 20140811164213) do
     t.integer "id_subrrogada_foranea"
   end
 
+  add_index "migra_prestaciones", ["id_subrrogada_foranea"], :name => "migra_prestaciones_id_subrrogada_foranea_idx"
   add_index "migra_prestaciones", ["numero_fila"], :name => "migra_prestaciones_numero_fila_idx"
+  add_index "migra_prestaciones", ["rural"], :name => "migra_prestaciones_rural_idx"
 
   create_table "migra_prestaciones_liquidadas_nacer", :force => true do |t|
     t.integer "efector_id"
@@ -1495,6 +1500,7 @@ ActiveRecord::Schema.define(:version => 20140811164213) do
     t.integer  "failed_attempts",        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.boolean  "cuenta_eliminada",       :default => false
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

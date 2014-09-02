@@ -1,62 +1,71 @@
 # -*- encoding : utf-8 -*-
-sql_detalle = "select  es.numero numero_de_expediente, e.nombre, \n"+
-              "  (CASE WHEN consolidados.id  is null  THEN 'Cuasifactura N°' ELSE 'Consolidado N°'  END) \"roturlo_cuasi_con\",\n"+
-              "  (CASE WHEN consolidados.id is null  THEN c.numero_cuasifactura ELSE consolidados.numero_de_consolidado END) \"numero\",\n"+
-              "  p.periodo, con.concepto\n"+
-              "from expedientes_sumar es\n"+
-              "  join liquidaciones_sumar l on l.id = es.liquidacion_sumar_id\n"+
-              "  join periodos p on p.id = l.periodo_id\n"+
-              "  join efectores e on e.id = es.efector_id\n"+
-              "  JOIN conceptos_de_facturacion con on con.id = l.concepto_de_facturacion_id \n"+
-              "  LEFT JOIN liquidaciones_sumar_cuasifacturas c on c.liquidacion_sumar_id = l.id  and c.efector_id = e.id\n"+
-              "  LEFT JOIN consolidados_sumar consolidados on consolidados.liquidacion_sumar_id = l.id  and consolidados.efector_id = e.id\n"+
-              "where l.id = ?\n"+
-              "--and e.nombre ilike '%Coordinación Departamental de General Alvear%'\n"+
-              "order by 2,1"
+reporte = DocumentoGenerable.reporte(@liquidacion_sumar, ExpedienteSumar) 
 
-cq_detalle = CustomQuery.buscar(
-{
-  sql: sql_detalle,
-  values: @liquidacion_sumar.id
-})
+case reporte 
+when 'expediente_sumar_bas'
 
-report.use_layout File.join(Rails.root, 'app', 'reports', 'generar_caratulas_expedientes_por_liquidacion.tlf') do |config|
-end
+  sql_detalle = "select  es.numero numero_de_expediente, e.nombre, \n"+
+                "  (CASE WHEN consolidados.id  is null  THEN 'Cuasifactura N°' ELSE 'Consolidado N°'  END) \"roturlo_cuasi_con\",\n"+
+                "  (CASE WHEN consolidados.id is null  THEN c.numero_cuasifactura ELSE consolidados.numero_de_consolidado END) \"numero\",\n"+
+                "  p.periodo, con.concepto\n"+
+                "from expedientes_sumar es\n"+
+                "  join liquidaciones_sumar l on l.id = es.liquidacion_sumar_id\n"+
+                "  join periodos p on p.id = l.periodo_id\n"+
+                "  join efectores e on e.id = es.efector_id\n"+
+                "  JOIN conceptos_de_facturacion con on con.id = l.concepto_de_facturacion_id \n"+
+                "  LEFT JOIN liquidaciones_sumar_cuasifacturas c on c.liquidacion_sumar_id = l.id  and c.efector_id = e.id\n"+
+                "  LEFT JOIN consolidados_sumar consolidados on consolidados.liquidacion_sumar_id = l.id  and consolidados.efector_id = e.id\n"+
+                "where l.id = ?\n"+
+                "--and e.nombre ilike '%Coordinación Departamental de General Alvear%'\n"+
+                "order by 2,1"
 
-report.start_new_page do |page|
-  impar = true
-  i = 0
-  fila = []
-  cq_detalle.each do |det|
-    #agrego la fila a la lista de detalles
-    if impar
-      fila << ({img_cabecera: File.join(Rails.root, 'app', 'assets','images',"cabecera_expedientes.png"),
-                   efector: det.nombre,
-                   cuasi_consolidado: det.numero ,
-                   periodo: det.periodo,
-                   expediente: det.numero_de_expediente,
-                   tipo: det.roturlo_cuasi_con,
-                   concepto: det.concepto
-                 })
-    else #par
-      fila[i].merge!({img_cabecera2: File.join(Rails.root, 'app', 'assets','images',"cabecera_expedientes.png"),
-                           efector2: det.nombre,
-                           cuasi_consolidado2: det.numero ,
-                           periodo2: det.periodo,
-                           expediente2: det.numero_de_expediente,
-                           tipo2: det.roturlo_cuasi_con,
-                           concepto2: det.concepto}
-                      )
-    end #end if
-    impar = not(impar)
-    i += 1 if impar
+  cq_detalle = CustomQuery.buscar(
+  {
+    sql: sql_detalle,
+    values: @liquidacion_sumar.id
+  })
 
-  end #end detalle each
-  i= 1
-  fila.each do |f|
-    page.list(:columna1).add_row do |row|
-      row.values f
-      i +=1 
-    end #end page list
-  end #end each fila
-end
+  report.use_layout File.join(Rails.root, 'app', 'reports', 'generar_caratulas_expedientes_por_liquidacion.tlf') do |config|
+  end
+
+  report.start_new_page do |page|
+    impar = true
+    i = 0
+    fila = []
+    cq_detalle.each do |det|
+      #agrego la fila a la lista de detalles
+      if impar
+        fila << ({img_cabecera: File.join(Rails.root, 'app', 'assets','images',"cabecera_expedientes.png"),
+                     efector: det.nombre,
+                     cuasi_consolidado: det.numero ,
+                     periodo: det.periodo,
+                     expediente: det.numero_de_expediente,
+                     tipo: det.roturlo_cuasi_con,
+                     concepto: det.concepto
+                   })
+      else #par
+        fila[i].merge!({img_cabecera2: File.join(Rails.root, 'app', 'assets','images',"cabecera_expedientes.png"),
+                             efector2: det.nombre,
+                             cuasi_consolidado2: det.numero ,
+                             periodo2: det.periodo,
+                             expediente2: det.numero_de_expediente,
+                             tipo2: det.roturlo_cuasi_con,
+                             concepto2: det.concepto}
+                        )
+      end #end if
+      impar = not(impar)
+      i += 1 if impar
+
+    end #end detalle each
+    i= 1
+    fila.each do |f|
+      page.list(:columna1).add_row do |row|
+        row.values f
+        i +=1 
+      end #end page list
+    end #end each fila
+  end
+
+else
+  raise "No se encontro el reporte especificado para el documento. Reporte: #{reporte}"
+end # end case

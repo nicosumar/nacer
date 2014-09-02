@@ -359,8 +359,7 @@ class LiquidacionSumar < ActiveRecord::Base
         sql:    "UPDATE public.prestaciones_liquidadas \n"+
                 "            SET monto = #{formula}(pl.id), \n"+
                 "                estado_de_la_prestacion_liquidada_id =  #{estado_rechazada}, \n"+
-                "                observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || CAST(E'No cumple con la validacion de \"' || pla.comprobacion || E'\" \\n ' \n"+
-                "                                      as text)\n"+
+                "                observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || 'No cumple con la validacion de \"' || pla.comprobacion || '\" al periodo #{self.periodo.periodo} ;' \n"+
                 "FROM prestaciones_incluidas pi\n"+
                 " JOIN prestaciones_liquidadas pl on pl.prestacion_incluida_id = pi.id\n"+
                 " JOIN prestaciones_liquidadas_advertencias pla on pla.prestacion_liquidada_id = pl.id \n"+
@@ -389,10 +388,10 @@ class LiquidacionSumar < ActiveRecord::Base
         sql:  "UPDATE public.prestaciones_liquidadas \n"+
               "SET monto = #{formula}(pl.id), \n"+
               "    estado_de_la_prestacion_liquidada_id =  #{estado_exceptuada}, \n"+
-              "    observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || CAST(E'No cumple con la validacion de \"' || pla.comprobacion ||E'\" \\n ' \n "+
-              "                         ' Aprobada por regla \"'|| regl.nombre || E'\" \\n' ||\n"+
-              "                         ' Observaciones: ' || COALESCE(regl.observaciones, '')\n"+
-              "                           as text)\n "+
+              "    observaciones_liquidacion = COALESCE( prestaciones_liquidadas.observaciones_liquidacion, '') || 'No cumple con la validacion de \"' || pla.comprobacion ||'\".' \n "+
+              "                         ' Aprobada por regla \"'|| regl.nombre || '\"' ||\n"+
+              "                         ' Observaciones: ' || COALESCE(regl.observaciones, '')||\n"+
+              "                         ';' \n "+
               " from prestaciones_liquidadas_advertencias pla \n "+
               "   join prestaciones_liquidadas pl on pl.id = pla.prestacion_liquidada_id\n "+
               "   join prestaciones_incluidas pi on pi.id = pl.prestacion_incluida_id\n "+
@@ -420,12 +419,17 @@ class LiquidacionSumar < ActiveRecord::Base
     end
   end
 
-  def generar_documentos
-    self.concepto_de_facturacion.generar_documentos(self) 
+  def generar_documentos!
+    begin
+      self.concepto_de_facturacion.generar_documentos!(self)
+    rescue Exception => e
+      logger.warn "Ocurrio un error: " + e.message
+      raise "Ocurrio un error: " + e.message
+    end
   end
 
   def generar_cuasifacturas
-
+=begin
     ActiveRecord::Base.transaction do
 
       estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
@@ -522,6 +526,7 @@ class LiquidacionSumar < ActiveRecord::Base
 
 
     return true
+=end
   end
  
   def vaciar_liquidacion

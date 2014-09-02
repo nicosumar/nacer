@@ -104,49 +104,68 @@ class LiquidacionesSumarController < ApplicationController
     tiempo_proceso = Time.now
 
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    respuesta = {}
+    status = :ok
 
     begin
       @liquidacion_sumar.vaciar_liquidacion
+      respuesta = { :tipo => :ok, :titulo => "La liquidacion se elimino correctamente - Tiempo para vaciar la liquidacion: #{Time.now - tiempo_proceso} segundos" }
     rescue Exception => e
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "No fue posible vaciar la liquidacion. Si las cuasifacturas ya han sido generadas, la liquidación no se puede vaciar. Detalles: #{e.message}" }
-      return
+      respuesta = { :tipo => :error, :titulo => "No fue posible vaciar la liquidacion", mensaje: "Si las cuasifacturas ya han sido generadas, la liquidación no se puede vaciar. Detalles: #{e.message}" }
+      status =  :method_not_allowed
     end
     logger.warn "Tiempo para vaciar la liquidacion: #{Time.now - tiempo_proceso} segundos"
-    redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "La liquidacion se elimino correctamente" }
-
+    
+    respond_to do |format|
+      format.html { redirect_to @liquidacion_sumar, flash: respuesta }
+      format.json { render json: respuesta.to_json, status: status }
+    end
 
   end
 
   def procesar_liquidacion
     tiempo_proceso = Time.now
 
+    respuesta = {}
+    status = :ok
+
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
 
     if @liquidacion_sumar.prestaciones_liquidadas.count > 1
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." }
+      respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." }
+      status = :method_not_allowed
     else
       if @liquidacion_sumar.generar_snapshoot_de_liquidacion
         logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
+        respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
       else
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
+        respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
+        status = :internal_server_error
       end
     end
+
+    respond_to do |format|
+      format.html { redirect_to @liquidacion_sumar, flash: respuesta }
+      format.json { render json: respuesta.to_json, status: status }
+    end
   end
-
-
 
 
   def generar_cuasifacturas
     tiempo_proceso = Time.now
 
-     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    respuesta = {}
+    status = :ok
 
     if @liquidacion_sumar.prestaciones_liquidadas.count == 0
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
+      respuesta = { tipo: :error, titulo: "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
+      status =  :method_not_allowed
     elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
+      respuesta = { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
+      status =  :method_not_allowed
     end
+
       
 =begin
       if @liquidacion_sumar.generar_cuasifacturas
@@ -156,13 +175,22 @@ class LiquidacionesSumarController < ApplicationController
         redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
       end
 =end
-    if @liquidacion_sumar.generar_documentos
-      logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" }
-    else
-      redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
+    begin
+      unless respuesta.present?
+        @liquidacion_sumar.generar_documentos!
+        logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
+        respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
+      end
+    rescue Exception => e
+      logger.warn e.inspect
+      respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas.",
+                     mensaje: e.message }
+      status = :internal_server_error
     end
-    
+      
+    respond_to do |format|
+      format.json { render json: respuesta.to_json, status: status }
+    end
   end
 
   # GET /liquidaciones_sumar/1/efector/1.pdf
@@ -219,25 +247,6 @@ class LiquidacionesSumarController < ApplicationController
         filename:  "detalle_de_prestaciones_#{@liquidacion_sumar.periodo.periodo}_#{@liquidacion_sumar.concepto_de_facturacion.codigo}.xlsx"
       }
       
-    end
-  end
-
-  def prueba_cont
-    #raise 'llala'
-    l = LiquidacionSumar.find(params[:id])
-   
-    res = {
-      tipo: :ok,
-      titulo: "Todo bien",
-      mensaje: "Todo salio bien"
-    }
-
-    sleep 10
-
-    respond_to do |format|
-      format.json do
-        render json: res.to_json
-      end
     end
   end
 

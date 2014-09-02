@@ -45,23 +45,24 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   # Genera los documentos asociados al concepto para una liquidación dada
   # @param  liquidacion [LiquidacionSumar] Objeto de la liquidación en curso
   # 
-  # @return [Boolean] Si pudo generar todos los documentos.
-  def generar_documentos(liquidacion)
+  def generar_documentos!(liquidacion)
 
     documentos_a_generar = self.documentos_generables_por_conceptos.order(:orden)
 
-    ActiveRecord::Base.transaction do
-      documentos_a_generar.each do |dgpc|
-        if dgpc.generar(liquidacion) == false
-          logger.warn "----------------------------------------------------------------------------------------------------------------------------"
-          logger.warn "No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
-          logger.warn "----------------------------------------------------------------------------------------------------------------------------"
-          raise ActiveRecord::Rollback, "No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
-          return false
-        end
-      end # End itera documentos a generar
-    end # End transaction
-    return true
+    begin
+      ActiveRecord::Base.transaction do
+        documentos_a_generar.each do |dgpc|
+          if dgpc.generar(liquidacion) == false
+            logger.warn "----------------------------------------------------------------------------------------------------------------------------"
+            logger.warn "No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
+            logger.warn "----------------------------------------------------------------------------------------------------------------------------"
+            raise "No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
+          end
+        end # End itera documentos a generar
+      end # End transaction
+    rescue Exception => e
+      raise e
+    end
   end
 
 end

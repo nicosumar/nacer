@@ -35,7 +35,6 @@ Nacer::Application.routes.draw do
       post   'procesar_liquidacion', as: :procesar_liquidacion, action: :procesar_liquidacion
       post   'generar_cuasifacturas', as: :generar_cuasifacturas, action: :generar_cuasifacturas
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
-      post   'prueba_cont', as: :prueba_cont, action: :prueba_cont
     end
   end
   resources :reglas

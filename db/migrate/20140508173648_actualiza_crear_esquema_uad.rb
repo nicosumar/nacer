@@ -50,7 +50,7 @@ def change
           existe_prestaciones := 'f'::bool;
           EXECUTE '
             -- Creamos el esquema para la nueva UAD
-            CREATE SCHEMA \"uad_' || NEW.codigo || '\";
+            CREATE SCHEMA 'uad_' || NEW.codigo || ';
 
             -- Crear la tabla local de indexación de términos para búsquedas FTS
             CREATE TABLE uad_' || NEW.codigo || '.busquedas_locales (
@@ -322,7 +322,7 @@ def change
               ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_nomencladores
               FOREIGN KEY (nomenclador_id) REFERENCES nomencladores(id);
             ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-              ADD CONSTRAINT fk_uad_' || NEW.codigo || '.prestaciones_brindadas
+              ADD CONSTRAINT fk_uad_' || NEW.codigo || '_prestaciones_brindadas
               FOREIGN KEY (estado_de_la_prestacion_liquidada_id) REFERENCES estados_de_las_prestaciones(id);
             
             --Crear indices para prestaciones brindadas

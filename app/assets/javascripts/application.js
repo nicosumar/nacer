@@ -20,6 +20,7 @@
 
 $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
+  $('input[type="submit"]').attr("data-disable-with", "Por favor, espere...");
 });
 
 //TODO: Para browsers mas viejos usar "void 0" en lugar de la keyword undefined. Testearlo despues

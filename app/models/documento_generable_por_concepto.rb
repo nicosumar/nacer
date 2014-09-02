@@ -33,6 +33,12 @@ class DocumentoGenerablePorConcepto < ActiveRecord::Base
     end
   end
 
+  # 
+  # Devuelve el reporte para un Documento Generable segun su liquidación
+  # @param liquidacion [LiquidacionSumar] [Liquidacion refereida]
+  # @param documento_generable [DocumentoGenerable] [La clase que se corresponde al documento generable]
+  # 
+  # @return [String] [string con el documento generable]
   def self.reporte(liquidacion, documento_generable)
     DocumentoGenerablePorConcepto.where(concepto_de_facturacion_id: liquidacion.concepto_de_facturacion, documento_generable_id: documento_generable).first.report_layout
   end

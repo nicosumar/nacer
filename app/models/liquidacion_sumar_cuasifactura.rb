@@ -10,8 +10,12 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
 
   attr_accessible :monto_total, :numero_cuasifactura, :observaciones, :liquidacion_sumar, :efector, :liquidacion_id, :efector_id
   attr_accessible :concepto_de_facturacion, :concepto_de_facturacion_id
+  attr_accessible :cuasifactura_escaneada
 
   validates :concepto_de_facturacion, presence: true
+
+  has_attached_file :cuasifactura_escaneada, :styles => { :medium => "300x300>", :thumb => "100x100>" }, :default_url => "/images/:style/missing.png"
+  validates_attachment_content_type :cuasifactura_escaneada, :content_type => /\Aimage\/.*\Z/
   
   # 
   # Genera las cuasifacturas desde una liquidación dada

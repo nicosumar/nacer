@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  $("#documento_generable_por_concepto_genera_numeracion").attr('checked', false);
+  //$("#documento_generable_por_concepto_genera_numeracion").attr('checked', false);
 
   //Creo el modal
   $(function() {
@@ -17,7 +17,6 @@ $(document).ready(function(){
   });
 
   $("#documento_generable_por_concepto_genera_numeracion").on("click", function(e){
-    //Si checkea comunitaria, desactivo la busqueda de afiliados
     $("#documento_generable_por_concepto_funcion_de_numeracion").prop('disabled',$(this).is(':checked') == "1" ? false : true);
     $("#documento_generable_por_concepto_funcion_de_numeracion").val('');
   });

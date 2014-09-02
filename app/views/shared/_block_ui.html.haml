@@ -2,10 +2,10 @@
 = javascript_include_tag 'block_ui_sumar.js'
 
 #blockUI_div{style: 'display: none; '}
-  = image_tag( 'spinner.gif', id: 'blockUI_div_spinner')
+  = image_tag( 'spinner.gif', id: 'blockUI_div_spinner', size: "56x56")
   %br
   %h2{id: 'blockUI_div_titulo'}
   %br
-  %h2{id: 'blockUI_div_mensaje'}
+  #blockUI_div_mensaje
   %br
   = button_tag('Cerrar', type: 'button', id: "blockUI_div_aceptar", name: 'blockUI_div_aceptar')

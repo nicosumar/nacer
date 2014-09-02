@@ -20,7 +20,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Sanchez de Bustamante 1330",
       provincia: Provincia.find(1), #caba
       telefonos: "4962-9247 / 9248 / 9280 Guardia: 4962-9232",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "C09307",
@@ -28,7 +29,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Manuel A. Montes de Oca 40",
       provincia: Provincia.find(1), #caba
       telefonos: "4307-5842/ 5844 Guardia: 4307-5442 / 4300-1700",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "C86001",
@@ -36,7 +38,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Combate de los Pozos 1881",
       provincia: Provincia.find(1), #caba
       telefonos: "4941-8702",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "B12279",
@@ -44,7 +47,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "MIRAFLORES N 125",
       provincia: Provincia.find(2), #Buenos Aires
       telefonos: "",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "B08440",
@@ -52,7 +56,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Pte. Illia s/n y Marconi - El Palomar (1684)",
       provincia: Provincia.find(2), #Buenos Aires
       telefonos: "(011) 4469-9300 - FAX: (011) 4654-7982",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "B08573",
@@ -60,7 +65,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "CASTELLI 2450",
       provincia: Provincia.find(2), #Buenos Aires
       telefonos: "",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "B12182",
@@ -68,7 +74,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "14 n° 1651",
       provincia: Provincia.find(2), #Buenos Aires
       telefonos: "0221-4535901 al 10/912 /3",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "B12286",
@@ -76,7 +83,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Av. Calchaquí N° 5401 e/Lope de Vega y Rastrador Fournier",
       provincia: Provincia.find(6), # Buenos Aires
       telefonos: "011-42107095/7096/7089",
-      integrante: false 
+      integrante: false ,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "X01429",
@@ -84,7 +92,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "BAJADA PUCARA 1900",
       provincia: Provincia.find(4), # Córdoba
       telefonos: "(0351)458-6438",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "W20108",
@@ -92,7 +101,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Bolivar 1334",
       provincia: Provincia.find(5), # Corrientes
       telefonos: "(0351)458-6438",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "E06492",
@@ -100,7 +110,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "LA PAZ 435",
       provincia: Provincia.find(6), # Entre Ríos
       telefonos: "0343 - 4230460/4234377/4217366",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "A03593",
@@ -108,7 +119,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Virasoro 1855",
       provincia: Provincia.find(13), # Santa  Fe
       telefonos: "",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "S01296",
@@ -116,7 +128,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Mendoza 4151",
       provincia: Provincia.find(13), # Santa  Fe
       telefonos: "4505900/63/12/49",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "T01316",
@@ -124,7 +137,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Pje. Hungria 700",
       provincia: Provincia.find(15), # Tucuman
       telefonos: "420 5341",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       },
       {
       cuie: "Q06391",
@@ -132,7 +146,8 @@ class AddExternoToEfectores < ActiveRecord::Migration
       domicilio: "Buenos Aires 421- Ciudad Nqn",
       provincia: Provincia.find(21), # Neuquen
       telefonos: "0299-4490800",
-      integrante: false
+      integrante: false,
+      area_de_prestacion_id: 1
       }])
   end
 

@@ -10,6 +10,7 @@ class DocumentosGenerablesPorConceptosController < ApplicationController
     @documentos_generables_por_conceptos = @concepto_de_facturacion.documentos_generables_por_conceptos.includes(:documento_generable, :tipo_de_agrupacion).order(:orden)
     @documentos_generables = DocumentoGenerable.all.collect {|d| [d.nombre, d.id]}
     @tipos_de_agrupacion = TipoDeAgrupacion.all.collect {|t| [t.nombre, t.id]}
+    @documento_generable_por_concepto = DocumentoGenerablePorConcepto.new
   end
 
   # POST /documentos_generables_por_conceptos.js

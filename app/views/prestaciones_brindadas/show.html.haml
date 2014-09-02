@@ -17,6 +17,11 @@
     - if ["R", "P", "L", "V"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-ok.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %ul
+            %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+            - if @prestacion_brindada.observaciones_de_liquidacion.present?
+              %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
     - elsif ["I", "F"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-advertencia.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
@@ -31,16 +36,28 @@
                 - dra.advertencias.each do |attr, advs|
                   - advs.each do |msj|
                     %li= msj
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %ul
+            %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+            - if @prestacion_brindada.observaciones_de_liquidacion.present?
+              %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
     - elsif ["U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-advertencia.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
-        %ul
-          %li La prestación no podrá ser facturada.
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %ul
+            %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+            - if @prestacion_brindada.observaciones_de_liquidacion.present?
+              %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
     - else
       #info.infobox-error.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
         %ul
           %li= @prestacion_brindada.mensaje_de_la_baja
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+          - if @prestacion_brindada.observaciones_de_liquidacion.present?
+            %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
 
   - if @prestacion_brindada.clave_de_beneficiario
     %h3 Clave única de beneficiario asociada a la prestación

@@ -41,7 +41,6 @@
           %span.field_value= @liquidacion_sumar.plantilla_de_reglas.nombre
         - else
           %span.field_value No
-      -#%td{colspan: 2}= button_to 'Ver plantilla', @liquidacion_sumar.plantilla_de_reglas, method: "get" unless @liquidacion_sumar.plantilla_de_reglas.blank?
     %tr
       %td
         %b Grupo de Efectores:
@@ -50,12 +49,11 @@
     %tr
       %td{colspan: 4} &nbsp;
   #action-links{style: "float:right; margin-right: 120px;"}
-    = link_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :delete
+    = link_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar, format: 'json'), method: :delete, remote: true
     = link_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
-    = link_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar), method: :post
-    = link_to "Generar cuasifacturas",  generar_cuasifacturas_liquidacion_sumar_path(@liquidacion_sumar.id), method: :post
+    = link_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar, format: 'json'), method: :post, remote: true
+    = link_to "Generar cuasifacturas",  generar_cuasifacturas_liquidacion_sumar_path(@liquidacion_sumar.id, format: 'json'), method: :post, remote: true
     = link_to 'Generar expedientes', generar_caratulas_expedientes_por_liquidacion_expediente_sumar_path(@liquidacion_sumar.id, format: 'pdf'), method: "get"
-    = link_to "prueba", prueba_cont_liquidacion_sumar_path(@liquidacion_sumar, format: 'json'), method: :post, remote: true, id:'prueba', data: {block_ui: {id: @liquidacion_sumar.id} }
   %br
   %br
   %br

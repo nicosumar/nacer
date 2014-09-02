@@ -55,7 +55,7 @@ class LiquidacionesInformesController < ApplicationController
     @liquidacion_informe = LiquidacionInforme.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html # show.html.haml
       format.json { render json: @liquidacion_informe }
     end
   end
@@ -76,7 +76,7 @@ class LiquidacionesInformesController < ApplicationController
         aprobado = params[:aprobar] == 'true' ? true : false
         cuasifactura = nil
         expediente = nil
-        
+
         # Si deberia indicar el numero de cuasifactura
         if params.has_key? :numero_de_expediente
           if params[:numero_de_expediente].present?
@@ -91,11 +91,15 @@ class LiquidacionesInformesController < ApplicationController
         if params.has_key? :numero_de_cuasifactura
           if params[:numero_de_cuasifactura].present?
             cuasifactura = params[:numero_de_cuasifactura]
+            cuasi = @liquidacion_informe.liquidacion_sumar_cuasifactura
+            cuasi.cuasifactura_escaneada = params[:cuasifactura_escaneada]
+            cuasi.save!
           else
             raise ActiveRecord::Rollback, "Debe indicar el numero de cuasifactura"
             render action: "edit" 
           end
         end
+        
         @liquidacion_informe.generar_anexos!(cuasifactura, expediente, aprobado)
         
         redirect_to @liquidacion_informe, :flash => { :tipo => :ok, :titulo => "El informe fue generado correctamente" } 
