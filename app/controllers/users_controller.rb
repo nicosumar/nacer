@@ -15,8 +15,8 @@ class UsersController < Devise::RegistrationsController
       return
     end
 
-    @new_users = User.where(:authorized => false).order("id DESC")
-    @users = User.where(:authorized => true).order("last_sign_in_at DESC")
+    @new_users = User.no_eliminado.where(:authorized => false).order("id DESC")
+    @users = User.no_eliminado.where(:authorized => true).order("current_sign_in_at DESC NULLS LAST")
   end
 
   # GET /users/sign_up
@@ -53,7 +53,7 @@ class UsersController < Devise::RegistrationsController
 
   # GET /users/:id/edit
   def admin_edit
-    @user = User.unscoped.find(params[:id], :include => [:user_groups, :sexo])
+    @user = User.find(params[:id], :include => [:user_groups, :sexo])
     @user_groups = UserGroup.find(:all).collect{ |ug| [ug.user_group_description, ug.id] }
     @user_group_ids = @user.user_groups.collect{ |ug| ug.id }
     @unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find(:all).collect{ |uad| [uad.nombre, uad.id] }
@@ -63,7 +63,7 @@ class UsersController < Devise::RegistrationsController
   # PUT /users/:id
   def admin_update
     # Obtener el usuario
-    user = User.unscoped.find(params[:id], :include => [:user_groups, :unidades_de_alta_de_datos])
+    user = User.find(params[:id], :include => [:user_groups, :unidades_de_alta_de_datos])
 
     # Verificar si se autorizó al usuario a iniciar sesión y registrar la hora y el administrador que autoriza
     if !user.authorized? && params[:user][:authorized] == "1"
@@ -94,7 +94,7 @@ class UsersController < Devise::RegistrationsController
     user.user_groups = UserGroup.find((params[:user][:user_group_ids]).reject(&:blank?) || [])
     user.unidades_de_alta_de_datos = UnidadDeAltaDeDatos.find((params[:user][:unidad_de_alta_de_datos_ids]).reject(&:blank?) || [])
 
-    redirect_to edit_user_path(user),
+    redirect_to users_path,
       :flash => {
         :tipo => :ok,
         :titulo => 'Las autorizaciones de la cuenta de usuario se actualizaron correctamente.'
