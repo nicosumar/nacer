@@ -357,100 +357,37 @@ ActiveRecord::Base.connection.execute <<-SQL
                 CREATE TABLE uad_' || NEW.codigo || '.procesos_de_datos_externos (
                   id integer NOT NULL,
                   tipo_de_proceso_id integer NOT NULL,
-                  created_at timestamp without time zone,
-                  updated_at timestamp without time zone,
+                  archivo_de_datos_file_name character varying (255) NOT NULL,
+                  archivo_de_datos_content_type character varying (255),
+                  archivo_de_datos_file_size integer,
+                  archivo_de_datos_updated_at timestamp without time zone,
+                  hash_de_archivo character varying (255) NOT NULL,
+                  proceso_solicitado timestamp without time zone,
+                  proceso_iniciado timestamp without time zone,
+                  proceso_finalizado timestamp without time zone,
+                  notificar_por_email boolean,
                   creator_id integer,
-                  updater_id integer
-                );
-
-                -- Crear la secuencia que genera los identificadores de la tabla de prestaciones
-                CREATE SEQUENCE uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq;
-                ALTER SEQUENCE uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq
-                  OWNED BY uad_' || NEW.codigo || '.prestaciones_brindadas.id;
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-                  ALTER COLUMN id
-                    SET DEFAULT nextval(''uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq''::regclass);
-
-                -- Clave primaria para la tabla de prestaciones
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-                  ADD CONSTRAINT uad_' || NEW.codigo || '_prestaciones_brindadas_pkey PRIMARY KEY (id);
-
-                -- Crear triggers para actualizaciones de datos relacionadas con las prestaciones
-                CREATE TRIGGER trg_uad_' || NEW.codigo || '_prestaciones_fts
-                  AFTER INSERT OR DELETE OR UPDATE ON uad_' || NEW.codigo || '.prestaciones_brindadas
-                  FOR EACH ROW EXECUTE PROCEDURE prestaciones_brindadas_fts_trigger();
-
-                -- Restricciones de clave foránea para la tabla de prestaciones
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_estados
-                  FOREIGN KEY (estado_de_la_prestacion_id) REFERENCES estados_de_las_prestaciones(id);
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_efectores
-                  FOREIGN KEY (efector_id) REFERENCES efectores(id);
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_prestaciones
-                  FOREIGN KEY (prestacion_id) REFERENCES prestaciones(id);
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_diagnosticos
-                  FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id);
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_nomencladores
-                  FOREIGN KEY (nomenclador_id) REFERENCES nomencladores(id);
-
-                -- Crear la tabla para almacenar los atributos adicionales (datos reportables)
-                CREATE TABLE uad_' || NEW.codigo || '.datos_reportables_asociados (
-                  id integer NOT NULL,
-                  prestacion_brindada_id integer NOT NULL,
-                  dato_reportable_requerido_id integer NOT NULL,
-                  valor_integer integer,
-                  valor_big_decimal numeric(15,4),
-                  valor_date date,
-                  valor_string text,
+                  updater_id integer,
                   created_at timestamp without time zone,
-                  updated_at timestamp without time zone,
-                  creator_id integer,
-                  updater_id integer
+                  updated_at timestamp without time zone
                 );
 
-                -- Crear la secuencia que genera los identificadores de la tabla de datos reportables asociados
-                CREATE SEQUENCE uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq;
-                ALTER SEQUENCE uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq
-                  OWNED BY uad_' || NEW.codigo || '.datos_reportables_asociados.id;
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
+                -- Crear la secuencia que genera los identificadores de la tabla de procesos
+                CREATE SEQUENCE uad_' || NEW.codigo || '.procesos_de_datos_externos_id_seq;
+                ALTER SEQUENCE uad_' || NEW.codigo || '.procesos_de_datos_externos_id_seq
+                  OWNED BY uad_' || NEW.codigo || '.procesos_de_datos_externos.id;
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.procesos_de_datos_externos
                   ALTER COLUMN id
-                    SET DEFAULT nextval(''uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq''::regclass);
+                    SET DEFAULT nextval(''uad_' || NEW.codigo || '.procesos_de_datos_externos_id_seq''::regclass);
 
-                -- Clave primaria para la tabla de datos reportables asociados
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
-                  ADD CONSTRAINT uad_' || NEW.codigo || '_datos_reportables_asociados_pkey PRIMARY KEY (id);
+                -- Clave primaria para la tabla de procesos
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.procesos_de_datos_externos
+                  ADD CONSTRAINT uad_' || NEW.codigo || '_procesos_de_datos_externos_pkey PRIMARY KEY (id);
 
-                -- Restricciones de clave foránea para la tabla de datos reportables asociados
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_prestaciones_brindadas
-                  FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEW.codigo || '.prestaciones_brindadas(id);
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_datos_reportables_requeridos
-                  FOREIGN KEY (dato_reportable_requerido_id) REFERENCES datos_reportables_requeridos(id);
-
-                -- Crear la tabla para almacenar los métodos de validación fallados por las prestaciones brindadas
-                CREATE TABLE uad_' || NEW.codigo || '.metodos_de_validacion_fallados (
-                  prestacion_brindada_id integer NOT NULL,
-                  metodo_de_validacion_id integer NOT NULL
-                );
-
-                -- Restricciones de clave foránea para la tabla de métodos de validación fallados
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_fallados
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_mm_vv_pp_bb_prestaciones_brindadas
-                  FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEW.codigo || '.prestaciones_brindadas(id);
-                ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_fallados
-                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_mm_vv_pp_bb_metodos_de_validacion
-                  FOREIGN KEY (metodo_de_validacion_id) REFERENCES public.metodos_de_validacion(id);
-
-                -- Trigger para evitar duplicaciones en la tabla de prestaciones brindadas
-                CREATE TRIGGER trg_uad_' || NEW.codigo || '_antes_de_cambiar_prestacion_brindada
-                  BEFORE INSERT OR UPDATE ON uad_' || NEW.codigo || '.prestaciones_brindadas
-                  FOR EACH ROW EXECUTE PROCEDURE verificar_duplicacion_de_prestaciones();';
-
+                -- Restricciones de clave foránea para la tabla de procesos
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.procesos_de_datos_externos
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_dd_ee_tipos_de_procesos
+                  FOREIGN KEY (tipo_de_proceso_id) REFERENCES tipos_de_procesos(id);';
             END IF;
 
             RETURN NEW;
