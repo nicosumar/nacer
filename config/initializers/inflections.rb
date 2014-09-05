@@ -30,7 +30,7 @@ end
 ActiveSupport::Inflector.inflections do |inflect|
 
   inflect.clear(:all)
-  
+
   inflect.plural(/·([A-Z]|_| |$)/, '\1')
   inflect.plural(/([acefgikoptuw])([A-Z]|_| |$)/, '\1s\2')
   inflect.plural(/z([A-Z]|_| |$)/, 'ces\1')
@@ -60,7 +60,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("User·Group·User·", "UserGroupsUsers")
   inflect.irregular("ability", "abilities·")
   inflect.irregular("ability·", "abilities")
-  
+
   # Plurales no regulares para clases y objetos
 
   inflect.irregular("convenio_de_gestion", "convenios·_de·_gestion·")
@@ -312,7 +312,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("liquidacion·_sumar·_cuasifactura·_detalle·", "liquidaciones_sumar_cuasifacturas_detalles")
   inflect.irregular("LiquidacionSumarCuasifacturaDetalle", "Liquidaciones·Sumar·Cuasifacturas·Detalles·")
   inflect.irregular("Liquidacion·Sumar·Cuasifactura·Detalle·", "LiquidacionesSumarCuasifacturasDetalles")
-  # Estados de los procesos 
+  # Estados de los procesos
   inflect.irregular("estado_del_proceso", "estados·_de·_los·_procesos·")
   inflect.irregular("estado·_del·_proceso·", "estados_de_los_procesos")
   inflect.irregular("EstadoDelProceso", "Estados·De·Los·Procesos·")
@@ -337,7 +337,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("consolidado·_sumar·_detalle·", "consolidados_sumar_detalles")
   inflect.irregular("ConsolidadoSumarDetalle", "Consolidados·Sumar·Detalles·")
   inflect.irregular("Consolidado·Sumar·Detalle·", "ConsolidadosSumarDetalles")
-    
+
   # UAD (unidad de alta de datos)
   inflect.irregular("uad_nombre", "uad·_nombres·")
   inflect.irregular("uad·_nombre·", "uad_nombre")
@@ -416,7 +416,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("TipoDeProceso", "Tipos·De·Procesos·")
   inflect.irregular("Tipo·De·Proceso·", "TiposDeProcesos")
 
-  # Tipos de procesos
+  # Procesos de importación de datos externos
   inflect.irregular("proceso_de_datos_externos", "procesos·_de·_datos·_externos·")
   inflect.irregular("proceso·_de·_datos_externos·", "procesos_de_datos_externos")
   inflect.irregular("ProcesoDeDatosExternos", "Procesos·De·Datos·Externos·")

@@ -1,15 +1,16 @@
 # -*- encoding : utf-8 -*-
 
 # Trigger que modifica la estructura del esquema asociado a la UAD, incorporando las tablas necesarias
-ActiveRecord::Base.connection.execute "
-  DROP FUNCTION crear_esquema_para_uad();
-  CREATE FUNCTION crear_esquema_para_uad()
+ActiveRecord::Base.connection.execute <<-SQL
+
+  CREATE OR REPLACE FUNCTION crear_esquema_para_uad()
     RETURNS trigger AS
   $BODY$
           DECLARE
             existe_uad bool;
             existe_novedades bool;
             existe_prestaciones bool;
+            existe_procesos bool;
           BEGIN
             SELECT COUNT(*) > 0
               FROM information_schema.schemata
@@ -20,6 +21,7 @@ ActiveRecord::Base.connection.execute "
             IF NOT existe_uad THEN
               existe_novedades := 'f'::bool;
               existe_prestaciones := 'f'::bool;
+              existe_procesos := 'f'::bool;
               EXECUTE '
                 -- Creamos el esquema para la nueva UAD
                 CREATE SCHEMA uad_' || NEW.codigo || ';
@@ -347,6 +349,110 @@ ActiveRecord::Base.connection.execute "
                   FOR EACH ROW EXECUTE PROCEDURE verificar_duplicacion_de_prestaciones();';
 
             END IF;
+
+            IF NEW.procesos_de_datos AND NOT existe_procesos THEN
+              EXECUTE '
+
+                -- Crear la tabla para almacenar las procesos de importación de datos externos realizados
+                CREATE TABLE uad_' || NEW.codigo || '.procesos_de_datos_externos (
+                  id integer NOT NULL,
+                  tipo_de_proceso_id integer NOT NULL,
+                  created_at timestamp without time zone,
+                  updated_at timestamp without time zone,
+                  creator_id integer,
+                  updater_id integer
+                );
+
+                -- Crear la secuencia que genera los identificadores de la tabla de prestaciones
+                CREATE SEQUENCE uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq;
+                ALTER SEQUENCE uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq
+                  OWNED BY uad_' || NEW.codigo || '.prestaciones_brindadas.id;
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+                  ALTER COLUMN id
+                    SET DEFAULT nextval(''uad_' || NEW.codigo || '.prestaciones_brindadas_id_seq''::regclass);
+
+                -- Clave primaria para la tabla de prestaciones
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+                  ADD CONSTRAINT uad_' || NEW.codigo || '_prestaciones_brindadas_pkey PRIMARY KEY (id);
+
+                -- Crear triggers para actualizaciones de datos relacionadas con las prestaciones
+                CREATE TRIGGER trg_uad_' || NEW.codigo || '_prestaciones_fts
+                  AFTER INSERT OR DELETE OR UPDATE ON uad_' || NEW.codigo || '.prestaciones_brindadas
+                  FOR EACH ROW EXECUTE PROCEDURE prestaciones_brindadas_fts_trigger();
+
+                -- Restricciones de clave foránea para la tabla de prestaciones
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_estados
+                  FOREIGN KEY (estado_de_la_prestacion_id) REFERENCES estados_de_las_prestaciones(id);
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_efectores
+                  FOREIGN KEY (efector_id) REFERENCES efectores(id);
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_prestaciones
+                  FOREIGN KEY (prestacion_id) REFERENCES prestaciones(id);
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_diagnosticos
+                  FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id);
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_nomencladores
+                  FOREIGN KEY (nomenclador_id) REFERENCES nomencladores(id);
+
+                -- Crear la tabla para almacenar los atributos adicionales (datos reportables)
+                CREATE TABLE uad_' || NEW.codigo || '.datos_reportables_asociados (
+                  id integer NOT NULL,
+                  prestacion_brindada_id integer NOT NULL,
+                  dato_reportable_requerido_id integer NOT NULL,
+                  valor_integer integer,
+                  valor_big_decimal numeric(15,4),
+                  valor_date date,
+                  valor_string text,
+                  created_at timestamp without time zone,
+                  updated_at timestamp without time zone,
+                  creator_id integer,
+                  updater_id integer
+                );
+
+                -- Crear la secuencia que genera los identificadores de la tabla de datos reportables asociados
+                CREATE SEQUENCE uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq;
+                ALTER SEQUENCE uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq
+                  OWNED BY uad_' || NEW.codigo || '.datos_reportables_asociados.id;
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
+                  ALTER COLUMN id
+                    SET DEFAULT nextval(''uad_' || NEW.codigo || '.datos_reportables_asociados_id_seq''::regclass);
+
+                -- Clave primaria para la tabla de datos reportables asociados
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
+                  ADD CONSTRAINT uad_' || NEW.codigo || '_datos_reportables_asociados_pkey PRIMARY KEY (id);
+
+                -- Restricciones de clave foránea para la tabla de datos reportables asociados
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_prestaciones_brindadas
+                  FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEW.codigo || '.prestaciones_brindadas(id);
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.datos_reportables_asociados
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_dd_rr_aa_datos_reportables_requeridos
+                  FOREIGN KEY (dato_reportable_requerido_id) REFERENCES datos_reportables_requeridos(id);
+
+                -- Crear la tabla para almacenar los métodos de validación fallados por las prestaciones brindadas
+                CREATE TABLE uad_' || NEW.codigo || '.metodos_de_validacion_fallados (
+                  prestacion_brindada_id integer NOT NULL,
+                  metodo_de_validacion_id integer NOT NULL
+                );
+
+                -- Restricciones de clave foránea para la tabla de métodos de validación fallados
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_fallados
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_mm_vv_pp_bb_prestaciones_brindadas
+                  FOREIGN KEY (prestacion_brindada_id) REFERENCES uad_' || NEW.codigo || '.prestaciones_brindadas(id);
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.metodos_de_validacion_fallados
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_mm_vv_pp_bb_metodos_de_validacion
+                  FOREIGN KEY (metodo_de_validacion_id) REFERENCES public.metodos_de_validacion(id);
+
+                -- Trigger para evitar duplicaciones en la tabla de prestaciones brindadas
+                CREATE TRIGGER trg_uad_' || NEW.codigo || '_antes_de_cambiar_prestacion_brindada
+                  BEFORE INSERT OR UPDATE ON uad_' || NEW.codigo || '.prestaciones_brindadas
+                  FOR EACH ROW EXECUTE PROCEDURE verificar_duplicacion_de_prestaciones();';
+
+            END IF;
+
             RETURN NEW;
           END;
         $BODY$
@@ -355,4 +461,5 @@ ActiveRecord::Base.connection.execute "
 
   ALTER FUNCTION crear_esquema_para_uad()
     OWNER TO nacer_adm;
-"
+
+SQL
