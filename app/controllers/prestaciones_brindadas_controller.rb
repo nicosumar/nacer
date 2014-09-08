@@ -16,18 +16,25 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Verificar si se solicitó el historial de un beneficiario en particular o todas las prestaciones registradas en esta UAD
     if params[:clave_de_beneficiario].present?
-      # Obtener el afiliado o la novedad asociadas a la prestación
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => params[:clave_de_beneficiario],
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
-          :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["I", "R", "P", "Z", "U", "S"]),
+          :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("A")
         ).first
-      if not @beneficiario
+      if not @beneficiario.present?
+        @beneficiario =
+          NovedadDelAfiliado.where(
+            :clave_de_beneficiario => params[:clave_de_beneficiario],
+            :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
+            :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("M")
+          ).first
+      end
+      if not @beneficiario.present?
         @beneficiario = Afiliado.find_by_clave_de_beneficiario(params[:clave_de_beneficiario])
       end
 
-      if @beneficiario.nil?
+      if not @beneficiario.present?
         redirect_to(
           root_url,
           :flash => {:tipo => :error, :titulo => "La petición no es válida",
@@ -71,10 +78,22 @@ class PrestacionesBrindadasController < ApplicationController
         @descripcion_del_estado = EstadoDeLaPrestacion.find(@estado_de_la_prestacion_id).nombre
 
         # Obtener las prestaciones filtradas de acuerdo con el parámetro
-        @prestaciones_brindadas =
-          PrestacionBrindada.con_estado(@estado_de_la_prestacion_id).paginate(:page => params[:page], :per_page => 20,
-            :include => [:prestacion, :diagnostico], :order => "updated_at DESC"
-          )
+        if @estado_de_la_prestacion_id == 3 # Registradas, más todas las que tienen advertencias pero no son visibles
+          @prestaciones_brindadas =
+            PrestacionBrindada.sin_advertencias.paginate(:page => params[:page], :per_page => 20,
+              :include => [:prestacion, :diagnostico], :order => "prestaciones_brindadas.updated_at DESC"
+            )
+        elsif @estado_de_la_prestacion_id == 2 # Con advertencias, pero sólo si son visibles
+          @prestaciones_brindadas =
+            PrestacionBrindada.con_advertencias_visibles.paginate(:page => params[:page], :per_page => 20,
+              :include => [:prestacion, :diagnostico], :order => "prestaciones_brindadas.updated_at DESC"
+            )
+        else
+          @prestaciones_brindadas =
+            PrestacionBrindada.con_estado(@estado_de_la_prestacion_id).paginate(:page => params[:page], :per_page => 20,
+              :include => [:prestacion, :diagnostico], :order => "prestaciones_brindadas.updated_at DESC"
+            )
+        end
       end
     end
 
@@ -112,18 +131,22 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-# TODO: cleanup
-#    # Verificar si hay advertencias
-#    @prestacion_brindada.hay_advertencias?
-
     # Obtener el afiliado o la novedad asociadas a la prestación
     @beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
-        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["I", "R", "P", "Z", "U", "S"]),
+        :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("A")
       ).first
-    if not @beneficiario
+    if not @beneficiario.present?
+      @beneficiario =
+        NovedadDelAfiliado.where(
+          :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
+          :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("M")
+        ).first
+    end
+    if not @beneficiario.present?
       @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
     end
 
@@ -193,21 +216,39 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
-          :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["I", "R", "P", "Z", "U", "S"]),
+          :tipo_de_novedad_id => TipoDeNovedad.find_by_codigo("A")
         ).first
-      if !@beneficiario
+      if not @beneficiario.present?
+        @beneficiario =
+          NovedadDelAfiliado.where(
+            :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
+            :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
+            :tipo_de_novedad_id => TipoDeNovedad.find_by_codigo("M")
+          ).first
+      end
+      if not @beneficiario.present?
         @beneficiario =
           Afiliado.find_by_clave_de_beneficiario(
             params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]
           )
       end
 
-      if !@beneficiario
+      if not @beneficiario.present?
         redirect_to(
           root_url,
           :flash => {:tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
+        return
+      end
+
+      if @beneficiario.is_a?(NovedadDelAfiliado) && ["I", "Z", "U", "S"].member?(@beneficiario.estado_de_la_novedad.codigo)
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "Empadronamiento incorrecto o inválido",
+            :mensaje => "No se pueden registrar prestaciones a beneficiarios que poseen una inscripción rechazada, anulada, o con datos obligatorios incompletos. Verifique y corrija la situación de registro del beneficiario o de la beneficiaria en el padrón antes de intentar registrar la prestación."
           }
         )
         return
@@ -281,35 +322,29 @@ class PrestacionesBrindadasController < ApplicationController
 
     @diagnosticos = []
 
-# TODO: cleanup, no se utiliza más, solo verificaremos actividad del beneficiario y vigencia para mostrar la advertencia en
-# pantalla pero son advertencias que no se persisten en la base de datos ya que son verificadas en el momento de la liquidación
-#    # Mostrar las advertencias que se puedan haber generado en la selección de efector y fecha
-#    if @prestacion_brindada.hay_advertencias?
-#      flash[:tipo] = :advertencia
-#      flash[:titulo] = "Advertencia"
-#      flash[:mensaje] = @prestacion_brindada.advertencias[:base]
-#    end
+    # Modificado: 21/07/2014 - Eliminamos las advertencias por pantalla para evitar que los usuarios dejen de registrar
+    # las prestaciones brindadas. La idea es que se cargue todo, independientemente de lo que se liquide después.
 
     # Mostrar advertencias en pantalla si la prestación ya está vencida o el beneficiario no está activo
-    if !@prestacion_brindada.beneficiario_activo?
-      flash.now[:tipo] = :advertencia
-      flash.now[:titulo] = "Advertencia"
-      if @beneficiario.sexo.codigo == "F"
-        flash.now[:mensaje] = ["La beneficiaria no se encontraba activa a la fecha de la prestación"]
-      else
-        flash.now[:mensaje] = ["El beneficiario no se encontraba activo a la fecha de la prestación"]
-      end
-    end
-
-    if !@prestacion_brindada.prestacion_vigente?
-      if flash.now[:tipo].present?
-        flash.now[:mensaje] << "La prestación se encuentra vencida"
-      else
-        flash.now[:tipo] = :advertencia
-        flash.now[:titulo] = "Advertencia"
-        flash.now[:mensaje] = ["La prestación se encuentra vencida"]
-      end
-    end
+#    if !@prestacion_brindada.beneficiario_activo?
+#      flash.now[:tipo] = :advertencia
+#      flash.now[:titulo] = "Advertencia"
+#      if @beneficiario.sexo.codigo == "F"
+#        flash.now[:mensaje] = ["La beneficiaria no se encontraba activa a la fecha de la prestación"]
+#      else
+#        flash.now[:mensaje] = ["El beneficiario no se encontraba activo a la fecha de la prestación"]
+#      end
+#    end
+#
+#    if !@prestacion_brindada.prestacion_vigente?
+#      if flash.now[:tipo].present?
+#        flash.now[:mensaje] << "La prestación se encuentra vencida"
+#      else
+#        flash.now[:tipo] = :advertencia
+#        flash.now[:titulo] = "Advertencia"
+#        flash.now[:mensaje] = ["La prestación se encuentra vencida"]
+#      end
+#    end
   end
 
   # GET /prestaciones_brindadas/:id/edit
@@ -358,12 +393,24 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
-      if not @beneficiario
+
+      if !@beneficiario.present?
         @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
       end
+
+      if !@beneficiario.present?
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
+        return
+      end
+
     end
 
     # Generar el listado de diagnósticos válidos para la prestación
@@ -401,17 +448,18 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
-      if !@beneficiario
+
+      if !@beneficiario.present?
         @beneficiario =
           Afiliado.find_by_clave_de_beneficiario(
             params[:prestacion_brindada][:clave_de_beneficiario]
           )
       end
 
-      if !@beneficiario
+      if !@beneficiario.present?
         redirect_to(
           root_url,
           :flash => {:tipo => :error, :titulo => "La petición no es válida",
@@ -478,16 +526,6 @@ class PrestacionesBrindadasController < ApplicationController
       dra.updater_id = current_user.id
     end
 
-# TODO: cleanup
-#    # Verificar si hay advertencias presentes, para modificar el estado de la prestación
-#    if @prestacion_brindada.hay_advertencias?
-#      if !@prestacion_brindada.datos_reportables_incompletos
-#        @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
-#      end
-#    else
-#      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R")
-#    end
-
     # Actualizar la información sobre métodos de validación que generan advertencias fallados y ajustar el estado de la prestación
     @prestacion_brindada.actualizar_metodos_de_validacion_fallados
     if @prestacion_brindada.metodos_de_validacion.size > 0
@@ -499,7 +537,51 @@ class PrestacionesBrindadasController < ApplicationController
     # Guardar la prestación y los datos reportables asociados
     @prestacion_brindada.save
 
-    if @prestacion_brindada.metodos_de_validacion.size > 0
+    # Verificar si la prestación guardada es una prestación que puede modificar el lugar de atención habitual del beneficiario
+    # Las prestaciones que pueden modificar el lugar de atención no son comunitarias por lo cual debe existir el beneficiario
+    if @prestacion_brindada.prestacion.modifica_lugar_de_atencion && @beneficiario.lugar_de_atencion_habitual_id != @prestacion_brindada.efector_id
+      # Verificar el historial de prestaciones de este beneficiario. Si en el último año no registra prestaciones de este mismo tipo
+      # que hayan sido brindadas por el efector de atención habitual, se genera automáticamente una modificación de datos que cambia
+      # el lugar de atención habitual por este efector que brindó la prestación.
+      if VistaGlobalDePrestacionBrindada.where("
+          clave_de_beneficiario = '#{@beneficiario.clave_de_beneficiario}'
+          AND fecha_de_la_prestacion > '#{(@prestacion_brindada.fecha_de_la_prestacion - 1.year).strftime("%Y-%m-%d")}'
+          AND prestacion_id IN (SELECT id FROM prestaciones WHERE modifica_lugar_de_atencion)
+          AND efector_id = '#{(@beneficiario.lugar_de_atencion_habitual_id.present? ? @beneficiario.lugar_de_atencion_habitual_id : 0)}'
+          AND estado_de_la_prestacion_id NOT IN (SELECT id FROM estados_de_las_prestaciones WHERE codigo IN ('U', 'S'))
+        ").size == 0 then
+        # La variable @beneficiario puede ser una novedad ingresada para este beneficiario, o bien un registro del padrón
+        if @beneficiario.is_a? Afiliado
+          # Si es un registro del padrón, creamos una nueva novedad (solicitud de modificación de datos)
+          novedad = NovedadDelAfiliado.new
+          novedad.copiar_atributos_del_afiliado(@beneficiario)
+          novedad.tipo_de_novedad_id = TipoDeNovedad.id_del_codigo("M")
+          novedad.categoria_de_afiliado_id = novedad.categorizar
+          novedad.apellido = novedad.apellido.mb_chars.upcase.to_s
+          novedad.nombre = novedad.nombre.mb_chars.upcase.to_s
+          novedad.generar_advertencias
+          novedad.creator_id = current_user.id
+          novedad.updater_id = current_user.id
+          if novedad.advertencias && novedad.advertencias.size > 0
+            novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo("I")
+          else
+            novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo("R")
+          end
+          novedad.lugar_de_atencion_habitual_id = @prestacion_brindada.efector_id
+          novedad.fecha_de_la_novedad = @prestacion_brindada.fecha_de_la_prestacion
+          # TODO: HARDCODED, debería ser un CI asociado a la UAD del usuario, pero quizás no es mala idea que sea el de
+          # procedimientos internos
+          novedad.centro_de_inscripcion_id = 316
+          puts novedad.inspect
+          novedad.save
+        else
+          # Si era una novedad pendiente, modificamos el campo lugar_de_atencion_habitual_id
+          @beneficiario.update_attributes({:lugar_de_atencion_habitual_id => @prestacion_brindada.efector_id})
+        end
+      end
+    end
+
+    if @prestacion_brindada.metodos_de_validacion.any?{|mv| mv.visible}
       redirect_to(@prestacion_brindada,
         :flash => { :tipo => :advertencia,
           :titulo => 'La prestación brindada se registró con advertencias',
@@ -512,7 +594,7 @@ class PrestacionesBrindadasController < ApplicationController
     end
   end
 
-  # PUT /addendas/:id
+  # PUT /prestaciones_brindadas/:id
   def update
     # Verificar los permisos del usuario
     if cannot? :update, PrestacionBrindada
@@ -558,17 +640,18 @@ class PrestacionesBrindadasController < ApplicationController
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => params[:prestacion_brindada][:clave_de_beneficiario],
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
           :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
         ).first
-      if !@beneficiario
+
+      if !@beneficiario.present?
         @beneficiario =
           Afiliado.find_by_clave_de_beneficiario(
             params[:prestacion_brindada][:clave_de_beneficiario]
           )
       end
 
-      if !@beneficiario
+      if !@beneficiario.present?
         redirect_to(
           root_url,
           :flash => {:tipo => :error, :titulo => "La petición no es válida",
@@ -592,9 +675,6 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Actualizar los atributos de la prestación
     @prestacion_brindada.attributes = params[:prestacion_brindada]
-
-    # Marcar la prestación brindada como incompleta, hasta tanto se completen las validaciones.
-    @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("I")
 
     # Generar el listado de diagnósticos válidos para esta prestación
     @diagnosticos = @prestacion_brindada.prestacion.diagnosticos.collect{|d| [d.nombre_y_codigo, d.id]}.sort
@@ -620,16 +700,6 @@ class PrestacionesBrindadasController < ApplicationController
     @prestacion_brindada.datos_reportables_asociados.each do |dra|
       dra.updater_id = current_user.id
     end
-
-# TODO: cleanup
-#    Verificar si hay advertencias presentes, para modificar el estado de la prestación
-#    if @prestacion_brindada.hay_advertencias?
-#      if !@prestacion_brindada.datos_reportables_incompletos
-#        @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("F")
-#      end
-#    else
-#      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("R")
-#    end
 
     # Actualizar la información sobre métodos de validación que generan advertencias fallados y ajustar el estado de la prestación
     @prestacion_brindada.actualizar_metodos_de_validacion_fallados

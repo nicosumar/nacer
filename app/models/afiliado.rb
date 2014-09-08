@@ -267,7 +267,7 @@ class Afiliado < ActiveRecord::Base
       :estado_de_la_novedad_id => [1,2,3]
     )
 
-    return (novedad_pendiente.size > 0)
+    return (novedad_pendiente.size == 1)
   end
 
   # novedad_pendiente
@@ -286,7 +286,7 @@ class Afiliado < ActiveRecord::Base
   def documento_y_tipo
     self.tipo_de_documento.codigo + ": "+self.numero_de_documento
   end
-  
+
   def nombre_completo
 
     nombre_completo = nombre + " " + apellido
@@ -298,74 +298,6 @@ class Afiliado < ActiveRecord::Base
     return nombre_completo
 
   end
-
-  # Devuelve un Array con los códigos de categoría válidos para el afiliado en la fecha especificada.
-  # -- OBSOLETO --
-  #def categorias(fecha = Date.today)
-  #  case
-  #    when categoria_de_afiliado_id == 1 # Embarazadas
-  #      # Si no hay FPP o FEP se devuelve la misma categoría
-  #      return [1] unless (fecha_probable_de_parto || fecha_efectiva_de_parto)
-  #      case
-  #        when (fpp = fecha_probable_de_parto) # Afiliada con FPP especificada
-  #          case
-  #            when (fecha - fpp).to_i < -45
-  #              # Si la fecha es anterior a la FPP en más de 45 días, sólo se habilita la categoría 1
-  #              return [1]
-  #            when (fecha - fpp).to_i >= -45 && (fecha - fpp) <= 45
-  #              # Si la fecha se encuentra entre 45 días antes y 45 días después de la FPP se habilitan las categorías 1 y 2
-  #              return [1, 2]
-  #            else
-  #              # Si la fecha excede en más de 45 días la FPP, sólo se habilita la categoría 2
-  #              return [2]
-  #          end
-  #        when (fep = fecha_efectiva_de_parto)
-  #          case
-  #            when (fecha - fep).to_i < -7
-  #              # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
-  #              return [1]
-  #            when (fecha - fep).to_i >= -7 && (fecha - fep) <= 7
-  #              # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
-  #              return [1, 2]
-  #            else
-  #              # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
-  #              return [2]
-  #          end
-  #      end
-  #
-  #    when categoria_de_afiliado_id == 2 # Puérperas
-  #      # Si no hay FEP se devuelve la misma categoría
-  #      return [2] unless fecha_efectiva_de_parto
-  #      case
-  #        when (fecha - fecha_efectiva_de_parto).to_i < -7
-  #          # Si la fecha es anterior a la FEP en más de 7 días, sólo se habilita la categoría 1
-  #          return [1]
-  #        when (fecha - fecha_efectiva_de_parto).to_i >= -7 && (fecha - fecha_efectiva_de_parto) <= 7
-  #          # Si la fecha se encuentra eentre 7 días antes y 7 días después de la FEP se habilitan las categorías 1 y 2
-  #          return [1, 2]
-  #        else
-  #          # Si la fecha excede en más de 7 días la FEP, sólo se habilita la categoría 2
-  #          return [2]
-  #      end
-  #
-  #    when (categoria_de_afiliado_id == 3 || categoria_de_afiliado_id == 4) # Niños
-  #      # Si no hay fecha de nacimiento se devuelve la misma categoría
-  #      return [categoria_de_afiliado_id] unless fecha_de_nacimiento
-  #      case
-  #        when (fecha - fecha_de_nacimiento).to_i < 335
-  #          # Si la fecha es anterior a la fecha en que el niño cumple 11 meses (335 días), sólo se habilita la categoría 3
-  #          return [3]
-  #        when (fecha - fecha_de_nacimiento).to_i >= 335 && (fecha - fecha_de_nacimiento) <= 395
-  #          # Si la fecha se encuentra eentre los 11 y 13 meses de edad, se habilitan las categorías 3 y 4
-  #          return [3, 4]
-  #        else
-  #          # Si a la fecha el niño excede los 13 meses de edad, sólo se habilita la categoría 4
-  #          return [4]
-  #      end
-  #    else # Categoria mal definida
-  #      return nil
-  #  end
-  #end
 
   def grupo_poblacional_al_dia(fecha_de_la_prestacion = Date.today)
 
@@ -383,6 +315,14 @@ class Afiliado < ActiveRecord::Base
 
     return nil
 
+  end
+
+  #
+  # Devuelve una relación de la vista global de prestaciones brindadas, con las prestaciones correspondientes a este
+  # beneficiario
+  #
+  def prestaciones_brindadas
+    VistaGlobalDePrestacionBrindada.where(:clave_de_beneficiario => self.clave_de_beneficiario)
   end
 
   #
@@ -646,7 +586,7 @@ class Afiliado < ActiveRecord::Base
       :cobertura_efectiva_basica => SiNo.valor_bool_del_codigo(self.valor(campos[93], :texto)),
       :efector_ceb_id => Efector.id_del_cuie(self.valor(campos[94], :texto)),
       :fecha_de_la_ultima_prestacion => self.valor(campos[95], :fecha),
-      :prestacion_ceb_id => Prestacion.id_del_codigo(self.valor(campos[96], :texto)),
+      :prestacion_ceb_id => Prestacion.id_del_codigo(self.valor(campos[96], :texto), Afiliado.find_by_afiliado_id(self.valor(campos[0], :entero)), self.valor(campos[95], :fecha)),
       :devenga_capita => SiNo.valor_bool_del_codigo(self.valor(campos[97], :texto)),
       :devenga_cantidad_de_capitas => self.valor(campos[98], :entero),
       :grupo_poblacional_id => GrupoPoblacional.id_del_codigo(self.valor(campos[99], :texto))
@@ -707,7 +647,7 @@ class Afiliado < ActiveRecord::Base
 
     # Si no coincide con el embarazo actual, verificar si existe algún periodo de embarazo registrado que coincida con la fecha
     self.periodos_de_embarazo.each do |pe|
-      return true if (fecha >= (pe.fecha_probable_de_parto - 40.weeks) && fecha < (pe.fecha_probable_de_parto + 6.weeks))
+      return true if pe.fecha_probable_de_parto && (fecha >= (pe.fecha_probable_de_parto - 40.weeks) && fecha < (pe.fecha_probable_de_parto + 6.weeks))
     end
 
     return false

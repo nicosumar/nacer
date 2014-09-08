@@ -793,17 +793,16 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad.estado_de_la_novedad_id = 2
       @novedad.save
 
-      # TODO: analizar otros casos, ya que una modificación en una inscripción registrada podría hacer que la prestación
-      # asociada ganara una advertencia, en vez de únicamente eliminarla
       if UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
-        # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén marcadas con el
-        # estado 'Registrada, con advertencias', para ver si esta solicitud hizo que se eliminara la advertencia
-        PrestacionBrindada.where(
-          :clave_de_beneficiario => @novedad.clave_de_beneficiario,
-          :estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")
-        ).each do |pb|
-          if !pb.actualizar_metodos_de_validacion_fallados
-            pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+        # Verificar si existen prestaciones cargadas para la misma clave de beneficiario que estén pendientes y
+        # actualizar los métodos de validación fallados por esas prestaciones
+        PrestacionBrindada.where(:clave_de_beneficiario => @novedad.clave_de_beneficiario).each do |pb|
+          if pb.pendiente?
+            if !pb.actualizar_metodos_de_validacion_fallados
+              pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+            else
+              pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")})
+            end
           end
         end
       end
@@ -854,9 +853,41 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       return
     end
 
+    if @novedad.tipo_de_novedad.codigo == "A" && UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
+      # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén pendientes, en cuyo caso
+      # no se permite anular la novedad
+      if PrestacionBrindada.where(:clave_de_beneficiario => @novedad.clave_de_beneficiario).any? { |pb| pb.pendiente? }
+        redirect_to( @novedad,
+          :flash => { :tipo => :error, :titulo => "No se puede anular esta novedad",
+            :mensaje => "No es posible anular esta novedad porque " +
+              (@novedad.sexo.codigo == "F" ? "la beneficiaria" : "el beneficiario") +
+              " tiene alguna prestación brindada pendiente de resolución asociada con esta novedad."
+          }
+        )
+        return
+      end
+    end
+
     # Cambiar el estado de la novedad por el que corresponde a la anulación por el usuario
     @novedad.estado_de_la_novedad_id = EstadoDeLaNovedad.id_del_codigo!("U")
     @novedad.save(:validate => false)
+
+    if UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
+      # Verificar si existen prestaciones cargadas para la misma clave de beneficiario que estén pendientes y
+      # actualizar los métodos de validación fallados por esas prestaciones
+      PrestacionBrindada.where(:clave_de_beneficiario => @novedad.clave_de_beneficiario).each do |pb|
+        if pb.pendiente?
+          if !pb.actualizar_metodos_de_validacion_fallados
+            pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("R")})
+          else
+            pb.update_attributes({:estado_de_la_prestacion_id => EstadoDeLaPrestacion.id_del_codigo("F")})
+          end
+        end
+      end
+    end
+
+    # Verificar todas las prestaciones pendientes que dependen de la clave asociada a esta novedad
+
 
     redirect_to( novedad_del_afiliado_path(@novedad),
       :flash => { :tipo => :advertencia, :titulo => "La solicitud fue anulada",

@@ -5,7 +5,7 @@ Nacer::Application.routes.draw do
   resources :notas_de_debito
 
   resources :informes_debitos_prestacionales do
-    resources :detalles_de_debitos_prestacionales, only: [:index, :create, :destroy] 
+    resources :detalles_de_debitos_prestacionales, only: [:index, :create, :destroy]
     put :iniciar, on: :member
     put :finalizar, on: :member
     put :cerrar, on: :member
@@ -53,7 +53,7 @@ Nacer::Application.routes.draw do
       post 'cerrar', as: :cerrar, action: :cerrar
     end
   end
-  
+
   resources :consolidados_sumar
   # rutas para la actualizacion asincronica
   resources :anexos_medicos_prestaciones do
@@ -66,7 +66,7 @@ Nacer::Application.routes.draw do
   end
 
 
-  devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users" }
+  devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users", :passwords => "passwords" }
   devise_scope :user do
     get "users", :to => "users#index", :as => :users
     get "users/:id", :to => "users#admin_edit", :as => :user
@@ -91,7 +91,7 @@ Nacer::Application.routes.draw do
   resources :provincias, :except => :destroy
   resources :departamentos, :except => :destroy
   resources :distritos, :except => :destroy
-  resources :informes, :except => :destroy do 
+  resources :informes, :except => :destroy do
     get "informe_solicitado", on: :collection, as: :render_informe_default, action: :render_informe
   end
   resources :addendas, :except => :destroy
@@ -120,6 +120,7 @@ Nacer::Application.routes.draw do
   end
   resources :afiliados, :only => [:show] do
     get :busqueda_por_aproximacion, on: :collection
+    get 'prestaciones_brindadas', :on => :member, :as => :prestaciones_brindadas_al
   end
   resources :unidades_de_alta_de_datos, :except => :destroy
   resources :prestaciones_brindadas

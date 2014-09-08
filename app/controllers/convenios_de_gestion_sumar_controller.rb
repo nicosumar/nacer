@@ -449,7 +449,8 @@ class ConveniosDeGestionSumarController < ApplicationController
     end
 
     # Guardar las prestaciones seleccionadas para luego rellenar la tabla asociada si se graba correctamente
-    @prestacion_autorizada_ids = params[:convenio_de_gestion_sumar].delete(:prestacion_autorizada_ids).reject(&:blank?) || []
+    # TODO: CLEANUP. No se pueden modificar las prestaciones desde la interfaz de usuario
+    #@prestacion_autorizada_ids = params[:convenio_de_gestion_sumar].delete(:prestacion_autorizada_ids).reject(&:blank?) || []
     migrar_prestaciones = params[:migrar_prestaciones]
 
     # Obtener el convenio
@@ -480,8 +481,10 @@ class ConveniosDeGestionSumarController < ApplicationController
     # Verificar la validez del objeto
     if @convenio_de_gestion.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if ( @prestacion_autorizada_ids.any?{|p_id| !((@prestaciones.collect{|p| p[1]}).member?(p_id.to_i))} ||
-           @firmante_id.present? && !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
+      # TODO: CLEANUP. Las prestaciones autorizadas no pueden modificarse desde la interfaz.
+      #if ( @prestacion_autorizada_ids.any?{|p_id| !((@prestaciones.collect{|p| p[1]}).member?(p_id.to_i))} ||
+      #     @firmante_id.present? && !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
+      if ( @firmante_id.present? && !@firmantes.collect{|f| f[1]}.member?(@firmante_id.to_i) )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."

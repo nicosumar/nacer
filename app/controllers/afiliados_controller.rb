@@ -49,9 +49,9 @@ class AfiliadosController < ApplicationController
       @afiliados = Afiliado.busqueda_por_aproximacion(numero, nombres.join(" "))
       if @afiliados[0].present? and @afiliados[0].size > 0
 
-        @afiliados[0].map! do |af| 
-          { 
-            id: af.afiliado_id, 
+        @afiliados[0].map! do |af|
+          {
+            id: af.afiliado_id,
             nombre: "#{af.apellido}, #{af.nombre}",
             documento: "#{af.tipo_de_documento.codigo}: #{af.numero_de_documento}",
             fecha_de_nacimiento: "#{af.fecha_de_nacimiento}",
@@ -68,18 +68,46 @@ class AfiliadosController < ApplicationController
 
       respond_to do |format|
         if @afiliados[0].present? and @afiliados[0].size > 0
-          format.json { 
-            render json: {total: @afiliados[0].size ,afiliados: @afiliados[0].paginate(:page => x, :per_page => y) } 
+          format.json {
+            render json: {total: @afiliados[0].size ,afiliados: @afiliados[0].paginate(:page => x, :per_page => y) }
           }
         else
           format.json { render json: {total: 0, afiliados: []}  }
         end
       end
-      
+
     rescue Exception => e
       respond_to do |format|
         format.json { render json: {total: 0, afiliados: []}  }
       end
+    end
+  end
+
+  # GET /afiliados/:id/prestaciones_brindadas
+  def prestaciones_brindadas
+    # Verificar los permisos del usuario
+    if cannot? :read, Afiliado
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener el afiliado
+    begin
+      @afiliado =
+        Afiliado.find(params[:id],
+          :include => [ :clase_de_documento, :tipo_de_documento, :sexo ]
+        )
+    rescue ActiveRecord::RecordNotFound
+      redirect_to(root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
     end
   end
 

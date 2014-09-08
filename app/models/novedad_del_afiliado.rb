@@ -775,6 +775,17 @@ class NovedadDelAfiliado < ActiveRecord::Base
     begin
 #      ActiveRecord::Base.transaction do
 
+        # Verificar si existe la secuencia antes de solicitar la generación del archivo A y crearla
+        if ActiveRecord::Base::connection.exec_query("
+          SELECT *
+            FROM information_schema.sequences
+            WHERE sequence_schema = 'uad_#{codigo_uad}' AND sequence_name = 'ci_#{codigo_ci}_archivo_a_seq';
+        ").rows.size == 0
+          ActiveRecord::Base::connection.execute("
+            CREATE SEQUENCE uad_#{codigo_uad}.ci_#{codigo_ci}_archivo_a_seq;
+          ")
+        end
+
         # Obtener el siguiente número en la secuencia de generación de archivos A para este CI en esta UAD
         numero_secuencia =
           ActiveRecord::Base.connection.exec_query("

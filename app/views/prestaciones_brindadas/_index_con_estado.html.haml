@@ -41,7 +41,12 @@
           %tr.clickable{ :onclick => "location.href=\'#{prestacion_brindada_path(p)}\'", :title => "Ver detalles de la prestación" }
             - if @mostrar_efector
               %td= p.efector.nombre
-            %td= p.estado_de_la_prestacion.nombre
+            -#%td= p.estado_de_la_prestacion.nombre
+            %td
+              - if p.estado_de_la_prestacion.codigo == "F" && p.metodos_de_validacion.all?{|mv| !mv.visible}
+                = EstadoDeLaPrestacion.find_by_codigo("R").nombre
+              - else
+                = p.estado_de_la_prestacion.nombre
             %td= p.fecha_de_la_prestacion.strftime("%d/%m/%Y")
             %td= p.prestacion.codigo.to_s + (p.diagnostico ? p.diagnostico.codigo.to_s : '')
             - if p.clave_de_beneficiario

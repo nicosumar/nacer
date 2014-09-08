@@ -62,7 +62,11 @@ class UnidadesDeAltaDeDatosController < ApplicationController
       CentroDeInscripcion.find(:all, :order => :nombre).collect{ |c| [c.codigo + " - " + c.nombre_corto, c.id]}
     @centro_de_inscripcion_ids = []
     @efectores =
-      Efector.where("unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
+      Efector.where("
+        integrante AND NOT EXISTS (
+          SELECT * FROM unidades_de_alta_de_datos WHERE efector_id = efectores.id
+        )"
+      ).order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
     @efector_ids = []
   end
 
@@ -96,10 +100,12 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     @centro_de_inscripcion_ids = @unidad_de_alta_de_datos.centros_de_inscripcion.collect{ |c| c.id }
     @efector_ids = @unidad_de_alta_de_datos.efectores.collect{ |e| e.id }
     @efectores =
-      Efector.where((@efector_ids.size > 0 ? "id IN (#{@efector_ids.collect{|i| i.to_i}.join(", ")}) OR " : "") +
-        "unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{
-        |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]
-      }
+      Efector.where("
+        integrante AND NOT EXISTS (
+          SELECT * FROM unidades_de_alta_de_datos WHERE efector_id = efectores.id
+        )" +
+        (@unidad_de_alta_de_datos.efector_id.present? ? " OR efectores.id = '#{@unidad_de_alta_de_datos.efector_id}'" : "") + "
+      ").order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
   end
 
   # POST /unidades_de_alta_de_datos
@@ -135,9 +141,11 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     @centros_de_inscripcion =
       CentroDeInscripcion.find(:all, :order => :nombre).collect{ |c| [c.codigo + " - " + c.nombre_corto, c.id]}
     @efectores =
-      Efector.where("unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{
-        |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]
-      }
+      Efector.where("
+        integrante AND NOT EXISTS (
+          SELECT * FROM unidades_de_alta_de_datos WHERE efector_id = efectores.id
+        )"
+      ).order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
 
     # Verificar la validez del objeto
     if @unidad_de_alta_de_datos.valid?
@@ -243,10 +251,12 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     @centros_de_inscripcion =
       CentroDeInscripcion.find(:all, :order => :nombre).collect{ |c| [c.codigo + " - " + c.nombre_corto, c.id]}
     @efectores =
-      Efector.where((@efector_ids.size > 0 ? "id IN (#{@efector_ids.collect{|i| i.to_i}.join(", ")}) OR " : "") +
-        "unidad_de_alta_de_datos_id IS NULL").order(:nombre).collect{
-        |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]
-      }
+      Efector.where("
+        integrante AND NOT EXISTS (
+          SELECT * FROM unidades_de_alta_de_datos WHERE efector_id = efectores.id
+        )" +
+        (@unidad_de_alta_de_datos.efector_id.present? ? " OR efectores.id = '#{@unidad_de_alta_de_datos.efector_id}'" : "") + "
+      ").order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
 
     # Verificar la validez del objeto
     if @unidad_de_alta_de_datos.valid?

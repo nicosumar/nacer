@@ -1,0 +1,55 @@
+- content_for :title do
+  Historial de prestaciones del afiliado
+
+#content-header
+  %h1 Historial de prestaciones del afiliado
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3
+    Datos
+    - if @afiliado.sexo.present? && @afiliado.sexo.codigo == "F"
+      de la beneficiaria
+    - else
+      del beneficiario
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @afiliado.nombre.to_s + " " + @afiliado.apellido.to_s
+  %div.field
+    %span.field_name Documento
+    %span.field_value
+      - if @afiliado.tipo_de_documento.present?
+        = @afiliado.tipo_de_documento.codigo.to_s
+      = @afiliado.numero_de_documento.to_s
+      - if @afiliado.clase_de_documento.present? && @afiliado.clase_de_documento.codigo == "A"
+        = "(de un familiar)"
+
+  %h3
+    Prestaciones registradas para
+    - if @afiliado.sexo.present? && @afiliado.sexo.codigo == "F"
+      esta beneficiaria
+    - else
+      este beneficiario
+  - if @afiliado.prestaciones_brindadas.any?
+    %table
+      %thead
+        %tr
+          %th Fecha de la prestación
+          %th Prestación
+          %th Estado
+          %th Unidad de alta de datos
+      %tbody
+        - @afiliado.prestaciones_brindadas.order("fecha_de_la_prestacion DESC").each do |pb|
+          %tr
+            %td= pb.fecha_de_la_prestacion.strftime("%d/%m/%Y")
+            %td
+              - if pb.prestacion.present?
+                = pb.prestacion.nombre + " (" + pb.prestacion.codigo + (pb.diagnostico.present? && pb.diagnostico.codigo || "") + ")"
+              - else
+                (Ignorada)
+            %td= pb.estado_de_la_prestacion.present? && pb.estado_de_la_prestacion.nombre || "(Ignorado)"
+            %td= pb.unidad_de_alta_de_datos.present? && pb.unidad_de_alta_de_datos.nombre || "(Ignorada)"
+  - else
+    %div.field_content
+      %span.field_empty No registra prestaciones cargadas en ninguna unidad de alta de datos

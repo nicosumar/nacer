@@ -210,6 +210,11 @@ es:
           one: "%{model} no pudo guardarse debido a 1 error"
           other: "%{model} no pudo guardarse debido a %{count} errores"
         body: "Revise que los siguientes campos sean válidos:"
+      models:
+        user:
+          attributes:
+            email: 
+              taken: "ya ha sido utilizado"
 
       messages:
         taken: "ya ha sido utilizado"
