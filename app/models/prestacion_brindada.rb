@@ -66,6 +66,32 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   #
+  # self.sin_advertencias
+  # Devuelve los registros filtrados en estado aún no se ha facturado, o que tienen advertencias que no son visibles para
+  # el usuario
+  def self.sin_advertencias
+    where('
+      estado_de_la_prestacion_id = 3
+      OR estado_de_la_prestacion_id = 2 AND NOT EXISTS (
+        SELECT *
+          FROM
+            metodos_de_validacion_fallados mvf
+            JOIN metodos_de_validacion mv ON (mvf.metodo_de_validacion_id = mv.id)
+          WHERE
+            mvf.prestacion_brindada_id = prestaciones_brindadas.id
+            AND mv.visible
+      )'
+    )
+  end
+
+  #
+  # self.con_advertencias_visibles
+  # Devuelve los registros filtrados cuando tienen advertencias que son visibles para el usuario
+  def self.con_advertencias_visibles
+    where(:estado_de_la_prestacion_id => 2).joins(:metodos_de_validacion).where('"metodos_de_validacion"."visible"').uniq
+  end
+
+  #
   # pendiente?
   # Indica si la prestación brindada está pendiente (aún no ha sido facturada ni anulada).
   def pendiente?
@@ -247,27 +273,31 @@ class PrestacionBrindada < ActiveRecord::Base
       :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
       :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
     ).first
-    if not beneficiaria
+    if not beneficiaria.present?
       beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiaria.present?
 
     return beneficiaria.estaba_embarazada?(fecha_de_la_prestacion)
   end
 
   def diagnostico_de_embarazo_del_primer_trimestre?
-    @beneficiaria =
+    beneficiaria =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => clave_de_beneficiario,
         :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
         :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
       ).first
-    if not @beneficiaria
-      @beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    if not beneficiaria
+      beneficiaria = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
-    return false unless @beneficiaria.embarazo_actual && @beneficiaria.semanas_de_embarazo
+    return true unless beneficiaria.present?
 
-    return (@beneficiaria.semanas_de_embarazo < 20)
+    return false unless beneficiaria.embarazo_actual && beneficiaria.semanas_de_embarazo
+
+    return (beneficiaria.semanas_de_embarazo < 20)
   end
 
   def tension_arterial_valida?
@@ -322,6 +352,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) < 7
   end
 
@@ -335,6 +367,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) < 28
   end
@@ -350,6 +384,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 2) < 1
   end
 
@@ -363,6 +399,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 0) >= 1
   end
@@ -378,6 +416,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_meses(fecha_de_la_prestacion) || 0) > 53
   end
 
@@ -391,6 +431,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return beneficiario.se_declara_indigena
   end
@@ -406,6 +448,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 51) < 50
   end
 
@@ -419,6 +463,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 48) > 49
   end
@@ -434,6 +480,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     return (beneficiario.edad_en_anios(fecha_de_la_prestacion) || 23) > 24
   end
 
@@ -447,6 +495,8 @@ class PrestacionBrindada < ActiveRecord::Base
     if not beneficiario
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
+
+    return true unless beneficiario.present?
 
     return (beneficiario.edad_en_meses(fecha_de_la_prestacion) || 4) < 3
   end
@@ -499,6 +549,8 @@ class PrestacionBrindada < ActiveRecord::Base
       beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
     end
 
+    return true unless beneficiario.present?
+
     if beneficiario.edad_en_meses(self.fecha_de_la_prestacion) == 0
       cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_menores_de_1_mes)
       intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_menores_de_1_mes)
@@ -514,15 +566,15 @@ class PrestacionBrindada < ActiveRecord::Base
     elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 18
       cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_12_a_18_meses)
       intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_12_a_18_meses)
-      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 1.year)).to_i.to_s + ".days"
     elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 36
       cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_18_a_36_meses)
       intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_18_a_36_meses)
-      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 18.months)).to_i.to_s + ".days"
     elsif beneficiario.edad_en_meses(self.fecha_de_la_prestacion) < 72
       cantidad_maxima = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_cantidad_maxima_de_36_a_72_meses)
       intervalo = Parametro.valor_del_parametro(:tasa_de_uso_control_pediatrico_intervalo_de_36_a_72_meses)
-      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 12.months)).to_i.to_s + ".days"
+      periodo = (self.fecha_de_la_prestacion - (beneficiario.fecha_de_nacimiento + 3.years)).to_i.to_s + ".days"
     else
       return true # ¿Qué mierda? No debería pasar...
     end
@@ -536,7 +588,7 @@ class PrestacionBrindada < ActiveRecord::Base
     sql_where = "
       prestacion_id = #{self.prestacion_id}
       AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
-      AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+      AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
     "
     if periodo.present?
       sql_where += "
@@ -551,18 +603,29 @@ class PrestacionBrindada < ActiveRecord::Base
         )
       "
     end
-    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > cantidad_maxima
+    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size >= cantidad_maxima
 
     # Si se ha definido un intervalo mínimo entre prestaciones, verificar que se haya cumplido
     if intervalo.present?
-      sql_where = "
-        prestacion_id = #{self.prestacion_id}
-        AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
-        AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
-        AND fecha_de_la_prestacion BETWEEN
-          '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
-          AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
-      "
+      if periodo.present? && eval(periodo) < eval(intervalo)
+        sql_where = "
+          prestacion_id = #{self.prestacion_id}
+          AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
+          AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
+          AND fecha_de_la_prestacion BETWEEN
+            '#{(self.fecha_de_la_prestacion - eval(periodo)).strftime("%Y-%m-%d")}'
+            AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+        "
+      else
+        sql_where = "
+          prestacion_id = #{self.prestacion_id}
+          AND clave_de_beneficiario = '#{self.clave_de_beneficiario}'
+          AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
+          AND fecha_de_la_prestacion BETWEEN
+            '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
+            AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+        "
+      end
       if self.persisted?
         sql_where += "
           AND NOT (
@@ -583,7 +646,7 @@ class PrestacionBrindada < ActiveRecord::Base
     sql_where = "
       prestacion_id = #{self.prestacion_id}
       AND efector_id = '#{self.efector_id}'
-      AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
+      AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
     "
     if periodo.present?
       sql_where += "
@@ -598,18 +661,29 @@ class PrestacionBrindada < ActiveRecord::Base
         )
       "
     end
-    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > tasa_de_uso.cantidad_maxima
+    return false if VistaGlobalDePrestacionBrindada.where(sql_where).size > cantidad_maxima
 
     # Si se ha definido un intervalo mínimo entre prestaciones, verificar que se haya cumplido
     if intervalo.present?
-      sql_where = "
-        prestacion_id = #{self.prestacion_id}
-        AND efector_id = '#{self.efector_id}'
-        AND estado_de_la_prestacion_id IN (1, 2, 3, 4, 5, 7, 12)
-        AND fecha_de_la_prestacion BETWEEN
-          '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
-          AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
-      "
+      if periodo.present? && eval(periodo) < eval(intervalo)
+        sql_where = "
+          prestacion_id = #{self.prestacion_id}
+          AND efector_id = '#{self.efector_id}'
+          AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
+          AND fecha_de_la_prestacion BETWEEN
+            '#{(self.fecha_de_la_prestacion - eval(periodo)).strftime("%Y-%m-%d")}'
+            AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+        "
+      else
+        sql_where = "
+          prestacion_id = #{self.prestacion_id}
+          AND efector_id = '#{self.efector_id}'
+          AND estado_de_la_prestacion_id IN (3, 4, 5, 12)
+          AND fecha_de_la_prestacion BETWEEN
+            '#{(self.fecha_de_la_prestacion - eval(intervalo)).strftime("%Y-%m-%d")}'
+            AND '#{(self.fecha_de_la_prestacion + eval(intervalo)).strftime("%Y-%m-%d")}'
+        "
+      end
       if self.persisted?
         sql_where += "
           AND NOT (
