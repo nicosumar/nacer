@@ -18,8 +18,10 @@ class User < ActiveRecord::Base
   has_many :unidades_de_alta_de_datos_users
   has_many :unidades_de_alta_de_datos, :through => :unidades_de_alta_de_datos_users
 
-  # No mostrar cuentas de usuario eliminadas
-  default_scope where(:cuenta_eliminada => false)
+  # No mostrar cuentas de usuario eliminadas -- FUE UNA MALA IDEA, porque se elimina de todas las consultas
+  #default_scope where(:cuenta_eliminada => false)
+
+  scope :no_eliminado, where(:cuenta_eliminada => false)
 
   # Validaciones
   validates_presence_of :nombre, :apellido, :observaciones

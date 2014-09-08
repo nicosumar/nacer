@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
-# Datos precargados al inicializar el sistema
 
-# Crear nuevas restricciones de claves foráneas
+# Trigger que modifica la estructura del esquema asociado a la UAD, incorporando las tablas necesarias
 ActiveRecord::Base.connection.execute "
   DROP FUNCTION crear_esquema_para_uad();
   CREATE FUNCTION crear_esquema_para_uad()
