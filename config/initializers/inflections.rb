@@ -422,6 +422,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("ProcesoDeDatosExternos", "Procesos·De·Datos·Externos·")
   inflect.irregular("Proceso·De·Datos·Externos·", "ProcesosDeDatosExternos")
 
+  # Partos SIP
+  inflect.irregular("parto_sip", "partos·_sip·")
+  inflect.irregular("parto·_sip·", "partos_sip")
+  inflect.irregular("PartoSip", "Partos·Sip·")
+  inflect.irregular("Parto·Sip·", "PartosSip")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

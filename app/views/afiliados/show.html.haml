@@ -1,6 +1,6 @@
 - content_for :title do
   Beneficiario:
-  = @afiliado.nombre + " " + @afiliado.apellido
+  = @afiliado.nombre.to_s + " " + @afiliado.apellido.to_s
 
 #content-header
   %h1= @afiliado.nombre_completo
