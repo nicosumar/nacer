@@ -12,6 +12,9 @@ class PrestacionLiquidada < ActiveRecord::Base
   has_many   :prestaciones_liquidadas_datos
   has_one    :detalle_de_debito_prestacional
   has_one    :prestacion, through: :prestacion_incluida
+  has_one    :liquidacion_sumar_cuasifactura_detalle, :inverse_of => :prestacion_liquidada
+  has_one    :liquidaciones_sumar_cuasifacturas, :through => :liquidacion_sumar_cuasifactura_detalle, :class_name => "LiquidacionSumarCuasifactura"
+  has_one    :periodo, :through => :liquidacion
 
   scope :pagadas_por_efector, lambda {|efector| where(efector_id: efector.id, estado_de_la_prestacion_liquidada_id: 12)}  
   scope :pagadas_por_efector_y_concepto, 
