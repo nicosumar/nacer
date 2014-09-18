@@ -289,7 +289,7 @@ class Afiliado < ActiveRecord::Base
 
   def nombre_completo
 
-    nombre_completo = nombre + " " + apellido
+    nombre_completo = (nombre.to_s + " " + apellido.to_s).strip
 
     if nombre_completo.size > 35
       nombre_completo = nombre_completo[0..31] + "..."
