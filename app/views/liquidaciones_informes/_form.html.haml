@@ -2,17 +2,21 @@
 
   - if @liquidacion_informe.requiere_numero_de_expediente?
     .field
-      = f.label :numero_de_expediente, "N° de expediente"
-      = text_field_tag :numero_de_expediente
+      = f.fields_for :expediente_sumar do |e|
+        = e.label :numero, "N° de expediente"
+        = e.text_field :numero
 
   - if @liquidacion_informe.requiere_numero_de_cuasi?
-    .field
-      = f.label :numero_de_cuasifactura, "N° de cuasifactura recibida:"
-      = text_field_tag :numero_de_cuasifactura
-    .field 
-      = f.label 'Cuasifactura recibida:'
-      = file_field_tag :cuasifactura_escaneada
+    = f.fields_for :liquidacion_sumar_cuasifactura do |c|
+      .field
+        = c.label :numero_cuasifactura, "N° de cuasifactura recibida:"
+        = c.text_field :numero_cuasifactura
+      %br
+      .field
+        = c.label "Cuasifactura escaneada:"
+        = c.file_field :cuasifactura_escaneada
 
+  %br
   = radio_button_tag 'aprobar', true
   Aprobar cuasifactura y generar anexos
   %br

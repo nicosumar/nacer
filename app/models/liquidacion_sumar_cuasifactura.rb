@@ -13,14 +13,15 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
   attr_accessible :cuasifactura_escaneada
 
   validates :concepto_de_facturacion, presence: true
+  validates :numero_cuasifactura, presence: true, on: :update 
+  validates :cuasifactura_escaneada, presence: true, on: :update 
 
-  has_attached_file :cuasifactura_escaneada, :styles => { :medium => "300x300>", :thumb => "100x100>" }, :default_url => "/images/:style/missing.png"
-  validates_attachment_content_type :cuasifactura_escaneada, :content_type => /\Aimage\/.*\Z/
-  
+  has_attached_file :cuasifactura_escaneada, :styles => { :medium => "300x300>", :thumb => "100x100>" }
+  validates_attachment_content_type :cuasifactura_escaneada, :content_type => /\Aimage\/.*\Z/
+    
   # 
   # Genera las cuasifacturas desde una liquidación dada
   # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
-
   # @param  documento_generable [DocumentoGenerablePorConcepto] Especificación de la generación del documento
   # 
   # @return [Boolean] confirmación de la generación de las cuasifacturas
@@ -40,15 +41,14 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
           # Si el monto de la cuasi es cero, sigo con el prox efector
           next if total_cuasifactura == 0
           
-          cuasifactura = LiquidacionSumarCuasifactura.create( liquidacion_sumar: liquidacion_sumar, 
+          cuasifactura = LiquidacionSumarCuasifactura.create!( liquidacion_sumar: liquidacion_sumar, 
                                                               efector: e, 
                                                               monto_total: total_cuasifactura, 
                                                               concepto_de_facturacion: liquidacion_sumar.concepto_de_facturacion)
-          cuasifactura.save
           
           # 2) Obtengo el numero de cuasifactura si corresponde para este tipo de documento
           cuasifactura.numero_cuasifactura = documento_generable.obtener_numeracion(cuasifactura.id)
-          cuasifactura.save
+          cuasifactura.save!(validate: false)
 
           # 3) Creo el detalle para esta cuasifactura
           ActiveRecord::Base.connection.execute "--Creo el detalle para esta cuasifactura\n"+

@@ -803,14 +803,12 @@ class PrestacionBrindada < ActiveRecord::Base
                   "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id "
           })
     end
-
     #a.cmd_tuples
   end
 
-
   # 
   # Marca las prestaciones brindadas de baja cuyo beneficiario no presentara periodo de actividad al momento de tomar la prestación.
-  # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
+  # @param periodo [LiquidacionSumar] Liquidacion en la cual se verifican los periodos de actividad
   # 
   # @return [Fixnum] Cantidad de prestaciones vencidas
   def self.marcar_prestaciones_sin_periodo_de_actividad(liquidacion)
@@ -840,8 +838,8 @@ class PrestacionBrindada < ActiveRecord::Base
         upd = CustomQuery.ejecutar({
             sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
                   "SET estado_de_la_prestacion_liquidada_id = 14, \n"+
-                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación brindada al beneficiario no posee periodo de actividad al periodo #{liquidacion.periodo.periodo}' \n"+
-                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La prestación brindada al beneficiario no posee periodo de actividad al periodo #{liquidacion.periodo.periodo}') ,\n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación brindada al beneficiario no posee periodo de actividad al periodo de liquidación #{liquidacion.periodo.periodo}' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La prestación brindada al beneficiario no posee periodo de actividad al periodo de liquidación #{liquidacion.periodo.periodo}') ,\n"+
                   "                                   END \n"+
                   "    updated_at = now()\n"+
                   "FROM vista_global_de_prestaciones_brindadas vpb\n"+
@@ -860,7 +858,47 @@ class PrestacionBrindada < ActiveRecord::Base
                   "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id "
           })
     end
-
-
   end
-end
+
+
+  # 
+  # Marca todas las prestaciones de una liquidación como "Registrada"
+  # @param liquidacion [LiquidacionSumar] Liquidacion en la cual se encuentran las prestaciones
+  # 
+  def self.marcar_prestaciones_facturadas!(liquidacion)
+    
+    raise 'El argumento debe ser de tipo LiquidacionSumar' unless liquidacion.is_a?(LiquidacionSumar) 
+    
+    estado_aceptada_id    = liquidacion.parametro_liquidacion_sumar.prestacion_aceptada.id
+    estado_exceptuada_id  = liquidacion.parametro_liquidacion_sumar.prestacion_exceptuada.id
+    estados_aceptados_ids = [estado_aceptada_id, estado_exceptuada_id].join(", ")
+
+    begin
+      ActiveRecord::Base.transaction do 
+
+       cq = CustomQuery.buscar({
+        sql:  "SELECT DISTINCT esquema\n"+
+              "FROM prestaciones_liquidadas\n"+
+              "WHERE liquidacion_id = #{liquidacion.id}"
+        })
+
+        cq.each do |r|
+          upd = CustomQuery.ejecutar({
+              sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n "+
+                    "SET estado_de_la_prestacion_id = #{estado_aceptada_id}, \n "+
+                    "    estado_de_la_prestacion_liquidada_id = #{estado_aceptada_id} \n "+
+                    "FROM prestaciones_liquidadas p \n "+
+                    "    JOIN liquidaciones_sumar_cuasifacturas lsc ON (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n "+
+                    "WHERE p.liquidacion_id = #{liquidacion.id} \n "+
+                    "AND   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados_ids} )\n "+
+                    "AND   prestaciones_brindadas.id = p.prestacion_brindada_id \n"+
+                    "AND   p.esquema = '#{r[:esquema]}'"
+            })
+        end #end each
+      end #end transaction
+    rescue Exception => e
+      raise "Ocurrio un problema: #{e.message}"
+    end #end begin/rescue
+  end #end method
+
+end#end class

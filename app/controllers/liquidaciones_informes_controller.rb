@@ -69,44 +69,18 @@ class LiquidacionesInformesController < ApplicationController
   # PUT /liquidaciones_informes/1
   def update
     @liquidacion_informe = LiquidacionInforme.find(params[:id])
+    aprobados = params[:aprobar] == 'true' ? true : false
 
     ActiveRecord::Base.transaction do
-      if @liquidacion_informe.update_attributes!(params[:liquidacion_informe])
 
-        aprobado = params[:aprobar] == 'true' ? true : false
-        cuasifactura = nil
-        expediente = nil
-
-        # Si deberia indicar el numero de cuasifactura
-        if params.has_key? :numero_de_expediente
-          if params[:numero_de_expediente].present?
-            expediente = params[:numero_de_expediente]
-          else
-            raise ActiveRecord::Rollback, "Debe indicar el numero de expediente"
-            render action: "edit" 
-          end
-        end
-
-        # Si deberia indicar el numero de cuasifactura
-        if params.has_key? :numero_de_cuasifactura
-          if params[:numero_de_cuasifactura].present?
-            cuasifactura = params[:numero_de_cuasifactura]
-            cuasi = @liquidacion_informe.liquidacion_sumar_cuasifactura
-            cuasi.cuasifactura_escaneada = params[:cuasifactura_escaneada]
-            cuasi.save!
-          else
-            raise ActiveRecord::Rollback, "Debe indicar el numero de cuasifactura"
-            render action: "edit" 
-          end
-        end
-        
-        @liquidacion_informe.generar_anexos!(cuasifactura, expediente, aprobado)
+      if @liquidacion_informe.update_attributes(params[:liquidacion_informe])
+        @liquidacion_informe.generar_anexos(aprobados)
         
         redirect_to @liquidacion_informe, :flash => { :tipo => :ok, :titulo => "El informe fue generado correctamente" } 
       else
         render action: "edit" 
       end
-    end
+    end # end transaction
   end
 
   def cerrar

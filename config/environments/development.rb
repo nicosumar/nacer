@@ -48,4 +48,9 @@ Nacer::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  Paperclip::Attachment.default_options[:path] = ":rails_root/public:url"
+  Paperclip::Attachment.default_options[:url] = "/paperclip/:hash.:extension" 
+  Paperclip::Attachment.default_options[:hash_secret] = "Sumar2012Mza" 
+
 end

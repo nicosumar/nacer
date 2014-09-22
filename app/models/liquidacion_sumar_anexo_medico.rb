@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class LiquidacionSumarAnexoMedico < ActiveRecord::Base
   
   belongs_to :estado_del_proceso
@@ -59,6 +60,11 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
     return true
   end
   
+  # 
+  # Finaliza el anexo. Las prestaciones a las que no se les indico el
+  # estado de aceptación son guardadas como "Aceptadas pendientes de pago"
+  # 
+  # @return [type] [description]
   def finalizar_anexo
     #busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
     estado_del_proceso = EstadoDelProceso.find(3)
@@ -82,6 +88,10 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
     end
   end
 
+  # 
+  # Cambia el estado del anexo a cerrado. Esta situación se da al cerrar el informe.
+  # 
+  # @return [type] [description]
   def cerrar_anexo
     #busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
     estado_del_proceso = EstadoDelProceso.find(4)

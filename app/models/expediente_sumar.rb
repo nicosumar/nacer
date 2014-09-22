@@ -6,6 +6,8 @@ class ExpedienteSumar < ActiveRecord::Base
   
   attr_accessible :numero, :tipo_de_expediente, :efector, :liquidacion_sumar, :liquidacion_sumar_id
 
+  validates :numero, presence: true, on: :update 
+
   # 
   # Genera los expedientes para los efectores de una liquidación dada
   # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
@@ -27,9 +29,8 @@ class ExpedienteSumar < ActiveRecord::Base
           exp = ExpedienteSumar.create!({ tipo_de_expediente: liquidacion_sumar.concepto_de_facturacion.tipo_de_expediente,
                                          liquidacion_sumar: liquidacion_sumar,
                                          efector: e})
-          exp.save
           exp.numero = documento_generable.obtener_numeracion(e.id)
-          exp.save
+          exp.save!(validate: false)
         end # end itera segun agrupacion
 
       rescue Exception => e

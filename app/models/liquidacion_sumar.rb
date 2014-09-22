@@ -421,7 +421,10 @@ class LiquidacionSumar < ActiveRecord::Base
 
   def generar_documentos!
     begin
-      self.concepto_de_facturacion.generar_documentos!(self)
+      transaction do 
+        self.concepto_de_facturacion.generar_documentos!(self)
+        PrestacionBrindada.marcar_prestaciones_facturadas!(self)
+      end
     rescue Exception => e
       logger.warn "Ocurrio un error: " + e.message
       raise "Ocurrio un error: " + e.message

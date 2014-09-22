@@ -10,6 +10,13 @@ class LiquidacionInforme < ActiveRecord::Base
   
   attr_accessible :observaciones, :liquidacion_sumar, :estado_del_proceso, :expediente_sumar, :liquidacion_sumar_cuasifactura
   attr_accessible :efector_id, :liquidacion_sumar_cuasifactura_id, :liquidacion_sumar_id, :expediente_sumar_id, :estado_del_proceso_id
+  attr_accessible :liquidacion_sumar_cuasifactura_attributes, :expediente_sumar_attributes
+
+  accepts_nested_attributes_for :liquidacion_sumar_cuasifactura
+  validates_associated :liquidacion_sumar_cuasifactura, on: :update
+
+  accepts_nested_attributes_for :expediente_sumar
+  validates_associated :expediente_sumar, on: :update
 
   # 
   # Genera los informes de liquidacion para los efectores de una liquidación dada
@@ -77,13 +84,16 @@ class LiquidacionInforme < ActiveRecord::Base
     return true
   end
 
+  # 
+  # Buscar las prestaciones que son comunes a ambos anexos (medico y administrativo)
+  # (en realidad son solo las mencionadas en el anexo administrativo)
+  # Las comparo, si una tiene estado de rechazo en algun anexo , dejo ese estado
+  # 
+  # El query toma como idea que el id del estado de la prestacion, mientras es mayor, el motivo de rechazo es mas negativo
+  # 
+  # @return [type] [description]
   def cerrar
-    # Buscar las prestaciones que son comunes a ambos anexos (medico y administrativo)
-    # (en realidad son solo las mencionadas en el anexo administrativo)
-    # Las comparo, si una tiene estado de rechazo en algun anexo , dejo ese estado
-    # 
-    # El query toma como idea que el id del estado de la prestacion, mientras es mayor, el motivo de rechazo es mas negativo
-
+    
     # Actualizo el estado a la liquidada y de ahi la brindada
     estado_finalizado = EstadoDelProceso.find(3) 
     cq = false
@@ -134,7 +144,7 @@ class LiquidacionInforme < ActiveRecord::Base
   end
 
   def requiere_numero_de_cuasi?
-    if self.liquidacion_sumar_cuasifactura.numero_cuasifactura.blank? 
+    if LiquidacionInforme.find(self.id).liquidacion_sumar_cuasifactura.numero_cuasifactura.blank? 
       return true
     else
       return false
@@ -142,31 +152,37 @@ class LiquidacionInforme < ActiveRecord::Base
   end
 
   def requiere_numero_de_expediente?
-    if self.expediente_sumar.numero.blank?
+    if LiquidacionInforme.find(self.id).expediente_sumar.numero.blank?
       return true
     else
       return false
     end
   end
 
-  def generar_anexos!(numero_cuasifactura, numero_expediente, aprobado)
+  def generar_anexos(aprobado)
     transaction do
       self.aprobado = aprobado
+      self.estado_del_proceso_id = 2 # Estado en curso
       self.save
-      # Si deberia indicar el numero de expediente
-      self.expediente_sumar.numero = numero_expediente if numero_expediente.present?
-      self.expediente_sumar.save!
-      # Si deberia indicar el numero de cuasifactura
-      self.liquidacion_sumar_cuasifactura.numero_cuasifactura = numero_cuasifactura if numero_cuasifactura.present?
-      self.liquidacion_sumar_cuasifactura.save!
-      
+
       # Si se aprueba la cuasifactura, los anexos administrativos pasan a estado "En Curso"
       # de otra manera, ambos se cierran y las prestaciones se devuelven para refacturar
       LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(self, aprobado)
       LiquidacionSumarAnexoMedico.generar_anexo_medico(self, aprobado)
 
-      self.cerrar unless aprobado
-      
-    end    
+      if aprobado
+        if self.liquidacion_sumar_anexo_medico.anexos_medicos_prestaciones.size == 0
+          self.liquidacion_sumar_anexo_medico.finalizar_anexo
+        end
+
+        if self.liquidacion_sumar_anexo_administrativo.anexos_administrativos_prestaciones.size == 0
+          self.liquidacion_sumar_anexo_administrativo.finalizar_anexo
+        end
+      else
+        self.cerrar 
+      end # end if aprobado
+
+    end # end transaction
   end
+
 end
