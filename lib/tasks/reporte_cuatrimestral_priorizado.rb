@@ -150,6 +150,7 @@ class ReporteCuatrimestralPriorizado
       [[502],[10]], # IMV001A98
       [[501],[10]], # IMV002A98
       [[499],[10]], # IMV008A98
+      [[765],[9]],  # IMV011A97
       [[518],[33]], # CTC001T83
       [[519],[33]] # CTC002T83
     ]
