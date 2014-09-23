@@ -269,8 +269,8 @@ class ReporteCuatrimestralPriorizado
     
     prestaciones_paquete_basico_diagnostico = [
       [[560],[9]],  # CTC001A97
-      [[522],[9]],  # CTC009A97
-      [[523],[9]],  # CTC008A97
+      [[561],[9]],  # CTC009A97
+      [[562],[9]],  # CTC008A97
       [[558],[39]]  # PRP003W12
     ]
 
