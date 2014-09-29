@@ -70,8 +70,8 @@ class ReporteCuatrimestralPriorizado
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
           "AND mp.grupo = ? \n"+
-          "AND e.alto_impacto\n"+
-          "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo "
+          "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
+          "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
 
 
@@ -121,7 +121,7 @@ class ReporteCuatrimestralPriorizado
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
           "AND mp.grupo = ? \n"+
-          "AND e.alto_impacto\n"+
+          "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
 
@@ -180,7 +180,7 @@ class ReporteCuatrimestralPriorizado
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
           "AND mp.grupo = ? \n"+
-          "AND e.alto_impacto\n"+
+          "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
 
@@ -248,7 +248,7 @@ class ReporteCuatrimestralPriorizado
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
           "AND mp.grupo = ? \n"+
-          "AND e.alto_impacto\n"+
+          "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
 
@@ -299,7 +299,7 @@ class ReporteCuatrimestralPriorizado
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
           "AND mp.grupo = ? \n"+
-          "AND e.alto_impacto\n"+
+          "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
 
