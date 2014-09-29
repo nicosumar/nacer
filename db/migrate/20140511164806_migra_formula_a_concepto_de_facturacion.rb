@@ -15,10 +15,10 @@ class MigraFormulaAConceptoDeFacturacion < ActiveRecord::Migration
       ALTER TABLE "public"."periodos"
         ADD COLUMN "dias_de_prestacion" int4 DEFAULT 120;
     SQL
-    ConceptoDeFacturacion.all.each do |c|
-      c.formula_id = 1
-      c.save
-    end
+    c = ConceptoDeFacturacion.find(1)
+    c.formula = Formula.find(1)
+    c.save
+    
     Periodo.all.each do |p|
       p.dias_de_prestacion = 120
       p.save

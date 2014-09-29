@@ -891,7 +891,7 @@ class PrestacionBrindada < ActiveRecord::Base
                     "    JOIN liquidaciones_sumar_cuasifacturas lsc ON (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n "+
                     "WHERE p.liquidacion_id = #{liquidacion.id} \n "+
                     "AND   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados_ids} )\n "+
-                    "AND   prestaciones_brindadas.id = p.prestacion_brindada_id \n"+
+                    "AND   #{r[:esquema]}.prestaciones_brindadas.id = p.prestacion_brindada_id \n"+
                     "AND   p.esquema = '#{r[:esquema]}'"
             })
         end #end each
@@ -900,5 +900,57 @@ class PrestacionBrindada < ActiveRecord::Base
       raise "Ocurrio un problema: #{e.message}"
     end #end begin/rescue
   end #end method
+
+  # 
+  # Revisa todas las prestaciones brindadas buscando prestaciones duplicadas en
+  # base a que posean el mismo beneficiario, en la misma fecha, se haya realizado en
+  # el mismo efector y sea la misma prestación
+  # 
+  # @return [type] [description]
+  def self.anular_prestaciones_duplicadas
+
+    duplicados = CustomQuery.buscar({
+      sql:  "SELECT  vpb.efector_id, vpb.clave_de_beneficiario, vpb.prestacion_id, vpb.fecha_de_la_prestacion, \n"+
+            "               count(*)\n"+
+            "from vista_global_de_prestaciones_brindadas vpb \n"+
+            "where estado_de_la_prestacion_id in (2,3,7)\n"+
+            "and clave_de_beneficiario is not null\n"+
+            "group by  vpb.efector_id, vpb.clave_de_beneficiario, vpb.prestacion_id, vpb.fecha_de_la_prestacion\n"+
+            "having count(*) > 1"
+      })
+
+    duplicados.each do |tupla|
+      casos = CustomQuery.buscar({
+        sql:  "select *\n"+
+              "from vista_global_de_prestaciones_brindadas vpb\n"+
+              "where clave_de_beneficiario = '#{tupla[:clave_de_beneficiario]}'\n"+
+              "and efector_id = #{tupla[:efector_id]}\n"+
+              "and fecha_de_la_prestacion = '#{tupla[:fecha_de_la_prestacion]}'\n"+
+              "and prestacion_id = #{tupla[:prestacion_id]}\n"+
+              "order by created_at, id"
+        })
+
+      # Si hay alguna en estado 3, tomo esa
+      aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '3'}
+      if aprobado.blank?
+        # Si hay alguna en estado 7 (refacturado) y ninguna en 3, tomo esa
+        aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '7'}
+        if aprobado.blank?
+          # Si no hay ninguna en 3, ni 7 son todas 2 (advertidas), tomo la primera
+          aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '2'}
+        end
+      end
+
+      casos.each do |c|
+        next if c == aprobado
+        CustomQuery.ejecutar({
+          sql: "UPDATE #{c[:esquema]}.prestaciones_brindadas\n"+
+               "SET estado_de_la_prestacion_id = 11\n"+
+               "WHERE id = #{c[:id]}\n"
+        })
+      end #end update
+
+    end #end each duplicados
+  end # end anular_prestaciones_duplicadas
 
 end#end class

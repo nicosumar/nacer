@@ -132,24 +132,9 @@ class LiquidacionSumar < ActiveRecord::Base
       PrestacionBrindada.marcar_prestaciones_vencidas self
       PrestacionBrindada.marcar_prestaciones_sin_periodo_de_actividad self
       
-      # 0 ) Elimino los duplicados
-      cq = CustomQuery.ejecutar({
-        esquemas: esquemas,
-        sql: "update prestaciones_brindadas\n"+
-            "set estado_de_la_prestacion_id = 11\n"+
-            "WHERE\n"+
-            " EXISTS (\n"+
-            "   SELECT *\n"+
-            "   FROM prestaciones_brindadas pb2\n"+
-            "   WHERE prestaciones_brindadas.efector_id = pb2.efector_id\n"+
-            "   AND prestaciones_brindadas.prestacion_id = pb2.prestacion_id\n"+
-            "   AND prestaciones_brindadas.clave_de_beneficiario = pb2.clave_de_beneficiario\n"+
-            "   AND prestaciones_brindadas.fecha_de_la_prestacion = pb2.fecha_de_la_prestacion\n"+
-            "   AND pb2.id > prestaciones_brindadas.id \n"+
-            "   AND prestaciones_brindadas.estado_de_la_prestacion_id = pb2.estado_de_la_prestacion_id\n"+
-            "   AND prestaciones_brindadas.estado_de_la_prestacion_id IN (2, 3, 7)\n"+
-            " )" 
-      })
+      # 0 ) Elimino los duplicados
+      PrestacionBrindada.anular_prestaciones_duplicadas
+      
 
 
       # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
@@ -174,7 +159,7 @@ class LiquidacionSumar < ActiveRecord::Base
                 "  INNER JOIN nomencladores nom  ON ( nom.id = ap.nomenclador_id )\n"+
                 "  LEFT JOIN  afiliados af ON (af.clave_de_beneficiario = vpb.clave_de_beneficiario)\n"+
                 "  LEFT JOIN  periodos_de_actividad pa ON (pa.afiliado_id  = af.afiliado_id )\n"+
-                "WHERE vpb.estado_de_la_prestacion_id IN (1,2,3,7) \n"+
+                "WHERE vpb.estado_de_la_prestacion_id IN (2,3,7) \n"+
                 " AND (vpb.estado_de_la_prestacion_liquidada_id is null or vpb.estado_de_la_prestacion_liquidada_id != 14) \n "+
                 " AND cdf.id = #{self.concepto_de_facturacion.id}    \n"+
                 " AND ef.id in ( #{efectores.join(", ")} )\n"+
@@ -288,7 +273,7 @@ class LiquidacionSumar < ActiveRecord::Base
               "                 AND pl.esquema = dra.esquema\n"+
               "                 AND ap.dato_reportable_id = drr.dato_reportable_id\n"+
               "                )\n"+
-              "WHERE pl.estado_de_la_prestacion_id IN (1,2,3,7)\n"+
+              "WHERE pl.estado_de_la_prestacion_id IN (2,3,7)\n"+
               "AND ef.id in ( #{efectores.join(", ")} )\n"+
               "AND ap.nomenclador_id =  \n"+
               "                       (select id from nomencladores \n"+
@@ -319,7 +304,7 @@ class LiquidacionSumar < ActiveRecord::Base
               " INNER JOIN prestaciones_liquidadas pl ON  (pl.prestacion_brindada_id = m.prestacion_brindada_id \n"+
               "                                            AND pl.esquema = m.esquema\n"+
               "                                            AND pl.liquidacion_id = #{self.id} )\n"+
-              "WHERE pl.estado_de_la_prestacion_id IN (1,2,3,7) \n "+
+              "WHERE pl.estado_de_la_prestacion_id IN (2,3,7) \n "+
               " AND pl.efector_id in ( #{efectores.join(", ")} )\n"+
               " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
         })

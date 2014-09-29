@@ -27,12 +27,11 @@ class CrearFormulaCccYPpac < ActiveRecord::Migration
         observaciones: "Formula para liquidar cardiopatias y ppac",
         activa: true
   		})
-    ConceptoDeFacturacion.all.each do |c|
-      if c.id != 1
-        c.formula = f
-      end
-      c.save
-    end
+    excecute <<-SQL
+      UPDATE conceptos_de_facturacion
+      set formula_id = 2
+      where formula_is is null;
+    SQL
   end
 
   def down

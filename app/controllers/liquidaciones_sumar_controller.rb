@@ -165,16 +165,7 @@ class LiquidacionesSumarController < ApplicationController
       respuesta = { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
       status =  :method_not_allowed
     end
-
       
-=begin
-      if @liquidacion_sumar.generar_cuasifacturas
-        logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente" }
-      else
-        redirect_to @liquidacion_sumar, :flash => { :tipo => :error, :titulo => "Hubieron problemas al realizar la generacion. Contacte con el departamento de sistemas." }
-      end
-=end
     begin
       unless respuesta.present?
         @liquidacion_sumar.generar_documentos!

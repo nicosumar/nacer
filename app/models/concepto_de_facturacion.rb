@@ -12,7 +12,7 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   belongs_to :formula
 
   attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo, :formula_id, :dias_de_prestacion
-  attr_accessible :tipo_de_expediente, :tipo_de_expediente_id
+  attr_accessible :tipo_de_expediente, :tipo_de_expediente_id, :formula
 
   validates :concepto, presence: true
   validates :descripcion, presence: true

@@ -1,21 +1,21 @@
 class ActualizarConceptosDeFacturacion < ActiveRecord::Migration
   def up
-      ConceptoDeFacturacion.all.each do |c|
-      case c.id
-      when 1
-        c.tipo_de_expediente = TipoDeExpediente.find 1
-        c.formula = Formula.find 1
-        c.save
-      when 2..3
-        c.tipo_de_expediente = TipoDeExpediente.find 3
-        c.formula = Formula.find 1
-        c.save
-      else 
-        c.tipo_de_expediente = TipoDeExpediente.find 2
-        c.formula = Formula.find 1
-        c.save
-      end
-    end
+    execute <<-SQL
+      UPDATE conceptos_de_facturacion
+      SET tipo_de_expediente_id = 1,
+      formula_id = 1
+      where id = 1;
+
+      UPDATE conceptos_de_facturacion
+      SET tipo_de_expediente_id = 3
+      where id in (2,3);
+
+      UPDATE conceptos_de_facturacion
+      SET tipo_de_expediente_id = 2
+      where id not in (1, 2,3);
+
+    SQL
+
 
     execute <<-SQL
       CREATE OR REPLACE FUNCTION "public"."formula_1"(prestacion int4)

@@ -3,7 +3,7 @@
 ActiveRecord::Base.connection.execute <<-SQL
   -- Function: "verificar_duplicacion_de_prestaciones()"()
   -- DROP FUNCTION "verificar_duplicacion_de_prestaciones()"();
-  CREATE OR REPLACE FUNCTION "verificar_duplicacion_de_prestaciones()"()
+  CREATE OR REPLACE FUNCTION verificar_duplicacion_de_prestaciones()
     RETURNS trigger AS
   $BODY$
           DECLARE
@@ -12,6 +12,8 @@ ActiveRecord::Base.connection.execute <<-SQL
             -- Si el estado de la prestación que se inserta/modifica es un estado anulado dejamos que continúe
             IF NEW.estado_de_la_prestacion_id IN (SELECT id FROM estados_de_las_prestaciones WHERE codigo IN ('U', 'S')) THEN
               RETURN NEW; 
+            ELSIF NEW.clave_de_beneficiario IS NULL THEN
+              RETURN NEW;
             END IF;
 
             -- Para todos los otros estados verificamos que la operación no cree un duplicado
@@ -52,7 +54,7 @@ ActiveRecord::Base.connection.execute <<-SQL
         $BODY$
     LANGUAGE plpgsql VOLATILE
     COST 100;
-  ALTER FUNCTION "verificar_duplicacion_de_prestaciones()"()
+  ALTER FUNCTION verificar_duplicacion_de_prestaciones()
     OWNER TO nacer_adm;
 
 SQL
