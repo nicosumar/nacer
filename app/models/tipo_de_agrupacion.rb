@@ -71,6 +71,6 @@ class TipoDeAgrupacion < ActiveRecord::Base
                     yield e, e.prestaciones_liquidadas_por_liquidacion(liquidacion, true).where(clave_de_beneficiario: r.clave_de_beneficiario)
                   end
                   
-  	end
+    end
   end
 end

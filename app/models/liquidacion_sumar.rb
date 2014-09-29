@@ -132,7 +132,9 @@ class LiquidacionSumar < ActiveRecord::Base
       PrestacionBrindada.marcar_prestaciones_vencidas self
       PrestacionBrindada.marcar_prestaciones_sin_periodo_de_actividad self
       
-      # 0 ) Elimino los duplicados
+      # 0 ) Elimino los duplicados
+
+
       PrestacionBrindada.anular_prestaciones_duplicadas
       
 
@@ -416,107 +418,6 @@ class LiquidacionSumar < ActiveRecord::Base
     end
   end
 
-  def generar_cuasifacturas
-=begin
-    ActiveRecord::Base.transaction do
-
-      estado_rechazada = self.parametro_liquidacion_sumar.prestacion_rechazada.id
-      estado_aceptada  = self.parametro_liquidacion_sumar.prestacion_aceptada.id
-
-      # 1) Genero las cabeceras
-      cq = CustomQuery.ejecutar ({
-        sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas  \n"+
-              "(liquidacion_sumar_id, efector_id, monto_total, created_at, updated_at)  \n"+
-              "select liquidacion_id, efector_id, sum(monto), now(), now() \n"+
-              "from prestaciones_liquidadas \n"+
-              "where liquidacion_id = #{self.id} \n"+
-              "and   estado_de_la_prestacion_liquidada_id != #{estado_rechazada} \n"+
-              "group by liquidacion_id, efector_id"
-                    })
-      if cq
-        logger.warn ("Tabla de cuasifacturas generada")
-      else
-        logger.warn ("Tabla de cuasifacturas NO generada")
-        return false
-      end
-
-      # 2) Insertar las que tienen advertencias salvadas por una regla con su observacion -- id 5: Aprobada para liquidación
-      cq = CustomQuery.ejecutar ({
-        sql:  "INSERT INTO public.liquidaciones_sumar_cuasifacturas_detalles  \n"+
-              "(liquidaciones_sumar_cuasifacturas_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, prestacion_liquidada_id, observaciones, created_at, updated_at)  \n"+
-              "select lsc.id , p.prestacion_incluida_id, p.estado_de_la_prestacion_liquidada_id, p.monto, p.id, 
-               'Observaciones de la prestacion: ' ||p.observaciones || '\\n Observaciones de liquidacion: '|| p.observaciones_liquidacion
-                , now(),now() \n"+
-              "from prestaciones_liquidadas p \n"+
-              " join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n"+
-              "where p.liquidacion_id = #{self.id} \n"+
-              "and   p.estado_de_la_prestacion_liquidada_id != #{estado_rechazada}"
-        })
-
-      if cq
-        logger.warn ("Tabla de detalle de cuasifacturas generada")
-      else
-        logger.warn ("Tabla de detalle de cuasifacturas NO generada")
-        return false
-      end
-
-
-      # 3) Actualiza las prestaciones brindadas para que no sean modificadas
-      efectores =  self.grupo_de_efectores_liquidacion.efectores.all.collect {|ef| ef.id}
-      esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efectores))
-
-      estado_exceptuada = self.parametro_liquidacion_sumar.prestacion_exceptuada.id
-      estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
-      cq = CustomQuery.ejecutar ({
-        esquemas: esquemas,
-        sql:  "update prestaciones_brindadas \n "+
-              "   set estado_de_la_prestacion_id = #{estado_aceptada} \n "+
-              "from prestaciones_liquidadas p \n "+
-              "    join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n "+
-              "where p.liquidacion_id = #{self.id} \n "+
-              "and   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
-              "and p.efector_id in (select ef.id \n "+
-              "                                      from efectores ef \n "+
-              "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
-              "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
-              "  AND p.efector_id in ( #{efectores.join(", ")} )\n"+
-              "and prestaciones_brindadas.id = p.prestacion_brindada_id"
-        })
-      if cq
-        logger.warn ("Tabla prestaciones brindadas actualizada")
-      else
-        logger.warn ("Tabla prestaciones brindadas NO actualizada")
-        return false
-      end
-
-      # 4) Creo los informes de liquidacion
-      if LiquidacionInforme.generar_informes_de_liquidacion(self)
-        logger.warn ("Informes de liquidacion generados")
-      else
-        logger.warn ("Informes de liquidacion NO generados")
-      end
-
-      # 5 ) Genero los consolidados para quienes correspondan.
-      if ConsolidadoSumar.generar_consolidados self
-        logger.warn ("Consolidados de efectores generados")
-      else
-        logger.warn ("Consolidados de efectores NO generados")
-      end
-
-      # 5) Genero los expedientes de la liquidacion
-
-      if ExpedienteSumar.generar_expedientes_desde_liquidacion(self)
-        logger.warn ("Expedientes Generados")
-      else
-        logger.warn ("Expedientes NO generados")
-      end
-    end
-
-
-    return true
-=end
-  end
- 
   def vaciar_liquidacion
 
     # Comprobar que no existen cuasifacturas generadas para poder eliminar

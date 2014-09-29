@@ -13,9 +13,11 @@ class Efector < ActiveRecord::Base
   attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria, :cuie
 
   # Atributos protegidos
-  # attr_protected :cuie
+  # attr_protected :cuie
 
-  # Atributos solo lectura
+
+  # Atributos solo lectura
+
   attr_readonly :cuie
 
   # Asociaciones
@@ -531,7 +533,6 @@ class Efector < ActiveRecord::Base
   # Devuelve las prestaciones liquidadas para unaliquidacion dada de este efector
   # @param  argLiquidacion [LiquidacionSumar] La liquidacion de la cual deben obtenerse las prestaciones
   # @param  solo_aceptadas = true [Boolean] Indica si solo debe devolver las prestaciones aceptadas, o todas
-
   # @param  efectores = [] [Array] Array de efectores que deben incluirse en la busqueda
   # 
   # @return [PrestacionLiquidada] Las prestaciones liquidadas para ese efector en la liquidacion que se envio como parametro
