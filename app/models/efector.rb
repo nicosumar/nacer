@@ -11,6 +11,8 @@ class Efector < ActiveRecord::Base
   attr_accessible :cuit, :condicion_iva, :fecha_inicio_de_actividades, :condicion_iibb, :datos_bancarios, :banco_cuenta_principal
   attr_accessible :numero_de_cuenta_principal, :denominacion_cuenta_principal, :sucursal_cuenta_principal, :banco_cuenta_secundaria
   attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria, :cuie
+  attr_accessible :categorizado_cone
+
 
   # Atributos protegidos
   # attr_protected :cuie
