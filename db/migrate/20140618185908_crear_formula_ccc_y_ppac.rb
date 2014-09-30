@@ -27,10 +27,10 @@ class CrearFormulaCccYPpac < ActiveRecord::Migration
         observaciones: "Formula para liquidar cardiopatias y ppac",
         activa: true
   		})
-    excecute <<-SQL
+    execute <<-SQL
       UPDATE conceptos_de_facturacion
-      set formula_id = 2
-      where formula_is is null;
+      set formula_id = (select id from formulas order by created_at desc  limit 1 )
+      where formula_id is null;
     SQL
   end
 

@@ -13,10 +13,10 @@ class LiquidacionInforme < ActiveRecord::Base
   attr_accessible :liquidacion_sumar_cuasifactura_attributes, :expediente_sumar_attributes
 
   accepts_nested_attributes_for :liquidacion_sumar_cuasifactura
-  validates_associated :liquidacion_sumar_cuasifactura, on: :update
+  validates_associated :liquidacion_sumar_cuasifactura, on: :update, if: Proc.new { |l| l.requiere_numero_de_cuasi? }
 
   accepts_nested_attributes_for :expediente_sumar
-  validates_associated :expediente_sumar, on: :update
+  validates_associated :expediente_sumar, on: :update, if: Proc.new { |l| l.requiere_numero_de_expediente? }
 
   # 
   # Genera los informes de liquidacion para los efectores de una liquidación dada

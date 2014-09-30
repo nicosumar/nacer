@@ -29,7 +29,7 @@ class ExpedienteSumar < ActiveRecord::Base
           exp = ExpedienteSumar.create!({ tipo_de_expediente: liquidacion_sumar.concepto_de_facturacion.tipo_de_expediente,
                                          liquidacion_sumar: liquidacion_sumar,
                                          efector: e})
-          exp.numero = documento_generable.obtener_numeracion(e.id)
+          exp.numero = documento_generable.obtener_numeracion(exp.id)
           exp.save!(validate: false)
         end # end itera segun agrupacion
 

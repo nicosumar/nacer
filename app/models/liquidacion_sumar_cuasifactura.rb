@@ -5,6 +5,7 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
   belongs_to :efector
   belongs_to :concepto_de_facturacion
   has_many :liquidaciones_sumar_cuasifacturas_detalles, foreign_key: :liquidaciones_sumar_cuasifacturas_id
+  has_one :liquidacion_informe
 
   scope :para, lambda {|efector, liquidacion| where(efector_id: efector.id, liquidacion_id: liquidacion.id)}
 
@@ -13,11 +14,12 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
   attr_accessible :cuasifactura_escaneada
 
   validates :concepto_de_facturacion, presence: true
-  validates :numero_cuasifactura, presence: true, on: :update 
-  validates :cuasifactura_escaneada, presence: true, on: :update 
+  validates :numero_cuasifactura, presence: true, on: :update, if: Proc.new { |c| c.numero_cuasifactura.blank?  } 
+  validates :cuasifactura_escaneada, presence: true, on: :update, if: Proc.new { |c| c.numero_cuasifactura.blank? }
 
   has_attached_file :cuasifactura_escaneada, :styles => { :medium => "300x300>", :thumb => "100x100>" }
-  validates_attachment_content_type :cuasifactura_escaneada, :content_type => /\Aimage\/.*\Z/
+  validates_attachment_content_type :cuasifactura_escaneada, :content_type => /\Aimage\/.*\Z/
+
     
   # 
   # Genera las cuasifacturas desde una liquidación dada
