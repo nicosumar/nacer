@@ -23,7 +23,7 @@ class UnidadDeAltaDeDatos < ActiveRecord::Base
   default_scope where(:activa => true)
 
   # Validaciones
-  validates_presence_of :nombre, :codigo
+  validates_presence_of :nombre, :codigo, :efector, :efector_id
   validates_uniqueness_of :codigo
   validates_length_of :codigo, :is => 3
 

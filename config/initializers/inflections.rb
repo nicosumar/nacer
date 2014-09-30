@@ -422,6 +422,24 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("ProcesoDeDatosExternos", "Procesos·De·Datos·Externos·")
   inflect.irregular("Proceso·De·Datos·Externos·", "ProcesosDeDatosExternos")
 
+  # Documentos Generables
+  inflect.irregular("documento_generable", "documentos·_generables·")
+  inflect.irregular("documento·_generable·", "documentos_generables")
+  inflect.irregular("DocumentoGenerable", "Documentos·Generables·")
+  inflect.irregular("Documento·Generable·", "DocumentosGenerables")
+
+  # Documentos Generables Por Concepto
+  inflect.irregular("documento_generable_por_concepto", "documentos·_generables·_por·_conceptos·")
+  inflect.irregular("documento·_generable·_por·_concepto·", "documentos_generables_por_conceptos")
+  inflect.irregular("DocumentoGenerablePorConcepto", "Documentos·Generables·Por·Conceptos·")
+  inflect.irregular("Documento·Generable·Por·Concepto·", "DocumentosGenerablesPorConceptos")
+
+  # Tipos de agrupacion
+  inflect.irregular("tipo_de_agrupacion", "tipos·_de·_agrupacion·")
+  inflect.irregular("tipo·_de·_agrupacion·", "tipos_de_agrupacion")
+  inflect.irregular("TipoDeAgrupacion", "Tipos·De·Agrupacion·")
+  inflect.irregular("Tipo·De·Agrupacion·", "TiposDeAgrupacion")
+
   # Partos SIP
   inflect.irregular("parto_sip", "partos·_sip·")
   inflect.irregular("parto·_sip·", "partos_sip")

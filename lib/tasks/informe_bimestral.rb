@@ -87,6 +87,10 @@ class InformeBimestral
           " and p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada \n"+
           " and extract(month from p.fecha_de_la_prestacion )  in (#{meses})\n"+
           " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
+          " and (p.fecha_de_la_prestacion BETWEEN pe.fecha_de_inicio and pe.fecha_de_finalizacion \n"+
+          "      OR \n"+
+          "      (p.fecha_de_la_prestacion >= pe.fecha_de_inicio and pe.fecha_de_finalizacion is null )\n"+
+          "      )\n"+
           "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo "
 
     sql_resto =  "select 'Embarazadas' \"Grupo\",'Resto' \"Tipo\", pi.prestacion_codigo||'-'||pi.prestacion_nombre \"Prestación\", d.codigo \"Diagnóstico\", count(*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
@@ -108,6 +112,10 @@ class InformeBimestral
                       " and p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada \n"+
                       " and extract(month from p.fecha_de_la_prestacion )  in (#{meses})\n"+
                       " and extract(year from p.fecha_de_la_prestacion ) = ? \n"+
+                      " and (p.fecha_de_la_prestacion BETWEEN pe.fecha_de_inicio and pe.fecha_de_finalizacion \n"+
+                      "      OR \n"+
+                      "      (p.fecha_de_la_prestacion >= pe.fecha_de_inicio and pe.fecha_de_finalizacion is null )\n"+
+                      "      )\n"+
                       "GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo \n"
 
     cq = CustomQuery.buscar (

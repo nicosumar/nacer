@@ -69,7 +69,7 @@ class ReporteCuatrimestralPriorizado
           "where pi.nomenclador_id = ?\n"+
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
-          "AND mp.grupo = ? \n"+
+          "AND mp.grupo = ? \n"+          
           "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
@@ -110,6 +110,7 @@ class ReporteCuatrimestralPriorizado
           "peri.periodo, count(p.*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
+          " JOIN afiliados a on a.clave_de_beneficiario = p.clave_de_beneficiario\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
           " join migra_prestaciones mp on mp.id_subrrogada_foranea = pi.prestacion_id \n"+
           " join efectores e on e.id = p.efector_id  \n"+
@@ -122,6 +123,7 @@ class ReporteCuatrimestralPriorizado
           "    )\n"+
           "AND mp.grupo = ? \n"+
           "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
+          "AND date_part('year',age(p.fecha_de_la_prestacion, a.fecha_de_nacimiento )) BETWEEN 0 and 5 --beneficiarios que tenian entre 0 y 5 al momento de la prestacion \n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
 
@@ -169,6 +171,7 @@ class ReporteCuatrimestralPriorizado
           "peri.periodo, count(p.*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
+          " JOIN afiliados a on a.clave_de_beneficiario = p.clave_de_beneficiario\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
           " join migra_prestaciones mp on mp.id_subrrogada_foranea = pi.prestacion_id \n"+
           " join efectores e on e.id = p.efector_id  \n"+
@@ -180,6 +183,7 @@ class ReporteCuatrimestralPriorizado
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
           "AND mp.grupo = ? \n"+
+          "AND date_part('year',age(p.fecha_de_la_prestacion, a.fecha_de_nacimiento )) BETWEEN 6 and 9 --beneficiarios que tenian entre 0 y 5 al momento de la prestacion \n"+
           "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
@@ -237,6 +241,7 @@ class ReporteCuatrimestralPriorizado
           "peri.periodo, count(p.*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
+          " JOIN afiliados a on a.clave_de_beneficiario = p.clave_de_beneficiario\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
           " join migra_prestaciones mp on mp.id_subrrogada_foranea = pi.prestacion_id \n"+
           " join efectores e on e.id = p.efector_id  \n"+
@@ -248,6 +253,7 @@ class ReporteCuatrimestralPriorizado
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
           "AND mp.grupo = ? \n"+
+          "AND date_part('year',age(p.fecha_de_la_prestacion, a.fecha_de_nacimiento )) BETWEEN 10 and 19 --beneficiarios que tenian entre 0 y 5 al momento de la prestacion \n"+
           "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"
@@ -288,6 +294,7 @@ class ReporteCuatrimestralPriorizado
           "peri.periodo, count(p.*) \"Cant.\", round(sum(p.monto),2) \"Total\"\n"+
           "from prestaciones_incluidas pi \n"+
           " join prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id\n"+
+          " JOIN afiliados a on a.clave_de_beneficiario = p.clave_de_beneficiario\n"+
           " join diagnosticos d on d.id = p.diagnostico_id \n"+
           " join migra_prestaciones mp on mp.id_subrrogada_foranea = pi.prestacion_id \n"+
           " join efectores e on e.id = p.efector_id  \n"+
@@ -299,6 +306,7 @@ class ReporteCuatrimestralPriorizado
           "AND (\n"+ filtro_prest.join(" OR\n")  +
           "    )\n"+
           "AND mp.grupo = ? \n"+
+          "AND date_part('year',age(p.fecha_de_la_prestacion, a.fecha_de_nacimiento )) BETWEEN 20 and 64 --beneficiarios que tenian entre 0 y 5 al momento de la prestacion \n"+
           "AND e.id in (5, 42, 53, 197, 263, 377)\n"+
           "GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo\n"+
           "ORDER BY e.nombre, peri.periodo"

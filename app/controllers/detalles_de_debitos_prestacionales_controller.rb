@@ -22,10 +22,9 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
 
   # POST /detalles_de_debitos_prestacionales.js
   def create
-
-    # El detalle es solo se guarda si el estado del proceso esta en curso
     @detalle_de_debito_prestacional = @informe_de_debito.detalles_de_debitos_prestacionales.new(params[:detalle_de_debito_prestacional])
     
+    # El detalle es solo se guarda si el estado del proceso esta en curso
     if @informe_de_debito.estado_del_proceso.id == EstadoDelProceso.where(codigo: 'C').first.id 
       respond_to do |format|
         begin

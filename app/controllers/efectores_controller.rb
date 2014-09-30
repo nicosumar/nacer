@@ -67,8 +67,18 @@ class EfectoresController < ApplicationController
 
     # Crear los objetos necesarios para la vista
     @efector = Efector.new
-    @departamentos = Departamento.de_esta_provincia.collect{ |d| [d.nombre_corto, d.id] }
-    @distritos = []
+        @provincias = Provincia.all.collect {|p| [p.nombre, p.id]}
+    @departamentos = Provincia.includes(:departamentos).all.collect do |p|
+      p.departamentos.collect do |d|
+        [d.nombre, d.id, {class: p.id}]
+      end
+    end.flatten!(1).uniq
+
+    @distritos = Departamento.includes(:distritos).all.collect do |de|
+      de.distritos.collect do |d|
+        [d.nombre, d.id, {class: de.id}]
+      end
+    end.flatten!(1).uniq
     @grupos_de_efectores = GrupoDeEfectores.find(:all).collect{ |g| [g.nombre_corto, g.id] }
     @areas_de_prestacion = AreaDePrestacion.find(:all).collect{ |a| [a.nombre_corto, a.id] }
     @dependencias_administrativas = DependenciaAdministrativa.find(:all).collect{ |d| [d.nombre_corto, d.id] }
@@ -99,8 +109,19 @@ class EfectoresController < ApplicationController
     end
 
     # Crear los objetos necesarios para generar la vista
-    @departamentos = Departamento.de_esta_provincia.collect{ |d| [d.nombre_corto, d.id] }
-    @distritos = Distrito.where(:departamento_id => @efector.departamento_id).collect{ |d| [d.nombre_corto, d.id] }
+    @provincias = Provincia.all.collect {|p| [p.nombre, p.id]}
+    @departamentos = Provincia.includes(:departamentos).all.collect do |p|
+      p.departamentos.collect do |d|
+        [d.nombre, d.id, {class: p.id}]
+      end
+    end.flatten!(1).uniq
+
+    @distritos = Departamento.includes(:distritos).all.collect do |de|
+      de.distritos.collect do |d|
+        [d.nombre, d.id, {class: de.id}]
+      end
+    end.flatten!(1).uniq
+
     @grupos_de_efectores = GrupoDeEfectores.find(:all).collect{ |g| [g.nombre_corto, g.id] }
     @areas_de_prestacion = AreaDePrestacion.find(:all).collect{ |a| [a.nombre_corto, a.id] }
     @dependencias_administrativas = DependenciaAdministrativa.find(:all).collect{ |d| [d.nombre_corto, d.id] }
@@ -138,8 +159,19 @@ class EfectoresController < ApplicationController
     @efector.cuie = cuie unless cuie.blank?
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
-    @departamentos = Departamento.de_esta_provincia.collect{ |d| [d.nombre_corto, d.id] }
-    @distritos = Distrito.where(:departamento_id => @efector.departamento_id).collect{ |d| [d.nombre_corto, d.id] }
+    @provincias = Provincia.all.collect {|p| [p.nombre, p.id]}
+    @departamentos = Provincia.include(:departamentos).all.collect do |p|
+      p.departamentos.collect do |d|
+        [d.nombre, d.id, {class: p.id}]
+      end
+    end.flatten!(1).uniq
+
+    @distritos = Departamento.include(:distritos).all.collect do |de|
+      de.distritos.collect do |d|
+        [d.nombre, d.id, {class: de.id}]
+      end
+    end.flatten!(1).uniq
+
     @grupos_de_efectores = GrupoDeEfectores.find(:all).collect{ |g| [g.nombre_corto, g.id] }
     @areas_de_prestacion = AreaDePrestacion.find(:all).collect{ |a| [a.nombre_corto, a.id] }
     @dependencias_administrativas = DependenciaAdministrativa.find(:all).collect{ |d| [d.nombre_corto, d.id] }
@@ -220,8 +252,18 @@ class EfectoresController < ApplicationController
     @efector.cuie = cuie unless cuie.blank?
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
-    @departamentos = Departamento.de_esta_provincia.collect{ |d| [d.nombre_corto, d.id] }
-    @distritos = Distrito.where(:departamento_id => @efector.departamento_id).collect{ |d| [d.nombre_corto, d.id] }
+    @provincias = Provincia.all.collect {|p| [p.nombre, p.id]}
+    @departamentos = Provincia.include(:departamentos).all.collect do |p|
+      p.departamentos.collect do |d|
+        [d.nombre, d.id, {class: p.id}]
+      end
+    end.flatten!(1).uniq
+
+    @distritos = Departamento.include(:distritos).all.collect do |de|
+      de.distritos.collect do |d|
+        [d.nombre, d.id, {class: de.id}]
+      end
+    end.flatten!(1).uniq
     @grupos_de_efectores = GrupoDeEfectores.find(:all).collect{ |g| [g.nombre_corto, g.id] }
     @areas_de_prestacion = AreaDePrestacion.find(:all).collect{ |a| [a.nombre_corto, a.id] }
     @dependencias_administrativas = DependenciaAdministrativa.find(:all).collect{ |d| [d.nombre_corto, d.id] }

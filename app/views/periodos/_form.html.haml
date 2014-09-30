@@ -17,6 +17,9 @@
   .field
     = f.label :concepto_de_facturacion, "Concepto de facturacion al que aplica este período:"
     = f.select :concepto_de_facturacion_id, @conceptos
+  .field
+    = f.label :dias_de_prestacion, "Vigencia de las prestaciones (en dias):"
+    = f.text_field :dias_de_prestacion, { :class => "solo_numeros"}
 
   .actions
     = f.submit

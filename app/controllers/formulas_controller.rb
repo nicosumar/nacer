@@ -26,14 +26,12 @@ class FormulasController < ApplicationController
   # POST /formulas
   def create
     @formula = Formula.new(params[:formula])
-
    
     if @formula.save
       redirect_to @formula, :flash => { :tipo => :ok, :titulo => "Se creó la formula '#{@formula.descripcion}'. #{@formula.crear_formula} " } 
     else
       render action: "new" 
     end
-
   end
 
   # PUT /formulas/1

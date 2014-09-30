@@ -16,10 +16,7 @@ class ParametrosLiquidacionesSumarController < ApplicationController
       redirect_to @parametro_liquidacion_sumar.liquidaciones_sumar.first, :flash => { :tipo => :error, :titulo => "La liquidacion ya ha sido procesada. Los cambios no se realizarán." } 
       return
     end
-    
-    @formulas = Formula.all.collect {|d| [d.descripcion, d.id]}
     @estados = EstadoDeLaPrestacion.all.collect {|d| [d.nombre, d.id]}
-
   end
 
   # PUT /parametros_liquidaciones_sumar/1
@@ -29,8 +26,6 @@ class ParametrosLiquidacionesSumarController < ApplicationController
     if @parametro_liquidacion_sumar.update_attributes(params[:parametro_liquidacion_sumar])
       redirect_to @parametro_liquidacion_sumar, :flash => { :tipo => :ok, :titulo => "Se actualizaron los parametros correctamente" } 
     else
-      @formulas = Formula.all.collect {|d| [d.descipcion, d.id]}
-
       render action: "edit" 
     end
   end

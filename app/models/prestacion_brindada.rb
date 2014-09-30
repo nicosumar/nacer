@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # -*- encoding : utf-8 -*-
 class PrestacionBrindada < ActiveRecord::Base
 
@@ -766,4 +767,201 @@ class PrestacionBrindada < ActiveRecord::Base
     puts "Stub"
   end
 
-end
+  #
+  # Busca todas las prestaciones sin facturar y vencidas al periodo indicado y las marca como vencidas
+  # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
+  #
+  # @return [Fixnum] Cantidad de prestaciones vencidas
+  def self.marcar_prestaciones_vencidas(liquidacion)
+
+    vigencia_perstaciones = liquidacion.periodo.dias_de_prestacion
+    fecha_de_recepcion = liquidacion.periodo.fecha_recepcion.to_s
+    fecha_limite_prestaciones = liquidacion.periodo.fecha_limite_prestaciones.to_s
+    prestaciones_ids = liquidacion.periodo.concepto_de_facturacion.prestaciones.collect {|r| r.id }.join(", ")
+    efectores = liquidacion.grupo_de_efectores_liquidacion.efectores.collect {|e| e.id}.join(", ")
+
+    cq = CustomQuery.buscar({
+        sql:  "SELECT DISTINCT vpb.esquema\n"+
+              "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+              "WHERE  vpb.fecha_de_la_prestacion < (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones})\n"+
+              "AND  vpb.prestacion_id in (#{prestaciones_ids} ) \n"+
+              "AND vpb.efector_id in (#{efectores})\n"+
+              "and vpb.estado_de_la_prestacion_id in (1,2,3,7)"
+      })
+
+    cq.each do |r|
+        upd = CustomQuery.ejecutar({
+            sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
+                  "SET estado_de_la_prestacion_id = 11, \n"+
+                  "    estado_de_la_prestacion_liquidada_id = 13, \n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo};' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo} ;' \n"+
+                  "                                   END, \n"+
+                  "    updated_at = now() \n"+
+                  "FROM vista_global_de_prestaciones_brindadas vpb \n"+
+                  "WHERE  vpb.fecha_de_la_prestacion < (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones})\n"+
+                  "AND vpb.prestacion_id in (#{prestaciones_ids} ) \n"+
+                  "AND vpb.estado_de_la_prestacion_id in (1,2,3,7) \n"+
+                  "AND vpb.efector_id in (#{efectores})\n"+
+                  "AND vpb.esquema = '#{r[:esquema]}' \n"+
+                  "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id "
+          })
+    end
+    #a.cmd_tuples
+  end
+
+  #
+  # Marca las prestaciones brindadas de baja cuyo beneficiario no presentara periodo de actividad al momento de tomar la prestación.
+  # @param periodo [LiquidacionSumar] Liquidacion en la cual se verifican los periodos de actividad
+  #
+  # @return [Fixnum] Cantidad de prestaciones vencidas
+  def self.marcar_prestaciones_sin_periodo_de_actividad(liquidacion)
+
+    vigencia_perstaciones = liquidacion.periodo.dias_de_prestacion
+    fecha_de_recepcion = liquidacion.periodo.fecha_recepcion.to_s
+    fecha_limite_prestaciones = liquidacion.periodo.fecha_limite_prestaciones.to_s
+    efectores = liquidacion.grupo_de_efectores_liquidacion.efectores.collect {|e| e.id}.join(", ")
+    prestaciones_ids = liquidacion.periodo.concepto_de_facturacion.prestaciones.collect {|r| r.id }.join(", ")
+
+    cq = CustomQuery.buscar({
+      sql:  "SELECT DISTINCT esquema \n"+
+            "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+            " INNER JOIN     afiliados af ON (af.clave_de_beneficiario = vpb.clave_de_beneficiario) \n"+
+            "WHERE vpb.estado_de_la_prestacion_id IN (1,2,3,7)\n"+
+            "AND vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd')\n"+
+            "AND NOT EXISTS (SELECT * FROM periodos_de_actividad pa WHERE\n"+
+            "                   vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio AND (pa.fecha_de_finalizacion is null \n"+
+            "                         OR\n"+
+            "                        pa.fecha_de_finalizacion > vpb.fecha_de_la_prestacion )\n"+
+            "                       )\n"+
+            "AND vpb.efector_id in (#{efectores})\n"+
+            "AND  vpb.prestacion_id in (#{prestaciones_ids} ) \n"
+      })
+
+    cq.each do |r|
+        upd = CustomQuery.ejecutar({
+            sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
+                  "SET estado_de_la_prestacion_liquidada_id = 14, \n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación brindada al beneficiario no posee periodo de actividad al periodo de liquidación #{liquidacion.periodo.periodo}' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La prestación brindada al beneficiario no posee periodo de actividad al periodo de liquidación #{liquidacion.periodo.periodo}') ,\n"+
+                  "                                   END \n"+
+                  "    updated_at = now()\n"+
+                  "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+                  " INNER JOIN     afiliados af ON (af.clave_de_beneficiario = vpb.clave_de_beneficiario) \n"+
+                  "WHERE vpb.estado_de_la_prestacion_id IN (1,2,3,7)\n"+
+                  "AND vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd')\n"+
+                  "AND NOT EXISTS (SELECT * FROM periodos_de_actividad pa WHERE\n"+
+                  "                    af.afiliado_id = pa.afiliado_id\n"+
+                  "                   AND vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio AND (pa.fecha_de_finalizacion is null \n"+
+                  "                         OR\n"+
+                  "                        pa.fecha_de_finalizacion > vpb.fecha_de_la_prestacion )\n"+
+                  "                       )\n"+
+                  "AND vpb.esquema = '#{r[:esquema]}' \n"+
+                  "AND vpb.efector_id in (#{efectores})\n"+
+                  "AND  vpb.prestacion_id in (#{prestaciones_ids} ) \n"+
+                  "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id "
+          })
+    end
+  end
+
+
+  #
+  # Marca todas las prestaciones de una liquidación como "Registrada"
+  # @param liquidacion [LiquidacionSumar] Liquidacion en la cual se encuentran las prestaciones
+  #
+  def self.marcar_prestaciones_facturadas!(liquidacion)
+
+    raise 'El argumento debe ser de tipo LiquidacionSumar' unless liquidacion.is_a?(LiquidacionSumar)
+
+    estado_aceptada_id    = liquidacion.parametro_liquidacion_sumar.prestacion_aceptada.id
+    estado_exceptuada_id  = liquidacion.parametro_liquidacion_sumar.prestacion_exceptuada.id
+    estados_aceptados_ids = [estado_aceptada_id, estado_exceptuada_id].join(", ")
+
+    begin
+      ActiveRecord::Base.transaction do
+
+       cq = CustomQuery.buscar({
+        sql:  "SELECT DISTINCT esquema\n"+
+              "FROM prestaciones_liquidadas\n"+
+              "WHERE liquidacion_id = #{liquidacion.id}"
+        })
+
+        cq.each do |r|
+          upd = CustomQuery.ejecutar({
+              sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n "+
+                    "SET estado_de_la_prestacion_id = #{estado_aceptada_id}, \n "+
+                    "    estado_de_la_prestacion_liquidada_id = #{estado_aceptada_id} \n "+
+                    "FROM prestaciones_liquidadas p \n "+
+                    "    JOIN liquidaciones_sumar_cuasifacturas lsc ON (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n "+
+                    "WHERE p.liquidacion_id = #{liquidacion.id} \n "+
+                    "AND   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados_ids} )\n "+
+                    "AND   #{r[:esquema]}.prestaciones_brindadas.id = p.prestacion_brindada_id \n"+
+                    "AND   p.esquema = '#{r[:esquema]}'"
+            })
+        end #end each
+      end #end transaction
+    rescue Exception => e
+      raise "Ocurrio un problema: #{e.message}"
+    end #end begin/rescue
+  end #end method
+
+
+  #
+
+  # Revisa todas las prestaciones brindadas buscando prestaciones duplicadas en
+
+  # base a que posean el mismo beneficiario, en la misma fecha, se haya realizado en
+
+  # el mismo efector y sea la misma prestación
+
+  #
+
+  # @return [type] [description]
+  def self.anular_prestaciones_duplicadas
+
+    duplicados = CustomQuery.buscar({
+      sql:  "SELECT  vpb.efector_id, vpb.clave_de_beneficiario, vpb.prestacion_id, vpb.fecha_de_la_prestacion, \n"+
+            "               count(*)\n"+
+            "from vista_global_de_prestaciones_brindadas vpb \n"+
+            "where estado_de_la_prestacion_id in (2,3,7)\n"+
+            "and clave_de_beneficiario is not null\n"+
+            "group by  vpb.efector_id, vpb.clave_de_beneficiario, vpb.prestacion_id, vpb.fecha_de_la_prestacion\n"+
+            "having count(*) > 1"
+      })
+
+    duplicados.each do |tupla|
+      casos = CustomQuery.buscar({
+        sql:  "select *\n"+
+              "from vista_global_de_prestaciones_brindadas vpb\n"+
+              "where clave_de_beneficiario = '#{tupla[:clave_de_beneficiario]}'\n"+
+              "and efector_id = #{tupla[:efector_id]}\n"+
+              "and fecha_de_la_prestacion = '#{tupla[:fecha_de_la_prestacion]}'\n"+
+              "and prestacion_id = #{tupla[:prestacion_id]}\n"+
+              "order by created_at, id"
+        })
+
+      # Si hay alguna en estado 3, tomo esa
+
+      aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '3'}
+      if aprobado.blank?
+        # Si hay alguna en estado 7 (refacturado) y ninguna en 3, tomo esa
+        aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '7'}
+        if aprobado.blank?
+          # Si no hay ninguna en 3, ni 7 son todas 2 (advertidas), tomo la primera
+          aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '2'}
+        end
+      end
+
+      casos.each do |c|
+        next if c == aprobado
+        CustomQuery.ejecutar({
+          sql: "UPDATE #{c[:esquema]}.prestaciones_brindadas\n"+
+               "SET estado_de_la_prestacion_id = 11\n"+
+               "WHERE id = #{c[:id]}\n"
+        })
+      end #end update
+
+    end #end each duplicados
+  end # end anular_prestaciones_duplicadas
+
+end#end class

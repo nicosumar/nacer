@@ -27,3 +27,6 @@
   %div.field_content
     %span.field_name observaciones:
     %span.field_value= @liquidacion_informe.observaciones
+  - if @liquidacion_informe.requiere_numero_de_cuasi?
+    = image_tag @liquidacion_informe.liquidacion_sumar_cuasifactura.cuasifactura_escaneada.url(:medium)
+  

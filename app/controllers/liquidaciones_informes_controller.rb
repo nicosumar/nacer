@@ -55,7 +55,7 @@ class LiquidacionesInformesController < ApplicationController
     @liquidacion_informe = LiquidacionInforme.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html # show.html.haml
       format.json { render json: @liquidacion_informe }
     end
   end
@@ -66,34 +66,21 @@ class LiquidacionesInformesController < ApplicationController
     @liquidacion_informe = LiquidacionInforme.find(params[:id])
   end
 
-
   # PUT /liquidaciones_informes/1
   def update
     @liquidacion_informe = LiquidacionInforme.find(params[:id])
+    aprobados = params[:aprobar] == 'true' ? true : false
 
-    # Si se aprueba la cuasifactura, los anexos administrativos pasan a estado "En Curso"
-    # de otra manera, ambos se cierran y las prestaciones se devuelven para refacturar
-    
-    if @liquidacion_informe.update_attributes(params[:liquidacion_informe])
+    ActiveRecord::Base.transaction do
 
-      if params[:aprobar] == 'true'
-        @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
-        @liquidacion_informe.aprobado = true
-        @liquidacion_informe.save
-        LiquidacionSumarAnexoAdministrativo.generar_anexo_administrativo(@liquidacion_informe.id)
-        LiquidacionSumarAnexoMedico.generar_anexo_medico(@liquidacion_informe)
+      if @liquidacion_informe.update_attributes(params[:liquidacion_informe])
+        @liquidacion_informe.generar_anexos(aprobados)
+        
+        redirect_to @liquidacion_informe, :flash => { :tipo => :ok, :titulo => "El informe fue generado correctamente" } 
       else
-        @liquidacion_informe.estado_del_proceso = EstadoDelProceso.where(codigo: "B").first
-        @liquidacion_informe.save
-        @liquidacion_informe.aprobado = false
-        LiquidacionSumarAnexoAdministrativo.generar_anexo_para_devolucion(@liquidacion_informe.id)
-        LiquidacionSumarAnexoMedico.generar_anexo_para_devolucion(@liquidacion_informe.id)
+        render action: "edit" 
       end
-      redirect_to @liquidacion_informe, :flash => { :tipo => :ok, :titulo => "El informe fue generado correctamente" } 
-    else
-      render action: "edit" 
-    end
-    
+    end # end transaction
   end
 
   def cerrar

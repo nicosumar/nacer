@@ -68,6 +68,12 @@ ActiveRecord::Base.connection.execute <<-SQL
                   table_schema = ('uad_' || NEW.codigo)
                   AND table_name = 'prestaciones_brindadas'
               INTO existe_prestaciones;
+              SELECT COUNT(*) > 0
+                FROM information_schema.tables
+                WHERE
+                  table_schema = ('uad_' || NEW.codigo)
+                  AND table_name = 'procesos_de_datos_externos'
+              INTO existe_procesos;
             END IF;
 
             IF NEW.inscripcion AND NOT existe_novedades THEN
@@ -257,7 +263,9 @@ ActiveRecord::Base.connection.execute <<-SQL
                   created_at timestamp without time zone,
                   updated_at timestamp without time zone,
                   creator_id integer,
-                  updater_id integer
+                  updater_id integer,
+                  estado_de_la_prestacion_liquidada_id integer,
+                  observaciones_de_liquidacion text
                 );
 
                 -- Crear la secuencia que genera los identificadores de la tabla de prestaciones
@@ -293,6 +301,14 @@ ActiveRecord::Base.connection.execute <<-SQL
                 ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
                   ADD CONSTRAINT fk_uad_' || NEW.codigo || '_pp_bb_nomencladores
                   FOREIGN KEY (nomenclador_id) REFERENCES nomencladores(id);
+                ALTER TABLE ONLY uad_' || NEW.codigo || '.prestaciones_brindadas
+                  ADD CONSTRAINT fk_uad_' || NEW.codigo || '_prestaciones_brindadas
+                  FOREIGN KEY (estado_de_la_prestacion_liquidada_id) REFERENCES estados_de_las_prestaciones(id);
+
+                --Crear indices para prestaciones brindadas
+                CREATE INDEX ON uad_' || NEW.codigo || '.prestaciones_brindadas (efector_id);
+                CREATE INDEX ON uad_' || NEW.codigo || '.prestaciones_brindadas (fecha_de_la_prestacion);
+                CREATE INDEX ON uad_' || NEW.codigo || '.prestaciones_brindadas (estado_de_la_prestacion_id);
 
                 -- Crear la tabla para almacenar los atributos adicionales (datos reportables)
                 CREATE TABLE uad_' || NEW.codigo || '.datos_reportables_asociados (
@@ -392,7 +408,7 @@ ActiveRecord::Base.connection.execute <<-SQL
 
             RETURN NEW;
           END;
-        $BODY$
+    $BODY$
     LANGUAGE plpgsql VOLATILE
     COST 100;
 

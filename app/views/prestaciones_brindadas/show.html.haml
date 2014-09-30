@@ -17,12 +17,22 @@
     - if ["R", "P", "L", "V"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-ok.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %ul
+            %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+            - if @prestacion_brindada.observaciones_de_liquidacion.present?
+              %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
     - elsif ["I", "F"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       - if @prestacion_brindada.metodos_de_validacion_fallados.size > 0 && @prestacion_brindada.metodos_de_validacion.all?{|mv| !mv.visible}
         -# Si ninguno de los métodos de validación fallados por la prestación deben mostrarse al usuario, se muestra el mensaje
         -# como si no se hubieran generado advertencias
         #info.infobox-ok.no-margin
           %h2= EstadoDeLaPrestacion.find_by_codigo("R").nombre
+          - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+            %ul
+              %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+              - if @prestacion_brindada.observaciones_de_liquidacion.present?
+                %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
       - else
         #info.infobox-advertencia.no-margin
           %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
@@ -37,21 +47,28 @@
                   - dra.advertencias.each do |attr, advs|
                     - advs.each do |msj|
                       %li= msj
-    - elsif @prestacion_brindada.estado_de_la_prestacion.codigo == "U"
+          - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+            %ul
+              %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+              - if @prestacion_brindada.observaciones_de_liquidacion.present?
+                %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
+    - elsif ["U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
       #info.infobox-advertencia.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
-        %ul
-          %li La prestación no podrá ser facturada.
-    - elsif @prestacion_brindada.estado_de_la_prestacion.codigo == "S"
-      #info.infobox-advertencia.no-margin
-        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
-        %ul
-          %li La prestación está vencida.
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %ul
+            %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+            - if @prestacion_brindada.observaciones_de_liquidacion.present?
+              %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
     - else
       #info.infobox-error.no-margin
         %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
         %ul
           %li= @prestacion_brindada.mensaje_de_la_baja
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+          - if @prestacion_brindada.observaciones_de_liquidacion.present?
+            %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
 
   - if @prestacion_brindada.clave_de_beneficiario
     %h3 Clave única de beneficiario asociada a la prestación

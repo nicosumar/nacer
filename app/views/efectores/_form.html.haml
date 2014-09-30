@@ -27,11 +27,14 @@
     = f.label :domicilio
     = f.text_field :domicilio
   %div.field
+    = f.label :provincia_id, "Provincia"
+    = f.select :provincia_id, @provincias,{}, {:class => 'select2'}
+  %div.field
     = f.label :departamento_id
-    = f.select :departamento_id, options_for_select(@departamentos, @efector.departamento_id), { :include_blank => true }
+    = f.select :departamento_id, @departamentos,{}, {:class => 'select2'}
   #select_distritos.field
     = f.label :distrito_id
-    = f.select :distrito_id, options_for_select(@distritos, @efector.distrito_id), { :include_blank => true }
+    = f.select :distrito_id, @distritos, {}, {:class => 'select2'}
   %div.field
     = f.label :codigo_postal
     = f.text_field :codigo_postal, :style => "text-transform: uppercase;"
@@ -52,15 +55,15 @@
   %div.field
     = f.label :grupo_de_efectores_id
     = f.select :grupo_de_efectores_id, options_for_select(@grupos_de_efectores, @efector.grupo_de_efectores_id), |
-      {:include_blank => true} |
+      {:include_blank => true} , {:class => 'select2'} |
   %div.field
     = f.label :area_de_prestacion_id
     = f.select :area_de_prestacion_id, options_for_select(@areas_de_prestacion, @efector.area_de_prestacion_id), |
-      {:include_blank => true} |
+      {:include_blank => true}, {:class => 'select2'} |
   %div.field
     = f.label :dependencia_administrativa_id
     = f.select :dependencia_administrativa_id, |
-      options_for_select(@dependencias_administrativas, @efector.dependencia_administrativa_id), {:include_blank => true} |
+      options_for_select(@dependencias_administrativas, @efector.dependencia_administrativa_id), {:include_blank => true} , {:class => 'select2'} |
   %div.field
     = f.label :integrante
     = f.check_box :integrante

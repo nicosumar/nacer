@@ -8,6 +8,8 @@
       = link_to '<< Volver al listado', conceptos_de_facturacion_path
     - if can? :update, ConceptoDeFacturacion
       = link_to 'Editar', edit_concepto_de_facturacion_path(@concepto_de_facturacion)
+    - if can? :manage, DocumentoGenerablePorConcepto
+      = link_to 'Documentos Generables', concepto_de_facturacion_documentos_generables_por_conceptos_path(@concepto_de_facturacion)
 
 = render :partial => "shared/info", :locals => { :registro => @concepto_de_facturacion }
 
@@ -18,6 +20,12 @@
   %div.field_content
     %span.field_name Descripción:
     %span.field_value= @concepto_de_facturacion.descripcion
+  %div.field_content
+    %span.field_name Formula:
+    %span.field_value= @concepto_de_facturacion.formula.descripcion if @concepto_de_facturacion.formula.present?
+  %div.field_content
+    %span.field_name Tipo de expedientes:
+    %span.field_value= @concepto_de_facturacion.tipo_de_expediente.nombre if @concepto_de_facturacion.tipo_de_expediente.present?
   %table
     %tr
       %th Prestacion

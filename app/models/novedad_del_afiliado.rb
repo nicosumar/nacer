@@ -356,13 +356,14 @@ class NovedadDelAfiliado < ActiveRecord::Base
   # Devuelve la categoría de beneficiario (ahora es obsoleto, pero se mantiene aún por
   # compatibilidad).
   def categorizar
-    edad = self.edad_en_anios(fecha_de_la_novedad || Date.today)
-
-    return 1 if edad >= 10 && sexo_id == Sexo.id_del_codigo("F") && esta_embarazada
-    return 3 if edad < 1
-    return 4 if edad < 6
-    return 5 if edad < 20
-    return 6 if sexo_id == Sexo.id_del_codigo("F") && edad < 64
+    if fecha_de_nacimiento.present?
+      edad = self.edad_en_anios(fecha_de_la_novedad || Date.today)
+      return 1 if edad >= 10 && sexo_id == Sexo.id_del_codigo("F") && esta_embarazada
+      return 3 if edad < 1
+      return 4 if edad < 6
+      return 5 if edad < 20
+      return 6 if sexo_id == Sexo.id_del_codigo("F") && edad < 64
+    end
 
     return nil
   end

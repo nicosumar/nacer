@@ -1,4 +1,6 @@
 class Formula < ActiveRecord::Base
+  
+  after_save :compilar_formula
   has_many :parametros_liquidaciones_sumar
   attr_accessible :descripcion, :formula, :observaciones, :activa
 
@@ -29,6 +31,19 @@ class Formula < ActiveRecord::Base
       return "Se produjo un error al compilar la formula: #{e.message}" ;
     end
     return 'La formula se compilo con exito';
+  end
+ 
+  def compilar_formula
+    begin
+      ActiveRecord::Base.connection.execute "CREATE OR REPLACE FUNCTION public.FORMULA_#{self.id} (PRESTACION  prestaciones_liquidadas.id%TYPE)\n"+
+                  "  RETURNS prestaciones_liquidadas.monto%TYPE AS  $$\n"+
+                  self.formula+
+                  "  $$ \n"+
+                  "  LANGUAGE PLPGSQL;"
+
+    rescue Exception => e
+      raise "Se produjo un error al compilar la formula: #{e.message}" ;
+    end
   end
 
 end

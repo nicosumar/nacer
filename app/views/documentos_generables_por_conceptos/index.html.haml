@@ -1,0 +1,39 @@
+= javascript_include_tag 'documentos_generables_por_conceptos.js'
+#content-header
+  %h1= @concepto_de_facturacion.concepto + " - Documentos generables por concepto  "
+  #action-links
+    - if can? :read, ConceptoDeFacturacion
+      = link_to '<< Volver al concepto', @concepto_de_facturacion
+ 
+%table{id: "tabla_detalle"}
+  %tr
+    %th{width: "10"} Orden de Ejecución
+    %th Documento Generable
+    %th Tipo de Agrupación
+    %th ¿Genera Numeración?
+    %th Función de Numeración
+    %th Reporte - Layout
+    %th Accciones
+  = form_for([@concepto_de_facturacion, @documento_generable_por_concepto], remote: true) do |f|
+    %tr
+      %td= f.text_field :orden, size: 1
+      %td= f.select :documento_generable_id, @documentos_generables,{include_blank: true}, {class: 'select2', style: "width: 150px", data: {placeholder: 'Seleccione el documento a generar' }}
+      %td= f.select :tipo_de_agrupacion_id, @tipos_de_agrupacion,{include_blank: true}, {class: 'select2', style: "width: 150px", data: {placeholder: 'Seleccione el documento a generar' }}
+      %td{style: "text-align: center;"}= f.check_box :genera_numeracion
+      %td= f.text_field :funcion_de_numeracion, size: 10
+      %td= f.text_field :report_layout, size: 8
+      %td= f.submit "Agregar"
+  - @documentos_generables_por_conceptos.each do |documento_generable_por_concepto|
+    %tr{id: "detalle_"+documento_generable_por_concepto.id.to_s}
+      %td{style: "text-align: center;"}= documento_generable_por_concepto.orden
+      %td= documento_generable_por_concepto.documento_generable.nombre
+      %td= documento_generable_por_concepto.tipo_de_agrupacion.nombre
+      %td{style: "text-align: center;"}= documento_generable_por_concepto.genera_numeracion ? "Si" : "No"
+      %td= documento_generable_por_concepto.funcion_de_numeracion.present? ? documento_generable_por_concepto.funcion_de_numeracion : "Ninguna"
+      %td= documento_generable_por_concepto.report_layout.present? ? documento_generable_por_concepto.report_layout : "Ninguno"
+      %td= link_to "Eliminar", [@concepto_de_facturacion, documento_generable_por_concepto], method: :delete, remote: true, data: { confirm: "¿Está seguro que desea eliminar la generación de este documento?" }
+
+#errores{title: "No se pudo guardar su configuración"}
+
+
+

@@ -245,9 +245,11 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
   create_table "conceptos_de_facturacion", :force => true do |t|
     t.string   "concepto"
     t.string   "descripcion"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
     t.string   "codigo"
+    t.integer  "formula_id"
+    t.integer  "tipo_de_expediente_id"
   end
 
   add_index "conceptos_de_facturacion", ["codigo"], :name => "index_conceptos_de_facturacion_on_codigo", :unique => true
@@ -540,6 +542,31 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
   add_index "documentaciones_respaldatorias_prestaciones", ["fecha_de_inicio", "fecha_de_finalizacion"], :name => "documentaciones_respaldatoria_fecha_de_inicio_fecha_de_fina_idx"
   add_index "documentaciones_respaldatorias_prestaciones", ["prestacion_id"], :name => "documentaciones_respaldatorias_prestaciones_prestacion_id_idx"
 
+  create_table "documentos_generables", :force => true do |t|
+    t.string   "nombre",     :null => false
+    t.string   "modelo",     :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "documentos_generables_por_conceptos", :force => true do |t|
+    t.integer  "concepto_de_facturacion_id",                    :null => false
+    t.integer  "documento_generable_id",                        :null => false
+    t.integer  "tipo_de_agrupacion_id",                         :null => false
+    t.string   "report_layout"
+    t.boolean  "genera_numeracion",          :default => false, :null => false
+    t.string   "funcion_de_numeracion"
+    t.integer  "orden"
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+  end
+
+  add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id", "documento_generable_id"], :name => "documentos_generables_por_con_concepto_de_facturacion_id_do_key", :unique => true
+  add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id", "orden"], :name => "documentos_generables_por_con_concepto_de_facturacion_id_or_key", :unique => true
+  add_index "documentos_generables_por_conceptos", ["concepto_de_facturacion_id"], :name => "documentos_generables_por_concep_concepto_de_facturacion_id_idx"
+  add_index "documentos_generables_por_conceptos", ["documento_generable_id"], :name => "documentos_generables_por_conceptos_documento_generable_id_idx"
+  add_index "documentos_generables_por_conceptos", ["tipo_de_agrupacion_id"], :name => "documentos_generables_por_conceptos_tipo_de_agrupacion_id_idx"
+
   create_table "efectores", :force => true do |t|
     t.string   "cuie"
     t.string   "codigo_de_efector_sissa"
@@ -586,7 +613,12 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
     t.string   "categoria_obstetrica"
     t.string   "categoria_neonatal"
     t.boolean  "internet",                          :default => false
+    t.boolean  "categorizado_cone",                 :default => false
+    t.integer  "provincia_id",                      :default => 9,     :null => false
   end
+
+  add_index "efectores", ["cuie"], :name => "efectores_cuie_idx"
+  add_index "efectores", ["provincia_id"], :name => "efectores_provincia_id_idx"
 
   create_table "estados_de_las_novedades", :force => true do |t|
     t.string  "nombre"
@@ -613,12 +645,9 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
     t.text     "numero"
     t.integer  "tipo_de_expediente_id"
     t.integer  "efector_id"
-    t.integer  "periodo_id"
-    t.integer  "liquidacion_sumar_cuasifactura_id"
-    t.integer  "consolidado_sumar_id"
     t.integer  "liquidacion_sumar_id"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
   end
 
   add_index "expedientes_sumar", ["tipo_de_expediente_id"], :name => "index_expedientes_sumar_on_tipo_de_expediente_id"
@@ -787,6 +816,7 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
     t.integer  "parametro_liquidacion_sumar_id"
   end
 
+  add_index "liquidaciones_sumar", ["concepto_de_facturacion_id", "periodo_id", "grupo_de_efectores_liquidacion_id"], :name => "liquidaciones_sumar_concepto_de_facturacion_id_periodo_id_g_key", :unique => true
   add_index "liquidaciones_sumar", ["concepto_de_facturacion_id"], :name => "liquidaciones_sumar_concepto_de_facturacion_id_idx"
   add_index "liquidaciones_sumar", ["grupo_de_efectores_liquidacion_id"], :name => "liquidaciones_sumar_grupo_de_efectores_liquidacion_id_idx"
   add_index "liquidaciones_sumar", ["parametro_liquidacion_sumar_id"], :name => "liquidaciones_sumar_parametro_liquidacion_sumar_id_idx"
@@ -815,16 +845,20 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
   create_table "liquidaciones_sumar_cuasifacturas", :force => true do |t|
     t.integer  "liquidacion_sumar_id"
     t.integer  "efector_id"
-    t.decimal  "monto_total",          :precision => 15, :scale => 4
+    t.decimal  "monto_total",                         :precision => 15, :scale => 4
     t.string   "numero_cuasifactura"
     t.text     "observaciones"
-    t.datetime "created_at",                                          :null => false
-    t.datetime "updated_at",                                          :null => false
+    t.datetime "created_at",                                                         :null => false
+    t.datetime "updated_at",                                                         :null => false
+    t.integer  "concepto_de_facturacion_id",                                         :null => false
+    t.string   "cuasifactura_escaneada_file_name"
+    t.string   "cuasifactura_escaneada_content_type"
+    t.integer  "cuasifactura_escaneada_file_size"
+    t.datetime "cuasifactura_escaneada_updated_at"
   end
 
   add_index "liquidaciones_sumar_cuasifacturas", ["efector_id"], :name => "liquidaciones_sumar_cuasifacturas_efector_id_idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector__idx"
-  add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id", "efector_id"], :name => "liquidaciones_sumar_cuasifact_liquidacion_sumar_id_efector__key", :unique => true
   add_index "liquidaciones_sumar_cuasifacturas", ["liquidacion_sumar_id"], :name => "liquidaciones_sumar_cuasifacturas_liquidacion_sumar_id_idx"
   add_index "liquidaciones_sumar_cuasifacturas", ["numero_cuasifactura"], :name => "liquidaciones_sumar_cuasifacturas_numero_cuasifactura_key", :unique => true
 
@@ -988,10 +1022,8 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
   end
 
   create_table "parametros_liquidaciones_sumar", :force => true do |t|
-    t.integer  "dias_de_prestacion",                   :default => 120
-    t.integer  "formula_id"
-    t.datetime "created_at",                                            :null => false
-    t.datetime "updated_at",                                            :null => false
+    t.datetime "created_at",                                          :null => false
+    t.datetime "updated_at",                                          :null => false
     t.integer  "rechazar_estado_de_la_prestacion_id",  :default => 7
     t.integer  "aceptar_estado_de_la_prestacion_id",   :default => 4
     t.integer  "excepcion_estado_de_la_prestacion_id", :default => 4
@@ -1025,9 +1057,10 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
     t.date     "fecha_recepcion"
     t.integer  "tipo_periodo_id"
     t.integer  "concepto_de_facturacion_id"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
     t.date     "fecha_limite_prestaciones"
+    t.integer  "dias_de_prestacion",         :default => 120
   end
 
   add_index "periodos", ["concepto_de_facturacion_id"], :name => "periodos_concepto_de_facturacion_id_idx"
@@ -1177,6 +1210,7 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
     t.text     "observaciones_liquidacion"
     t.datetime "created_at",                                                                       :null => false
     t.datetime "updated_at",                                                                       :null => false
+    t.string   "esquema"
   end
 
   add_index "prestaciones_liquidadas", ["clave_de_beneficiario"], :name => "prestaciones_liquidadas_clave_de_beneficiario_idx"
@@ -1344,6 +1378,13 @@ ActiveRecord::Schema.define(:version => 20140825145303) do
   create_table "subgrupos_de_prestaciones", :force => true do |t|
     t.integer "grupo_de_prestaciones_id", :null => false
     t.string  "nombre",                   :null => false
+  end
+
+  create_table "tipos_de_agrupacion", :force => true do |t|
+    t.string   "nombre",                  :null => false
+    t.string   "codigo",     :limit => 3, :null => false
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   create_table "tipos_de_debitos_prestacionales", :force => true do |t|

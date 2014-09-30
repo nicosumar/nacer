@@ -20,6 +20,7 @@
 
 $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
+  $('input[type="submit"]').attr("data-disable-with", "Por favor, espere...");
 });
 
 //TODO: Para browsers mas viejos usar "void 0" en lugar de la keyword undefined. Testearlo despues
@@ -106,7 +107,16 @@ $(document).ready(function() {
 
 //Usar la clase "jquery_fecha" para cambiar un input text a jquery con calendar
 $(document).ready(function() {
-  $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true });  
+  $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true }); 
+
+  $(".solo_numeros").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+    
+    if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57) && event.which != 8) 
+      event.preventDefault();
+  });
+
+
 });
 
 jQuery(function($){

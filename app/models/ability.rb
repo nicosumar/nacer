@@ -135,6 +135,7 @@ class Ability
 
     if user.in_group? :facturacion_uad
       can :read, Afiliado
+      can :read, LiquidacionSumar
       can :read, NovedadDelAfiliado
       can :manage, PrestacionBrindada
       can :manage, DatoReportableAsociado

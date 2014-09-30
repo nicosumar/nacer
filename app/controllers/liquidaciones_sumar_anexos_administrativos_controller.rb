@@ -21,7 +21,8 @@ class LiquidacionesSumarAnexosAdministrativosController < ApplicationController
       include: [:prestacion_liquidada, :estado_de_la_prestacion],
       joins:  "join prestaciones_liquidadas on prestaciones_liquidadas.id = anexos_administrativos_prestaciones.prestacion_liquidada_id\n"+
               "join prestaciones_incluidas on prestaciones_incluidas.id = prestaciones_liquidadas.prestacion_incluida_id\n",
-      conditions: condiciones
+      conditions: condiciones,
+      order: "prestaciones_incluidas.prestacion_codigo "
       )
 
 

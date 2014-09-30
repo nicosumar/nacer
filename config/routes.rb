@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :documentos_generables
   resources :notas_de_debito
 
   resources :informes_debitos_prestacionales do
@@ -21,19 +22,19 @@ Nacer::Application.routes.draw do
   get 'buscar_prestacion_liquidada/por_afiliado_concepto_y_efector' => 'prestaciones_liquidadas#por_afiliado_concepto_y_efector', as: :prestaciones_liquidadas_por_afiliado_efector_concepto
 
   #Liquidaciones - Sumar
-  resources :conceptos_de_facturacion
+  resources :conceptos_de_facturacion do
+    resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy] 
+  end
   resources :periodos
   resources :tipos_periodos
   resources :formulas
   resources :grupos_de_efectores_liquidaciones
   resources :liquidaciones_sumar do
+    get '/efectores/:id', to: 'liquidaciones_sumar#detalle_de_prestaciones_liquidadas_por_efector', as: 'detalle_de_prestaciones_liquidadas_por_efector'
     member do
       post   'procesar_liquidacion', as: :procesar_liquidacion, action: :procesar_liquidacion
       post   'generar_cuasifacturas', as: :generar_cuasifacturas, action: :generar_cuasifacturas
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
-    end
-    collection  do
-      get 'prestaciones_liquidadas/:id' => 'PrestacionesLiquidadas#ver_prestaciones_liquidadas', as: :ver_prestaciones_liquidadas
     end
   end
   resources :reglas
@@ -44,12 +45,8 @@ Nacer::Application.routes.draw do
     put :finalizar_anexo, on: :member
   end
   resources :plantillas_de_reglas
-  resources :liquidaciones_sumar_cuasifacturas_detalles
-  resources :liquidaciones_sumar_cuasifacturas do
-    member do
-      get 'detalle_prestaciones_cuasifactura/:id', as: :detalle_prestaciones_cuasifactura, action: :detalle_prestaciones_cuasifactura
-    end
-  end
+  # resources :liquidaciones_sumar_cuasifacturas_detalles
+  resources :liquidaciones_sumar_cuasifacturas 
   resources :parametros_liquidaciones_sumar
   resources :liquidaciones_informes do
     member do

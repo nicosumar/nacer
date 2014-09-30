@@ -6,134 +6,76 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
 
   attr_accessible :fecha_de_finalizacion, :fecha_de_inicio, :estado_del_proceso
 
-  def self.generar_anexo_administrativo(argInformeDeLiquidacionId)
-  	# Obtengo la liquidacion
-  	informe_de_liquidacion = LiquidacionInforme.find(argInformeDeLiquidacionId) # TODO: reemplazar para que reciba el objeto de la liquidacion, no el id
-  	efector = informe_de_liquidacion.liquidacion_sumar_cuasifactura.efector.id
-  	liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar.id
-  	estado_del_proceso = EstadoDelProceso.where(codigo: "C").first
+  def self.generar_anexo_administrativo(arg_informe_de_liquidacion, aprobado)
+    #Verifico los parametros
+  	return false unless arg_informe_de_liquidacion.is_a?(LiquidacionInforme)
+    documento_generable = DocumentoGenerable.where(modelo: LiquidacionInforme.to_s).first
+    return false unless documento_generable.present?
 
-    # Estados
-    estado_aceptada  = informe_de_liquidacion.liquidacion_sumar.parametro_liquidacion_sumar.prestacion_aceptada.id
-    estado_exceptuada = informe_de_liquidacion.liquidacion_sumar.parametro_liquidacion_sumar.prestacion_exceptuada.id
-    estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
+    # Seteo las variables de creación de la cabecera y anexos
+    estado_del_proceso = EstadoDelProceso.where(codigo: "C").first # En curso
+    agrega_estado_insert = ""
+    agrega_estado_dato = ""
 
-    #Creo la cabecera 
-  	anexo = LiquidacionSumarAnexoAdministrativo.create(
-  		estado_del_proceso: estado_del_proceso,
-  		fecha_de_inicio:  DateTime.now()
-  		)
+    unless aprobado
+      agrega_estado_insert = ", estado_de_la_prestacion_id, motivo_de_rechazo_id "
+      agrega_estado_dato = " , #{EstadoDeLaPrestacion.find(7).id}, #{MotivoDeRechazo.find(6).id} " #7: devuelta para refacturar - 6: Falta doc reespaldatoria
+    end
 
-  	informe_de_liquidacion.liquidacion_sumar_anexo_administrativo = anexo
-  	informe_de_liquidacion.save!
+    transaction do 
+      # Creo la cabecera 
+      anexo = LiquidacionSumarAnexoAdministrativo.create!(
+        estado_del_proceso: estado_del_proceso,
+        fecha_de_inicio:  DateTime.now()
+        )
+      arg_informe_de_liquidacion.liquidacion_sumar_anexo_administrativo = anexo
+      arg_informe_de_liquidacion.save!
 
-  	cq = CustomQuery.ejecutar ({
-      sql:  "INSERT INTO \"public\".\"anexos_administrativos_prestaciones\" \n"+
-						"(	\"liquidacion_sumar_anexo_administrativo_id\",	\"prestacion_liquidada_id\", \"created_at\",	\"updated_at\")\n"+
-						"SELECT	#{anexo.id} anexo_administrativo_id, p.id, now(), now()\n"+
-						"FROM\n"+
-						"	liquidaciones_sumar l\n"+
-						"JOIN prestaciones_liquidadas P ON P .liquidacion_id = l.ID\n"+
-						"JOIN prestaciones_incluidas pi ON pi. ID = P .prestacion_incluida_id\n"+
-						"JOIN prestaciones pr ON pr. ID = pi.prestacion_id\n"+
-						"JOIN documentaciones_respaldatorias_prestaciones drp ON drp.prestacion_id = pr. ID\n"+
-						"WHERE	P.liquidacion_id = #{liquidacion_sumar}\n"+
-            "AND p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
-						"AND P .efector_id = #{efector}\n"+
-						"AND (\n"+
-						"	P .fecha_de_la_prestacion BETWEEN drp.fecha_de_inicio\n"+
-						"	AND drp.fecha_de_finalizacion\n"+
-						"	OR (\n"+
-						"		P .fecha_de_la_prestacion >= drp.fecha_de_inicio\n"+
-						"		AND drp.fecha_de_finalizacion IS NULL\n"+
-						"	)\n"+
-						")"
-			})
+      # solo las prestaciones liquidadas que se correspondan a esta cuasifactura
+      documento_generable.iterar(arg_informe_de_liquidacion.liquidacion_sumar) do |e, p_aceptadas|
+      
+        # Creo el detalle del anexo. Si no fue aprobado el anexo, guarda las prestaciones como "Devueltas para refacturar"
+        ActiveRecord::Base.connection.execute "--Creo el detalle del anexo\n"+
+          "INSERT INTO \"public\".\"anexos_administrativos_prestaciones\" \n"+
+          "(  \"liquidacion_sumar_anexo_administrativo_id\",  \"prestacion_liquidada_id\", \"created_at\",  \"updated_at\" "+agrega_estado_insert+")\n"+
+          p_aceptadas.select([anexo.id, "prestaciones_liquidadas.id", "now() as created_at", "now() as updated_at" + agrega_estado_dato ]).
+                      joins("JOIN prestaciones_incluidas pi ON pi.id = prestaciones_liquidadas.prestacion_incluida_id\n"+ #  Joins para incluir las tablas de
+                            "JOIN prestaciones pr ON pr.id = pi.prestacion_id\n"+                                         # documentación respaldatoria
+                            "JOIN documentaciones_respaldatorias_prestaciones drp ON drp.prestacion_id = pr.id\n").
+                      where(  "prestaciones_liquidadas.id IN (\n"+ #  Verifica que las prestaciones incluidas en el anexo sean las de la 
+                              "    SELECT\n"+                      # cuasifactura que corresponde a este informe de liquidacion   
+                              "      d.prestacion_liquidada_id\n"+
+                              "    FROM\n"+
+                              "      liquidaciones_sumar_cuasifacturas c\n"+
+                              "   join liquidaciones_sumar_cuasifacturas_detalles d on c.id = d.liquidaciones_sumar_cuasifacturas_id\n"+
+                              "    WHERE\n"+
+                              "      c.id = #{arg_informe_de_liquidacion.liquidacion_sumar_cuasifactura_id}\n"+
+                              "  )").
+                      where( " prestaciones_liquidadas.fecha_de_la_prestacion BETWEEN drp.fecha_de_inicio\n"+ #  Filtra que solo incluya las prestaciones
+                             " AND drp.fecha_de_finalizacion\n"+                                              # que requieren documentación respaldatoria 
+                             " OR (\n"+
+                             "   prestaciones_liquidadas.fecha_de_la_prestacion >= drp.fecha_de_inicio\n"+
+                             "   AND drp.fecha_de_finalizacion IS NULL\n"+
+                             " )\n").
+                      where(" prestaciones_liquidadas.efector_id = #{arg_informe_de_liquidacion.liquidacion_sumar_cuasifactura.efector_id }"). # Filtra el efector (x si las moscas)
+                      to_sql
+      end # end itera
+      unless aprobado
+         anexo.finalizar_anexo
+      end 
+    end
+
+    return true
   end
 
-  def self.generar_anexo_para_devolucion(argInformeDeLiquidacionId) # TODO: reemplazar para que reciba el objeto de la liquidacion, no el id
-
-  	informe_de_liquidacion = LiquidacionInforme.find(argInformeDeLiquidacionId)
-    efector = informe_de_liquidacion.liquidacion_sumar_cuasifactura.efector.id
-    liquidacion_sumar = informe_de_liquidacion.liquidacion_sumar
-
-    # Estados
-    estado_aceptada  = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_aceptada.id
-    estado_exceptuada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_exceptuada.id
-    estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
-    estado_rechazada_refacturar = EstadoDeLaPrestacion.find(7) # 7  | Devuelta por la UGSP para refacturar |
-  	estado_del_proceso = EstadoDelProceso.where(codigo: "B").first # estado "Finaliazo y cerrado"
-
-  	#Genero la cabecera
-    anexo = LiquidacionSumarAnexoAdministrativo.create(
-  		estado_del_proceso: estado_del_proceso,
-  		fecha_de_inicio:  DateTime.now(),
-  		fecha_de_finalizacion: DateTime.now()
-  		)
-  	informe_de_liquidacion.liquidacion_sumar_anexo_administrativo = anexo
-  	informe_de_liquidacion.save!
-
-    cq = CustomQuery.ejecutar ({
-      sql:  "INSERT INTO public.anexos_administrativos_prestaciones \n"+
-            "(  liquidacion_sumar_anexo_administrativo_id, prestacion_liquidada_id, \n"+
-            " estado_de_la_prestacion_id, \n"+
-            "created_at, updated_at)\n"+
-            "SELECT #{anexo.id} anexo_administrativo_id, p.id, \n"+
-            "       #{estado_rechazada_refacturar.id}, \n"+
-            "now(), now()\n"+
-            "FROM\n"+
-            " liquidaciones_sumar l\n"+
-            "JOIN prestaciones_liquidadas P ON P .liquidacion_id = l. ID\n"+
-            "JOIN prestaciones_incluidas pi ON pi. ID = P .prestacion_incluida_id\n"+
-            "JOIN prestaciones pr ON pr. ID = pi.prestacion_id\n"+
-            "JOIN documentaciones_respaldatorias_prestaciones drp ON drp.prestacion_id = pr. ID\n"+
-            "WHERE  P.liquidacion_id = #{liquidacion_sumar.id}\n"+
-            "AND p.estado_de_la_prestacion_liquidada_id in (#{estados_aceptados})\n"+
-            "AND P .efector_id = #{efector}\n"+
-            "AND (\n"+
-            " P .fecha_de_la_prestacion BETWEEN drp.fecha_de_inicio\n"+
-            " AND drp.fecha_de_finalizacion\n"+
-            " OR (\n"+
-            "   P .fecha_de_la_prestacion >= drp.fecha_de_inicio\n"+
-            "   AND drp.fecha_de_finalizacion IS NULL\n"+
-            " )\n"+
-            ")"
-      })
-
-    esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: efector))
-
-    # Actualiza las prestaciones brindadas que hayan sido aceptadas durante la liquidación (o sea, aceptadas y exceptuadas por regla)
-    # y las marca como devueltas para refacturar.
-    # Las prestaciones que no han sido aceptadas durante esta liquidación, se mantienen sin cambios en la tabla de prestaciones brindadas
-    # sin tomar en cuenta si el rechazo se realizo por advertencias o algo similar. 
-    cq = CustomQuery.ejecutar ({
-      esquemas: esquemas,
-      sql:  "UPDATE prestaciones_brindadas \n "+
-            "   set estado_de_la_prestacion_id = #{estado_rechazada_refacturar.id} \n "+
-            "FROM prestaciones_liquidadas p \n "+
-            "WHERE p.liquidacion_id = #{liquidacion_sumar.id} \n "+
-            "AND   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
-            "AND p.efector_id in (select ef.id \n "+
-            "                                      from efectores ef \n "+
-            "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
-            "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
-    				"AND p.efector_id = #{efector}\n " +
-            "AND prestaciones_brindadas.id = p.prestacion_brindada_id"
-      })
-
-    # Actualizo el estado de la prestacion liquidada a rechazada para refacturar, siendo este su ultimo estado durante esta liquidación.
-    cq = CustomQuery.ejecutar ({
-      sql:  "update prestaciones_liquidadas \n "+
-            "   set estado_de_la_prestacion_liquidada_id = #{estado_rechazada_refacturar.id} \n "+
-            "where liquidacion_id = #{liquidacion_sumar.id} \n "+
-            "and   estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
-            "and efector_id = #{efector} "
-      })
-  end
-
+  # 
+  # Finaliza el anexo. Las prestaciones a las que no se les indico el
+  # estado de aceptación son guardadas como "Aceptadas pendientes de pago"
+  # 
+  # @return [type] [description]
   def finalizar_anexo
     # busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
-    estado_del_proceso = EstadoDelProceso.find(3) # Registrada, aun no se ha facturado
+    estado_del_proceso = EstadoDelProceso.find(3) # Finalizado
 
     # Establezco el estado de "Aceptada para liquidación en el estado de las prestaciones que no se ha definido estado"
     # TODO: Ver de parametrizar estos estados por algun lado
@@ -154,6 +96,10 @@ class LiquidacionSumarAnexoAdministrativo < ActiveRecord::Base
     end
   end
 
+  # 
+  # Cambia el estado del anexo a cerrado. Esta situación se da al cerrar el informe.
+  # 
+  # @return [type] [description]
   def cerrar_anexo
     #busco el estado de finalizado. TODO: Ver de parametrizar estos estados por algun lado
     estado_del_proceso = EstadoDelProceso.find(4)

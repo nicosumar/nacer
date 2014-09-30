@@ -17,6 +17,7 @@ group :development do
   gem 'hirb-unicode'
   gem "better_errors"
   gem "binding_of_caller"
+  gem 'thin'
 end
 
 gem 'jquery-rails'
@@ -29,16 +30,21 @@ gem 'will_paginate'
 gem 'capistrano'
 gem 'text'
 gem 'nilify_blanks'
-gem 'spreadsheet'
-gem 'thinreports-rails'
 #gem 'unicode_utils'
+gem "paperclip", "~> 4.1"
+
+# Reports gems
 gem 'odf-report'
 gem 'delayed_job_active_record'
 gem 'daemons'
-gem 'paperclip'
+gem 'spreadsheet'
+gem 'thinreports-rails'
+gem 'axlsx'
+gem 'axlsx_rails'
 
 # UI Gems
 gem 'cocoon', '>= 1.2'
 gem 'wice_grid', '>=3.4.0'
 gem 'chosen-rails', '~> 1.1.0'
 gem "select2-rails"
+
