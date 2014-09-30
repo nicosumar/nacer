@@ -204,20 +204,20 @@ class LiquidacionesSumarController < ApplicationController
     elsif current_user.in_group? [:liquidacion_adm]
       if efector_actual.es_administrador? 
        # si es administrador y quiere consultar sobre un efector que no es o bien el mismo o alguno de los administrados, lo redirijo
-        permitir_reporte = false if efector_actual != @efector or efector_actual.efectores_administrados.include? @efector 
+        permitir_reporte = false unless efector_actual == @efector or efector_actual.efectores_administrados.include? @efector 
       elsif efector_actual.es_autoadministrado?
-        permitir_reporte = false if efector_actual != @efector 
+        permitir_reporte = false unless efector_actual == @efector 
       elsif efector_actual.es_administrado?
         # si es administrado y quiere consultar sobre un efector que no es o bien su administrador o alguno de sus administrados, lo redirijo
-        permitir_reporte = false if efector_actual.administrador_sumar.efectores_administrados.include? @efector or efector_actual.administrador_sumar != @efector
+        permitir_reporte = false unless efector_actual.administrador_sumar.efectores_administrados.include? @efector or efector_actual.administrador_sumar == @efector
       end
     elsif current_user.in_group? [:facturacion_uad] 
-      if uad.efector.es_administrador? 
-        permitir_reporte = false if efector_actual != @efector or efector_actual.efectores_administrados.include? @efector 
-      elsif uad.efector.es_autoadministrado?
-        permitir_reporte = false if efector_actual != @efector 
-      elsif uad.efector.es_administrado? 
-        permitir_reporte = false  if Efector.where("unidad_de_alta_de_datos_id = '?' OR id = '?'", uad.id, efector_actual.id).include? @efector or efector_actual.administrador_sumar != @efector
+      if efector_actual.es_administrador? 
+        permitir_reporte = false unless efector_actual == @efector or efector_actual.efectores_administrados.include? @efector 
+      elsif efector_actual.es_autoadministrado?
+        permitir_reporte = false unless efector_actual == @efector 
+      elsif efector_actual.es_administrado? 
+        permitir_reporte = false unless Efector.where("unidad_de_alta_de_datos_id = '?' OR id = '?'", uad.id, efector_actual.id).include? @efector 
       end
     end
 
@@ -227,6 +227,7 @@ class LiquidacionesSumarController < ApplicationController
                       :titulo => "No está autorizado para acceder a esta página", 
                       :mensaje => "Se informará al administrador del sistema sobre este incidente."
                     })
+      return
     end
 
     respond_to do |format|
