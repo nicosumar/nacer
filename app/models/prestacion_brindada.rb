@@ -761,4 +761,9 @@ class PrestacionBrindada < ActiveRecord::Base
     prestacion.comunitaria
   end
 
+  # Procesos de datos externos
+  def self.procesar_datos_externos(hash_de_archivo)
+    puts "Stub"
+  end
+
 end

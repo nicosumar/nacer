@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140901155220) do
+ActiveRecord::Schema.define(:version => 20140825145303) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -586,7 +586,6 @@ ActiveRecord::Schema.define(:version => 20140901155220) do
     t.string   "categoria_obstetrica"
     t.string   "categoria_neonatal"
     t.boolean  "internet",                          :default => false
-    t.boolean  "categorizado_cone",                 :default => false
   end
 
   create_table "estados_de_las_novedades", :force => true do |t|
@@ -998,41 +997,6 @@ ActiveRecord::Schema.define(:version => 20140901155220) do
     t.integer  "excepcion_estado_de_la_prestacion_id", :default => 4
   end
 
-  create_table "partos_sip", :force => true do |t|
-    t.integer "efector_id",                               :null => false
-    t.string  "id01",                                     :null => false
-    t.string  "nombre"
-    t.string  "apellido"
-    t.string  "numero_de_documento"
-    t.date    "fecha_de_terminacion"
-    t.integer "edad_materna"
-    t.integer "gestas_previas"
-    t.string  "embarazo_planeado",           :limit => 1
-    t.string  "fracaso_de_mac",              :limit => 1
-    t.string  "chagas",                      :limit => 1
-    t.string  "sifilis_antes_20_semanas",    :limit => 1
-    t.string  "sifilis_despues_20_semanas",  :limit => 1
-    t.integer "consultas_prenatales"
-    t.string  "corticoides_antenatales",     :limit => 1
-    t.integer "edad_gestacional_al_parto"
-    t.string  "nacimiento",                  :limit => 1
-    t.string  "terminacion",                 :limit => 1
-    t.string  "ocitocicos_prealumbramiento", :limit => 1
-    t.integer "peso_al_nacer"
-    t.string  "egreso_del_rn",               :limit => 1
-    t.string  "anticoncepcion_consejeria",   :limit => 1
-    t.string  "anticoncepcion_mac",          :limit => 1
-    t.string  "att_actual",                  :limit => 1
-    t.integer "att_1a_dosis"
-    t.integer "att_2a_dosis"
-    t.string  "nivel_educativo",             :limit => 1
-    t.integer "apgar_1"
-    t.integer "apgar_5"
-  end
-
-  add_index "partos_sip", ["efector_id"], :name => "index_partos_sip_on_efector_id"
-  add_index "partos_sip", ["id01"], :name => "index_partos_sip_on_id01"
-
   create_table "percentiles_pc_edad", :force => true do |t|
     t.string "nombre"
     t.string "codigo_para_prestaciones"
@@ -1419,12 +1383,6 @@ ActiveRecord::Schema.define(:version => 20140901155220) do
     t.string "nombre", :null => false
   end
 
-  create_table "tipos_de_procesos", :force => true do |t|
-    t.string "codigo"
-    t.string "nombre"
-    t.string "modelo_de_datos"
-  end
-
   create_table "tipos_de_tratamientos", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -1442,18 +1400,17 @@ ActiveRecord::Schema.define(:version => 20140901155220) do
   end
 
   create_table "unidades_de_alta_de_datos", :force => true do |t|
-    t.string   "nombre",                              :null => false
-    t.string   "codigo",                              :null => false
-    t.boolean  "inscripcion",      :default => false
-    t.boolean  "facturacion",      :default => false
-    t.boolean  "activa",           :default => true
+    t.string   "nombre",                           :null => false
+    t.string   "codigo",                           :null => false
+    t.boolean  "inscripcion",   :default => false
+    t.boolean  "facturacion",   :default => false
+    t.boolean  "activa",        :default => true
     t.text     "observaciones"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
     t.integer  "efector_id"
-    t.boolean  "proceso_de_datos", :default => false
   end
 
   add_index "unidades_de_alta_de_datos", ["codigo"], :name => "index_unidades_de_alta_de_datos_on_codigo", :unique => true
@@ -1519,7 +1476,6 @@ ActiveRecord::Schema.define(:version => 20140901155220) do
     t.integer  "failed_attempts",        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
-    t.boolean  "cuenta_eliminada",       :default => false
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

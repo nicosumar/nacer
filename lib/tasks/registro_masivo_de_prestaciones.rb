@@ -180,7 +180,6 @@ class RegistroMasivoDePrestaciones
         id_dato_reportable_4_informado integer,
         valor_dato_reportable_4_informado varchar(255),
         formato_valido boolean,
-        esquema varchar(255),
         efector_id integer,
         efector varchar(255),
         fecha_de_la_prestacion date,
