@@ -9,11 +9,19 @@ class ProcesoDeDatosExternos < ActiveRecord::Base
 
   # Validaciones
   validates :tipo_de_proceso_id, :presence => true
-  validates :archivo_de_datos_file_name, :presence => true
-  validates :hash_de_archivo, :uniqueness => true
+  validates :archivo_de_datos_fingerprint, :uniqueness => true
+  validates_attachment :archivo_de_datos, :presence => true, :content_type => { :content_type => ["text/plain", "text/csv"] }
 
   def procesar
-    eval(modelo_de_datos).procesar_datos_externos(hash_de_archivo)
+    eval(modelo_de_datos).procesar_datos_externos(archivo_de_datos_fingerprint)
+  end
+
+  # Paperclip before_post_process callback
+  def before_post_process
+  end
+
+  # Paperclip after_post_process callback
+  def after_post_process
   end
 
 end

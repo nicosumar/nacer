@@ -377,7 +377,7 @@ ActiveRecord::Base.connection.execute <<-SQL
                   archivo_de_datos_content_type character varying (255),
                   archivo_de_datos_file_size integer,
                   archivo_de_datos_updated_at timestamp without time zone,
-                  hash_de_archivo character varying (255) NOT NULL,
+                  archivo_de_datos_fingerprint character varying (255),
                   proceso_solicitado timestamp without time zone,
                   proceso_iniciado timestamp without time zone,
                   proceso_finalizado timestamp without time zone,
