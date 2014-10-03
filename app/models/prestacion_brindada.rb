@@ -26,6 +26,8 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :estado_de_la_prestacion_liquidada, class_name: EstadoDeLaPrestacion
   belongs_to :nomenclador
   belongs_to :prestacion
+  belongs_to :creator, :class_name => "User"
+  belongs_to :updater, :class_name => "User"
   has_many :datos_reportables_asociados, :inverse_of => :prestacion_brindada, :order => :id
   has_many :metodos_de_validacion_fallados, :inverse_of => :prestacion_brindada
   has_many :metodos_de_validacion, :through => :metodos_de_validacion_fallados
