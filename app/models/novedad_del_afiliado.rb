@@ -819,11 +819,11 @@ class NovedadDelAfiliado < ActiveRecord::Base
             SELECT
               'D'::text AS \"TipoRegistro\",
               n1.clave_de_beneficiario AS \"ClaveBeneficiario\",
-              LEFT(n1.apellido, 30) AS \"BenefApellido\",
-              LEFT(n1.nombre, 30) AS \"BenefNombre\",
+              REGEXP_REPLACE(LEFT(n1.apellido, 30), E'\\t', '', 'g') AS \"BenefApellido\",
+              REGEXP_REPLACE(LEFT(n1.nombre, 30), E'\\t', '', 'g') AS \"BenefNombre\",
               t1.codigo AS \"BenefTipoDocumento\",
               c1.codigo AS \"BenefClaseDocumento\",
-              LEFT(n1.numero_de_documento, 12) AS \"BenefNroDocumento\",
+              REGEXP_REPLACE(LEFT(n1.numero_de_documento, 12), E'\\t', '', 'g') AS \"BenefNroDocumento\",
               s1.codigo AS \"BenefSexo\",
               n1.categoria_de_afiliado_id AS \"BenefIdCategoria\",
               n1.fecha_de_nacimiento AS \"BenefFechaNacimiento\",
@@ -831,17 +831,17 @@ class NovedadDelAfiliado < ActiveRecord::Base
               n1.lengua_originaria_id AS \"Id_Lengua\",
               n1.tribu_originaria_id AS \"Id_PuebloOriginario\",
               t2.codigo AS \"MadreTipoDoc\",
-              LEFT(n1.numero_de_documento_de_la_madre, 12) AS \"MadreNroDoc\",
-              LEFT(n1.apellido_de_la_madre, 30) AS \"MadreApellido\",
-              LEFT(n1.nombre_de_la_madre, 30) AS \"MadreNombre\",
+              REGEXP_REPLACE(LEFT(n1.numero_de_documento_de_la_madre, 12), E'\\t', '', 'g') AS \"MadreNroDoc\",
+              REGEXP_REPLACE(LEFT(n1.apellido_de_la_madre, 30), E'\\t', '', 'g') AS \"MadreApellido\",
+              REGEXP_REPLACE(LEFT(n1.nombre_de_la_madre, 30), E'\\t', '', 'g') AS \"MadreNombre\",
               t3.codigo AS \"PadreTipoDoc\",
-              LEFT(n1.numero_de_documento_del_padre, 12) AS \"PadreNroDoc\",
-              LEFT(n1.apellido_del_padre, 30) AS \"PadreApellido\",
-              LEFT(n1.nombre_del_padre, 30) AS \"PadreNombre\",
+              REGEXP_REPLACE(LEFT(n1.numero_de_documento_del_padre, 12), E'\\t', '', 'g') AS \"PadreNroDoc\",
+              REGEXP_REPLACE(LEFT(n1.apellido_del_padre, 30), E'\\t', '', 'g') AS \"PadreApellido\",
+              REGEXP_REPLACE(LEFT(n1.nombre_del_padre, 30), E'\\t', '', 'g') AS \"PadreNombre\",
               t4.codigo AS \"TutorTipoDoc\",
-              LEFT(n1.numero_de_documento_del_tutor, 12) AS \"TutorNroDoc\",
-              LEFT(n1.apellido_del_tutor, 30) AS \"TutorApellido\",
-              LEFT(n1.nombre_del_tutor, 30) AS \"TutorNombre\",
+              REGEXP_REPLACE(LEFT(n1.numero_de_documento_del_tutor, 12), E'\\t', '', 'g') AS \"TutorNroDoc\",
+              REGEXP_REPLACE(LEFT(n1.apellido_del_tutor, 30), E'\\t', '', 'g') AS \"TutorApellido\",
+              REGEXP_REPLACE(LEFT(n1.nombre_del_tutor, 30), E'\\t', '', 'g') AS \"TutorNombre\",
               NULL::text AS \"TutorTipoRelacion\",
               (CASE
                 WHEN tn.codigo = 'A' THEN
@@ -855,20 +855,20 @@ class NovedadDelAfiliado < ActiveRecord::Base
               n1.fecha_probable_de_parto AS \"FechaProbableParto\",
               n1.fecha_efectiva_de_parto AS \"FechaEfectivaParto\",
               'S'::text AS \"Activo\",
-              LEFT(n1.domicilio_calle, 40) AS \"DomicilioCalle\",
-              LEFT(n1.domicilio_numero, 5) AS \"DomicilioNro\",
-              LEFT(n1.domicilio_manzana, 5) AS \"DomicilioManzana\",
-              LEFT(n1.domicilio_piso, 5) AS \"DomicilioPiso\",
-              LEFT(n1.domicilio_depto, 5) AS \"DomicilioDepto\",
-              LEFT(n1.domicilio_entre_calle_1, 40) AS \"DomEntreCalle1\",
-              LEFT(n1.domicilio_entre_calle_2, 40) AS \"DomEntreCalle2\",
-              LEFT(n1.domicilio_barrio_o_paraje, 40) AS \"DomBarrio\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_calle, 40), E'\\t', '', 'g') AS \"DomicilioCalle\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_numero, 5), E'\\t', '', 'g') AS \"DomicilioNro\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_manzana, 5), E'\\t', '', 'g') AS \"DomicilioManzana\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_piso, 5), E'\\t', '', 'g') AS \"DomicilioPiso\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_depto, 5), E'\\t', '', 'g') AS \"DomicilioDepto\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_entre_calle_1, 40), E'\\t', '', 'g') AS \"DomEntreCalle1\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_entre_calle_2, 40), E'\\t', '', 'g') AS \"DomEntreCalle2\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_barrio_o_paraje, 40), E'\\t', '', 'g') AS \"DomBarrio\",
               UPPER(LEFT(d1.nombre, 40)) AS \"DomMunicipio\",
               UPPER(LEFT(d1.nombre, 40)) AS \"DomDepartamento\",
               UPPER(LEFT(d2.nombre, 40)) AS \"DomLocalidad\",
-              LEFT(n1.domicilio_codigo_postal, 8) AS \"DomCodigoPostal\",
+              REGEXP_REPLACE(LEFT(n1.domicilio_codigo_postal, 8), E'\\t', '', 'g') AS \"DomCodigoPostal\",
               '#{codigo_provincia}'::text AS \"DomIdProvincia\",
-              n1.telefono AS \"Telefono\",
+              REGEXP_REPLACE(n1.telefono, E'\\t', '', 'g') AS \"Telefono\",
               e1.cuie AS \"LugarAtencionHabitual\",
               e1.cuie AS \"CUIEfectorAsignado\",
               n1.id AS \"Id_Novedad\",
@@ -898,17 +898,20 @@ class NovedadDelAfiliado < ActiveRecord::Base
               n1.e_mail AS \"Email\",
               n1.numero_de_celular AS \"NumeroCelular\",
               n1.fecha_de_la_ultima_menstruacion AS \"FUM\",
-              (CASE
-                WHEN LENGTH(n1.observaciones) > 0 THEN
-                  LEFT(
-                    '--DOMICILIO: '::text ||
-                    REGEXP_REPLACE(n1.observaciones, E'\\r\\n', '~', 'g') ||
-                    ' --~'::text ||
-                    REGEXP_REPLACE(COALESCE(n1.observaciones_generales, ''), E'\\r\\n', '~', 'g'), 200
-                  )
-                ELSE
-                  LEFT(REGEXP_REPLACE(COALESCE(n1.observaciones_generales, ''), E'\\r\\n', '~', 'g'), 200)
-              END) AS \"ObservacionesGenerales\",
+              REGEXP_REPLACE(
+                (CASE
+                  WHEN LENGTH(n1.observaciones) > 0 THEN
+                    LEFT(
+                      '--DOMICILIO: '::text ||
+                      REGEXP_REPLACE(n1.observaciones, E'\\r\\n', '~', 'g') ||
+                      ' --~'::text ||
+                      REGEXP_REPLACE(COALESCE(n1.observaciones_generales, ''), E'\\r\\n', '~', 'g'), 200
+                    )
+                  ELSE
+                    LEFT(REGEXP_REPLACE(COALESCE(n1.observaciones_generales, ''), E'\\r\\n', '~', 'g'), 200)
+                END),
+                E'\\t', '', 'g'
+              ) AS \"ObservacionesGenerales\",
               d3.codigo AS \"Discapacidad\",
               UPPER(LEFT(p1.nombre, 40)) AS \"AfiPais\"
               FROM uad_#{codigo_uad}.novedades_de_los_afiliados AS n1

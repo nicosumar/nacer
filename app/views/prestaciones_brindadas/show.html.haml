@@ -139,7 +139,7 @@
     %div.field_content
       %span.field_name= "Cantidad de " + @prestacion_brindada.prestacion.unidad_de_medida.nombre.downcase
       %span.field_value= (@prestacion_brindada.prestacion.unidad_de_medida.solo_enteros ? |
-        @prestacion_brindada.cantidad_de_unidades.to_i : @prestacio<n_brindada.cantidad_de_unidades) |
+        @prestacion_brindada.cantidad_de_unidades.to_i : @prestacion_brindada.cantidad_de_unidades) |
 
   - if @prestacion_brindada.datos_reportables_asociados.any?
     %h3 Atributos reportables
@@ -197,24 +197,39 @@
     - else
       %span.field_empty No se han ingresado observaciones para la prestación brindada
 
-  - if @prestacion_brindada.cuasi_factura
-    %h3 Datos de la liquidación
+  - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+    %h3 Datos del último proceso de liquidación
     %div.field_content
-      %span.field_name Número de cuasi-factura
-      %span.field_value= @prestacion_brindada.cuasi_factura.numero
-      = link_to "Ver cuasi-factura", @prestacion_brindada.cuasi_factura, |
-        { :title => "Se abre en otra pestaña", :onclick => "this.target='_blank'" } |
+      %span.field_name Estado de la prestación liquidada
+      %span.field_value= @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+    - if !@prestacion_brindada.observaciones_de_liquidacion.blank?
+      %div.field_content
+        %span.field_value_multiline
+          - @prestacion_brindada.observaciones_de_liquidacion.split("\n").each do |linea|
+            = linea
+            %br/
+
+  %h3 Información sobre el registro
+
+  %div.field_content
+    %span.field_name Fecha y hora de creación del registro
+    - if @prestacion_brindada.created_at.present?
+      %span.field_value= @prestacion_brindada.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+    - else
+      %span.field_empty No se registró la fecha de creación
+  %div.field_content
+    %span.field_name Usuario que creó el registro
+    - if @prestacion_brindada.creator.present?
+      %span.field_value= @prestacion_brindada.creator.nombre_completo
+    - else
+      %span.field_empty No se registró el usuario que realizó la creación
+  - if @prestacion_brindada.updated_at.present? && @prestacion_brindada.created_at.present? && @prestacion_brindada.updated_at > @prestacion_brindada.created_at
     %div.field_content
-      %span.field_name Nomenclador aplicado
-      %span.field_value= @prestacion_brindada.nomenclador.nombre
-    - if @prestacion_brindada.monto_liquidado > 0.0
-      %div.field_content
-        %span.field_name Monto liquidado
-        %span.field_value
-          = number_to_currency(@prestacion_brindada.monto_liquidado)
-          - if @prestacion_brindada.monto_facturado != @prestacion_brindada.monto_liquidado
-            = "(se había facturado por #{number_to_currency(@prestacion_brindada.monto_facturado)})"
-    - if @prestacion_brindada.fecha_del_debito
-      %div.field_content
-        %span.field_name Fecha del débito de auditoría
-        %span.field_value= @prestacion_brindada.fecha_del_debito.strftime("%d/%m/%Y")
+      %span.field_name Fecha y hora de la última modificación del registro
+      %span.field_value= @prestacion_brindada.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+    %div.field_content
+      %span.field_name Último usuario que modificó esta solicitud
+      - if @prestacion_brindada.updater.present?
+        %span.field_value= @prestacion_brindada.updater.nombre_completo
+      - else
+        %span.field_empty No se registró el usuario que realizó la última modificación
