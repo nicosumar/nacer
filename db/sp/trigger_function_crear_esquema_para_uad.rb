@@ -366,7 +366,7 @@ ActiveRecord::Base.connection.execute <<-SQL
 
             END IF;
 
-            IF NEW.procesos_de_datos AND NOT existe_procesos THEN
+            IF NEW.proceso_de_datos AND NOT existe_procesos THEN
               EXECUTE '
 
                 -- Crear la tabla para almacenar las procesos de importación de datos externos realizados
