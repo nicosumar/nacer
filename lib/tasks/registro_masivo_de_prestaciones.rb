@@ -74,7 +74,7 @@ class RegistroMasivoDePrestaciones
     end
     TipoDeDocumento.all.each do |i|
       hash_tipos.merge! i.codigo => i.id
-    endFormulario de modificación de autorizaciones del usuario
+    end
     Sexo.all.each do |i|
       hash_sexos.merge! i.codigo => i.id
     end

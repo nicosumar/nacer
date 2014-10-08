@@ -763,11 +763,6 @@ class PrestacionBrindada < ActiveRecord::Base
     prestacion.comunitaria
   end
 
-  # Procesos de datos externos
-  def self.procesar_datos_externos(hash_de_archivo)
-    puts "Stub"
-  end
-
   #
   # Busca todas las prestaciones sin facturar y vencidas al periodo indicado y las marca como vencidas
   # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
@@ -964,5 +959,119 @@ class PrestacionBrindada < ActiveRecord::Base
 
     end #end each duplicados
   end # end anular_prestaciones_duplicadas
+
+  # CONSTANTES Y CALLBACKS PARA PROCESAMIENTO DE DATOS EXTERNOS
+
+  # Define los atributos en el orden que deben aparecer en el archivo de texto (CSV) que se va a procesar
+  ATRIBUTOS = [
+    "Efector",
+    "Fecha de la prestación",
+    "Clave de beneficiario",
+    "Apellido",
+    "Nombre",
+    "Clase de documento",
+    "Tipo de documento",
+    "Número de documento",
+    "Historia clínica",
+    "Código de prestación",
+    "Dato reportable 1 (ID)",
+    "Dato reportable 1 (valor)",
+    "Dato reportable 2 (ID)",
+    "Dato reportable 2 (valor)",
+    "Dato reportable 3 (ID)",
+    "Dato reportable 3 (valor)",
+    "Dato reportable 4 (ID)",
+    "Dato reportable 4 (valor)"
+  ]
+
+  # Define los patrones de expresiones regulares para validación rápida de formato de una línea del archivo CSV.
+  # Es utilizado durante el preprocesamiento del archivo.
+  PATRONES_DE_VALIDACION = [
+    /[[:alpha:]][0-9]{5}/,
+    /20[0-9][0-9]-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])|(0?[1-9]|[1-2][0-9]|3[0-1])\/(0?[1-9]|1[0-2])\/(20)?[0-9][0-9]/,
+    /09[0-9]{14}|^$/,
+    /[[:word:]]+/,
+    /[[:word:]]+/,
+    Regexp.new(ClaseDeDocumento.all.collect{|c| c.id.to_s + "|" + c.codigo.to_s}.join("|"), :ignore_case),
+    Regexp.new(TipoDeDocumento.all.collect{|c| c.id.to_s + "|" + c.codigo.to_s}.join("|"), :ignore_case),
+    /[[:word:]]+/,
+    /[[:word:]]+/,
+    /[[:alpha:]]{2}[[:blank:]]*[[:alpha:]][0-9]{3}[[:blank:]]*([0-9]{3}|[[:alpha:]][0-9]{2}(\.[0-9])?)/,
+    /[1-9][0-9]*|^$/,
+    /[[:word:]]*/,
+    /[1-9][0-9]*|^$/,
+    /[[:word:]]*/,
+    /[1-9][0-9]*|^$/,
+    /[[:word:]]*/,
+    /[1-9][0-9]*|^$/,
+    /[[:word:]]*/
+  ]
+
+  def self.crear_tabla_de_preprocesamiento(nombre_de_tabla)
+    ActiveRecord::Base.connection.execute <<-SQL
+      CREATE TABLE "procesos"."#{nombre_de_tabla}" (
+        linea integer PRIMARY KEY,
+        formato_valido boolean,
+        errores_de_formato text,
+        efector_informado varchar(255),
+        fecha_de_la_prestacion_informada varchar(255),
+        clave_de_beneficiario_informado varchar(255),
+        apellido_informado varchar(255),
+        nombre_informado varchar(255),
+        clase_de_documento_informado varchar(255),
+        tipo_de_documento_informado varchar(255),
+        numero_de_documento_informado varchar(255),
+        historia_clinica_informada varchar(255),
+        codigo_de_prestacion_informado varchar(255),
+        id_dato_reportable_1_informado varchar(255),
+        valor_dato_reportable_1_informado varchar(255),
+        id_dato_reportable_2_informado varchar(255),
+        valor_dato_reportable_2_informado varchar(255),
+        id_dato_reportable_3_informado varchar(255),
+        valor_dato_reportable_3_informado varchar(255),
+        id_dato_reportable_4_informado varchar(255),
+        valor_dato_reportable_4_informado varchar(255),
+        efector_id integer,
+        fecha_de_la_prestacion date,
+        clave_de_beneficiario varchar(255),
+        apellido varchar(255),
+        nombre varchar(255),
+        clase_de_documento_id integer,
+        tipo_de_documento_id integer,
+        numero_de_documento varchar(255),
+        sexo_id integer,
+        prestacion_id integer,
+        diagnostico_id integer,
+        dato_reportable_1_id integer,
+        dato_reportable_1_valor varchar(255),
+        dato_reportable_2_id integer,
+        dato_reportable_2_valor varchar(255),
+        dato_reportable_3_id integer,
+        dato_reportable_3_valor varchar(255),
+        dato_reportable_4_id integer,
+        dato_reportable_4_valor varchar(255),
+        errores_de_validacion text,
+        a_persistir boolean
+      );
+    SQL
+  end
+
+  def self.guardar_linea_a_procesar(nombre_de_tabla, numero_de_linea, datos = [], linea_valida = false, errores_de_formato = [])
+    raise ArgumentError unless nombre_de_tabla.present? && numero_de_linea.present?
+    ActiveRecord::Base.connection.execute <<-SQL
+      INSERT INTO "procesos"."#{nombre_de_tabla}"
+        VALUES (
+          '#{numero_de_linea}',
+          '#{linea_valida ? "t" : "f"}'::boolean,
+          '#{errores_de_formato.join("; ")}',
+          '#{campos.join("', '")}'
+        );
+    SQL
+  end
+
+  # Procesos de datos externos
+  def self.procesar_datos_externos(nombre_de_tabla)
+    puts "Stub"
+  end
 
 end#end class
