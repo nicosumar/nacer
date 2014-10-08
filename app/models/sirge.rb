@@ -1,3 +1,4 @@
+  # -*- encoding : utf-8 -*-
 class Sirge < ActiveRecord::Base
 
   belongs_to :efector
@@ -75,7 +76,9 @@ class Sirge < ActiveRecord::Base
                 fecha_gasto = Time.days_in_month(row[2].to_s.gsub(/[^0-9]/i, '').to_i, row[3].to_s.gsub(/[^0-9]/i, '').to_i) #el ultimo dia de cada periodo de rendicion
                 periodo = row[3].to_s.gsub(/[^0-9]/i, '')+" "+row[2].to_s.gsub(/[^0-9]/i, '')
               end
-    #  Sirge.cargar_aplicacion_de_fondos("2014", "01")
+    #  Sirge.cargar_aplicacion_de_fondos("2014", "10")
+
+              puts "Fila Nº: #{row.idx}"
 
               i = 4
               while i <= 21
