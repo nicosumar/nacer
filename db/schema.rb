@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140918141700) do
+ActiveRecord::Schema.define(:version => 20141008105646) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -443,6 +443,22 @@ ActiveRecord::Schema.define(:version => 20140918141700) do
     t.decimal "minimo",                :precision => 15, :scale => 4
     t.decimal "maximo",                :precision => 15, :scale => 4
   end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0, :null => false
+    t.integer  "attempts",   :default => 0, :null => false
+    t.text     "handler",                   :null => false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "departamentos", :force => true do |t|
     t.string  "nombre",                :null => false
@@ -1443,6 +1459,12 @@ ActiveRecord::Schema.define(:version => 20140918141700) do
     t.string "nombre", :null => false
   end
 
+  create_table "tipos_de_procesos", :force => true do |t|
+    t.string "codigo"
+    t.string "nombre"
+    t.string "modelo_de_datos"
+  end
+
   create_table "tipos_de_tratamientos", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -1460,19 +1482,21 @@ ActiveRecord::Schema.define(:version => 20140918141700) do
   end
 
   create_table "unidades_de_alta_de_datos", :force => true do |t|
-    t.string   "nombre",                           :null => false
-    t.string   "codigo",                           :null => false
-    t.boolean  "inscripcion",   :default => false
-    t.boolean  "facturacion",   :default => false
-    t.boolean  "activa",        :default => true
+    t.string   "nombre",                              :null => false
+    t.string   "codigo",                              :null => false
+    t.boolean  "inscripcion",      :default => false
+    t.boolean  "facturacion",      :default => false
+    t.boolean  "activa",           :default => true
     t.text     "observaciones"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.integer  "creator_id"
     t.integer  "updater_id"
     t.integer  "efector_id"
+    t.boolean  "proceso_de_datos", :default => false
   end
 
+  add_index "unidades_de_alta_de_datos", ["activa", "id"], :name => "index_unidades_de_alta_de_datos_on_activa_and_id"
   add_index "unidades_de_alta_de_datos", ["codigo"], :name => "index_unidades_de_alta_de_datos_on_codigo", :unique => true
   add_index "unidades_de_alta_de_datos", ["efector_id"], :name => "index_unidades_de_alta_de_datos_on_efector_id"
   add_index "unidades_de_alta_de_datos", ["efector_id"], :name => "unidades_de_alta_de_datos_efector_id_key", :unique => true
@@ -1486,6 +1510,8 @@ ActiveRecord::Schema.define(:version => 20140918141700) do
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
   end
+
+  add_index "unidades_de_alta_de_datos_users", ["user_id"], :name => "index_unidades_de_alta_de_datos_users_on_user_id"
 
   create_table "unidades_de_medida", :force => true do |t|
     t.string  "nombre",       :null => false
@@ -1510,6 +1536,7 @@ ActiveRecord::Schema.define(:version => 20140918141700) do
   end
 
   add_index "user_groups_users", ["user_group_id", "user_id"], :name => "index_user_groups_users_on_user_group_id_and_user_id", :unique => true
+  add_index "user_groups_users", ["user_id"], :name => "index_user_groups_users_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "nombre",                                    :null => false
@@ -1540,6 +1567,7 @@ ActiveRecord::Schema.define(:version => 20140918141700) do
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
+  add_index "users", ["current_sign_in_at"], :name => "index_users_on_current_sign_in_at"
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
