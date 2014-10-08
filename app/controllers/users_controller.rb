@@ -16,7 +16,7 @@ class UsersController < Devise::RegistrationsController
     end
 
     @new_users = User.no_eliminado.where(:authorized => false).order("id DESC")
-    @users = User.no_eliminado.where(:authorized => true).order("current_sign_in_at DESC NULLS LAST")
+    @users = User.no_eliminado.where(:authorized => true).includes([:unidades_de_alta_de_datos, :user_groups]).order("current_sign_in_at DESC NULLS LAST")
   end
 
   # GET /users/sign_up
