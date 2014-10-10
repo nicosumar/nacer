@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141008111837) do
+ActiveRecord::Schema.define(:version => 20141009011332) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -627,8 +627,12 @@ ActiveRecord::Schema.define(:version => 20141008111837) do
     t.boolean "indexable", :default => false
   end
 
-# Could not dump table "estados_de_las_prestaciones" because of following NoMethodError
-#   undefined method `result' for Interrupt:Interrupt
+  create_table "estados_de_las_prestaciones", :force => true do |t|
+    t.string  "nombre"
+    t.string  "codigo"
+    t.boolean "pendiente", :default => false
+    t.boolean "indexable", :default => false
+  end
 
   create_table "estados_de_los_procesos", :force => true do |t|
     t.string   "nombre"

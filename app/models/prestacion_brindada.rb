@@ -8,12 +8,13 @@ class PrestacionBrindada < ActiveRecord::Base
   # CAMBIADO POR UNA ASOCIACIÓN AL MODELO DE MÉTODOS DE VALIDACIÓN (LOS MÉTODOS DE VALIDACIÓN FALLADOS SE PERSISTEN A LA BB.DD.)
   # Advertencias generadas por las validaciones
   #attr_accessor :advertencias, :datos_reportables_incompletos
+  attr_reader :datos_reportables_asociados_attributes
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :cuasi_factura_id, :diagnostico_id, :efector_id
   attr_accessible :es_catastrofica, :estado_de_la_prestacion_id, :fecha_de_la_prestacion, :fecha_del_debito, :mensaje_de_la_baja
   attr_accessible :monto_facturado, :monto_liquidado, :nomenclador_id, :observaciones, :prestacion_id
-  attr_accessible :datos_reportables_asociados_attributes, :historia_clinica
+  attr_accessible :datos_reportables_asociados_attributes, :historia_clinica, :datos_reportables_asociados
 
   # Los atributos siguientes solo pueden establecerse durante la creación
   attr_readonly :clave_de_beneficiario, :efector_id, :fecha_de_la_prestacion, :prestacion_id
@@ -23,6 +24,7 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :diagnostico
   belongs_to :efector
   belongs_to :estado_de_la_prestacion
+  belongs_to :estado_de_la_prestacion_liquidada, :class_name => "EstadoDeLaPrestacion"
   belongs_to :nomenclador
   belongs_to :prestacion
   belongs_to :creator, :class_name => "User"
@@ -90,6 +92,17 @@ class PrestacionBrindada < ActiveRecord::Base
   # Devuelve los registros filtrados cuando tienen advertencias que son visibles para el usuario
   def self.con_advertencias_visibles
     where(:estado_de_la_prestacion_id => 2).joins(:metodos_de_validacion).where('"metodos_de_validacion"."visible"').uniq
+  end
+
+  #
+  # datos_reportables_asociados_attributes (reader)
+  # Devuelve un array con los atributos de los datos reportables asociados para serialización
+  def datos_reportables_asociados_attributes
+    datos_reportables_asociados.collect do |dra|
+      dra.attributes.keep_if do |k,v|
+        %w(dato_reportable_requerido_id valor_integer valor_big_decimal valor_date valor_string).member? k
+      end
+    end
   end
 
   #
@@ -962,115 +975,111 @@ class PrestacionBrindada < ActiveRecord::Base
 
   # CONSTANTES Y CALLBACKS PARA PROCESAMIENTO DE DATOS EXTERNOS
 
-  # Define los atributos en el orden que deben aparecer en el archivo de texto (CSV) que se va a procesar
-  ATRIBUTOS = [
-    "Efector",
-    "Fecha de la prestación",
-    "Clave de beneficiario",
-    "Apellido",
-    "Nombre",
-    "Clase de documento",
-    "Tipo de documento",
-    "Número de documento",
-    "Historia clínica",
-    "Código de prestación",
-    "Dato reportable 1 (ID)",
-    "Dato reportable 1 (valor)",
-    "Dato reportable 2 (ID)",
-    "Dato reportable 2 (valor)",
-    "Dato reportable 3 (ID)",
-    "Dato reportable 3 (valor)",
-    "Dato reportable 4 (ID)",
-    "Dato reportable 4 (valor)"
-  ]
-
-  # Define los patrones de expresiones regulares para validación rápida de formato de una línea del archivo CSV.
-  # Es utilizado durante el preprocesamiento del archivo.
-  PATRONES_DE_VALIDACION = [
-    /[[:alpha:]][0-9]{5}/,
-    /20[0-9][0-9]-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])|(0?[1-9]|[1-2][0-9]|3[0-1])\/(0?[1-9]|1[0-2])\/(20)?[0-9][0-9]/,
-    /09[0-9]{14}|^$/,
-    /[[:word:]]+/,
-    /[[:word:]]+/,
-    Regexp.new(ClaseDeDocumento.all.collect{|c| c.id.to_s + "|" + c.codigo.to_s}.join("|"), :ignore_case),
-    Regexp.new(TipoDeDocumento.all.collect{|c| c.id.to_s + "|" + c.codigo.to_s}.join("|"), :ignore_case),
-    /[[:word:]]+/,
-    /[[:word:]]+/,
-    /[[:alpha:]]{2}[[:blank:]]*[[:alpha:]][0-9]{3}[[:blank:]]*([0-9]{3}|[[:alpha:]][0-9]{2}(\.[0-9])?)/,
-    /[1-9][0-9]*|^$/,
-    /[[:word:]]*/,
-    /[1-9][0-9]*|^$/,
-    /[[:word:]]*/,
-    /[1-9][0-9]*|^$/,
-    /[[:word:]]*/,
-    /[1-9][0-9]*|^$/,
-    /[[:word:]]*/
-  ]
-
-  def self.crear_tabla_de_preprocesamiento(nombre_de_tabla)
-    ActiveRecord::Base.connection.execute <<-SQL
-      CREATE TABLE "procesos"."#{nombre_de_tabla}" (
-        linea integer PRIMARY KEY,
-        formato_valido boolean,
-        errores_de_formato text,
-        efector_informado varchar(255),
-        fecha_de_la_prestacion_informada varchar(255),
-        clave_de_beneficiario_informado varchar(255),
-        apellido_informado varchar(255),
-        nombre_informado varchar(255),
-        clase_de_documento_informado varchar(255),
-        tipo_de_documento_informado varchar(255),
-        numero_de_documento_informado varchar(255),
-        historia_clinica_informada varchar(255),
-        codigo_de_prestacion_informado varchar(255),
-        id_dato_reportable_1_informado varchar(255),
-        valor_dato_reportable_1_informado varchar(255),
-        id_dato_reportable_2_informado varchar(255),
-        valor_dato_reportable_2_informado varchar(255),
-        id_dato_reportable_3_informado varchar(255),
-        valor_dato_reportable_3_informado varchar(255),
-        id_dato_reportable_4_informado varchar(255),
-        valor_dato_reportable_4_informado varchar(255),
-        efector_id integer,
-        fecha_de_la_prestacion date,
-        clave_de_beneficiario varchar(255),
-        apellido varchar(255),
-        nombre varchar(255),
-        clase_de_documento_id integer,
-        tipo_de_documento_id integer,
-        numero_de_documento varchar(255),
-        sexo_id integer,
-        prestacion_id integer,
-        diagnostico_id integer,
-        dato_reportable_1_id integer,
-        dato_reportable_1_valor varchar(255),
-        dato_reportable_2_id integer,
-        dato_reportable_2_valor varchar(255),
-        dato_reportable_3_id integer,
-        dato_reportable_3_valor varchar(255),
-        dato_reportable_4_id integer,
-        dato_reportable_4_valor varchar(255),
-        errores_de_validacion text,
-        a_persistir boolean
-      );
-    SQL
-  end
-
-  def self.guardar_linea_a_procesar(nombre_de_tabla, numero_de_linea, datos = [], linea_valida = false, errores_de_formato = [])
-    raise ArgumentError unless nombre_de_tabla.present? && numero_de_linea.present?
-    ActiveRecord::Base.connection.execute <<-SQL
-      INSERT INTO "procesos"."#{nombre_de_tabla}"
-        VALUES (
-          '#{numero_de_linea}',
-          '#{linea_valida ? "t" : "f"}'::boolean,
-          '#{errores_de_formato.join("; ")}',
-          '#{campos.join("', '")}'
-        );
-    SQL
-  end
+  # Define los atributos en el orden que deben aparecer en el archivo de texto (CSV) que se va a procesar y las expresiones regulares que
+  # se utilizan para verificar rápidamente si el formato del valor tiene una sintaxis correcta
+  ESTRUCTURA_DEL_ARCHIVO_DE_DATOS = {
+    :efector => {
+      :etiqueta => "Efector",
+      :patron_de_validacion => /[[:alpha:]][0-9]{5}/, # Una letra, seguida de 5 dígitos del 0 al 9
+      :obtener => lambda {|cadena| Efector.find_by_cuie(cadena)}
+    },
+    :fecha_de_la_prestacion => {
+      :etiqueta => "Fecha de la prestación",
+      :patron_de_validacion => /20[0-9][0-9]-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])|(0?[1-9]|[1-2][0-9]|3[0-1])\/(0?[1-9]|1[0-2])\/20[0-9][0-9]/,
+      :obtener => lambda {|cadena| begin Date.strptime(cadena, "%Y-%m-%d") rescue begin Date.strptime(cadena, "%d/%m/%Y") rescue nil end end}
+    },
+    :clave_de_beneficiario => {
+      :etiqueta => "Clave de beneficiario",
+      :patron_de_validacion => /09[0-9]{14}|^$/, # Clave única de beneficiario de 16 dígitos que comienza con '09', o en blanco
+      :obtener => lambda {|cadena| cadena.strip}
+    },
+    :apellido => {
+      :etiqueta => "Apellido",
+      :patron_de_validacion => /[[:word:]]+/, # Una o más palabras
+      :obtener => lambda {|cadena| cadena.strip}
+    },
+    :nombre => {
+      :etiqueta => "Nombre",
+      :patron_de_validacion => /[[:word:]]+/, # Una o más palabras
+      :obtener => lambda {|cadena| cadena.strip}
+    },
+    :clase_de_documento => {
+      :etiqueta => "Clase de documento",
+      :patron_de_validacion => Regexp.new(ClaseDeDocumento.all.collect{|c| c.id.to_s + "|" + c.codigo.to_s}.join("|"), :ignore_case), # ID o código existente
+      :obtener => lambda {|cadena| begin ClaseDeDocumento.find(cadena.to_i) rescue ClaseDeDocumento.find_by_codigo(cadena) end}
+    },
+    :tipo_de_documento => {
+      :etiqueta => "Tipo de documento",
+      :patron_de_validacion => Regexp.new(TipoDeDocumento.all.collect{|c| c.id.to_s + "|" + c.codigo.to_s}.join("|"), :ignore_case), # ID o código existente
+      :obtener => lambda {|cadena| begin TipoDeDocumento.find(cadena.to_i) rescue TipoDeDocumento.find_by_codigo(cadena) end}
+    },
+    :numero_de_documento => {
+      :etiqueta => "Número de documento",
+      :patron_de_validacion => /[[:word:]]+/, # Una o más palabras
+      :obtener => lambda {|cadena| cadena.strip}
+    },
+    :historia_clinica => {
+      :etiqueta => "Historia clínica / Registro",
+      :patron_de_validacion => /[[:word:]]+/, # Una o más palabras
+      :obtener => lambda {|cadena| cadena.strip}
+    },
+    :codigo_de_prestacion => {
+      :etiqueta => "Código de prestación",
+      :patron_de_validacion => /[[:alpha:]]{2}[[:blank:]]*[[:alpha:]][0-9]{3}[[:blank:]]*([0-9]{3}|[[:alpha:]][0-9]{2}(\.[0-9])?)/,
+      :obtener => lambda {|cadena| cadena.gsub(/[[:blank:]]/, "")}
+    },
+    :dato_reportable_1_id => {
+      :etiqueta => "Dato reportable 1 (ID)",
+      :patron_de_validacion => /[1-9][0-9]*|^$/, # ID (entero), o en blanco
+      :obtener => lambda {|cadena| cadena.strip.to_i}
+    },
+    :dato_reportable_1_valor => {
+      :etiqueta => "Dato reportable 1 (valor)",
+      :patron_de_validacion => /[[:word:]]*/, # Cero o más cadenas
+      :obtener => lambda {|cadena| cadena}
+    },
+    :dato_reportable_2_id => {
+      :etiqueta => "Dato reportable 2 (ID)",
+      :patron_de_validacion => /[1-9][0-9]*|^$/, # ID (entero), o en blanco
+      :obtener => lambda {|cadena| cadena.to_i}
+    },
+    :dato_reportable_2_valor => {
+      :etiqueta => "Dato reportable 2 (valor)",
+      :patron_de_validacion => /[[:word:]]*/, # Cero o más cadenas
+      :obtener => lambda {|cadena| cadena}
+    },
+    :dato_reportable_3_id => {
+      :etiqueta => "Dato reportable 3 (ID)",
+      :patron_de_validacion => /[1-9][0-9]*|^$/, # ID (entero), o en blanco
+      :obtener => lambda {|cadena| cadena.to_i}
+    },
+    :dato_reportable_3_valor => {
+      :etiqueta => "Dato reportable 3 (valor)",
+      :patron_de_validacion => /[[:word:]]*/, # Cero o más cadenas
+      :obtener => lambda {|cadena| cadena}
+    },
+    :dato_reportable_4_id => {
+      :etiqueta => "Dato reportable 4 (ID)",
+      :patron_de_validacion => /[1-9][0-9]*|^$/, # ID (entero), o en blanco
+      :obtener => lambda {|cadena| cadena.to_i}
+    },
+    :dato_reportable_4_valor => {
+      :etiqueta => "Dato reportable 4 (valor)",
+      :patron_de_validacion => /[[:word:]]*/, # Cero o más cadenas
+      :obtener => lambda {|cadena| cadena}
+    },
+    :observaciones => {
+      :etiqueta => "Observaciones",
+      :patron_de_validacion => /[[:word:]]*/, # Cero o más palabras
+      :obtener => lambda {|cadena| cadena.strip}
+    }
+  }
 
   # Procesos de datos externos
   def self.procesar_datos_externos(nombre_de_tabla)
+
+    # PRUEBA de serialización:
+    # pb2 = PrestacionBrindada.new(ActiveSupport::JSON.decode(pb.to_json(:except => [:id, :created_at, :updated_at, :creator_id, :updater_id, :estado_de_la_prestacion_liquidada_id, :observaciones_de_liquidacion], :methods => :datos_reportables_asociados_attributes)))
     puts "Stub"
   end
 

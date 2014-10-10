@@ -1,0 +1,43 @@
+- content_for :title do
+  Procesos de datos externos
+
+#content-header
+  %h1 Procesos de datos externos
+  - if can? :create, ProcesoDeDatosExternos
+    #action-links
+      = link_to "Crear un nuevo proceso", new_proceso_de_datos_externos_url
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Listado de procesos de datos externos
+
+  - if @procesos.size > 0
+    %table
+      %thead
+        %tr
+          %th Tipo de proceso
+          %th Archivo de datos
+          %th Estado del proceso
+      %tbody
+        - @procesos.each do |p|
+          %tr.clickable{ :onclick => "location.href=\'#{proceso_de_datos_externos_path(p)}\'", :title => "Ver detalles del proceso" }
+            %td= p.tipo_de_proceso.nombre
+            %td= p.archivo_de_datos_file_name
+            %td
+              - if p.proceso_aplicado
+                Proceso finalizado y aplicado
+              - elsif p.proceso_finalizado.present?
+                El proceso se finalizó, pero aún no fue aplicado
+              - elsif p.ultimo_fallo.present?
+                Se produjo un error al procesar el archivo, comuníquese con el área de sistemas
+              - elsif p.proceso_iniciado.present?
+                El proceso se encuentra en ejecución. Porcentaje de avance:
+                = p.porcentaje_de_avance
+              - elsif p.proceso_solicitado.present?
+                El proceso se encuentra en la cola de espera
+              - else
+                Se ha creado el proceso, pero aún no se ha solicitado el procesamiento
+    = will_paginate @procesos, :inner_window => 2, :outer_window => 0
+  - else
+    No se ha creado ningún proceso de datos externos

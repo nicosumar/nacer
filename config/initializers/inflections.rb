@@ -418,7 +418,7 @@ ActiveSupport::Inflector.inflections do |inflect|
 
   # Procesos de importación de datos externos
   inflect.irregular("proceso_de_datos_externos", "procesos·_de·_datos·_externos·")
-  inflect.irregular("proceso·_de·_datos_externos·", "procesos_de_datos_externos")
+  inflect.irregular("proceso·_de·_datos·_externos·", "procesos_de_datos_externos")
   inflect.irregular("ProcesoDeDatosExternos", "Procesos·De·Datos·Externos·")
   inflect.irregular("Proceso·De·Datos·Externos·", "ProcesosDeDatosExternos")
 
@@ -562,6 +562,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("score_de_riesgo", "score de riesgo cardiovascular")
   inflect.human("fecha_de_la_novedad", "fecha de inscripción/modificación")
   inflect.human("centro_de_inscripcion_id", "centro de inscripción")
+  inflect.human("archivo_de_datos", "archivo a procesar")
+  inflect.human("archivo_de_datos_content_type", "archivo a procesar")
 
   #Tablas de configuracion
   #Paises

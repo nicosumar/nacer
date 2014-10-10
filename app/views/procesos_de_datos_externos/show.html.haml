@@ -1,0 +1,84 @@
+- content_for :title do
+  Información detallada del proceso de datos externos
+
+#content-header
+  %h1 Información detallada del proceso de datos externos
+  #action-links
+    - if can?(:update, ProcesoDeDatosExternos) && @proceso.modificable?
+      = link_to "Modificar el proceso", edit_proceso_de_datos_externos_path(@proceso)
+    - if !@proceso.proceso_solicitado.present?  && @proceso.cantidad_de_lineas_validas > 0
+      = link_to "Iniciar procesamiento", iniciar_proceso_de_datos_externos_path(@proceso), :method => :post
+    - if @proceso.proceso_finalizado.present? && !@proceso.proceso_aplicado
+      = link_to "Aplicar proceso", aplicar_proceso_de_datos_externos_path(@proceso), :method => :post
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Datos del proceso
+
+  %div.field_content
+    %span.field_name Tipo de proceso seleccionado
+    - if @proceso.tipo_de_proceso.present?
+      %span.field_value= @proceso.tipo_de_proceso.nombre
+    - else
+      %span.field_empty No se ha definido el tipo de proceso
+  %div.field_content
+    %span.field_name Estado del proceso
+    - if @proceso.proceso_aplicado
+      %span.field_value Proceso finalizado y aplicado
+    - elsif @proceso.proceso_finalizado.present?
+      %span.field_value El proceso se finalizó, pero aún no fue aplicado
+    - elsif @proceso.ultimo_fallo.present?
+      %span.field_value Se produjo un error al procesar el archivo, comuníquese con el área de sistemas
+    - elsif @proceso.proceso_iniciado.present?
+      %span.field_value
+        El proceso se encuentra en ejecución. Porcentaje de avance:
+        = p.porcentaje_de_avance
+    - elsif @proceso.proceso_solicitado.present?
+      %span.field_value El proceso se encuentra en la cola de espera
+    - else
+      %span.field_value Se ha creado el proceso, pero aún no se ha solicitado el procesamiento
+
+  %h3 Información del archivo cargado
+  %div.field_content
+    %span.field_name Nombre del archivo cargado
+    - if !@proceso.archivo_de_datos_file_name.blank?
+      %span.field_value= @proceso.archivo_de_datos_file_name
+    - else
+      %span.field_empty No se ha cargado ningún archivo
+  %div.field_content
+    %span.field_name Tamaño del archivo
+    - if @proceso.archivo_de_datos_file_size.present?
+      %span.field_value
+        - if @proceso.archivo_de_datos_file_size > 1000000
+          = ("%.1f" % (@proceso.archivo_de_datos_file_size.to_f / 1000000.to_f)) + " Mb"
+        - elsif @proceso.archivo_de_datos_file_size > 1000
+          = ("%.1f" % (@proceso.archivo_de_datos_file_size.to_f / 1000.to_f)) + " Kb"
+        - else
+          = "#{@proceso.archivo_de_datos_file_size} b"
+    - else
+      %span.field_empty No se ha cargado ningún archivo
+  %div.field_content
+    %span.field_name Cantidad de líneas totales
+    - if !@proceso.tabla_de_preprocesamiento.blank?
+      %span.field_value= @proceso.cantidad_de_lineas_totales
+    - else
+      %span.field_empty No se ha cargado ningún archivo
+  %div.field_content
+    %span.field_name Cantidad de líneas con sintaxis válida para el procesamiento
+    - if !@proceso.tabla_de_preprocesamiento.blank?
+      %span.field_value= @proceso.cantidad_de_lineas_validas
+      - if @proceso.cantidad_de_lineas_validas == 0 && !@proceso.proceso_solicitado.present?
+        %span.note (El proceso no podrá iniciarse porque no existe ninguna línea con sintaxis correcta)
+    - else
+      %span.field_empty No se ha cargado ningún archivo
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@proceso.observaciones.blank?
+      %span.field_value_multiline
+        - @proceso.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para el proceso

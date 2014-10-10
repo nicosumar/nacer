@@ -141,6 +141,10 @@ class Ability
       can :manage, DatoReportableAsociado
     end
 
+    if user.in_group? :procesos_uad
+      can :manage, ProcesoDeDatosExternos
+    end
+
     if user.in_group? :capacitacion
       can :manage, Contacto
       can :manage, NovedadDelAfiliado

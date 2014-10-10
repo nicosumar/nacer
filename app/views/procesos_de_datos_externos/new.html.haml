@@ -1,0 +1,13 @@
+- content_for :title do
+  Creación de un nuevo proceso de datos externos
+
+#content-header
+  %h1 Creación de un nuevo proceso de datos externos
+
+= render :partial => "shared/info", :locals => { :registro => @proceso }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de un nuevo proceso
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render 'form'

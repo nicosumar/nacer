@@ -55,10 +55,12 @@
                     %ul
                       - if can? :create, PrestacionBrindada
                         %li= link_to "Registrar una prestación individual", new_prestacion_brindada_path
-                      - if can? :create, PrestacionBrindada
                         %li= link_to "Registrar una prestación comunitaria", new_prestacion_brindada_path(:comunitaria => true)
-                      - if can? :read, PrestacionBrindada
-                        %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
+                      %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
+                    - if can?(:read, ProcesoDeDatosExternos) && UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).proceso_de_datos
+                      %h3 IMPORTACIÓN DE DATOS EXTERNOS
+                      %ul
+                        %li= link_to "Procesos de datos externos", procesos_de_datos_externos_path
                   %div.col_1
                     %h3 FACTURACIÓN
                     %ul

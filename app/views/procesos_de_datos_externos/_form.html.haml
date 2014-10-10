@@ -1,0 +1,26 @@
+= form_for(@proceso) do |f|
+  %h3.first-header Datos del proceso
+
+  %div.field
+    = f.label :tipo_de_proceso_id, "Tipo de proceso*"
+    = f.select :tipo_de_proceso_id, @tipos_de_procesos, {:include_blank => true}, {:class => 'select2'}
+
+  %div.field
+    = f.label :archivo_de_datos, "Archivo a procesar*"
+    = f.file_field :archivo_de_datos, {:accept => "text/plain, text/csv"}
+
+  %div.field
+    = f.label :notificar_por_email, "Notificar por email al concluir el proceso"
+    = f.check_box :notificar_por_email
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %div.actions
+    - if @proceso.new_record?
+      = f.submit "Crear el proceso"
+      = link_to "Cancelar", procesos_de_datos_externos_url
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @proceso

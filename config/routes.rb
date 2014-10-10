@@ -23,7 +23,7 @@ Nacer::Application.routes.draw do
 
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion do
-    resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy] 
+    resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy]
   end
   resources :periodos
   resources :tipos_periodos
@@ -46,7 +46,7 @@ Nacer::Application.routes.draw do
   end
   resources :plantillas_de_reglas
   # resources :liquidaciones_sumar_cuasifacturas_detalles
-  resources :liquidaciones_sumar_cuasifacturas 
+  resources :liquidaciones_sumar_cuasifacturas
   resources :parametros_liquidaciones_sumar
   resources :liquidaciones_informes do
     member do
@@ -126,6 +126,12 @@ Nacer::Application.routes.draw do
   resources :prestaciones_brindadas
   match "informe_de_beneficiarios_activos" => "informes#beneficiarios_activos"
   match "tablero_de_comandos_alto_impacto" => "informes#tablero_de_comandos_alto_impacto"
+  resources :procesos_de_datos_externos, :except => :destroy do
+    member do
+      post 'aplicar', :as => :aplicar, :action => :aplicar
+      post 'iniciar', :as => :iniciar, :action => :iniciar
+    end
+  end
 
   root :to => 'inicio#index'
 
