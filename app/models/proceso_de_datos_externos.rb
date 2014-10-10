@@ -24,7 +24,24 @@ class ProcesoDeDatosExternos < ActiveRecord::Base
   before_post_process :valid? # Solo ejecutamos el postprocesador cuando es válido el objeto
 
   def procesar
-    eval(modelo_de_datos).procesar_datos_externos(tabla_de_preprocesamiento)
+    # Marcamos el inicio del proceso
+    self.proceso_iniciado = Time.now
+    self.save!(:validate => false)
+
+    # Llamamos al método de procesamiento de datos externos específico del modelo que corresponde al tipo de proceso
+    begin
+      eval(tipo_de_proceso.modelo_de_datos).procesar_datos_externos(tabla_de_preprocesamiento)
+    rescue Exception => e
+      self.ultimo_fallo = Time.now
+      self.excepcion = e.to_s
+      self.save!(:validate => false)
+      raise e
+      return
+    end
+
+    # Marcamos la finalización del proceso
+    self.proceso_finalizado = Time.now
+    self.save!(:validate => false)
   end
 
   def eliminar_tabla_de_preprocesamiento
@@ -61,7 +78,7 @@ class ProcesoDeDatosExternos < ActiveRecord::Base
   end
 
   def modificable?
-    # Un proceso puede modificarse si no está en procesamiento, y todavía no fue aplicado
+    # Un proceso puede modificarse si no está en procesamiento y todavía no fue aplicado
     !proceso_aplicado && (proceso_solicitado.nil? || proceso_finalizado.present?)
   end
 
@@ -86,10 +103,6 @@ class ProcesoDeDatosExternos < ActiveRecord::Base
       return cantidad.values[0][0].to_i
     end
     return 0
-  end
-
-  # Paperclip after_post_process callback
-  def after_post_process
   end
 
 end

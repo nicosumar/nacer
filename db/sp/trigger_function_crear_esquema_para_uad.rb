@@ -384,6 +384,7 @@ ActiveRecord::Base.connection.execute <<-SQL
                   proceso_iniciado timestamp without time zone,
                   registros_procesados integer DEFAULT 0,
                   ultimo_fallo timestamp without time zone,
+                  excepcion text,
                   proceso_finalizado timestamp without time zone,
                   proceso_aplicado boolean DEFAULT 'f'::boolean,
                   notificar_por_email boolean DEFAULT 't'::boolean,

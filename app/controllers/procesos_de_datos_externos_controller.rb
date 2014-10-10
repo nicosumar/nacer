@@ -228,10 +228,10 @@ class ProcesosDeDatosExternosController < ApplicationController
 
   end # def update
 
-  # GET /efectores/:id/prestaciones_autorizadas
-  def prestaciones_autorizadas
+  # POST /procesos_de_datos_externos/:id/iniciar
+  def iniciar
     # Verificar los permisos del usuario
-    if cannot? :read, PrestacionAutorizada
+    if cannot? :create, ProcesoDeDatosExternos
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -240,11 +240,20 @@ class ProcesosDeDatosExternosController < ApplicationController
       return
     end
 
-    # Obtener el efector
+    # Obtener el proceso
     begin
-      @efector =
-        Efector.find(params[:id], :include => { :prestaciones_autorizadas => [:autorizante_al_alta, :prestacion] })
+      @proceso = ProcesoDeDatosExternos.find(params[:id])
     rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Verificar que el proceso esté en condiciones de ser iniciado
+    if @proceso.proceso_solicitado.present? || @proceso.cantidad_de_lineas_validas == 0
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -253,16 +262,36 @@ class ProcesosDeDatosExternosController < ApplicationController
       return
     end
 
-    # Verificar que el efector tenga un convenio de gestión suscrito
-    if !@efector.convenio_de_gestion_sumar && !@efector.convenio_de_gestion
-      redirect_to(root_url,
-        :flash => { :tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+    # Verificar la validez del objeto
+    if @proceso.valid?
+      # Ponemos el momento en que se solicitó iniciar el proceso
+      @proceso.proceso_solicitado = Time.now
+
+      # Registrar el usuario que realiza la modificación
+      @proceso.updater_id = current_user.id
+
+      # Guardar el proceso
+      @proceso.save
+
+      # Encolar el inicio del procesamiento
+      Delayed::Job.enqueue Delayed::ProcesoDeDatosExternosWrapper.new(session[:codigo_uad_actual], @proceso.id)
+
+      redirect_to(@proceso,
+        :flash => {:tipo => :ok, :titulo => 'El proceso ha sido colocado en la cola de espera de procesamiento' }
+      )
+    else
+      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
+      redirect_to(
+        @proceso,
+        :flash => {
+          :tipo => :error,
+          :titulo => "Se produjo un error",
+          :mensaje => "No se pudo colocar el proceso en la cola de espera de procesamiento. Contacte al área de sistemas."
         }
       )
-      return
-    end
-  end
+    end # if @proceso.valid?
+
+  end # def iniciar
 
   # GET /efectores/:id/referentes
   def referentes
