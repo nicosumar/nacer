@@ -264,18 +264,20 @@ class ProcesosDeDatosExternosController < ApplicationController
 
     # Verificar la validez del objeto
     if @proceso.valid?
-      # Ponemos el momento en que se solicitó iniciar el proceso
-      @proceso.proceso_solicitado = Time.now
+      # Transaccionamos las modificaciones
+      ActiveRecord::Base.transaction do
+        # Ponemos el momento en que se solicitó iniciar el proceso
+        @proceso.proceso_solicitado = Time.now
 
-      # Registrar el usuario que realiza la modificación
-      @proceso.updater_id = current_user.id
+        # Registrar el usuario que realiza la modificación
+        @proceso.updater_id = current_user.id
 
-      # Guardar el proceso
-      @proceso.save
+        # Guardar el proceso
+        @proceso.save
 
-      # Encolar el inicio del procesamiento
-      Delayed::Job.enqueue Delayed::ProcesoDeDatosExternosWrapper.new(session[:codigo_uad_actual], @proceso.id)
-
+        # Encolar el inicio del procesamiento
+        Delayed::Job.enqueue(Delayed::MultitenantPerformableMethod.new("uad_#{session[:codigo_uad_actual]}", ProcesoDeDatosExternos, :procesar, @proceso.id))
+      end
       redirect_to(@proceso,
         :flash => {:tipo => :ok, :titulo => 'El proceso ha sido colocado en la cola de espera de procesamiento' }
       )
@@ -292,34 +294,5 @@ class ProcesosDeDatosExternosController < ApplicationController
     end # if @proceso.valid?
 
   end # def iniciar
-
-  # GET /efectores/:id/referentes
-  def referentes
-    # Verificar los permisos del usuario
-    if cannot? :read, Referente
-      redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."
-        }
-      )
-      return
-    end
-
-    # Obtener el efector
-    begin
-      @efector =
-        Efector.find(params[:id], :include => { :referentes => :contacto })
-    rescue ActiveRecord::RecordNotFound
-      redirect_to(root_url,
-        :flash => { :tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."
-        }
-      )
-      return
-    end
-
-    # Crear los objetos para la vista
-    @referentes = @efector.referentes
-  end
 
 end

@@ -1011,7 +1011,7 @@ class PrestacionBrindada < ActiveRecord::Base
     :tipo_de_documento => {
       :etiqueta => "Tipo de documento",
       :patron_de_validacion => Regexp.new(TipoDeDocumento.all.collect{|c| c.id.to_s + "|" + c.codigo.to_s}.join("|"), :ignore_case), # ID o código existente
-      :obtener => lambda {|cadena| begin TipoDeDocumento.find(cadena.to_i) rescue TipoDeDocumento.find_by_codigo(cadena) end}
+      :obtener => lambda {|cadena| begin TipoDeDocumento.find(cadena.strip.to_i) rescue TipoDeDocumento.find_by_codigo(cadena.strip) end}
     },
     :numero_de_documento => {
       :etiqueta => "Número de documento",
@@ -1031,7 +1031,7 @@ class PrestacionBrindada < ActiveRecord::Base
     :dato_reportable_1_id => {
       :etiqueta => "Dato reportable 1 (ID)",
       :patron_de_validacion => /[1-9][0-9]*|^$/, # ID (entero), o en blanco
-      :obtener => lambda {|cadena| cadena.strip.to_i}
+      :obtener => lambda {|cadena| begin DatoReportable.find(cadena.strip.to_i rescue nil end}
     },
     :dato_reportable_1_valor => {
       :etiqueta => "Dato reportable 1 (valor)",
@@ -1080,7 +1080,364 @@ class PrestacionBrindada < ActiveRecord::Base
 
     # PRUEBA de serialización:
     # pb2 = PrestacionBrindada.new(ActiveSupport::JSON.decode(pb.to_json(:except => [:id, :created_at, :updated_at, :creator_id, :updater_id, :estado_de_la_prestacion_liquidada_id, :observaciones_de_liquidacion], :methods => :datos_reportables_asociados_attributes)))
-    puts "Stub"
-  end
+
+    # Obtenemos los datos de la tabla de preprocesamiento (únicamente las líneas con formato válido)
+    resultado = ActiveRecord::Base.connection.exec_query <<-SQL
+        SELECT *
+          FROM "procesos".#{nombre_de_tabla}
+          WHERE formato_valido;
+      SQL
+
+    resultado.rows.each do |fila|
+      errores = []
+      prestacion_brindada = self.new
+      atributos = parsear_linea(fila[resultado.columns.index("linea")])
+
+      # Establecer la fecha de la prestación, o registrar un error si no se pudo convertir la cadena en una fecha válida
+      prestacion_brindada.fecha_de_la_prestacion = atributos[:fecha_de_la_prestacion][:valor]
+      if !prestacion_brindada.fecha_de_la_prestacion.present?
+        errores << "La fecha de la prestación informada no es válida ('#{atributos[:fecha_de_la_prestacion][:informada]}')"
+      end
+
+      # Evaluamos los datos reportables informados
+      dato_reportable_1 = atributos[:dato_reportable_1_id]
+      dato_reportable_1_valor = atributos[:dato_reportable_1_valor]
+      if !dato_reportable_1[:informado].blank?
+        if !dato_reportable_1[:valor].present?
+          errores << "Advertencia: el identificador del primer dato reportable no existe " + \
+            "('#{dato_reportable_1[:informado]}'), se ignorará el valor asociado"
+        else
+          if dato_reportable_1_valor[:valor].blank?
+            errores << "Advertencia: no se asignó el valor del primer dato reportable ('#{dato_reportable_1_valor[:informado]}')"
+          end
+        end
+      end
+      dato_reportable_2 = atributos[:dato_reportable_2_id]
+      dato_reportable_2_valor = atributos[:dato_reportable_2_valor]
+      if !dato_reportable_2[:informado].blank?
+        if !dato_reportable_2[:valor].present?
+          errores << "Advertencia: el identificador del segundo dato reportable no existe " + \
+            "('#{dato_reportable_2[:informado]}'), se ignorará el valor asociado"
+        else
+          if dato_reportable_2_valor[:valor].blank?
+            errores << "Advertencia: no se asignó el valor del segundo dato reportable ('#{dato_reportable_2_valor[:informado]}')"
+          end
+        end
+      end
+      dato_reportable_3 = atributos[:dato_reportable_3_id]
+      dato_reportable_3_valor = atributos[:dato_reportable_3_valor]
+      if !dato_reportable_3[:informado].blank?
+        if !dato_reportable_3[:valor].present?
+          errores << "Advertencia: el identificador del tercer dato reportable no existe " + \
+            "('#{dato_reportable_3[:informado]}'), se ignorará el valor asociado"
+        else
+          if dato_reportable_3_valor[:valor].blank?
+            errores << "Advertencia: no se asignó el valor del primer dato reportable ('#{dato_reportable_3_valor[:informado]}')"
+          end
+        end
+      end
+      dato_reportable_4 = atributos[:dato_reportable_4_id]
+      dato_reportable_4_valor = atributos[:dato_reportable_4_valor]
+      if !dato_reportable_4[:informado].blank?
+        if !dato_reportable_4[:valor].present?
+          errores << "Advertencia: el identificador del cuarto dato reportable no existe " + \
+            "('#{dato_reportable_4[:informado]}'), se ignorará el valor asociado"
+        else
+          if dato_reportable_4_valor[:valor].blank?
+            errores << "Advertencia: no se asignó el valor del cuarto dato reportable ('#{dato_reportable_4_valor[:informado]}')"
+          end
+        end
+      end
+
+      # Intentar encontrar el beneficiario al que se le brindó la prestación
+      if atributos[:clave_de_beneficiario][:valor].present?
+        # Si se pasa una clave de beneficiario, solo intentamos encontrarlo por ese criterio
+        beneficiarios = Afiliado.where(:clave_de_beneficiario => atributos[:clave_de_beneficiario][:valor])
+        if beneficiarios.size == 0
+          errores << "La clave de beneficiario '#{atributos[:clave_de_beneficiario][:valor]}' no se encontró en el padrón"
+        end
+      else
+        # Si no se pasó una clave, buscamos por clase, tipo y número de documento
+        beneficiarios = Afiliado.busqueda_por_documento(
+            atributos[:numero_de_documeno][:valor],
+            atributos[:clase_de_documento][:valor] || ClaseDeDocumento.find_by_codigo("P"),
+            nil
+          )
+        if beneficiarios.size == 0
+          errores << "No se encontró al beneficiario " + \
+            "'#{atributos[:apellido][:valor]}, #{:atributos[:nombre][:valor]}'" + \
+            ", con la clase, tipo y número de documento indicados (clase: #{atributos[:clase_de_documento][:informado]}, " + \
+            "tipo: #{atributos[:tipo_de_documento][:informado]}, " + \
+            "número: #{atributos[:numero_de_documeno][:valor]}) en el padrón"
+        end
+      end
+
+      # Obtener la prestación y el diagnóstico asociados con el código informado, o indicar el error si no se informó el código
+      prestaciones = []
+      if !atributos[:codigo_de_prestacion][:valor].present?
+        errores << "No se informó el código de prestación"
+      else
+        codigo_de_prestacion = atributos[:codigo_de_prestacion][:valor][0..5]
+        prestacion = Prestacion.find_by_codigo(codigo_de_prestacion)
+        if !prestacion.present?
+          errores << "El código de prestación no existe ('#{codigo_de_prestacion}')"
+        end
+        codigo_de_diagnostico = atributos[:codigo_de_prestacion][:valor][6..-1]
+        diagnostico = Diagnostico.find_by_codigo(codigo_de_diagnostico)
+        if !diagnostico.present?
+          errores << "El código de diagnóstico no existe (cadena evaluada: '#{codigo_de_diagnostico}')"
+        else
+          prestacion_brindada.diagnostico_id = diagnostico.id
+        end
+        if prestacion.present? && diagnostico.present?
+          # Obtener todas las prestaciones que tengan el código informado y admitan el diagnóstico informado
+          prestaciones = Prestacion.joins(:diagnosticos).where(
+              "\"prestaciones\".\"codigo\" = ? AND \"diagnosticos\".\"id\" = ?",
+              codigo_de_prestacion,
+              diagnostico.id
+            )
+          # Registrar el error si no se encuentra una prestación para esa combinación de código y diagnóstico
+          if prestaciones.size == 0
+            errores << "No se encontró una prestación con código '#{codigo_de_prestacion}' " + \
+              "y diagnóstico '#{diagnostico.nombre} (#{codigo_de_diagnostico})'"
+          end
+        end
+      end # if !atributos[:codigo_de_prestacion][:valor].present?
+
+      # Inicializamos la variable que va a contener las distintas soluciones posibles, junto con su puntuación en forma ordenada
+      soluciones = []
+
+      # Construimos todas las soluciones combinando los beneficiarios y prestaciones posibles, y asignamos una puntuación
+      # a cada solución
+      if beneficiarios.size > 0 && prestaciones.size > 0 && prestacion_brindada.fecha_de_la_prestacion.present?
+
+        # Iteramos todos los posibles registros de beneficiarios
+        beneficiarios.each do |beneficiario|
+
+          # Inicializamos la variable que nos da la puntuación para este beneficiario
+          punt_benef = 0
+          errores_benef = []
+
+          # Creamos otro objeto para guardar la info de la prestación brindada con los datos del beneficiario
+          pb_benef = prestacion_brindada.dup
+          pb_benef.clave_de_beneficiario = beneficiario.clave_de_beneficiario
+
+          # Registrar el error si tiene datos imprescindibles incompletos
+          if !(beneficiario.sexo.present? && beneficiario.fecha_de_nacimiento.present?)
+            errores_benef << "No se puede evaluar la prestación porque al registro del beneficiario " + \
+              "le faltan datos imprescindibles (sexo o fecha de nacimiento)"
+          else
+            # Obtener el grupo poblacional al que pertenecía el beneficiario para la fecha de la prestación
+            grupo_poblacional = beneficiario.grupo_poblacional_al_dia(pb_benef.fecha_de_la_prestacion)
+            if !grupo_poblacional.present?
+              errores_benef = "El beneficiario no integra la población objetivo del Programa Sumar (sexo: " + \
+                "'#{beneficiario.sexo.nombre}', edad: " + \
+                "'#{beneficiario.edad_en_anios(prestacion_brindada.fecha_de_la_prestacion)} años')"
+            else
+              # Añadimos un punto al beneficiario si tiene datos completos y pertenece a los grupos poblacionales del Programa
+              punt_benef += 1
+            end
+
+            # Añadimos tres puntos si se registró la prestación con documento ajeno y este beneficiario tenía menos de un año
+            # a la fecha de la prestación.
+            if atributos[:clase_de_documento][:valor].present? && \
+               atributos[:clase_de_documento][:valor].id == ClaseDeDocumento.id_del_codigo!("A") && \
+               (beneficiario.fecha_de_nacimiento + 1.year) >= pb_benef.fecha_de_la_prestacion
+              punt_benef += 3
+            end
+          end
+
+          # Añadir un punto si el beneficiario está activo
+          punt_benef += 1 if beneficiario.activo?(pb_benef.fecha_de_la_prestacion)
+
+          # Iteramos todos los posibles registros de prestaciones
+          prestaciones.each do |prestacion|
+
+            # Inicializamos la variable que nos da la puntuación para esta combinación de beneficiario y prestación
+            punt_benef_prest = punt_benef
+            errores_benef_prest = []
+
+            # Volvemos a duplicar el objeto para evaluar la combinación de este beneficiario con esta prestación
+            pb_benef_prest = pb_benef.dup
+            pb_benef_prest.prestacion_id = prestacion.id
+
+            # Verificar si la prestación está habilitada para el sexo del beneficiario
+            if beneficiario.sexo_id.present? && !(beneficiario.sexo.prestaciones_autorizadas.collect{|p| p.id}.member?(prestacion.id))
+              pb_benef_prest.agregar_error(
+                "La prestación no está habilitada para el sexo del beneficiario (#{beneficiario.sexo.nombre.downcase})"
+              )
+            else
+              punt_benef_prest += 1
+            end
+
+            # Verificar si la prestación está habilitada para el grupo poblacional del beneficiario
+            if grupo_poblacional.present? && !(grupo_poblacional.prestaciones_autorizadas.collect{|p| p.id}.member?(prestacion.id))
+              pb_benef_prest.agregar_error(
+                "La prestación no está habilitada para el grupo poblacional del beneficiario (#{grupo_poblacional.nombre.downcase})"
+              )
+            else
+              punt_benef_prest += 1
+            end
+
+            # Verificar si la prestación está habilitada para este efector
+            if !(@efector.prestaciones_autorizadas_al_dia(pb_benef_prest.fecha_de_la_prestacion).collect{|p| p.prestacion_id}.member?(prestacion.id))
+              pb_benef_prest.agregar_error(
+                "La prestación no está habilitada para el efector a la fecha de la prestación"
+              )
+            else
+              punt_benef_prest += 1
+            end
+
+            # Si la prestación está habilitada, creamos un objeto PrestacionBrindada asignando la combinación actual de
+            # beneficiario y prestación para poder evaluar esta solución
+            if (
+              beneficiario.sexo_id.present? &&
+              grupo_poblacional.present? &&
+              (@efector.prestaciones_autorizadas_al_dia(pb_benef_prest.fecha_de_la_prestacion).collect{|p| p.prestacion_id}.member?(prestacion.id)) &&
+              (beneficiario.sexo.prestaciones_autorizadas.collect{|p| p.id}.member?(prestacion.id)) &&
+              (grupo_poblacional.prestaciones_autorizadas.collect{|p| p.id}.member?(prestacion.id))
+            )
+              pb = PrestacionBrindada.new({
+                :estado_de_la_prestacion_id => 3,
+                :clave_de_beneficiario => pb_benef_prest.clave_de_beneficiario,
+                :historia_clinica => pb_benef_prest.historia_clinica,
+                :fecha_de_la_prestacion => pb_benef_prest.fecha_de_la_prestacion,
+                :efector_id => @efector.id,
+                :prestacion_id => prestacion.id,
+                :es_catastrofica => prestacion.es_catastrofica,
+                :diagnostico_id => diagnostico.id
+              })
+              dras = []
+              pb.prestacion.datos_reportables_requeridos.each do |drr|
+                if drr.dato_reportable_id == pb_benef_prest.dato_reportable_1_id
+                  dra_valor = pb_benef_prest.dato_reportable_1_valor
+                elsif drr.dato_reportable_id == pb_benef_prest.dato_reportable_2_id
+                  dra_valor = pb_benef_prest.dato_reportable_2_valor
+                elsif drr.dato_reportable_id == pb_benef_prest.dato_reportable_3_id
+                  dra_valor = pb_benef_prest.dato_reportable_3_valor
+                elsif drr.dato_reportable_id == pb_benef_prest.dato_reportable_4_id
+                  dra_valor = pb_benef_prest.dato_reportable_4_valor
+                else
+                  dra_valor = nil
+                end
+                if dra_valor.present?
+                  dra = DatoReportableAsociado.new({:dato_reportable_requerido_id => drr.id})
+                  case drr.dato_reportable.tipo_ruby
+                    when "string"
+                      dra.valor_string = dra_valor
+                    when "date"
+                      dra.valor_date = a_fecha(dra_valor)
+                    when "big_decimal"
+                      dra.valor_big_decimal = dra_valor.to_f
+                    when "integer"
+                      if drr.dato_reportable.enumerable
+                        dra.valor_integer = clase_a_id(drr.dato_reportable.clase_para_enumeracion, dra_valor)
+                      else
+                        dra.valor_integer = dra_valor.to_i
+                      end
+                  end
+                  dras << dra
+                end
+              end
+              pb.datos_reportables_asociados = dras
+
+              # Verificamos si la prestación brindada sería válida y añadimos puntos en forma acorde
+              if pb.valid?
+                punt_benef_prest += 1
+                pb.actualizar_metodos_de_validacion_fallados
+                if pb.metodos_de_validacion.size == 0
+                  punt_benef_prest += 1
+                end
+              else
+                pb_benef_prest.agregar_error(pb.errors.full_messages.join(" - "))
+              end
+            end
+
+            # Guardar esta solución entre las posibles, ubicándola en forma ordenada de acuerdo con el puntaje
+            esta_solucion = [pb_benef_prest, punt_benef_prest]
+
+            posicion = 0
+            soluciones.each_with_index do |solucion, i|
+              if solucion[1] < punt_benef_prest
+                posicion = i
+                break
+              else
+                posicion = i+1
+              end
+            end
+
+            soluciones.insert(posicion, esta_solucion)
+          end
+        end
+
+        # Ahora diferenciamos dos casos, según la prestación se haya registrado con documento ajeno o con documento propio
+        if hash_a_id(@hash_clases, prestacion_brindada.clase_de_documento_informado) == ClaseDeDocumento.id_del_codigo!("A")
+          # Cuando se ha registrado con documento ajeno, solo mantenemos las soluciones que tienen la mayor puntuación
+          mayor_puntuacion = soluciones[0][1]
+          soluciones.keep_if{|s| s[1] == mayor_puntuacion}
+
+          if soluciones.size > 1
+            # Si quedó más de una solución con la puntuación más alta, intentar seleccionar la que tenga el nombre más
+            # parecido
+            mejor_solucion = nil
+            mejor_nivel = 0
+            soluciones.each do |solucion|
+              pb = solucion[0]
+              nivel = nivel_de_similitud(pb.apellido_informado, pb.nombre_informado, pb.apellido, pb.nombre)
+              if nivel > mejor_nivel
+                mejor_solucion = pb
+                mejor_nivel = nivel
+              end
+            end
+            prestacion_brindada = mejor_solucion
+          else
+            # Si quedó una única solución posible, esa es la nuestra
+            prestacion_brindada = soluciones.first[0]
+          end
+        else
+          # Cuando se ha registrado la prestación con un número de documento propio, seleccionamos la solución de mejor
+          # puntuación cuyo nivel de similitud en los nombres supere cierto valor umbral, para no asignar la prestación
+          # a un beneficiario incorrecto cuando se la ha registrado con un DNI incorrecto.
+          prestacion_seleccionada = nil
+          soluciones.each do |solucion|
+            pb = solucion[0]
+            nivel = self.nivel_de_similitud(pb.apellido_informado, pb.nombre_informado, pb.apellido, pb.nombre)
+            if nivel >= 6 # valor de umbral
+              # Consideramos que encontramos un buen candidato
+              prestacion_seleccionada = pb
+              break
+            end
+          end
+
+          # Seleccionar la mejor solución, o registrar el error si no coincidieron los nombres en ninguna de las soluciones
+          if prestacion_seleccionada.present?
+            prestacion_brindada = prestacion_seleccionada
+          else
+            prestacion_brindada = soluciones.first[0]
+            prestacion_brindada.agregar_error(
+              "El nombre del beneficiario no coincide (informado: '#{prestacion_brindada.apellido_informado}, " + \
+              "#{prestacion_brindada.nombre_informado}', registrado en el padrón: '" + \
+              "#{prestacion_brindada.apellido}, #{prestacion_brindada.nombre}')."
+            )
+          end
+        end
+      end
+
+      # En este punto tenemos individualizada la prestación que se quiere registrar. Puede persistirse si no tiene errores
+      # registrados.
+      if prestacion_brindada.errores.blank?
+        # Todo bien, la prestación se guarda y podrá persistirse como PrestacionBrindada
+        prestacion_brindada.persistido = true
+      else
+        # La prestación que quedó seleccionada tiene errores por los que no se puede persistir
+        prestacion_brindada.persistido = false
+      end
+
+      # Guardar la prestación y continuar con la próxima línea
+      prestacion_brindada.save
+
+    end # resultado.rows.each
+
+  end # def self.procesar_datos_externos
 
 end#end class

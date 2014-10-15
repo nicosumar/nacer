@@ -1,4 +1,4 @@
-require 'proceso_de_datos_externos_delayed'
+require 'multitenant_performable_method'
 
 Delayed::Worker.destroy_failed_jobs = false
 Delayed::Worker.sleep_delay = 60
