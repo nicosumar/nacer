@@ -54,8 +54,13 @@ class TipoDeAgrupacion < ActiveRecord::Base
                   group("convenios_de_administracion_sumar.administrador_id").
                   collect { |r|  r.administrador_id }
       efectores_id.flatten! 1
+      
       Efector.where(id: efectores_id).each do |e|
-        yield e, e.prestaciones_liquidadas_por_liquidacion(liquidacion, true)
+        if e.es_administrador?
+          yield e, e.prestaciones_liquidadas_por_liquidacion(liquidacion, true, e.efectores_administrados)
+        else
+          yield e, e.prestaciones_liquidadas_por_liquidacion(liquidacion, true)
+        end
       end
 
     when "E" # Efectores
