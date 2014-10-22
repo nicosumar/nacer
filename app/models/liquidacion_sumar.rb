@@ -133,11 +133,7 @@ class LiquidacionSumar < ActiveRecord::Base
       PrestacionBrindada.marcar_prestaciones_sin_periodo_de_actividad self
       
       # 0 ) Elimino los duplicados
-
-
       PrestacionBrindada.anular_prestaciones_duplicadas
-      
-
 
       # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
       cq = CustomQuery.ejecutar (
@@ -242,7 +238,6 @@ class LiquidacionSumar < ActiveRecord::Base
         logger.warn ("Tabla de prestaciones liquidadas generada")
       else
         logger.warn ("Tabla de prestaciones liquidadas NO generada")
-        return false
       end
 
       # 3)  Identifico los datos vinculados a las prestaciones brindadas
@@ -292,7 +287,6 @@ class LiquidacionSumar < ActiveRecord::Base
         logger.warn ("Tabla de prestaciones Liquidadas datos generada")
       else
         logger.warn ("Tabla de prestaciones Liquidadas datos NO generada")
-        return false
       end
 
       # 4)  Identifico las advertencias que poseen las prestaciones brindadas que se
@@ -314,7 +308,6 @@ class LiquidacionSumar < ActiveRecord::Base
         logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
       else
         logger.warn ("Tabla de prestaciones Liquidadas advertencias NO generada")
-        return false
       end
 
       # 5) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
@@ -338,6 +331,12 @@ class LiquidacionSumar < ActiveRecord::Base
               "AND prestaciones_liquidadas.id = pl.id\n"+
               "AND pl.efector_id in ( #{efectores.join(", ")} )\n"
         })
+
+      if cq
+        logger.warn ("Tabla de prestaciones Liquidadas Actualizada con ACEPTADAS")
+      else
+        logger.warn ("Tabla de prestaciones Liquidadas NO Actualizada con ACEPTADAS")
+      end
 
       # 6) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
       #    de prestaciones liquidadas
@@ -367,6 +366,12 @@ class LiquidacionSumar < ActiveRecord::Base
                 " AND prestaciones_liquidadas.id = pl.id\n "+
                 " AND pl.efector_id in ( #{efectores.join(", ")} )\n"
       })
+
+      if cq
+        logger.warn ("Tabla de prestaciones Liquidadas Actualizada con RECHAZADAS")
+      else
+        logger.warn ("Tabla de prestaciones Liquidadas NO Actualizada con RECHAZADAS")
+      end
 
       # 7) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
       #    de prestaciones liquidadas
@@ -403,8 +408,13 @@ class LiquidacionSumar < ActiveRecord::Base
 
 
        })
-    end
-  end
+      if cq
+        logger.warn ("Tabla de prestaciones Liquidadas Actualizada con EXCEPTUADAS")
+      else
+        logger.warn ("Tabla de prestaciones Liquidadas NO Actualizada con EXCEPTUADAS")
+      end
+    end # END transaction
+  end  # END Method
 
   def generar_documentos!
     begin

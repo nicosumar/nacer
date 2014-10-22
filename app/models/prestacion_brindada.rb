@@ -902,12 +902,12 @@ class PrestacionBrindada < ActiveRecord::Base
       raise "Ocurrio un problema: #{e.message}"
     end #end begin/rescue
   end #end method
-
-  # 
-  # Revisa todas las prestaciones brindadas buscando prestaciones duplicadas en
-  # base a que posean el mismo beneficiario, en la misma fecha, se haya realizado en
-  # el mismo efector y sea la misma prestación
-  # 
+
+  # 
+  # Revisa todas las prestaciones brindadas buscando prestaciones duplicadas en
+  # base a que posean el mismo beneficiario, en la misma fecha, se haya realizado en
+  # el mismo efector y sea la misma prestación
+  # 
   # @return [type] [description]
   def self.anular_prestaciones_duplicadas
 
@@ -932,7 +932,8 @@ class PrestacionBrindada < ActiveRecord::Base
               "order by created_at, id"
         })
 
-      # Si hay alguna en estado 3, tomo esa
+      # Si hay alguna en estado 3, tomo esa
+
       aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '3'}
       if aprobado.blank?
         # Si hay alguna en estado 7 (refacturado) y ninguna en 3, tomo esa
