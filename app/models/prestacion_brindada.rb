@@ -878,13 +878,16 @@ class PrestacionBrindada < ActiveRecord::Base
     begin
       ActiveRecord::Base.transaction do 
 
-       cq = CustomQuery.buscar({
-        sql:  "SELECT DISTINCT esquema\n"+
-              "FROM prestaciones_liquidadas\n"+
-              "WHERE liquidacion_id = #{liquidacion.id}"
-        })
+        cq = CustomQuery.buscar({
+         sql:  "SELECT DISTINCT esquema\n"+
+               "FROM prestaciones_liquidadas\n"+
+               "WHERE liquidacion_id = #{liquidacion.id}"
+         })
 
         cq.each do |r|
+          
+          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Marcando prestaciones para el esquema #{r[:esquema]} - Liquidacion #{liquidacion.id} "
+          
           upd = CustomQuery.ejecutar({
               sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n "+
                     "SET estado_de_la_prestacion_id = #{estado_aceptada_id}, \n "+

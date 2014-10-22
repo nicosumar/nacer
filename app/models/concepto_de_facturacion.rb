@@ -54,7 +54,7 @@ class ConceptoDeFacturacion < ActiveRecord::Base
         documentos_a_generar.each do |dgpc|
           if dgpc.generar(liquidacion) == false
             logger.warn "----------------------------------------------------------------------------------------------------------------------------"
-            logger.warn "No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
+            logger.warn "LOG INFO - LIQUIDACION_SUMAR: No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
             logger.warn "----------------------------------------------------------------------------------------------------------------------------"
             raise "No se pudo generar el documento del modelo #{dgpc.documento_generable.modelo} para la liquidacion #{liquidacion.descripcion}"
           end
