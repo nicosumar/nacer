@@ -38,6 +38,7 @@ class Efector < ActiveRecord::Base
   has_many :prestaciones_autorizadas
   has_many :asignaciones_de_nomenclador
   has_many :referentes
+  has_one  :entidad
   # Asociaciones referentes a la liquidacion
   belongs_to :unidad_de_alta_de_datos
   belongs_to :grupo_de_efectores_liquidacion

@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :organismos_gubernamentales
+
+
   resources :documentos_generables
   resources :notas_de_debito
 

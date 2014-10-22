@@ -1,0 +1,17 @@
+- content_for :title do
+  Edición de un Organismo Gubernamental
+
+- content_for :other_includes do
+  = javascript_include_tag 'jquery.chained.min'
+  = javascript_include_tag "organismos_gubernamentales"
+#content-header
+  %h1 Edición de un Organismo Gubernamental
+  #action-links
+    = link_to '<< Volver al listado', organismos_gubernamentales_path
+
+= render :partial => "shared/info", :locals => { :registro => @organismo_gubernamental }
+
+#content-body
+  %h2.first-header-with-note Formulario de edición de un Organismo Gubernamental
+
+  = render 'form'

@@ -19,7 +19,7 @@ class NotasDeDebitoController < ApplicationController
     @nota_de_debito = NotaDeDebito.new
     @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
-    @tipos_de_notas = TipoDeNotaDebito.all.collect {|t| [t.nombre, t.id]}
+    @tipos_de_notas = TipoDeNotaDebito.where("codigo != 'DP'").collect {|t| [t.nombre, t.id]}
   end
 
   # GET /notas_de_debito/1/edit
@@ -27,7 +27,7 @@ class NotasDeDebitoController < ApplicationController
     @nota_de_debito = NotaDeDebito.find(params[:id])
     @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
-    @tipos_de_notas = TipoDeNotaDebito.all.collect {|t| [t.nombre, t.id]}
+    @tipos_de_notas = TipoDeNotaDebito.where("codigo != 'DP'").collect {|t| [t.nombre, t.id]}
   end
 
   # POST /notas_de_debito
@@ -39,7 +39,7 @@ class NotasDeDebitoController < ApplicationController
     else
       @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
       @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
-      @tipos_de_notas = TipoDeNotaDebito.all.collect {|t| [t.nombre, t.id]}
+      @tipos_de_notas = TipoDeNotaDebito.where("codigo != 'DP'").collect {|t| [t.nombre, t.id]}
       
       render action: "new" 
     end
