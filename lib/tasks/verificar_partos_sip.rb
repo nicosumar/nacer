@@ -4,7 +4,7 @@ class VerificarPartosSip
 
   def self.procesar
     archivo = File.open("lib/tasks/datos/verificacion_partos_#{Date.today.iso8601}.csv", "w")
-    archivo.puts("Efector\tPeriodo de liquidación\tNúmero de cuasifactura\tFecha de la prestación\tClave de beneficiario\tCódigo de prestación\tMensajes del proceso")
+    archivo.puts("Efector\tPeriodo de liquidación\tNúmero de cuasifactura\tFecha de la prestación\tClave de beneficiario\tDocumento\tNombre\tCódigo de prestación\tMensajes del proceso")
 
     ActiveRecord::Base.transaction do
       ActiveRecord::Base.logger.silence do
@@ -17,7 +17,7 @@ class VerificarPartosSip
 
           if !pl.efector.categorizado_cone
             parto.update_attributes(:estado_de_la_prestacion_id => 7, :motivo_de_rechazo_id => 22)
-            archivo.puts("#{pl.efector.nombre}\t#{pl.periodo.periodo}\t#{pl.liquidaciones_sumar_cuasifacturas.numero_cuasifactura}\t#{pl.fecha_de_la_prestacion.strftime('%d/%m/%Y')}\t#{pl.clave_de_beneficiario}\t#{pl.prestacion_incluida.prestacion_codigo + pl.diagnostico.codigo}\tPrestación devuelta para ser refacturada: El efector no tiene categorización CONE")
+            archivo.puts("#{pl.efector.nombre}\t#{pl.periodo.periodo}\t#{pl.liquidaciones_sumar_cuasifacturas.numero_cuasifactura}\t#{pl.fecha_de_la_prestacion.strftime('%d/%m/%Y')}\t#{pl.clave_de_beneficiario}\t#{(pl.afiliado.tipo_de_documento.present? ? pl.afiliado.tipo_de_documento.codigo + " " : "") + pl.afiliado.numero_de_documento.to_s}\t#{pl.afiliado.apellido.to_s + ", " + pl.afiliado.nombre.to_s}\t#{pl.prestacion_incluida.prestacion_codigo + pl.diagnostico.codigo}\tPrestación devuelta para ser refacturada: El efector no tiene categorización CONE")
           else
             partos_sip = PartoSip.where("
                 numero_de_documento LIKE '%#{numero_de_documento_beneficiaria}%'
@@ -29,7 +29,7 @@ class VerificarPartosSip
             if partos_sip.size == 0
               # No se encontró el registro en la base del SIP
               parto.update_attributes(:estado_de_la_prestacion_id => 7, :motivo_de_rechazo_id => 23)
-              archivo.puts("#{pl.efector.nombre}\t#{pl.periodo.periodo}\t#{pl.liquidaciones_sumar_cuasifacturas.numero_cuasifactura}\t#{pl.fecha_de_la_prestacion.strftime('%d/%m/%Y')}\t#{pl.clave_de_beneficiario}\t#{pl.prestacion_incluida.prestacion_codigo + pl.diagnostico.codigo}\tPrestación devuelta para ser refacturada: No se encontró la HCPB asociada con el parto para este número de documento y fecha de prestación")
+              archivo.puts("#{pl.efector.nombre}\t#{pl.periodo.periodo}\t#{pl.liquidaciones_sumar_cuasifacturas.numero_cuasifactura}\t#{pl.fecha_de_la_prestacion.strftime('%d/%m/%Y')}\t#{pl.clave_de_beneficiario}\t#{(pl.afiliado.tipo_de_documento.present? ? pl.afiliado.tipo_de_documento.codigo + " " : "") + pl.afiliado.numero_de_documento.to_s}\t#{pl.afiliado.apellido.to_s + ", " + pl.afiliado.nombre.to_s}\t#{pl.prestacion_incluida.prestacion_codigo + pl.diagnostico.codigo}\tPrestación devuelta para ser refacturada: No se encontró la HCPB asociada con el parto para este número de documento y fecha de prestación")
             else
               # Se encontraron uno o más registros, verificar que todos los datos del primer registro estén completos, o marcar los errores
               motivos_de_rechazo = ''
@@ -134,10 +134,10 @@ class VerificarPartosSip
               # Verificar si hubo algún motivo de rechazo y marcar el registro en el anexo médico
               if motivos_de_rechazo.size > 0
                 parto.update_attributes(:estado_de_la_prestacion_id => 7, :motivo_de_rechazo_id => 24)
-                archivo.puts("#{pl.efector.nombre}\t#{pl.periodo.periodo}\t#{pl.liquidaciones_sumar_cuasifacturas.numero_cuasifactura}\t#{pl.fecha_de_la_prestacion.strftime('%d/%m/%Y')}\t#{pl.clave_de_beneficiario}\t#{pl.prestacion_incluida.prestacion_codigo + pl.diagnostico.codigo}\tPrestación devuelta para ser refacturada: #{motivos_de_rechazo}")
+                archivo.puts("#{pl.efector.nombre}\t#{pl.periodo.periodo}\t#{pl.liquidaciones_sumar_cuasifacturas.numero_cuasifactura}\t#{pl.fecha_de_la_prestacion.strftime('%d/%m/%Y')}\t#{pl.clave_de_beneficiario}\t#{(pl.afiliado.tipo_de_documento.present? ? pl.afiliado.tipo_de_documento.codigo + " " : "") + pl.afiliado.numero_de_documento.to_s}\t#{pl.afiliado.apellido.to_s + ", " + pl.afiliado.nombre.to_s}\t#{pl.prestacion_incluida.prestacion_codigo + pl.diagnostico.codigo}\tPrestación devuelta para ser refacturada: #{motivos_de_rechazo}")
               else
                 parto.update_attributes(:estado_de_la_prestacion_id => 5, :motivo_de_rechazo_id => nil)
-                archivo.puts("#{pl.efector.nombre}\t#{pl.periodo.periodo}\t#{pl.liquidaciones_sumar_cuasifacturas.numero_cuasifactura}\t#{pl.fecha_de_la_prestacion.strftime('%d/%m/%Y')}\t#{pl.clave_de_beneficiario}\t#{pl.prestacion_incluida.prestacion_codigo + pl.diagnostico.codigo}\tPrestación aceptada para ser liquidada")
+                archivo.puts("#{pl.efector.nombre}\t#{pl.periodo.periodo}\t#{pl.liquidaciones_sumar_cuasifacturas.numero_cuasifactura}\t#{pl.fecha_de_la_prestacion.strftime('%d/%m/%Y')}\t#{pl.clave_de_beneficiario}\t#{(pl.afiliado.tipo_de_documento.present? ? pl.afiliado.tipo_de_documento.codigo + " " : "") + pl.afiliado.numero_de_documento.to_s}\t#{pl.afiliado.apellido.to_s + ", " + pl.afiliado.nombre.to_s}\t#{pl.prestacion_incluida.prestacion_codigo + pl.diagnostico.codigo}\tPrestación aceptada para ser liquidada")
               end
             end
           end
