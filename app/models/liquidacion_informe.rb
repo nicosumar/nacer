@@ -37,7 +37,7 @@ class LiquidacionInforme < ActiveRecord::Base
           # Si el efector no liquido prestaciones
           next if pliquidadas.size == 0
 
-          logger.warn "Creando informe para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} - Administrador: #{e.nombre}"
+          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando informe para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
           
           
           # Solo los efectores administradores o autoadministrados generan expediente
@@ -49,14 +49,14 @@ class LiquidacionInforme < ActiveRecord::Base
               expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} "]).first.id
             else
               expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} " +
-                                                            "AND expedientes_sumar.id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
+                                                            "AND id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
             end
           else
             if ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} "]).size == 1
               expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} "]).first.id
             else
               expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} " +
-                                                            "AND expedientes_sumar.id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
+                                                            "AND id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
             end
           end
 

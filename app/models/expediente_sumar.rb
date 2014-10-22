@@ -24,6 +24,8 @@ class ExpedienteSumar < ActiveRecord::Base
 
           # Si el efector administrador no posee prestaciones para liquidar, lo omito
           next if pliquidadas.sum(:monto) == 0
+
+          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando cuasifactura para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
           
           # 1) Creo la cabecera del expediente
           exp = ExpedienteSumar.create!({ tipo_de_expediente: liquidacion_sumar.concepto_de_facturacion.tipo_de_expediente,
