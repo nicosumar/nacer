@@ -160,13 +160,13 @@ class EfectoresController < ApplicationController
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @provincias = Provincia.all.collect {|p| [p.nombre, p.id]}
-    @departamentos = Provincia.include(:departamentos).all.collect do |p|
+    @departamentos = Provincia.includes(:departamentos).all.collect do |p|
       p.departamentos.collect do |d|
         [d.nombre, d.id, {class: p.id}]
       end
     end.flatten!(1).uniq
 
-    @distritos = Departamento.include(:distritos).all.collect do |de|
+    @distritos = Departamento.includes(:distritos).all.collect do |de|
       de.distritos.collect do |d|
         [d.nombre, d.id, {class: de.id}]
       end
@@ -253,13 +253,13 @@ class EfectoresController < ApplicationController
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @provincias = Provincia.all.collect {|p| [p.nombre, p.id]}
-    @departamentos = Provincia.include(:departamentos).all.collect do |p|
+    @departamentos = Provincia.includes(:departamentos).all.collect do |p|
       p.departamentos.collect do |d|
         [d.nombre, d.id, {class: p.id}]
       end
     end.flatten!(1).uniq
 
-    @distritos = Departamento.include(:distritos).all.collect do |de|
+    @distritos = Departamento.includes(:distritos).all.collect do |de|
       de.distritos.collect do |d|
         [d.nombre, d.id, {class: de.id}]
       end
