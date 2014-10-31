@@ -15,9 +15,11 @@
       -
       = link_to("Registrar prestación", |
         new_prestacion_brindada_path(:clave_de_beneficiario => @novedad.clave_de_beneficiario)) |
-    - if can? :read, PrestacionBrindada
+    - if can?(:read, VistaGlobalDePrestacionBrindada) && current_user.in_group?(:operaciones)
+      = link_to("Historial de prestaciones", prestaciones_brindadas_al_afiliado_path)
+    - elsif can?(:read, PrestacionBrindada) && current_user.in_group?(:facturacion_uad)
       = link_to("Historial de prestaciones", |
-        prestaciones_brindadas_path(:clave_de_beneficiario => @novedad.clave_de_beneficiario)) |
+        prestaciones_brindadas_path(:clave_de_beneficiario => @afiliado.clave_de_beneficiario)) |
 
 = render :partial => "shared/info", :locals => { :registro => @novedad }
 

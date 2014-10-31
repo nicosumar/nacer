@@ -197,18 +197,6 @@
     - else
       %span.field_empty No se han ingresado observaciones para la prestación brindada
 
-  - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
-    %h3 Datos del último proceso de liquidación
-    %div.field_content
-      %span.field_name Estado de la prestación liquidada
-      %span.field_value= @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
-    - if !@prestacion_brindada.observaciones_de_liquidacion.blank?
-      %div.field_content
-        %span.field_value_multiline
-          - @prestacion_brindada.observaciones_de_liquidacion.split("\n").each do |linea|
-            = linea
-            %br/
-
   %h3 Información sobre el registro
 
   %div.field_content
@@ -233,3 +221,18 @@
         %span.field_value= @prestacion_brindada.updater.nombre_completo
       - else
         %span.field_empty No se registró el usuario que realizó la última modificación
+
+  - if @prestacion_brindada.prestaciones_liquidadas.size > 0
+    %h3 Resultado de los procesos de liquidación donde se incluyó esta prestación
+    %div.field_content
+      %ul.field_value
+        - @prestacion_brindada.prestaciones_liquidadas.each do |pl|
+          %li
+            = "Periodo '" + pl.periodo.periodo.to_s + "': " + pl.estado_de_la_prestacion_liquidada.nombre + "."
+            - if pl.rechazada?
+              - if pl.rechazo_administrativo?
+                %br/
+                = "Motivo de rechazo del área de administración: " + pl.motivo_de_rechazo_administrativo + "."
+              - if pl.rechazo_medico?
+                %br/
+                = "Motivo de rechazo del área médica: " + pl.motivo_de_rechazo_medico + "."

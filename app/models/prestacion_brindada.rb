@@ -765,10 +765,10 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
 
-  # 
+  #
   # Busca todas las prestaciones sin facturar y vencidas al periodo indicado y las marca como vencidas
   # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
-  # 
+  #
   # @return [Fixnum] Cantidad de prestaciones vencidas
   def self.marcar_prestaciones_vencidas(liquidacion)
 
@@ -808,10 +808,10 @@ class PrestacionBrindada < ActiveRecord::Base
     #a.cmd_tuples
   end
 
-  # 
+  #
   # Marca las prestaciones brindadas de baja cuyo beneficiario no presentara periodo de actividad al momento de tomar la prestación.
   # @param periodo [LiquidacionSumar] Liquidacion en la cual se verifican los periodos de actividad
-  # 
+  #
   # @return [Fixnum] Cantidad de prestaciones vencidas
   def self.marcar_prestaciones_sin_periodo_de_actividad(liquidacion)
 
@@ -820,7 +820,7 @@ class PrestacionBrindada < ActiveRecord::Base
     fecha_limite_prestaciones = liquidacion.periodo.fecha_limite_prestaciones.to_s
     efectores = liquidacion.grupo_de_efectores_liquidacion.efectores.collect {|e| e.id}.join(", ")
     prestaciones_ids = liquidacion.periodo.concepto_de_facturacion.prestaciones.collect {|r| r.id }.join(", ")
-    
+
     cq = CustomQuery.buscar({
       sql:  "SELECT DISTINCT esquema \n"+
             "FROM vista_global_de_prestaciones_brindadas vpb\n"+
@@ -863,20 +863,20 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
 
-  # 
+  #
   # Marca todas las prestaciones de una liquidación como "Registrada"
   # @param liquidacion [LiquidacionSumar] Liquidacion en la cual se encuentran las prestaciones
-  # 
+  #
   def self.marcar_prestaciones_facturadas!(liquidacion)
-    
-    raise 'El argumento debe ser de tipo LiquidacionSumar' unless liquidacion.is_a?(LiquidacionSumar) 
-    
+
+    raise 'El argumento debe ser de tipo LiquidacionSumar' unless liquidacion.is_a?(LiquidacionSumar)
+
     estado_aceptada_id    = liquidacion.parametro_liquidacion_sumar.prestacion_aceptada.id
     estado_exceptuada_id  = liquidacion.parametro_liquidacion_sumar.prestacion_exceptuada.id
     estados_aceptados_ids = [estado_aceptada_id, estado_exceptuada_id].join(", ")
 
     begin
-      ActiveRecord::Base.transaction do 
+      ActiveRecord::Base.transaction do
 
         cq = CustomQuery.buscar({
          sql:  "SELECT DISTINCT esquema\n"+
@@ -885,9 +885,9 @@ class PrestacionBrindada < ActiveRecord::Base
          })
 
         cq.each do |r|
-          
+
           logger.warn "LOG INFO - LIQUIDACION_SUMAR: Marcando prestaciones para el esquema #{r[:esquema]} - Liquidacion #{liquidacion.id} "
-          
+
           upd = CustomQuery.ejecutar({
               sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n "+
                     "SET estado_de_la_prestacion_id = #{estado_aceptada_id}, \n "+
@@ -904,13 +904,14 @@ class PrestacionBrindada < ActiveRecord::Base
     rescue Exception => e
       raise "Ocurrio un problema: #{e.message}"
     end #end begin/rescue
+
   end #end method
 
-  # 
+  #
   # Revisa todas las prestaciones brindadas buscando prestaciones duplicadas en
   # base a que posean el mismo beneficiario, en la misma fecha, se haya realizado en
   # el mismo efector y sea la misma prestación
-  # 
+  #
   # @return [type] [description]
   def self.anular_prestaciones_duplicadas
 
@@ -936,7 +937,6 @@ class PrestacionBrindada < ActiveRecord::Base
         })
 
       # Si hay alguna en estado 3, tomo esa
-
       aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '3'}
       if aprobado.blank?
         # Si hay alguna en estado 7 (refacturado) y ninguna en 3, tomo esa
@@ -954,9 +954,23 @@ class PrestacionBrindada < ActiveRecord::Base
                "SET estado_de_la_prestacion_id = 11\n"+
                "WHERE id = #{c[:id]}\n"
         })
-      end #end update
+      end #end ~ casos.each
 
-    end #end each duplicados
-  end # end anular_prestaciones_duplicadas
+    end #end ~ duplicados.each
 
-end#end class
+  end #end ~ def self.anular_prestaciones_duplicadas
+
+  def prestaciones_liquidadas
+    esquema_actual = ActiveRecord::Base.connection.exec_query("SELECT current_schema();").rows[0][0]
+
+    # Devolvemos las prestaciones liquidadas asociadas con esta prestación brindada, o un
+    # ActiveRecord::Relation sin datos si el esquema actual es una UAD que no realiza facturación
+    uad = UnidadDeAltaDeDatos.find_by_codigo((esquema_actual.match(/uad_([0-9]{3})/) || [])[1])
+    if uad.present? && uad.facturacion
+      PrestacionLiquidada.where(:unidad_de_alta_de_datos_id => uad.id, :prestacion_brindada_id => self.id)
+    else
+      PrestacionLiquidada.where("'f'::boolean")
+    end
+  end #end ~ def prestaciones_liquidadas
+
+end #end ~ class PrestacionBrindada
