@@ -377,7 +377,7 @@ archivo.set_encoding("CP1252", :crlf_newline => true)
 
 UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
   ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
-  res = ActiveRecord::Base.connection.exec_query <--SQL
+  res = ActiveRecord::Base.connection.exec_query <<-SQL
     SELECT
         e.cuie "CUIE",
         pb.clave_de_beneficiario "Clave beneficiario",
@@ -460,26 +460,26 @@ UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
         AND (a.fecha_de_nacimiento + '7 years'::interval)::date BETWEEN '2014-05-01' AND '2014-08-31'
         AND pb.estado_de_la_prestacion_id NOT IN (10)
         AND
-	  EXISTS (
-	    SELECT pb2.*
-	      FROM
-		prestaciones_brindadas pb2
-	      WHERE
-		pb2.prestacion_id IN (464, 501)
-		AND pb2.fecha_de_la_prestacion = pb.fecha_de_la_prestacion
-		AND pb2.clave_de_beneficiario = pb.clave_de_beneficiario
-		AND pb2.estado_de_la_prestacion_id NOT IN (10)
+	        EXISTS (
+	          SELECT pb2.*
+	            FROM
+            		prestaciones_brindadas pb2
+	            WHERE
+		            pb2.prestacion_id IN (464, 501)
+		            AND pb2.fecha_de_la_prestacion = pb.fecha_de_la_prestacion
+		            AND pb2.clave_de_beneficiario = pb.clave_de_beneficiario
+		            AND pb2.estado_de_la_prestacion_id NOT IN (10)
           )
         AND
           NOT EXISTS (
-	    SELECT pb3.*
-	      FROM
-		prestaciones_brindadas pb3
-	      WHERE
-		pb3.prestacion_id IN (465, 502, 765)
-		AND pb3.fecha_de_la_prestacion = pb.fecha_de_la_prestacion
-		AND pb3.clave_de_beneficiario = pb.clave_de_beneficiario
-		AND pb3.estado_de_la_prestacion_id NOT IN (10)
+      	    SELECT pb3.*
+	            FROM
+            		prestaciones_brindadas pb3
+      	      WHERE
+		            pb3.prestacion_id IN (465, 502, 765)
+		            AND pb3.fecha_de_la_prestacion = pb.fecha_de_la_prestacion
+		            AND pb3.clave_de_beneficiario = pb.clave_de_beneficiario
+		            AND pb3.estado_de_la_prestacion_id NOT IN (10)
           )
 
     UNION
