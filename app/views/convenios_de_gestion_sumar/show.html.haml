@@ -16,7 +16,7 @@
 = render :partial => "shared/info"
 
 #content-body
-  %h3 Datos de identificación
+  %h2 Datos de identificación
   %div.field_content
     %span.field_name Número
     %span.field_value= @convenio_de_gestion.numero
@@ -25,7 +25,7 @@
     %span.field_value= @convenio_de_gestion.efector.nombre
     = link_to "Ver detalles del efector", @convenio_de_gestion.efector
 
-  %h3 Datos del firmante y fechas
+  %h2 Datos del firmante y fechas
   %div.field_content
     %span.field_name Firmante por el efector
     - if !@convenio_de_gestion.firmante_id.blank?
@@ -51,7 +51,7 @@
     - else
       %span.field_empty No se indicó la fecha de finalización
 
-  %h3 Direcciones de correo electrónico para notificaciones fehacientes
+  %h2 Direcciones de correo electrónico para notificaciones fehacientes
   %div.field_content
     - if !@convenio_de_gestion.email.blank?
       %span.field_value_multiline
@@ -61,7 +61,7 @@
     - else
       %span.field_empty No se ingresó la dirección de correo electrónico
 
-  %h3 Observaciones
+  %h2 Observaciones
   %div.field_content
     - if !@convenio_de_gestion.observaciones.blank?
       %span.field_value_multiline
@@ -71,18 +71,21 @@
     - else
       %span.field_empty No se han ingresado observaciones para el convenio de gestión
 
-  %h3 Prestaciones autorizadas en el convenio original sin tener en cuenta las adendas
+  %h2 Prestaciones autorizadas en el convenio original SIN TENER EN CUENTA las adendas posteriores
   - if @convenio_de_gestion.prestaciones_autorizadas.any?
-    %table
-      %thead
-        %tr
-          %th Código
-          %th Nombre
-      %tbody
-        - @convenio_de_gestion.prestaciones_autorizadas.each do |c|
-          %tr
-            %td= c.prestacion.codigo
-            %td= c.prestacion.nombre
+    - @convenio_de_gestion.prestaciones_autorizadas_pdss.each do |grupo|
+      %h3.grupo_pdss= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
+      - if grupo.has_key? :subgrupos
+        - grupo[:subgrupos].each do |subgrupo|
+          %h4.subgrupo_pdss= (subgrupo["codigo"].present? ? subgrupo["codigo"] + ") " : "") + subgrupo["nombre"]
+          - if subgrupo.has_key? :apartados
+            - subgrupo[:apartados].each do |apartado|
+              %h4.apartado_pdss= (apartado["codigo"].present? ? apartado["codigo"] + ") " : "") + apartado["nombre"]
+              = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => apartado[:prestaciones]}
+          - else
+            = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => subgrupo[:prestaciones]}
+      - else
+        = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones]}
   - else
     %div.field_content
       %span.field_empty Aún no se han definido prestaciones autorizadas para este convenio.

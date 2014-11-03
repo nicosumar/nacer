@@ -47,8 +47,8 @@
             - if can?(:read, PrestacionBrindada) && UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
               %li
                 %a.drop{:href => "#"} PRESTACIONES
-                %div.dropdown_3columns
-                  %div.col_3
+                %div.dropdown_2columns
+                  %div.col_2
                     %h2 Gestión de prestaciones
                   %div.col_2
                     %h3 REGISTRO DE PRESTACIONES
@@ -59,10 +59,6 @@
                         %li= link_to "Registrar una prestación comunitaria", new_prestacion_brindada_path(:comunitaria => true)
                       - if can? :read, PrestacionBrindada
                         %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
-                  %div.col_1
-                    %h3 FACTURACIÓN
-                    %ul
-                      %li= link_to "Documentos electrónicos", documentos_electronicos_index_path
 
             - if can? :read, Efector
               %li
@@ -75,10 +71,10 @@
                     %ul
                       %li= link_to "Efectores", efectores_path
                       %li= link_to "Documentos electrónicos", documentos_electronicos_index_path
-                    - if can? :read, Addenda
+                    - if can? :read, AddendaSumar
                       %h3 ADENDAS
                       %ul
-                        %li= link_to "Adendas", addendas_path
+                        %li= link_to "Adendas", addendas_sumar_path
                   %div.col_1
                     - if can? :read, ConvenioDeGestionSumar
                       %h3 CONVENIOS SUMAR
@@ -207,7 +203,7 @@
           #pie
             = image_tag "footer.png"
           %p.primero
-            Copyleft 2011-2013,
+            Copyleft 2012-2014,
             = mail_to '"Área de sistemas informáticos, Programa SUMAR Mendoza" <operacionesnacer-salud@mendoza.gov.ar>', |
               "Área de sistemas informáticos, Programa SUMAR Mendoza", :title => "Enviar un mensaje al equipo de desarrollo" |
             = " - Teléfono: (0261) 424-7020, int. 119"

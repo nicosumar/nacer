@@ -16,7 +16,7 @@ class EfectoresController < ApplicationController
 
     # Obtener el listado de efectores
     @efectores =
-      Efector.paginate(:page => params[:page], :per_page => 20,
+      Efector.accessible_by(current_ability).paginate(:page => params[:page], :per_page => 20,
         :include => [:convenio_de_gestion, :convenio_de_administracion, :convenio_de_gestion_sumar,
           :convenio_de_administracion_sumar
         ], :order => :cuie
@@ -25,16 +25,6 @@ class EfectoresController < ApplicationController
 
   # GET /efectores/:id
   def show
-    # Verificar los permisos del usuario
-    if cannot? :read, Efector
-      redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."
-        }
-      )
-      return
-    end
-
     # Obtener el efector
     begin
       @efector =
@@ -51,6 +41,17 @@ class EfectoresController < ApplicationController
       )
       return
     end
+
+    # Verificar los permisos del usuario
+    if cannot? :read, @efector
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
   end
 
   # GET /efectores/new
@@ -301,16 +302,6 @@ class EfectoresController < ApplicationController
 
   # GET /efectores/:id/prestaciones_autorizadas
   def prestaciones_autorizadas
-    # Verificar los permisos del usuario
-    if cannot? :read, PrestacionAutorizada
-      redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."
-        }
-      )
-      return
-    end
-
     # Obtener el efector
     begin
       @efector =
@@ -318,6 +309,16 @@ class EfectoresController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Verificar los permisos del usuario
+    if cannot? :read, @efector
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
