@@ -18,7 +18,8 @@
         %th Convenio
         %th Efector
         %th Inicio
-        %th Última modificación
+        - if current_user.in_group? [:facturacion, :convenios, :auditoria_control, :contabilidad, :liquidacion_uad]
+          %th Última modificación
     %tbody
       - @convenios_de_gestion.each do |c|
         %tr.clickable{ |
@@ -26,5 +27,6 @@
           %td= c.numero
           %td= c.efector.nombre
           %td= c.fecha_de_inicio.strftime("%d/%m/%Y")
-          %td= c.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+          - if current_user.in_group? [:facturacion, :convenios, :auditoria_control, :contabilidad, :liquidacion_uad]
+            %td= c.updated_at.strftime("%d/%m/%Y %H:%M:%S")
   = will_paginate @convenios_de_gestion, :inner_window => 2, :outer_window => 0
