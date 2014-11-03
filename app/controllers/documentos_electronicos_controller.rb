@@ -2,7 +2,7 @@
 class DocumentosElectronicosController < ApplicationController
 
 	before_filter :authenticate_user!
-  
+
   def index
 
     # Valores para los dropdown

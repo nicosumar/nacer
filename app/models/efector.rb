@@ -13,14 +13,8 @@ class Efector < ActiveRecord::Base
   attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria, :cuie
   attr_accessible :categorizado_cone
 
-
   # Atributos protegidos
   # attr_protected :cuie
-
-
-  # Atributos solo lectura
-
-  attr_readonly :cuie
 
   # Asociaciones
   has_one :convenio_de_gestion
@@ -36,6 +30,7 @@ class Efector < ActiveRecord::Base
   has_one :administrador, :through => :convenio_de_administracion
   has_one :administrador_sumar, :through => :convenio_de_administracion_sumar, :source => "administrador"
   has_many :prestaciones_autorizadas
+  has_many :prestaciones_pdss_autorizadas
   has_many :asignaciones_de_nomenclador
   has_many :referentes
   # Asociaciones referentes a la liquidacion
@@ -113,6 +108,7 @@ class Efector < ActiveRecord::Base
     ")
   end
 
+
   def fecha_de_inicio_del_convenio_actual
     convenio_actual = (convenio_de_gestion_sumar || convenio_de_gestion)
 
@@ -125,14 +121,14 @@ class Efector < ActiveRecord::Base
     return administrador.present? if convenio_de_gestion.present?
   end
 
-  # 
+  #
   # Devuelve los efectores que administra
-  # 
+  #
   # @return [Array<Efector>] Array de efectores administrados
   def efectores_administrados
     Efector.joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id").where(["administrador_id = ?",self.id])
   end
- 
+
   #
   # Devuelve si el efector es administrador. Considera administrador al efector si:
   # Tiene al menos un efector con convenio de administracion asociado a el como administrador
@@ -141,7 +137,7 @@ class Efector < ActiveRecord::Base
   def es_administrador?
     # Tiene al menos un efector con convenio de administracion asociado a el como administrador
     return false if self.efectores_administrados.size < 1
-   
+
     return true
   end
 
@@ -286,6 +282,21 @@ class Efector < ActiveRecord::Base
     end
     
   end
+
+  #
+  # Devuelve los ID de prestaciones autorizadas a la fecha solicitada
+  #
+  # @return [Array<id>] Array con los ID de las prestaciones PDSS autorizadas al día pasado como parámetro para este efector
+  def prestaciones_pdss_autorizadas_ids(fecha = Date.today)
+    prestaciones_pdss_autorizadas.where("
+      fecha_de_inicio >= '#{fecha.iso8601}'
+      AND (
+        fecha_de_finalizacion IS NULL
+        OR fecha_de_finalizacion > '#{fecha.iso8601}'
+      )
+    ").collect{|ppa| ppa.prestacion_pdss_id}
+  end
+
 
   #--------------------------------------------------------------
   #                   Metodos de clase

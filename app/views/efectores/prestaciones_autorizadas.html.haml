@@ -21,29 +21,22 @@
       %span.field_value= @efector.nombre + " (el CUIE aún no se ha asignado)"
     = link_to "Ver detalles del efector", @efector
 
-  - if @efector.prestaciones_autorizadas.any?
+  - if @efector.prestaciones_autorizadas_al_dia(Date.today).any?
     %h2
       Prestaciones autorizadas al
-      = Time.now.strftime("%d/%m/%Y")
-    %table
-      %thead
-        %tr
-          %th Código
-          %th Nombre
-          %th Autorizador
-          %th Fecha de inicio
-      %tbody
-        - @efector.prestaciones_autorizadas_al_dia.sort_by{|pa| pa.prestacion.codigo}.each do |p|
-          %tr
-            %td= p.prestacion.codigo
-            %td= p.prestacion.nombre_corto
-            - case
-              - when p.autorizante_al_alta_type == 'ConvenioDeGestion' || p.autorizante_al_alta_type == 'ConvenioDeGestionSumar'
-                %td Convenio de gestión
-              - when p.autorizante_al_alta_type == 'Addenda' || p.autorizante_al_alta_type == 'AddendaSumar'
-                %td Adenda
-              - else
-                %td (desconocido)
-            %td= p.autorizante_al_alta.fecha_de_inicio.strftime('%d/%m/%Y')
+      = Date.today.strftime("%d/%m/%Y")
+    - @efector.prestaciones_autorizadas_pdss_al_dia(Date.today).each do |grupo|
+      %h4.grupo_pdss= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
+      - if grupo.has_key? :subgrupos
+        - grupo[:subgrupos].each do |subgrupo|
+          %h4.subgrupo_pdss= (subgrupo["codigo"].present? ? subgrupo["codigo"] + ") " : "") + subgrupo["nombre"]
+          - if subgrupo.has_key? :apartados
+            - subgrupo[:apartados].each do |apartado|
+              %h4.apartado_pdss= (apartado["codigo"].present? ? apartado["codigo"] + ") " : "") + apartado["nombre"]
+              = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => apartado[:prestaciones]}
+          - else
+            = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => subgrupo[:prestaciones]}
+      - else
+        = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones]}
   - else
     No hay información sobre las prestaciones autorizadas para el convenio

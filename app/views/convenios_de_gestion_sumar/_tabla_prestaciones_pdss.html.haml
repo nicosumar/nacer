@@ -1,0 +1,27 @@
+- if prestaciones.collect{|p| p[:autorizada]}.any?
+  %table
+    %theader
+      %tr
+        - if prestaciones.collect{|p| p["nosologia_id"]}.any?
+          %th Nosología / Acciones preventivas
+        %th Tipo de prestación
+        %th Nombre de la prestación
+        %th Código
+        %th Rural
+    %tbody
+      - prestaciones.each do |p|
+        - if p[:autorizada]
+          %tr
+            - if prestaciones.collect{|p| p["nosologia_id"]}.any?
+              %td
+                - if p["nosologia_id"].nil?
+                  Con ref. a nosologías de este grupo
+                - else
+                  = Nosologia.find(p["nosologia_id"].to_i).nombre
+            %td= TipoDePrestacion.find(p["tipo_de_prestacion_id"].to_i).nombre
+            %td= p["nombre"]
+            %td= p["codigo"]
+            %td= (p["rural"] ? "R" : "")
+  %br/
+- else
+  %p No existen prestaciones autorizadas para este grupo

@@ -374,11 +374,41 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("ExpedienteSumar", "Expedientes·Sumar·")
   inflect.irregular("Expediente·Sumar·", "ExpedientesSumar")
 
-  #Tipos de expedientes
+  # Tipos de expedientes
   inflect.irregular("tipo_de_expediente", "tipos·_de·_expedientes·")
   inflect.irregular("tipo·_de·_expediente·", "tipos_de_expedientes")
   inflect.irregular("TipoDeExpediente", "Tipos·De·Expedientes·")
   inflect.irregular("Tipo·De·Expediente·", "TiposDeExpedientes")
+
+  # Grupos del PDSS
+  inflect.irregular("grupo_pdss", "grupos·_pdss·")
+  inflect.irregular("grupo·_pdss·", "grupos_pdss")
+  inflect.irregular("GrupoPdss", "Grupos·Pdss·")
+  inflect.irregular("Grupo·Pdss·", "GruposPdss")
+
+  # Subgrupos del PDSS
+  inflect.irregular("subgrupo_pdss", "subgrupos·_pdss·")
+  inflect.irregular("subgrupo·_pdss·", "subgrupos_pdss")
+  inflect.irregular("SubgrupoPdss", "Subgrupos·Pdss·")
+  inflect.irregular("Subgrupo·Pdss·", "SubgruposPdss")
+
+  # Apartados para subgrupos del PDSS
+  inflect.irregular("apartado_pdss", "apartados·_pdss·")
+  inflect.irregular("apartado·_pdss·", "apartados_pdss")
+  inflect.irregular("ApartadoPdss", "Apartados·Pdss·")
+  inflect.irregular("Apartado·Pdss·", "ApartadosPdss")
+
+  # Prestaciones del PDSS
+  inflect.irregular("prestacion_pdss", "prestaciones·_pdss·")
+  inflect.irregular("prestacion·_pdss·", "prestaciones_pdss")
+  inflect.irregular("PrestacionPdss", "Prestaciones·Pdss·")
+  inflect.irregular("Prestacion·Pdss·", "PrestacionesPdss")
+
+  # Prestaciones PDSS autorizadas por efector
+  inflect.irregular("prestacion_pdss_autorizada", "prestaciones·_pdss·_autorizadas·")
+  inflect.irregular("prestacion·_pdss·_autorizada·", "prestaciones_pdss_autorizadas")
+  inflect.irregular("PrestacionPdssAutorizada", "Prestaciones·Pdss·Autorizadas·")
+  inflect.irregular("Prestacion·Pdss·Autorizada·", "PrestacionesPdssAutorizadas")
 
   #Detalles de debitos prestacionales
   inflect.irregular("detalle_de_debito_prestacional", "detalles·_de·_debitos·_prestacionales·")

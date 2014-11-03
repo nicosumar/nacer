@@ -9,6 +9,7 @@ class PrestacionAutorizada < ActiveRecord::Base
   belongs_to :prestacion
   belongs_to :autorizante_al_alta, :polymorphic => true
   belongs_to :autorizante_de_la_baja, :polymorphic => true
+  has_many :prestaciones_pdss, :through => :prestacion
 
   # Validaciones
   validates_presence_of :efector_id, :prestacion_id, :fecha_de_inicio
