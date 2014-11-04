@@ -19,7 +19,7 @@ class ReporteRuby
       [['Cero a Cinco', 2],[arg_nomenclador, arg_anio]],
       [['Seis a Nueve', 3],[arg_nomenclador, arg_anio]],
       [['Diez a Diecinueve', 4],[arg_nomenclador, arg_anio]],
-      [['Veinte a Sesenta y cuatro', 6],[arg_nomenclador, arg_anio]]
+      [['Veinte a Sesenta y cuatro', 5],[arg_nomenclador, arg_anio]]
     
 
     grupos_y_filtros.each do |g|
