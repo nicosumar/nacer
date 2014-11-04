@@ -43,8 +43,8 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
     return !error_de_fecha
   end
 
-  def prestaciones_pdss_autorizadas_ids(*ignorar)
-    prestaciones_pdss_autorizadas.collect{|ppa| ppa.prestacion_pdss_id}
+  def prestaciones_pdss_autorizadas_decoradas
+    PrestacionPdssAutorizada.efector_y_fecha(self.efector_id, self.fecha_de_inicio)
   end
 
 end

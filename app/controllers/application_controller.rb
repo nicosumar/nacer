@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   attr_reader :uad_actual
   helper :all
-  helper_method :admin_required, :modelos_autorizados
+  helper_method :admin_required, :modelos_autorizados, :uad_actual
   before_filter :establecer_uad
 
   # establecer_uad

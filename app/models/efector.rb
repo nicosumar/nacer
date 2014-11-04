@@ -141,9 +141,9 @@ class Efector < ActiveRecord::Base
     return true
   end
 
-  # 
+  #
   # Devuelve si el efector es autoadministrado
-  # 
+  #
   # @return [Boolean] Verdadero si es autoadministrado
   def es_autoadministrado?
     if Efector.administradores_y_autoadministrados_sumar.where(id: self.id).size == 1
@@ -153,21 +153,21 @@ class Efector < ActiveRecord::Base
     end
   end
 
-  # 
+  #
   # Devuelve los efectores que administra solo si estos poseen prestaciones liquidadas
-  # 
+  #
   # @return [Array<Efector>] Array de efectores administrados
   def administrados_con_prestaciones_liquidadas
     if self.es_administrador?
       self.efectores_administrados
           .where("EXISTS (select id from prestaciones_liquidadas where prestaciones_liquidadas.efector_id = efectores.id)")
-    end 
+    end
   end
 
 
-  # 
+  #
   # Devuelve los conceptos que alguna vez ha facturado
-  # 
+  #
   # @return [Array<ConceptoDeFacturacion>] Array de conceptos de facturación
   def conceptos_que_facturo
     ConceptoDeFacturacion.select("DISTINCT conceptos_de_facturacion.*")
@@ -177,24 +177,24 @@ class Efector < ActiveRecord::Base
   end
 
 
-  # 
+  #
   # Devuelve los conceptos que ha facturado o consolidado
-  # 
+  #
   # @return [Array<ConceptoDeFacturacion>] Array de conceptos de facturación
   def conceptos_facturados_o_consolidados
-    
+
     if self.es_administrador?
       self.consolidados_sumar.present?
       return (self.conceptos_que_facturo.collect {|cf| cf } + [ConceptoDeFacturacion.find(1)]).uniq.sort! { |a,b| a.periodo <=> b.periodo }
     else
       return self.conceptos_que_facturo.collect {|cf| cf }
     end
-    
+
   end
 
-  # 
+  #
   # Devuelve los periodos que alguna vez ha facturado
-  # 
+  #
   # @return [Array<Periodo>] Array con los conceptos de facturacion
   def periodos_facturados( arg_concepto = [])
 
@@ -206,17 +206,17 @@ class Efector < ActiveRecord::Base
       arg_concepto = ConceptoDeFacturacion.all.map {|c| c.id}
     end
     Periodo.select("DISTINCT periodos.*")
-           .joins("join liquidaciones_sumar l on l.periodo_id = periodos.id\n"+ 
+           .joins("join liquidaciones_sumar l on l.periodo_id = periodos.id\n"+
                   "join prestaciones_liquidadas pl on pl.liquidacion_id = l.id ")
            .where("pl.efector_id = #{self.id}\n"+
                   "AND l.concepto_de_facturacion_id IN (#{arg_concepto.join(', ') })").order(:periodo)
   end
 
 
-  # 
+  #
   # Devuelve los periodos que ha facturado o consolidado
   # @param arg_concepto = [] [ConcdeptoDeFacturacion] [Filtro para un concepto en particular ]
-  # 
+  #
   # @return [Array<Periodo>] [Array con los periodos que ha facturado o consolidado]
   def periodos_facturados_o_consoliados(arg_concepto = [])
     if arg_concepto.is_a? ConceptoDeFacturacion
@@ -237,13 +237,13 @@ class Efector < ActiveRecord::Base
     else
       return self.periodos_facturados(arg_concepto).collect {|pf| pf }
     end
-   
+
   end
 
   #
   # Devuelve el consolidado de un periodo dado
   #
-  # @return [ConsolidadoSumar] 
+  # @return [ConsolidadoSumar]
   def consolidado_de_periodo(argPeriodo)
     if self.consolidados_sumar.where(periodo_id: argPeriodo.id).blank?
       return []
@@ -255,46 +255,40 @@ class Efector < ActiveRecord::Base
   #
   # Devuelve las cuasifactura de un periodo dado
   #
-  # @return [LiquidacionSumarCuasifactura] 
+  # @return [LiquidacionSumarCuasifactura]
   def cuasifacturas_de_un_periodo(argPeriodo)
     self.cuasifacturas.joins(:liquidacion_sumar).where(liquidaciones_sumar: {periodo_id: argPeriodo.id})
   end
 
 
-  # 
+  #
   # Devuelve las prestaciones liquidadas para unaliquidacion dada de este efector
   # @param  argLiquidacion [LiquidacionSumar] La liquidacion de la cual deben obtenerse las prestaciones
   # @param  solo_aceptadas = true [Boolean] Indica si solo debe devolver las prestaciones aceptadas, o todas
-  # 
+  #
   # @return [PrestacionLiquidada] Las prestaciones liquidadas para ese efector en la liquidacion que se envio como parametro
   def prestaciones_liquidadas_por_liquidacion(argLiquidacion, solo_aceptadas = true)
-    
+
     unless (solo_aceptadas.is_a? TrueClass or solo_aceptadas.is_a? FalseClass) and argLiquidacion.is_a? LiquidacionSumar
        return nil
-    end 
+    end
 
     estados_aceptados = [argLiquidacion.parametro_liquidacion_sumar.prestacion_aceptada.id, argLiquidacion.parametro_liquidacion_sumar.prestacion_exceptuada.id]
-    
+
     if solo_aceptadas
       self.prestaciones_liquidadas.where(liquidacion_id: argLiquidacion.id, estado_de_la_prestacion_liquidada_id: estados_aceptados)
     else
       self.prestaciones_liquidadas.where(liquidacion_id: argLiquidacion.id)
     end
-    
+
   end
 
-  #
+  # PRESENTACION - Considerar mover esta función a una clase de presentación propia
   # Devuelve los ID de prestaciones autorizadas a la fecha solicitada
   #
   # @return [Array<id>] Array con los ID de las prestaciones PDSS autorizadas al día pasado como parámetro para este efector
-  def prestaciones_pdss_autorizadas_ids(fecha = Date.today)
-    prestaciones_pdss_autorizadas.where("
-      fecha_de_inicio >= '#{fecha.iso8601}'
-      AND (
-        fecha_de_finalizacion IS NULL
-        OR fecha_de_finalizacion > '#{fecha.iso8601}'
-      )
-    ").collect{|ppa| ppa.prestacion_pdss_id}
+  def prestaciones_pdss_autorizadas_al_dia_decoradas(fecha = Date.today)
+    PrestacionPdssAutorizada.efector_y_fecha(self.id, fecha)
   end
 
 
@@ -542,28 +536,28 @@ class Efector < ActiveRecord::Base
     ")
   end
 
-  # 
+  #
   # Devuelve las prestaciones liquidadas para unaliquidacion dada de este efector
   # @param  argLiquidacion [LiquidacionSumar] La liquidacion de la cual deben obtenerse las prestaciones
   # @param  solo_aceptadas = true [Boolean] Indica si solo debe devolver las prestaciones aceptadas, o todas
   # @param  efectores = [] [Array] Array de efectores que deben incluirse en la busqueda
-  # 
+  #
   # @return [PrestacionLiquidada] Las prestaciones liquidadas para ese efector en la liquidacion que se envio como parametro
   def self.prestaciones_liquidadas_por_liquidacion(argLiquidacion, solo_aceptadas = true, efectores = [])
-    
+
     unless (solo_aceptadas.is_a? TrueClass or solo_aceptadas.is_a? FalseClass) and argLiquidacion.is_a? LiquidacionSumar and efectores.is_a? ActiveRecord::Relation and efectores.first.is_a? Efector
        raise "Los parametros no son corerctos"
        return nil
-    end 
+    end
 
     estados_aceptados = [argLiquidacion.parametro_liquidacion_sumar.prestacion_aceptada.id, argLiquidacion.parametro_liquidacion_sumar.prestacion_exceptuada.id]
-    
+
     if solo_aceptadas
-      PrestacionLiquidada.where(liquidacion_id: argLiquidacion.id, estado_de_la_prestacion_liquidada_id: estados_aceptados, efector_id: (efectores.collect {|e| e.id} + [efectores.first.administrador_sumar.id]) ) 
+      PrestacionLiquidada.where(liquidacion_id: argLiquidacion.id, estado_de_la_prestacion_liquidada_id: estados_aceptados, efector_id: (efectores.collect {|e| e.id} + [efectores.first.administrador_sumar.id]) )
     else
       PrestacionLiquidada.where(liquidacion_id: argLiquidacion.id, efector_id: (efectores.collect {|e| e.id} + [efectores.first.administrador_sumar.id]))
     end
-    
+
   end
 
 

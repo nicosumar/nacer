@@ -44,7 +44,8 @@
     %div.field_content
       %span.field_name Convenio de gestión Sumar
       %span.field_value= @efector.convenio_de_gestion_sumar.numero
-      = link_to "Ver detalles del convenio", @efector.convenio_de_gestion_sumar
+      - if can? :read, @efector.convenio_de_gestion_sumar
+        = link_to "Ver detalles del convenio", @efector.convenio_de_gestion_sumar
     - if @efector.convenio_de_administracion_sumar
       %div.field_content
         %span.field_name Administrado por un tercero
@@ -52,11 +53,13 @@
       %div.field_content
         %span.field_name Convenio de administración Sumar
         %span.field_value= @efector.convenio_de_administracion_sumar.numero
-        = link_to "Ver detalles del convenio", @efector.convenio_de_administracion_sumar
+        - if can? :read, @efector.convenio_de_administracion_sumar
+          = link_to "Ver detalles del convenio", @efector.convenio_de_administracion_sumar
       %div.field_content
         %span.field_name Administrador
         %span.field_value= @efector.administrador_sumar.cuie.to_s + " - " + @efector.administrador_sumar.nombre_corto
-        = link_to "Ver detalles del efector", @efector.administrador_sumar
+        - if can? :read, @efector.administrador_sumar
+          = link_to "Ver detalles del efector", @efector.administrador_sumar
     - else
       %div.field_content
         %span.field_name Administrado por un tercero
@@ -195,19 +198,20 @@
         %span.field_name Habilitado
         %span.field_value No
 
-  %h3 Infraestructura
-  %div.field_content
-    %span.field_name Camas de internación
-    - if !@efector.camas_de_internacion.blank?
-      %span.field_value= @efector.camas_de_internacion
-    - else
-      %span.field_empty No se ha ingresado la cantidad de camas de internación
-  %div.field_content
-    %span.field_name Ambientes
-    - if !@efector.ambientes.blank?
-      %span.field_value= @efector.ambientes
-    - else
-      %span.field_empty No se ha ingresado la cantidad de ambientes
+  -#
+    %h3 Infraestructura
+    %div.field_content
+      %span.field_name Camas de internación
+      - if !@efector.camas_de_internacion.blank?
+        %span.field_value= @efector.camas_de_internacion
+      - else
+        %span.field_empty No se ha ingresado la cantidad de camas de internación
+    %div.field_content
+      %span.field_name Ambientes
+      - if !@efector.ambientes.blank?
+        %span.field_value= @efector.ambientes
+      - else
+        %span.field_empty No se ha ingresado la cantidad de ambientes
 
   - if current_user.in_group? [:facturacion, :convenios, :auditoria_control, :contabilidad, :liquidacion_uad]
     %h3 Datos de facturación

@@ -1,36 +1,24 @@
-%table
-  %theader
+%table.prestaciones_pdss
+  %thead
     %tr
-      - if prestaciones.collect{|p| p["nosologia_id"]}.any?
+      - if prestaciones.any?{|p| p["nosologia"].present?}
         %th Nosología / Acciones preventivas
       %th Tipo de prestación
       %th Nombre de la prestación
       %th Código
-      %th Rural
+      %th Área
       %th Autorizada
-      %th Autorizador
-      %th Fecha de inicio
   %tbody
     - prestaciones.each do |p|
-      %tr
-        - if prestaciones.collect{|p| p["nosologia_id"]}.any?
+      %tr{:title => p["autorizada"] == "t" ? "Autorizada por: #{p["tipo_de_autorizador"]} #{p["numero_de_autorizador"]}, a partir del #{p["fecha_de_inicio"]}." : ""}
+        - if prestaciones.any?{|p| p["nosologia"].present?}
           %td
-            - if p["nosologia_id"].nil?
+            - if p["nosologia"].nil?
               Con ref. a nosologías de este grupo
             - else
-              = Nosologia.find(p["nosologia_id"].to_i).nombre
-        %td= TipoDePrestacion.find(p["tipo_de_prestacion_id"].to_i).nombre
-        %td= p["nombre"]
-        %td= p["codigo"]
-        %td= (p["rural"] ? "R" : "")
-        %td= (p[:autorizada] ? "Sí" : "No")
-        %td
-          - if p[:autorizada]
-            - if p[:autorizador].is_a?(ConvenioDeGestionSumar)
-              = "Convenio de gestión " + p[:autorizador].numero.to_s
-            - elsif p[:autorizador].is_a?(AddendaSumar)
-              = "Adenda " + p[:autorizador].numero.to_s
-        %td
-          - if p[:autorizada]
-            = p[:autorizador].fecha_de_inicio.strftime("%d/%m/%Y")
-%br/
+              = p["nosologia"]
+        %td.centrado= p["tipo_de_prestacion"]
+        %td= p["nombre_de_prestacion"]
+        %td.centrado= p["codigo_de_prestacion"]
+        %td.centrado= (p["rural"] == "t" ? "Urbana/Rural" : "Urbana")
+        %td.centrado= p["autorizada"] == "t" ? "Sí" : "No"

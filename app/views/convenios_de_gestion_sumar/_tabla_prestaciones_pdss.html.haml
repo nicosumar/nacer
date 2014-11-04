@@ -1,27 +1,26 @@
-- if prestaciones.collect{|p| p[:autorizada]}.any?
-  %table
-    %theader
+- if prestaciones.any?{|p| p["autorizada"] == "t"}
+  %table.prestaciones_pdss
+    %thead
       %tr
-        - if prestaciones.collect{|p| p["nosologia_id"]}.any?
+        - if prestaciones.any?{|p| p["nosologia"].present?}
           %th Nosología / Acciones preventivas
         %th Tipo de prestación
         %th Nombre de la prestación
         %th Código
-        %th Rural
+        %th Área
     %tbody
       - prestaciones.each do |p|
-        - if p[:autorizada]
+        - if p["autorizada"] == "t"
           %tr
-            - if prestaciones.collect{|p| p["nosologia_id"]}.any?
+            - if prestaciones.any?{|p| p["nosologia"].present?}
               %td
-                - if p["nosologia_id"].nil?
+                - if p["nosologia"].nil?
                   Con ref. a nosologías de este grupo
                 - else
-                  = Nosologia.find(p["nosologia_id"].to_i).nombre
-            %td= TipoDePrestacion.find(p["tipo_de_prestacion_id"].to_i).nombre
-            %td= p["nombre"]
-            %td= p["codigo"]
-            %td= (p["rural"] ? "R" : "")
-  %br/
+                  = p["nosologia"]
+            %td.centrado= p["tipo_de_prestacion"]
+            %td= p["nombre_de_prestacion"]
+            %td.centrado= p["codigo_de_prestacion"]
+            %td.centrado= (p["rural"] == "t" ? "Urbana/Rural" : "Urbana")
 - else
   %p No existen prestaciones autorizadas para este grupo

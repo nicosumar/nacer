@@ -73,19 +73,22 @@
 
   %h2 Prestaciones autorizadas en el convenio original SIN TENER EN CUENTA las adendas posteriores
   - if @convenio_de_gestion.prestaciones_autorizadas.any?
-    - @convenio_de_gestion.prestaciones_autorizadas_pdss.each do |grupo|
-      %h3.grupo_pdss= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
-      - if grupo.has_key? :subgrupos
-        - grupo[:subgrupos].each do |subgrupo|
-          %h4.subgrupo_pdss= (subgrupo["codigo"].present? ? subgrupo["codigo"] + ") " : "") + subgrupo["nombre"]
-          - if subgrupo.has_key? :apartados
-            - subgrupo[:apartados].each do |apartado|
-              %h4.apartado_pdss= (apartado["codigo"].present? ? apartado["codigo"] + ") " : "") + apartado["nombre"]
-              = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => apartado[:prestaciones]}
-          - else
-            = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => subgrupo[:prestaciones]}
-      - else
-        = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones]}
+    - PrestacionPdssAutorizada.efector_y_fecha(@convenio_de_gestion.efector_id, @convenio_de_gestion.fecha_de_inicio).each do |grupo|
+      %div.grupo_pdss{:id => grupo["nombre"]}
+        %h4= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
+        - if grupo.has_key? :subgrupos
+          - grupo[:subgrupos].each do |subgrupo|
+            %div.subgrupo_pdss{:id => subgrupo["nombre"]}
+              %h4= (subgrupo["codigo"].present? ? subgrupo["codigo"] + ") " : "") + subgrupo["nombre"]
+              - if subgrupo.has_key? :apartados
+                - subgrupo[:apartados].each do |apartado|
+                  %div.apartado_pdss{:id => apartado["nombre"]}
+                    %h4.first-header= (apartado["codigo"].present? ? apartado["codigo"] + ") " : "") + apartado["nombre"]
+                    = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => apartado[:prestaciones]}
+              - else
+                = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => subgrupo[:prestaciones]}
+        - else
+          = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones]}
   - else
     %div.field_content
       %span.field_empty Aún no se han definido prestaciones autorizadas para este convenio.

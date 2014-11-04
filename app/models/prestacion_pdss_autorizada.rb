@@ -32,88 +32,92 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
 #    ")
 #  end
 
-  # prestaciones_autorizadas_pdss
+  # PRESENTACION - devuelve un objeto para presentación en la vista. Evaluar el uso de funciones específicas para la capa de presentación
+  # self.efector_y_fecha
   # Devuelve todas las prestaciones del PDSS, serializadas en un Hash con su grupo, subgrupo, apartado, etc. e
   # indicando cuáles prestaciones están autorizadas según el objeto pasado como parámetro.
-  def serializar_pdss(objeto, fecha = Date.today)
-    raise ArgumentError unless (objeto.is_a? Efector || objeto.is_a? ConvenioDeGestionSumar)
-
-    prestaciones_pdss_autorizadas_ids = objeto.prestaciones_pdss_autorizadas_ids(fecha)
+  def self.efector_y_fecha(efector_id, fecha = Date.today)
+    qres = ActiveRecord::Base.connection.exec_query( <<-SQL
+        SELECT
+            gp.id "grupo_pdss_id",
+            sp.id "subgrupo_pdss_id",
+            ap.id "apartado_pdss_id",
+            pp.id "prestacion_pdss_id",
+            n.nombre "nosologia",
+            tdp.nombre "tipo_de_prestacion",
+            pp.codigo "codigo_de_prestacion",
+            pp.nombre "nombre_de_prestacion",
+            pp.rural "rural",
+            CASE WHEN ppa.autorizante_al_alta_type IS NOT NULL THEN 't'::boolean ELSE 'f'::boolean END "autorizada",
+            CASE
+              WHEN ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar' THEN 'Convenio de gestión'::varchar(255)
+              WHEN ppa.autorizante_al_alta_type = 'AddendaSumar' THEN 'Adenda'::varchar(255)
+              ELSE NULL::varchar(255)
+            END "tipo_de_autorizador",
+            CASE
+              WHEN ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar' THEN cgs.numero
+              WHEN ppa.autorizante_al_alta_type = 'AddendaSumar' THEN ads.numero
+              ELSE NULL::varchar(255)
+            END "numero_de_autorizador",
+            to_char(ppa.fecha_de_inicio, 'DD/MM/YYYY') "fecha_de_inicio"
+          FROM
+            prestaciones_pdss pp
+            LEFT JOIN grupos_pdss gp ON gp.id = pp.grupo_pdss_id
+            LEFT JOIN subgrupos_pdss sp ON sp.id = pp.subgrupo_pdss_id
+            LEFT JOIN apartados_pdss ap ON ap.id = pp.apartado_pdss_id
+            LEFT JOIN nosologias n ON n.id = pp.nosologia_id
+            LEFT JOIN tipos_de_prestaciones tdp ON tdp.id = pp.tipo_de_prestacion_id
+            LEFT JOIN prestaciones_pdss_autorizadas ppa ON (
+              ppa.efector_id = #{efector_id}
+              AND ppa.fecha_de_inicio <= '#{fecha.iso8601}'
+              AND (ppa.fecha_de_finalizacion IS NULL OR ppa.fecha_de_finalizacion > '#{fecha.iso8601}')
+              AND ppa.prestacion_pdss_id = pp.id
+            )
+            LEFT JOIN convenios_de_gestion_sumar cgs ON (
+              ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar'
+              AND ppa.autorizante_al_alta_id = cgs.id
+            )
+            LEFT JOIN addendas_sumar ads ON (
+              ppa.autorizante_al_alta_type = 'AddendaSumar' AND
+              ppa.autorizante_al_alta_id = ads.id
+            )
+          ORDER BY gp.orden, sp.orden, ap.orden, pp.orden;
+      SQL
+    )
 
     grupos = []
-    GrupoPdss.find(:all, :order => :orden).each do |g|
+    GrupoPdss.where(true).order(:orden).select([:id, :codigo, :nombre]).each do |g|
       if g.subgrupos_pdss.size > 0
         subgrupos_del_grupo = []
-        SubgrupoPdss.where(:grupo_pdss_id => g.id).order(:orden).each do |s|
+        SubgrupoPdss.where(:grupo_pdss_id => g.id).order(:orden).select([:id, :codigo, :nombre]).each do |s|
           if s.apartados_pdss.size > 0
             apartados_del_subgrupo = []
-            ApartadoPdss.where(:subgrupo_pdss_id => s.id).order(:orden).each do |a|
-              prestaciones_del_apartado = []
-              PrestacionPdss.where(:grupo_pdss_id => g.id, :subgrupo_pdss_id => s.id, :apartado_pdss_id => a.id).order(:orden).each do |p|
-                if prestaciones_pdss_autorizadas_ids.member?(p.id)
-                  prestaciones_del_apartado << p.attributes.merge!(:autorizada => true)
-                  if objeto.is_a? Efector
-                    # Añadir información del instrumento legal que autorizó la prestación
-                    prestaciones_del_apartado <<
-                      PrestacionAutorizada.joins({:prestacion => :prestaciones_pdss}).where("
-                      --??? MIERDA
-                      ").first.autorizante_al_alta
-                    })
-                else
-                  prestaciones_del_apartado << p.attributes.merge!(:autorizada => false)
-                end
-              end
-              apartados_del_subgrupo << a.attributes.merge!(:prestaciones => prestaciones_del_apartado)
+            ApartadoPdss.where(:subgrupo_pdss_id => s.id).order(:orden).select([:id, :codigo, :nombre]).each do |a|
+              apartados_del_subgrupo << a.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == g.id.to_s && r[1] == s.id.to_s && r[2] == a.id.to_s}))
             end
             subgrupos_del_grupo << s.attributes.merge!(:apartados => apartados_del_subgrupo)
           else
-            prestaciones_del_subgrupo = []
-            PrestacionPdss.where(:grupo_pdss_id => g.id, :subgrupo_pdss_id => s.id).order(:orden).each do |p|
-              if prestaciones_pdss_autorizadas.member?(p.id)
-                prestaciones_del_subgrupo << p.attributes.merge!({
-                  :autorizada => true,
-                  :autorizador => PrestacionAutorizada.joins({:prestacion => :prestaciones_pdss}).where("
-                    \"prestaciones_autorizadas\".\"efector_id\" = #{self.id}
-                    AND \"prestaciones_autorizadas\".\"fecha_de_inicio\" <= '#{fecha.strftime("%Y-%m-%d")}'
-                    AND (
-                      \"prestaciones_autorizadas\".\"fecha_de_finalizacion\" IS NULL
-                      OR \"prestaciones_autorizadas\".\"fecha_de_finalizacion\" > '#{fecha.strftime("%Y-%m-%d")}'
-                    )
-                    AND \"prestaciones_pdss\".\"id\" = #{p.id}
-                  ").first.autorizante_al_alta
-                })
-              else
-                prestaciones_del_subgrupo << p.attributes.merge!(:autorizada => false)
-              end
-            end
-            subgrupos_del_grupo << s.attributes.merge!(:prestaciones => prestaciones_del_subgrupo)
+            subgrupos_del_grupo << s.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == g.id.to_s && r[1] == s.id.to_s}))
           end
         end
         grupos << g.attributes.merge!(:subgrupos => subgrupos_del_grupo)
       else
-        prestaciones_del_grupo = []
-        PrestacionPdss.where(:grupo_pdss_id => g.id).order(:orden).each do |p|
-          if prestaciones_pdss_autorizadas.member?(p.id)
-            prestaciones_del_grupo << p.attributes.merge!({
-              :autorizada => true,
-              :autorizador => PrestacionAutorizada.joins({:prestacion => :prestaciones_pdss}).where("
-                \"prestaciones_autorizadas\".\"efector_id\" = #{self.id}
-                AND \"prestaciones_autorizadas\".\"fecha_de_inicio\" <= '#{fecha.strftime("%Y-%m-%d")}'
-                AND (
-                  \"prestaciones_autorizadas\".\"fecha_de_finalizacion\" IS NULL
-                  OR \"prestaciones_autorizadas\".\"fecha_de_finalizacion\" > '#{fecha.strftime("%Y-%m-%d")}'
-                )
-                AND \"prestaciones_pdss\".\"id\" = #{p.id}
-              ").first.autorizante_al_alta
-            })
-          else
-            prestaciones_del_grupo << p.attributes.merge!(:autorizada => false)
-          end
-        end
-        grupos << g.attributes.merge!(:prestaciones => prestaciones_del_grupo)
+        grupos << g.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == g.id.to_s}))
       end
     end
     return grupos
+  end
+
+  def self.obtener_prestaciones(nombres, valores)
+    prestaciones = []
+    valores.each do |r|
+      atributos = {}
+      r.each_with_index do |v, i|
+        atributos.merge!(nombres[i] => v) if i > 2
+      end
+      prestaciones << atributos
+    end
+    return prestaciones
   end
 
 end

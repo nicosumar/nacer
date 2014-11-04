@@ -26,7 +26,7 @@
 
           -# NUEVO MENÚ
           %ul{:id => "newmenu"}
-            - if can?(:read, NovedadDelAfiliado) && UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).inscripcion
+            - if can?(:read, NovedadDelAfiliado) && uad_actual.inscripcion
               %li
                 %a.drop{:href => "#"} PADRONES
                 %div.dropdown_3columns
@@ -44,7 +44,7 @@
                     %ul
                       %li= link_to "Buscar afiliado", "#", {:title => "En preparación... Aún no está disponible."}
 
-            - if can?(:read, PrestacionBrindada) && UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).facturacion
+            - if can?(:read, PrestacionBrindada) && uad_actual.facturacion
               %li
                 %a.drop{:href => "#"} PRESTACIONES
                 %div.dropdown_2columns
