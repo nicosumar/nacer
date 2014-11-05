@@ -131,6 +131,7 @@ class LiquidacionSumar < ActiveRecord::Base
       # Busco y marco prestaciones vencidas al momento de liquidar
       PrestacionBrindada.marcar_prestaciones_vencidas self
       PrestacionBrindada.marcar_prestaciones_sin_periodo_de_actividad self
+      PrestacionBrindada.marcar_prestaciones_sin_asignacion_de_precio self
       
       # 0 ) Elimino los duplicados
       PrestacionBrindada.anular_prestaciones_duplicadas

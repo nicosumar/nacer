@@ -809,6 +809,73 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   #
+  # Marca las prestaciones brindadas que no posean asignacion de precio para el efector
+  # que la brindo
+  # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
+  #
+  # @return [Fixnum] Cantidad de prestaciones vencidas
+  def self.marcar_prestaciones_sin_asignacion_de_precio(liquidacion)
+
+    cq = CustomQuery.buscar({
+        sql:  "SELECT DISTINCT vpb.esquema\n"+
+              "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+              " JOIN prestaciones p ON p.id = vpb.prestacion_id\n"+
+              " JOIN efectores e ON e.id = vpb.efector_id\n"+
+              "WHERE vpb.estado_de_la_prestacion_id IN (1, 2,3,7)\n"+
+              "AND p.area_de_prestacion_id is null\n"+
+              "AND not exists ( SELECT ap.id \n"+
+              "                   FROM asignaciones_de_precios ap \n"+
+              "                 WHERE ap.area_de_prestacion_id = e.area_de_prestacion_id\n"+
+              "                 AND vpb.prestacion_id = ap.prestacion_id \n"+
+              "                 AND ap.nomenclador_id =     \n"+
+              "                                        ( select id from nomencladores \n"+
+              "                                           where activo = 't' \n"+
+              "                                          and nomenclador_sumar = 't' \n"+
+              "                                          and (vpb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+              "                                          or  \n"+
+              "                                         (vpb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+              "                                         limit 1\n"+
+              "                                        )\n"+
+              "                )"
+      })
+    ActiveRecord::Base.transaction do
+      cq.each do |r|
+        ActiveRecord::Base.connection.schema_search_path = "#{r[:esquema]}, public"
+        puts "puso el esquema #{ActiveRecord::Base.connection.schema_search_path}"
+        upd = CustomQuery.ejecutar({
+            sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
+                  "SET estado_de_la_prestacion_liquidada_id = 15, \n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La Prestación no cuenta con asignacion de precios en este nomenclador #{liquidacion.periodo.periodo}' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La Prestación no cuenta con asignacion de precios en este nomenclador #{liquidacion.periodo.periodo}') \n"+
+                  "                                   END, \n"+
+                  "    updated_at = now()\n"+
+                  "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+                  " JOIN prestaciones p ON p.id = vpb.prestacion_id\n"+
+                  " JOIN efectores e ON e.id = vpb.efector_id\n"+
+                  "WHERE vpb.estado_de_la_prestacion_id IN (1, 2,3,7)\n"+
+                  "AND p.area_de_prestacion_id is null\n"+
+                  "AND not exists ( SELECT ap.id \n"+
+                  "                   FROM asignaciones_de_precios ap \n"+
+                  "                 WHERE ap.area_de_prestacion_id = e.area_de_prestacion_id\n"+
+                  "                 AND vpb.prestacion_id = ap.prestacion_id \n"+
+                  "                 AND ap.nomenclador_id =     \n"+
+                  "                                        ( select id from nomencladores \n"+
+                  "                                           where activo = 't' \n"+
+                  "                                          and nomenclador_sumar = 't' \n"+
+                  "                                          and (vpb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+                  "                                          or  \n"+
+                  "                                         (vpb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+                  "                                         limit 1\n"+
+                  "                                        )\n"+
+                  "                )\n"+
+                  "and vpb.esquema = '#{r[:esquema]}'\n"+
+                  "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id"
+          })
+      end
+    end # end transaction
+  end
+
+  #
   # Marca las prestaciones brindadas de baja cuyo beneficiario no presentara periodo de actividad al momento de tomar la prestación.
   # @param periodo [LiquidacionSumar] Liquidacion en la cual se verifican los periodos de actividad
   #
