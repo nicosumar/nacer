@@ -1,0 +1,47 @@
+- content_for :title do
+  Sucursales Bancarias
+
+#content-header
+  %h1 Sucursal Bancaria
+  #action-links
+    = link_to '<< Volver al listado', sucursales_bancarias_path
+    - if can?(:update, SucursalBancaria)
+      = link_to 'Editar', edit_sucursal_bancaria_path(@sucursal_bancaria)
+    - if can? :destroy, SucursalBancaria
+      = link_to 'Borrar', @sucursal_bancaria, method: :delete, data: { confirm: '¿Esta Seguro?' }
+     
+= render :partial => "shared/info", :locals => { :registro => @sucursal_bancaria }
+
+#content-body
+  %h2 Sucursal Bancaria
+  %div.field_content
+    %span.field_name Banco:
+    %span.field_value= @sucursal_bancaria.banco.nombre
+
+  %div.field_content
+    %span.field_name Número:
+    %span.field_value= @sucursal_bancaria.numero
+
+  %div.field_content
+    %span.field_name Nombre:
+    %span.field_value= @sucursal_bancaria.nombre
+
+  %div.field_content
+    %span.field_name Pais:
+    %span.field_value= @sucursal_bancaria.pais.present? ? @sucursal_bancaria.pais.nombre : 'Desconocido'
+
+  %div.field_content
+    %span.field_name Provincia:
+    %span.field_value= @sucursal_bancaria.provincia.present? ? @sucursal_bancaria.provincia.nombre : 'Desconocido'
+
+  %div.field_content
+    %span.field_name Departamento:
+    %span.field_value= @sucursal_bancaria.departamento.present? ? @sucursal_bancaria.departamento.nombre : 'Desconocido'
+
+  %div.field_content
+    %span.field_name Distrito:
+    %span.field_value= @sucursal_bancaria.distrito.present? ? @sucursal_bancaria.distrito.nombre : 'Desconocido'
+
+  %div.field_content
+    %span.field_name Observaciones:
+    %span.field_value= @sucursal_bancaria.observaciones

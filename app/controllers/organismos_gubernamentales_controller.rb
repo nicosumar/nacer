@@ -56,7 +56,7 @@ class OrganismosGubernamentalesController < ApplicationController
     @organismo_gubernamental = OrganismoGubernamental.new(params[:organismo_gubernamental])
 
     if @organismo_gubernamental.save
-      redirect_to @organismo_gubernamental, :flash => { :tipo => :ok, :titulo => 'El efector se creó correctamente.' }
+      redirect_to @organismo_gubernamental, :flash => { :tipo => :ok, :titulo => 'El Organismo se creó correctamente.' }
     else
       @provincias = Provincia.all.collect {|p| [p.nombre, p.id]}
 

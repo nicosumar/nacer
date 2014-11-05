@@ -8,6 +8,7 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   has_many :documentos_generables_por_conceptos
   has_many :documentos_generables, through: :documentos_generables_por_conceptos
   has_many :liquidaciones_sumar_cuasifacturas
+  has_many :movimientos_bancarios_autorizados
   belongs_to :tipo_de_expediente
   belongs_to :formula
 

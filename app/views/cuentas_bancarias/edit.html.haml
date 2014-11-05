@@ -1,0 +1,17 @@
+- content_for :title do
+  Edición de Cuentas Bancarias
+
+- content_for :other_includes do
+  = javascript_include_tag 'jquery.chained.min.js'
+  = javascript_include_tag 'cuentas_bancarias'
+#content-header
+  %h1 Edición de una cuenta bancaria
+  #action-links
+    = link_to '<< Volver al listado', cuentas_bancarias_path
+
+= render :partial => "shared/info", :locals => { :registro => @cuenta_bancaria }
+
+#content-body
+  %h2.first-header-with-note Formulario de edición de cuentas bancarias
+
+  = render 'form'

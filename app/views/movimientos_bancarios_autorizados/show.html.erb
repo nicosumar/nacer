@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Cuenta bancaria origen:</b>
+  <%= @movimiento_bancario_autorizado.cuenta_bancaria_origen %>
+</p>
+
+<p>
+  <b>Cuenta bancaria destino:</b>
+  <%= @movimiento_bancario_autorizado.cuenta_bancaria_destino %>
+</p>
+
+<p>
+  <b>Concepto de facturacion:</b>
+  <%= @movimiento_bancario_autorizado.concepto_de_facturacion %>
+</p>
+
+
+<%= link_to 'Edit', edit_movimiento_bancario_autorizado_path(@movimiento_bancario_autorizado) %> |
+<%= link_to 'Back', movimientos_bancarios_autorizados_path %>

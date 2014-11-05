@@ -1,0 +1,19 @@
+- content_for :title do
+  Creación de una nueva Cuenta Bancaria
+
+- content_for :other_includes do
+  = javascript_include_tag 'jquery.chained.min.js'
+  = javascript_include_tag 'cuentas_bancarias'
+#content-header
+  %h1 Creación de una nueva Cuenta Bancaria
+  #action-links
+    = link_to '<< Volver al listado', cuentas_bancarias_path
+
+= render :partial => "shared/info", :locals => { :registro => @cuenta_bancaria }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de Cuentas Bancarias
+  %br
+  = render 'form'
+
+

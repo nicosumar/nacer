@@ -3,6 +3,8 @@ class Efector < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks
 
+  after_create :crear_entidad
+
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :codigo_de_efector_sissa, :codigo_de_efector_bio, :nombre, :domicilio, :departamento_id, :distrito_id, :provincia_id, :provincia
   attr_accessible :codigo_postal, :latitud, :longitud, :telefonos, :email, :grupo_de_efectores_id, :area_de_prestacion_id
@@ -38,7 +40,8 @@ class Efector < ActiveRecord::Base
   has_many :prestaciones_autorizadas
   has_many :asignaciones_de_nomenclador
   has_many :referentes
-  has_one  :entidad
+  has_one  :entidad, as: :entidad
+  has_many :cuentas_bancarias, through: :entidad
   # Asociaciones referentes a la liquidacion
   belongs_to :unidad_de_alta_de_datos
   belongs_to :grupo_de_efectores_liquidacion
@@ -554,6 +557,12 @@ class Efector < ActiveRecord::Base
       PrestacionLiquidada.where(liquidacion_id: argLiquidacion.id, efector_id: (efectores.collect {|e| e.id} + [efectores.first.administrador_sumar.id]))
     end
     
+  end
+
+  private
+
+  def crear_entidad
+    Entidad.create({entidad: self}, :without_protection => true)
   end
 
 

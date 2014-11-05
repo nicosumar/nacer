@@ -21,11 +21,11 @@
     - @organismos_gubernamentales.each do |organismo_gubernamental|
       %tr.clickable{ :onclick => "location.href=\'#{organismo_gubernamental_path(organismo_gubernamental)}\'", :title => "Ver detalles del organismo" }
         %td= organismo_gubernamental.nombre
-        %td= organismo_gubernamental.domicilio
-        %td= organismo_gubernamental.provincia.nombre
-        %td= organismo_gubernamental.departamento.nombre
-        %td= organismo_gubernamental.distrito.nombre
-        %td= organismo_gubernamental.codigo_postal
-        %td= organismo_gubernamental.telefonos
-        %td= organismo_gubernamental.email
+        %td= organismo_gubernamental.domicilio or "N/D"
+        %td= organismo_gubernamental.provincia.present? ? organismo_gubernamental.provincia.nombre : "N/D"
+        %td= organismo_gubernamental.departamento.present? ? organismo_gubernamental.departamento.nombre : "N/D"
+        %td= organismo_gubernamental.distrito.present? ? organismo_gubernamental.distrito.nombre : "N/D"
+        %td= organismo_gubernamental.codigo_postal or "N/D"
+        %td= organismo_gubernamental.telefonos or "N/D"
+        %td= organismo_gubernamental.email or "N/D"
   %br

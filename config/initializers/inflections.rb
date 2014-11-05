@@ -434,6 +434,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("PartoSip", "Partos·Sip·")
   inflect.irregular("Parto·Sip·", "PartosSip")
 
+  # Tipos de cuenta bancaria
+  inflect.irregular("tipo_de_cuenta_bancaria", "tipos·_de·_cuenta·_bancaria·")
+  inflect.irregular("tipo·_de·_cuenta·_bancaria·", "tipos_de_cuenta_bancaria")
+  inflect.irregular("TipoDeCuentaBancaria", "Tipos·De·Cuenta·Bancaria·")
+  inflect.irregular("Tipo·De·Cuenta·Bancaria·", "TiposDeCuentaBancaria")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

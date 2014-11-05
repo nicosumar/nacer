@@ -1,0 +1,7 @@
+= form_for([@concepto_de_facturacion, @movimiento_bancario_autorizado], remote: true) do |f|
+  %tr
+    %td= select_tag :organismo_gubernamental, options_for_select(@organismos_gubernamentales, @organismo_gubernamental_id), {class: 'select2', style: "width: 150px", data: {placeholder: 'Seleccione el generador de la transeferencia' }, include_blank: :true}
+    %td= f.select :cuenta_bancaria_origen_id, @cuentas_bancarias_gubernamentales, {include_blank: true}, {class: 'select2', style: "width: 200px", data: {placeholder: 'Seleccione la cuenta origen de los fondos' }}
+    %td= select_tag :efector, options_for_select(@efectores, @efector_id), {class: 'select2', style: "width: 200px", data: {placeholder: 'Seleccione el destinatario de la transeferencia' }, include_blank: :true}
+    %td= f.select :cuenta_bancaria_destino_id, @cuentas_bancarias_efectores, {include_blank: true}, {class: 'select2', style: "width: 200px", data: {placeholder: 'Seleccione la cuenta destino de los fondos' }}
+    %td= f.submit "Agregar"

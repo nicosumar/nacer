@@ -11,9 +11,10 @@ ugsp = OrganismoGubernamental.create(
     email: 'plannacer-salud@mendoza.gov.ar'
   }, :without_protection => true)
 
-e = Entidad.new
-e.entidad = ugsp
-e.save
+UFI = OrganismoGubernamental.create(
+  { #:id => 2,
+    nombre: 'Unidad de Financiamiento Internacional'
+  }, :without_protection => true)
 
 Efector.all.each do |ef|
   Entidad.create({entidad: ef}, :without_protection => true)

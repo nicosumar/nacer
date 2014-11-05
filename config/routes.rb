@@ -1,9 +1,10 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :cuentas_bancarias
+  resources :sucursales_bancarias
+  resources :bancos
   resources :organismos_gubernamentales
-
-
   resources :documentos_generables
   resources :notas_de_debito
 
@@ -27,6 +28,7 @@ Nacer::Application.routes.draw do
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion do
     resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy] 
+    resources :movimientos_bancarios_autorizados, only: [:index, :create, :destroy] 
   end
   resources :periodos
   resources :tipos_periodos

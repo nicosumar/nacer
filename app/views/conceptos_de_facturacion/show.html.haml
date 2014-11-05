@@ -10,6 +10,8 @@
       = link_to 'Editar', edit_concepto_de_facturacion_path(@concepto_de_facturacion)
     - if can? :manage, DocumentoGenerablePorConcepto
       = link_to 'Documentos Generables', concepto_de_facturacion_documentos_generables_por_conceptos_path(@concepto_de_facturacion)
+    - if can? :manage, MovimientoBancarioAutorizado
+      = link_to 'Movimientos bancarios autorizados', concepto_de_facturacion_movimientos_bancarios_autorizados_path(@concepto_de_facturacion)
 
 = render :partial => "shared/info", :locals => { :registro => @concepto_de_facturacion }
 

@@ -1,0 +1,28 @@
+<% if @documento_generable_por_concepto.new_record? %>
+  $("#errores").empty();
+  $("#errores").append("<p><%= escape_javascript(render partial: '/shared/info', :locals => { :registro => @movimiento_bancario_autorizado }) %></p>");
+  $("#errores").dialog("open");
+
+<% else %>  
+%td= 
+%td= 
+%td= 
+%td= 
+%td= 
+  var tabla = "";
+  tabla += "<tr id= 'detalle_<%= @movimiento_bancario_autorizado.id.to_s %>'>";
+  tabla += "  <td><%= @movimiento_bancario_autorizado.cuenta_bancaria_origen.entidad.entidad.nombre %></td>";
+  tabla += '  <td><%= link_to "#{@movimiento_bancario_autorizado.cuenta_bancaria_origen.nombre}",  @movimiento_bancario_autorizado.cuenta_bancaria_origen %></td>';
+  tabla += "  <td><%= @movimiento_bancario_autorizado.cuenta_bancaria_destino.entidad.entidad.nombre %></td>";
+  tabla += '  <td><%= link_to "#{@movimiento_bancario_autorizado.cuenta_bancaria_destino.nombre}", @movimiento_bancario_autorizado.cuenta_bancaria_destino %></td>';
+  tabla += '  <td><%= link_to "Eliminar", [@concepto_de_facturacion, @movimiento_bancario_autorizado], method: :delete, remote: true, data: { confirm: "¿Está seguro que desea eliminar esta autorizacion de movimiento?" } %></td>';
+  tabla += "</tr>";
+  $('#tabla_detalle tr:last').after(tabla);
+  $('#<%="detalle_"+@movimiento_bancario_autorizado.id.to_s %>').effect('highlight');
+
+  $('#organismo_gubernamental').select2('val', "");
+  $('#movimiento_bancario_autorizado_cuenta_bancaria_origen_id').select2('val', "");
+  $('#efector').select2('val', "");
+  $('#movimiento_bancario_autorizado_cuenta_bancaria_destino_id').select2('val', "");
+  
+<% end %>
