@@ -1,14 +1,9 @@
-<% if @documento_generable_por_concepto.new_record? %>
+<% if @movimiento_bancario_autorizado.new_record? %>
   $("#errores").empty();
   $("#errores").append("<p><%= escape_javascript(render partial: '/shared/info', :locals => { :registro => @movimiento_bancario_autorizado }) %></p>");
   $("#errores").dialog("open");
 
 <% else %>  
-%td= 
-%td= 
-%td= 
-%td= 
-%td= 
   var tabla = "";
   tabla += "<tr id= 'detalle_<%= @movimiento_bancario_autorizado.id.to_s %>'>";
   tabla += "  <td><%= @movimiento_bancario_autorizado.cuenta_bancaria_origen.entidad.entidad.nombre %></td>";

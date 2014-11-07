@@ -44,3 +44,28 @@
   %div.field_content
     %span.field_name Dirección de correo electrónico:
     %span.field_value= @organismo_gubernamental.email
+  
+  %h3 Listado de Cuentas Bancarias
+  - @organismo_gubernamental.cuentas_bancarias.each do |cuenta_bancaria|
+    %h4= link_to cuenta_bancaria.denominacion + " - " + cuenta_bancaria.banco.nombre, cuenta_bancaria
+    %div.field_content
+      %span.field_name Sucursal bancaria
+      %span.field_value= cuenta_bancaria.sucursal_bancaria.numero
+    %div.field_content
+      %span.field_name Tipo de cuenta
+      %span.field_value= cuenta_bancaria.tipo_de_cuenta_bancaria.nombre
+    %div.field_content
+      %span.field_name Número de cuenta
+      %span.field_value= cuenta_bancaria.numero.present? ? cuenta_bancaria.numero : "Desconocido"
+    %div.field_content
+      %span.field_name CBU
+      %span.field_value= cuenta_bancaria.cbu.present? ? cuenta_bancaria.cbu : "Desconocido"
+
+    
+      
+        
+        
+        
+        
+        
+        

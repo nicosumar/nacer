@@ -30,74 +30,32 @@ class MovimientosBancariosAutorizadosController < ApplicationController
     end.flatten(1).uniq
   end
 
-  # GET /movimientos_bancarios_autorizados/1
-  # GET /movimientos_bancarios_autorizados/1.json
-  def show
-    @movimiento_bancario_autorizado = MovimientoBancarioAutorizado.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @movimiento_bancario_autorizado }
-    end
-  end
-
-  # GET /movimientos_bancarios_autorizados/new
-  # GET /movimientos_bancarios_autorizados/new.json
-  def new
-    @movimiento_bancario_autorizado = MovimientoBancarioAutorizado.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @movimiento_bancario_autorizado }
-    end
-  end
-
-  # GET /movimientos_bancarios_autorizados/1/edit
-  def edit
-    @movimiento_bancario_autorizado = MovimientoBancarioAutorizado.find(params[:id])
-  end
-
-  # POST /movimientos_bancarios_autorizados
-  # POST /movimientos_bancarios_autorizados.json
+  # POST /movimientos_bancarios_autorizados.js
   def create
-    @movimiento_bancario_autorizado = MovimientoBancarioAutorizado.new(params[:movimiento_bancario_autorizado])
+    @movimiento_bancario_autorizado =  @concepto_de_facturacion.movimientos_bancarios_autorizados.new(params[:movimiento_bancario_autorizado])
 
     respond_to do |format|
-      if @movimiento_bancario_autorizado.save
-        format.html { redirect_to @movimiento_bancario_autorizado, notice: 'Movimiento bancario autorizado was successfully created.' }
-        format.json { render json: @movimiento_bancario_autorizado, status: :created, location: @movimiento_bancario_autorizado }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @movimiento_bancario_autorizado.errors, status: :unprocessable_entity }
+      begin
+        @movimiento_bancario_autorizado.save!
+
+      rescue ActiveRecord::RecordNotUnique => e
+        if e.message.include? "cuenta_bancaria_origen_id, cuenta_bancaria_destino_id, concepto_de_facturacion_id"
+          @movimiento_bancario_autorizado.errors.add(:duplicado, "El movimiento bancario ya existe para este concepto.")
+        end
+      rescue Exception => e
+        @movimiento_bancario_autorizado.errors.add(:otro, e.message)
       end
+      format.js
     end
   end
 
-  # PUT /movimientos_bancarios_autorizados/1
-  # PUT /movimientos_bancarios_autorizados/1.json
-  def update
-    @movimiento_bancario_autorizado = MovimientoBancarioAutorizado.find(params[:id])
-
-    respond_to do |format|
-      if @movimiento_bancario_autorizado.update_attributes(params[:movimiento_bancario_autorizado])
-        format.html { redirect_to @movimiento_bancario_autorizado, notice: 'Movimiento bancario autorizado was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @movimiento_bancario_autorizado.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /movimientos_bancarios_autorizados/1
-  # DELETE /movimientos_bancarios_autorizados/1.json
+  # DELETE /movimientos_bancarios_autorizados/1.js
   def destroy
     @movimiento_bancario_autorizado = MovimientoBancarioAutorizado.find(params[:id])
     @movimiento_bancario_autorizado.destroy
 
     respond_to do |format|
-      format.html { redirect_to movimientos_bancarios_autorizados_url }
-      format.json { head :no_content }
+      format.js
     end
   end
 
@@ -113,13 +71,13 @@ class MovimientosBancariosAutorizadosController < ApplicationController
   end
 
   def verificar_lectura
-    if cannot? :read, MovimientoBancarioAutorizado
+    if cannot? :manage, MovimientoBancarioAutorizado
       redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end
 
   def verificar_creacion
-    if cannot? :create, MovimientoBancarioAutorizado
+    if cannot? :manage, MovimientoBancarioAutorizado
       redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end

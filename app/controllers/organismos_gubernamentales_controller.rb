@@ -11,7 +11,7 @@ class OrganismosGubernamentalesController < ApplicationController
 
   # GET /organismos_gubernamentales/1
   def show
-    @organismo_gubernamental = OrganismoGubernamental.find(params[:id])
+    @organismo_gubernamental = OrganismoGubernamental.includes(:cuentas_bancarias).find(params[:id])
   end
 
   # GET /organismos_gubernamentales/new

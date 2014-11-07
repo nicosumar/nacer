@@ -21,7 +21,7 @@
       %th Acciones
     = render 'form'
     - @movimientos_bancarios_autorizados.each do |movimiento_bancario_autorizado|
-      %tr
+      %tr{id: "detalle_" + movimiento_bancario_autorizado.id.to_s }
         %td= movimiento_bancario_autorizado.cuenta_bancaria_origen.entidad.entidad.nombre
         %td= link_to "#{movimiento_bancario_autorizado.cuenta_bancaria_origen.nombre}",  movimiento_bancario_autorizado.cuenta_bancaria_origen
         %td= movimiento_bancario_autorizado.cuenta_bancaria_destino.entidad.entidad.nombre
