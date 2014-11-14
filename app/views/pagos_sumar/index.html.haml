@@ -1,0 +1,42 @@
+#content-header
+  %h1 Listado de pagos
+  #action-links
+    - if can? :create, PagoSumar
+      = link_to 'Nuevo proceso de pago', new_pago_sumar_path
+
+= render :partial => "shared/info"
+
+#content-body
+  %h1 Listado de pagos
+  - if @pagos_sumar.size == 0
+    No hay pagos registrados
+  - else
+    %table
+      %tr
+        %th Efector
+        %th Concepto de facturacion
+        %th Cuenta bancaria origen
+        %th Cuenta bancaria detino
+        %th Fecha de proceso
+        %th Informado sirge
+        %th Fecha informado sirge
+        %th Notificado
+        %th Fecha de notificacion
+        %th
+        %th
+        %th
+      - @pagos_sumar.each do |pago_sumar|
+        %tr
+          %td= pago_sumar.efector
+          %td= pago_sumar.concepto_de_facturacion
+          %td= pago_sumar.cuenta_bancaria_origen
+          %td= pago_sumar.cuenta_bancaria_detino
+          %td= pago_sumar.fecha_de_proceso
+          %td= pago_sumar.informado_sirge
+          %td= pago_sumar.fecha_informado_sirge
+          %td= pago_sumar.notificado
+          %td= pago_sumar.fecha_de_notificacion
+          %td= link_to 'Show', pago_sumar
+          %td= link_to 'Edit', edit_pago_sumar_path(pago_sumar)
+          %td= link_to 'Destroy', pago_sumar, method: :delete, data: { confirm: 'Are you sure?' }
+%br/

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141030175445) do
+ActiveRecord::Schema.define(:version => 20141112182857) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -161,6 +161,18 @@ ActiveRecord::Schema.define(:version => 20141030175445) do
   add_index "anexos_medicos_prestaciones", ["liquidacion_sumar_anexo_medico_id"], :name => "anexos_medicos_prestaciones_liquidacion_sumar_anexo_medico__idx"
   add_index "anexos_medicos_prestaciones", ["motivo_de_rechazo_id"], :name => "anexos_medicos_prestaciones_motivo_de_rechazo_id_idx"
   add_index "anexos_medicos_prestaciones", ["prestacion_liquidada_id"], :name => "anexos_medicos_prestaciones_prestacion_liquidada_id_idx"
+
+  create_table "aplicaciones_de_notas_de_debito", :force => true do |t|
+    t.integer  "nota_de_debito_id",   :null => false
+    t.integer  "pago_sumar_id",       :null => false
+    t.date     "fecha_de_aplicacion", :null => false
+    t.decimal  "monto",               :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "aplicaciones_de_notas_de_debito", ["nota_de_debito_id"], :name => "index_aplicaciones_de_notas_de_debito_on_nota_de_debito_id"
+  add_index "aplicaciones_de_notas_de_debito", ["pago_sumar_id"], :name => "index_aplicaciones_de_notas_de_debito_on_pago_sumar_id"
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
@@ -756,6 +768,17 @@ ActiveRecord::Schema.define(:version => 20141030175445) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "informes_para_pagos", :force => true do |t|
+    t.integer  "liquidacion_informe_id",                                :null => false
+    t.integer  "pago_sumar_id",                                         :null => false
+    t.decimal  "monto_aprobado",         :precision => 15, :scale => 4, :null => false
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
+  end
+
+  add_index "informes_para_pagos", ["liquidacion_informe_id"], :name => "index_informes_para_pagos_on_liquidacion_informe_id"
+  add_index "informes_para_pagos", ["pago_sumar_id"], :name => "index_informes_para_pagos_on_pago_sumar_id"
+
   create_table "informes_uads", :force => true do |t|
     t.integer  "informe_id"
     t.integer  "unidad_de_alta_de_datos_id"
@@ -975,15 +998,16 @@ ActiveRecord::Schema.define(:version => 20141030175445) do
   end
 
   create_table "movimientos_bancarios_autorizados", :force => true do |t|
-    t.integer  "cuenta_bancaria_origen_id"
-    t.integer  "cuenta_bancaria_destino_id"
-    t.integer  "concepto_de_facturacion_id"
+    t.integer  "cuenta_bancaria_origen_id",  :null => false
+    t.integer  "cuenta_bancaria_destino_id", :null => false
+    t.integer  "concepto_de_facturacion_id", :null => false
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
   end
 
   add_index "movimientos_bancarios_autorizados", ["concepto_de_facturacion_id"], :name => "index_movimientos_banc_autorizado_on_concepto_de_facturacion_id"
   add_index "movimientos_bancarios_autorizados", ["cuenta_bancaria_destino_id"], :name => "index_movimientos_banc_autorizado_on_cuenta_bancaria_destino_id"
+  add_index "movimientos_bancarios_autorizados", ["cuenta_bancaria_origen_id", "cuenta_bancaria_destino_id", "concepto_de_facturacion_id"], :name => "movimientos_bancarios_autoriz_cuenta_bancaria_origen_id_cue_key", :unique => true
   add_index "movimientos_bancarios_autorizados", ["cuenta_bancaria_origen_id"], :name => "index_movimientos_banc_autorizado_on_cuenta_bancaria_origen_id"
 
   create_table "niveles_de_instruccion", :force => true do |t|
@@ -1049,6 +1073,26 @@ ActiveRecord::Schema.define(:version => 20141030175445) do
   add_index "organismos_gubernamentales", ["departamento_id"], :name => "index_organismos_gubernamentales_on_departamento_id"
   add_index "organismos_gubernamentales", ["distrito_id"], :name => "index_organismos_gubernamentales_on_distrito_id"
   add_index "organismos_gubernamentales", ["provincia_id"], :name => "index_organismos_gubernamentales_on_provincia_id"
+
+  create_table "pagos_sumar", :force => true do |t|
+    t.integer  "efector_id",                 :null => false
+    t.integer  "concepto_de_facturacion_id", :null => false
+    t.integer  "cuenta_bancaria_origen_id",  :null => false
+    t.integer  "cuenta_bancaria_detino_id",  :null => false
+    t.integer  "estado_del_proceso_id",      :null => false
+    t.date     "fecha_de_proceso"
+    t.boolean  "informado_sirge",            :null => false
+    t.date     "fecha_informado_sirge"
+    t.boolean  "notificado",                 :null => false
+    t.date     "fecha_de_notificacion"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "pagos_sumar", ["concepto_de_facturacion_id"], :name => "index_pagos_sumar_on_concepto_de_facturacion_id"
+  add_index "pagos_sumar", ["cuenta_bancaria_detino_id"], :name => "index_pagos_sumar_on_cuenta_bancaria_detino_id"
+  add_index "pagos_sumar", ["cuenta_bancaria_origen_id"], :name => "index_pagos_sumar_on_cuenta_bancaria_origen_id"
+  add_index "pagos_sumar", ["efector_id"], :name => "index_pagos_sumar_on_efector_id"
 
   create_table "paises", :force => true do |t|
     t.integer "pais_bio_id"

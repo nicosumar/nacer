@@ -34,12 +34,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.plural(/·([A-Z]|_| |$)/, '\1')
   inflect.plural(/([acefgikoptuw])([A-Z]|_| |$)/, '\1s\2')
   inflect.plural(/z([A-Z]|_| |$)/, 'ces\1')
-  inflect.plural(/([bdhjlmnrsy])([A-Z]|_| |$)/, '\1es\2')
+  inflect.plural(/([bdhjlnrsy])([A-Z]|_| |$)/, '\1es\2')
 
   inflect.singular(/·([A-Z]|_| |$)/, '\1')
   inflect.singular(/([acefgikoptuw])s([A-Z]|_| |$)/, '\1\2')
   inflect.singular(/ces([A-Z]|_| |$)/, 'z\1')
-  inflect.singular(/([bdhjlmnrsy])es([A-Z]|_| |$)/, '\1\2')
+  inflect.singular(/([bdhjlnrsy])es([A-Z]|_| |$)/, '\1\2')
 
   # Inflexiones en inglés para Authlogic y CanCan
   inflect.irregular("user", "users·")
@@ -440,15 +440,32 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("TipoDeCuentaBancaria", "Tipos·De·Cuenta·Bancaria·")
   inflect.irregular("Tipo·De·Cuenta·Bancaria·", "TiposDeCuentaBancaria")
 
+  #Informe Para Pago (SUMAR)
+  inflect.irregular("informe_para_pago", "informes·_para·_pagos·")
+  inflect.irregular("informe·_para·_pago·", "informes_para_pagos")
+  inflect.irregular("InformeParaPago", "Informes·Para·Pagos·")
+  inflect.irregular("Informe·Para·Pago·", "InformesParaPagos")
+
+  # Pagos Sumar
+  inflect.irregular("pago_sumar", "pagos·_sumar·")
+  inflect.irregular("pago·_sumar·", "pagos_sumar")
+  inflect.irregular("PagoSumar", "Pagos·Sumar·")
+  inflect.irregular("Pago·Sumar·", "PagosSumar")
+
+  # Aplicacion de notas de debito
+  inflect.irregular("aplicacion_de_nota_de_debito", "aplicaciones·_de·_notas·_de·_debito·")
+  inflect.irregular("aplicacion·_de·_nota·_de·_debito·", "aplicaciones_de_notas_de_debito")
+  inflect.irregular("AplicacionDe", "Aplicaciones·De·")
+  inflect.irregular("Aplicacion·de·", "AplicacionesDe")
+
+  inflect.irregular("pago_sumar_informe", "pagos·_sumar·_informes·")
+  inflect.irregular("pago·_sumar·_informe·", "pagos_sumar_informes")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")
   inflect.irregular("impide", "impiden·")
   inflect.irregular("impide·", "impiden")
-  inflect.irregular("informe", "informes·")
-  inflect.irregular("informe·", "informes")
-  inflect.irregular("Informe", "Informes·")
-  inflect.irregular("Informe·", "Informes")
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")

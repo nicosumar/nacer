@@ -38,6 +38,19 @@
   %div.field_content
     %span.field_name Reservado:
     %span.field_value= @nota_de_debito.reservado
-  
+%br
+  %table
+    %tr
+      %th Pago sumar
+      %th Fecha de aplicación
+      %th Monto
+    - if @aplicaciones_de_notas_de_debito.size > 0 
+      - @aplicaciones_de_notas_de_debito.each do |aplicacion_de_nota_de_debito|
+        %tr
+          %td= aplicacion_de_nota_de_debito.pago_sumar.id
+          %td= aplicacion_de_nota_de_debito.fecha_de_aplicacion
+          %td= aplicacion_de_nota_de_debito.monto
+    - else 
+      %td{colspan: 3} 
+        %h4 No existen aplicaciones de este debito
 
-  %br

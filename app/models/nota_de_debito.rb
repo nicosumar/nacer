@@ -3,6 +3,7 @@ class NotaDeDebito < ActiveRecord::Base
   belongs_to :efector
   belongs_to :concepto_de_facturacion
   belongs_to :tipo_de_nota_debito
+  has_many   :aplicaciones_de_notas_de_debito
   
   attr_accessible :monto, :numero, :observaciones, :remanente, :reservado
   attr_accessible :efector_id, :concepto_de_facturacion_id, :tipo_de_nota_debito_id 
@@ -10,6 +11,11 @@ class NotaDeDebito < ActiveRecord::Base
   validates :monto, presence: true
   validates :observaciones, presence: true
 
+  # 
+  # Genera una nota de debito desde un informe de debito prestacional
+  # @param arg_InformeDeDebito InformeDebitoPrestacional 
+  # 
+  # @return [NotaDeDebito] [Nota de debito creada]
   def self.nueva_desde_informe(arg_InformeDeDebito)
 
   	if arg_InformeDeDebito.class != InformeDebitoPrestacional
@@ -25,7 +31,6 @@ class NotaDeDebito < ActiveRecord::Base
             monto: (InformeDebitoPrestacional.joins(detalles_de_debitos_prestacionales: :prestacion_liquidada ).where(id: arg_InformeDeDebito.id).sum(:monto) ).to_f
           }
         ])
-  	
   end
 
 end

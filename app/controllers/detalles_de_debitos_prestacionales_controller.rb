@@ -17,7 +17,6 @@ class DetallesDeDebitosPrestacionalesController < ApplicationController
       redirect_to @informe_de_debito
     end
 
-
   end
 
   # POST /detalles_de_debitos_prestacionales.js

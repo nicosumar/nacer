@@ -471,8 +471,11 @@ class Efector < ActiveRecord::Base
           ))) ORDER BY nombre;")
   end
 
+  # 
   # Devuelve los efectores que administran a otros, o bien que tienen suscrito un convenio de gestión y no son administrados
   # por un tercero.
+  # 
+  # @return [Efector] Array de efectores
   def self.administradores_y_autoadministrados_sumar
     Efector.where("(efectores.integrante = TRUE) AND
           EXISTS (

@@ -1,0 +1,22 @@
+= form_for(@pago_sumar, html: {id: "wizzard-pago"}) do |f|
+  %h3 Seleccion de efector y concepto
+  %section
+    .field
+      = f.label :efector
+      = f.select :efector_id, @efectores, {include_blank: true}, {class: 'select2', style: "width: 300px", data: {placeholder: 'Seleccione el efector' }}
+    .field
+      = f.label :concepto_de_facturacion
+      = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {}, {class: 'select2'}
+  %h3 Elegir informes y notas de debito
+  %section
+    %p informes y notas de debito
+  %h3 Elegir cuenta destino y origen
+  %section
+    .field
+      = f.label :cuenta_bancaria_origen
+      = f.text_field :cuenta_bancaria_origen
+    .field
+      = f.label :cuenta_bancaria_detino
+      = f.text_field :cuenta_bancaria_detino
+    .actions
+      = f.submit

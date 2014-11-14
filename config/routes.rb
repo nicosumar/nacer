@@ -1,11 +1,15 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :pagos_sumar
+
+
   resources :cuentas_bancarias
   resources :sucursales_bancarias
   resources :bancos
   resources :organismos_gubernamentales
   resources :documentos_generables
+  
   resources :notas_de_debito
 
   resources :informes_debitos_prestacionales do

@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class NotasDeDebitoController < ApplicationController
+
   before_filter :authenticate_user!
   before_filter :verificar_lectura
   before_filter :verificar_escritura, only: [:create, :new, :edit, :update]
@@ -7,11 +8,13 @@ class NotasDeDebitoController < ApplicationController
   # GET /notas_de_debito
   def index
     @notas_de_debito = NotaDeDebito.includes(:efector, :tipo_de_nota_debito, :concepto_de_facturacion).all
+
   end
 
   # GET /notas_de_debito/1
   def show
     @nota_de_debito = NotaDeDebito.includes(:efector, :tipo_de_nota_debito, :concepto_de_facturacion).find(params[:id])
+    @aplicaciones_de_notas_de_debito = @nota_de_debito.aplicaciones_de_notas_de_debito.includes(:pago_sumar).all
   end
 
   # GET /notas_de_debito/new

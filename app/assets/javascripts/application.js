@@ -17,10 +17,19 @@
 //= require jquery.ui.effect-highlight
 //= require chosen-jquery
 //= require wice_grid 
+//= require jquery.steps
 
 $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
   $('input[type="submit"]').attr("data-disable-with", "Por favor, espere...");
+});
+
+$(document).ready(function(){
+  $(".wizzard").steps({
+      headerTag: "h3",
+      bodyTag: "section",
+      transitionEffect: "slideLeft"
+  });
 });
 
 //TODO: Para browsers mas viejos usar "void 0" en lugar de la keyword undefined. Testearlo despues
@@ -57,8 +66,9 @@ $(document).ready(function() {
       }
     }
     options.dropdownCssClass = "bigdrop";
-    select.select2(options);
     
+    select.select2(options);
+        
     if(select.hasClass('encadenado') && select.data('id-padre') != undefined && select.data('parametro') !== undefined ){
 
       select.select2('enable', false);
@@ -115,8 +125,6 @@ $(document).ready(function() {
     if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57) && event.which != 8) 
       event.preventDefault();
   });
-
-
 });
 
 jQuery(function($){
