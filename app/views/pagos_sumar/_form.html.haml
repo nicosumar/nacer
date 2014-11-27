@@ -1,22 +1,96 @@
-= form_for(@pago_sumar, html: {id: "wizzard-pago"}) do |f|
-  %h3 Seleccion de efector y concepto
-  %section
-    .field
-      = f.label :efector
-      = f.select :efector_id, @efectores, {include_blank: true}, {class: 'select2', style: "width: 300px", data: {placeholder: 'Seleccione el efector' }}
-    .field
-      = f.label :concepto_de_facturacion
-      = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {}, {class: 'select2'}
-  %h3 Elegir informes y notas de debito
-  %section
+#wizard.swMain
+  %ul
+    %li
+      %a{:href => "#paso-1"}
+        %label.stepNumber 1
+        %span.stepDesc.medium
+          Efector y
+          %br/
+          Concepto 
+    %li
+      %a{:href => "#paso-2"}
+        %label.stepNumber 2
+        %span.stepDesc
+          Informes y 
+          %br/
+          notas de debito
+    %li
+      %a{:href => "#paso-3"}
+        %label.stepNumber 3
+        %span.stepDesc
+          Cuentas 
+          %br/
+          Bancarias 
+    %li
+      %a{:href => "#paso-4"}
+        %label.stepNumber 4
+        %span.stepDesc
+          Resumen
+          %br/
+  / = form_for(@pago_sumar) do |f|
+  #paso-1
+    %h2.StepTitle Seleccione el efector y concepto de facturación a pagar
+    #content-body
+      = form_for(@pago_sumar) do |f|
+        .field
+          = f.label :efector
+          = f.select :efector_id, @efectores, {include_blank: true}, {class: 'select2', style: "width: 300px", data: {placeholder: 'Seleccione el efector' }}
+        .field
+          = f.label :concepto_de_facturacion
+          = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {}, {class: 'select2'}
+  #paso-2
+    %h2.StepTitle Seleccione los informes de liquidacion y notas de debito a incluir
     %p informes y notas de debito
-  %h3 Elegir cuenta destino y origen
-  %section
-    .field
-      = f.label :cuenta_bancaria_origen
-      = f.text_field :cuenta_bancaria_origen
-    .field
-      = f.label :cuenta_bancaria_detino
-      = f.text_field :cuenta_bancaria_detino
-    .actions
-      = f.submit
+    #content-body
+      %table{style: "border-spacing: 0;"}
+        %thead
+          %tr
+            %th{colspan: 8, style: "background: #0089cb;"}= @e.nombre
+          %tr
+            %th{colspan: 8, style: "background: #0089cb;"}= "Informe de Liquidación Nº #{@e.liquidaciones_informes.first.id} | #{@e.liquidaciones_informes.first.liquidacion_sumar.periodo.periodo} "
+        %tfoot
+          %tr
+            %td{colspan: 8} TOTAL 
+        %tbody
+          %tr
+            %td{colspan: 4, style: "text-align:center;vertical-align:middle"} Administración
+            %td{colspan: 4, style: "text-align:center;vertical-align:middle"} Area Médica
+          %tr
+            %td{colspan: 2, style: "text-align:center;vertical-align:middle"} Rechazos
+            %td{colspan: 2, style: "text-align:center;vertical-align:middle"} Devoluciones
+            %td{colspan: 2, style: "text-align:center;vertical-align:middle"} Rechazos
+            %td{colspan: 2, style: "text-align:center;vertical-align:middle"} Devoluciones
+          %tr
+            %td #
+            %td $
+            %td #
+            %td $
+            %td #
+            %td $
+            %td #
+            %td $
+          %tr
+            %td 1
+            %td $10
+            %td 2
+            %td $10
+            %td 3
+            %td $10
+            %td 4
+            %td $10
+  #paso-3
+    %h2.StepTitle Seleccione la cuenta bancaria origen y destino de los fondos
+    #content-body
+      = form_for(@pago_sumar) do |f|
+        .field
+          = f.label :cuenta_bancaria_origen
+          = f.text_field :cuenta_bancaria_origen
+        .field
+          = f.label :cuenta_bancaria_detino
+          = f.text_field :cuenta_bancaria_detino
+  #paso-4
+    #content-body
+      %h2.StepTitle Resumen
+      %p RESUMEN
+  /    .actions
+  /      = f.submit

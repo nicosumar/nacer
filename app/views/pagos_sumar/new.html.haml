@@ -2,19 +2,22 @@
   Asistente de generación de pagos
 
 - content_for :other_includes do
-  =# stylesheet_link_tag 'steps/main.css'
-  =# stylesheet_link_tag 'steps/jquery.steps.css'
+  -#= stylesheet_link_tag 'steps/main.css'
+  -#= stylesheet_link_tag 'steps/jquery.steps.css'
+  = stylesheet_link_tag 'smartwizard/smart_wizard'
+  = stylesheet_link_tag 'entradas'
+  = stylesheet_link_tag 'tabla_ficha'
   = javascript_include_tag 'jquery.chained.min'
-  =# javascript_include_tag 'jquery.steps'
-  =# javascript_include_tag 'pagos_sumar'
+  -#= javascript_include_tag 'jquery.steps'
+  = javascript_include_tag 'jquery.smartWizard'
+  = javascript_include_tag 'pagos_sumar'
+
 #content-header
   %h1 Asistente de pagos
   #action-links
     = link_to '<< Volver al listado', pagos_sumar_path
 
-= render :partial => "shared/info", :locals => { :registro => @pago_sumar }
-
 #content-body
-  %h2.first-header-with-note Asistente de pagos
-  %br
+  = render :partial => "shared/info", :locals => { :registro => @pago_sumar }
   = render 'form'
+

@@ -26,6 +26,7 @@ class PagosSumarController < ApplicationController
     @pago_sumar = PagoSumar.new
     @efectores = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
     @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect { |cf| [cf.concepto, cf.id]}
+    @e = Efector.where("nombre ilike '%lago%'").first
 
 
   end

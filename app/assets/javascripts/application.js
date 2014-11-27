@@ -15,15 +15,16 @@
 //= require jquery.ui.tabs
 //= require jquery.ui.tooltip
 //= require jquery.ui.effect-highlight
+//= require jquery.ui.all
 //= require chosen-jquery
 //= require wice_grid 
-//= require jquery.steps
+
 
 $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
   $('input[type="submit"]').attr("data-disable-with", "Por favor, espere...");
 });
-
+/*
 $(document).ready(function(){
   $(".wizzard").steps({
       headerTag: "h3",
@@ -31,7 +32,7 @@ $(document).ready(function(){
       transitionEffect: "slideLeft"
   });
 });
-
+*/
 //TODO: Para browsers mas viejos usar "void 0" en lugar de la keyword undefined. Testearlo despues
 $(document).ready(function() {
   $('.select2').each(function(i, e){
