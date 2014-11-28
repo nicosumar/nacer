@@ -783,3 +783,45 @@ div.field_with_warnings {
     background: none repeat scroll 0 0 #72C2DB;
     color: #FFFFFF;
 }
+/* Tarjetas de Selección */
+
+#tarjeta {
+  clear: both;
+  float:left;
+}
+.chkbox {
+  color: #FFFFFF;
+  background-color: $azul_nacer;
+  width:  655px;
+  border: 1px solid;
+  margin: 20px 20px 5px 20px;
+  padding: 5px 50px 5px 20px;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  border-radius: 0.6em ;
+  -moz-border-radius: 0.6em;
+  -webkit-border-radius: 0.6em;
+  h2 {
+    margin: 0;
+    padding: 4px 0px 2px 0px;
+    font-style: normal;
+  }
+  ul {
+    padding-left: 15px;
+  }
+  table{
+    width: 100%;
+    border-collapse: collapse;
+  }
+  td{
+    margin: 0;
+    color: #fff;
+    padding: 4px 0px 2px 0px;
+    font-style: normal; 
+    border-bottom: solid 1px ;
+    border-bottom-color: #fff ;
+  }
+  td:last-child{
+    text-align: right;
+  }
+}

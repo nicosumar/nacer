@@ -21,6 +21,7 @@ Nacer::Application.routes.draw do
 
   resources :expedientes_sumar do
     get 'generar_caratulas_expedientes_por_liquidacion', as: :generar_caratulas_expedientes_por_liquidacion, action: :generar_caratulas_expedientes_por_liquidacion, on: :member
+    get :impagos_por_efector, on: :collection
   end
 
   get "documentos_electronicos/index"

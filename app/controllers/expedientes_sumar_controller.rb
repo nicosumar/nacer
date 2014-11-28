@@ -16,6 +16,14 @@ class ExpedientesSumarController < ApplicationController
     end
   end
 
+  # GET /expedientes_sumar/impagos_por_Efector
+  def impagos_por_efector
+    efector = Efector.find(params[:parametros_adicionales][:valor_encadenado])
+    @expedientes = ExpedienteSumar.impagos_por_efector efector
+    raise 'll'
+    render json: @expedientes, status: :ok
+  end
+
   private
 
   def verificar_lectura 

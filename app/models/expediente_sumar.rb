@@ -3,8 +3,11 @@ class ExpedienteSumar < ActiveRecord::Base
   belongs_to :tipo_de_expediente
   belongs_to :efector
   belongs_to :liquidacion_sumar
+  belongs_to :pago_sumar
+  
   
   attr_accessible :numero, :tipo_de_expediente, :efector, :liquidacion_sumar, :liquidacion_sumar_id
+  attr_accessible :pago_sumar_id
 
   validates :numero, presence: true, on: :update 
 
@@ -39,6 +42,24 @@ class ExpedienteSumar < ActiveRecord::Base
       end #en begin/rescue
     end #End active base transaction
     return true
+  end
+
+  # 
+  # Devuelve si el expediente es un expediente de pago
+  # 
+  def es_de_pago?
+    [1,2,3].include? self.tipo_de_expediente_id
+  end
+
+  # 
+  # Devuelve los expedientes impagos por efector
+  # @param efector [Efector] Efector que posee los expedientes
+  # 
+  # @return [type] [description]
+  def self.impagos_por_efector(efector)
+    return false unless efector.is_a?(Efector)
+    ExpedienteSumar.where(efector_id: efector.id, tipo_de_expediente_id: [1,2,3]).
+                    where("expedientes_sumar.pago_sumar_id is null")
   end
 
 end

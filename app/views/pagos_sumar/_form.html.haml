@@ -30,7 +30,21 @@
   / = form_for(@pago_sumar) do |f|
   #paso-1
     %h2.StepTitle Seleccione el efector y concepto de facturación a pagar
-    #content-body
+    #tarjeta.chkbox
+      %table{style: "width: 100%"}
+        %tr{width: "30%"}
+          %td{rowspan: "3", style: "border-bottom-style: solid;"}
+            -# cantidad de informes +1 (que es el total)
+            %h2 Expediente 
+            %br
+            %h2 S/000110132 Periodo 2014-11
+          %td= "Informe de Liquidación Nº #{@e.liquidaciones_informes.first.id}" #nombre del informe
+          %td= "Aprobado $20000" # TOTAL APROBADO
+        %tr{width: "50%"} 
+          %td= "Informe de Liquidación Nº #{@e.liquidaciones_informes.first.id} | #{@e.liquidaciones_informes.first.liquidacion_sumar.periodo.periodo} " # SEGUNDO INFORME EN ADELANTE
+          %td Aprobado $20000
+        %tr{width: "20%"}
+          %td{colspan: 2, style: "text-align: right"} TOTAL $20000
       = form_for(@pago_sumar) do |f|
         .field
           = f.label :efector
@@ -40,44 +54,13 @@
           = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {}, {class: 'select2'}
   #paso-2
     %h2.StepTitle Seleccione los informes de liquidacion y notas de debito a incluir
-    %p informes y notas de debito
-    #content-body
-      %table{style: "border-spacing: 0;"}
-        %thead
-          %tr
-            %th{colspan: 8, style: "background: #0089cb;"}= @e.nombre
-          %tr
-            %th{colspan: 8, style: "background: #0089cb;"}= "Informe de Liquidación Nº #{@e.liquidaciones_informes.first.id} | #{@e.liquidaciones_informes.first.liquidacion_sumar.periodo.periodo} "
-        %tfoot
-          %tr
-            %td{colspan: 8} TOTAL 
-        %tbody
-          %tr
-            %td{colspan: 4, style: "text-align:center;vertical-align:middle"} Administración
-            %td{colspan: 4, style: "text-align:center;vertical-align:middle"} Area Médica
-          %tr
-            %td{colspan: 2, style: "text-align:center;vertical-align:middle"} Rechazos
-            %td{colspan: 2, style: "text-align:center;vertical-align:middle"} Devoluciones
-            %td{colspan: 2, style: "text-align:center;vertical-align:middle"} Rechazos
-            %td{colspan: 2, style: "text-align:center;vertical-align:middle"} Devoluciones
-          %tr
-            %td #
-            %td $
-            %td #
-            %td $
-            %td #
-            %td $
-            %td #
-            %td $
-          %tr
-            %td 1
-            %td $10
-            %td 2
-            %td $10
-            %td 3
-            %td $10
-            %td 4
-            %td $10
+    #content-body
+      = form_for(@pago_sumar) do |f|
+        .field 
+          = f.label "Expedientes"
+          = f.hidden_field :expedientes_sumar, class: 'select2 ajax encadenado', data: { source: impagos_por_efector_expedientes_sumar_path, placeholder: 'Seleccione los expedientes a pagar', coleccion: 'prestaciones', id_padre: 'pago_sumar_efector_id', parametro: 'efetor_id', parametros_adicionales: "concepto_de_facturacion_id: 1" }
+          -#= f.hidden_field :expedientes_sumar, class: 'select2 ajax encadenado', data: { source: impagos_por_efector_expedientes_sumar_path, placeholder: 'Seleccione los expedientes a pagar', coleccion: 'prestaciones', id_padre: 'pago_sumar_efector_id', parametro: 'efetor_id', parametros_adicionales: "#efector_id: #{@informe_de_debito.efector.id}, concepto_de_facturacion_id: #{@informe_de_debito.concepto_de_facturacion.id}", funcion_de_formato: "maquetaPrestaciones", funcion_de_formato_seleccionada: "seleccionaPrestacion" }
+
   #paso-3
     %h2.StepTitle Seleccione la cuenta bancaria origen y destino de los fondos
     #content-body

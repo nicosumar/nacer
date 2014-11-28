@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141112182857) do
+ActiveRecord::Schema.define(:version => 20141128025024) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -670,6 +670,16 @@ ActiveRecord::Schema.define(:version => 20141112182857) do
     t.datetime "updated_at",              :null => false
   end
 
+  create_table "expedientes_pagos", :force => true do |t|
+    t.integer  "pago_sumar_id"
+    t.integer  "expediente_sumar_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "expedientes_pagos", ["expediente_sumar_id"], :name => "index_expedientes_pagos_on_expediente_sumar_id"
+  add_index "expedientes_pagos", ["pago_sumar_id"], :name => "index_expedientes_pagos_on_pago_sumar_id"
+
   create_table "expedientes_sumar", :force => true do |t|
     t.text     "numero"
     t.integer  "tipo_de_expediente_id"
@@ -677,6 +687,7 @@ ActiveRecord::Schema.define(:version => 20141112182857) do
     t.integer  "liquidacion_sumar_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "pago_sumar_id"
   end
 
   add_index "expedientes_sumar", ["tipo_de_expediente_id"], :name => "index_expedientes_sumar_on_tipo_de_expediente_id"
@@ -767,17 +778,6 @@ ActiveRecord::Schema.define(:version => 20141112182857) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
-
-  create_table "informes_para_pagos", :force => true do |t|
-    t.integer  "liquidacion_informe_id",                                :null => false
-    t.integer  "pago_sumar_id",                                         :null => false
-    t.decimal  "monto_aprobado",         :precision => 15, :scale => 4, :null => false
-    t.datetime "created_at",                                            :null => false
-    t.datetime "updated_at",                                            :null => false
-  end
-
-  add_index "informes_para_pagos", ["liquidacion_informe_id"], :name => "index_informes_para_pagos_on_liquidacion_informe_id"
-  add_index "informes_para_pagos", ["pago_sumar_id"], :name => "index_informes_para_pagos_on_pago_sumar_id"
 
   create_table "informes_uads", :force => true do |t|
     t.integer  "informe_id"

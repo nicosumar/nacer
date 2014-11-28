@@ -11,6 +11,7 @@ class CreatePagosSumar < ActiveRecord::Migration
       t.date :fecha_informado_sirge
       t.boolean :notificado
       t.date :fecha_de_notificacion
+      t.column :monto, "numeric(15,4)"
 
       t.timestamps
     end
