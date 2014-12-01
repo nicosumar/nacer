@@ -10,7 +10,8 @@ class CustomQuery < ActiveRecord::Base
     #TODO: Ver cuanto afecta la velocidad
     if crear
       ActiveRecord::Base.connection.execute <<-SQL 
-        CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1
+        CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1;
+        CREATE OR REPLACE TEMPORARY VIEW custom_queryes AS SELECT 1;
         SQL
     end
     @filtros_de_busqueda = Hash.new
@@ -77,7 +78,8 @@ class CustomQuery < ActiveRecord::Base
     
     #creo una vista temporal para evitar el error de que no existe la tabla del modelo
     ActiveRecord::Base.connection.execute <<-SQL 
-      CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1
+      CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1;
+      CREATE OR REPLACE TEMPORARY VIEW custom_queryes AS SELECT 1;
       SQL
 
     #Si no existen estos parametros, busco en un solo esquema (el actual)
@@ -135,7 +137,8 @@ class CustomQuery < ActiveRecord::Base
     
     #creo una vista temporal para evitar el error de que no existe la tabla del modelo
     ActiveRecord::Base.connection.execute <<-SQL 
-      CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1
+      CREATE OR REPLACE TEMPORARY VIEW customes_queryes AS SELECT 1;
+      CREATE OR REPLACE TEMPORARY VIEW custom_queryes AS SELECT 1;
       SQL
 
     #Si no existen estos parametros, busco en un solo esquema (el actual)

@@ -185,4 +185,36 @@ class LiquidacionInforme < ActiveRecord::Base
     end # end transaction
   end
 
+  def monto_aprobado
+    r = ActiveRecord::Base.connection.exec_query <<-SQL
+      select  es.numero "Numero de Expediente", e.cuie "CUIE", e.nombre "Efector",  estados.nombre "Estado del Informe",
+              c.monto_total "Total Cuasifactura",
+              c.monto_total - (sum(CASE WHEN amp.estado_de_la_prestacion_id in(6,10, 11) THEN pl.monto ELSE 0::numeric END) + 
+                    sum(CASE WHEN aap.estado_de_la_prestacion_id in(6,10, 11) THEN pl.monto ELSE 0::numeric END) ) "aprobado",
+
+                    sum(CASE WHEN aap.estado_de_la_prestacion_id = 7 THEN pl.monto ELSE 0::numeric END) "devueltos_administracion_$",
+                    sum(CASE WHEN aap.estado_de_la_prestacion_id = 7 THEN 1 ELSE 0::numeric END) "devueltos_administracion_",
+                    sum(CASE WHEN amp.estado_de_la_prestacion_id = 7 THEN pl.monto ELSE 0::numeric END) "devueltos_medicos_$",
+                    sum(CASE WHEN amp.estado_de_la_prestacion_id = 7 THEN 1 ELSE 0::numeric END) "devueltos_mdicos_c",
+                    sum(CASE WHEN aap.estado_de_la_prestacion_id in(6,10, 11) THEN pl.monto ELSE 0::numeric END) "rechazos_administracion_$",
+                    sum(CASE WHEN aap.estado_de_la_prestacion_id in(6,10, 11) THEN 1 ELSE 0::numeric END) "rechazos_administracion_d",
+                    sum(CASE WHEN amp.estado_de_la_prestacion_id in(6,10, 11) THEN pl.monto ELSE 0::numeric END) "rechazos_medicos_$", 
+                    sum(CASE WHEN amp.estado_de_la_prestacion_id in(6,10, 11) THEN 1 ELSE 0::numeric END) "rechazos_medicos_d"
+      from liquidaciones_sumar l
+        join liquidaciones_sumar_cuasifacturas c on c.liquidacion_sumar_id = l.id
+        join efectores e on e.id  = c.efector_id
+        join liquidaciones_informes li on li.efector_id = e.id and li.liquidacion_sumar_id = l.id 
+        join estados_de_los_procesos estados on estados.id = li.estado_del_proceso_id
+        join prestaciones_liquidadas pl ON pl.liquidacion_id = l.id and pl.efector_id = e.id 
+        join expedientes_sumar es on es.id = li.expediente_sumar_id
+        left join anexos_medicos_prestaciones amp ON amp.prestacion_liquidada_id = pl.id 
+        left JOIN anexos_administrativos_prestaciones aap ON aap.prestacion_liquidada_id = pl.id
+      where li.id = #{self.id}
+      group by 1,2, 3,"Total Cuasifactura", estados.nombre --li.numero_de_expediente, e.cuie, e.nombre, total_cuasifactura
+      order by 1,2
+    SQL
+    r.rows[0][5].to_f
+    
+  end
+
 end

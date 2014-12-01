@@ -18,10 +18,30 @@ class ExpedientesSumarController < ApplicationController
 
   # GET /expedientes_sumar/impagos_por_Efector
   def impagos_por_efector
-    efector = Efector.find(params[:parametros_adicionales][:valor_encadenado])
-    @expedientes = ExpedienteSumar.impagos_por_efector efector
-    raise 'll'
-    render json: @expedientes, status: :ok
+    begin
+      cadena = params[:q].split(" ")
+      x = params[:page]
+      y = params[:per]
+
+      efector = Efector.find(params[:parametros_adicionales][:pago_sumar_efector_id])
+      @expedientes = ExpedienteSumar.impagos_por_efector efector
+
+      @expedientes.map! do |ex|
+        {
+          id: ex.id,
+          numero: ex.numero,
+          liquidaciones_informes: { ex.liquidaciones_informes.map { |li| [li.id, li.monto_aprobado]} },
+          periodo: ex.liquidacion_sumar.periodo.periodo
+        }
+      end
+
+
+      render json: @expedientes, status: :ok
+      
+      
+    rescue Exception => e
+      render json: {total: 0, expedientes: []}  }, status: :ok
+    end
   end
 
   private

@@ -51,14 +51,15 @@
           = f.select :efector_id, @efectores, {include_blank: true}, {class: 'select2', style: "width: 300px", data: {placeholder: 'Seleccione el efector' }}
         .field
           = f.label :concepto_de_facturacion
-          = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {}, {class: 'select2'}
+          = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {include_blank: true}, {class: 'select2', style: "width: 300px", data: {placeholder: 'Seleccione el concepto de facturacion a pagar'}}
   #paso-2
     %h2.StepTitle Seleccione los informes de liquidacion y notas de debito a incluir
-    #content-body
+    #content-body
+
       = form_for(@pago_sumar) do |f|
         .field 
           = f.label "Expedientes"
-          = f.hidden_field :expedientes_sumar, class: 'select2 ajax encadenado', data: { source: impagos_por_efector_expedientes_sumar_path, placeholder: 'Seleccione los expedientes a pagar', coleccion: 'prestaciones', id_padre: 'pago_sumar_efector_id', parametro: 'efetor_id', parametros_adicionales: "concepto_de_facturacion_id: 1" }
+          = f.hidden_field :expedientes_sumar, class: 'select2 ajax dependiente', data: { source: impagos_por_efector_expedientes_sumar_path, placeholder: 'Seleccione los expedientes a pagar', coleccion: 'prestaciones', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id', parametro: 'efetor_id', parametros_adicionales: "" }
           -#= f.hidden_field :expedientes_sumar, class: 'select2 ajax encadenado', data: { source: impagos_por_efector_expedientes_sumar_path, placeholder: 'Seleccione los expedientes a pagar', coleccion: 'prestaciones', id_padre: 'pago_sumar_efector_id', parametro: 'efetor_id', parametros_adicionales: "#efector_id: #{@informe_de_debito.efector.id}, concepto_de_facturacion_id: #{@informe_de_debito.concepto_de_facturacion.id}", funcion_de_formato: "maquetaPrestaciones", funcion_de_formato_seleccionada: "seleccionaPrestacion" }
 
   #paso-3

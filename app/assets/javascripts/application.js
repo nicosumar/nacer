@@ -69,12 +69,58 @@ $(document).ready(function() {
     options.dropdownCssClass = "bigdrop";
     
     select.select2(options);
+
+    if(select.hasClass('dependiente') && select.data('id-padre') != undefined && select.data('parametro') !== undefined )
+    {
+      select.select2('enable', false);
+
+      //Busco los padres:
+      padres = []
+      $.each(select.data('id-padre').split(","), function(indice, padre_id){
+        padre = $("#"+$.trim(padre_id));
         
+        //Si lo encuentra
+        if(padre.length)
+        {
+          padres.push(padre)
+          //Guardo los parametros adicionales estaticos y agrego el id de este padre en los parametros adicionales
+          select.data('parametros-adicionales',  $.trim(padre_id)+': -1, '+ select.data('parametros-adicionales'));
+          
+          //A cada padre lo seteo para que cuando cambie el valor, actualice los parametros que envia via ajax
+          padres[indice].change( function(evt){
+            
+            arr_parametros_adicionales = [];
+            $.each(select.data('parametros-adicionales').split(","),function(idx_parametro, parametro){
+              //reconstruyo el string de parametros adicionales cambiando solo el nuevo valor del padre
+              nombre_parametro = $.trim(parametro.split(":")[0]);
+              valor_parametro  = $.trim(parametro.split(":")[1]);
+              //Si no paso parametros adicionales
+              if(nombre_parametro.length != 0)
+              {
+                if(nombre_parametro == evt.currentTarget.id)
+                  valor_parametro = evt.currentTarget.value;
+                arr_parametros_adicionales.push(nombre_parametro+":"+valor_parametro+" ");
+              }
+            }); //end each parametros-adicionales
+            select.data('parametros-adicionales', arr_parametros_adicionales.join(",") );
+          }); //end on change
+        } // end if (si encontro el padre)
+        else
+          throw "No se encontro el elemento: "+"'"+padre_id+"'" 
+      });//end each padre
+      select.select2('enable', true);
+    } //end class dependiente
+
     if(select.hasClass('encadenado') && select.data('id-padre') != undefined && select.data('parametro') !== undefined ){
 
       select.select2('enable', false);
       select.data('parametros-adicionales', select.data('parametros-adicionales') + ', valor_encadenado: -1')
       padre = $('#'+select.data('id-padre'));
+/*
+              if(parametros[1][0] == "#" && $(parametros[1]).val() !== undefined)
+                v = $(parametros[1]).val();
+                */
+
       padre.on('change', function(e){
 
         var parametros_adicionales = [];
@@ -93,7 +139,6 @@ $(document).ready(function() {
           select.data('parametros-adicionales', parametros_adicionales.join(",") );
           select.select2("val","");
           select.select2('enable', false);
-          //select.data('parametros-adicionales[valor_encadenado]', padre.val() );
         }
         else
         {
@@ -109,7 +154,6 @@ $(document).ready(function() {
           
           select.data('parametros-adicionales', parametros_adicionales.join(",") );
           select.select2('enable', true);
-
         }
       });
     }
