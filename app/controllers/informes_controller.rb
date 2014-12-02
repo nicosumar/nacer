@@ -155,7 +155,7 @@ class InformesController < ApplicationController
   end
 
   def index
-      @reportes = Informe.all
+    @reportes = Informe.order(:titulo).all
   end
 
   def usuarios_inscripciones
