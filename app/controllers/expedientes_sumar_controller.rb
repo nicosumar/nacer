@@ -18,7 +18,7 @@ class ExpedientesSumarController < ApplicationController
 
   # GET /expedientes_sumar/impagos_por_Efector
   def impagos_por_efector
-    begin
+    #begin
       cadena = params[:q].split(" ")
       x = params[:page]
       y = params[:per]
@@ -30,18 +30,23 @@ class ExpedientesSumarController < ApplicationController
         {
           id: ex.id,
           numero: ex.numero,
-          liquidaciones_informes: { ex.liquidaciones_informes.map { |li| [li.id, li.monto_aprobado]} },
+          liquidaciones_informes: ex.liquidaciones_informes.map { |li| [id: li.id, monto: li.monto_aprobado] },
           periodo: ex.liquidacion_sumar.periodo.periodo
         }
       end
 
-
-      render json: @expedientes, status: :ok
+      respond_to do |format|
+          format.json {
+            render json: {total: @expedientes.size ,expedientes: @expedientes }
+          }
+      end
+      
+      #render json: @expedientes, status: :ok
       
       
-    rescue Exception => e
-      render json: {total: 0, expedientes: []}  }, status: :ok
-    end
+    #rescue Exception => e
+     # render json: {total: 0, expedientes: []}  }, status: :ok
+    #end
   end
 
   private
