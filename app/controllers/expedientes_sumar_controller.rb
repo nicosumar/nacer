@@ -30,7 +30,9 @@ class ExpedientesSumarController < ApplicationController
         {
           id: ex.id,
           numero: ex.numero,
-          liquidaciones_informes: ex.liquidaciones_informes.map { |li| [id: li.id, monto: li.monto_aprobado] },
+          efector: efector.nombre,
+          monto_aprobado: ex.monto_aprobado,
+          #liquidaciones_informes: ex.liquidaciones_informes.map { |li| {id: li.id, monto: li.monto_aprobado} },
           periodo: ex.liquidacion_sumar.periodo.periodo
         }
       end

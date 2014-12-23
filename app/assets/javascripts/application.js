@@ -45,8 +45,9 @@ $(document).ready(function() {
       width: 'resolve',
       dropdownAutoWidth : true
     };
+
     ;
-    if(select.data('funcion-de-formato') != undefined) {
+    if(select.data('funcion-de-formato') != undefined || select.data('funcion-de-formato') != "") {
       options.formatResult = eval(select.data('funcion-de-formato'));
       options.formatSelection = eval(select.data('funcion-de-formato-seleccionada'));
     } 
@@ -67,6 +68,15 @@ $(document).ready(function() {
       }
     }
     options.dropdownCssClass = "bigdrop";
+    if( select.data('multiple') != undefined )
+      options.multiple = select.data('multiple');
+    
+    // Agrega las opciones adicionales de creacion.
+    if( select.data('opciones') != undefined){
+      opc = select.data('opciones');
+      for(var o in opc)
+        eval("options."+ o +" = opc."+o );
+    }
     
     select.select2(options);
 
