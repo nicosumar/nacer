@@ -19,11 +19,11 @@
   %div.field
     = f.label :fecha_de_inicio, "Fecha de inicio*"
     = f.date_select :fecha_de_inicio, |
-      {:start_year => 2006, :end_year => Date.today.year, :include_blank => true} |
+      {:start_year => 2006, :end_year => Date.today.year + 1, :include_blank => true} |
   %div.field
     = f.label :fecha_de_finalizacion
     = f.date_select :fecha_de_finalizacion, |
-      {:start_year => 2006, :end_year => Date.today.year, :include_blank => true} |
+      {:start_year => 2006, :end_year => Date.today.year + 1, :include_blank => true} |
 
   %h3 Observaciones
   %div.field
