@@ -10,7 +10,9 @@ Nacer::Application.routes.draw do
   resources :organismos_gubernamentales
   resources :documentos_generables
   
-  resources :notas_de_debito
+  resources :notas_de_debito do
+    get :remanentes_por_efector, on: :collection
+  end
 
   resources :informes_debitos_prestacionales do
     resources :detalles_de_debitos_prestacionales, only: [:index, :create, :destroy]
@@ -33,7 +35,9 @@ Nacer::Application.routes.draw do
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion do
     resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy] 
-    resources :movimientos_bancarios_autorizados, only: [:index, :create, :destroy] 
+    resources :movimientos_bancarios_autorizados, only: [:index, :create, :destroy] do
+      get :por_entidad, on: :collection
+    end
   end
   resources :periodos
   resources :tipos_periodos

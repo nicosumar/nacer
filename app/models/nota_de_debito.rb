@@ -33,4 +33,28 @@ class NotaDeDebito < ActiveRecord::Base
         ])
   end
 
+  def self.disponibles_para_aplicacion
+    where("notas_de_debito.remanente - notas_de_debito.reservado > 0")
+  end
+
+  # 
+  # Devuelve las notas de credito disponibles para un efector. 
+  # Si el efector es administrador, incluye las ND disponibles para sus administrados
+  # @param efector [Efector] Efector por el cual realizar el filtro
+  # @param incluir_administrados = false [Boolean] [Indica si incluye o no las nd de sus administrados]
+  # 
+  # @return [type] [description]
+  def self.por_efector(efector, incluir_administrados = false)
+    return false unless efector.is_a?(Efector)
+    efectores = []
+    
+    if incluir_administrados and efector.es_administrador? 
+      efectores = efector.efectores_administrados.map { |e| e.id }
+      efectores << efector.id
+    else
+      efectores << efector.id
+    end
+    return where(efector_id: efectores)
+  end # end por_efector
+
 end

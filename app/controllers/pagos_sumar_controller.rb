@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PagosSumarController < ApplicationController
   # GET /pagos_sumar
   # GET /pagos_sumar.json
@@ -25,8 +26,31 @@ class PagosSumarController < ApplicationController
   def new
     @pago_sumar = PagoSumar.new
     @efectores = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
-    @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect { |cf| [cf.concepto, cf.id]}
-    @e = Efector.where("nombre ilike '%lago%'").first
+
+    @conceptos_de_facturacion = @efectores.map do |e|
+      e.conceptos_que_facturo.map do |c|
+        [c.nombre, c.id, {class: e.id}]
+      end
+    end
+
+    @cuentas_bancarias_destino = @efectores.map do |e|
+      e.entidad.cuentas_bancarias.joins(:destinos).collect do |cbcaria|
+        [cbcaria.nombre, cbcaria.id, {class: "e.id"}]
+      end
+    end
+
+@tipos_de_entidades = Entidad.select("DISTINCT entidad_type").collect {|t| [t.entidad_type.underscore.humanize, t.entidad_type]}
+    @entidades = Entidad.select("DISTINCT entidad_type").collect do |ent|
+      Entidad.where(entidad_type: ent.entidad_type).includes(:entidad).collect do |e|
+        [e.entidad.nombre, e.id, {class: ent.entidad_type}]
+      end
+    end.flatten!(1).uniq
+
+
+
+     ConceptoDeFacturacion.all.collect { |cf| [cf.concepto, cf.id]}
+    
+    @cuentas_bancarias_origen = 
 
 
   end

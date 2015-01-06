@@ -18,19 +18,23 @@ class ExpedientesSumarController < ApplicationController
 
   # GET /expedientes_sumar/impagos_por_Efector
   def impagos_por_efector
-    #begin
-      cadena = params[:q].split(" ")
+    begin
+      cadena = params[:q]
       x = params[:page]
       y = params[:per]
 
       efector = Efector.find(params[:parametros_adicionales][:pago_sumar_efector_id])
-      @expedientes = ExpedienteSumar.impagos_por_efector efector
+      concepto = ConceptoDeFacturacion.find(params[:parametros_adicionales][:pago_sumar_concepto_de_facturacion_id])
+
+      @expedientes = ExpedienteSumar.del_concepto_de_facturacion(concepto)
+                                    .where(efector_id: efector.id)
+                                    .where("expedientes_sumar.numero ilike ?", "%#{cadena}%")
 
       @expedientes.map! do |ex|
         {
           id: ex.id,
           numero: ex.numero,
-          efector: efector.nombre,
+          # efector: efector.nombre,
           monto_aprobado: ex.monto_aprobado,
           #liquidaciones_informes: ex.liquidaciones_informes.map { |li| {id: li.id, monto: li.monto_aprobado} },
           periodo: ex.liquidacion_sumar.periodo.periodo
@@ -42,14 +46,16 @@ class ExpedientesSumarController < ApplicationController
             render json: {total: @expedientes.size ,expedientes: @expedientes }
           }
       end
-      
-      #render json: @expedientes, status: :ok
-      
-      
-    #rescue Exception => e
-     # render json: {total: 0, expedientes: []}  }, status: :ok
-    #end
-  end
+
+    rescue Exception => e
+      respond_to do |format|
+        format.json {
+          render json: {total: 0, expedientes: [] }, status: :ok
+        }
+      end #end response
+    end #end begin rescue
+    
+  end #end impagos por efector
 
   private
 

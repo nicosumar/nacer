@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PagoSumar < ActiveRecord::Base
   belongs_to :efector
   belongs_to :concepto_de_facturacion

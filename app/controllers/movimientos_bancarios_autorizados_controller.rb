@@ -71,7 +71,7 @@ class MovimientosBancariosAutorizadosController < ApplicationController
   end
 
   def verificar_lectura
-    if cannot? :manage, MovimientoBancarioAutorizado
+    if cannot? :read, MovimientoBancarioAutorizado
       redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
     end
   end

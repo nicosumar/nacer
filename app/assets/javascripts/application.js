@@ -24,15 +24,7 @@ $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
   $('input[type="submit"]').attr("data-disable-with", "Por favor, espere...");
 });
-/*
-$(document).ready(function(){
-  $(".wizzard").steps({
-      headerTag: "h3",
-      bodyTag: "section",
-      transitionEffect: "slideLeft"
-  });
-});
-*/
+
 //TODO: Para browsers mas viejos usar "void 0" en lugar de la keyword undefined. Testearlo despues
 $(document).ready(function() {
   $('.select2').each(function(i, e){
@@ -52,10 +44,12 @@ $(document).ready(function() {
       options.formatSelection = eval(select.data('funcion-de-formato-seleccionada'));
     } 
     if (select.hasClass('ajax')) {
+      if (select.data('parametros-adicionales') == undefined )
+        select.data('parametros-adicionales',  '');
       options.ajax = {
         url: select.data('source'),
         dataType: 'json',
-        quietMillis: 70,
+        quietMillis: 170,
         data: function(term, page) { 
           return { 
             q: term, 
@@ -68,8 +62,6 @@ $(document).ready(function() {
       }
     }
     options.dropdownCssClass = "bigdrop";
-    if( select.data('multiple') != undefined )
-      options.multiple = select.data('multiple');
     
     // Agrega las opciones adicionales de creacion.
     if( select.data('opciones') != undefined){
@@ -80,7 +72,7 @@ $(document).ready(function() {
     
     select.select2(options);
 
-    if(select.hasClass('dependiente') && select.data('id-padre') != undefined && select.data('parametro') !== undefined )
+    if(select.hasClass('dependiente') && select.data('id-padre') != undefined )
     {
       select.select2('enable', false);
 
@@ -126,10 +118,6 @@ $(document).ready(function() {
       select.select2('enable', false);
       select.data('parametros-adicionales', select.data('parametros-adicionales') + ', valor_encadenado: -1')
       padre = $('#'+select.data('id-padre'));
-/*
-              if(parametros[1][0] == "#" && $(parametros[1]).val() !== undefined)
-                v = $(parametros[1]).val();
-                */
 
       padre.on('change', function(e){
 

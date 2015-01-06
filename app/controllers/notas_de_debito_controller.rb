@@ -63,6 +63,50 @@ class NotasDeDebitoController < ApplicationController
     end
   end
 
+  # GET /notas_de_debito/remanentes_por_efector
+  def remanentes_por_efector
+    begin
+      cadena = params[:q]
+      x = params[:page]
+      y = params[:per]
+
+      efector = Efector.find(params[:parametros_adicionales][:pago_sumar_efector_id])
+      concepto = ConceptoDeFacturacion.find(params[:parametros_adicionales][:pago_sumar_concepto_de_facturacion_id])
+
+      @notas_de_debito = NotaDeDebito.disponibles_para_aplicacion
+                                     .por_efector(efector, true)
+                                     .where(concepto_de_facturacion_id: concepto)
+                                     .where("notas_de_debito.numero ilike ?", "%#{cadena}%")
+                                     .includes(:tipo_de_nota_debito)
+    
+      @notas_de_debito.map! do |nd|
+        {
+          id: nd.id,
+          numero: nd.numero,
+          tipo_nombre: nd.tipo_de_nota_debito.nombre,
+          tipo_codigo: nd.tipo_de_nota_debito.codigo,
+          monto_original: nd.monto,
+          monto_remanente: nd.remanente,
+          monto_reservado: nd.reservado,
+          monto_disponible: nd.remanente - nd.reservado
+        }
+      end
+
+      respond_to do |format|
+          format.json {
+            render json: {total: @notas_de_debito.size ,notas_de_debito: @notas_de_debito }
+          }
+      end
+
+    rescue Exception => e
+      respond_to do |format|
+        format.json {
+          render json: {total: 0, notas_de_debito: [] }, status: :ok
+        }
+      end #end response
+    end #end begin rescue    
+  end # end pendientes_por_efector
+
   private
 
   def verificar_lectura

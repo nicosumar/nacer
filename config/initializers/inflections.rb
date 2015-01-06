@@ -455,8 +455,14 @@ ActiveSupport::Inflector.inflections do |inflect|
   # Aplicacion de notas de debito
   inflect.irregular("aplicacion_de_nota_de_debito", "aplicaciones·_de·_notas·_de·_debito·")
   inflect.irregular("aplicacion·_de·_nota·_de·_debito·", "aplicaciones_de_notas_de_debito")
-  inflect.irregular("AplicacionDe", "Aplicaciones·De·")
-  inflect.irregular("Aplicacion·de·", "AplicacionesDe")
+  inflect.irregular("AplicacionDeNotaDeDebito", "Aplicaciones·De·Notas·De·Debito·")
+  inflect.irregular("Aplicacion·de·Notas·De·Debito·", "AplicacionesDeNotasDeDebito")
+
+  # Aplicacion de notas de debito
+  inflect.irregular("estado_de_aplicacion_de_debito", "estados·_de·_aplicaciones·_de·_debitos·")
+  inflect.irregular("estado·_de·_aplicacion·_de·_debito·", "estados_de_aplicaciones_de_debitos")
+  inflect.irregular("EstadoDeAplicacionDeDebito", "Estados·De·Aplicaciones·De·Debitos")
+  inflect.irregular("Estado·De·Aplicacion·De·Debito·", "EstadosDeAplicacionesDeDebitos")
 
   inflect.irregular("pago_sumar_informe", "pagos·_sumar·_informes·")
   inflect.irregular("pago·_sumar·_informe·", "pagos_sumar_informes")

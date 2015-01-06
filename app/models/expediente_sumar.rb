@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ExpedienteSumar < ActiveRecord::Base
 
   belongs_to :tipo_de_expediente
@@ -6,12 +7,13 @@ class ExpedienteSumar < ActiveRecord::Base
   belongs_to :pago_sumar
   has_many   :liquidaciones_informes
   
-  
   attr_accessible :numero, :tipo_de_expediente, :efector, :liquidacion_sumar, :liquidacion_sumar_id
   attr_accessible :pago_sumar_id
 
   validates :numero, presence: true, on: :update 
 
+  scope :impagos, where(tipo_de_expediente_id: [1,2,3], pago_sumar_id: nil)
+  
   # 
   # Genera los expedientes para los efectores de una liquidación dada
   # @param  liquidacion_sumar [LiquidacionSumar] Liquidacion desde la cual debe generar las cuasifacturas
@@ -44,7 +46,6 @@ class ExpedienteSumar < ActiveRecord::Base
     end #End active base transaction
     return true
   end
-
 
   # 
   # Devuelve si el expediente es un expediente de pago
@@ -81,11 +82,31 @@ class ExpedienteSumar < ActiveRecord::Base
   # Devuelve los expedientes impagos por efector
   # @param efector [Efector] Efector que posee los expedientes
   # 
-  # @return [type] [description]
+  # @return [ActiveRecord::Relation] Expedientes de pago, impagos para un efector dado
   def self.impagos_por_efector(efector)
     return false unless efector.is_a?(Efector)
     ExpedienteSumar.includes(:liquidaciones_informes).
                     where(efector_id: efector.id, tipo_de_expediente_id: [1,2,3]).
                     where("expedientes_sumar.pago_sumar_id is null")
+  end
+
+  # 
+  # Devuelve los expedientes para un concepto de facturacion
+  # @param concepto_de_facturacion [ConceptoDeFacturacion] Concepto de facturacion sobre el cual se filtra
+  # 
+  # @return [ActiveRecord::Relation] [description]
+  def self.del_concepto_de_facturacion(concepto_de_facturacion)
+    return false unless concepto_de_facturacion.is_a?(ConceptoDeFacturacion)
+
+    expediente_a_concepto = case concepto_de_facturacion.id
+      when 1 # Paquete Basico
+        1 # expedientes paquete basico
+      when 2..3 # PPAC
+        3 # expedientes ppac 
+      when 4..5  # Cardiopatias
+        2 # expedientes cardiopatias
+      end
+
+    where(tipo_de_expediente_id: expediente_a_concepto)
   end
 end

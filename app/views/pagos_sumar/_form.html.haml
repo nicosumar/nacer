@@ -48,17 +48,20 @@
     = form_for(@pago_sumar) do |f|
       .field
         = f.label :efector
-        = f.select :efector_id, @efectores, {include_blank: true}, {class: 'select2', style: "width: 300px", data: {placeholder: 'Seleccione el efector' }}
+        = f.select :efector_id, @efectores, {include_blank: true}, {class: 'select2', style: "width: 80%", data: {placeholder: 'Seleccione el efector' }}
       .field
         = f.label :concepto_de_facturacion
-        = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {include_blank: true}, {class: 'select2', style: "width: 300px", data: {placeholder: 'Seleccione el concepto de facturacion a pagar'}}
+        = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {include_blank: true}, {class: 'select2', style: "width: 80%", data: {placeholder: 'Seleccione el concepto de facturacion a pagar'}}
   #paso-2
     %h2.StepTitle Seleccione los informes de liquidacion y notas de debito a incluir
     #content-body
       = form_for(@pago_sumar) do |f|
         .field 
           = f.label "Expedientes"
-          = f.hidden_field :expedientes_sumar, class: 'select2 ajax dependiente', data: { source: impagos_por_efector_expedientes_sumar_path, placeholder: 'Seleccione los expedientes a pagar', coleccion: 'expedientes', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id', parametro: 'efetor_id', parametros_adicionales: "", funcion_de_formato: "maquetaExpedientes", funcion_de_formato_seleccionada: "maquetaExpedientesSeleccionados", opciones: {multiple: true, closeOnSelect: true, dropdownAutoWidth: false} }
+          = f.hidden_field :expedientes_sumar, class: 'select2 ajax dependiente', data: { source: impagos_por_efector_expedientes_sumar_path, placeholder: 'Seleccione los expedientes a pagar', coleccion: 'expedientes', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id',  funcion_de_formato: "maquetaExpedientes", funcion_de_formato_seleccionada: "maquetaExpedientesSeleccionados", opciones: {multiple: true, closeOnSelect: true, dropdownAutoWidth: true, minimumInputLength: 2} }, width: '80%' 
+      .field 
+        = label_tag "Notas de Debito"
+        = hidden_field_tag :notas_de_debito, nil,class: 'select2 ajax dependiente', data: { source: remanentes_por_efector_notas_de_debito_path, placeholder: 'Seleccione las notas de debit a aplicar', coleccion: 'notas_de_debito', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id', parametros_adicionales: "", funcion_de_formato: "maquetaNotas", funcion_de_formato_seleccionada: "maquetaNotasSeleccionadas", opciones: {multiple: true, closeOnSelect: false, dropdownAutoWidth: true, minimumInputLength: 0} }, width: '80%' 
   #paso-3
     %h2.StepTitle Seleccione la cuenta bancaria origen y destino de los fondos
     #content-body

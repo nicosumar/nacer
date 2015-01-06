@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141128025024) do
+ActiveRecord::Schema.define(:version => 20150105162354) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -163,12 +163,13 @@ ActiveRecord::Schema.define(:version => 20141128025024) do
   add_index "anexos_medicos_prestaciones", ["prestacion_liquidada_id"], :name => "anexos_medicos_prestaciones_prestacion_liquidada_id_idx"
 
   create_table "aplicaciones_de_notas_de_debito", :force => true do |t|
-    t.integer  "nota_de_debito_id",   :null => false
-    t.integer  "pago_sumar_id",       :null => false
-    t.date     "fecha_de_aplicacion", :null => false
-    t.decimal  "monto",               :null => false
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.integer  "nota_de_debito_id",                 :null => false
+    t.integer  "pago_sumar_id",                     :null => false
+    t.date     "fecha_de_aplicacion",               :null => false
+    t.decimal  "monto",                             :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+    t.integer  "estado_de_aplicacion_de_debito_id", :null => false
   end
 
   add_index "aplicaciones_de_notas_de_debito", ["nota_de_debito_id"], :name => "index_aplicaciones_de_notas_de_debito_on_nota_de_debito_id"
@@ -649,6 +650,13 @@ ActiveRecord::Schema.define(:version => 20141128025024) do
 
   add_index "entidades", ["entidad_id", "entidad_type"], :name => "entidades_entidad_id_entidad_type_key", :unique => true
 
+  create_table "estados_de_aplicaciones_de_debitos", :force => true do |t|
+    t.string   "codigo",     :limit => 3
+    t.string   "nombre",     :limit => 15
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+  end
+
   create_table "estados_de_las_novedades", :force => true do |t|
     t.string  "nombre"
     t.string  "codigo"
@@ -669,16 +677,6 @@ ActiveRecord::Schema.define(:version => 20141128025024) do
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false
   end
-
-  create_table "expedientes_pagos", :force => true do |t|
-    t.integer  "pago_sumar_id"
-    t.integer  "expediente_sumar_id"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
-  end
-
-  add_index "expedientes_pagos", ["expediente_sumar_id"], :name => "index_expedientes_pagos_on_expediente_sumar_id"
-  add_index "expedientes_pagos", ["pago_sumar_id"], :name => "index_expedientes_pagos_on_pago_sumar_id"
 
   create_table "expedientes_sumar", :force => true do |t|
     t.text     "numero"
@@ -778,6 +776,17 @@ ActiveRecord::Schema.define(:version => 20141128025024) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "informes_para_pagos", :force => true do |t|
+    t.integer  "liquidacion_informe_id",                                :null => false
+    t.integer  "pago_sumar_id",                                         :null => false
+    t.decimal  "monto_aprobado",         :precision => 15, :scale => 4, :null => false
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
+  end
+
+  add_index "informes_para_pagos", ["liquidacion_informe_id"], :name => "index_informes_para_pagos_on_liquidacion_informe_id"
+  add_index "informes_para_pagos", ["pago_sumar_id"], :name => "index_informes_para_pagos_on_pago_sumar_id"
 
   create_table "informes_uads", :force => true do |t|
     t.integer  "informe_id"
