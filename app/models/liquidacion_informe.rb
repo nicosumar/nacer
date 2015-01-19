@@ -133,7 +133,7 @@ class LiquidacionInforme < ActiveRecord::Base
           upd = CustomQuery.ejecutar({
               sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n "+
                     "SET estado_de_la_prestacion_id = p.estado_de_la_prestacion_liquidada_id, \n "+
-                    "    updated_at = NOW()"
+                    "    updated_at = NOW()\n"+
                     "FROM prestaciones_liquidadas p \n "+
                     " JOIN anexos_medicos_prestaciones amp on amp.prestacion_liquidada_id = p.id \n"+
                     "WHERE #{r[:esquema]}.prestaciones_brindadas.id = p.prestacion_brindada_id\n"+  # filtro para el update
