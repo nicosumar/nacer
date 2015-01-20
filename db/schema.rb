@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150105162354) do
+ActiveRecord::Schema.define(:version => 20150108160510) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -1075,8 +1075,9 @@ ActiveRecord::Schema.define(:version => 20150105162354) do
     t.text     "codigo_postal"
     t.text     "telefonos"
     t.text     "email"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.boolean  "gestionable",     :default => false, :null => false
   end
 
   add_index "organismos_gubernamentales", ["departamento_id"], :name => "index_organismos_gubernamentales_on_departamento_id"
@@ -1348,7 +1349,10 @@ ActiveRecord::Schema.define(:version => 20150105162354) do
   end
 
   add_index "prestaciones_liquidadas", ["clave_de_beneficiario"], :name => "prestaciones_liquidadas_clave_de_beneficiario_idx"
+  add_index "prestaciones_liquidadas", ["efector_id"], :name => "prestaciones_liquidadas_efector_id_idx"
+  add_index "prestaciones_liquidadas", ["liquidacion_id", "efector_id"], :name => "prestaciones_liquidadas_liquidacion_id_efector_id_idx"
   add_index "prestaciones_liquidadas", ["liquidacion_id", "unidad_de_alta_de_datos_id", "efector_id", "prestacion_incluida_id", "fecha_de_la_prestacion", "clave_de_beneficiario"], :name => "prestaciones_liquidadas_liquidacion_id_unidad_de_alta_de_da_key", :unique => true
+  add_index "prestaciones_liquidadas", ["liquidacion_id"], :name => "prestaciones_liquidadas_liquidacion_id_idx"
 
   create_table "prestaciones_liquidadas_advertencias", :force => true do |t|
     t.integer  "liquidacion_id"

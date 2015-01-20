@@ -3,8 +3,9 @@ Nacer::Application.routes.draw do
 
   resources :pagos_sumar
 
-
-  resources :cuentas_bancarias
+  resources :cuentas_bancarias do
+    get :destino_por_concepto_origen_efector, on: :collection
+  end
   resources :sucursales_bancarias
   resources :bancos
   resources :organismos_gubernamentales
@@ -35,9 +36,7 @@ Nacer::Application.routes.draw do
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion do
     resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy] 
-    resources :movimientos_bancarios_autorizados, only: [:index, :create, :destroy] do
-      get :por_entidad, on: :collection
-    end
+    resources :movimientos_bancarios_autorizados, only: [:index, :create, :destroy] 
   end
   resources :periodos
   resources :tipos_periodos

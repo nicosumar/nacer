@@ -25,6 +25,14 @@ $(document).ready(function() {
   $('input[type="submit"]').attr("data-disable-with", "Por favor, espere...");
 });
 
+function JSONize(str) {
+  return str
+    // agrega comillas a las llaves de un string wrap keys without quote with valid double quote
+    .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})    
+    // reemplaza las comillas simples por dobles en los valores
+    .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})         
+}
+
 //TODO: Para browsers mas viejos usar "void 0" en lugar de la keyword undefined. Testearlo despues
 $(document).ready(function() {
   $('.select2').each(function(i, e){
@@ -38,7 +46,7 @@ $(document).ready(function() {
       dropdownAutoWidth : true
     };
 
-    ;
+    //;
     if(select.data('funcion-de-formato') != undefined || select.data('funcion-de-formato') != "") {
       options.formatResult = eval(select.data('funcion-de-formato'));
       options.formatSelection = eval(select.data('funcion-de-formato-seleccionada'));
@@ -46,17 +54,28 @@ $(document).ready(function() {
     if (select.hasClass('ajax')) {
       if (select.data('parametros-adicionales') == undefined )
         select.data('parametros-adicionales',  '');
+      
       options.ajax = {
         url: select.data('source'),
         dataType: 'json',
         quietMillis: 170,
         data: function(term, page) { 
-          return { 
-            q: term, 
-            page: page, 
-            per: 10, 
+          ret = {
+            q: term,
+            page: page,
+            per: 10,
             parametros_adicionales: (select.data('parametros-adicionales') == undefined) ? '' : eval("({"+ select.data('parametros-adicionales') + "})")
-          } 
+          }
+          
+          var params = {};
+          // envio los parametros adicionales como valores - Dejo el array tambien para compatibilidad hacia atras
+          if( select.data('parametros-adicionales') != undefined){
+            //Convierto los datos adicionales en un obj
+            params = jQuery.parseJSON( JSONize("{"+ select.data('parametros-adicionales') + "}")  );
+          }
+          //agrego los parametros adicionales al obj sin estar en el array
+          $.extend( ret, ret, params );
+          return ret 
         },
         results: function(data, page) { return { more: data.total > (page * 10), results: eval("data." + select.data('coleccion'))} }
       }
@@ -64,6 +83,7 @@ $(document).ready(function() {
     options.dropdownCssClass = "bigdrop";
     
     // Agrega las opciones adicionales de creacion.
+    // TODO: reemplazar por $.extend y sacar el eval
     if( select.data('opciones') != undefined){
       opc = select.data('opciones');
       for(var o in opc)
@@ -78,6 +98,11 @@ $(document).ready(function() {
 
       //Busco los padres:
       padres = []
+      if($.trim(select.data('parametros-adicionales')) == "")
+        parametros_adicionales = [];
+      else 
+        parametros_adicionales = $.trim(select.data('parametros-adicionales')).split(",");
+
       $.each(select.data('id-padre').split(","), function(indice, padre_id){
         padre = $("#"+$.trim(padre_id));
         
@@ -86,7 +111,10 @@ $(document).ready(function() {
         {
           padres.push(padre)
           //Guardo los parametros adicionales estaticos y agrego el id de este padre en los parametros adicionales
-          select.data('parametros-adicionales',  $.trim(padre_id)+': -1, '+ select.data('parametros-adicionales'));
+          
+          parametros_adicionales.push($.trim(padre_id)+': -1');
+          select.data('parametros-adicionales', parametros_adicionales.join(","))
+          //select.data('parametros-adicionales',  $.trim(padre_id)+': -1, '+ select.data('parametros-adicionales'));
           
           //A cada padre lo seteo para que cuando cambie el valor, actualice los parametros que envia via ajax
           padres[indice].change( function(evt){
@@ -106,6 +134,7 @@ $(document).ready(function() {
             }); //end each parametros-adicionales
             select.data('parametros-adicionales', arr_parametros_adicionales.join(",") );
           }); //end on change
+
         } // end if (si encontro el padre)
         else
           throw "No se encontro el elemento: "+"'"+padre_id+"'" 

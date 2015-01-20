@@ -43,14 +43,29 @@ class Efector < ActiveRecord::Base
   has_one  :entidad, as: :entidad
   has_many :cuentas_bancarias, through: :entidad
   # Asociaciones referentes a la liquidacion
-  belongs_to :unidad_de_alta_de_datos
-  belongs_to :grupo_de_efectores_liquidacion
-  has_many :reglas
-  has_many :prestaciones_liquidadas
-  has_many :liquidaciones_informes
-  has_many :cuasifacturas, class_name: "LiquidacionSumarCuasifactura"
-  has_many :consolidados_sumar
-  has_one  :unidad_de_alta_de_datos_administrada, class_name: "UnidadDeAltaDeDatos"
+  belongs_to  :unidad_de_alta_de_datos
+  belongs_to  :grupo_de_efectores_liquidacion
+  has_many    :reglas
+  has_many    :prestaciones_liquidadas
+  has_many    :liquidaciones_informes
+  has_many    :cuasifacturas, class_name: "LiquidacionSumarCuasifactura"
+  has_many    :consolidados_sumar
+  has_one     :unidad_de_alta_de_datos_administrada, class_name: "UnidadDeAltaDeDatos"
+  has_many    :conceptos_facturados, :class_name => "ConceptoDeFacturacion", :finder_sql => Proc.new {
+      %Q{
+        SELECT DISTINCT conceptos_de_facturacion.* 
+        FROM "conceptos_de_facturacion" 
+          JOIN liquidaciones_sumar l on l.concepto_de_facturacion_id = conceptos_de_facturacion.id 
+        WHERE (exists 
+                ( select * 
+                  from prestaciones_liquidadas 
+                  where liquidacion_id = l.id 
+                  and prestaciones_liquidadas.efector_id = #{id}
+                )
+              )
+      }
+  }
+
   #Asociaciones referentes a informes de debitos
   has_many :informes_debitos_prestacionales
   has_many :notas_de_debito
@@ -184,7 +199,6 @@ class Efector < ActiveRecord::Base
               .where("pl.efector_id = #{self.id}").order(:concepto)
   end
 
-
   # 
   # Devuelve los conceptos que ha facturado o consolidado
   # 
@@ -223,7 +237,7 @@ class Efector < ActiveRecord::Base
 
   # 
   # Devuelve los periodos que ha facturado o consolidado
-  # @param arg_concepto = [] [ConcdeptoDeFacturacion] [Filtro para un concepto en particular ]
+  # @param arg_concepto = [] [ConceptoDeFacturacion] [Filtro para un concepto en particular ]
   # 
   # @return [Array<Periodo>] [Array con los periodos que ha facturado o consolidado]
   def periodos_facturados_o_consoliados(arg_concepto = [])

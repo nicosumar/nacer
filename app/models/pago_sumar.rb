@@ -3,7 +3,7 @@ class PagoSumar < ActiveRecord::Base
   belongs_to :efector
   belongs_to :concepto_de_facturacion
   belongs_to :cuenta_bancaria_origen, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_origen_id'
-  belongs_to :cuenta_bancaria_detino, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_origen_id'
+  belongs_to :cuenta_bancaria_destino, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_origen_id'
   belongs_to :fecha_de_proceso
   has_many   :expedientes_sumar
   has_many   :aplicaciones_de_notas_de_debito

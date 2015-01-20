@@ -13,6 +13,8 @@ class OrganismoGubernamental < ActiveRecord::Base
   attr_accessible :codigo_postal, :domicilio, :email, :nombre, :telefonos
   attr_accessible :provincia_id, :departamento_id, :distrito_id
 
+  scope :gestionables, where(gestionable: true)
+
   private
 
   def crear_entidad

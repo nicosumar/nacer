@@ -133,6 +133,47 @@ class CuentasBancariasController < ApplicationController
     end
   end
 
+  # 
+  # GET destino_por_concepto_y_entidad_origen/entidad_id=?&concepto_de_facturacion_id=?&cuenta_bancaria_origen_id=?
+  # Cuentas destino de fondos para una entidad origen y concepto de facturacion
+  # 
+  # @return [json] Json array con cuentas destino de fondos 
+  def destino_por_concepto_origen_efector
+    begin
+      cadena = params[:q]
+      x = params[:page]
+      y = params[:per]
+          
+      efector = Efector.find(params[:pago_sumar_efector_id])
+      concepto = ConceptoDeFacturacion.find(params[:pago_sumar_concepto_de_facturacion_id])
+      cuenta_origen = CuentaBancaria.find(params[:pago_sumar_cuenta_bancaria_origen_id])
+
+      @cuentas_destino = CuentaBancaria.destinos_autorizado_para_el_concepto(concepto).
+                                        destinos_autorizados_desde_cuenta(cuenta_origen).
+                                        destino_autorizadas_para(efector.entidad)
+
+      @cuentas_destino.map! do |cb|
+        {
+          id: cb.id,
+          nombre: cb.nombre
+        }
+      end
+
+      respond_to do |format|
+          format.json {
+            render json: {total: @cuentas_destino.size ,cuentas_destino: @cuentas_destino }
+          }
+      end
+
+    rescue Exception => e
+      respond_to do |format|
+        format.json {
+          render json: {total: 0, cuentas_destino: [] }, status: :ok
+        }
+      end #end response
+    end #end begin rescue 
+  end
+
   private 
 
   def verificar_permisos

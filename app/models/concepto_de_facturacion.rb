@@ -15,6 +15,12 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo, :formula_id, :dias_de_prestacion
   attr_accessible :tipo_de_expediente, :tipo_de_expediente_id, :formula
 
+  scope :facturados, -> { select("DISTINCT conceptos_de_facturacion.*")
+                          .joins("JOIN liquidaciones_sumar l on l.concepto_de_facturacion_id = conceptos_de_facturacion.id")
+                          .where("exists (select * from prestaciones_liquidadas where liquidacion_id = l.id)")
+                          .order(:concepto)
+                        }
+
   validates :concepto, presence: true
   validates :descripcion, presence: true
   validates :codigo, presence: true
@@ -64,6 +70,10 @@ class ConceptoDeFacturacion < ActiveRecord::Base
     rescue Exception => e
       raise e
     end
+  end
+
+  def nombre
+    self.concepto
   end
 
 end
