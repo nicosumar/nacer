@@ -30,7 +30,7 @@ end
 ActiveSupport::Inflector.inflections do |inflect|
 
   inflect.clear(:all)
-  
+
   inflect.plural(/·([A-Z]|_| |$)/, '\1')
   inflect.plural(/([acefgikoptuw])([A-Z]|_| |$)/, '\1s\2')
   inflect.plural(/z([A-Z]|_| |$)/, 'ces\1')
@@ -60,7 +60,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("User·Group·User·", "UserGroupsUsers")
   inflect.irregular("ability", "abilities·")
   inflect.irregular("ability·", "abilities")
-  
+
   # Plurales no regulares para clases y objetos
 
   inflect.irregular("convenio_de_gestion", "convenios·_de·_gestion·")
@@ -312,7 +312,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("liquidacion·_sumar·_cuasifactura·_detalle·", "liquidaciones_sumar_cuasifacturas_detalles")
   inflect.irregular("LiquidacionSumarCuasifacturaDetalle", "Liquidaciones·Sumar·Cuasifacturas·Detalles·")
   inflect.irregular("Liquidacion·Sumar·Cuasifactura·Detalle·", "LiquidacionesSumarCuasifacturasDetalles")
-  # Estados de los procesos 
+  # Estados de los procesos
   inflect.irregular("estado_del_proceso", "estados·_de·_los·_procesos·")
   inflect.irregular("estado·_del·_proceso·", "estados_de_los_procesos")
   inflect.irregular("EstadoDelProceso", "Estados·De·Los·Procesos·")
@@ -337,7 +337,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("consolidado·_sumar·_detalle·", "consolidados_sumar_detalles")
   inflect.irregular("ConsolidadoSumarDetalle", "Consolidados·Sumar·Detalles·")
   inflect.irregular("Consolidado·Sumar·Detalle·", "ConsolidadosSumarDetalles")
-    
+
   # UAD (unidad de alta de datos)
   inflect.irregular("uad_nombre", "uad·_nombres·")
   inflect.irregular("uad·_nombre·", "uad_nombre")
@@ -380,23 +380,23 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("TipoDeExpediente", "Tipos·De·Expedientes·")
   inflect.irregular("Tipo·De·Expediente·", "TiposDeExpedientes")
 
+  # Secciones del PDSS
+  inflect.irregular("seccion_pdss", "secciones·_pdss·")
+  inflect.irregular("seccion·_pdss·", "secciones_pdss")
+  inflect.irregular("SeccionPdss", "Secciones·Pdss·")
+  inflect.irregular("Seccion·Pdss·", "SeccionesPdss")
+
   # Grupos del PDSS
   inflect.irregular("grupo_pdss", "grupos·_pdss·")
   inflect.irregular("grupo·_pdss·", "grupos_pdss")
   inflect.irregular("GrupoPdss", "Grupos·Pdss·")
   inflect.irregular("Grupo·Pdss·", "GruposPdss")
 
-  # Subgrupos del PDSS
-  inflect.irregular("subgrupo_pdss", "subgrupos·_pdss·")
-  inflect.irregular("subgrupo·_pdss·", "subgrupos_pdss")
-  inflect.irregular("SubgrupoPdss", "Subgrupos·Pdss·")
-  inflect.irregular("Subgrupo·Pdss·", "SubgruposPdss")
-
-  # Apartados para subgrupos del PDSS
-  inflect.irregular("apartado_pdss", "apartados·_pdss·")
-  inflect.irregular("apartado·_pdss·", "apartados_pdss")
-  inflect.irregular("ApartadoPdss", "Apartados·Pdss·")
-  inflect.irregular("Apartado·Pdss·", "ApartadosPdss")
+#  # Apartados para subgrupos del PDSS
+#  inflect.irregular("apartado_pdss", "apartados·_pdss·")
+#  inflect.irregular("apartado·_pdss·", "apartados_pdss")
+#  inflect.irregular("ApartadoPdss", "Apartados·Pdss·")
+#  inflect.irregular("Apartado·Pdss·", "ApartadosPdss")
 
   # Prestaciones del PDSS
   inflect.irregular("prestacion_pdss", "prestaciones·_pdss·")
@@ -440,7 +440,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("NotaDeDebito", "Notas·De·Debito·")
   inflect.irregular("Nota·De·Debito·", "NotasDeDebito")
 
-  # Documentos Generables 
+  # Documentos Generables
   inflect.irregular("documento_generable", "documentos·_generables·")
   inflect.irregular("documento·_generable·", "documentos_generables")
   inflect.irregular("DocumentoGenerable", "Documentos·Generables·")
@@ -457,12 +457,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("tipo·_de·_agrupacion·", "tipos_de_agrupacion")
   inflect.irregular("TipoDeAgrupacion", "Tipos·De·Agrupacion·")
   inflect.irregular("Tipo·De·Agrupacion·", "TiposDeAgrupacion")
-  
+
   # Partos SIP
   inflect.irregular("parto_sip", "partos·_sip·")
   inflect.irregular("parto·_sip·", "partos_sip")
   inflect.irregular("PartoSip", "Partos·Sip·")
   inflect.irregular("Parto·Sip·", "PartosSip")
+
+  # Líneas de cuidado
+  inflect.irregular("linea_de_cuidado", "lineas·_de·_cuidado·")
+  inflect.irregular("linea·_de·_cuidado·", "lineas_de_cuidado")
+  inflect.irregular("LineaDeCuidado", "Lineas·De·Cuidado·")
+  inflect.irregular("Linea·De·Cuidado·", "LineasDeCuidado")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

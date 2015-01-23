@@ -1,17 +1,7 @@
 # -*- encoding : utf-8 -*-
 # Crear las restricciones adicionales en la base de datos
-class ModificarTablasPDSS < ActiveRecord::Migration
+class PrestacionesPdssSeed < ActiveRecord::Migration
   # Claves foráneas para asegurar la integridad referencial en el motor de la base de datos
-  execute "
-    ALTER TABLE subgrupos_pdss
-      ADD CONSTRAINT fk_subgrupos_grupos_pdss
-      FOREIGN KEY (grupo_pdss_id) REFERENCES grupos_pdss (id);
-  "
-  execute "
-    ALTER TABLE apartados_pdss
-      ADD CONSTRAINT fk_apartados_subgrupos_pdss
-      FOREIGN KEY (subgrupo_pdss_id) REFERENCES subgrupos_pdss (id);
-  "
   execute "
     ALTER TABLE prestaciones_pdss
       ADD CONSTRAINT fk_grupos_prestaciones_pdss
@@ -19,18 +9,8 @@ class ModificarTablasPDSS < ActiveRecord::Migration
   "
   execute "
     ALTER TABLE prestaciones_pdss
-      ADD CONSTRAINT fk_subgrupos_prestaciones_pdss
-      FOREIGN KEY (subgrupo_pdss_id) REFERENCES subgrupos_pdss (id);
-  "
-  execute "
-    ALTER TABLE prestaciones_pdss
-      ADD CONSTRAINT fk_apartados_prestaciones_pdss
-      FOREIGN KEY (apartado_pdss_id) REFERENCES apartados_pdss (id);
-  "
-  execute "
-    ALTER TABLE prestaciones_pdss
-      ADD CONSTRAINT fk_nosologias_prestaciones_pdss
-      FOREIGN KEY (nosologia_id) REFERENCES nosologias (id);
+      ADD CONSTRAINT fk_lineas_de_cuidado_prestaciones_pdss
+      FOREIGN KEY (linea_de_cuidado_id) REFERENCES lineas_de_cuidado (id);
   "
   execute "
     ALTER TABLE prestaciones_pdss
@@ -38,507 +18,762 @@ class ModificarTablasPDSS < ActiveRecord::Migration
       FOREIGN KEY (tipo_de_prestacion_id) REFERENCES tipos_de_prestaciones (id);
   "
   execute "
-    ALTER TABLE prestaciones_prestaciones_pdss
-      ADD CONSTRAINT fk_ppp_prestaciones_pdss
-      FOREIGN KEY (prestacion_pdss_id) REFERENCES prestaciones_pdss (id);
-  "
-  execute "
-    ALTER TABLE prestaciones_prestaciones_pdss
-      ADD CONSTRAINT fk_ppp_prestaciones
-      FOREIGN KEY (prestacion_id) REFERENCES prestaciones (id);
+    ALTER TABLE prestaciones_pdss
+      ADD CONSTRAINT fk_prestaciones_pdss_modulos
+      FOREIGN KEY (modulo_id) REFERENCES modulos (id);
   "
 end
 
-# Datos precargados al inicializar el sistema
-GrupoPdss.create!([
-  {
-    # :id => 1
-    :codigo => "1",
-    :nombre => "Mujer / Adolescente",
-    :orden => 1
-  },
-  {
-    # :id => 2
-    :codigo => "2",
-    :nombre => "Niños y niñas de 0 a 5 años",
-    :orden => 2
-  },
-  {
-    # :id => 3
-    :codigo => "3",
-    :nombre => "Niños y niñas de 6 a 9 años",
-    :orden => 3
-  },
-  {
-    # :id => 4
-    :codigo => "4",
-    :nombre => "Adolescentes de 10 a 19 años",
-    :orden => 4
-  },
-  {
-    # :id => 5
-    :codigo => "5",
-    :nombre => "Mujeres de 20 a 64 años",
-    :orden => 5
-  },
-  {
-    # :id => 6
-    :codigo => nil,
-    :nombre => "Anexo de valorización",
-    :orden => 6
-  },
-])
+PrestacionPdss.create([
 
-SubgrupoPdss.create!([
+  # SECCIÓN 1 - Grupo 1
+
   {
     # :id => 1
-    :codigo => "1.1",
+    :nombre => "Atención y tratamiento ambulatorio de anemia grave del embarazo (no incluye hemoderivados)",
     :grupo_pdss_id => 1,
-    :nombre => "Embarazo / parto / puerperio",
-    :orden => 1
+    :orden => 1,
+    :linea_de_cuidado_id => 1,
+    :tipo_de_prestacion_id => 4,
   },
   {
     # :id => 2
-    :codigo => "1.2",
+    :nombre => "Atención y tratamiento ambulatorio de anemia leve del embarazo (inicial)",
     :grupo_pdss_id => 1,
-    :nombre => "Embarazo de alto riesgo",
-    :orden => 2
+    :orden => 2,
+    :linea_de_cuidado_id => 2,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 3
-    :codigo => "2.1",
-    :grupo_pdss_id => 2,
-    :nombre => "Recién nacido (posparto inmediato)",
-    :orden => 1
+    :nombre => "Atención y tratamiento ambulatorio de anemia leve del embarazo (ulterior)",
+    :grupo_pdss_id => 1,
+    :orden => 3,
+    :linea_de_cuidado_id => 2,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 4
-    :codigo => "2.2",
-    :grupo_pdss_id => 2,
-    :nombre => "Recién nacido (malformaciones quirúrgicas)",
-    :orden => 2
+    :nombre => "Tratamiento ambulatorio de complicaciones de parto en puerperio inmediato (inicial)",
+    :grupo_pdss_id => 1,
+    :orden => 4,
+    :linea_de_cuidado_id => 3,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 5
-    :codigo => "2.3",
-    :grupo_pdss_id => 2,
-    :nombre => "Seguimiento ambulatorio de RN de alto riesgo",
-    :orden => 3
+    :nombre => "Tratamiento ambulatorio de complicaciones de parto en puerperio inmediato (ulterior)",
+    :grupo_pdss_id => 1,
+    :orden => 5,
+    :linea_de_cuidado_id => 3,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 6
-    :codigo => "2.4",
-    :grupo_pdss_id => 2,
-    :nombre => "Traslado de RN de alto riesgo",
-    :orden => 4
+    :nombre => "Búsqueda activa de embarazadas en el primer trimestre por agente sanitario y/o personal de salud",
+    :grupo_pdss_id => 1,
+    :orden => 6,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 3
   },
   {
     # :id => 7
-    :codigo => "2.5",
-    :grupo_pdss_id => 2,
-    :nombre => "Cardiopatías congénitas",
-    :orden => 5
+    :nombre => "Búsqueda activa de embarazadas con abandono de controles, por agente sanitario y/o personal de salud",
+    :grupo_pdss_id => 1,
+    :orden => 7,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 3
   },
   {
     # :id => 8
-    :codigo => "2.6",
-    :grupo_pdss_id => 2,
-    :nombre => "Cardiopatías congénitas: módulos quirúrgicos",
-    :orden => 6
+    :nombre => "Encuentros para promoción del desarrollo infantil, prevención de patologías prevalentes en la infancia, conductas saludables, hábitos de higiene",
+    :grupo_pdss_id => 1,
+    :orden => 8,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 16
   },
   {
     # :id => 9
-    :codigo => "2.7",
-    :grupo_pdss_id => 2,
-    :nombre => "Cardiopatías congénitas: prácticas complementarias a módulos quirúrgicos",
-    :orden => 7
+    :nombre => "Encuentros para promoción de pautas alimentarias en embarazadas, puérperas y niños menores de 6 años",
+    :grupo_pdss_id => 1,
+    :orden => 9,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 16
   },
   {
     # :id => 10
-    :codigo => "2.8",
-    :grupo_pdss_id => 2,
-    :nombre => "Cuidado de la salud",
-    :orden => 8
+    :nombre => "Encuentros para promoción de salud sexual y reproductiva, conductas saludables, hábitos de higiene",
+    :grupo_pdss_id => 1,
+    :orden => 10,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 16
   },
   {
     # :id => 11
-    :codigo => "3.1",
-    :grupo_pdss_id => 3,
-    :nombre => "Cuidado de la salud",
-    :orden => 1
+    :nombre => "Tratamiento de la hemorragia del 1er trimestre",
+    :grupo_pdss_id => 1,
+    :orden => 11,
+    :linea_de_cuidado_id => 5,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 12
-    :codigo => "4.1",
-    :grupo_pdss_id => 4,
-    :nombre => "Cuidado de la salud",
-    :orden => 1
+    :nombre => "Tratamiento de la hemorragia del 1er trimestre (clínica obstétrica)",
+    :grupo_pdss_id => 1,
+    :orden => 12,
+    :linea_de_cuidado_id => 5,
+    :tipo_de_prestacion_id => 9
   },
   {
     # :id => 13
-    :codigo => "5.1",
-    :grupo_pdss_id => 5,
-    :nombre => "Cuidado de la salud",
-    :orden => 1
-  }
-])
-
-ApartadoPdss.create!([
-  {
-    # :id => 1
-    :codigo => "1.2.a",
-    :subgrupo_pdss_id => 2,
-    :nombre => "Ambulatorio",
-    :orden => 1
-  },
-  {
-    # :id => 2
-    :codigo => "1.2.b",
-    :subgrupo_pdss_id => 2,
-    :nombre => "Internación",
-    :orden => 2
-  },
-  {
-    # :id => 3
-    :codigo => "1.2.c",
-    :subgrupo_pdss_id => 2,
-    :nombre => "Hospital de día",
-    :orden => 3
-  },
-  {
-    # :id => 4
-    :codigo => "1.2.d",
-    :subgrupo_pdss_id => 2,
-    :nombre => "Traslado",
-    :orden => 4
-  },
-  {
-    # :id => 5
-    :codigo => "2.6.a",
-    :subgrupo_pdss_id => 8,
-    :nombre => "Pract. Alta C.-CCC I",
-    :orden => 1
-  },
-  {
-    # :id => 6
-    :codigo => "2.6.b",
-    :subgrupo_pdss_id => 8,
-    :nombre => "Pract. Alta C.-CCC II",
-    :orden => 2
-  },
-  {
-    # :id => 7
-    :codigo => "2.6.c",
-    :subgrupo_pdss_id => 8,
-    :nombre => "Pract. Alta C.-CCC III",
-    :orden => 3
-  },
-  {
-    # :id => 8
-    :codigo => "2.6.d",
-    :subgrupo_pdss_id => 8,
-    :nombre => "Pract. Alta C.-CCC IV",
-    :orden => 4
-  }
-])
-
-Nosologia.create!([
-  {
-    # :id => 1
-    :codigo => "A",
-    :nombre => "Control de salud"
-  },
-  {
-    # :id => 2
-    :codigo => "B",
-    :nombre => "Medicina preventiva / Promoción de la salud"
-  },
-  {
-    # :id => 3
-    :codigo => "C",
-    :nombre => "Deficiencias nutricionales"
-  },
-  {
-    # :id => 4
-    :codigo => "D",
-    :nombre => "Hemorragias del embarazo"
-  },
-  {
-    # :id => 5
-    :codigo => "E",
-    :nombre => "Infecciosas y parasitarias"
-  },
-  {
-    # :id => 6
-    :codigo => "F",
-    :nombre => "Neoplasias malignas"
-  },
-  {
-    # :id => 7
-    :codigo => "G",
-    :nombre => "Parto"
-  },
-  {
-    # :id => 8
-    :codigo => "H",
-    :nombre => "Patología puerperal"
-  },
-  {
-    # :id => 9
-    :codigo => "I",
-    :nombre => "Notificación de riesgo"
-  },
-  {
-    # :id => 10
-    :codigo => "J",
-    :nombre => "Hipertensión"
-  },
-  {
-    # :id => 11
-    :codigo => "K",
-    :nombre => "Diabetes gestacional"
-  },
-  {
-    # :id => 12
-    :codigo => "L",
-    :nombre => "Hemorragia posparto"
-  },
-  {
-    # :id => 13
-    :codigo => "M",
-    :nombre => "Amenaza de parto prematuro"
+    :nombre => "Tratamiento de la hemorragia del 1er trimestre (quirúrgica)",
+    :grupo_pdss_id => 1,
+    :orden => 13,
+    :linea_de_cuidado_id => 5,
+    :tipo_de_prestacion_id => 9
   },
   {
     # :id => 14
-    :codigo => "N",
-    :nombre => "Hipoacusia"
+    :nombre => "Tratamiento de la hemorragia del 2do trimestre (clínica obstétrica)",
+    :grupo_pdss_id => 1,
+    :orden => 14,
+    :linea_de_cuidado_id => 6,
+    :tipo_de_prestacion_id => 9
   },
   {
     # :id => 15
-    :codigo => "O",
-    :nombre => "Otras perinatales"
+    :nombre => "Tratamiento de la hemorragia del 2do trimestre (quirúrgica)",
+    :grupo_pdss_id => 1,
+    :orden => 15,
+    :linea_de_cuidado_id => 6,
+    :tipo_de_prestacion_id => 9
   },
   {
     # :id => 16
-    :codigo => "P",
-    :nombre => "Retinopatía del prematuro"
+    :nombre => "Tratamiento de la hemorragia del 3er trimestre (clínica obstétrica)",
+    :grupo_pdss_id => 1,
+    :orden => 16,
+    :linea_de_cuidado_id => 7,
+    :tipo_de_prestacion_id => 9
   },
   {
     # :id => 17
-    :codigo => "Q",
-    :nombre => "Trastornos endocrinos y metabólicos"
+    :nombre => "Tratamiento de la hemorragia del 3er trimestre (quirúrgica)",
+    :grupo_pdss_id => 1,
+    :orden => 17,
+    :linea_de_cuidado_id => 7,
+    :tipo_de_prestacion_id => 9
   },
   {
     # :id => 18
-    :codigo => "R",
-    :nombre => "Cardiopatías congénitas"
+    :nombre => "Atención y tratamiento ambulatorio de infección urinaria en embarazada",
+    :grupo_pdss_id => 1,
+    :orden => 18,
+    :linea_de_cuidado_id => 8,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 19
-    :codigo => "S",
-    :nombre => "Confirmación diagnóstica con pediatras especialistas"
+    :nombre => "Cesárea y atención del recién nacido",
+    :grupo_pdss_id => 1,
+    :orden => 19,
+    :linea_de_cuidado_id => 9,
+    :tipo_de_prestacion_id => 9
   },
   {
     # :id => 20
-    :codigo => "T",
-    :nombre => "Enfermedad respiratoria"
+    :nombre => "Atención de parto y recién nacido",
+    :grupo_pdss_id => 1,
+    :orden => 20,
+    :linea_de_cuidado_id => 10,
+    :tipo_de_prestacion_id => 9
   },
   {
     # :id => 21
-    :codigo => "U",
-    :nombre => "Otras patologías"
+    :nombre => "Control prenatal de 1ra vez",
+    :grupo_pdss_id => 1,
+    :orden => 21,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 22
-    :codigo => "V",
-    :nombre => "Salud bucal"
+    :nombre => "Ulterior de control prenatal",
+    :grupo_pdss_id => 1,
+    :orden => 22,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 23
-    :codigo => "W",
-    :nombre => "Lesiones intencionales"
+    :nombre => "Odontológica prenatal - profilaxis",
+    :grupo_pdss_id => 1,
+    :orden => 23,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 24
-    :codigo => "X",
-    :nombre => "Pesquisa"
+    :nombre => "Control odontológico en el tratamiento de gingivitis y enfermedad periodontal leve",
+    :grupo_pdss_id => 1,
+    :orden => 24,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 4
   },
   {
     # :id => 25
-    :codigo => "Y",
-    :nombre => "Salud mental"
-  }
-])
-
-PrestacionPdss.create([
-  {
-    # :id => 1
-    :nombre => "Control prenatal de 1ra. Vez",
-    :codigo => "CTC005",
-    :orden => 1,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 2
-    :nombre => "Consulta - Consulta ulterior de control prenatal",
-    :codigo => "CTC006",
-    :orden => 2,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 3
-    :nombre => "Odontológica prenatal - profilaxis.",
-    :codigo => "CTC010",
-    :orden => 3,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 4
-    :nombre => "Ctrol. Odont. en el trat. de gingivitis y enf. periodontal leve.",
-    :codigo => "CTC010",
-    :orden => 4,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 5
-    :nombre => "Control prenatal de embarazo de alto riesgo.",
-    :codigo => "CTC007",
-    :orden => 5,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 6
-    :nombre => "Puerperio inmediato.",
-    :codigo => "CTC001",
-    :orden => 6,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 7
-    :nombre => "Dosis aplicada de vacuna triple bacteriana acelular (dTpa)",
-    :codigo => "IMV008",
-    :orden => 7,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 8
-    :nombre => "Inmunización doble adulto en embarazo",
-    :codigo => "IMV010",
-    :orden => 8,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 9
-    :nombre => "Dosis aplicada de vacuna antigripal en embarazo o puerperio",
-    :codigo => "IMV013",
-    :orden => 9,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 10
-    :nombre => "Inmunización puerperal doble viral (Rubéola)",
-    :codigo => "IMV011",
-    :orden => 10,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 11
     :nombre => "Toma de muestra para PAP (incluye material descartable)",
-    :codigo => "PRP018",
+    :grupo_pdss_id => 1,
+    :orden => 25,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 26
+    :nombre => "Colposcopía en control de embarazo (incluye material descartable)",
+    :grupo_pdss_id => 1,
+    :orden => 26,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 27
+    :nombre => "Tartrectomía y cepillado mecánico",
+    :grupo_pdss_id => 1,
+    :orden => 27,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 28
+    :nombre => "Inactivación de caries",
+    :grupo_pdss_id => 1,
+    :orden => 28,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 29
+    :nombre => "Carta de derechos de la mujer embarazada indígena",
+    :grupo_pdss_id => 1,
+    :orden => 29,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 15
+  },
+  {
+    # :id => 30
+    :nombre => "Educación para la salud en embarazo (bio-psico-social)",
+    :grupo_pdss_id => 1,
+    :orden => 30,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 15
+  },
+  {
+    # :id => 31
+    :nombre => "Lectura de la muestra tomada en mujeres embarazadas, en laboratorio de Anatomía patológica/Citología con diagnóstico firmado por anátomo-patólogo matriculado (CA cérvicouterino)",
+    :grupo_pdss_id => 1,
+    :orden => 31,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 1
+  },
+  {
+    # :id => 32
+    :nombre => "Control prenatal de embarazo de alto riesgo",
+    :grupo_pdss_id => 1,
+    :orden => 32,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 33
+    :nombre => "Dosis aplicada de vacuna triple bacteriana acelular (dTpa)",
+    :grupo_pdss_id => 1,
+    :orden => 33,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 34
+    :nombre => "Inmunización doble adulto en embarazo",
+    :grupo_pdss_id => 1,
+    :orden => 34,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 35
+    :nombre => "Dosis aplicada de vacuna antigripal en embarazo o puerperio",
+    :grupo_pdss_id => 1,
+    :orden => 35,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 36
+    :nombre => "Puerperio inmediato",
+    :grupo_pdss_id => 1,
+    :orden => 36,
+    :linea_de_cuidado_id => 12,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 37
+    :nombre => "Dosis aplicada de vacuna antigripal en embarazo o puerperio",
+    :grupo_pdss_id => 1,
+    :orden => 37,
+    :linea_de_cuidado_id => 12,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 38
+    :nombre => "Inmunización puerperal doble viral (rubéola)",
+    :grupo_pdss_id => 1,
+    :orden => 38,
+    :linea_de_cuidado_id => 12,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 39
+    :nombre => "Consejería puerperal en SS y R; lactancia materna y puericultura (prevención de muerte súbita y signos de alarma)",
+    :grupo_pdss_id => 1,
+    :orden => 39,
+    :linea_de_cuidado_id => 12,
+    :tipo_de_prestacion_id => 15
+  },
+  {
+    # :id => 40
+    :nombre => "Atención y tratamiento ambulatorio de sífilis e ITS en embarazo",
+    :grupo_pdss_id => 1,
+    :orden => 40,
+    :linea_de_cuidado_id => 13,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 41
+    :nombre => "Atención y tratamiento ambulatorio de VIH en la embarazada",
+    :grupo_pdss_id => 1,
+    :orden => 41,
+    :linea_de_cuidado_id => 14,
+    :tipo_de_prestacion_id => 4
+  },
+
+  # SECCIÓN 1 - Grupo 2
+
+  {
+    # :id => 42
+    :nombre => "Consulta seguimiento post alta",
+    :grupo_pdss_id => 2,
+    :orden => 1,
+    :linea_de_cuidado_id => 15,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 43
+    :nombre => "Ref. por embarazo de alto riesgo de Nivel 2 ó 3 a niveles de complejidad sup.",
+    :grupo_pdss_id => 2,
+    :orden => 2,
+    :linea_de_cuidado_id => 16,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 44
+    :nombre => "Consulta inicial de diabetes gestacional",
+    :grupo_pdss_id => 2,
+    :orden => 3,
+    :linea_de_cuidado_id => 17,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 45
+    :nombre => "Consulta de seguimiento de diabetes gestacional",
+    :grupo_pdss_id => 2,
+    :orden => 4,
+    :linea_de_cuidado_id => 17,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 46
+    :nombre => "Consulta con oftalmología",
+    :grupo_pdss_id => 2,
+    :orden => 5,
+    :linea_de_cuidado_id => 17,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 47
+    :nombre => "Consulta con cardiología",
+    :grupo_pdss_id => 2,
+    :orden => 6,
+    :linea_de_cuidado_id => 17,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 48
+    :nombre => "Consulta con endocrinólogo",
+    :grupo_pdss_id => 2,
+    :orden => 7,
+    :linea_de_cuidado_id => 17,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 49
+    :nombre => "Consulta con nutricionista",
+    :grupo_pdss_id => 2,
+    :orden => 8,
+    :linea_de_cuidado_id => 17,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 50
+    :nombre => "Consulta seguimiento puerperio paciente con diabetes gestacional",
+    :grupo_pdss_id => 2,
+    :orden => 9,
+    :linea_de_cuidado_id => 17,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 51
+    :nombre => "Consulta puerperio con nutricionista",
+    :grupo_pdss_id => 2,
+    :orden => 10,
+    :linea_de_cuidado_id => 17,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 52
+    :nombre => "Consulta seguimiento puerperio en hemorragia posparto",
+    :grupo_pdss_id => 2,
     :orden => 11,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 13,
-    :rural => true
+    :linea_de_cuidado_id => 18,
+    :tipo_de_prestacion_id => 4
   },
   {
-    # :id => 12
-    :nombre => "Colposcop. en ctrol. Emb. (incl. Mat. Desc.)",
-    :codigo => "PRP002",
+    # :id => 53
+    :nombre => "Consulta inicial de la embarazada con hipertensión crónica",
+    :grupo_pdss_id => 2,
     :orden => 12,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
+    :linea_de_cuidado_id => 19,
+    :tipo_de_prestacion_id => 4
   },
   {
-    # :id => 13
-    :nombre => "Tartrectomía y cepillado mecánico.",
-    :codigo => "PRP033",
+    # :id => 54
+    :nombre => "Consulta de seguimiento de la embarazada con hipertensión crónica",
+    :grupo_pdss_id => 2,
     :orden => 13,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
+    :linea_de_cuidado_id => 19,
+    :tipo_de_prestacion_id => 4
   },
   {
-    # :id => 14
-    :nombre => "Inactivación de caries.",
-    :codigo => "PRP026",
+    # :id => 55
+    :nombre => "Consulta con oftalmología",
+    :grupo_pdss_id => 2,
     :orden => 14,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
+    :linea_de_cuidado_id => 19,
+    :tipo_de_prestacion_id => 4
   },
+  {
+    # :id => 56
+    :nombre => "Consulta con nefrología",
+    :grupo_pdss_id => 2,
+    :orden => 15,
+    :linea_de_cuidado_id => 19,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 57
+    :nombre => "Consulta con cardiología",
+    :grupo_pdss_id => 2,
+    :orden => 16,
+    :linea_de_cuidado_id => 19,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 58
+    :nombre => "Consulta seguimiento puerperio de paciente con hipertensión",
+    :grupo_pdss_id => 2,
+    :orden => 17,
+    :linea_de_cuidado_id => 19,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 59
+    :nombre => "Consulta inicial de hipertensión gestacional",
+    :grupo_pdss_id => 2,
+    :orden => 18,
+    :linea_de_cuidado_id => 20,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 60
+    :nombre => "Consulta de seguimiento de la hipertensión gestacional",
+    :grupo_pdss_id => 2,
+    :orden => 19,
+    :linea_de_cuidado_id => 20,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 61
+    :nombre => "Consulta con cardiología",
+    :grupo_pdss_id => 2,
+    :orden => 20,
+    :linea_de_cuidado_id => 20,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 62
+    :nombre => "Consulta seguimiento puerperio de paciente con hipertensión",
+    :grupo_pdss_id => 2,
+    :orden => 21,
+    :linea_de_cuidado_id => 20,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 63
+    :nombre => "Notificación de factores de riesgo",
+    :grupo_pdss_id => 2,
+    :orden => 22,
+    :linea_de_cuidado_id => 11,
+    :tipo_de_prestacion_id => 4
+  },
+
+  # SECCIÓN 1 - Grupo 3
+
+  {
+    # :id => 64
+    :nombre => "Internación por preeclampsia grave, eclampsia o sindrome Hellp",
+    :grupo_pdss_id => 3,
+    :orden => 1,
+    :linea_de_cuidado_id => 21,
+    :modulo_id => 1,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 65
+    :nombre => "Internación por amenaza de parto prematuro",
+    :grupo_pdss_id => 3,
+    :orden => 2,
+    :linea_de_cuidado_id => 15,
+    :modulo_id => 2,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 66
+    :nombre => "Hemorragia posparto con histerectomía",
+    :grupo_pdss_id => 3,
+    :orden => 3,
+    :linea_de_cuidado_id => 18,
+    :modulo_id => 3,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 67
+    :nombre => "Hemorragia posparto sin histerectomía",
+    :grupo_pdss_id => 3,
+    :orden => 4,
+    :linea_de_cuidado_id => 18,
+    :modulo_id => 4,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 68
+    :nombre => "Diabetes gestacional sin requerimiento de insulina",
+    :grupo_pdss_id => 3,
+    :orden => 5,
+    :linea_de_cuidado_id => 17,
+    :modulo_id => 5,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 69
+    :nombre => "Diabetes gestacional con requerimiento de insulina",
+    :grupo_pdss_id => 3,
+    :orden => 6,
+    :linea_de_cuidado_id => 17,
+    :modulo_id => 6,
+    :tipo_de_prestacion_id => 9
+  },
+
+  # SECCIÓN 1 - Grupo 4
+
+  {
+    # :id => 70
+    :nombre => "Diabetes gestacional",
+    :grupo_pdss_id => 4,
+    :orden => 1,
+    :linea_de_cuidado_id => 17,
+    :modulo_id => 7,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 71
+    :nombre => "Hipertensión en embarazo",
+    :grupo_pdss_id => 4,
+    :orden => 2,
+    :linea_de_cuidado_id => 22,
+    :modulo_id => 8,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 72
+    :nombre => "Restricción del crecimiento intrauterino: pequeño para edad gestacional",
+    :grupo_pdss_id => 4,
+    :orden => 3,
+    :linea_de_cuidado_id => 23,
+    :modulo_id => 9,
+    :tipo_de_prestacion_id => 9
+  },
+
+  # SECCIÓN 1 - Grupo 5
+
+  {
+    # :id => 73
+    :nombre => "Informe de comité de auditoría de muerte materna y/o infantil recibido y aprobado por el Ministerio de Salud de la Provincia, según ordenamiento",
+    :grupo_pdss_id => 5,
+    :orden => 1,
+    :linea_de_cuidado_id => nil,
+    :tipo_de_prestacion_id => 2
+  },
+
+  # SECCIÓN 2 - Grupo 6
+
+  {
+    # :id => 74
+    :nombre => "Tratamiento inmediato de Chagas congénito",
+    :grupo_pdss_id => 6,
+    :orden => 1,
+    :linea_de_cuidado_id => 24,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 75
+    :nombre => "Inmunización de recién nacido (BCG antes del alta y Hepatitis B en primeras 12 hs de vida)",
+    :grupo_pdss_id => 6,
+    :orden => 2,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 76
+    :nombre => "Oftalmoscopía binocular indirecta (OBI) a todo niño de riesgo (pesquisa de la retinopatía del prematuro)",
+    :grupo_pdss_id => 6,
+    :orden => 3,
+    :linea_de_cuidado_id => 26,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 77
+    :nombre => "Otoemisiones acústicas para detección temprana de hipoacusia en RN",
+    :grupo_pdss_id => 6,
+    :orden => 4,
+    :linea_de_cuidado_id => 27,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 78
+    :nombre => "Tratamiento inmediato de sífilis congénita en RN",
+    :grupo_pdss_id => 6,
+    :orden => 5,
+    :linea_de_cuidado_id => 28,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 79
+    :nombre => "Incubadora hasta 48 hs en RN",
+    :grupo_pdss_id => 6,
+    :orden => 6,
+    :linea_de_cuidado_id => 29,
+    :tipo_de_prestacion_id => 7
+  },
+  {
+    # :id => 80
+    :nombre => "Tratamiento inmediato de trastornos metabólicos (estado ácido base y electrolitos) en RN",
+    :grupo_pdss_id => 6,
+    :orden => 7,
+    :linea_de_cuidado_id => 30,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 81
+    :nombre => "Atención de RN con condición grave al nacer (tratamiento pre-referencia)",
+    :grupo_pdss_id => 6,
+    :orden => 8,
+    :linea_de_cuidado_id => 30,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 82
+    :nombre => "Tratamiento inmediato de transmisión vertical de VIH en RN",
+    :grupo_pdss_id => 6,
+    :orden => 9,
+    :linea_de_cuidado_id => 31,
+    :tipo_de_prestacion_id => 9
+  },
+
+  # SECCIÓN 2 - Grupo 7
+
+  {
+    # :id => 83
+    :nombre => "Ano imperforado alto o bajo",
+    :grupo_pdss_id => 7,
+    :orden => 1,
+    :linea_de_cuidado_id => 32,
+    :modulo_id => 10,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 84
+    :nombre => "Mielomeningocele",
+    :grupo_pdss_id => 7,
+    :orden => 2,
+    :linea_de_cuidado_id => 32,
+    :modulo_id => 11,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 85
+    :nombre => "Hidrocefalia",
+    :grupo_pdss_id => 7,
+    :orden => 3,
+    :linea_de_cuidado_id => 32,
+    :modulo_id => 12,
+    :tipo_de_prestacion_id => 9
+  },
+
+  # SECCIÓN 2 - Grupo 8
+
+  {
+    # :id => 86
+    :nombre => "Ingreso",
+    :grupo_pdss_id => 8,
+    :orden => 1,
+    :linea_de_cuidado_id => 33,
+    :modulo_id => 13,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 87
+    :nombre => "Egreso",
+    :grupo_pdss_id => 8,
+    :orden => 2,
+    :linea_de_cuidado_id => 33,
+    :modulo_id => 14,
+    :tipo_de_prestacion_id => 4
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   {
     # :id => 15
     :nombre => "Laboratorio prueba de embarazo",
@@ -576,42 +811,6 @@ PrestacionPdss.create([
     :rural => false
   },
   {
-    # :id => 18
-    :nombre => "Consejería puerperal en SS y R; lactancia materna y puericultura (prevención de muerte súbita y signos de alarma)",
-    :codigo => "COT017",
-    :orden => 18,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 15,
-    :rural => true
-  },
-  {
-    # :id => 19
-    :nombre => "Carta de derechos de la mujer embarazada indígena.",
-    :codigo => "COT019",
-    :orden => 19,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 15,
-    :rural => false
-  },
-  {
-    # :id => 20
-    :nombre => "Educación para la salud en embarazo (bio-psico-social)",
-    :codigo => "COT021",
-    :orden => 20,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 15,
-    :rural => false
-  },
-  {
     # :id => 21
     :nombre => "Ronda Sanit. Compl. orientada a detecc. población de riesgo en área rural.",
     :codigo => "ROX001",
@@ -646,294 +845,6 @@ PrestacionPdss.create([
     :nosologia_id => 2,
     :tipo_de_prestacion_id => 5,
     :rural => true
-  },
-  {
-    # :id => 24
-    :nombre => "Búsqueda activa de embarazadas en el primer trimestre por agente sanitario  y/o personal de Salud.",
-    :codigo => "CAW001",
-    :orden => 24,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 3,
-    :rural => true
-  },
-  {
-    # :id => 25
-    :nombre => "Búsqueda activa de embarazadas con abandono de controles, por agente sanitario y/o personal de salud.",
-    :codigo => "CAW002",
-    :orden => 25,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 3,
-    :rural => true
-  },
-  {
-    # :id => 26
-    :nombre => "Encuentros p/ prom. del desarrollo infantil, prev. de patolog. prevalentes en la infancia, conductas saludables, hábitos de higiene.",
-    :codigo => "TAT003",
-    :orden => 26,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 16,
-    :rural => true
-  },
-  {
-    # :id => 27
-    :nombre => "Enc. p/ prom. pautas alimentarias en emb., puérperas y niños de 6 años.",
-    :codigo => "TAT002",
-    :orden => 27,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 16,
-    :rural => true
-  },
-  {
-    # :id => 28
-    :nombre => "Enc. p/ prom. salud sexual y reprod., Conductas Saludables, Háb. de Higiene.",
-    :codigo => "TAT001",
-    :orden => 28,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 16,
-    :rural => true
-  },
-  {
-    # :id => 29
-    :nombre => "Inf. comité auditoría muerte materna y/o infantil recib. y aprob. por el Minist. de Salud de la Pcia., según ordenamiento.",
-    :codigo => "AUH001",
-    :orden => 29,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 2,
-    :rural => false
-  },
-  {
-    # :id => 30
-    :nombre => "At. y tratamiento amb. de anemia leve del embarazo (inicial)",
-    :codigo => "CTC005",
-    :orden => 30,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 3,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 31
-    :nombre => "Atención y tratamiento ambulatorio de anemia leve del embarazo (ulterior)",
-    :codigo => "CTC006",
-    :orden => 31,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 3,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 32
-    :nombre => "At. y trat. ambulatorio de anemia grave del emb. (no incl.hemoderivados)",
-    :codigo => "CTC007",
-    :orden => 32,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 3,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 33
-    :nombre => "Tratamiento de la hemorragia del 1er. Trimestre.",
-    :codigo => "CTC007",
-    :orden => 33,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 4,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 34
-    :nombre => "Tratamiento de la hemorragia del 1er. Trimestre (Clínica Obstétrica)",
-    :codigo => "ITE004",
-    :orden => 34,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 9,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 35
-    :nombre => "Tratamiento de la hemorragia del 1er. Trimestre (Quirúrgica)",
-    :codigo => "ITQ005",
-    :orden => 35,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 9,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 36
-    :nombre => "Tratamiento de la hemorragia del 2do.Trimestre (Clínica Obstétrica)",
-    :codigo => "ITE005",
-    :orden => 36,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 9,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 37
-    :nombre => "Tratamiento de la hemorragia del 2do. Trimestre (Quirúrgica)",
-    :codigo => "ITQ006",
-    :orden => 37,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 9,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 38
-    :nombre => "Tratamiento de la hemorragia del 3er. Trimestre (Clínica Obstétrica)",
-    :codigo => "ITE006",
-    :orden => 38,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 9,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 39
-    :nombre => "Tratamiento de la hemorragia del 3er. Trimestre (Quirúrgica)",
-    :codigo => "ITQ007",
-    :orden => 39,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 9,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 40
-    :nombre => "At. y tratamiento amb. de infección urinaria en embarazada.",
-    :codigo => "CTC005",
-    :orden => 40,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 41
-    :nombre => "Atención y tratamiento ambulatorio  de sífilis e ITS en embarazo.",
-    :codigo => "CTC007",
-    :orden => 41,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 42
-    :nombre => "Atención y tratamiento ambulatorio de VIH en la embarazada.",
-    :codigo => "CTC007",
-    :orden => 42,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 43
-    :nombre => "Lectura muestra tomada en mujeres emb., en lab. de Anatomía Pat. /Citología con diag. firmado por anátomo-patólogo matriculado (CA cervicouterino).",
-    :codigo => "APA001",
-    :orden => 43,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 1,
-    :rural => false
-  },
-  {
-    # :id => 44
-    :nombre => "Atención de parto y recién nacido",
-    :codigo => "ITQ001",
-    :orden => 44,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 7,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 45
-    :nombre => "Cesárea y atención del recién nacido.",
-    :codigo => "ITQ002",
-    :orden => 45,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 7,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 46
-    :nombre => "Trat. ambulatorio de complicaciones de parto en puerperio inmediato. (inicial)",
-    :codigo => "CTC018",
-    :orden => 46,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 8,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 47
-    :nombre => "Trat. ambulatorio de complicaciones de parto en puerperio inmediato. (ulterior)",
-    :codigo => "CTC019",
-    :orden => 47,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 1,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 8,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
   },
   {
     # :id => 48
@@ -1006,114 +917,6 @@ PrestacionPdss.create([
     :nosologia_id => nil,
     :tipo_de_prestacion_id => 6,
     :rural => true
-  },
-  {
-    # :id => 54
-    :nombre => "Notificación de Factores de Riesgo",
-    :codigo => "NTN004",
-    :orden => 1,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 9,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 55
-    :nombre => "Ref. por embarazo de alto riesgo de Nivel 2 ó 3 a niveles de complejidad sup.",
-    :codigo => "NTN006",
-    :orden => 2,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 9,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 56
-    :nombre => "Consulta inicial de la embarazada con hipertensión crónica",
-    :codigo => "CTC007",
-    :orden => 3,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 10,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 57
-    :nombre => "Consulta de seguimiento de la embarazada con hipertensión crónica",
-    :codigo => "CTC022",
-    :orden => 4,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 10,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 58
-    :nombre => "Consulta inicial de hipertensión gestacional",
-    :codigo => "CTC007",
-    :orden => 5,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 10,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 59
-    :nombre => "Consulta de seguimiento de la hipertensión gestacional",
-    :codigo => "CTC022",
-    :orden => 6,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 10,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 60
-    :nombre => "Consulta con oftalmología",
-    :codigo => "CTC011",
-    :orden => 7,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 10,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 61
-    :nombre => "Consulta con cardiología",
-    :codigo => "CTC016",
-    :orden => 8,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 10,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 62
-    :nombre => "Consulta con nefrología",
-    :codigo => "CTC016",
-    :orden => 9,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 10,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
   },
   {
     # :id => 63
@@ -1368,90 +1171,6 @@ PrestacionPdss.create([
     :rural => false
   },
   {
-    # :id => 84
-    :nombre => "Consulta seg. Puerp. de paciente c/ hipertensión",
-    :codigo => "CTC018",
-    :orden => 31,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 10,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 85
-    :nombre => "Consulta inicial de diabetes gestacional",
-    :codigo => "CTC007",
-    :orden => 32,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 11,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 86
-    :nombre => "Consulta de seguimiento de diabetes gestacional",
-    :codigo => "CTC022",
-    :orden => 33,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 11,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 87
-    :nombre => "Consulta con oftalmología",
-    :codigo => "CTC011",
-    :orden => 34,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 11,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 88
-    :nombre => "Consulta con cardiología",
-    :codigo => "CTC016",
-    :orden => 35,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 11,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 89
-    :nombre => "Consulta con endocrinólogo",
-    :codigo => "CTC016",
-    :orden => 36,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 11,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 90
-    :nombre => "Consulta con nutricionista",
-    :codigo => "CTC016",
-    :orden => 37,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 11,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
     # :id => 91
     :nombre => "Hemograma completo",
     :codigo => "LBL057",
@@ -1656,42 +1375,6 @@ PrestacionPdss.create([
     :rural => false
   },
   {
-    # :id => 108
-    :nombre => "Consulta seguimiento puerperio paciente con diabetes gestacional",
-    :codigo => "CTC018",
-    :orden => 55,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 11,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 109
-    :nombre => "Consulta puerperio con Nutricionista",
-    :codigo => "CTC018",
-    :orden => 56,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 11,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 110
-    :nombre => "Consulta seguimiento puerperio en hemorragia post parto",
-    :codigo => "CTC018",
-    :orden => 57,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 12,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
     # :id => 111
     :nombre => "Ecografía ginecológica",
     :codigo => "IGR008",
@@ -1713,18 +1396,6 @@ PrestacionPdss.create([
     :apartado_pdss_id => 1,
     :nosologia_id => 12,
     :tipo_de_prestacion_id => 6,
-    :rural => false
-  },
-  {
-    # :id => 113
-    :nombre => "Consulta seguimiento post alta",
-    :codigo => "CTC017",
-    :orden => 60,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 1,
-    :nosologia_id => 13,
-    :tipo_de_prestacion_id => 4,
     :rural => false
   },
   {
@@ -1763,114 +1434,13 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 13,
     :rural => false
   },
-  {
-    # :id => 117
-    :nombre => "Emerg. Hipert.: Preeclampsia grave, Eclampsia, Sindrome Hellp",
-    :codigo => "ITE007",
-    :orden => 1,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 2,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 118
-    :nombre => "Amenaza de parto prematuro",
-    :codigo => "ITE008",
-    :orden => 2,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 2,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 119
-    :nombre => "Hemorragia post parto con histerectomía",
-    :codigo => "ITQ004",
-    :orden => 3,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 2,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 120
-    :nombre => "Hemorragia post parto sin histerectomía",
-    :codigo => "ITQ008",
-    :orden => 4,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 2,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 121
-    :nombre => "Diabetes Gestacional SIN requerimiento de insulina",
-    :codigo => "ITE009",
-    :orden => 5,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 2,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 122
-    :nombre => "Diabetes Gestacional CON requerimiento de insulina",
-    :codigo => "ITE009",
-    :orden => 6,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 2,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 123
-    :nombre => "Diabetes Gestacional",
-    :codigo => "ITE010",
-    :orden => 1,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 3,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 124
-    :nombre => "Hipertensión en embarazo",
-    :codigo => "ITE011",
-    :orden => 2,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 3,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 125
-    :nombre => "Restricción del crecimiento intrauterino: Pequeño para edad gestacional",
-    :codigo => "ITE012",
-    :orden => 3,
-    :grupo_pdss_id => 1,
-    :subgrupo_pdss_id => 2,
-    :apartado_pdss_id => 3,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
+
+
+
+
+
+
+
   {
     # :id => 126
     :nombre => "Traslado de la gestante con diagnóstico de patología del embarazo; APP o malformación fetal mayor a centro de referencia",
@@ -1884,18 +1454,6 @@ PrestacionPdss.create([
     :rural => false
   },
   {
-    # :id => 127
-    :nombre => "Inmuniz. de recién nacido (BCG antes del alta y Hepatitis B en primeras 12 hs de vida)",
-    :codigo => "IMVxxx",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => false
-  },
-  {
     # :id => 128
     :nombre => "Informe de comité de auditoría de muerte materna y/o infantil  recibido y aprobado por el Ministerio de Salud de la Provincia, según ordenamiento",
     :codigo => "AUH002",
@@ -1905,162 +1463,6 @@ PrestacionPdss.create([
     :apartado_pdss_id => nil,
     :nosologia_id => 2,
     :tipo_de_prestacion_id => 2,
-    :rural => false
-  },
-  {
-    # :id => 129
-    :nombre => "Otoemisiones acústicas para Detección temprana de hipoacusia en RN",
-    :codigo => "PRP021",
-    :orden => 3,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 14,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 130
-    :nombre => "Tratamiento inmediato de sífilis congénita en RN",
-    :codigo => "ITE002",
-    :orden => 4,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 131
-    :nombre => "Tratamiento inmediato de transmisión vertical de VIH en RN",
-    :codigo => "ITE002",
-    :orden => 5,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 132
-    :nombre => "Tratamiento inmediato de Chagas congénito",
-    :codigo => "ITE002",
-    :orden => 6,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 133
-    :nombre => "Atención de RN con condición grave al nacer (tratamiento pre-referencia)",
-    :codigo => "ITE002",
-    :orden => 7,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 15,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 134
-    :nombre => "Incubadora hasta 48 hs en RN",
-    :codigo => "ICI001",
-    :orden => 8,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 15,
-    :tipo_de_prestacion_id => 7,
-    :rural => false
-  },
-  {
-    # :id => 135
-    :nombre => "Pesq. retinop. premat: Oftalmoscop. binocular indirecta (OBI) a todo niño de riesgo",
-    :codigo => "PRP017",
-    :orden => 9,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 16,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 136
-    :nombre => "Trat. inmediato de trastornos metab. (estado ácido base y electrolitos) en RN",
-    :codigo => "ITE002",
-    :orden => 10,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 137
-    :nombre => "Malformación anorrectal",
-    :codigo => "ITQ012",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 4,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 138
-    :nombre => "Mielomeningocele",
-    :codigo => "ITQ013",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 4,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 139
-    :nombre => "Hidrocefalia",
-    :codigo => "ITQ014",
-    :orden => 3,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 4,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 140
-    :nombre => "Ingreso",
-    :codigo => "CTC020",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 5,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 141
-    :nombre => "Egreso",
-    :codigo => "CTC021",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 5,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 4,
     :rural => false
   },
   {
