@@ -23,7 +23,7 @@ $(document).ready(function() {
         };
     };
     if (anterior == 2 && proximo == 3) {
-      if($("#pago_sumar_expediente_sumar_id").select2("val").length <= 1){
+      if($("#pago_sumar_expedientes_sumar_attributes_0_id").select2("val").length < 1){
         alert("Debe seleccionar al menos a un expediente a pagar");
         esValido = false;
       };
@@ -60,7 +60,7 @@ function generarResumen(obj, context){
     //Fields
     var efector  = $("#pago_sumar_efector_id").select2("data");
     var concepto = $("#pago_sumar_concepto_de_facturacion_id").select2("data");
-    var expedientes = $("pago_sumar_expediente_sumar_id").select2("data");
+    var expedientes = $("#pago_sumar_expedientes_sumar_attributes_0_id").select2("data");
     var notas_de_debito = $("#notas_de_debito").select2("data");
     var cuenta_bancaria_origen = $("#pago_sumar_cuenta_bancaria_origen_id").select2("data");
     var cuenta_bancaria_destino = $("#pago_sumar_cuenta_bancaria_destino_id").select2("data");
@@ -107,20 +107,22 @@ function generarResumen(obj, context){
         markup += "<p><ul>";
         markup += "<li><b>"+ notas_de_debito[i].tipo_nombre+ "</b></li> ";
         markup += "<li><b>Nº: </b>"+  notas_de_debito[i].tipo_codigo + "-"+ notas_de_debito[i].numero + "</li> ";
-        markup += "<li><b>Monto Original: </b>  $ "+  notas_de_debito[i].monto_original + "</li> ";
-        markup += "<li><b>Monto Reservado: </b> $ "+  notas_de_debito[i].monto_reservado + "</li> ";
-        markup += "<li><b>Monto Remanente: </b> $ "+  notas_de_debito[i].monto_remanente + "</li> ";
-        markup += "<li><b>Monto Disponible: </b>$ "+  notas_de_debito[i].monto_disponible + "</li> ";
+        markup += "<li><b>Monto Original: </b>  $ "+  parseFloat(notas_de_debito[i].monto_original).toString() + "</li> ";
+        markup += "<li><b>Monto Reservado: </b> $ "+  parseFloat(notas_de_debito[i].monto_reservado).toString() + "</li> ";
+        markup += "<li><b>Monto Remanente: </b> $ "+  parseFloat(notas_de_debito[i].monto_remanente).toString() + "</li> ";
+        markup += "<li><b>Monto Disponible: </b>$ "+  parseFloat(notas_de_debito[i].monto_disponible).toString() + "</li> ";
         markup += "</ul></p>";
         totalDeDebitos += notas_de_debito[i].monto_disponible;
       };
     };
     
     totalAPagar -= totalDeDebitos;
-    markup += "<h4>Total de Debitos: $ "+totalDeDebitos+"</h4>";
-    markup += "<h3>Total a pagar $ "+totalAPagar+"</h3>";
+    markup += "<h4>Total de Debitos: $ "+ parseFloat(totalDeDebitos).toString() +"</h4>";
 
     div_expedientes_y_nd.html(markup);
+    
+    
+    $("#totales").html("<h3>Total a pagar $ "+ parseFloat(totalAPagar).toString() +"</h3>");
     $('#wizard').smartWizard('fixHeight');
   }
 

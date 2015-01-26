@@ -12,5 +12,5 @@ class PagoSumar < ActiveRecord::Base
   attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id
   
   accepts_nested_attributes_for :expedientes_sumar
-  attr_accessible :expedientes_sumar
+  attr_accessible :expedientes_sumar_attributes
 end

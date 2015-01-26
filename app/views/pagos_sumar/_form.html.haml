@@ -40,8 +40,9 @@
           = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {include_blank: true}, {class: 'select2', style: "width: 70%", data: {placeholder: 'Seleccione el concepto de facturacion a pagar'}}
     #paso-2
       %h2.StepTitle Seleccione los informes de liquidacion y notas de debito a incluir
-      #content-body
-        - raise '12'
+      #content-body
+
+        -# raise '12'
         = f.fields_for(:expedientes_sumar) do |exp|
           .field 
             = exp.label "Expedientes"
@@ -65,5 +66,5 @@
       %div{id: 'efector_y_concepto', style: "color: #000"}
       %div{id: 'cuentas_bancarias', style: "color: #000"}
       %div{id: 'expedientes_y_nd', style: "color: #000"}
-  /    .actions
-  /      = f.submit
+      %div{id: 'totales', style: "color: #000; text-align: right; margin-right: 10em;"}
+  
