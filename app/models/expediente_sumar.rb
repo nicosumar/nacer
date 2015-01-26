@@ -8,7 +8,7 @@ class ExpedienteSumar < ActiveRecord::Base
   has_many   :liquidaciones_informes
   
   attr_accessible :numero, :tipo_de_expediente, :efector, :liquidacion_sumar, :liquidacion_sumar_id
-  attr_accessible :pago_sumar_id
+  attr_accessible :pago_sumar_id, :pago_sumar
 
   validates :numero, presence: true, on: :update 
 

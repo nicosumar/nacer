@@ -38,7 +38,6 @@ $(document).ready(function() {
   $('.select2').each(function(i, e){
     var select = $(e);
     options = {
-      placeholder: (select.data('placeholder') == undefined) ? '' : select.data('placeholder'),
       minimumInputLength: (select.data('caracteresminimos') == undefined) ? '0' : select.data('caracteresminimos'),
       allowClear: true,
       dropdownCssClass: "bigdrop",

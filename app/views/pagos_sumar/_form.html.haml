@@ -1,71 +1,69 @@
-#wizard.swMain
-  %ul
-    %li
-      %a{:href => "#paso-1"}
-        %label.stepNumber 1
-        %span.stepDesc.medium
-          Efector y
-          %br/
-          Concepto 
-    %li
-      %a{:href => "#paso-2"}
-        %label.stepNumber 2
-        %span.stepDesc
-          Informes y 
-          %br/
-          notas de debito
-    %li
-      %a{:href => "#paso-3"}
-        %label.stepNumber 3
-        %span.stepDesc
-          Cuentas 
-          %br/
-          Bancarias 
-    %li
-      %a{:href => "#paso-4"}
-        %label.stepNumber 4
-        %span.stepDesc
-          Resumen
-          %br/
-  / = form_for(@pago_sumar) do |f|
-  #paso-1
-    %h2.StepTitle Seleccione el efector y concepto de facturación a pagar
-    #content-body
-      = form_for(@pago_sumar) do |f|
+= form_for(@pago_sumar) do |f|
+  #wizard.swMain
+    %ul
+      %li
+        %a{:href => "#paso-1"}
+          %label.stepNumber 1
+          %span.stepDesc.medium
+            Efector y
+            %br/
+            Concepto 
+      %li
+        %a{:href => "#paso-2"}
+          %label.stepNumber 2
+          %span.stepDesc
+            Informes y 
+            %br/
+            notas de debito
+      %li
+        %a{:href => "#paso-3"}
+          %label.stepNumber 3
+          %span.stepDesc
+            Cuentas 
+            %br/
+            Bancarias 
+      %li
+        %a{:href => "#paso-4"}
+          %label.stepNumber 4
+          %span.stepDesc
+            Resumen
+            %br/
+    #paso-1
+      %h2.StepTitle Seleccione el efector y concepto de facturación a pagar
+      #content-body
+        / = form_for(@pago_sumar) do |f|
         .field
           = f.label :efector
           = f.select :efector_id, @efectores, {include_blank: true}, {class: 'select2', style: "width: 80%", data: {placeholder: 'Seleccione el efector' }}
         .field
           = f.label :concepto_de_facturacion
-          = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {include_blank: true}, {class: 'select2', style: "width: 80%", data: {placeholder: 'Seleccione el concepto de facturacion a pagar'}}
-  #paso-2
-    %h2.StepTitle Seleccione los informes de liquidacion y notas de debito a incluir
-    #content-body
-      = form_for(@pago_sumar) do |f|
+          = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {include_blank: true}, {class: 'select2', style: "width: 70%", data: {placeholder: 'Seleccione el concepto de facturacion a pagar'}}
+    #paso-2
+      %h2.StepTitle Seleccione los informes de liquidacion y notas de debito a incluir
+      #content-body
+        - raise '12'
+        = f.fields_for(:expedientes_sumar) do |exp|
+          .field 
+            = exp.label "Expedientes"
+            =# ff.select :expediente_id:
+            = exp.hidden_field :id, class: 'select2 ajax dependiente', data: { source: impagos_por_efector_expedientes_sumar_path, coleccion: 'expedientes', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id',  funcion_de_formato: "maquetaExpedientes", funcion_de_formato_seleccionada: "maquetaExpedientesSeleccionados", opciones: {multiple: true, closeOnSelect: true, dropdownAutoWidth: true, minimumInputLength: 2, width: '80%', placeholder: 'Seleccione los expedientes a pagar' } }
         .field 
-          = f.label "Expedientes"
-          = f.hidden_field :expedientes_sumar, class: 'select2 ajax dependiente', data: { source: impagos_por_efector_expedientes_sumar_path, placeholder: 'Seleccione los expedientes a pagar', coleccion: 'expedientes', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id',  funcion_de_formato: "maquetaExpedientes", funcion_de_formato_seleccionada: "maquetaExpedientesSeleccionados", opciones: {multiple: true, closeOnSelect: true, dropdownAutoWidth: true, minimumInputLength: 2} }, width: '80%' 
-      .field 
-        = label_tag "Notas de Debito"
-        = hidden_field_tag :notas_de_debito, nil,class: 'select2 ajax dependiente', data: { source: remanentes_por_efector_notas_de_debito_path, placeholder: 'Seleccione las notas de debito a aplicar', coleccion: 'notas_de_debito', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id', parametros_adicionales: "", funcion_de_formato: "maquetaNotas", funcion_de_formato_seleccionada: "maquetaNotasSeleccionadas", opciones: {multiple: true, closeOnSelect: false, dropdownAutoWidth: true, minimumInputLength: 0} }, width: '80%' 
-  #paso-3
-    %h2.StepTitle Seleccione la cuenta bancaria origen y destino de los fondos
-    #content-body
-      = form_for(@pago_sumar) do |f|
+          = label_tag "Notas de Debito"
+          = hidden_field_tag :notas_de_debito, nil,class: 'select2 ajax dependiente', data: { source: remanentes_por_efector_notas_de_debito_path, coleccion: 'notas_de_debito', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id', parametros_adicionales: "", funcion_de_formato: "maquetaNotas", funcion_de_formato_seleccionada: "maquetaNotasSeleccionadas", opciones: {multiple: true, closeOnSelect: false, dropdownAutoWidth: true, minimumInputLength: 0, width: '80%', placeholder: 'Seleccione las notas de debito a aplicar' } }
+    #paso-3
+      %h2.StepTitle Seleccione la cuenta bancaria origen y destino de los fondos
+      #content-body
+        / = form_for(@pago_sumar) do |f|
         .field
           = f.label  :cuenta_bancaria_origen_id
           = f.select :cuenta_bancaria_origen_id, @cuentas_bancarias_origen, {include_blank: true}, {class: 'select2'}
         .field 
           = f.label :cuenta_bancaria_destino_id
           = f.hidden_field :cuenta_bancaria_destino_id, class: 'select2 ajax dependiente', data: { source: destino_por_concepto_origen_efector_cuentas_bancarias_path, placeholder: 'Seleccione las notas de debit a aplicar', coleccion: 'cuentas_destino', id_padre: 'pago_sumar_efector_id, pago_sumar_concepto_de_facturacion_id, pago_sumar_cuenta_bancaria_origen_id', funcion_de_formato: "maquetaCuentasDestino", funcion_de_formato_seleccionada: "maquetaCuentaDestinoSeleccionada", opciones: {multiple: false, dropdownAutoWidth: true, minimumInputLength: 0} }, width: '80%' 
-
-  #paso-4
-    #content-body
+    #paso-4
       %h2.StepTitle Resumen
-      #content-body
-        %div{id: 'efector_y_concepto', style: "color: #000"}
-        %div{id: 'expedientes_y_nd', style: "color: #000"}
-        %div{id: 'cuentas_bancarias', style: "color: #000"}
-        %p RESUMEN
+      %div{id: 'efector_y_concepto', style: "color: #000"}
+      %div{id: 'cuentas_bancarias', style: "color: #000"}
+      %div{id: 'expedientes_y_nd', style: "color: #000"}
   /    .actions
   /      = f.submit

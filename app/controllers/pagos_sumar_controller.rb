@@ -26,6 +26,7 @@ class PagosSumarController < ApplicationController
   def new
     @pago_sumar = PagoSumar.new
     @efectores = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
+    @expedientes = ExpedienteSumar.new # @pago_sumar.expedientes_sumar.build
 
     @conceptos_de_facturacion = Efector.administradores_y_autoadministrados_sumar.map do |e|
       e.conceptos_que_facturo.map do |c|
@@ -50,7 +51,10 @@ class PagosSumarController < ApplicationController
   # POST /pagos_sumar
   # POST /pagos_sumar.json
   def create
+
     @pago_sumar = PagoSumar.new(params[:pago_sumar])
+
+    raise 'll'
 
     respond_to do |format|
       if @pago_sumar.save
