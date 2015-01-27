@@ -50,7 +50,12 @@ $(document).ready(function() {
       $("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', true);
   });
 
-
+  $("#pago_sumar_efector_id").select2("val", "");
+  $("#pago_sumar_concepto_de_facturacion_id").select2("val", "");
+  $("#pago_sumar_expedientes_sumar_attributes_0_id").select2("val", "");
+  $("#pago_sumar_aplicaciones_de_notas_de_debito_attributes_0_nota_de_debito_id").select2("val", "");
+  $("#pago_sumar_cuenta_bancaria_origen_id").select2("val", "");
+  $("#pago_sumar_cuenta_bancaria_destino_id").select2("val", "");
 
 });
 
@@ -60,7 +65,7 @@ function generarResumen(obj, context) {
     var efector = $("#pago_sumar_efector_id").select2("data");
     var concepto = $("#pago_sumar_concepto_de_facturacion_id").select2("data");
     var expedientes = $("#pago_sumar_expedientes_sumar_attributes_0_id").select2("data");
-    var notas_de_debito = $("#notas_de_debito").select2("data");
+    var notas_de_debito = $("#pago_sumar_aplicaciones_de_notas_de_debito_attributes_0_nota_de_debito_id").select2("data");
     var cuenta_bancaria_origen = $("#pago_sumar_cuenta_bancaria_origen_id").select2("data");
     var cuenta_bancaria_destino = $("#pago_sumar_cuenta_bancaria_destino_id").select2("data");
 

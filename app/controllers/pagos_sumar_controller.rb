@@ -26,6 +26,7 @@ class PagosSumarController < ApplicationController
   def new
     @pago_sumar = PagoSumar.new
     @pago_sumar.expedientes_sumar.build
+    @pago_sumar.aplicaciones_de_notas_de_debito.build
 
     @efectores = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
 

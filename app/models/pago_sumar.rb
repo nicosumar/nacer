@@ -13,4 +13,7 @@ class PagoSumar < ActiveRecord::Base
   
   accepts_nested_attributes_for :expedientes_sumar
   attr_accessible :expedientes_sumar_attributes
+
+  accepts_nested_attributes_for :aplicaciones_de_notas_de_debito
+  attr_accessible :aplicaciones_de_notas_de_debito_attributes  
 end

@@ -11,6 +11,10 @@ class NotaDeDebito < ActiveRecord::Base
   validates :monto, presence: true
   validates :observaciones, presence: true
 
+  def disponible_para_aplicacion
+    self.remanente - self.reservado
+  end
+
   # 
   # Genera una nota de debito desde un informe de debito prestacional
   # @param arg_InformeDeDebito InformeDebitoPrestacional 
