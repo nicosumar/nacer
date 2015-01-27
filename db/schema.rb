@@ -678,16 +678,6 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
     t.datetime "updated_at",              :null => false
   end
 
-  create_table "expedientes_pagos", :force => true do |t|
-    t.integer  "pago_sumar_id"
-    t.integer  "expediente_sumar_id"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
-  end
-
-  add_index "expedientes_pagos", ["expediente_sumar_id"], :name => "index_expedientes_pagos_on_expediente_sumar_id"
-  add_index "expedientes_pagos", ["pago_sumar_id"], :name => "index_expedientes_pagos_on_pago_sumar_id"
-
   create_table "expedientes_sumar", :force => true do |t|
     t.text     "numero"
     t.integer  "tipo_de_expediente_id"

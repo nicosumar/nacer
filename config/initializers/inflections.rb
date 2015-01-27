@@ -456,7 +456,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("aplicacion_de_nota_de_debito", "aplicaciones·_de·_notas·_de·_debito·")
   inflect.irregular("aplicacion·_de·_nota·_de·_debito·", "aplicaciones_de_notas_de_debito")
   inflect.irregular("AplicacionDeNotaDeDebito", "Aplicaciones·De·Notas·De·Debito·")
-  inflect.irregular("Aplicacion·de·Notas·De·Debito·", "AplicacionesDeNotasDeDebito")
+  inflect.irregular("Aplicacion·De·Notas·De·Debito·", "AplicacionesDeNotasDeDebito")
 
   # Aplicacion de notas de debito
   inflect.irregular("estado_de_aplicacion_de_debito", "estados·_de·_aplicaciones·_de·_debitos·")
