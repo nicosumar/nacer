@@ -28,6 +28,7 @@ class PagoSumar < ActiveRecord::Base
   def init
     # o el valor de la base, o q busque el estado 2
     self.estado_del_proceso ||= EstadoDelProceso.find(2) # "En Curso"
+    self.fecha_de_proceso ||= Date.today
   end
 
   def calcular_monto_a_pagar

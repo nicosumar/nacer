@@ -43,11 +43,14 @@ $(document).ready(function() {
 
   $("#pago_sumar_cuenta_bancaria_origen_id").on("change", function(e) {
     cb = $("#pago_sumar_cuenta_bancaria_origen_id");
+    
+    $("#pago_sumar_cuenta_bancaria_destino_id").select2("val", "");
+    
     if (cb.select2("val") == "") {
-      $("#pago_sumar_cuenta_bancaria_destino_id").select2("val", "");
       $("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', false);
     } else
       $("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', true);
+
   });
 
   $("#pago_sumar_efector_id").select2("val", "");

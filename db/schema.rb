@@ -163,13 +163,13 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
   add_index "anexos_medicos_prestaciones", ["prestacion_liquidada_id"], :name => "anexos_medicos_prestaciones_prestacion_liquidada_id_idx"
 
   create_table "aplicaciones_de_notas_de_debito", :force => true do |t|
-    t.integer  "nota_de_debito_id",                 :null => false
-    t.integer  "pago_sumar_id",                     :null => false
-    t.date     "fecha_de_aplicacion",               :null => false
-    t.decimal  "monto",                             :null => false
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
-    t.integer  "estado_de_aplicacion_de_debito_id", :null => false
+    t.integer  "nota_de_debito_id",                                :null => false
+    t.integer  "pago_sumar_id",                                    :null => false
+    t.date     "fecha_de_aplicacion",                              :null => false
+    t.decimal  "monto",                                            :null => false
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+    t.integer  "estado_de_aplicacion_de_debito_id", :default => 2, :null => false
   end
 
   add_index "aplicaciones_de_notas_de_debito", ["nota_de_debito_id"], :name => "index_aplicaciones_de_notas_de_debito_on_nota_de_debito_id"
@@ -210,6 +210,12 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
     t.string   "nombre"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "beneficiarios_trazadora_11", :id => false, :force => true do |t|
+    t.string "clave_de_beneficiario"
+    t.date   "fecha_de_asistencia"
+    t.string "cuie"
   end
 
   create_table "busquedas", :force => true do |t|
@@ -1074,22 +1080,23 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
   add_index "organismos_gubernamentales", ["provincia_id"], :name => "index_organismos_gubernamentales_on_provincia_id"
 
   create_table "pagos_sumar", :force => true do |t|
-    t.integer  "efector_id",                 :null => false
-    t.integer  "concepto_de_facturacion_id", :null => false
-    t.integer  "cuenta_bancaria_origen_id",  :null => false
-    t.integer  "cuenta_bancaria_detino_id",  :null => false
-    t.integer  "estado_del_proceso_id",      :null => false
+    t.integer  "efector_id",                                                                   :null => false
+    t.integer  "concepto_de_facturacion_id",                                                   :null => false
+    t.integer  "cuenta_bancaria_origen_id",                                                    :null => false
+    t.integer  "cuenta_bancaria_destino_id",                                                   :null => false
+    t.integer  "estado_del_proceso_id",                                     :default => 2,     :null => false
     t.date     "fecha_de_proceso"
-    t.boolean  "informado_sirge",            :null => false
+    t.boolean  "informado_sirge",                                           :default => false, :null => false
     t.date     "fecha_informado_sirge"
-    t.boolean  "notificado",                 :null => false
+    t.boolean  "notificado",                                                :default => false, :null => false
     t.date     "fecha_de_notificacion"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.decimal  "monto",                      :precision => 15, :scale => 4
+    t.datetime "created_at",                                                                   :null => false
+    t.datetime "updated_at",                                                                   :null => false
   end
 
   add_index "pagos_sumar", ["concepto_de_facturacion_id"], :name => "index_pagos_sumar_on_concepto_de_facturacion_id"
-  add_index "pagos_sumar", ["cuenta_bancaria_detino_id"], :name => "index_pagos_sumar_on_cuenta_bancaria_detino_id"
+  add_index "pagos_sumar", ["cuenta_bancaria_destino_id"], :name => "index_pagos_sumar_on_cuenta_bancaria_destino_id"
   add_index "pagos_sumar", ["cuenta_bancaria_origen_id"], :name => "index_pagos_sumar_on_cuenta_bancaria_origen_id"
   add_index "pagos_sumar", ["efector_id"], :name => "index_pagos_sumar_on_efector_id"
 
