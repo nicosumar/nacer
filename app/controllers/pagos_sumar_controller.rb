@@ -56,7 +56,7 @@ class PagosSumarController < ApplicationController
 
     @pago_sumar = PagoSumar.new(params[:pago_sumar])
 
-    raise 'll'
+    #raise 'll'
 
     respond_to do |format|
       if @pago_sumar.save

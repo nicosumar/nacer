@@ -5,11 +5,11 @@ class CreatePagosSumar < ActiveRecord::Migration
       t.references :concepto_de_facturacion
       t.references :cuenta_bancaria_origen
       t.references :cuenta_bancaria_destino
-      t.references :estado_del_proceso
+      t.references :estado_del_proceso, default: 2 # Estado "En curso" lo agrego al modelo para no olvidar q existe
       t.date :fecha_de_proceso
-      t.boolean :informado_sirge
+      t.boolean :informado_sirge, default: false
       t.date :fecha_informado_sirge
-      t.boolean :notificado
+      t.boolean :notificado, default: false
       t.date :fecha_de_notificacion
       t.column :monto, "numeric(15,4)"
 

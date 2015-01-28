@@ -6,6 +6,8 @@ class CuentaBancaria < ActiveRecord::Base
   belongs_to :entidad
   has_many   :destinos, class_name: "MovimientoBancarioAutorizado", foreign_key: :cuenta_bancaria_destino_id
   has_many   :origenes, class_name: "MovimientoBancarioAutorizado", foreign_key: :cuenta_bancaria_origen_id
+  has_many   :pagos_sumar_recibidos, class_name: "PagoSumar", foreign_key: :cuenta_bancaria_destino_id
+  has_many   :pagos_sumar_enviados, class_name: "PagoSumar", foreign_key: :cuenta_bancaria_origen_id
   
   attr_accessible :cuenta_contable, :denominacion, :numero, :cbu
   attr_accessible :entidad_id, :tipo_de_cuenta_bancaria_id, :banco_id, :sucursal_bancaria_id

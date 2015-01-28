@@ -17,6 +17,7 @@ class CreateAplicacionesDeNotasDeDebito < ActiveRecord::Migration
         ALTER COLUMN "pago_sumar_id" SET NOT NULL,
         ALTER COLUMN "fecha_de_aplicacion" SET NOT NULL,
         ALTER COLUMN "monto" SET NOT NULL,
+        ALTER COLUMN "fecha_de_aplicacion" SET DEFAULT NOW(),
         ADD FOREIGN KEY ("nota_de_debito_id") REFERENCES "public"."notas_de_debito" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION,
         ADD FOREIGN KEY ("pago_sumar_id") REFERENCES "public"."pagos_sumar" ("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
     SQL
