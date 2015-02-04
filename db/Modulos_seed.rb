@@ -71,5 +71,30 @@ Modulo.create([
     :nombre => "Egreso",
     :codigo => "EGR"
   },
+  {
+    #:id => 15,
+    :nombre => "Prácticas de alta complejidad CCC I (patología sin CEC en pacientes no neonatos)",
+    :codigo => "CC1"
+  },
+  {
+    #:id => 16,
+    :nombre => "Prácticas de alta complejidad CCC II (pacientes sin CEC neonatos)",
+    :codigo => "CC2"
+  },
+  {
+    #:id => 17,
+    :nombre => "Prácticas de alta complejidad CCC III (pacientes con CEC y baja complejidad - CIA)",
+    :codigo => "CC3"
+  },
+  {
+    #:id => 18,
+    :nombre => "Prácticas de alta complejidad CCC IV (pacientes con CEC y baja complejidad - CIV simple sin otras malformaciones)",
+    :codigo => "CC4"
+  },
+  {
+    #:id => 19,
+    :nombre => "Módulos de cardiopatías congénitas",
+    :codigo => "MCC"
+  },
 
 ])

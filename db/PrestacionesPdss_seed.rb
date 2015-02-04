@@ -760,12 +760,627 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 4
   },
 
+  # SECCIÓN 2 - Grupo 9
 
+  {
+    # :id => 88
+    :nombre => "Ergometría",
+    :grupo_pdss_id => 9,
+    :orden => 1,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 89
+    :nombre => "Holter de 24 hs",
+    :grupo_pdss_id => 9,
+    :orden => 2,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 90
+    :nombre => "Presurometría",
+    :grupo_pdss_id => 9,
+    :orden => 3,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 91
+    :nombre => "Hemodinamia diagnóstica",
+    :grupo_pdss_id => 9,
+    :orden => 4,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 6
+  },
+  {
+    # :id => 92
+    :nombre => "Resonancia magnética",
+    :grupo_pdss_id => 9,
+    :orden => 5,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 6
+  },
+  {
+    # :id => 93
+    :nombre => "Tomografía",
+    :grupo_pdss_id => 9,
+    :orden => 6,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 6
+  },
 
+  # SECCIÓN 2 - Grupo 10
 
+  {
+    # :id => 94
+    :nombre => "Cierre de ductus con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 1,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 95
+    :nombre => "Cerclaje de arteria pulmonar con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 2,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 96
+    :nombre => "Anastomosis subclavio-pulmonar con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 3,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 97
+    :nombre => "Corrección de coartación de la aorta con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 4,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 98
+    :nombre => "Cierre de ductus con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 5,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 99
+    :nombre => "Corrección de coartación de la aorta con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 6,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 100
+    :nombre => "Cierre de CIA con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 7,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 101
+    :nombre => "Cierre de CIV con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 8,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 102
+    :nombre => "Colocación de Stent en ramas pulmonares con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 9,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 103
+    :nombre => "Embolización de colaterales de ramas pulmonares con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 10,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 104
+    :nombre => "Cierre de ductus",
+    :grupo_pdss_id => 10,
+    :orden => 11,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 16,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 105
+    :nombre => "Cerclaje de arteria pulmonar",
+    :grupo_pdss_id => 10,
+    :orden => 12,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 16,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 106
+    :nombre => "Anastomosis subclavio-pulmonar",
+    :grupo_pdss_id => 10,
+    :orden => 13,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 16,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 107
+    :nombre => "Corrección de coartación de la aorta",
+    :grupo_pdss_id => 10,
+    :orden => 14,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 16,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 108
+    :nombre => "Cirugía de Glenn",
+    :grupo_pdss_id => 10,
+    :orden => 15,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 109
+    :nombre => "Cierre de CIA con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 16,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 110
+    :nombre => "Cirugía correctora",
+    :grupo_pdss_id => 10,
+    :orden => 17,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 111
+    :nombre => "Correctora de ventana aortopulmonar",
+    :grupo_pdss_id => 10,
+    :orden => 18,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 112
+    :nombre => "Correctora de canal A-V parcial",
+    :grupo_pdss_id => 10,
+    :orden => 19,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 113
+    :nombre => "Cierre de CIV con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 20,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 18,
+    :tipo_de_prestacion_id => 9
+  },
 
+  # SECCIÓN 2 - Grupo 11
 
+  {
+    # :id => 114
+    :nombre => "Alprostadil",
+    :grupo_pdss_id => 11,
+    :orden => 1,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 115
+    :nombre => "Óxido nitríco y dispenser para su administración",
+    :grupo_pdss_id => 11,
+    :orden => 2,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 116
+    :nombre => "Levosimendán",
+    :grupo_pdss_id => 11,
+    :orden => 3,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 117
+    :nombre => "Factor VII activado recombinante",
+    :grupo_pdss_id => 11,
+    :orden => 4,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 118
+    :nombre => "Iloprost",
+    :grupo_pdss_id => 11,
+    :orden => 5,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 119
+    :nombre => "Trometanol",
+    :grupo_pdss_id => 11,
+    :orden => 6,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 120
+    :nombre => "Surfactante",
+    :grupo_pdss_id => 11,
+    :orden => 7,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 121
+    :nombre => "Nutrición parenteral total",
+    :grupo_pdss_id => 11,
+    :orden => 8,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 122
+    :nombre => "Prótesis y órtesis",
+    :grupo_pdss_id => 11,
+    :orden => 9,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
 
+  # SECCIÓN 2 - Grupo 12
+
+  {
+    # :id => 123
+    :nombre => "Búsqueda activa de niños con abandono de controles",
+    :grupo_pdss_id => 12,
+    :orden => 1,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 3
+  },
+  {
+    # :id => 124
+    :nombre => "Encuentros para promoción de pautas alimentarias en embarazadas, puérperas y niños menores de 6 años",
+    :grupo_pdss_id => 12,
+    :orden => 2,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 16
+  },
+  {
+    # :id => 125
+    :nombre => "Encuentros para promoción del desarrollo infantil, prevención de patolog. prevalentes en la infancia, conductas saludables, hábitos de higiene",
+    :grupo_pdss_id => 12,
+    :orden => 3,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 16
+  },
+  {
+    # :id => 126
+    :nombre => "Examen periódico de salud de niños menores de 1 año",
+    :grupo_pdss_id => 12,
+    :orden => 4,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 127
+    :nombre => "Examen periódico de salud de niños de 1 a 5 años",
+    :grupo_pdss_id => 12,
+    :orden => 5,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 128
+    :nombre => "Consulta buco-dental en salud en niños menores de 6 años",
+    :grupo_pdss_id => 12,
+    :orden => 6,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 129
+    :nombre => "Consulta oftalmológica en niños de 5 años",
+    :grupo_pdss_id => 12,
+    :orden => 7,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 130
+    :nombre => "Inactivación de caries",
+    :grupo_pdss_id => 12,
+    :orden => 8,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 131
+    :nombre => "Dosis aplicada de vacuna triple viral en niños menores de 6 años",
+    :grupo_pdss_id => 12,
+    :orden => 9,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 132
+    :nombre => "Dosis aplicada de Sabín en niños de 2, 4, 6 y 18 meses y 6 años o actualización de esquema",
+    :grupo_pdss_id => 12,
+    :orden => 10,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 133
+    :nombre => "Dosis aplicada de inmunización pentavalente en niños de 2, 4, 6 y 18 meses o actualización de esquema",
+    :grupo_pdss_id => 12,
+    :orden => 11,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 134
+    :nombre => "Dosis aplicada de inmunización cuádruple en niños de 18 meses o actualización de esquema",
+    :grupo_pdss_id => 12,
+    :orden => 12,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 135
+    :nombre => "Dosis aplicada de inmunización para hepatitis A en niños de 12 meses o actualización de esquema",
+    :grupo_pdss_id => 12,
+    :orden => 13,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 136
+    :nombre => "Dosis aplicada de inmunización triple bacteriana celular en niños de 6 años o actualización de esquema",
+    :grupo_pdss_id => 12,
+    :orden => 14,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 137
+    :nombre => "Dosis aplicada de inmunización anti-amarílica en niños de 12 meses en departamentos de riesgo",
+    :grupo_pdss_id => 12,
+    :orden => 15,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 138
+    :nombre => "Dosis aplicada de vacuna doble viral (SR) al ingreso escolar",
+    :grupo_pdss_id => 12,
+    :orden => 16,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 139
+    :nombre => "Dosis aplicada de vacuna antigripal en niños de 6 a 24 meses o en niños mayores con factores de riesgo",
+    :grupo_pdss_id => 12,
+    :orden => 17,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 140
+    :nombre => "Dosis aplicada de vacuna neumococo conjugada",
+    :grupo_pdss_id => 12,
+    :orden => 18,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 141
+    :nombre => "Consultas con pediatras especialistas en cardiología, nefrología, infectología, gastroenterología",
+    :grupo_pdss_id => 12,
+    :orden => 19,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 142
+    :nombre => "Atención ambulatoria con suplementación vitamínica a niños desnutridos menores de 6 años (inicial)",
+    :grupo_pdss_id => 12,
+    :orden => 20,
+    :linea_de_cuidado_id => 35,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 143
+    :nombre => "Atención ambulatoria con suplementación vitamínica a niños desnutridos menores de 6 años (ulterior)",
+    :grupo_pdss_id => 12,
+    :orden => 21,
+    :linea_de_cuidado_id => 35,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 144
+    :nombre => "Consulta de niños con especialistas (hipoacusia en lactante \"No pasa\" con Otoemisiones acústicas)",
+    :grupo_pdss_id => 12,
+    :orden => 22,
+    :linea_de_cuidado_id => 27,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 145
+    :nombre => "Rescreening de hipoacusia en lactante \"No pasa\" con BERA",
+    :grupo_pdss_id => 12,
+    :orden => 23,
+    :linea_de_cuidado_id => 27,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 146
+    :nombre => "Rescreening de hipoacusia en lactante \"No pasa\" con otoemisiones acústicas",
+    :grupo_pdss_id => 12,
+    :orden => 24,
+    :linea_de_cuidado_id => 27,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 147
+    :nombre => "Atención ambulatoria de enfermedades diarreicas agudas en niños menores de 6 años (inicial)",
+    :grupo_pdss_id => 12,
+    :orden => 25,
+    :linea_de_cuidado_id => 36,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 148
+    :nombre => "Atención ambulatoria de enfermedades diarreicas agudas en niños menores de 6 años (ulterior)",
+    :grupo_pdss_id => 12,
+    :orden => 26,
+    :linea_de_cuidado_id => 36,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 149
+    :nombre => "Posta de rehidratación: diarrea aguda en ambulatorio",
+    :grupo_pdss_id => 12,
+    :orden => 27,
+    :linea_de_cuidado_id => 36,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 150
+    :nombre => "Atención ambulatoria de infección respiratoria aguda en niños menores de 6 años (inicial)",
+    :grupo_pdss_id => 12,
+    :orden => 28,
+    :linea_de_cuidado_id => 37,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 151
+    :nombre => "Atención ambulatoria de infección respiratoria aguda en niños menores de 6 años (ulterior)",
+    :grupo_pdss_id => 12,
+    :orden => 29,
+    :linea_de_cuidado_id => 37,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 152
+    :nombre => "Kinesioterapia ambulatoria en infecciones respiratorias agudas en niños menores de 6 años (5 sesiones)",
+    :grupo_pdss_id => 12,
+    :orden => 30,
+    :linea_de_cuidado_id => 37,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 153
+    :nombre => "Internación abreviada SBO (prehospitalización en ambulatorio)",
+    :grupo_pdss_id => 12,
+    :orden => 31,
+    :linea_de_cuidado_id => 37,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 154
+    :nombre => "Internación abreviada SBO (24-48 hs de internación en hospital)",
+    :grupo_pdss_id => 12,
+    :orden => 32,
+    :linea_de_cuidado_id => 37,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 155
+    :nombre => "Neumonía",
+    :grupo_pdss_id => 12,
+    :orden => 33,
+    :linea_de_cuidado_id => 38,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 156
+    :nombre => "Consulta pediátrica de menores de 6 años en emergencia hospitalaria",
+    :grupo_pdss_id => 12,
+    :orden => 34,
+    :linea_de_cuidado_id => 39,
+    :tipo_de_prestacion_id => 4
+  },
+
+  # SECCIÓN 2 - Grupo 13
+
+  {
+    # :id => 157
+    :nombre => "Informe de comité de auditoría de muerte materna y/o infantil recibido y aprobado por el Ministerio de Salud de la Provincia, según ordenamiento",
+    :grupo_pdss_id => 13,
+    :orden => 1,
+    :tipo_de_prestacion_id => 2
+  },
+
+  # SECCIÓN 3 - Grupo 14
+
+  {
+    # :id => 158
+    :nombre => "Anemia leve y moderada (inicial)",
+    :grupo_pdss_id => 14,
+    :orden => 1,
+    :linea_de_cuidado_id => 40,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 159
+    :nombre => "Anemia leve y moderada (ulterior)",
+    :grupo_pdss_id => 14,
+    :orden => 2,
+    :linea_de_cuidado_id => 40,
+    :tipo_de_prestacion_id => 4
+  },
 
 
 
@@ -1454,18 +2069,6 @@ PrestacionPdss.create([
     :rural => false
   },
   {
-    # :id => 128
-    :nombre => "Informe de comité de auditoría de muerte materna y/o infantil  recibido y aprobado por el Ministerio de Salud de la Provincia, según ordenamiento",
-    :codigo => "AUH002",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 3,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 2,
-    :rural => false
-  },
-  {
     # :id => 142
     :nombre => "Traslado del RN prematuro de 500 a 1500 gramos, o de un RN con malformación congénita quirúrgica",
     :codigo => "TLM040",
@@ -1477,582 +2080,17 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 17,
     :rural => false
   },
-  {
-    # :id => 143
-    :nombre => "Ergometría",
-    :codigo => "PRP005",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 7,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 18,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 144
-    :nombre => "Holter de 24 hs",
-    :codigo => "PRP034",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 7,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 18,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 145
-    :nombre => "Presurometría",
-    :codigo => "PRP035",
-    :orden => 3,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 7,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 18,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 146
-    :nombre => "Hemodinamia Diagnóstica",
-    :codigo => "IGR040",
-    :orden => 4,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 7,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 18,
-    :tipo_de_prestacion_id => 6,
-    :rural => false
-  },
-  {
-    # :id => 147
-    :nombre => "Resonancia magnética",
-    :codigo => "IGR041",
-    :orden => 5,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 7,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 18,
-    :tipo_de_prestacion_id => 6,
-    :rural => false
-  },
-  {
-    # :id => 148
-    :nombre => "Tomografía",
-    :codigo => "IGR030",
-    :orden => 6,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 7,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 18,
-    :tipo_de_prestacion_id => 6,
-    :rural => false
-  },
-  {
-    # :id => 149
-    :nombre => "Cierre de ductus con cirugía convencional",
-    :codigo => "ITK001",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 150
-    :nombre => "Cerclaje de arteria pulmonar con cirugía convencional",
-    :codigo => "ITK002",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 151
-    :nombre => "Anastomosis sublcavio-pulmonar con cirugía convencional",
-    :codigo => "ITK003",
-    :orden => 3,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 152
-    :nombre => "Corrección coartación de la aorta con cirugía convencional",
-    :codigo => "ITK004",
-    :orden => 4,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 153
-    :nombre => "Cierre de ductus con hemodinamia intervencionista",
-    :codigo => "ITK005",
-    :orden => 5,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 154
-    :nombre => "Corrección coartación de la aorta con hemodinamia intervencionista",
-    :codigo => "ITK006",
-    :orden => 6,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 155
-    :nombre => "Cierre CIA con hemodinamia intervencionista",
-    :codigo => "ITK007",
-    :orden => 7,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 156
-    :nombre => "Cierre de CIV con hemodinamia intervencionista",
-    :codigo => "ITK008",
-    :orden => 8,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 157
-    :nombre => "Colocación de Stent en ramas pulmonares con hemodinamia intervencionista",
-    :codigo => "ITK009",
-    :orden => 9,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 158
-    :nombre => "Embolización de colaterales de ramas pulmonares con hemodinamia intervencionista",
-    :codigo => "ITK010",
-    :orden => 10,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 5,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 159
-    :nombre => "Cierre de ductus",
-    :codigo => "ITK011",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 6,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 160
-    :nombre => "Cerclaje de arteria pulmonar",
-    :codigo => "ITK012",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 6,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 161
-    :nombre => "Anastomosis sublcavio-pulmonar",
-    :codigo => "ITK013",
-    :orden => 3,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 6,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 162
-    :nombre => "Corrección coartación de la aorta",
-    :codigo => "ITK014",
-    :orden => 4,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 6,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 163
-    :nombre => "Cirugía de Glenn",
-    :codigo => "ITK015",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 7,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 164
-    :nombre => "Cierre CIA con cirugía convencional",
-    :codigo => "ITK016",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 7,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 165
-    :nombre => "Cirugía correctora",
-    :codigo => "ITK035",
-    :orden => 3,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 7,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 166
-    :nombre => "Correctora de ventana aortopulmonar",
-    :codigo => "ITK036",
-    :orden => 4,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 7,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 167
-    :nombre => "Correctora de canal A-V parcial",
-    :codigo => "ITK037",
-    :orden => 5,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 7,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 168
-    :nombre => "Cierre de CIV c/ Q conv.",
-    :codigo => "ITK017",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => 8,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 169
-    :nombre => "Alprostadil",
-    :codigo => "XMX001",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 170
-    :nombre => "Oxido Nitríco y dispenser para su administración",
-    :codigo => "XMX002",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 171
-    :nombre => "Levosimedan",
-    :codigo => "XMX003",
-    :orden => 3,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 172
-    :nombre => "Factor VII activado recombinante",
-    :codigo => "XMX004",
-    :orden => 4,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 173
-    :nombre => "Iloprost",
-    :codigo => "XMX005",
-    :orden => 5,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 174
-    :nombre => "Trometanol",
-    :codigo => "XMX006",
-    :orden => 6,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 175
-    :nombre => "Surfactante",
-    :codigo => "XMX007",
-    :orden => 7,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 176
-    :nombre => "Nutrición Parenteral Total",
-    :codigo => "XMX008",
-    :orden => 8,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 177
-    :nombre => "Prótesis y Órtesis",
-    :codigo => "XMX009",
-    :orden => 9,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 9,
-    :apartado_pdss_id => nil,
-    :nosologia_id => nil,
-    :tipo_de_prestacion_id => 11,
-    :rural => false
-  },
-  {
-    # :id => 178
-    :nombre => "Pediátrica en menores de 1 año",
-    :codigo => "CTC001",
-    :orden => 1,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 179
-    :nombre => "Pediátrica de 1 a 6 años",
-    :codigo => "CTC001",
-    :orden => 2,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 180
-    :nombre => "Consulta  buco-dental en salud en niños menores de 6 años",
-    :codigo => "CTC010",
-    :orden => 3,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 181
-    :nombre => "Consulta oftalmológica en niños de 5 años",
-    :codigo => "CTC011",
-    :orden => 4,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 182
-    :nombre => "Dosis aplicada de inmunización Anti-amarílica en niños de 12 meses en departamentos de riesgo",
-    :codigo => "IMV007",
-    :orden => 5,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 183
-    :nombre => "Dosis apl. Inmuniz. Cuádruple en niños de 18 meses o actualiz. de esquema",
-    :codigo => "IMV004",
-    :orden => 6,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 184
-    :nombre => "Dosis apl. Inmuniz. p/ Hepatitis A en niños de 12 meses o actualiz. de esquema",
-    :codigo => "IMV005",
-    :orden => 7,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 185
-    :nombre => "Dosis aplicada de inmunización Pentavalente en niños de 2, 4, 6 y 18 meses o actualización de esquema",
-    :codigo => "IMV003",
-    :orden => 8,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 186
-    :nombre => "Dosis aplicada de inmunización Triple Bacteriana Celular en niños de 6 años o actualización de esquema",
-    :codigo => "IMV006",
-    :orden => 9,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 187
-    :nombre => "Dosis apl. de Sabín en niños de 2, 4, 6 y 18 meses y 6 años o actualiz. de esquema",
-    :codigo => "IMV002",
-    :orden => 10,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 8,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 188
-    :nombre => "Dosis aplicada de vacuna triple viral en niños menores de 6 años",
-    :codigo => "IMV001",
-    :orden => 11,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 189
-    :nombre => "Dosis aplicada de vacuna doble viral (SR) al ingreso escolar",
-    :codigo => "IMV011",
-    :orden => 12,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 190
-    :nombre => "Dosis apl. vacuna antig. en niños de 6 a 24 meses o en niños mayores c/ fac.de riesgo",
-    :codigo => "IMV013",
-    :orden => 13,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
+
+
+
+
+
+
+
+
+
+
+
   {
     # :id => 191
     :nombre => "Ronda Sanit. completa orientada a detección de población de riesgo en área rural",
@@ -2089,42 +2127,11 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 5,
     :rural => true
   },
-  {
-    # :id => 194
-    :nombre => "Búsq. activa de niños c/ abandono de ctroles, por agente sanit. y personal de salud.",
-    :codigo => "CAW003",
-    :orden => 17,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 3,
-    :rural => true
-  },
-  {
-    # :id => 195
-    :nombre => "Encuentros para promoción de pautas alimentarias en embarazadas, puérperas y niños menores de 6 años.",
-    :codigo => "TAT002",
-    :orden => 18,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 16,
-    :rural => true
-  },
-  {
-    # :id => 196
-    :nombre => "Encuentros para promoción del desarrollo infantil, prevención de patolog. prevalentes en la infancia, conductas saludables, hábitos de higiene",
-    :codigo => "TAT003",
-    :orden => 19,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 16,
-    :rural => true
-  },
+
+
+
+
+
   {
     # :id => 197
     :nombre => "Informe de comité de auditoría de muerte materna y/o infantil recibido y aprobado por el Ministerio de Salud de la Provincia, según ordenamiento",
@@ -2137,198 +2144,12 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 2,
     :rural => false
   },
-  {
-    # :id => 198
-    :nombre => "Consultas con pediatras especialistas en Cardiología, Nefrología, Infectología, Gastroenterología",
-    :codigo => "CTC016",
-    :orden => 21,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 19,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 199
-    :nombre => "Atención ambulatoria con suplementación vitamínica a niños desnutridos menores de 6 años (inicial)",
-    :codigo => "CTC001",
-    :orden => 22,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 3,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 200
-    :nombre => "Atención ambulatoria con suplementación vitamínica a niños desnutridos menores de 6 años (ulterior)",
-    :codigo => "CTC002",
-    :orden => 23,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 3,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 201
-    :nombre => "Atención amb. infección respiratoria aguda en niños menores de 6 años (inicial)",
-    :codigo => "CTC001",
-    :orden => 24,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 202
-    :nombre => "Atención amb. infección respiratoria aguda en niños menores de 6 años (ulterior)",
-    :codigo => "CTC002",
-    :orden => 25,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 203
-    :nombre => "Kinesiot. amb. infecciones resp. agudas en niños menores de 6 años (5 sesiones)",
-    :codigo => "PRP011",
-    :orden => 26,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 13,
-    :rural => true
-  },
-  {
-    # :id => 204
-    :nombre => "Internación abreviada SBO (prehospitalización en ambulatorio)",
-    :codigo => "ITE001",
-    :orden => 27,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 205
-    :nombre => "Internación abreviada SBO (24-48 hs de internación en hospital)",
-    :codigo => "ITE002",
-    :orden => 28,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 206
-    :nombre => "Neumonía",
-    :codigo => "ITE003",
-    :orden => 29,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 9,
-    :rural => false
-  },
-  {
-    # :id => 207
-    :nombre => "Consulta de niños con especialistas (hipoacusia en lactante \"No pasa\" con Otoemisiones acústicas)",
-    :codigo => "CTC001",
-    :orden => 30,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 14,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 208
-    :nombre => "Rescreening de hipoacusia en lactante \"No pasa\" con BERA",
-    :codigo => "PRP022",
-    :orden => 31,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 14,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 209
-    :nombre => "Rescreening de hipoacusia en lactante \"No pasa\" con otoemisiones acústicas",
-    :codigo => "PRP021",
-    :orden => 32,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 14,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 210
-    :nombre => "Atención amb. Enf. diarreicas agudas en niños menores de 6 años (inicial)",
-    :codigo => "CTC001",
-    :orden => 33,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 211
-    :nombre => "Atención amb. Enf. diarreicas agudas en niños menores de 6 años (ulterior)",
-    :codigo => "CTC002",
-    :orden => 34,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 212
-    :nombre => "Posta de rehidratación: Diarrea aguda en ambulatorio",
-    :codigo => "ITE001",
-    :orden => 35,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 5,
-    :tipo_de_prestacion_id => 9,
-    :rural => true
-  },
-  {
-    # :id => 213
-    :nombre => "Consulta pediátrica de menores de 6 años en emergencia hospitalaria",
-    :codigo => "CTC012",
-    :orden => 36,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 21,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
+
+
+
+
+
+
   {
     # :id => 214
     :nombre => "Electrocardiograma en niños menores de 6 años",
@@ -2341,18 +2162,10 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 13,
     :rural => false
   },
-  {
-    # :id => 215
-    :nombre => "Inactivación de caries",
-    :codigo => "PRP026",
-    :orden => 38,
-    :grupo_pdss_id => 2,
-    :subgrupo_pdss_id => 10,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 22,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
+
+
+
+
   {
     # :id => 216
     :nombre => "Transp. por ref. de zona A de emb. y niños menores de 6 años hasta 50 km",
@@ -2701,30 +2514,9 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 13,
     :rural => false
   },
-  {
-    # :id => 245
-    :nombre => "Anemia leve y moderada (inicial)",
-    :codigo => "CTC001",
-    :orden => 21,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 3,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 246
-    :nombre => "Anemia leve y moderada (ulterior)",
-    :codigo => "CTC002",
-    :orden => 22,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 3,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
+
+
+
   {
     # :id => 247
     :nombre => "Asma bronquial (inicial)",

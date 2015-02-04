@@ -167,5 +167,45 @@ LineaDeCuidado.create!([
     :nombre => "Otras neonatales",
     :codigo => "ONN"
   },
+  {
+    # :id => 34
+    :nombre => "Cardiopatías congénitas",
+    :codigo => "CCC"
+  },
+  {
+    # :id => 35
+    :nombre => "Desnutrición",
+    :codigo => "DSN"
+  },
+  {
+    # :id => 36
+    :nombre => "Gastroenteritis",
+    :codigo => "GEI"
+  },
+  {
+    # :id => 37
+    :nombre => "Infección respiratoria aguda",
+    :codigo => "IRA"
+  },
+  {
+    # :id => 38
+    :nombre => "Neumonía",
+    :codigo => "NEU"
+  },
+  {
+    # :id => 39
+    :nombre => "Según patología",
+    :codigo => "SPA"
+  },
+  {
+    # :id => 40
+    :nombre => "Anemia",
+    :codigo => "ANE"
+  },
+  {
+    # :id => 41
+    :nombre => "Asma bronquial",
+    :codigo => "ASB"
+  },
 
 ])

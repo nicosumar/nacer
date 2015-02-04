@@ -112,6 +112,126 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q43.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q79.3")
 
+  # Eliminar el código de diagnóstico "003" de la prestación "ITK003"
+  prestacion = Prestacion.find(410)
+  prestacion.diagnosticos.delete(Diagnostico.find(215))
+
+  # Eliminar los códigos de diagnóstico "026" y "087" de la prestación "ITK011" y añadir el código correcto "015"
+  prestacion = Prestacion.find(410)
+  prestacion.diagnosticos = [Diagnostico.find(120)]
+
+  # Cambiar el nombre de las prestaciones de código "XMX003" (Levosimedan -> Levosimendán)
+  prestacion = Prestacion.find(448)
+  prestacion.update_attributes({:nombre => "Levosimendán (en módulos I, II, III y IV -no catastróficos-)"})
+  prestacion = Prestacion.find(612)
+  prestacion.update_attributes({:nombre => "Levosimendán (en módulos V, VI y VII -catastróficos-)"})
+
+  # Eliminar el grupo poblacional de 6 a 9 años de la prestación "IMV002" con id 464 (existe equivalente con id 501)
+  prestacion = Prestacion.find(464)
+  prestacion.grupos_poblacionales.delete(de_6_a_9)
+
+  # Eliminar el grupo poblacional de 6 a 9 años de la prestación "IMV006"??? Duda consultada
+  #prestacion = Prestacion.find(463)
+  #prestacion.grupos_poblacionales.delete(de_6_a_9)
+
+  # Crear la prestación "IMV015", que quedó en el tintero
+  prestacion = Prestacion.create!({
+    # :id => 815,
+    :codigo => "IMV015",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("V015"),
+    :nombre => "Dosis aplicada de vacuna neumococo conjugada",
+    :otorga_cobertura => true,
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << menores_de_6
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98")
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 20.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 40.0000,
+    :adicional_por_prestacion => 0.0000,
+    :area_de_prestacion_id => AreaDePrestacion.id_del_codigo!("R"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+
+  # Corregir los diagnósticos de la prestación "CTC016" con id 468
+  prestacion = Prestacion.find(468)
+  prestacion.diagnosticos.delete_all
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A42")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K73")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K81")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K86")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R80")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T79")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T83")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("U71")
+
+  # Añadir diagnósticos faltantes a la prestación "CTC001" con id 471
+  prestacion = Prestacion.find(471)
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R78")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R81")
+
+  # Añadir diagnósticos faltantes a la prestación "CTC002" con id 472
+  prestacion = Prestacion.find(472)
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R78")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R81")
+
+  # Agregar el diagnóstico "R77"
+  Diagnostico.create!({:nombre => "Laringitis/Traqueítis aguda", :codigo => "R77"})
+
+  # Corregir los diagnósticos de la prestación "CTC012" con id 482
+  prestacion = Prestacion.find(482)
+  prestacion.diagnosticos.delete_all
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A81")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A92")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D01")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D10")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R87")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("S14")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R06")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T11")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("S13")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("N07")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("N79")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("S84")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R77")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R80")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("R03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("S18")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("H71")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("H72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("H76")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("L72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("L73")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("L74")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("L77")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("L78")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("L80")
+
+
+
+
+
+
+
+
+
+
+  #Modificar las prestaciones diagnósticas de CC para habilitar los nuevos grupos de 6 a 9 y 10 a 19 años.
+  #prestaciones = Prestacion.find([402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417])
+  #prestaciones.each do |prestacion|
+  #  prestacion.grupos_poblacionales << de_6_a_9
+  #  prestacion.grupos_poblacionales << adolescentes
+  #end
 
 
 

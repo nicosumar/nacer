@@ -107,5 +107,12 @@ GrupoPdss.create!([
     :codigo => "2.8",
     :seccion_pdss_id => 2,
     :orden => 8
-  }
+  },
+  {
+    # :id => 14
+    :nombre => "Cuidado de la salud",
+    :codigo => "3.1",
+    :seccion_pdss_id => 3,
+    :orden => 1
+  },
 ])
