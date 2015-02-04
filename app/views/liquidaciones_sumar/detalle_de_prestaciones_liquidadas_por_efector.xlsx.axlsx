@@ -19,7 +19,7 @@ wb.add_worksheet(name: "#{@liquidacion_sumar.periodo.periodo}_#{@liquidacion_sum
   sheet.add_row ["Periodo de liquidación", "#{@liquidacion_sumar.periodo.periodo}"], widths: [:auto, :ignore]
   sheet.add_row ["Efector", "#{@efector.nombre}"], widths: [:auto, :ignore]
   sheet.add_row [nil]
-  sheet.add_row ["Código Prestación","Prestación" ,"Fecha de prestación", "Documento", "Beneficiario", 
+  sheet.add_row ["Código Prestación","Prestación" ,"Fecha de prestación", "Valor de la prestación", "Documento", "Beneficiario", 
                  "Incluido en cuasifactura N°", "Rechazos por sistema", "Informe de liquidación", "Evaluación administrativa", "Motivo de rechazo administrativo",
                  "Evaluación médica", "Motivo de rechazo médico",
                  "Estado de liquidación" ], widths: [:auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto]
@@ -29,6 +29,7 @@ wb.add_worksheet(name: "#{@liquidacion_sumar.periodo.periodo}_#{@liquidacion_sum
       det.prestacion_codigo+det.codigo_de_diagnostico,
       det.prestacion_nombre,
       det.fecha_de_la_prestacion,
+      det.monto,
       det.documento,
       det.nombre_y_apellido,
       det.numero_cuasifactura,

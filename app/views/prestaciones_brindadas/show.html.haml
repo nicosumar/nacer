@@ -202,7 +202,7 @@
   %div.field_content
     %span.field_name Fecha y hora de creación del registro
     - if @prestacion_brindada.created_at.present?
-      %span.field_value= @prestacion_brindada.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+      %span.field_value= @prestacion_brindada.created_at.strftime("%d/%m/%Y %H:%M:%S")
     - else
       %span.field_empty No se registró la fecha de creación
   %div.field_content

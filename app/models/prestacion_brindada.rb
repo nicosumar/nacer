@@ -60,6 +60,11 @@ class PrestacionBrindada < ActiveRecord::Base
     where(:estado_de_la_prestacion_id => id_de_estado)
   end
 
+  def self.vencidas
+    where(estado_de_la_prestacion_id: 11,
+          estado_de_la_prestacion_liquidada_id: 13)
+  end
+
   #
   # self.del_beneficiario
   # Devuelve los registros filtrados de acuerdo con la clave de beneficiario pasada como parámetro

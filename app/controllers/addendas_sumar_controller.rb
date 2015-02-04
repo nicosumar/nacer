@@ -92,12 +92,23 @@ class AddendasSumarController < ApplicationController
 
     # Crear los objetos necesarios para la vista
     @addenda = AddendaSumar.new
-    @prestaciones_alta = Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).collect{
-      |p| [p.codigo + " - " + p.nombre_corto, p.id]
-    }
-    @prestaciones_baja = PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).collect{
-      |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
-    }
+    @prestaciones_alta =
+      Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).uniq! {|grup| grup.grupo_id}.collect { |g|
+        [ g.grupo_id + " - " + g.grupo,
+          (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo = ?", g.grupo_id).collect { |p|
+            [p.codigo + " - " + p.nombre_corto, p.id]
+          })
+        ]
+      }
+
+    @prestaciones_baja =
+      PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).uniq! {|grup| grup.grupo_id}.collect { |g|
+        [ g.grupo_id + " - " + g.grupo,
+          (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g.grupo_id).collect { |p|
+            [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
+          })
+        ]
+      }
     @prestacion_autorizada_alta_ids = []
     @prestacion_autorizada_baja_ids = []
   end
@@ -134,14 +145,24 @@ class AddendasSumarController < ApplicationController
 
     # Crear los objetos necesarios para la vista
     @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
-    @prestaciones_alta = Prestacion.no_autorizadas_sumar_antes_del_dia(
-      @convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).collect{
-        |p| [p.codigo + " - " + p.nombre_corto, p.id]
+
+    @prestaciones_alta =
+      Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).uniq! {|grup| grup.grupo_id}.collect { |g|
+        [ g.grupo_id + " - " + g.grupo,
+          (Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g.grupo_id).collect { |p|
+            [p.codigo + " - " + p.nombre_corto, p.id]
+          })
+        ]
       }
-    @prestaciones_baja = PrestacionAutorizada.autorizadas_antes_del_dia(
-      @convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).collect{
-        |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
+    @prestaciones_baja =
+      PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).uniq! {|grup| grup.grupo_id}.collect { |g|
+        [ g.grupo_id + " - " + g.grupo,
+          (PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g.grupo_id).collect { |p|
+            [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
+          })
+        ]
       }
+
     @prestacion_autorizada_alta_ids =
       @addenda.prestaciones_autorizadas_alta.collect{
         |p| p.prestacion_id
@@ -185,29 +206,26 @@ class AddendasSumarController < ApplicationController
       )
       return
     end
-
+    
     # Guardar las prestaciones seleccionadas para dar de alta y de baja
-    @prestacion_autorizada_alta_ids = params[:addenda_sumar].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
-    @prestacion_autorizada_baja_ids = params[:addenda_sumar].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
+    @prestacion_autorizada_alta_ids = (params[:addenda_sumar].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []).uniq
+    @prestacion_autorizada_baja_ids = (params[:addenda_sumar].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []).uniq
 
     # Crear una nueva adenda desde los parámetros
     @addenda = AddendaSumar.new(params[:addenda_sumar])
 
-    # Crear los objetos necesarios para regenerar la vista si hay algún error
-    @prestaciones_alta =
-      Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).collect{
-        |p| [p.codigo + " - " + p.nombre_corto, p.id]
-      }
-    @prestaciones_baja =
-      PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).collect{
-        |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
-      }
+    prestaciones_alta = Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).collect{
+      |p| [p.codigo + " - " + p.nombre_corto, p.id]
+    }
+    prestaciones_baja = PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).collect{
+      |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
+    }
 
     # Verificar la validez del objeto
     if @addenda.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if ( @prestacion_autorizada_alta_ids.any?{|p_id| !((@prestaciones_alta.collect{|p| p[1]}).member?(p_id.to_i))} ||
-           @prestacion_autorizada_baja_ids.any?{|p_id| !((@prestaciones_baja.collect{|p| p[1]}).member?(p_id.to_i))} )
+      if ( @prestacion_autorizada_alta_ids.any?{|p_id| !((prestaciones_alta.collect{|p| p[1]}).member?(p_id.to_i))} ||
+           @prestacion_autorizada_baja_ids.any?{|p_id| !((prestaciones_baja.collect{|p| p[1]}).member?(p_id.to_i))} )
         redirect_to( root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre el incidente."
@@ -245,6 +263,24 @@ class AddendasSumarController < ApplicationController
         :flash => { :tipo => :ok, :titulo => 'La adenda se creó correctamente.' }
       )
     else
+      # Crear los objetos necesarios para regenerar la vista si hay algún error
+      @prestaciones_alta =
+        Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).uniq! {|grup| grup.grupo_id}.collect { |g|
+          [ g.grupo_id + " - " + g.grupo,
+            (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo = ?", g.grupo_id).collect { |p|
+              [p.codigo + " - " + p.nombre_corto, p.id]
+            })
+          ]
+        }
+
+      @prestaciones_baja =
+        PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).uniq! {|grup| grup.grupo_id}.collect { |g|
+          [ g.grupo_id + " - " + g.grupo, 
+            (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g.grupo_id).collect { |p|
+              [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
+            })
+          ]
+        }
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
     end
@@ -287,18 +323,16 @@ class AddendasSumarController < ApplicationController
     @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
-    @prestaciones_alta = Prestacion.no_autorizadas_sumar_antes_del_dia(
-      @convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).collect{
+    prestaciones_alta = Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).collect{
         |p| [p.codigo + " - " + p.nombre_corto, p.id]
       }
-    @prestaciones_baja = PrestacionAutorizada.autorizadas_antes_del_dia(
-      @convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).collect{
+    prestaciones_baja = PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).collect{
         |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
       }
-
+    
     # Preservar las prestaciones seleccionadas para dar de alta y de baja
-    @prestacion_autorizada_alta_ids = params[:addenda_sumar].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []
-    @prestacion_autorizada_baja_ids = params[:addenda_sumar].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []
+    @prestacion_autorizada_alta_ids = (params[:addenda_sumar].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []).uniq
+    @prestacion_autorizada_baja_ids = (params[:addenda_sumar].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []).uniq
 
     # Actualizar los valores de los atributos no protegidos por asignación masiva
     @addenda.attributes = params[:addenda_sumar]
@@ -306,8 +340,8 @@ class AddendasSumarController < ApplicationController
     # Verificar la validez del objeto
     if @addenda.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if ( @prestacion_autorizada_alta_ids.any?{|p_id| !((@prestaciones_alta.collect{|p| p[1]}).member?(p_id.to_i))} ||
-           @prestacion_autorizada_baja_ids.any?{|p_id| !((@prestaciones_baja.collect{|p| p[1]}).member?(p_id.to_i))} )
+      if ( @prestacion_autorizada_alta_ids.any?{|p_id| !((prestaciones_alta.collect{|p| p[1]}).member?(p_id.to_i))} ||
+           @prestacion_autorizada_baja_ids.any?{|p_id| !((prestaciones_baja.collect{|p| p[1]}).member?(p_id.to_i))} )
         redirect_to( root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre el incidente."
@@ -356,6 +390,24 @@ class AddendasSumarController < ApplicationController
         :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la adenda se guardaron correctamente.' }
       )
     else
+      # Crear los objetos necesarios para regenerar la vista si hay algún error
+      @prestaciones_alta =
+        Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).uniq! {|grup| grup.grupo_id}.collect { |g|
+          [ g.grupo_id + " - " + g.grupo, 
+            (Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g.grupo_id).collect { |p|
+              [p.codigo + " - " + p.nombre_corto, p.id]
+            })
+          ]
+        }
+
+      @prestaciones_baja =
+        PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).uniq! {|grup| grup.grupo_id}.collect { |g|
+          [ g.grupo_id + " - " + g.grupo, 
+            (PrestacionAutorizada..autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g.grupo_id).collect { |p|
+              [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
+            })
+          ]
+        }
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "edit"
     end

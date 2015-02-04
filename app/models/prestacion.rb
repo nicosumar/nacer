@@ -85,46 +85,63 @@ class Prestacion < ActiveRecord::Base
   # Devuelve las prestaciones que han sido autorizadas para el ID del efector que se pasa
   # como parámetro.
   def self.autorizadas_sumar(efector_id)
-    Prestacion.find_by_sql("
-      SELECT prestaciones.*
-        FROM prestaciones
-        WHERE
-          id IN (
-            SELECT prestacion_id
-              FROM prestaciones_autorizadas
-              WHERE efector_id = \'#{efector_id}\' AND fecha_de_finalizacion IS NULL
-          )
-          AND objeto_de_la_prestacion_id IS NOT NULL
-        ORDER BY codigo;")
+    sql = 
+      Prestacion.select(" DISTINCT ON (prestaciones.*) prestaciones.*, 
+                          CASE mp.grupo WHEN '1' THEN 'Embarazo'
+                                                          WHEN '2' THEN '0 a 6 años'
+                                                          WHEN '3' THEN '6 a 9 años'
+                                                          WHEN '4' THEN '10 a 19 años'
+                                                          WHEN '5' THEN '20 a 64 años'
+                                                          ELSE 'No agrupadas'
+                           END \"grupo\", mp.grupo \"grupo_id\",  subgrupo").
+                joins("JOIN vista_migra_pss mp on mp.id_subrrogada_foranea = prestaciones.id ").
+                where(" prestaciones.id IN (
+                           SELECT prestacion_id
+                             FROM prestaciones_autorizadas
+                             WHERE efector_id = \'#{efector_id}\' AND fecha_de_finalizacion IS NULL
+                         )
+                         AND objeto_de_la_prestacion_id IS NOT NULL")
   end
 
   # Devuelve las prestaciones que no han sido autorizadas para el ID del efector que se pasa
   # como parámetro.
   def self.no_autorizadas(efector_id)
-    Prestacion.find_by_sql("
-      SELECT prestaciones.*
-        FROM prestaciones
-        WHERE id NOT IN (
-          SELECT prestacion_id
-            FROM prestaciones_autorizadas
-            WHERE efector_id = \'#{efector_id}\' AND fecha_de_finalizacion IS NULL)
-        ORDER BY codigo;")
+    sql = 
+      Prestacion.select(" DISTINCT ON (prestaciones.*) prestaciones.*,
+                          CASE mp.grupo WHEN '1' THEN 'Embarazo'
+                            WHEN '2' THEN '0 a 6 años'
+                            WHEN '3' THEN '6 a 9 años'
+                            WHEN '4' THEN '10 a 19 años'
+                            WHEN '5' THEN '20 a 64 años'
+                            ELSE 'No agrupadas'
+                          END \"grupo\", mp.grupo \"grupo_id\",  subgrupo ").
+                joins(" JOIN vista_migra_pss mp on mp.id_subrrogada_foranea = prestaciones.id ").
+                where("prestaciones.id NOT IN (
+                          SELECT prestacion_id
+                            FROM prestaciones_autorizadas
+                            WHERE efector_id = ? AND fecha_de_finalizacion IS NULL) ", efector_id)
   end
 
   # Devuelve las prestaciones que no han sido autorizadas para el ID del efector que se pasa
   # como parámetro.
   def self.no_autorizadas_sumar(efector_id)
-    Prestacion.find_by_sql("
-      SELECT prestaciones.*
-        FROM prestaciones
-        WHERE
-          id NOT IN (
-            SELECT prestacion_id
-              FROM prestaciones_autorizadas
-              WHERE efector_id = \'#{efector_id}\' AND fecha_de_finalizacion IS NULL
-          )
-          AND objeto_de_la_prestacion_id IS NOT NULL
-        ORDER BY codigo;")
+    Prestacion.select(" DISTINCT ON (prestaciones.*) prestaciones.*,
+                        CASE mp.grupo WHEN '1' THEN 'Embarazo'
+                          WHEN '2' THEN '0 a 6 años'
+                          WHEN '3' THEN '6 a 9 años'
+                          WHEN '4' THEN '10 a 19 años'
+                          WHEN '5' THEN '20 a 64 años'
+                          ELSE 'No agrupadas'
+                        END \"grupo\", mp.grupo \"grupo_id\",  subgrupo ").
+              joins(" INNER JOIN vista_migra_pss mp on mp.id_subrrogada_foranea = prestaciones.id ").
+              joins(" INNER JOIN asignaciones_de_precios ap ON ap.prestacion_id = prestaciones.id AND ap.area_de_prestacion_id = #{Efector.find(efector_id).area_de_prestacion_id}").
+              where(" prestaciones.id NOT IN (
+                        SELECT prestacion_id
+                          FROM prestaciones_autorizadas
+                          WHERE efector_id = ? AND fecha_de_finalizacion IS NULL
+                      )", efector_id).
+              where(" objeto_de_la_prestacion_id IS NOT NULL")
+            
   end
 
   # Devuelve las prestaciones que no han sido autorizadas para el ID del efector
@@ -144,18 +161,24 @@ class Prestacion < ActiveRecord::Base
   # Devuelve las prestaciones que no han sido autorizadas para el ID del efector
   # hasta el dia anterior de la fecha indicada en los parámetros.
   def self.no_autorizadas_sumar_antes_del_dia(efector_id, fecha)
-    Prestacion.find_by_sql("
-      SELECT prestaciones.*
-        FROM prestaciones
-        WHERE
-          id NOT IN (
-            SELECT prestacion_id
-              FROM prestaciones_autorizadas
-              WHERE efector_id = \'#{efector_id}\' AND fecha_de_inicio < '#{fecha.strftime("%Y-%m-%d")}'
-                AND (fecha_de_finalizacion IS NULL OR fecha_de_finalizacion >= '#{fecha.strftime("%Y-%m-%d")}'
-          )
-          AND objeto_de_la_prestacion_id IS NOT NULL
-        ) ORDER BY codigo;")
+    Prestacion.select(" DISTINCT ON (prestaciones.*) prestaciones.*,
+                        CASE mp.grupo WHEN '1' THEN 'Embarazo'
+                          WHEN '2' THEN '0 a 6 años'
+                          WHEN '3' THEN '6 a 9 años'
+                          WHEN '4' THEN '10 a 19 años'
+                          WHEN '5' THEN '20 a 64 años'
+                          ELSE 'No agrupadas'
+                        END \"grupo\", mp.grupo \"grupo_id\",  subgrupo ").
+              joins(" INNER JOIN vista_migra_pss mp on mp.id_subrrogada_foranea = prestaciones.id ").
+              joins(" INNER JOIN asignaciones_de_precios ap ON ap.prestacion_id = prestaciones.id AND ap.area_de_prestacion_id = #{Efector.find(efector_id).area_de_prestacion_id}").
+              where(" prestaciones.id NOT IN (
+                        SELECT prestacion_id
+                        FROM prestaciones_autorizadas
+                        WHERE efector_id = ? AND fecha_de_inicio < ?
+                          AND (fecha_de_finalizacion IS NULL OR fecha_de_finalizacion >= ?)
+
+                    )", efector_id, fecha.strftime("%Y-%m-%d"), fecha.strftime("%Y-%m-%d")).
+              where(" objeto_de_la_prestacion_id IS NOT NULL ")
   end
 
   # Devuelve el id asociado con el código pasado
