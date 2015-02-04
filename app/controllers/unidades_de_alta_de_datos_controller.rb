@@ -163,7 +163,7 @@ class UnidadesDeAltaDeDatosController < ApplicationController
     if @unidad_de_alta_de_datos.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
       if ( @centro_de_inscripcion_ids.any?{ |c_id| !((@centros_de_inscripcion.collect{ |c| c[1]}).member?(c_id.to_i))} ||
-           @efector_ids.any?{ |e_id| !((@efectores.collect{ |e| e[1]}).member?(e_id.to_i))} )
+           @efector_ids.any?{ |e_id| !((@efectores_sin_uads.collect{ |e| e[1]}).member?(e_id.to_i))} )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
@@ -270,15 +270,15 @@ class UnidadesDeAltaDeDatosController < ApplicationController
         (@unidad_de_alta_de_datos.efector_id.present? ? " OR efectores.id = '#{@unidad_de_alta_de_datos.efector_id}'" : "") + "
       ").order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
 
-      @efectores_sin_uads = 
-        Efector.where(integrante: true, unidad_de_alta_de_datos_id: [nil, @unidad_de_alta_de_datos.id])
-               .order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
+    @efectores_sin_uads = 
+      Efector.where(integrante: true, unidad_de_alta_de_datos_id: [nil, @unidad_de_alta_de_datos.id])
+             .order(:nombre).collect{ |e| [e.cuie.to_s + " - " + e.nombre_corto, e.id]}
 
     # Verificar la validez del objeto
     if @unidad_de_alta_de_datos.valid?
       # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
       if ( @centro_de_inscripcion_ids.any?{ |c_id| !((@centros_de_inscripcion.collect{ |c| c[1]}).member?(c_id.to_i))} ||
-           @efector_ids.any?{ |e_id| !((@efectores.collect{ |e| e[1]}).member?(e_id.to_i))} )
+           @efector_ids.any?{ |e_id| !((@efectores_sin_uads.collect{ |e| e[1]}).member?(e_id.to_i))} )
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "La petición no es válida",
             :mensaje => "Se informará al administrador del sistema sobre este incidente."
