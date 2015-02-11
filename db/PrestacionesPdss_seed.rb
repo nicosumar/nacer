@@ -1381,6 +1381,270 @@ PrestacionPdss.create([
     :linea_de_cuidado_id => 40,
     :tipo_de_prestacion_id => 4
   },
+  {
+    # :id => 160
+    :nombre => "Asma bronquial (inicial)",
+    :grupo_pdss_id => 14,
+    :orden => 3,
+    :linea_de_cuidado_id => 41,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 161
+    :nombre => "Asma bronquial (ulterior)",
+    :grupo_pdss_id => 14,
+    :orden => 4,
+    :linea_de_cuidado_id => 41,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 162
+    :nombre => "Asma bronquial (urgencia)",
+    :grupo_pdss_id => 14,
+    :orden => 5,
+    :linea_de_cuidado_id => 41,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 163
+    :nombre => "Pautas nutricionales respetando cultura alimentaria de comunidades indígenas",
+    :grupo_pdss_id => 14,
+    :orden => 6,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 16
+  },
+  {
+    # :id => 164
+    :nombre => "Prevención de accidentes domésticos",
+    :grupo_pdss_id => 14,
+    :orden => 7,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 16
+  },
+  {
+    # :id => 165
+    :nombre => "Promoción de hábitos saludables: salud bucal, educación alimentaria, pautas de higiene",
+    :grupo_pdss_id => 14,
+    :orden => 8,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 16
+  },
+  {
+    # :id => 166
+    :nombre => "Búsqueda activa de niños con abandono de controles",
+    :grupo_pdss_id => 14,
+    :orden => 9,
+    :linea_de_cuidado_id => 4,
+    :tipo_de_prestacion_id => 3
+  },
+  {
+    # :id => 167
+    :nombre => "Examen periódico de salud de niños de 6 a 9 años",
+    :grupo_pdss_id => 14,
+    :orden => 10,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 168
+    :nombre => "Control de salud individual para población indígena en terreno",
+    :grupo_pdss_id => 14,
+    :orden => 11,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 169
+    :nombre => "Control odontológico",
+    :grupo_pdss_id => 14,
+    :orden => 12,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 170
+    :nombre => "Control oftalmológico",
+    :grupo_pdss_id => 14,
+    :orden => 13,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 171
+    :nombre => "Consulta  para confirmación diagnóstica en población indígena con riesgo detectado en terreno",
+    :grupo_pdss_id => 14,
+    :orden => 14,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 3
+  },
+  {
+    # :id => 172
+    :nombre => "Dosis aplicada de triple viral (actualización de esquema)",
+    :grupo_pdss_id => 14,
+    :orden => 15,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 173
+    :nombre => "Dosis aplicada de sabin oral (actualización de esquema)",
+    :grupo_pdss_id => 14,
+    :orden => 16,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 174
+    :nombre => "Dosis aplicada de dTap triple acelular (actualización de esquema en niños mayores de 7 años)",
+    :grupo_pdss_id => 14,
+    :orden => 17,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 175
+    :nombre => "Dosis aplicada de inmunización anti hepatitis B (actualización de esquema)",
+    :grupo_pdss_id => 14,
+    :orden => 18,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 176
+    :nombre => "Dosis aplicada de vacuna doble viral (SR) al ingreso escolar",
+    :grupo_pdss_id => 14,
+    :orden => 19,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 177
+    :nombre => "Dosis aplicada de vacuna antigripal en personas con factores de riesgo",
+    :grupo_pdss_id => 14,
+    :orden => 20,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 8
+  },
+  {
+    # :id => 178
+    :nombre => "Sellado de surcos",
+    :grupo_pdss_id => 14,
+    :orden => 21,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 179
+    :nombre => "Barniz fluorado de surcos",
+    :grupo_pdss_id => 14,
+    :orden => 22,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 180
+    :nombre => "Inactivación de caries",
+    :grupo_pdss_id => 14,
+    :orden => 23,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 181
+    :nombre => "Diagnóstica y de seguimiento de leucemia (inicial)",
+    :grupo_pdss_id => 14,
+    :orden => 23,
+    :linea_de_cuidado_id => 25,
+    :tipo_de_prestacion_id => 13
+  },
+  {
+    # :id => 251
+    :nombre => "Diagnóstica y de seguimiento de leucemia (ulterior)",
+    :codigo => "CTC002",
+    :orden => 27,
+    :grupo_pdss_id => 3,
+    :subgrupo_pdss_id => 11,
+    :apartado_pdss_id => nil,
+    :nosologia_id => 6,
+    :tipo_de_prestacion_id => 4,
+    :rural => false
+  },
+  {
+    # :id => 252
+    :nombre => "Diagnóstica y de seguimiento de linfoma (inicial)",
+    :codigo => "CTC001",
+    :orden => 28,
+    :grupo_pdss_id => 3,
+    :subgrupo_pdss_id => 11,
+    :apartado_pdss_id => nil,
+    :nosologia_id => 6,
+    :tipo_de_prestacion_id => 4,
+    :rural => false
+  },
+  {
+    # :id => 253
+    :nombre => "Diagnóstica y de seguimiento de linfoma (ulterior)",
+    :codigo => "CTC002",
+    :orden => 29,
+    :grupo_pdss_id => 3,
+    :subgrupo_pdss_id => 11,
+    :apartado_pdss_id => nil,
+    :nosologia_id => 6,
+    :tipo_de_prestacion_id => 4,
+    :rural => false
+  },
+  {
+    # :id => 254
+    :nombre => "Obesidad (inicial)",
+    :codigo => "CTC001",
+    :orden => 30,
+    :grupo_pdss_id => 3,
+    :subgrupo_pdss_id => 11,
+    :apartado_pdss_id => nil,
+    :nosologia_id => 17,
+    :tipo_de_prestacion_id => 4,
+    :rural => false
+  },
+  {
+    # :id => 255
+    :nombre => "Obesidad (ulterior)",
+    :codigo => "CTC002",
+    :orden => 31,
+    :grupo_pdss_id => 3,
+    :subgrupo_pdss_id => 11,
+    :apartado_pdss_id => nil,
+    :nosologia_id => 17,
+    :tipo_de_prestacion_id => 4,
+    :rural => false
+  },
+  {
+    # :id => 256
+    :nombre => "Sobrepeso (inicial)",
+    :codigo => "CTC001",
+    :orden => 32,
+    :grupo_pdss_id => 3,
+    :subgrupo_pdss_id => 11,
+    :apartado_pdss_id => nil,
+    :nosologia_id => 17,
+    :tipo_de_prestacion_id => 4,
+    :rural => false
+  },
+  {
+    # :id => 257
+    :nombre => "Sobrepeso (ulterior)",
+    :codigo => "CTC002",
+    :orden => 33,
+    :grupo_pdss_id => 3,
+    :subgrupo_pdss_id => 11,
+    :apartado_pdss_id => nil,
+    :nosologia_id => 17,
+    :tipo_de_prestacion_id => 4,
+    :rural => false
+  },
+
+
+
+
 
 
 
@@ -2274,90 +2538,9 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 6,
     :rural => false
   },
-  {
-    # :id => 225
-    :nombre => "Control en Niños de 6 a 9 años",
-    :codigo => "CTC001",
-    :orden => 1,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 226
-    :nombre => "Control de salud individual para población indígena en terreno",
-    :codigo => "CTC009",
-    :orden => 2,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 227
-    :nombre => "Control Odontológico",
-    :codigo => "CTC010",
-    :orden => 3,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => true
-  },
-  {
-    # :id => 228
-    :nombre => "Control oftalmológico",
-    :codigo => "CTC011",
-    :orden => 4,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 1,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 229
-    :nombre => "Pautas nutricionales respetando cultura alimentaria de comunidades indígenas.",
-    :codigo => "TAT004",
-    :orden => 5,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 16,
-    :rural => true
-  },
-  {
-    # :id => 230
-    :nombre => "Prevención de accidentes domésticos.",
-    :codigo => "TAT006",
-    :orden => 6,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 16,
-    :rural => true
-  },
-  {
-    # :id => 231
-    :nombre => "Prom. hábitos saludables: salud bucal, educación alimentaria, pautas de higiene",
-    :codigo => "TAT011",
-    :orden => 7,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 16,
-    :rural => true
-  },
+
+
+
   {
     # :id => 232
     :nombre => "Ronda Sanit. completa orientada a detección de población de riesgo en área rural",
@@ -2382,273 +2565,16 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 14,
     :rural => true
   },
-  {
-    # :id => 234
-    :nombre => "Búsqueda activa de niños con abandono de controles",
-    :codigo => "CAW003",
-    :orden => 10,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 3,
-    :rural => true
-  },
-  {
-    # :id => 235
-    :nombre => "Consulta  p/ confirm. diagnóstico en Pobl. Indígena con riesgo detectado en terreno",
-    :codigo => "CAW006",
-    :orden => 11,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 3,
-    :rural => false
-  },
-  {
-    # :id => 236
-    :nombre => "Dosis apl. de dTap Triple Acelular (actualización esquema en niños mayores 7 años)",
-    :codigo => "IMV008",
-    :orden => 12,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 237
-    :nombre => "Dosis aplicada de inmunización anti hepatitis B (Actualización esquema)",
-    :codigo => "IMV009",
-    :orden => 13,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 238
-    :nombre => "Dosis aplicada de Sabin Oral (Actualización esquema)",
-    :codigo => "IMV002",
-    :orden => 14,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 239
-    :nombre => "Dosis aplicada de Triple Viral (Actualización Esquema)",
-    :codigo => "IMV001",
-    :orden => 15,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 240
-    :nombre => "Dosis aplicada de vacuna doble viral (SR) al ingreso escolar.",
-    :codigo => "IMV011",
-    :orden => 16,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 241
-    :nombre => "Dosis aplicada de Vacuna Antigripal en personas con factores de riesgo.",
-    :codigo => "IMV013",
-    :orden => 17,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 8,
-    :rural => true
-  },
-  {
-    # :id => 242
-    :nombre => "Barniz fluorado de surcos",
-    :codigo => "PRP025",
-    :orden => 18,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 243
-    :nombre => "Inactivación de caries",
-    :codigo => "PRP026",
-    :orden => 19,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
-  {
-    # :id => 244
-    :nombre => "Sellado de surcos",
-    :codigo => "PRP024",
-    :orden => 20,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 2,
-    :tipo_de_prestacion_id => 13,
-    :rural => false
-  },
 
 
 
-  {
-    # :id => 247
-    :nombre => "Asma bronquial (inicial)",
-    :codigo => "CTC001",
-    :orden => 23,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 248
-    :nombre => "Asma bronquial (ulterior)",
-    :codigo => "CTC002",
-    :orden => 24,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 249
-    :nombre => "Asma bronquial (urgencia)",
-    :codigo => "CTC012",
-    :orden => 25,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 20,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 250
-    :nombre => "Diagnóstica y de seguimiento de leucemia (inicial)",
-    :codigo => "CTC001",
-    :orden => 26,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 251
-    :nombre => "Diagnóstica y de seguimiento de leucemia (ulterior)",
-    :codigo => "CTC002",
-    :orden => 27,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 252
-    :nombre => "Diagnóstica y de seguimiento de linfoma (inicial)",
-    :codigo => "CTC001",
-    :orden => 28,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 253
-    :nombre => "Diagnóstica y de seguimiento de linfoma (ulterior)",
-    :codigo => "CTC002",
-    :orden => 29,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 254
-    :nombre => "Obesidad (inicial)",
-    :codigo => "CTC001",
-    :orden => 30,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 255
-    :nombre => "Obesidad (ulterior)",
-    :codigo => "CTC002",
-    :orden => 31,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 256
-    :nombre => "Sobrepeso (inicial)",
-    :codigo => "CTC001",
-    :orden => 32,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
-  {
-    # :id => 257
-    :nombre => "Sobrepeso (ulterior)",
-    :codigo => "CTC002",
-    :orden => 33,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
-  },
+
+
+
+
+
+
+
   {
     # :id => 258
     :nombre => "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",

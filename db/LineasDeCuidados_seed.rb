@@ -207,5 +207,30 @@ LineaDeCuidado.create!([
     :nombre => "Asma bronquial",
     :codigo => "ASB"
   },
+  {
+    # :id => 42
+    :nombre => "Leucemia",
+    :codigo => "LEU"
+  },
+  {
+    # :id => 43
+    :nombre => "Linfoma",
+    :codigo => "LIN"
+  },
+  {
+    # :id => 44
+    :nombre => "Obesidad",
+    :codigo => "OBE"
+  },
+  {
+    # :id => 44
+    :nombre => "Obesidad",
+    :codigo => "OBE"
+  },
+  {
+    # :id => 45
+    :nombre => "Sobrepeso",
+    :codigo => "SOB"
+  },
 
 ])

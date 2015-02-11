@@ -13,12 +13,14 @@ ActiveRecord::Base.transaction do
   # Determinar la hora y fecha actual
   ahora = DateTime.now()
 
-  # Fecha de inicio del nomenclador
+  # Fecha de inicio del nomenclador viejo
   fecha_de_inicio = Date.new(2012, 8, 1)
+
+  # Fecha de inicio del nomenclador nuevo
+  fecha_de_inicio_nueva = Date.new(2015, 3, 1)
 
   # Obtener el nomenclador
   nomenclador_sumar = Nomenclador.find(5)
-
 
   # Dejar únicamente el diagnóstico "W78" asociado a la prestación "PRP002" (colposcopía en control de embarazo)
   prestacion = Prestacion.find(268)
@@ -126,6 +128,14 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.find(612)
   prestacion.update_attributes({:nombre => "Levosimendán (en módulos V, VI y VII -catastróficos-)"})
 
+  # Cambiar el nombre de la prestación CTC001 con id 455
+  prestacion = Prestacion.find(455)
+  prestacion.update_attributes({:nombre => "Examen periódico de salud de niñas y niños menores de un año"})
+
+  # Cambiar el nombre de la prestación CTC001 con id 456
+  prestacion = Prestacion.find(456)
+  prestacion.update_attributes({:nombre => "Examen periódico de salud de niñas y niños de uno a cinco años"})
+
   # Eliminar el grupo poblacional de 6 a 9 años de la prestación "IMV002" con id 464 (existe equivalente con id 501)
   prestacion = Prestacion.find(464)
   prestacion.grupos_poblacionales.delete(de_6_a_9)
@@ -147,12 +157,12 @@ ActiveRecord::Base.transaction do
   prestacion.grupos_poblacionales << menores_de_6
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98")
   AsignacionDePrecios.create!({
-    :precio_por_unidad => 20.0000,
+    :precio_por_unidad => # 20.0000, # Averiguar precios viejos
     :adicional_por_prestacion => 0.0000,
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
   })
   AsignacionDePrecios.create!({
-    :precio_por_unidad => 40.0000,
+    :precio_por_unidad => # 40.0000, # Averiguar precios viejos
     :adicional_por_prestacion => 0.0000,
     :area_de_prestacion_id => AreaDePrestacion.id_del_codigo!("R"),
     :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
@@ -217,10 +227,129 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("L78")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("L80")
 
+  # Cambiar el nombre de la prestación CTC001 con id 455
+  prestacion = Prestacion.find(493)
+  prestacion.update_attributes({:nombre => "Examen periódico de salud de niñas y niños de seis a nueve años"})
 
+  # Añadir los diagnósticos faltantes a la prestación CTC009 con id 494
+  prestacion = Prestacion.find(494)
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A21")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B02")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B87")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D23")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K81")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K86")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T83")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T79")
 
+  # Corregir los diagnósticos de la prestación "CAW006" con id 498
+  prestacion = Prestacion.find(498)
+  prestacion.diagnosticos.delete_all
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A75")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B80")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B78")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B81")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D96")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D61")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D62")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B90")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K73")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K83")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K86")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T79")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T83")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T89")
 
+  # Desdoblar la prestación "NTN002" (Notificación de inicio de tratamiento en tiempo oportuno -leucemia/linfoma-) en dos
+  # prestaciones, con el mismo código. Una para leucemia y otra para linfoma.
+  prestacion = Prestacion.create!({
+    # :id => 816,
+    :codigo => "NTN002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("N002"),
+    :nombre => 'Notificación de inicio de tratamiento en tiempo oportuno (leucemia)',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73")
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 5.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion = Prestacion.create!({
+    # :id => 817,
+    :codigo => "NTN002",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("N002"),
+    :nombre => 'Notificación de inicio de tratamiento en tiempo oportuno (linfoma)',
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72")
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 5.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
 
+  # Generamos una adenda para cada efector que tenga autorizada la prestación "NTN002" con id 520 dando de baja esa prestación
+  # y habilitando las dos nuevas.
+  ntn002_autorizadas = PrestacionAutorizada.where(prestacion_id: 520, fecha_de_finalizacion: nil)
+
+  ultima_addenda_sistema => AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
+
+  ntn002_autorizadas.each do |na|
+    addenda = AddendaSumar.create!({
+        numero: "AD-001" + '%03d' % (ultima_addenda_sistema += 1),
+        convenio_de_gestion_sumar_id: (na.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? na.autorizante_al_alta_id : AddendaSumar.find(autorizante_al_alta_id).convenio_de_gestion_sumar_id),
+        firmante: nil,
+        fecha_de_suscripcion: fecha_de_inicio_nueva,
+        observaciones: 'Adenda generada por sistema, por reemplazo de la prestación "NTN002".',
+        creator_id: 1,
+        updater_id: 1,
+        created_at: ahora,
+        updated_at: ahora
+      })
+    na.update_attributes({
+        fecha_de_finalizacion: fecha_de_inicio_nueva,
+        autorizante_de_la_baja_id: addenda.id,
+        autorizante_de_la_baja_type: "AddendaSumar"
+      })
+    PrestacionAutorizada.create!({
+        efector_id: na.efector_id,
+        prestacion_id: 816,
+        fecha_de_inicio: fecha_de_inicio_nueva,
+        autorizante_al_alta_id: addenda.id,
+        autorizante_al_alta_type: "AddendaSumar",
+        fecha_de_finalizacion: nil,
+        created_at: ahora,
+        updated_at: ahora,
+        creator_id: 1,
+        updater_id: 1
+      })
+    PrestacionAutorizada.create!({
+        efector_id: na.efector_id,
+        prestacion_id: 817,
+        fecha_de_inicio: fecha_de_inicio_nueva,
+        autorizante_al_alta_id: addenda.id,
+        autorizante_al_alta_type: "AddendaSumar",
+        fecha_de_finalizacion: nil,
+        created_at: ahora,
+        updated_at: ahora,
+        creator_id: 1,
+        updater_id: 1
+      })
+  end
 
 
 
