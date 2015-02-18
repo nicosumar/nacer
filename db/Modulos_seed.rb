@@ -74,27 +74,42 @@ Modulo.create([
   {
     #:id => 15,
     :nombre => "Prácticas de alta complejidad CCC I (patología sin CEC en pacientes no neonatos)",
-    :codigo => "CC1"
+    :codigo => "CC1_A"
   },
   {
     #:id => 16,
     :nombre => "Prácticas de alta complejidad CCC II (pacientes sin CEC neonatos)",
-    :codigo => "CC2"
+    :codigo => "CC2_A"
   },
   {
     #:id => 17,
     :nombre => "Prácticas de alta complejidad CCC III (pacientes con CEC y baja complejidad - CIA)",
-    :codigo => "CC3"
+    :codigo => "CC3_A"
   },
   {
     #:id => 18,
     :nombre => "Prácticas de alta complejidad CCC IV (pacientes con CEC y baja complejidad - CIV simple sin otras malformaciones)",
-    :codigo => "CC4"
+    :codigo => "CC4_A"
   },
   {
     #:id => 19,
     :nombre => "Módulos de cardiopatías congénitas",
-    :codigo => "MCC"
+    :codigo => "MCC_A"
+  },
+  {
+    #:id => 20,
+    :nombre => "Prácticas de alta complejidad CCC I (patología sin CEC)",
+    :codigo => "CC1_B"
+  },
+  {
+    #:id => 21,
+    :nombre => "Prácticas de alta complejidad CCC III (pacientes con CEC y baja complejidad - CIA)",
+    :codigo => "CC3_B"
+  },
+  {
+    #:id => 18,
+    :nombre => "Prácticas de alta complejidad CCC IV (pacientes con CEC y baja complejidad - CIV simple sin otras malformaciones)",
+    :codigo => "CC4_B"
   },
 
 ])

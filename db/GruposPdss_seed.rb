@@ -115,4 +115,11 @@ GrupoPdss.create!([
     :seccion_pdss_id => 3,
     :orden => 1
   },
+  {
+    # :id => 15
+    :nombre => "Cardiopatías congénitas: Estudios complementarios",
+    :codigo => "3.2",
+    :seccion_pdss_id => 3,
+    :orden => 2
+  },
 ])

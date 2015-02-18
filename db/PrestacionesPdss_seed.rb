@@ -1553,94 +1553,409 @@ PrestacionPdss.create([
     # :id => 181
     :nombre => "Diagnóstica y de seguimiento de leucemia (inicial)",
     :grupo_pdss_id => 14,
-    :orden => 23,
-    :linea_de_cuidado_id => 25,
+    :orden => 24,
+    :linea_de_cuidado_id => 42,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 182
+    :nombre => "Diagnóstica y de seguimiento de leucemia (ulterior)",
+    :grupo_pdss_id => 14,
+    :orden => 25,
+    :linea_de_cuidado_id => 42,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 183
+    :nombre => "Notificación de inicio de tratamiento en tiempo oportuno (leucemia)",
+    :grupo_pdss_id => 14,
+    :orden => 26,
+    :linea_de_cuidado_id => 42,
+    :tipo_de_prestacion_id => 12
+  },
+  {
+    # :id => 184
+    :nombre => "Diagnóstica y de seguimiento de linfoma (inicial)",
+    :grupo_pdss_id => 14,
+    :orden => 27,
+    :linea_de_cuidado_id => 43,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 185
+    :nombre => "Diagnóstica y de seguimiento de linfoma (ulterior)",
+    :grupo_pdss_id => 14,
+    :orden => 28,
+    :linea_de_cuidado_id => 43,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 186
+    :nombre => "Notificación de inicio de tratamiento en tiempo oportuno (linfoma)",
+    :grupo_pdss_id => 14,
+    :orden => 29,
+    :linea_de_cuidado_id => 43,
+    :tipo_de_prestacion_id => 12
+  },
+  {
+    # :id => 187
+    :nombre => "Obesidad (inicial)",
+    :grupo_pdss_id => 14,
+    :orden => 30,
+    :linea_de_cuidado_id => 44,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 188
+    :nombre => "Obesidad (ulterior)",
+    :grupo_pdss_id => 14,
+    :orden => 31,
+    :linea_de_cuidado_id => 44,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 189
+    :nombre => "Sobrepeso (inicial)",
+    :grupo_pdss_id => 14,
+    :orden => 32,
+    :linea_de_cuidado_id => 45,
+    :tipo_de_prestacion_id => 4
+  },
+  {
+    # :id => 190
+    :nombre => "Sobrepeso (ulterior)",
+    :grupo_pdss_id => 14,
+    :orden => 33,
+    :linea_de_cuidado_id => 45,
+    :tipo_de_prestacion_id => 4
+  },
+
+  # SECCIÓN 3 - Grupo 15
+
+  {
+    # :id => 191
+    :nombre => "Ergometría",
+    :grupo_pdss_id => 15,
+    :orden => 1,
+    :linea_de_cuidado_id => 34,
     :tipo_de_prestacion_id => 13
   },
   {
-    # :id => 251
-    :nombre => "Diagnóstica y de seguimiento de leucemia (ulterior)",
-    :codigo => "CTC002",
-    :orden => 27,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
+    # :id => 192
+    :nombre => "Holter de 24 hs",
+    :grupo_pdss_id => 15,
+    :orden => 2,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 13
   },
   {
-    # :id => 252
-    :nombre => "Diagnóstica y de seguimiento de linfoma (inicial)",
-    :codigo => "CTC001",
-    :orden => 28,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
+    # :id => 193
+    :nombre => "Presurometría",
+    :grupo_pdss_id => 15,
+    :orden => 3,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 13
   },
   {
-    # :id => 253
-    :nombre => "Diagnóstica y de seguimiento de linfoma (ulterior)",
-    :codigo => "CTC002",
-    :orden => 29,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
+    # :id => 194
+    :nombre => "Hemodinamia diagnóstica",
+    :grupo_pdss_id => 15,
+    :orden => 4,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 6
   },
   {
-    # :id => 254
-    :nombre => "Obesidad (inicial)",
-    :codigo => "CTC001",
-    :orden => 30,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
+    # :id => 195
+    :nombre => "Resonancia magnética",
+    :grupo_pdss_id => 15,
+    :orden => 5,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 6
   },
   {
-    # :id => 255
-    :nombre => "Obesidad (ulterior)",
-    :codigo => "CTC002",
-    :orden => 31,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
+    # :id => 196
+    :nombre => "Tomografía",
+    :grupo_pdss_id => 15,
+    :orden => 6,
+    :linea_de_cuidado_id => 34,
+    :tipo_de_prestacion_id => 6
+  },
+
+  # SECCIÓN 3 - Grupo 16
+
+  {
+    # :id => 197
+    :nombre => "Cierre de ductus con cirugía convencional",
+    :grupo_pdss_id => 16,
+    :orden => 1,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 20,
+    :tipo_de_prestacion_id => 9
   },
   {
-    # :id => 256
-    :nombre => "Sobrepeso (inicial)",
-    :codigo => "CTC001",
-    :orden => 32,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
+    # :id => 95
+    :nombre => "Cerclaje de arteria pulmonar con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 2,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
   },
   {
-    # :id => 257
-    :nombre => "Sobrepeso (ulterior)",
-    :codigo => "CTC002",
-    :orden => 33,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 17,
-    :tipo_de_prestacion_id => 4,
-    :rural => false
+    # :id => 96
+    :nombre => "Anastomosis subclavio-pulmonar con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 3,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
   },
+  {
+    # :id => 97
+    :nombre => "Corrección de coartación de la aorta con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 4,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 98
+    :nombre => "Cierre de ductus con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 5,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 99
+    :nombre => "Corrección de coartación de la aorta con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 6,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 100
+    :nombre => "Cierre de CIA con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 7,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 101
+    :nombre => "Cierre de CIV con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 8,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 102
+    :nombre => "Colocación de Stent en ramas pulmonares con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 9,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 103
+    :nombre => "Embolización de colaterales de ramas pulmonares con hemodinamia intervencionista",
+    :grupo_pdss_id => 10,
+    :orden => 10,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 15,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 104
+    :nombre => "Cierre de ductus",
+    :grupo_pdss_id => 10,
+    :orden => 11,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 16,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 105
+    :nombre => "Cerclaje de arteria pulmonar",
+    :grupo_pdss_id => 10,
+    :orden => 12,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 16,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 106
+    :nombre => "Anastomosis subclavio-pulmonar",
+    :grupo_pdss_id => 10,
+    :orden => 13,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 16,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 107
+    :nombre => "Corrección de coartación de la aorta",
+    :grupo_pdss_id => 10,
+    :orden => 14,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 16,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 108
+    :nombre => "Cirugía de Glenn",
+    :grupo_pdss_id => 10,
+    :orden => 15,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 109
+    :nombre => "Cierre de CIA con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 16,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 110
+    :nombre => "Cirugía correctora",
+    :grupo_pdss_id => 10,
+    :orden => 17,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 111
+    :nombre => "Correctora de ventana aortopulmonar",
+    :grupo_pdss_id => 10,
+    :orden => 18,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 112
+    :nombre => "Correctora de canal A-V parcial",
+    :grupo_pdss_id => 10,
+    :orden => 19,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 17,
+    :tipo_de_prestacion_id => 9
+  },
+  {
+    # :id => 113
+    :nombre => "Cierre de CIV con cirugía convencional",
+    :grupo_pdss_id => 10,
+    :orden => 20,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 18,
+    :tipo_de_prestacion_id => 9
+  },
+
+  # SECCIÓN 2 - Grupo 11
+
+  {
+    # :id => 114
+    :nombre => "Alprostadil",
+    :grupo_pdss_id => 11,
+    :orden => 1,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 115
+    :nombre => "Óxido nitríco y dispenser para su administración",
+    :grupo_pdss_id => 11,
+    :orden => 2,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 116
+    :nombre => "Levosimendán",
+    :grupo_pdss_id => 11,
+    :orden => 3,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 117
+    :nombre => "Factor VII activado recombinante",
+    :grupo_pdss_id => 11,
+    :orden => 4,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 118
+    :nombre => "Iloprost",
+    :grupo_pdss_id => 11,
+    :orden => 5,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 119
+    :nombre => "Trometanol",
+    :grupo_pdss_id => 11,
+    :orden => 6,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 120
+    :nombre => "Surfactante",
+    :grupo_pdss_id => 11,
+    :orden => 7,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 121
+    :nombre => "Nutrición parenteral total",
+    :grupo_pdss_id => 11,
+    :orden => 8,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+  {
+    # :id => 122
+    :nombre => "Prótesis y órtesis",
+    :grupo_pdss_id => 11,
+    :orden => 9,
+    :linea_de_cuidado_id => 34,
+    :modulo_id => 19,
+    :tipo_de_prestacion_id => 11
+  },
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2611,18 +2926,15 @@ PrestacionPdss.create([
     :tipo_de_prestacion_id => 6,
     :rural => false
   },
-  {
-    # :id => 261
-    :nombre => "Notificación de inicio de tratamiento en tiempo oportuno (leucemia-linfoma)",
-    :codigo => "NTN002",
-    :orden => 37,
-    :grupo_pdss_id => 3,
-    :subgrupo_pdss_id => 11,
-    :apartado_pdss_id => nil,
-    :nosologia_id => 6,
-    :tipo_de_prestacion_id => 12,
-    :rural => false
-  },
+
+
+
+
+
+
+
+
+
   {
     # :id => 262
     :nombre => "Examen periódico de salud del adolescente",

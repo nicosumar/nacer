@@ -221,6 +221,24 @@ PrestacionPdss.find(177).prestaciones << [Prestacion.find(503)]
 PrestacionPdss.find(178).prestaciones << [Prestacion.find(506)]
 PrestacionPdss.find(179).prestaciones << [Prestacion.find(504)]
 PrestacionPdss.find(180).prestaciones << [Prestacion.find(505)]
+PrestacionPdss.find(181).prestaciones << [Prestacion.find(512)]
+PrestacionPdss.find(182).prestaciones << [Prestacion.find(513)]
+PrestacionPdss.find(183).prestaciones << [Prestacion.find(816)]
+PrestacionPdss.find(184).prestaciones << [Prestacion.find(514)]
+PrestacionPdss.find(185).prestaciones << [Prestacion.find(515)]
+PrestacionPdss.find(186).prestaciones << [Prestacion.find(817)]
+PrestacionPdss.find(187).prestaciones << [Prestacion.find(516)]
+PrestacionPdss.find(188).prestaciones << [Prestacion.find(517)]
+PrestacionPdss.find(189).prestaciones << [Prestacion.find(518)]
+PrestacionPdss.find(190).prestaciones << [Prestacion.find(519)]
+
+# SECCIÓN 3 - Grupo 15
+PrestacionPdss.find(191).prestaciones << [Prestacion.find(402)]
+PrestacionPdss.find(192).prestaciones << [Prestacion.find(403)]
+PrestacionPdss.find(193).prestaciones << [Prestacion.find(404)]
+PrestacionPdss.find(194).prestaciones << [Prestacion.find(405)]
+PrestacionPdss.find(195).prestaciones << [Prestacion.find(406)]
+PrestacionPdss.find(196).prestaciones << [Prestacion.find(407)]
 
 
 
@@ -253,14 +271,6 @@ PrestacionPdss.find(233).prestaciones << [Prestacion.find(593)]
 
 
 
-PrestacionPdss.find(250).prestaciones << [Prestacion.find(512)]
-PrestacionPdss.find(251).prestaciones << [Prestacion.find(513)]
-PrestacionPdss.find(252).prestaciones << [Prestacion.find(514)]
-PrestacionPdss.find(253).prestaciones << [Prestacion.find(515)]
-PrestacionPdss.find(254).prestaciones << [Prestacion.find(516)]
-PrestacionPdss.find(255).prestaciones << [Prestacion.find(517)]
-PrestacionPdss.find(256).prestaciones << [Prestacion.find(518)]
-PrestacionPdss.find(257).prestaciones << [Prestacion.find(519)]
 PrestacionPdss.find(258)
 PrestacionPdss.find(259)
 PrestacionPdss.find(260)
