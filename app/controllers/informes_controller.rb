@@ -239,7 +239,7 @@ class InformesController < ApplicationController
     #Elimina espacios extras y retornos de carro
     # @informe.sql = @informe.sql.split.join(" ")
 
-    @esquemas_ids = informe.informes_uads.map(&:unidad_de_alta_de_datos_id)
+   @esquemas_ids = @informe.informes_uads.map(&:unidad_de_alta_de_datos_id)
     @informe.transaction do
       @informe.informes_uads.clear
       params[:informe_esquema][:id].each do |ie|

@@ -270,15 +270,14 @@ class ReporteRuby
     end # end grupo y numero
 
     sql_text = sql.join("\n UNION \n")
-    sql_text += "ORDER BY e.nombre, peri.periodo \n"
-=begin
+    
+
     cq = CustomQuery.buscar (
     {
         sql: sql_text
     })
-=end
-    sql_text
-    #return cq
+   
+    return cq
   end # end 
 
 end # end class
