@@ -14,7 +14,8 @@ class InformesController < ApplicationController
         @resultado = @cabecera_informe.ejecutar(params[:reporte][:parametros])
       }
       format.csv {
-        send_data @cabecera_informe.ejecutar_csv(params[:reporte][:parametros])
+        send_data(@cabecera_informe.ejecutar_csv(params[:reporte][:parametros]), 
+                  filename: @cabecera_informe.titulo.underscore + "_"+ Date.today.to_s.underscore + ".csv")
       }
     end
 
@@ -225,6 +226,7 @@ class InformesController < ApplicationController
     esquema = UnidadDeAltaDeDatos.new(nombre: 'Todos')
     esquema.id = 0
     @esquemas << esquema
+    @esquemas_ids = @informe.informes_uads.map(&:unidad_de_alta_de_datos_id)
     @esquemas_informes = @informe.esquemas.build
     @validadores_ui = InformeFiltroValidadorUi.all.collect {|vui| [vui.tipo, vui.id]}
   end
@@ -237,6 +239,7 @@ class InformesController < ApplicationController
     #Elimina espacios extras y retornos de carro
     # @informe.sql = @informe.sql.split.join(" ")
 
+    @esquemas_ids = informe.informes_uads.map(&:unidad_de_alta_de_datos_id)
     @informe.transaction do
       @informe.informes_uads.clear
       params[:informe_esquema][:id].each do |ie|

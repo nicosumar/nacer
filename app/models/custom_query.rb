@@ -97,8 +97,8 @@ class CustomQuery < ActiveRecord::Base
       args[:esquemas] = args[:esquemas].collect { |s| "uad_"+ s.codigo } unless args[:esquemas].blank?
       args[:except] = args[:except].collect { |s| "uad_"+ s.codigo } unless args[:except].blank?
       begin
-		return self.multi_find(args).each do |c|
-      c.codigo = "sql"
+		  return self.multi_find(args).each do |c|
+        c.codigo = "sql"
       end
       
       rescue Exception => e

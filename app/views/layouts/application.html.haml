@@ -75,10 +75,6 @@
                     %ul
                       %li= link_to "Efectores", efectores_path
                       %li= link_to "Documentos electrónicos", documentos_electronicos_index_path
-                    - if can? :read, Addenda
-                      %h3 ADENDAS
-                      %ul
-                        %li= link_to "Adendas", addendas_path
                   %div.col_1
                     - if can? :read, ConvenioDeGestionSumar
                       %h3 CONVENIOS SUMAR

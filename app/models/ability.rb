@@ -126,6 +126,7 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :read, LiquidacionSumar
     end
 
     if user.in_group? :inscripcion_uad
