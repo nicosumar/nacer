@@ -93,18 +93,18 @@ class AddendasSumarController < ApplicationController
     # Crear los objetos necesarios para la vista
     @addenda = AddendaSumar.new
     @prestaciones_alta =
-      Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).uniq! {|grup| grup.grupo_id}.collect { |g|
-        [ g.grupo_id + " - " + g.grupo,
-          (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo = ?", g.grupo_id).collect { |p|
+      Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+        [ g[0] + " - " + g[1],
+          (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
             [p.codigo + " - " + p.nombre_corto, p.id]
           })
         ]
       }
 
     @prestaciones_baja =
-      PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).uniq! {|grup| grup.grupo_id}.collect { |g|
-        [ g.grupo_id + " - " + g.grupo,
-          (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g.grupo_id).collect { |p|
+      PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+        [ g[0] + " - " + g[1],
+          (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
             [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
           })
         ]
@@ -147,17 +147,17 @@ class AddendasSumarController < ApplicationController
     @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
 
     @prestaciones_alta =
-      Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).uniq! {|grup| grup.grupo_id}.collect { |g|
-        [ g.grupo_id + " - " + g.grupo,
-          (Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g.grupo_id).collect { |p|
+      Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+        [ g[0] + " - " + g[1],
+          (Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g[0]).collect { |p|
             [p.codigo + " - " + p.nombre_corto, p.id]
           })
         ]
       }
     @prestaciones_baja =
-      PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).uniq! {|grup| grup.grupo_id}.collect { |g|
-        [ g.grupo_id + " - " + g.grupo,
-          (PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g.grupo_id).collect { |p|
+      PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+        [ g[0] + " - " + g[1],
+          (PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g[0]).collect { |p|
             [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
           })
         ]
@@ -265,18 +265,18 @@ class AddendasSumarController < ApplicationController
     else
       # Crear los objetos necesarios para regenerar la vista si hay algún error
       @prestaciones_alta =
-        Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).uniq! {|grup| grup.grupo_id}.collect { |g|
-          [ g.grupo_id + " - " + g.grupo,
-            (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo = ?", g.grupo_id).collect { |p|
+        Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+          [ g[0] + " - " + g[1],
+            (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
               [p.codigo + " - " + p.nombre_corto, p.id]
             })
           ]
         }
 
       @prestaciones_baja =
-        PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).uniq! {|grup| grup.grupo_id}.collect { |g|
-          [ g.grupo_id + " - " + g.grupo, 
-            (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g.grupo_id).collect { |p|
+        PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+          [ g[0] + " - " + g[1], 
+            (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
               [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
             })
           ]
@@ -392,18 +392,18 @@ class AddendasSumarController < ApplicationController
     else
       # Crear los objetos necesarios para regenerar la vista si hay algún error
       @prestaciones_alta =
-        Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).uniq! {|grup| grup.grupo_id}.collect { |g|
-          [ g.grupo_id + " - " + g.grupo, 
-            (Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g.grupo_id).collect { |p|
+        Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+          [ g[0] + " - " + g[1], 
+            (Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g[0]).collect { |p|
               [p.codigo + " - " + p.nombre_corto, p.id]
             })
           ]
         }
 
       @prestaciones_baja =
-        PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).uniq! {|grup| grup.grupo_id}.collect { |g|
-          [ g.grupo_id + " - " + g.grupo, 
-            (PrestacionAutorizada..autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g.grupo_id).collect { |p|
+        PrestacionAutorizada.autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+          [ g[0] + " - " + g[1], 
+            (PrestacionAutorizada..autorizadas_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).where("grupo = ?", g[0]).collect { |p|
               [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
             })
           ]
