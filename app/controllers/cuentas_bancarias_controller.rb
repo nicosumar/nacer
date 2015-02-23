@@ -106,18 +106,35 @@ class CuentasBancariasController < ApplicationController
   end
 
   # PUT /cuentas_bancarias/1
-  # PUT /cuentas_bancarias/1.json
   def update
     @cuenta_bancaria = CuentaBancaria.find(params[:id])
+    
+    if @cuenta_bancaria.update_attributes(params[:cuenta_bancaria])
+      redirect_to @cuenta_bancaria, flash: { tipo: :ok, titulo: 'La cuenta bancaria se actualizó correctamente.' }
+    else
+      # Datos para selects 
+      # Entidades
+      @tipos_de_entidades = Entidad.select("DISTINCT entidad_type").collect {|t| [t.entidad_type.underscore.humanize, t.entidad_type]}
+      @entidades = Entidad.select("DISTINCT entidad_type").collect do |ent|
+        Entidad.where(entidad_type: ent.entidad_type).includes(:entidad).collect do |e|
+          [e.entidad.nombre, e.id, {class: ent.entidad_type}]
+        end
+      end.flatten!(1).uniq
 
-    respond_to do |format|
-      if @cuenta_bancaria.update_attributes(params[:cuenta_bancaria])
-        format.html { redirect_to @cuenta_bancaria, notice: 'Cuenta bancaria was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @cuenta_bancaria.errors, status: :unprocessable_entity }
-      end
+      # Bancos
+      @bancos = Banco.all.collect {|b| [b.nombre, b.id]}
+      @sucursales_bancarias = Banco.all.collect do |b|
+        b.sucursales_bancarias.collect do |s|
+          [
+            s.nombre.present? ? s.numero + "- " + s.nombre : s.numero , 
+            s.id, 
+            {class: b.id}
+          ]
+        end
+      end.flatten(1).uniq
+      @tipos_de_cuentas = TipoDeCuentaBancaria.all.collect {|t| [t.nombre, t.id]}
+
+      render action: "edit"
     end
   end
 

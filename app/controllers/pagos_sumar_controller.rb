@@ -69,6 +69,10 @@ class PagosSumarController < ApplicationController
     end
   end
 
+  def notificar
+    
+  end
+
   # PUT /pagos_sumar/1
   # PUT /pagos_sumar/1.json
   def update

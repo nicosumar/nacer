@@ -1,7 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
-  resources :pagos_sumar
+  resources :pagos_sumar do
+    put :notificar, on: :member
+  end
 
   resources :cuentas_bancarias do
     get :destino_por_concepto_origen_efector, on: :collection
