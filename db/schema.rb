@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150108160510) do
+ActiveRecord::Schema.define(:version => 20150203162330) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -1688,5 +1688,39 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
+
+  create_table "users_copy", :force => true do |t|
+    t.string    "nombre",                                                 :null => false
+    t.string    "apellido",                                               :null => false
+    t.date      "fecha_de_nacimiento"
+    t.integer   "sexo_id"
+    t.text      "observaciones",                                          :null => false
+    t.boolean   "authorized",                          :default => false, :null => false
+    t.timestamp "authorized_at",          :limit => 6
+    t.integer   "authorized_by"
+    t.string    "email",                               :default => "",    :null => false
+    t.string    "encrypted_password",                  :default => "",    :null => false
+    t.string    "reset_password_token"
+    t.timestamp "reset_password_sent_at", :limit => 6
+    t.integer   "sign_in_count",                       :default => 0
+    t.timestamp "current_sign_in_at",     :limit => 6
+    t.timestamp "last_sign_in_at",        :limit => 6
+    t.string    "current_sign_in_ip"
+    t.string    "last_sign_in_ip"
+    t.string    "confirmation_token"
+    t.timestamp "confirmed_at",           :limit => 6
+    t.timestamp "confirmation_sent_at",   :limit => 6
+    t.string    "unconfirmed_email"
+    t.integer   "failed_attempts",                     :default => 0
+    t.string    "unlock_token"
+    t.timestamp "locked_at",              :limit => 6
+    t.boolean   "cuenta_eliminada",                    :default => false
+  end
+
+  add_index "users_copy", ["confirmation_token"], :name => "index_users_on_confirmation_token_copy", :unique => true
+  add_index "users_copy", ["current_sign_in_at"], :name => "index_users_on_current_sign_in_at_copy"
+  add_index "users_copy", ["email"], :name => "index_users_on_email_copy", :unique => true
+  add_index "users_copy", ["reset_password_token"], :name => "index_users_on_reset_password_token_copy", :unique => true
+  add_index "users_copy", ["unlock_token"], :name => "index_users_on_unlock_token_copy", :unique => true
 
 end

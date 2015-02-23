@@ -56,7 +56,7 @@ class PagosSumarController < ApplicationController
 
     @pago_sumar = PagoSumar.new(params[:pago_sumar])
 
-    #raise 'll'
+    @pago_sumar.aplicaciones_de_notas_de_debito.delete_if {|ap| ap.monto.blank? }
 
     respond_to do |format|
       if @pago_sumar.save

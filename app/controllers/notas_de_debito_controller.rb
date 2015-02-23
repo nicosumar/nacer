@@ -38,7 +38,7 @@ class NotasDeDebitoController < ApplicationController
     @nota_de_debito = NotaDeDebito.new(params[:nota_de_debito])
 
     if @nota_de_debito.save
-      redirect_to @nota_de_debito, :flash => { :tipo => :ok, :titulo => "Se creó la nota de debito N° #{@nota_de_debito.numero}" }
+      redirect_to @nota_de_debito, :flash => { :tipo => :ok, :titulo => "Se creó la nota de debito" }
     else
       @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
       @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}
@@ -53,7 +53,7 @@ class NotasDeDebitoController < ApplicationController
     @nota_de_debito = NotaDeDebito.find(params[:id])
 
     if @nota_de_debito.update_attributes(params[:nota_de_debito])
-      redirect_to @nota_de_debito, :flash => { :tipo => :ok, :titulo => "Se actualizó la nota de debito N° #{@nota_de_debito.numero}" }
+      redirect_to @nota_de_debito, :flash => { :tipo => :ok, :titulo => "Se actualizó la nota de debito" }
     else
       @efectores = Efector.all.collect {|e| [e.nombre, e.id]}
       @conceptos_de_facturacion = ConceptoDeFacturacion.all.collect {|c| [c.concepto, c.id]}

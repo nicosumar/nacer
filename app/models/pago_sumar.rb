@@ -3,13 +3,14 @@ class PagoSumar < ActiveRecord::Base
   belongs_to :efector
   belongs_to :concepto_de_facturacion
   belongs_to :cuenta_bancaria_origen, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_origen_id'
-  belongs_to :cuenta_bancaria_destino, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_origen_id'
+  belongs_to :cuenta_bancaria_destino, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_destino_id'
   belongs_to :estado_del_proceso
   has_many   :expedientes_sumar
   has_many   :aplicaciones_de_notas_de_debito
 
   # Atributos a ser inicializados/completados deforma automatica
   attr_accessible :fecha_de_proceso, :fecha_informado_sirge, :informado_sirge, :monto
+  # Fecha de proceso: Fecha en la que se inicio el proceso
   # Atributos a ser completados por el usuario
   attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id
   # Atributos solo actualizable luego de ser creado

@@ -14,29 +14,18 @@
     %table
       %tr
         %th Efector
-        %th Concepto de facturacion
-        %th Cuenta bancaria origen
-        %th Cuenta bancaria detino
+        %th Concepto de facturación
         %th Fecha de proceso
         %th Informado sirge
-        %th Fecha informado sirge
         %th Notificado
-        %th Fecha de notificacion
-        %th
-        %th
-        %th
+        %th Estado del pago
       - @pagos_sumar.each do |pago_sumar|
-        %tr
-          %td= pago_sumar.efector
-          %td= pago_sumar.concepto_de_facturacion
-          %td= pago_sumar.cuenta_bancaria_origen
-          %td= pago_sumar.cuenta_bancaria_destino
-          %td= pago_sumar.fecha_de_proceso
-          %td= pago_sumar.informado_sirge
-          %td= pago_sumar.fecha_informado_sirge
-          %td= pago_sumar.notificado
-          %td= pago_sumar.fecha_de_notificacion
-          %td= link_to 'Show', pago_sumar
-          %td= link_to 'Edit', edit_pago_sumar_path(pago_sumar)
-          %td= link_to 'Destroy', pago_sumar, method: :delete, data: { confirm: 'Are you sure?' }
+        %tr.clickable{ :onclick => "location.href=\'#{pago_sumar_path(pago_sumar)}\'", :title => "Ver detalles del proceso de pago" }
+          %td= pago_sumar.efector.nombre
+          %td= pago_sumar.concepto_de_facturacion.concepto
+          %td= pago_sumar.fecha_de_proceso.strftime("%d/%m/%Y")
+          %td= pago_sumar.informado_sirge ? "Si" : "No"
+          %td= pago_sumar.notificado ? "Si" : "No"
+          %td= pago_sumar.estado_del_proceso.nombre
+          / %td= link_to 'Edit', edit_pago_sumar_path(pago_sumar)
 %br/

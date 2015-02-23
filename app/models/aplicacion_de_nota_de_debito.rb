@@ -24,7 +24,6 @@ class AplicacionDeNotaDeDebito < ActiveRecord::Base
     #      -  monto actual a reservar
     #      es menor o igual al monto original -> no paso ninguna macana
     if (nd.remanente - nd.reservado - self.monto) > nd.monto
-      #raise '213'
       errors.add(:monto, "supera el remanente disponible para la nota de debito")      
     end
   end

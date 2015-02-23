@@ -1,68 +1,78 @@
 - content_for :title do
   Proceso de pago - SUMAR
 #content-header
-  %h1 Proceso de pago - SUMAR
+  %h1  Pagos Sumar - Finalización proceso de pago
   #action-links
     = link_to '<< Volver al listado', pagos_sumar_path
     - if can?(:update, PagoSumar)
       = link_to 'Modificar datos bancarios', edit_pago_sumar_path(@pago_sumar)
       = link_to 'Notificar transferencia',  notificar_pago_sumar(@pago_sumar)
+    - if can? :create, PagoSumar
+      = link_to 'Nuevo proceso de pago', new_pago_sumar_path
+    -if can? :read, PagoSumar
+      = link_to 'Ver listado de pagos', pagos_sumar_path
 
 = render :partial => "shared/info", :locals => { :registro => @pago_sumar }
 
-belongs_to :efector
-  belongs_to :concepto_de_facturacion
-  belongs_to :cuenta_bancaria_origen, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_origen_id'
-  belongs_to :cuenta_bancaria_destino, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_origen_id'
-  belongs_to :estado_del_proceso
-  has_many   :expedientes_sumar
-  has_many   :aplicaciones_de_notas_de_debito
-
-  # Atributos a ser inicializados/completados deforma automatica
-  attr_accessible :fecha_de_proceso, :fecha_informado_sirge, :informado_sirge, :monto
-  # Atributos a ser completados por el usuario
-  attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id
-  # Atributos solo actualizable luego de ser creado
-  attr_accessible :notificado, :fecha_de_notificacion
-
-
 #content-body
-  %h2 Entidad
+  %h3 Resumen del proceso de pago
   %div.field_content
-    %span.field_name Entidad:
-    %span.field_value= @cuenta_bancaria.entidad.entidad_type.underscore.humanize
+    %span.field_name Efector
+    %span.field_value= @pago_sumar.efector.nombre
+
+  %div.field_content
+    %span.field_name Concepto de facturación
+    %span.field_value= @pago_sumar.concepto_de_facturacion.nombre
+
+  %div.field_content
+    %span.field_name Fecha de inicio del proceso 
+    %span.field_value= @pago_sumar.fecha_de_proceso
+
+  %h4 Expedientes
+  - @pago_sumar.expedientes_sumar.each do |exp|
+    %div.field_content
+      %span.field_name= "Exp. Nº "+ exp.numero
+      %span.field_value= "$ " + exp.monto_aprobado.to_s
+
+  %h4 Notas de Debito aplicadas
+  - if @pago_sumar.aplicaciones_de_notas_de_debito.size > 1
+    - @pago_sumar.aplicaciones_de_notas_de_debito.each do |aplicacion|
+      %div.field_content
+        %span.field_name= link_to "ND. Nº "+ aplicacion.nota_de_debito.numero, aplicacion.nota_de_debito
+        %span.field_value= "$ " + aplicacion.monto.to_s
+  - else
+    %div.field_content
+      %span.field_value No se aplicaron débitos
+
+  %h4 Datos de transferencia
+
+  %div.field_content
+    %span.field_name Cuenta bancaria origen
+    %span.field_value= @pago_sumar.cuenta_bancaria_origen.denominacion
+
+  %div.field_content
+    %span.field_name Cuenta bancaria destino
+    %span.field_value= @pago_sumar.cuenta_bancaria_destino.denominacion
+
+  %h4 Datos de Procesos
+
+  %div.field_content
+    %span.field_name ¿ Se notifico al efector su deposito ? 
+    %span.field_value= @pago_sumar.notificado ? "Si" : "No"
+
+  - if @pago_sumar.notificado 
+    %div.field_content
+      %span.field_name Fecha de notificacion
+      %span.field_value= @pago_sumar.fecha_de_notificacion
+
+  %div.field_content
+    %span.field_name ¿ Se informó al SIRGE ?
+    %span.field_value= @pago_sumar.informado_sirge ? "Si" : "No"
+
+  -if @pago_sumar.informado_sirge
+    %div.field_content
+      %span.field_name Fecha de informado sirge
+      %span.field_value= @pago_sumar.fecha_informado_sirge.strftime("%d/%m/%Y")
 
 
 
-
-%p#notice= notice
-%p
-  %b Efector:
-  = @pago_sumar.efector
-%p
-  %b Concepto de facturacion:
-  = @pago_sumar.concepto_de_facturacion
-%p
-  %b Cuenta bancaria origen:
-  = @pago_sumar.cuenta_bancaria_origen
-%p
-  %b Cuenta bancaria detino:
-  = @pago_sumar.cuenta_bancaria_destino
-%p
-  %b Fecha de proceso:
-  = @pago_sumar.fecha_de_proceso
-%p
-  %b Informado sirge:
-  = @pago_sumar.informado_sirge
-%p
-  %b Fecha informado sirge:
-  = @pago_sumar.fecha_informado_sirge
-%p
-  %b Notificado:
-  = @pago_sumar.notificado
-%p
-  %b Fecha de notificacion:
-  = @pago_sumar.fecha_de_notificacion
-= link_to 'Edit', ()
-|
-\#{}
