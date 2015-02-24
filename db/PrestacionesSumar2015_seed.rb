@@ -27,27 +27,17 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos = [Diagnostico.find_by_codigo('W78')]
 
   # Cambio la descripción del código IMV008 / Añado métodos de validación faltantes
-  prestacion = Prestacion.where(:id => 764, :codigo => "IMV008").first
-  prestacion.update_attributes({:nombre => "Dosis aplicada de vacuna triple bacteriana acelular (dTpa) en el embarazo"})
+  prestacion = Prestacion.where(id: 764, codigo: "IMV008").first
+  prestacion.update_attributes({nombre: "Dosis aplicada de vacuna triple bacteriana acelular (dTpa) en el embarazo"})
   CantidadDePrestacionesPorPeriodo.create!(
     {
-      :prestacion_id => prestacion.id,
-      :cantidad_maxima => 2,
-      :periodo => "9.months",
-      :intervalo => "1.month"
+      prestacion_id: prestacion.id,
+      cantidad_maxima: 2,
+      periodo: "9.months",
+      intervalo: "1.month"
     }
   )
   prestacion.metodos_de_validacion << MetodoDeValidacion.find([1, 15])
-
-  # Generamos una adenda para cada efector que tenga autorizada alguna prestación de inmunizaciones
-  # y habilitando las dos nuevas.
-  efectores_con_inmunizaciones_para_ninios_autorizadas = PrestacionAutorizada.where(
-      prestacion_id: [
-          264, 265, 266, 380, 381, 459, 460, 461, 462, 463, 464, 465, 466, 499,
-          500, 501, 502, 503, 526, 527, 528, 529, 530, 531, 564, 565, 566, 764, 765
-        ],
-      fecha_de_finalizacion: nil
-    ).collect{|pa| pa.efector_id}.uniq.sort
 
   # Crear adendas automáticas para añadir la prestación "IMV008" a los efectores que tuvieran habilitada otras prestaciones de
   # inmunización en el embarazo
@@ -56,7 +46,7 @@ ActiveRecord::Base.transaction do
       fecha_de_finalizacion: nil
     ).collect{|pa| pa.efector_id}.uniq.sort
 
-  ultima_addenda_sistema => AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
+  ultima_addenda_sistema = AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
 
   efectores_con_inmunizaciones_de_embarazo_autorizadas.each do |ef|
     # Solo la habilitamos en los efectores que no la tengan habilitada
@@ -165,23 +155,23 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.find(410)
   prestacion.diagnosticos.delete(Diagnostico.find(215))
 
-  # Eliminar los códigos de diagnóstico "026" y "087" de la prestación "ITK011" y añadir el código correcto "015"
-  prestacion = Prestacion.find(410)
+  # Eliminar los códigos de diagnóstico "026" y "087" de la prestación "ITK036" y añadir el código correcto "015"
+  prestacion = Prestacion.find(425)
   prestacion.diagnosticos = [Diagnostico.find(120)]
 
   # Cambiar el nombre de las prestaciones de código "XMX003" (Levosimedan -> Levosimendán)
   prestacion = Prestacion.find(448)
-  prestacion.update_attributes({:nombre => "Levosimendán (en módulos I, II, III y IV -no catastróficos-)"})
+  prestacion.update_attributes({nombre: "Levosimendán (en módulos I, II, III y IV -no catastróficos-)"})
   prestacion = Prestacion.find(612)
-  prestacion.update_attributes({:nombre => "Levosimendán (en módulos V, VI y VII -catastróficos-)"})
+  prestacion.update_attributes({nombre: "Levosimendán (en módulos V, VI y VII -catastróficos-)"})
 
   # Cambiar el nombre de la prestación CTC001 con id 455
   prestacion = Prestacion.find(455)
-  prestacion.update_attributes({:nombre => "Examen periódico de salud de niñas y niños menores de un año"})
+  prestacion.update_attributes({nombre: "Examen periódico de salud de niñas y niños menores de un año"})
 
   # Cambiar el nombre de la prestación CTC001 con id 456
   prestacion = Prestacion.find(456)
-  prestacion.update_attributes({:nombre => "Examen periódico de salud de niñas y niños de uno a cinco años"})
+  prestacion.update_attributes({nombre: "Examen periódico de salud de niñas y niños de uno a cinco años"})
 
   # Eliminar el grupo poblacional de 6 a 9 años de la prestación "IMV002" con id 464 (existe equivalente con id 501)
   prestacion = Prestacion.find(464)
@@ -193,26 +183,26 @@ ActiveRecord::Base.transaction do
 
   # Crear la prestación "IMV015", que quedó en el tintero
   prestacion = Prestacion.create!({
-    # :id => 815,
-    :codigo => "IMV015",
-    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("V015"),
-    :nombre => "Dosis aplicada de vacuna neumococo conjugada",
-    :otorga_cobertura => true,
-    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+    # id: 815,
+    codigo: "IMV015",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("V015"),
+    nombre: "Dosis aplicada de vacuna neumococo conjugada",
+    otorga_cobertura: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
   prestacion.grupos_poblacionales << menores_de_6
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98")
   AsignacionDePrecios.create!({
-    :precio_por_unidad => # 20.0000, # Averiguar precios viejos
-    :adicional_por_prestacion => 0.0000,
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+    precio_por_unidad: # 20.0000, # Averiguar precios viejos
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
   })
   AsignacionDePrecios.create!({
-    :precio_por_unidad => # 40.0000, # Averiguar precios viejos
-    :adicional_por_prestacion => 0.0000,
-    :area_de_prestacion_id => AreaDePrestacion.id_del_codigo!("R"),
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+    precio_por_unidad: # 40.0000, # Averiguar precios viejos
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
   })
 
   # Generamos una adenda para cada efector que tenga autorizada alguna prestación de inmunizaciones para niños 
@@ -225,7 +215,7 @@ ActiveRecord::Base.transaction do
       fecha_de_finalizacion: nil
     ).collect{|pa| pa.efector_id}.uniq.sort
 
-  ultima_addenda_sistema => AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
+  ultima_addenda_sistema = AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
 
   efectores_con_inmunizaciones_autorizadas.each do |ef|
     addenda = AddendaSumar.create!({
@@ -279,7 +269,7 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("R81")
 
   # Agregar el diagnóstico "R77"
-  Diagnostico.create!({:nombre => "Laringitis/Traqueítis aguda", :codigo => "R77"})
+  Diagnostico.create!({nombre: "Laringitis/Traqueítis aguda", codigo: "R77"})
 
   # Corregir los diagnósticos de la prestación "CTC012" con id 482
   prestacion = Prestacion.find(482)
@@ -314,7 +304,7 @@ ActiveRecord::Base.transaction do
 
   # Cambiar el nombre de la prestación CTC001 con id 455
   prestacion = Prestacion.find(493)
-  prestacion.update_attributes({:nombre => "Examen periódico de salud de niñas y niños de seis a nueve años"})
+  prestacion.update_attributes({nombre: "Examen periódico de salud de niñas y niños de seis a nueve años"})
 
   # Añadir los diagnósticos faltantes a la prestación CTC009 con id 494
   prestacion = Prestacion.find(494)
@@ -357,41 +347,41 @@ ActiveRecord::Base.transaction do
   # Desdoblar la prestación "NTN002" (Notificación de inicio de tratamiento en tiempo oportuno -leucemia/linfoma-) en dos
   # prestaciones, con el mismo código. Una para leucemia y otra para linfoma.
   prestacion = Prestacion.create!({
-    # :id => 816,
-    :codigo => "NTN002",
-    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("N002"),
-    :nombre => 'Notificación de inicio de tratamiento en tiempo oportuno (leucemia)',
-    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+    # id: 816,
+    codigo: "NTN002",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("N002"),
+    nombre: 'Notificación de inicio de tratamiento en tiempo oportuno (leucemia)',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
   prestacion.grupos_poblacionales << [de_6_a_9]
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73")
   AsignacionDePrecios.create!({
-    :precio_por_unidad => 5.0000,
-    :adicional_por_prestacion => 0.0000,
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+    precio_por_unidad: 5.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
   })
   prestacion = Prestacion.create!({
-    # :id => 817,
-    :codigo => "NTN002",
-    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("N002"),
-    :nombre => 'Notificación de inicio de tratamiento en tiempo oportuno (linfoma)',
-    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+    # id: 817,
+    codigo: "NTN002",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("N002"),
+    nombre: 'Notificación de inicio de tratamiento en tiempo oportuno (linfoma)',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
   prestacion.grupos_poblacionales << [de_6_a_9]
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72")
   AsignacionDePrecios.create!({
-    :precio_por_unidad => 5.0000,
-    :adicional_por_prestacion => 0.0000,
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+    precio_por_unidad: 5.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
   })
 
   # Generamos una adenda para cada efector que tenga autorizada la prestación "NTN002" con id 520 dando de baja esa prestación
   # y habilitando las dos nuevas.
   ntn002_autorizadas = PrestacionAutorizada.where(prestacion_id: 520, fecha_de_finalizacion: nil)
 
-  ultima_addenda_sistema => AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
+  ultima_addenda_sistema = AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
 
   ntn002_autorizadas.each do |na|
     addenda = AddendaSumar.create!({
@@ -451,29 +441,505 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.find(407) # IGR030 - TAC
   prestacion.grupos_poblacionales << de_6_a_9
 
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK001"
+  prestacion = Prestacion.find(411)
+  prestacion.grupos_poblacionales << de_6_a_9
+
   # Crear la prestación "ITK200" para el diagnóstico "088", que quedó en el tintero
   prestacion = Prestacion.create!({
-    # :id => 818,
-    :codigo => "ITK200",
-    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("K200"),
-    :nombre => "Reoperación por ductus residual",
-    :otorga_cobertura => false,
-    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+    # id: 818
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo I - Reoperación por ductus residual',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
-  prestacion.grupos_poblacionales << menores_de_6
-  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98")
-  AsignacionDePrecios.create!({
-    :precio_por_unidad => # 20.0000, # Averiguar precios viejos
-    :adicional_por_prestacion => 0.0000,
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  prestacion.grupos_poblacionales << [de_6_a_9]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("088")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
   })
   AsignacionDePrecios.create!({
-    :precio_por_unidad => # 40.0000, # Averiguar precios viejos
-    :adicional_por_prestacion => 0.0000,
-    :area_de_prestacion_id => AreaDePrestacion.id_del_codigo!("R"),
-    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
   })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 6017.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 77.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2004.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK004"
+  prestacion = Prestacion.find(411)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Crear la prestación "ITK200" para el diagnóstico "035", que quedó en el tintero
+  prestacion = Prestacion.create!({
+    # id: 819
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo I - Reoperación por coartación de aorta residual',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("035")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 6017.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 77.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2004.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Duplicar la prestación "ITK005" para el grupo de 6 a 9 únicamente con el diagnóstico "088"
+  prestacion = Prestacion.create!({
+    # id: 820
+    codigo: "ITK005",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K005"),
+    nombre: 'Cardiopatías congénitas - Módulo I - Cierre de ductus con hemodinamia intervencionista',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("088")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 6017.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 77.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2004.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Crear la prestación "ITK201" para el diagnóstico "088", que quedó en el tintero
+  prestacion = Prestacion.create!({
+    # id: 821
+    codigo: "ITK201",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K201"),
+    nombre: 'Cardiopatías congénitas - Módulo I - Reintervención por ductus residual con hemodinamia intervencionista',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("088")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 6017.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 77.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2004.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK006"
+  prestacion = Prestacion.find(413)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Crear la prestación "ITK201" para el diagnóstico "035", que quedó en el tintero
+  prestacion = Prestacion.create!({
+    # id: 822
+    codigo: "ITK201",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K201"),
+    nombre: 'Cardiopatías congénitas - Módulo I - Reintervención por coartación de aorta residual con hemodinamia intervencionista',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("035")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio_nueva,
+    minimo: 0.0000,
+    maximo: 3.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 6017.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 77.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2004.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK007"
+  prestacion = Prestacion.find(414)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK008"
+  prestacion = Prestacion.find(415)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK009"
+  prestacion = Prestacion.find(416)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK010" y modificar un error tipográfico en el nombre
+  prestacion = Prestacion.find(417)
+  prestacion.update_attributes!(nombre: "Cardiopatías congénitas - Módulo I - Embolización de colaterales de ramas pulmonares con hemodinamia intervencionista")
+  prestacion.grupos_poblacionales << de_6_a_9
+
+
+
+
+
+
+
+
+
+
+
 
 
   #Modificar las prestaciones diagnósticas de CC para habilitar los nuevos grupos de 6 a 9 y 10 a 19 años.
@@ -490,37 +956,37 @@ ActiveRecord::Base.transaction do
 
 
 # Logoaudiometría (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(:codigo => "PRP020").first
+prestacion = Prestacion.where(codigo: "PRP020").first
 prestacion.sexos << Sexo.find(:all)
 prestacion.grupos_poblacionales << GrupoPoblacional.find([1, 2])
 prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
 
 # Monotest (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(:codigo => "LBL078").first
+prestacion = Prestacion.where(codigo: "LBL078").first
 prestacion.sexos << Sexo.find(:all)
 prestacion.grupos_poblacionales << GrupoPoblacional.find(:all)
 prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
 
 # Reacción de Widal (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(:codigo => "LBL096").first
+prestacion = Prestacion.where(codigo: "LBL096").first
 prestacion.sexos << Sexo.find(:all)
 prestacion.grupos_poblacionales << GrupoPoblacional.find(:all)
 prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
 
 # Receptores libres de transferrinas (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(:codigo => "LBL097").first
+prestacion = Prestacion.where(codigo: "LBL097").first
 prestacion.sexos << Sexo.find(:all)
 prestacion.grupos_poblacionales << GrupoPoblacional.find(:all)
 prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
 
 # Sangre oculta en heces (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(:codigo => "LBL098").first
+prestacion = Prestacion.where(codigo: "LBL098").first
 prestacion.sexos << Sexo.find(:all)
 prestacion.grupos_poblacionales << GrupoPoblacional.find(:all)
 prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
 
 # Cambio la descripción del código LBL112
-Prestacion.where(:id => 342, :codigo => "LBL112").first.update_attributes({:nombre => "Enzimas hepáticas: Transaminasas TGO/TGP (embarazo de alto riesgo)"})
+Prestacion.where(id: 342, codigo: "LBL112").first.update_attributes({nombre: "Enzimas hepáticas: Transaminasas TGO/TGP (embarazo de alto riesgo)"})
 
 # Falta el método de validación de "beneficiaria_embarazada?" en la prestación "Ecografía renal"
 Prestacion.find(350).metodos_de_validacion << [MetodoDeValidacion.find(1)]
@@ -529,7 +995,7 @@ Prestacion.find(350).metodos_de_validacion << [MetodoDeValidacion.find(1)]
 Prestacion.find(351).metodos_de_validacion << [MetodoDeValidacion.find(1)]
 
 # Traslado en unidad móvil de alta complejidad para adultos (faltó definir los grupos poblacionales habilitados y diagnósticos)
-prestacion = Prestacion.where(:codigo => "TLM020").first
+prestacion = Prestacion.where(codigo: "TLM020").first
 prestacion.sexos << [Sexo.find_by_codigo!("F")]
 prestacion.grupos_poblacionales << [GrupoPoblacional.find_by_codigo("D")]
 prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98") # Medicina preventiva
@@ -544,291 +1010,291 @@ prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98") # Medicina prevent
 #  DUPLICAR PRACTICAS COMPLEMENTARIAS DE CCC PARA MÓDULOS CATASTRÓFICOS
 #
 #  Prestacion.find_by_codigo("XMX001").update_attributes({
-#    :nombre => "Alprostadil (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Alprostadil (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  Prestacion.find_by_codigo("XMX002").update_attributes({
-#    :nombre => "Óxido nítrico y dispenser para su administración (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Óxido nítrico y dispenser para su administración (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  Prestacion.find_by_codigo("XMX003").update_attributes({
-#    :nombre => "Levosimedan (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Levosimedan (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  Prestacion.find_by_codigo("XMX004").update_attributes({
-#    :nombre => "Factor VII activado recombinante (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Factor VII activado recombinante (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  Prestacion.find_by_codigo("XMX005").update_attributes({
-#    :nombre => "Iloprost (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Iloprost (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  Prestacion.find_by_codigo("XMX006").update_attributes({
-#    :nombre => "Trometanol (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Trometanol (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  Prestacion.find_by_codigo("XMX007").update_attributes({
-#    :nombre => "Surfactante (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Surfactante (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  Prestacion.find_by_codigo("XMX008").update_attributes({
-#    :nombre => "Nutrición parenteral total (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Nutrición parenteral total (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  Prestacion.find_by_codigo("XMX009").update_attributes({
-#    :nombre => "Prótesis y órtesis (en módulos I, II, III y IV -no catastróficos-)",
-#    :es_catastrofica => false
+#    nombre: "Prótesis y órtesis (en módulos I, II, III y IV -no catastróficos-)",
+#    es_catastrofica: false
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX001",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X001', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX001",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X001', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Alprostadil (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true,
+#    nombre: 'Alprostadil (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true,
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX002",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X002', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX002",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X002', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Óxido nítrico y dispenser para su administración (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+#    nombre: 'Óxido nítrico y dispenser para su administración (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX003",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X003', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX003",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X003', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Levosimedan (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+#    nombre: 'Levosimedan (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX004",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X004', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX004",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X004', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Factor VII activado recombinante (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+#    nombre: 'Factor VII activado recombinante (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX005",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X005', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX005",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X005', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Iloprost (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+#    nombre: 'Iloprost (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX006",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X006', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX006",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X006', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Trometanol (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+#    nombre: 'Trometanol (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX007",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X007', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX007",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X007', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Surfactante (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+#    nombre: 'Surfactante (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX008",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X008', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX008",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X008', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Nutrición parenteral total (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+#    nombre: 'Nutrición parenteral total (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.create!({
-#    :codigo => "XMX009",
-#    :objeto_de_la_prestacion_id => (
-#      ObjetoDeLaPrestacion.where(:codigo => 'X009', :tipo_de_prestacion_id => TipoDePrestacion.id_del_codigo!('XM')).first.id
+#    codigo: "XMX009",
+#    objeto_de_la_prestacion_id: (
+#      ObjetoDeLaPrestacion.where(codigo: 'X009', tipo_de_prestacion_id: TipoDePrestacion.id_del_codigo!('XM')).first.id
 #    ),
-#    :nombre => 'Prótesis y órtesis (en módulos V, VI y VII -catastróficos-)',
-#    :es_catastrofica => true,
-#    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+#    nombre: 'Prótesis y órtesis (en módulos V, VI y VII -catastróficos-)',
+#    es_catastrofica: true,
+#    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
 #  })
 #  prestacion.sexos << [sexo_femenino, sexo_masculino]
 #  prestacion.grupos_poblacionales << [menores_de_6]
 #  prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :minimo => 0.0100,
-#    :necesario => true,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    minimo: 0.0100,
+#    necesario: true,
+#    obligatorio: true
 #  })
 #  AsignacionDePrecios.create!({
-#    :precio_por_unidad => 1.0000,
-#    :adicional_por_prestacion => 0.0000,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("VC"),
-#    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+#    precio_por_unidad: 1.0000,
+#    adicional_por_prestacion: 0.0000,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("VC"),
+#    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
 #  })
 #
 #  prestacion = Prestacion.where(
@@ -837,16 +1303,16 @@ prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98") # Medicina prevent
 #         WHERE diagnosticos_prestaciones.prestacion_id = prestaciones.id AND diagnosticos.codigo = 'W78'
 #     )").first
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("DIAGAP"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :obligatorio => false
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("DIAGAP"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    obligatorio: false
 #  })
 #  DatoReportableRequerido.create!({
-#    :prestacion_id => prestacion.id,
-#    :dato_reportable_id => DatoReportable.id_del_codigo!("SITAM"),
-#    :fecha_de_inicio => fecha_de_inicio,
-#    :obligatorio => true
+#    prestacion_id: prestacion.id,
+#    dato_reportable_id: DatoReportable.id_del_codigo!("SITAM"),
+#    fecha_de_inicio: fecha_de_inicio,
+#    obligatorio: true
 #  })
 #  prestacion.metodos_de_validacion << MetodoDeValidacion.find_by_metodo("beneficiaria_mayor_de_24_anios?")
 
