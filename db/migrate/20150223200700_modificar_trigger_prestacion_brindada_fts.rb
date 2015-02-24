@@ -37,7 +37,7 @@ class ModificarTriggerPrestacionBrindadaFts < ActiveRecord::Migration
       "
       ActiveRecord::Base.connection.execute "
         INSERT INTO uad_#{uad.codigo}.busquedas_locales (modelo_type, modelo_id, titulo, texto, vector_fts)
-          SELECT 'PrestacionBrindada'::text, pb.id, ''::text, ''::text, ''::text
+          SELECT 'PrestacionBrindada'::text, pb.id, ''::text, ''::text, ''::tsvector
             FROM
               uad_#{uad.codigo}.prestaciones_brindadas pb
               JOIN estados_de_las_prestaciones ep ON (ep.id = pb.estado_de_la_prestacion_id)
