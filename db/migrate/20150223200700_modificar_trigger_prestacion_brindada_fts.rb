@@ -1,8 +1,10 @@
+# -*- encoding : utf-8 -*-
+
 class ModificarTriggerPrestacionBrindadaFts < ActiveRecord::Migration
   def up
     load 'db/sp/trigger_prestaciones_brindadas_fts.rb'
 
-    UnidadDeAltaDeDatos.where(facturacion: true).each do |uad|
+    UnidadDeAltaDeDatos.where(facturacion: true).order(:codigo).each do |uad|
       ActiveRecord::Base.connection.execute "
         UPDATE uad_#{uad.codigo}.prestaciones_brindadas
           SET estado_de_la_prestacion_id = 11, observaciones_de_liquidacion = 'Prestación duplicada'
@@ -34,8 +36,8 @@ class ModificarTriggerPrestacionBrindadaFts < ActiveRecord::Migration
             );
       "
       ActiveRecord::Base.connection.execute "
-        INSERT INTO uad_#{uad.codigo}.busquedas_locales (modelo_type, modelo_id)
-          SELECT 'PrestacionBrindada', pb.id
+        INSERT INTO uad_#{uad.codigo}.busquedas_locales (modelo_type, modelo_id, titulo, texto, vector_fts)
+          SELECT 'PrestacionBrindada'::text, pb.id, ''::text, ''::text, ''::text
             FROM
               uad_#{uad.codigo}.prestaciones_brindadas pb
               JOIN estados_de_las_prestaciones ep ON (ep.id = pb.estado_de_la_prestacion_id)
