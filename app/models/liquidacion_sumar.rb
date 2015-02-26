@@ -49,12 +49,10 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
-    l = PrestacionLiquidada.select("DISTINCT liquidacion_id").
-                            joins(" join liquidaciones_sumar l on l.id = prestaciones_liquidadas.liquidacion_id").
-                            where(["prestaciones_liquidadas.efector_id = ?\n"+
-                                   "and l.periodo_id = ?\n"+
-                                   "and l.concepto_de_facturacion_id = ?", efector.id,  periodo.id, concepto.id]).collect {|r| r.liquidacion_id}
-    LiquidacionSumar.find l
+    where(periodo_id: periodo.id).
+    where(concepto_de_facturacion_id: concepto.id).
+    where("EXISTS (SELECT id FROM prestaciones_liquidadas WHERE liquidacion_id = liquidaciones_sumar.id and efector_id = ?)", efector.id)
+
   end
 
   # 
@@ -80,7 +78,7 @@ class LiquidacionSumar < ActiveRecord::Base
                    CASE WHEN  estado_prestacion_am.id IS NULL AND am.id IS NULL THEN 'En proceso de liquidación'  
                              WHEN  estado_prestacion_am.id IS NULL AND am.id IS  NOT NULL THEN 'No evalúa'  
                              ELSE  estado_prestacion_am.nombre END estado_prestacion_am, motivo_rechazo_am.nombre motivo_rechazo_am,
-                  ep.nombre estado, pl.observaciones_liquidacion, epb.nombre estado_actual
+                  ep.nombre estado, pl.observaciones_liquidacion, epb.nombre estado_actual, vgpb.observaciones_de_liquidacion
           FROM liquidaciones_sumar l
            INNER JOIN prestaciones_liquidadas pl ON pl.liquidacion_id = l.id 
            INNER JOIN prestaciones_incluidas pi ON pl.prestacion_incluida_id = pi.id 
