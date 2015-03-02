@@ -172,12 +172,12 @@ class Efector < ActiveRecord::Base
   # 
   # Devuelve los conceptos que alguna vez ha facturado
   # 
-  # @return [Array<ConceptoDeFacturacion>] Array de conceptos de facturación
+  # @return [ActiveRecord::Relation<ConceptoDeFacturacion>] Array de conceptos de facturación
   def conceptos_que_facturo
-    ConceptoDeFacturacion.select("DISTINCT conceptos_de_facturacion.*")
-              .joins("JOIN liquidaciones_sumar l on l.concepto_de_facturacion_id = conceptos_de_facturacion.id\n"+
-                     "JOIN prestaciones_liquidadas pl on pl.liquidacion_id = l.id")
-              .where("pl.efector_id = #{self.id}").order(:concepto)
+    ConceptoDeFacturacion.select("DISTINCT conceptos_de_facturacion.*").
+              joins("JOIN liquidaciones_sumar l ON l.concepto_de_facturacion_id = conceptos_de_facturacion.id\n").
+              where("EXISTS ( SELECT id FROM prestaciones_liquidadas WHERE liquidacion_id = l.id AND efector_id = #{self.id}) ").
+              order(:concepto)
   end
 
 
@@ -197,7 +197,8 @@ class Efector < ActiveRecord::Base
   end
 
   # 
-  # Devuelve los periodos que alguna vez ha facturado
+  #  Devuelve los periodos que alguna vez ha facturado
+  # para un concepto. o para todos
   # 
   # @return [Array<Periodo>] Array con los conceptos de facturacion
   def periodos_facturados( arg_concepto = [])
@@ -209,11 +210,11 @@ class Efector < ActiveRecord::Base
     if arg_concepto.empty?
       arg_concepto = ConceptoDeFacturacion.all.map {|c| c.id}
     end
-    Periodo.select("DISTINCT periodos.*")
-           .joins("join liquidaciones_sumar l on l.periodo_id = periodos.id\n"+ 
-                  "join prestaciones_liquidadas pl on pl.liquidacion_id = l.id ")
-           .where("pl.efector_id = #{self.id}\n"+
-                  "AND l.concepto_de_facturacion_id IN (#{arg_concepto.join(', ') })").order(:periodo)
+    Periodo.select("DISTINCT periodos.*").
+            joins("join liquidaciones_sumar l on l.periodo_id = periodos.id\n").
+            where("l.concepto_de_facturacion_id IN (#{arg_concepto.join(', ') })").
+            where("EXISTS (SELECT id FROM prestaciones_liquidadas where efector_id = #{self.id} and liquidacion_id = l.id)").
+            order(:periodo)
   end
 
 

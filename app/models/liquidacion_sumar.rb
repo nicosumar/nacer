@@ -49,12 +49,10 @@ class LiquidacionSumar < ActiveRecord::Base
       return false
     end
 
-    l = PrestacionLiquidada.select("DISTINCT liquidacion_id").
-                            joins(" join liquidaciones_sumar l on l.id = prestaciones_liquidadas.liquidacion_id").
-                            where(["prestaciones_liquidadas.efector_id = ?\n"+
-                                   "and l.periodo_id = ?\n"+
-                                   "and l.concepto_de_facturacion_id = ?", efector.id,  periodo.id, concepto.id]).collect {|r| r.liquidacion_id}
-    LiquidacionSumar.find l
+    where(periodo_id: periodo.id).
+    where(concepto_de_facturacion_id: concepto.id).
+    where("EXISTS (SELECT id FROM prestaciones_liquidadas WHERE liquidacion_id = liquidaciones_sumar.id and efector_id = ?)", efector.id)
+
   end
 
   # 
@@ -69,7 +67,7 @@ class LiquidacionSumar < ActiveRecord::Base
     end
 
     sql = <<-SQL 
-          select pi.prestacion_codigo,pi.prestacion_nombre, d.codigo codigo_de_diagnostico, pl.fecha_de_la_prestacion, 
+          SELECT pi.prestacion_codigo,pi.prestacion_nombre, d.codigo codigo_de_diagnostico, pl.fecha_de_la_prestacion, 
                    td.codigo||': '|| a.numero_de_documento documento, a.apellido || ', '|| a.nombre nombre_y_apellido, 
                    pl.id, pl.prestacion_brindada_id, pl.monto,
                    cuasi.numero_cuasifactura, amp.prestacion_liquidada_id, 
@@ -80,30 +78,32 @@ class LiquidacionSumar < ActiveRecord::Base
                    CASE WHEN  estado_prestacion_am.id IS NULL AND am.id IS NULL THEN 'En proceso de liquidación'  
                              WHEN  estado_prestacion_am.id IS NULL AND am.id IS  NOT NULL THEN 'No evalúa'  
                              ELSE  estado_prestacion_am.nombre END estado_prestacion_am, motivo_rechazo_am.nombre motivo_rechazo_am,
-                  ep.nombre estado, pl.observaciones_liquidacion
-          from liquidaciones_sumar l
-           join prestaciones_liquidadas pl on pl.liquidacion_id = l.id 
-           join prestaciones_incluidas pi on pl.prestacion_incluida_id = pi.id 
-           join estados_de_las_prestaciones ep on ep.id = pl.estado_de_la_prestacion_liquidada_id
-           join efectores e on e.\"id\" = pl.efector_id 
-           join diagnosticos d on d.id = pl.diagnostico_id
-           LEFT JOIN liquidaciones_informes li on li.efector_id = e.id and li.liquidacion_sumar_id = l.id 
-           LEFT JOIN estados_de_los_procesos estado_li on li.estado_del_proceso_id = estado_li.id 
-           LEFT JOIN liquidaciones_sumar_anexos_administrativos aa on li.liquidacion_sumar_anexo_administrativo_id = aa.id and aa.estado_del_proceso_id = 3 --estado finalizado
-           LEFT JOIN anexos_administrativos_prestaciones aap on aap.prestacion_liquidada_id = pl.id 
-           LEFT JOIN estados_de_las_prestaciones estado_prestacion_aa on estado_prestacion_aa.id = aap.estado_de_la_prestacion_id
-           LEFT JOIN motivos_de_rechazos motivo_rechazo_aa on motivo_rechazo_aa.id = aap.motivo_de_rechazo_id 
-           LEFT JOIN liquidaciones_sumar_anexos_medicos am on li.liquidacion_sumar_anexo_medico_id = am.id and am.estado_del_proceso_id = 3 --estado finalizado
-           LEFT JOIN anexos_medicos_prestaciones amp on amp.prestacion_liquidada_id = pl.id 
-           LEFT JOIN estados_de_las_prestaciones estado_prestacion_am on estado_prestacion_am.id = amp.estado_de_la_prestacion_id
-           LEFT JOIN motivos_de_rechazos motivo_rechazo_am on motivo_rechazo_am.id = amp.motivo_de_rechazo_id 
-           LEFT JOIN afiliados a on a.clave_de_beneficiario = pl.clave_de_beneficiario
-           LEFT JOIN tipos_de_documentos td on td.id = a.tipo_de_documento_id
-           LEFT JOIN (liquidaciones_sumar_cuasifacturas lsc 
-                        join liquidaciones_sumar_cuasifacturas_detalles lscd on lscd.liquidaciones_sumar_cuasifacturas_id = lsc.id ) cuasi on cuasi.prestacion_liquidada_id = pl.id 
-          where e.id = ?
-          and l.id = ?
-          order by  numero_cuasifactura desc, estado, prestacion_codigo, fecha_de_la_prestacion, documento
+                  ep.nombre estado, pl.observaciones_liquidacion, epb.nombre estado_actual, vgpb.observaciones_de_liquidacion
+          FROM liquidaciones_sumar l
+           INNER JOIN prestaciones_liquidadas pl ON pl.liquidacion_id = l.id 
+           INNER JOIN prestaciones_incluidas pi ON pl.prestacion_incluida_id = pi.id 
+           INNER JOIN estados_de_las_prestaciones ep ON ep.id = pl.estado_de_la_prestacion_liquidada_id
+           INNER JOIN efectores e ON e.\"id\" = pl.efector_id 
+           INNER JOIN diagnosticos d ON d.id = pl.diagnostico_id
+           INNER JOIN vista_global_de_prestaciones_brindadas vgpb ON ( vgpb.id = pl.prestacion_brindada_id AND vgpb.esquema = pl.esquema )
+           INNER JOIN estados_de_las_prestaciones epb ON epb.id = vgpb.estado_de_la_prestacion_id
+           LEFT JOIN  liquidaciones_informes li ON li.efector_id = e.id and li.liquidacion_sumar_id = l.id 
+           LEFT JOIN  estados_de_los_procesos estado_li ON li.estado_del_proceso_id = estado_li.id 
+           LEFT JOIN  liquidaciones_sumar_anexos_administrativos aa ON li.liquidacion_sumar_anexo_administrativo_id = aa.id and aa.estado_del_proceso_id = 3 --estado finalizado
+           LEFT JOIN  anexos_administrativos_prestaciones aap ON aap.prestacion_liquidada_id = pl.id 
+           LEFT JOIN  estados_de_las_prestaciones estado_prestacion_aa ON estado_prestacion_aa.id = aap.estado_de_la_prestacion_id
+           LEFT JOIN  motivos_de_rechazos motivo_rechazo_aa ON motivo_rechazo_aa.id = aap.motivo_de_rechazo_id 
+           LEFT JOIN  liquidaciones_sumar_anexos_medicos am ON li.liquidacion_sumar_anexo_medico_id = am.id and am.estado_del_proceso_id = 3 --estado finalizado
+           LEFT JOIN  anexos_medicos_prestaciones amp ON amp.prestacion_liquidada_id = pl.id 
+           LEFT JOIN  estados_de_las_prestaciones estado_prestacion_am ON estado_prestacion_am.id = amp.estado_de_la_prestacion_id
+           LEFT JOIN  motivos_de_rechazos motivo_rechazo_am ON motivo_rechazo_am.id = amp.motivo_de_rechazo_id 
+           LEFT JOIN  afiliados a ON a.clave_de_beneficiario = pl.clave_de_beneficiario
+           LEFT JOIN  tipos_de_documentos td ON td.id = a.tipo_de_documento_id
+           LEFT JOIN  (liquidaciones_sumar_cuasifacturas lsc 
+                        join liquidaciones_sumar_cuasifacturas_detalles lscd ON lscd.liquidaciones_sumar_cuasifacturas_id = lsc.id ) cuasi ON cuasi.prestacion_liquidada_id = pl.id 
+          WHERE e.id = ?
+          AND l.id = ?
+          ORDER BY numero_cuasifactura DESC, estado, prestacion_codigo, fecha_de_la_prestacion, documento
       SQL
     
     cq = CustomQuery.buscar (
