@@ -1,16 +1,14 @@
 - content_for :title do
   Proceso de pago - SUMAR
+
 #content-header
-  %h1  Pagos Sumar - Finalización proceso de pago
+  %h1 Pagos Sumar - Finalización proceso de pago
   #action-links
-    = link_to '<< Volver al listado', pagos_sumar_path
-    - if can?(:update, PagoSumar)
+    - if can? :read, PagoSumar
+      = link_to '<< Volver al listado', pagos_sumar_path
+    - if can? :update, PagoSumar
       = link_to 'Modificar datos bancarios', edit_pago_sumar_path(@pago_sumar)
-      = link_to 'Notificar transferencia',  notificar_pago_sumar(@pago_sumar)
-    - if can? :create, PagoSumar
-      = link_to 'Nuevo proceso de pago', new_pago_sumar_path
-    -if can? :read, PagoSumar
-      = link_to 'Ver listado de pagos', pagos_sumar_path
+      = link_to 'Notificar transferencia',  notificar_pago_sumar_path(@pago_sumar)
 
 = render :partial => "shared/info", :locals => { :registro => @pago_sumar }
 
@@ -69,10 +67,7 @@
     %span.field_name ¿ Se informó al SIRGE ?
     %span.field_value= @pago_sumar.informado_sirge ? "Si" : "No"
 
-  -if @pago_sumar.informado_sirge
+  - if @pago_sumar.informado_sirge
     %div.field_content
       %span.field_name Fecha de informado sirge
       %span.field_value= @pago_sumar.fecha_informado_sirge.strftime("%d/%m/%Y")
-
-
-

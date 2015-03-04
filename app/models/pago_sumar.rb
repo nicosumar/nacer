@@ -12,7 +12,7 @@ class PagoSumar < ActiveRecord::Base
   attr_accessible :fecha_de_proceso, :fecha_informado_sirge, :informado_sirge, :monto
   # Fecha de proceso: Fecha en la que se inicio el proceso
   # Atributos a ser completados por el usuario
-  attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id
+  attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id, :nota_de_debito_ids
   # Atributos solo actualizable luego de ser creado
   attr_accessible :notificado, :fecha_de_notificacion
 
@@ -45,5 +45,25 @@ class PagoSumar < ActiveRecord::Base
 
   end
 
+  def nota_de_debito_ids=(value_ids)
+    unless value_ids.is_a? Array
+      return nil 
+      raise ArgumentError
+    end
+
+    value_ids.each do |id|
+      if id.is_a? Fixnum
+        self.aplicaciones_de_notas_de_debito.build(nota_de_debito_id: id)
+      else
+        self.aplicaciones_de_notas_de_debito.clear 
+        errors.add(:aplicaciones_de_notas_de_debito, "Uno de los ids de notas de debito no es valido - ID: #{id}")
+        raise ArgumentError 
+      end
+    end
+  end
+
+  def nota_de_debito_ids
+    self.aplicaciones_de_notas_de_debito.map { |e| e.nota_de_debito_id } 
+  end
 
 end

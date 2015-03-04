@@ -103,7 +103,7 @@ function generarResumen(obj, context) {
       markup += "<li><b>Periodo: </b>" + expedientes[i].periodo + "</li> ";
       markup += "<li><b>Monto Aprobado: </b> $" + expedientes[i].monto_aprobado + "</li> ";
       markup += "</ul></p>";
-      totalAPagar += expedientes[i].monto_aprobado;
+      totalAPagar += parseFloat(expedientes[i].monto_aprobado);
     };
     markup += "</div>";
 
@@ -119,7 +119,7 @@ function generarResumen(obj, context) {
         markup += "<li><b>Monto Remanente: </b> $ " + parseFloat(notas_de_debito[i].monto_remanente).toString() + "</li> ";
         markup += "<li><b>Monto Disponible: </b>$ " + parseFloat(notas_de_debito[i].monto_disponible).toString() + "</li> ";
         markup += "</ul></p>";
-        totalDeDebitos += notas_de_debito[i].monto_disponible;
+        totalDeDebitos += parseFloat(notas_de_debito[i].monto_disponible);
       };
     };
 

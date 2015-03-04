@@ -12,14 +12,8 @@ class PagosSumarController < ApplicationController
   end
 
   # GET /pagos_sumar/1
-  # GET /pagos_sumar/1.json
   def show
     @pago_sumar = PagoSumar.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @pago_sumar }
-    end
   end
 
   # GET /pagos_sumar/new
@@ -27,6 +21,8 @@ class PagosSumarController < ApplicationController
     @pago_sumar = PagoSumar.new
     @pago_sumar.expedientes_sumar.build
     @pago_sumar.aplicaciones_de_notas_de_debito.build
+    @notas_de_debito = NotaDeDebito.all.collect { |nd| [nd.numero, nd.id] }
+    @nota_de_debito_id = nil
 
     @efectores = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
 
@@ -53,6 +49,20 @@ class PagosSumarController < ApplicationController
   # POST /pagos_sumar
   # POST /pagos_sumar.json
   def create
+
+    #params_notas_de_debito = params[:pago_sumar][:aplicaciones_de_notas_de_debito_attributes]["0"]
+
+    raise 'a'
+    nuevo_valor_nd = params_notas_de_debito.map { |a,b| {a=> b.split(",").map(&:to_i)}}.reduce(:merge)
+=begin
+    nuevo_valor_nd = params_notas_de_debito.map do |a,b| 
+      { 
+       { a=> b.split(",").map(&:to_i)}
+      }
+    end
+=end
+    params[:pago_sumar][:aplicaciones_de_notas_de_debito_attributes]["0"] = nuevo_valor_nd
+    
 
     @pago_sumar = PagoSumar.new(params[:pago_sumar])
 
