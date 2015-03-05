@@ -11,8 +11,11 @@ class PagoSumar < ActiveRecord::Base
   # Atributos a ser inicializados/completados deforma automatica
   attr_accessible :fecha_de_proceso, :fecha_informado_sirge, :informado_sirge, :monto
   # Fecha de proceso: Fecha en la que se inicio el proceso
+  
   # Atributos a ser completados por el usuario
-  attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id, :nota_de_debito_ids
+  attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id
+  attr_accessible :nota_de_debito_ids, :expediente_sumar_ids
+  
   # Atributos solo actualizable luego de ser creado
   attr_accessible :notificado, :fecha_de_notificacion
 
@@ -66,4 +69,19 @@ class PagoSumar < ActiveRecord::Base
     self.aplicaciones_de_notas_de_debito.map { |e| e.nota_de_debito_id } 
   end
 
+  def expediente_sumar_ids=(value_ids)
+    unless value_ids.is_a? Array
+      return nil 
+      raise ArgumentError
+    end
+
+    value_ids.reject! { |x| !(x.is_a? Fixnum)}
+    self.expedientes_sumar << ExpedienteSumar.find(value_ids)
+
+  end
+=begin
+  def expediente_sumar_ids
+    self.expediente_sumar_ids
+  end
+=end
 end

@@ -19,9 +19,8 @@ class PagosSumarController < ApplicationController
   # GET /pagos_sumar/new
   def new
     @pago_sumar = PagoSumar.new
-    @pago_sumar.expedientes_sumar.build
-    @pago_sumar.aplicaciones_de_notas_de_debito.build
-    @notas_de_debito = NotaDeDebito.all.collect { |nd| [nd.numero, nd.id] }
+    #@pago_sumar.expedientes_sumar.build
+    #@pago_sumar.aplicaciones_de_notas_de_debito.build
     @nota_de_debito_id = nil
 
     @efectores = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
@@ -51,22 +50,17 @@ class PagosSumarController < ApplicationController
   def create
 
     #params_notas_de_debito = params[:pago_sumar][:aplicaciones_de_notas_de_debito_attributes]["0"]
+    
+    params[:pago_sumar][:nota_de_debito_ids]   = parsear_parametro_de_multiselect params[:pago_sumar], :nota_de_debito_ids
+    params[:pago_sumar][:expediente_sumar_ids] = parsear_parametro_de_multiselect params[:pago_sumar], :expediente_sumar_ids
 
     raise 'a'
-    nuevo_valor_nd = params_notas_de_debito.map { |a,b| {a=> b.split(",").map(&:to_i)}}.reduce(:merge)
-=begin
-    nuevo_valor_nd = params_notas_de_debito.map do |a,b| 
-      { 
-       { a=> b.split(",").map(&:to_i)}
-      }
-    end
-=end
-    params[:pago_sumar][:aplicaciones_de_notas_de_debito_attributes]["0"] = nuevo_valor_nd
-    
+    #nuevo_valor_nd = params_notas_de_debito.map { |a,b| {a=> b.split(",").map(&:to_i)}}.reduce(:merge)
+   
 
     @pago_sumar = PagoSumar.new(params[:pago_sumar])
 
-    @pago_sumar.aplicaciones_de_notas_de_debito.delete_if {|ap| ap.monto.blank? }
+    #@pago_sumar.aplicaciones_de_notas_de_debito.delete_if {|ap| ap.monto.blank? }
 
     respond_to do |format|
       if @pago_sumar.save
@@ -109,5 +103,9 @@ class PagosSumarController < ApplicationController
       format.html { redirect_to pagos_sumar_url }
       format.json { head :no_content }
     end
+  end
+
+  def parsear_parametro_de_multiselect params, simbolo
+    params[simbolo].split(",").reject { |e| e.to_i == 0 }.map { |e| e.to_i }.to_s
   end
 end
