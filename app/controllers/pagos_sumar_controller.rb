@@ -48,29 +48,18 @@ class PagosSumarController < ApplicationController
   # POST /pagos_sumar
   # POST /pagos_sumar.json
   def create
-
-    #params_notas_de_debito = params[:pago_sumar][:aplicaciones_de_notas_de_debito_attributes]["0"]
     
     params[:pago_sumar][:nota_de_debito_ids]   = parsear_parametro_de_multiselect params[:pago_sumar], :nota_de_debito_ids
     params[:pago_sumar][:expediente_sumar_ids] = parsear_parametro_de_multiselect params[:pago_sumar], :expediente_sumar_ids
 
-    raise 'a'
-    #nuevo_valor_nd = params_notas_de_debito.map { |a,b| {a=> b.split(",").map(&:to_i)}}.reduce(:merge)
-   
-
     @pago_sumar = PagoSumar.new(params[:pago_sumar])
-
-    #@pago_sumar.aplicaciones_de_notas_de_debito.delete_if {|ap| ap.monto.blank? }
-
-    respond_to do |format|
-      if @pago_sumar.save
-        format.html { redirect_to @pago_sumar, notice: 'Pago sumar was successfully created.' }
-        format.json { render json: @pago_sumar, status: :created, location: @pago_sumar }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @pago_sumar.errors, status: :unprocessable_entity }
-      end
+    
+    if @pago_sumar.save
+      redirect_to @pago_sumar, notice: 'Se creo el proceso de pago correctamente.' 
+    else
+      render action: "new" 
     end
+    
   end
 
   def notificar
@@ -106,6 +95,6 @@ class PagosSumarController < ApplicationController
   end
 
   def parsear_parametro_de_multiselect params, simbolo
-    params[simbolo].split(",").reject { |e| e.to_i == 0 }.map { |e| e.to_i }.to_s
+    params[simbolo].split(",").reject { |e| e.to_i == 0 }.map { |e| e.to_i }
   end
 end

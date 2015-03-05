@@ -79,9 +79,8 @@ class PagoSumar < ActiveRecord::Base
     self.expedientes_sumar << ExpedienteSumar.find(value_ids)
 
   end
-=begin
-  def expediente_sumar_ids
-    self.expediente_sumar_ids
+
+  def numero_de_proceso
+    "%07d" % self.id    
   end
-=end
 end

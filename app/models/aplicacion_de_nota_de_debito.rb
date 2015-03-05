@@ -1,6 +1,6 @@
 class AplicacionDeNotaDeDebito < ActiveRecord::Base
   belongs_to :nota_de_debito
-  belongs_to :estado_de_aplicacion_de_nota_de_debito
+  belongs_to :estado_de_aplicacion_de_debito
   belongs_to :pago_sumar
   attr_accessible :monto, :pago_sumar, :fecha_de_aplicacion
   attr_accessible :nota_de_debito_id

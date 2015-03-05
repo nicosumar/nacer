@@ -141,7 +141,7 @@ function enviarPago(objs, context) {
 
 function maquetaExpedientes(expediente) {
   var markup = "";
-  markup += "<b>" + expediente.numero + "</b> ($ " + expediente.monto_aprobado + ")";
+  markup += "<b>" + expediente.numero + " - " + expediente.periodo + "</b> ($ " + expediente.monto_aprobado + ")";
 
   return markup;
 }

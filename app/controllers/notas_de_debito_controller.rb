@@ -14,7 +14,7 @@ class NotasDeDebitoController < ApplicationController
   # GET /notas_de_debito/1
   def show
     @nota_de_debito = NotaDeDebito.includes(:efector, :tipo_de_nota_debito, :concepto_de_facturacion).find(params[:id])
-    @aplicaciones_de_notas_de_debito = @nota_de_debito.aplicaciones_de_notas_de_debito.includes(:pago_sumar).all
+    @aplicaciones_de_notas_de_debito = @nota_de_debito.aplicaciones_de_notas_de_debito.includes(:pago_sumar, :estado_de_aplicacion_de_debito).all
   end
 
   # GET /notas_de_debito/new

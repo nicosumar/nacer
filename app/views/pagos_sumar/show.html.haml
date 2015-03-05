@@ -2,7 +2,7 @@
   Proceso de pago - SUMAR
 
 #content-header
-  %h1 Pagos Sumar - Finalización proceso de pago
+  %h1 Pagos Sumar - Proceso de pago
   #action-links
     - if can? :read, PagoSumar
       = link_to '<< Volver al listado', pagos_sumar_path
@@ -26,22 +26,24 @@
     %span.field_name Fecha de inicio del proceso 
     %span.field_value= @pago_sumar.fecha_de_proceso
 
-  %h4 Expedientes
+  %h4 Expedientes 
   - @pago_sumar.expedientes_sumar.each do |exp|
     %div.field_content
       %span.field_name= "Exp. Nº "+ exp.numero
       %span.field_value= "$ " + exp.monto_aprobado.to_s
-
-  %h4 Notas de Debito aplicadas
+  %h5= "( Total: $ #{@pago_sumar.expedientes_sumar.sum {|e| e.monto_aprobado} } )" 
+  %br
+  %h4 Notas de Debito aplicadas 
   - if @pago_sumar.aplicaciones_de_notas_de_debito.size > 1
     - @pago_sumar.aplicaciones_de_notas_de_debito.each do |aplicacion|
       %div.field_content
         %span.field_name= link_to "ND. Nº "+ aplicacion.nota_de_debito.numero, aplicacion.nota_de_debito
         %span.field_value= "$ " + aplicacion.monto.to_s
+    %h5= "( Total: $ #{@pago_sumar.aplicaciones_de_notas_de_debito.sum(:monto).to_s} )"
   - else
     %div.field_content
       %span.field_value No se aplicaron débitos
-
+  %br
   %h4 Datos de transferencia
 
   %div.field_content
