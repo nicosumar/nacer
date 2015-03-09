@@ -19,12 +19,8 @@ class PagosSumarController < ApplicationController
   # GET /pagos_sumar/new
   def new
     @pago_sumar = PagoSumar.new
-    #@pago_sumar.expedientes_sumar.build
-    #@pago_sumar.aplicaciones_de_notas_de_debito.build
-    @nota_de_debito_id = nil
-
-    @efectores = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
-
+    @efectores   = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
+    
     @conceptos_de_facturacion = Efector.administradores_y_autoadministrados_sumar.map do |e|
       e.conceptos_que_facturo.map do |c|
         [c.nombre, c.id, {class: e.id}]
@@ -43,6 +39,25 @@ class PagosSumarController < ApplicationController
   # GET /pagos_sumar/1/edit
   def edit
     @pago_sumar = PagoSumar.find(params[:id])
+    @efectores   = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
+    
+    @conceptos_de_facturacion = Efector.administradores_y_autoadministrados_sumar.map do |e|
+      e.conceptos_que_facturo.map do |c|
+        [c.nombre, c.id, {class: e.id}]
+      end
+    end.flatten!(1).uniq
+
+    @cuentas_bancarias_origen = OrganismoGubernamental.gestionables.map do |og|
+      og.entidad.cuentas_bancarias.map do |cbo|
+        [cbo.nombre, cbo.id, {class: og.id}]
+      end
+    end.flatten!(1).uniq
+
+    @efector_id  = @pago_sumar.efector_id
+    @concepto_id = @pago_sumar.concepto_de_facturacion_id
+    @expedientes_sumar_ids = @pago_sumar.expediente_sumar_ids
+
+    
   end
 
   # POST /pagos_sumar

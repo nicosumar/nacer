@@ -7,7 +7,7 @@ $(document).ready(function() {
     noForwardJumping: true,
     onLeaveStep: verificaDatosCompletos,
     onShowStep: generarResumen,
-    onFinish: enviarPago
+    onFinish: enviarPago,
   });
 
   function verificaDatosCompletos(obj, context) {
@@ -53,12 +53,21 @@ $(document).ready(function() {
 
   });
 
-  $("#pago_sumar_efector_id").select2("val", "");
-  $("#pago_sumar_concepto_de_facturacion_id").select2("val", "");
-  $("#pago_sumar_expediente_sumar_ids").select2("val", "");
-  $("#pago_sumar_nota_de_debito_ids").select2("val", "");
-  $("#pago_sumar_cuenta_bancaria_origen_id").select2("val", "");
-  $("#pago_sumar_cuenta_bancaria_destino_id").select2("val", "");
+  if ($("#pago_sumar_efector_id").select2("val") > 0) {
+    $("#pago_sumar_efector_id").select2("enable", false);    
+  };
+  //$("#pago_sumar_efector_id").select2("val", "");
+  if ($("#pago_sumar_concepto_de_facturacion_id").select2("val") > 0) {
+    $("#pago_sumar_concepto_de_facturacion_id").select2("enable", false);
+  };
+  //$("#pago_sumar_concepto_de_facturacion_id").select2("val", "");
+  
+  /*
+    $("#pago_sumar_expediente_sumar_ids").select2("val", "");
+    $("#pago_sumar_nota_de_debito_ids").select2("val", "");
+    $("#pago_sumar_cuenta_bancaria_origen_id").select2("val", "");
+    $("#pago_sumar_cuenta_bancaria_destino_id").select2("val", "");
+  */
 
 });
 

@@ -25,9 +25,10 @@ $(document).ready(function() {
   $('input[type="submit"]').attr("data-disable-with", "Por favor, espere...");
 });
 
+//Transforma una cadena en json 
 function JSONize(str) {
   return str
-    // agrega comillas a las llaves de un string wrap keys without quote with valid double quote
+    // agrega comillas a las llaves de un string 
     .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})    
     // reemplaza las comillas simples por dobles en los valores
     .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})         
@@ -50,6 +51,14 @@ $(document).ready(function() {
       options.formatResult = eval(select.data('funcion-de-formato'));
       options.formatSelection = eval(select.data('funcion-de-formato-seleccionada'));
     } 
+    // Agrega las opciones adicionales de creacion.
+    // TODO: reemplazar por $.extend y sacar el eval
+    if( select.data('opciones') != undefined){
+      opc = select.data('opciones');
+      for(var o in opc)
+        eval("options."+ o +" = opc."+o );
+    }
+
     if (select.hasClass('ajax')) {
       if (select.data('parametros-adicionales') == undefined )
         select.data('parametros-adicionales',  '');
@@ -67,6 +76,7 @@ $(document).ready(function() {
           }
           
           var params = {};
+          // DEPRECATION WARNING:
           // envio los parametros adicionales como valores - Dejo el array tambien para compatibilidad hacia atras
           if( select.data('parametros-adicionales') != undefined){
             //Convierto los datos adicionales en un obj
@@ -77,18 +87,28 @@ $(document).ready(function() {
           return ret 
         },
         results: function(data, page) { return { more: data.total > (page * 10), results: eval("data." + select.data('coleccion'))} }
+      },
+      initSelection: function (element, callback) {
+        ids = $(element).
       }
+      
     }
     options.dropdownCssClass = "bigdrop";
+
     
-    // Agrega las opciones adicionales de creacion.
-    // TODO: reemplazar por $.extend y sacar el eval
-    if( select.data('opciones') != undefined){
-      opc = select.data('opciones');
-      for(var o in opc)
-        eval("options."+ o +" = opc."+o );
+    
+    //Inicializacion para los multiselect
+    options.initSelection =  function (element, callback) {
+        // the input tag has a value attribute preloaded that points to a preselected repository's id
+        // this function resolves that id attribute to an object that select2 can render
+        // using its formatResult renderer - that way the repository name is shown preselected
+        var id = $(element).val();
+        if (id !== "") {
+            $.ajax("https://api.github.com/repositories/" + id, {
+                dataType: "json"
+            }).done(function(data) { callback(data); });
+        }
     }
-    
     select.select2(options);
 
     if(select.hasClass('dependiente') && select.data('id-padre') != undefined )
@@ -113,7 +133,6 @@ $(document).ready(function() {
           
           parametros_adicionales.push($.trim(padre_id)+': -1');
           select.data('parametros-adicionales', parametros_adicionales.join(","))
-          //select.data('parametros-adicionales',  $.trim(padre_id)+': -1, '+ select.data('parametros-adicionales'));
           
           //A cada padre lo seteo para que cuando cambie el valor, actualice los parametros que envia via ajax
           padres[indice].change( function(evt){
@@ -133,7 +152,8 @@ $(document).ready(function() {
             }); //end each parametros-adicionales
             select.data('parametros-adicionales', arr_parametros_adicionales.join(",") );
           }); //end on change
-
+          //Disparo el change para que si los padres ya tenian valores, le setee el valor a este depediente
+          padre.trigger("change");
         } // end if (si encontro el padre)
         else
           throw "No se encontro el elemento: "+"'"+padre_id+"'" 
@@ -141,6 +161,8 @@ $(document).ready(function() {
       select.select2('enable', true);
     } //end class dependiente
 
+
+    // DEPRECATED: Usar clase dependiente para encadenar distintos Select2
     if(select.hasClass('encadenado') && select.data('id-padre') != undefined && select.data('parametro') !== undefined ){
 
       select.select2('enable', false);
