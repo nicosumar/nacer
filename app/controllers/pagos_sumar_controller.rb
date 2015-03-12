@@ -19,7 +19,7 @@ class PagosSumarController < ApplicationController
   # GET /pagos_sumar/new
   def new
     @pago_sumar = PagoSumar.new
-    @efectores   = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
+    @efectores  = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
     
     @conceptos_de_facturacion = Efector.administradores_y_autoadministrados_sumar.map do |e|
       e.conceptos_que_facturo.map do |c|

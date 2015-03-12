@@ -72,12 +72,12 @@ $(document).ready(function() {
             q: term,
             page: page,
             per: 10,
+            // DEPRECATION WARNING:
+            // envio los parametros adicionales como valores - Dejo el array tambien para compatibilidad hacia atras
             parametros_adicionales: (select.data('parametros-adicionales') == undefined) ? '' : eval("({"+ select.data('parametros-adicionales') + "})")
           }
           
           var params = {};
-          // DEPRECATION WARNING:
-          // envio los parametros adicionales como valores - Dejo el array tambien para compatibilidad hacia atras
           if( select.data('parametros-adicionales') != undefined){
             //Convierto los datos adicionales en un obj
             params = jQuery.parseJSON( JSONize("{"+ select.data('parametros-adicionales') + "}")  );
@@ -87,34 +87,13 @@ $(document).ready(function() {
           return ret 
         },
         results: function(data, page) { return { more: data.total > (page * 10), results: eval("data." + select.data('coleccion'))} }
-      },
-      initSelection: function (element, callback) {
-        ids = $(element).
       }
-      
-    }
-    options.dropdownCssClass = "bigdrop";
+    } // end if (select.hasClass('ajax')) {
 
-    
-    
-    //Inicializacion para los multiselect
-    options.initSelection =  function (element, callback) {
-        // the input tag has a value attribute preloaded that points to a preselected repository's id
-        // this function resolves that id attribute to an object that select2 can render
-        // using its formatResult renderer - that way the repository name is shown preselected
-        var id = $(element).val();
-        if (id !== "") {
-            $.ajax("https://api.github.com/repositories/" + id, {
-                dataType: "json"
-            }).done(function(data) { callback(data); });
-        }
-    }
-    select.select2(options);
+    options.dropdownCssClass = "bigdrop";
 
     if(select.hasClass('dependiente') && select.data('id-padre') != undefined )
     {
-      select.select2('enable', false);
-
       //Busco los padres:
       padres = []
       if($.trim(select.data('parametros-adicionales')) == "")
@@ -131,7 +110,11 @@ $(document).ready(function() {
           padres.push(padre)
           //Guardo los parametros adicionales estaticos y agrego el id de este padre en los parametros adicionales
           
-          parametros_adicionales.push($.trim(padre_id)+': -1');
+          padre_val = ' -1';
+          if (padre.val() !== undefined && padre.val() != '' ) 
+            padre_val = " "+ padre.val();
+
+          parametros_adicionales.push($.trim(padre_id)+':'+padre_val);
           select.data('parametros-adicionales', parametros_adicionales.join(","))
           
           //A cada padre lo seteo para que cuando cambie el valor, actualice los parametros que envia via ajax
@@ -156,11 +139,52 @@ $(document).ready(function() {
           padre.trigger("change");
         } // end if (si encontro el padre)
         else
-          throw "No se encontro el elemento: "+"'"+padre_id+"'" 
+          throw "No se encontro el elemento: "+"'"+padre_id+"'";
       });//end each padre
-      select.select2('enable', true);
     } //end class dependiente
 
+    /*
+       Verifica si el select2 tiene una opcion de multiple. Si es asi
+      cambia el string q crea select2 por un array de ints
+    */
+    if (select.hasClass('ajax') && options.multiple !== undefined && options.multiple == true) {
+      options.initSelection =  function (element, callback) {
+        var ids = $(element).val();
+        if( ids !== ""){
+          // Parseo el select2 multiple (ajax), porque los datos los envia como cadena 
+          var s_arr_ids = ids.replace("[", "").replace("]", "").split(",");
+          var i_arr_ids = new Array();
+
+          // Por cada elemento seleccionado hay que pedirrlo al servidor
+          for (var i = 0; i < s_arr_ids.length; i++) {
+            i_arr_ids[i] = parseInt(s_arr_ids[i]);
+            ret = {
+              id:  i_arr_ids[i],
+              // DEPRECATION WARNING:
+              // envio los parametros adicionales como valores - Dejo el array tambien para compatibilidad hacia atras
+              parametros_adicionales: (select.data('parametros-adicionales') == undefined) ? '' : eval("({"+ select.data('parametros-adicionales') + "})")
+            }
+                
+            var params = {};
+            if( select.data('parametros-adicionales') != undefined)
+              params = jQuery.parseJSON( JSONize("{"+ select.data('parametros-adicionales') + "}")  ); //Convierto los datos adicionales en un obj
+            //agrego los parametros adicionales al obj sin estar en el array
+            $.extend( ret, ret, params );
+
+            $.ajax({
+              url: select.data('source'),
+              dataType: "json",
+              data: ret
+            })
+            .done( function(data) { 
+              callback(data); 
+            });
+          }
+        } //end if los ids!==""
+      } //end function initSelection
+    } //end if multiple
+
+    select.select2(options);
 
     // DEPRECATED: Usar clase dependiente para encadenar distintos Select2
     if(select.hasClass('encadenado') && select.data('id-padre') != undefined && select.data('parametro') !== undefined ){

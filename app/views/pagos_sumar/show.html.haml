@@ -8,7 +8,7 @@
       = link_to '<< Volver al listado', pagos_sumar_path
     - if can? :update, PagoSumar
       = link_to 'Modificar datos bancarios', edit_pago_sumar_path(@pago_sumar)
-      = link_to 'Notificar transferencia',  notificar_pago_sumar_path(@pago_sumar)
+      = link_to 'Notificar transferencia',  notificar_pago_sumar_path(@pago_sumar), method: :put
 
 = render :partial => "shared/info", :locals => { :registro => @pago_sumar }
 
