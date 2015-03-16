@@ -63,7 +63,6 @@ class PagosSumarController < ApplicationController
   end
 
   # POST /pagos_sumar
-  # POST /pagos_sumar.json
   def create
     
     params[:pago_sumar][:nota_de_debito_ids]   = parsear_parametro_de_multiselect params[:pago_sumar], :nota_de_debito_ids
@@ -74,6 +73,19 @@ class PagosSumarController < ApplicationController
     if @pago_sumar.save
       redirect_to @pago_sumar, notice: 'Se creo el proceso de pago correctamente.' 
     else
+      @efectores   = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
+      @conceptos_de_facturacion = Efector.administradores_y_autoadministrados_sumar.map do |e|
+        e.conceptos_que_facturo.map do |c|
+          [c.nombre, c.id, {class: e.id}]
+        end
+      end.flatten!(1).uniq
+
+      @cuentas_bancarias_origen = OrganismoGubernamental.gestionables.map do |og|
+        og.entidad.cuentas_bancarias.map do |cbo|
+          [cbo.nombre, cbo.id, {class: og.id}]
+        end
+      end.flatten!(1).uniq
+      
       render action: "new" 
     end
     

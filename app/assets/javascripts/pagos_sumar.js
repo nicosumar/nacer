@@ -48,23 +48,22 @@ $(document).ready(function() {
 
   function validarPasos(anterior, proximo) {
     var esValido = true;
-    if (anterior == 1 && proximo > anterior) {
-      if ($("#pago_sumar_efector_id").select2('val') == "" || $("#pago_sumar_concepto_de_facturacion_id").select2('val') == "") {
-        alert("Seleccione el efector y concepto a pagar");
-        esValido = false;
-      };
+    
+    // Valida datos del paso 1
+    if ($("#pago_sumar_efector_id").select2('val') == "" || $("#pago_sumar_concepto_de_facturacion_id").select2('val') == "") {
+      alert("Seleccione el efector y concepto a pagar");
+      esValido = false;
     };
-    if (anterior == 2 && proximo > anterior) {
-      if ($("#pago_sumar_expediente_sumar_ids").select2("val").length < 1) {
-        alert("Debe seleccionar al menos a un expediente a pagar");
-        esValido = false;
-      };
+
+    // Valida datos del paso 2
+    if ($("#pago_sumar_expediente_sumar_ids").select2("val").length < 1) {
+      alert("Debe seleccionar al menos a un expediente a pagar");
+      esValido = false;
     };
-    if (anterior == 3 && proximo > anterior) {
-      if ($("#pago_sumar_cuenta_bancaria_destino_id").select2("val") == "" || $("#pago_sumar_cuenta_bancaria_origen_id").select2("val") == "") {
-        alert("Seleccione las cuentas de origen y destino de los fondos");
-        esValido = false;
-      };
+    // Valida datos del paso 3
+    if ($("#pago_sumar_cuenta_bancaria_destino_id").select2("val") == "" || $("#pago_sumar_cuenta_bancaria_origen_id").select2("val") == "") {
+      alert("Seleccione las cuentas de origen y destino de los fondos");
+      esValido = false;
     };
 
     return esValido;
@@ -148,7 +147,7 @@ function generarResumen(obj, context) {
 }
 
 function enviarPago(objs, context) {
-  $("#new_pago_sumar").submit();
+  $("form").first().submit();
 }
 
 function maquetaExpedientes(expediente) {
