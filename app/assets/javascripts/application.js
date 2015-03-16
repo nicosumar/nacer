@@ -46,7 +46,6 @@ $(document).ready(function() {
       dropdownAutoWidth : true
     };
 
-    //;
     if(select.data('funcion-de-formato') != undefined || select.data('funcion-de-formato') != "") {
       options.formatResult = eval(select.data('funcion-de-formato'));
       options.formatSelection = eval(select.data('funcion-de-formato-seleccionada'));
@@ -143,44 +142,47 @@ $(document).ready(function() {
       });//end each padre
     } //end class dependiente
 
-    /*
-       Verifica si el select2 tiene una opcion de multiple. Si es asi
-      cambia el string q crea select2 por un array de ints
-    */
-    if (select.hasClass('ajax') && options.multiple !== undefined && options.multiple == true) {
+    if (select.hasClass('ajax') ) {
       options.initSelection =  function (element, callback) {
-        var ids = $(element).val();
-        if( ids !== ""){
-          // Parseo el select2 multiple (ajax), porque los datos los envia como cadena 
-          var s_arr_ids = ids.replace("[", "").replace("]", "").split(",");
-          var i_arr_ids = new Array();
-
-          // Por cada elemento seleccionado hay que pedirrlo al servidor
-          for (var i = 0; i < s_arr_ids.length; i++) {
-            i_arr_ids[i] = parseInt(s_arr_ids[i]);
-            ret = {
-              id:  i_arr_ids[i],
-              // DEPRECATION WARNING:
-              // envio los parametros adicionales como valores - Dejo el array tambien para compatibilidad hacia atras
-              parametros_adicionales: (select.data('parametros-adicionales') == undefined) ? '' : eval("({"+ select.data('parametros-adicionales') + "})")
-            }
-                
-            var params = {};
-            if( select.data('parametros-adicionales') != undefined)
-              params = jQuery.parseJSON( JSONize("{"+ select.data('parametros-adicionales') + "}")  ); //Convierto los datos adicionales en un obj
-            //agrego los parametros adicionales al obj sin estar en el array
-            $.extend( ret, ret, params );
-
-            $.ajax({
-              url: select.data('source'),
-              dataType: "json",
-              data: ret
-            })
-            .done( function(data) { 
-              callback(data); 
-            });
+        // Dejo el valor como rails lo envió.
+        var ids = $.trim($(element).val());
+        
+        //  Rails envia los arrays como arrays al value. A select 2 los toma como lista separados x comas,
+        // asique reemplazo el array para q select2 no se confunda y duplique elementos en los valores
+        $(element).val(ids.replace("[", "").replace("]", "")); //Elimino el valor del value html. 
+        
+        if( ids !== "[]"){
+          ret = { 
+            ids: ids,
+            // DEPRECATION WARNING:
+            // envio los parametros adicionales como valores - Dejo el array tambien para compatibilidad hacia atras
+            parametros_adicionales: (select.data('parametros-adicionales') == undefined) ? '' : eval("({"+ select.data('parametros-adicionales') + "})")
           }
-        } //end if los ids!==""
+
+          var params = {};
+          if( select.data('parametros-adicionales') != undefined)
+            params = jQuery.parseJSON( JSONize("{"+ select.data('parametros-adicionales') + "}")  ); //Convierto los datos adicionales en un obj
+          //agrego los parametros adicionales al obj sin estar en el array
+          $.extend( ret, ret, params );
+          // Pasando los args como json puedo hacer una sola llamada ajax y lo agarra el format selection del select2.
+          $.ajax({
+            url: select.data('source'),
+            dataType: "json",
+            data: ret
+          })
+          .done( function(data) { 
+            /*
+             *  Esta diferencia es porque el select2 es una garcha que manda 
+             * los argumentos como array o como objeto dependiendo de la configuracion del
+             * select2, en lugar de considerar q simplemente es una llamada ajax.
+            */
+            if (select.data('opciones').multiple == true) {
+              callback( eval("data." + select.data('coleccion')) ); 
+            } else{
+              callback( eval("data." + select.data('coleccion') + "[0]" ) ); 
+            };
+          });
+        } //end if los ids!=="[]"
       } //end function initSelection
     } //end if multiple
 

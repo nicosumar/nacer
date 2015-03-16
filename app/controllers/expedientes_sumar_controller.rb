@@ -18,51 +18,45 @@ class ExpedientesSumarController < ApplicationController
 
   # GET /expedientes_sumar/impagos_por_Efector
   def impagos_por_efector
-    logger.warn("---------------------------------------------------------------------------------------------------------------------")
-    logger.warn(params.inspect)
-    logger.warn("---------------------------------------------------------------------------------------------------------------------")
+    
     #begin
       cadena = params[:q]
-      id = params[:id]
       x = params[:page]
       y = params[:per]
+
+      ids = eval( params[:ids] ) if params[:ids].present?
       
       efector = Efector.find(params[:parametros_adicionales][:pago_sumar_efector_id])
       concepto = ConceptoDeFacturacion.find(params[:parametros_adicionales][:pago_sumar_concepto_de_facturacion_id])
 
-      # Si llega el parametro ID, busca uno en particular. Es para los multiselect
-      if id.present? and id.to_i > 0
-        @expedientes = ExpedienteSumar.find(id)
-        
-        @expedientes = {
-          id: @expedientes.id,
-          numero: @expedientes.numero,
-          monto_aprobado: @expedientes.monto_aprobado,
-          periodo: @expedientes.liquidacion_sumar.periodo.periodo
-        }
-        total_expedientes = 1
-      else
-        @expedientes = ExpedienteSumar.del_concepto_de_facturacion(concepto)
-                                      .where(efector_id: efector.id)
-                                      .where("expedientes_sumar.numero ilike ?", "%#{cadena}%") 
-        @expedientes.map! do |ex|
-          {
-            id: ex.id,
-            numero: ex.numero,
-            # efector: efector.nombre,
-            monto_aprobado: ex.monto_aprobado,
-            #liquidaciones_informes: ex.liquidaciones_informes.map { |li| {id: li.id, monto: li.monto_aprobado} },
-            periodo: ex.liquidacion_sumar.periodo.periodo
-          }
-        end
 
-        total_expedientes = @expedientes.size
+      # Si llega el parametro ID, busca uno en particular. Esto es para los multiselect q hacen una peticion a la vez de los seleccionados
+      if ids.is_a? Array or ids.is_a? Fixnum and not params[:ids].blank?
+        @expedientes = ExpedienteSumar.del_concepto_de_facturacion(concepto)
+                                      .where(id: ids) 
+      else
+        @expedientes = ExpedienteSumar.impagos_por_efector(efector)
+                                      .del_concepto_de_facturacion(concepto)
+                                      .where("expedientes_sumar.numero ilike ?", "%#{cadena}%") 
       end
+
+      @expedientes.map! do |ex|
+        {
+          id: ex.id,
+          numero: ex.numero,
+          # efector: efector.nombre,
+          monto_aprobado: ex.monto_aprobado,
+          #liquidaciones_informes: ex.liquidaciones_informes.map { |li| {id: li.id, monto: li.monto_aprobado} },
+          periodo: ex.liquidacion_sumar.periodo.periodo
+        }
+      end
+
+      total_expedientes = @expedientes.size
 
 
       respond_to do |format|
           format.json {
-            render json: {total: total_expedientes ,expedientes: @expedientes }
+            render json: {total: total_expedientes, expedientes: @expedientes }
           }
       end
 =begin

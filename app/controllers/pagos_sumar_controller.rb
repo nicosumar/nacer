@@ -56,6 +56,8 @@ class PagosSumarController < ApplicationController
     @efector_id  = @pago_sumar.efector_id
     @concepto_id = @pago_sumar.concepto_de_facturacion_id
     @expedientes_sumar_ids = @pago_sumar.expediente_sumar_ids
+    @cuenta_bancaria_destino_id = @pago_sumar.cuenta_bancaria_destino_id
+    @cuenta_bancaria_origen_id = @pago_sumar.cuenta_bancaria_origen_id
 
     
   end
@@ -82,18 +84,35 @@ class PagosSumarController < ApplicationController
   end
 
   # PUT /pagos_sumar/1
-  # PUT /pagos_sumar/1.json
   def update
+    params[:pago_sumar][:nota_de_debito_ids]   = parsear_parametro_de_multiselect params[:pago_sumar], :nota_de_debito_ids
+    params[:pago_sumar][:expediente_sumar_ids] = parsear_parametro_de_multiselect params[:pago_sumar], :expediente_sumar_ids
+
     @pago_sumar = PagoSumar.find(params[:id])
 
-    respond_to do |format|
-      if @pago_sumar.update_attributes(params[:pago_sumar])
-        format.html { redirect_to @pago_sumar, notice: 'Pago sumar was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @pago_sumar.errors, status: :unprocessable_entity }
-      end
+    if @pago_sumar.update_attributes(params[:pago_sumar])
+      redirect_to @pago_sumar, notice: 'Pago sumar was successfully updated.' 
+    else
+      @efectores   = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
+      @conceptos_de_facturacion = Efector.administradores_y_autoadministrados_sumar.map do |e|
+        e.conceptos_que_facturo.map do |c|
+          [c.nombre, c.id, {class: e.id}]
+        end
+      end.flatten!(1).uniq
+
+      @cuentas_bancarias_origen = OrganismoGubernamental.gestionables.map do |og|
+        og.entidad.cuentas_bancarias.map do |cbo|
+          [cbo.nombre, cbo.id, {class: og.id}]
+        end
+      end.flatten!(1).uniq
+
+      @efector_id  = @pago_sumar.efector_id
+      @concepto_id = @pago_sumar.concepto_de_facturacion_id
+      @expedientes_sumar_ids = @pago_sumar.expediente_sumar_ids
+      @cuenta_bancaria_destino_id = @pago_sumar.cuenta_bancaria_destino_id
+      @cuenta_bancaria_origen_id = @pago_sumar.cuenta_bancaria_origen_id
+
+      render action: "edit" 
     end
   end
 

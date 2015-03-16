@@ -158,16 +158,32 @@ class CuentasBancariasController < ApplicationController
   def destino_por_concepto_origen_efector
     begin
       cadena = params[:q]
+      ids = eval( params[:ids] ) if params[:ids].present?
       x = params[:page]
       y = params[:per]
-          
+
+      logger.warn "--------------------------------------------"
+      logger.warn "params: #{params.inspect}"
+      logger.warn "ids: #{ids.class} - #{}"
+      logger.warn "--------------------------------------------"
+
       efector = Efector.find(params[:pago_sumar_efector_id])
       concepto = ConceptoDeFacturacion.find(params[:pago_sumar_concepto_de_facturacion_id])
       cuenta_origen = CuentaBancaria.find(params[:pago_sumar_cuenta_bancaria_origen_id])
 
-      @cuentas_destino = CuentaBancaria.destinos_autorizado_para_el_concepto(concepto).
-                                        destinos_autorizados_desde_cuenta(cuenta_origen).
-                                        destino_autorizadas_para(efector.entidad)
+      if ids.is_a? Array or ids.is_a? Fixnum and not params[:ids].blank?
+        @cuentas_destino = CuentaBancaria.destinos_autorizado_para_el_concepto(concepto).
+                                          destinos_autorizados_desde_cuenta(cuenta_origen).
+                                          destino_autorizadas_para(efector.entidad).
+                                          where(id: ids).
+                                          where("cuentas_bancarias.denominacion ilike ?", "%#{cadena}%")
+      else
+        @cuentas_destino = CuentaBancaria.destinos_autorizado_para_el_concepto(concepto).
+                                          destinos_autorizados_desde_cuenta(cuenta_origen).
+                                          destino_autorizadas_para(efector.entidad).
+                                          where("cuentas_bancarias.denominacion ilike ?", "%#{cadena}%")
+      end
+                                        
 
       @cuentas_destino.map! do |cb|
         {
@@ -178,10 +194,9 @@ class CuentasBancariasController < ApplicationController
 
       respond_to do |format|
           format.json {
-            render json: {total: @cuentas_destino.size ,cuentas_destino: @cuentas_destino }
+            render json: {total: @cuentas_destino.size, cuentas_destino: @cuentas_destino }
           }
       end
-
     rescue Exception => e
       respond_to do |format|
         format.json {
@@ -189,7 +204,8 @@ class CuentasBancariasController < ApplicationController
         }
       end #end response
     end #end begin rescue 
-  end
+
+  end #end method destino_por_concepto_origen_efector
 
   private 
 

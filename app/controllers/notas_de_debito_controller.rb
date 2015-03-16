@@ -67,17 +67,27 @@ class NotasDeDebitoController < ApplicationController
   def remanentes_por_efector
     begin
       cadena = params[:q]
+      ids = eval( params[:ids] ) if params[:ids].present?
       x = params[:page]
       y = params[:per]
 
       efector = Efector.find(params[:parametros_adicionales][:pago_sumar_efector_id])
       concepto = ConceptoDeFacturacion.find(params[:parametros_adicionales][:pago_sumar_concepto_de_facturacion_id])
 
-      @notas_de_debito = NotaDeDebito.disponibles_para_aplicacion
-                                     .por_efector(efector, true)
-                                     .where(concepto_de_facturacion_id: concepto)
-                                     .where("notas_de_debito.numero ilike ?", "%#{cadena}%")
-                                     .includes(:tipo_de_nota_debito)
+      if ids.is_a? Array or ids.is_a? Fixnum
+        @notas_de_debito = NotaDeDebito.disponibles_para_aplicacion
+                                       .por_efector(efector, true)
+                                       .where(concepto_de_facturacion_id: concepto)
+                                       .where("notas_de_debito.numero ilike ?", "%#{cadena}%")
+                                       .where(id: ids)
+                                       .includes(:tipo_de_nota_debito)
+      elsif params[:ids].present?
+        @notas_de_debito = NotaDeDebito.disponibles_para_aplicacion
+                                       .por_efector(efector, true)
+                                       .where(concepto_de_facturacion_id: concepto)
+                                       .where("notas_de_debito.numero ilike ?", "%#{cadena}%")
+                                       .includes(:tipo_de_nota_debito)
+      end
     
       @notas_de_debito.map! do |nd|
         {

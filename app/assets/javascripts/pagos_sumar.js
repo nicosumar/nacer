@@ -1,10 +1,42 @@
 $(document).ready(function() {
-  // Defino el wizzard
+  
+  $("#pago_sumar_concepto_de_facturacion_id").chained("#pago_sumar_efector_id");
+  //$("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', false);
+
+  $("#pago_sumar_cuenta_bancaria_origen_id").on("change", function(e) {
+    cb = $("#pago_sumar_cuenta_bancaria_origen_id");
+
+    if (cb.select2("val") == "") {
+      $("#pago_sumar_cuenta_bancaria_destino_id").select2("val", "");
+      $("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', false);
+    } else
+      $("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', true);
+
+  });
+
+  //Si esta editando, habilito el forward jumping y click en los pasos
+  if ($("#pago_sumar_efector_id").select2("val") > 0) {
+    $("#pago_sumar_efector_id").select2("enable", false);
+    noForwardJumping = false;
+    enableAllSteps = true;
+  }
+  else{
+    noForwardJumping = true;
+    enableAllSteps = false;
+  };
+  
+  if ($("#pago_sumar_concepto_de_facturacion_id").select2("val") > 0)
+    $("#pago_sumar_concepto_de_facturacion_id").select2("enable", false);
+
+
+
+  // Inicializo el wizzard
   $('#wizard').smartWizard({
     labelNext: 'Siguiente',
     labelPrevious: 'Anterior',
     labelFinish: 'Finalizar',
-    noForwardJumping: true,
+    noForwardJumping: noForwardJumping,
+    enableAllSteps: enableAllSteps,
     onLeaveStep: verificaDatosCompletos,
     onShowStep: generarResumen,
     onFinish: enviarPago,
@@ -16,19 +48,19 @@ $(document).ready(function() {
 
   function validarPasos(anterior, proximo) {
     var esValido = true;
-    if (anterior == 1 && proximo == 2) {
+    if (anterior == 1 && proximo > anterior) {
       if ($("#pago_sumar_efector_id").select2('val') == "" || $("#pago_sumar_concepto_de_facturacion_id").select2('val') == "") {
         alert("Seleccione el efector y concepto a pagar");
         esValido = false;
       };
     };
-    if (anterior == 2 && proximo == 3) {
+    if (anterior == 2 && proximo > anterior) {
       if ($("#pago_sumar_expediente_sumar_ids").select2("val").length < 1) {
         alert("Debe seleccionar al menos a un expediente a pagar");
         esValido = false;
       };
     };
-    if (anterior == 3 && proximo == 4) {
+    if (anterior == 3 && proximo > anterior) {
       if ($("#pago_sumar_cuenta_bancaria_destino_id").select2("val") == "" || $("#pago_sumar_cuenta_bancaria_origen_id").select2("val") == "") {
         alert("Seleccione las cuentas de origen y destino de los fondos");
         esValido = false;
@@ -38,36 +70,7 @@ $(document).ready(function() {
     return esValido;
   }
 
-  $("#pago_sumar_concepto_de_facturacion_id").chained("#pago_sumar_efector_id");
-  $("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', false);
-
-  $("#pago_sumar_cuenta_bancaria_origen_id").on("change", function(e) {
-    cb = $("#pago_sumar_cuenta_bancaria_origen_id");
-
-    $("#pago_sumar_cuenta_bancaria_destino_id").select2("val", "");
-
-    if (cb.select2("val") == "") {
-      $("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', false);
-    } else
-      $("#pago_sumar_cuenta_bancaria_destino_id").select2('enable', true);
-
-  });
-
-  if ($("#pago_sumar_efector_id").select2("val") > 0) {
-    $("#pago_sumar_efector_id").select2("enable", false);    
-  };
-  //$("#pago_sumar_efector_id").select2("val", "");
-  if ($("#pago_sumar_concepto_de_facturacion_id").select2("val") > 0) {
-    $("#pago_sumar_concepto_de_facturacion_id").select2("enable", false);
-  };
-  //$("#pago_sumar_concepto_de_facturacion_id").select2("val", "");
   
-  /*
-    $("#pago_sumar_expediente_sumar_ids").select2("val", "");
-    $("#pago_sumar_nota_de_debito_ids").select2("val", "");
-    $("#pago_sumar_cuenta_bancaria_origen_id").select2("val", "");
-    $("#pago_sumar_cuenta_bancaria_destino_id").select2("val", "");
-  */
 
 });
 

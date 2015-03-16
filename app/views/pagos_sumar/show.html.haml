@@ -34,7 +34,7 @@
   %h5= "( Total: $ #{@pago_sumar.expedientes_sumar.sum {|e| e.monto_aprobado} } )" 
   %br
   %h4 Notas de Debito aplicadas 
-  - if @pago_sumar.aplicaciones_de_notas_de_debito.size > 1
+  - if @pago_sumar.aplicaciones_de_notas_de_debito.size > 0
     - @pago_sumar.aplicaciones_de_notas_de_debito.each do |aplicacion|
       %div.field_content
         %span.field_name= link_to "ND. Nº "+ aplicacion.nota_de_debito.numero, aplicacion.nota_de_debito

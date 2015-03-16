@@ -87,7 +87,7 @@ class ExpedienteSumar < ActiveRecord::Base
     return false unless efector.is_a?(Efector)
     ExpedienteSumar.includes(:liquidaciones_informes).
                     where(efector_id: efector.id, tipo_de_expediente_id: [1,2,3]).
-                    where("expedientes_sumar.pago_sumar_id is null")
+                    where(pago_sumar_id: nil)
   end
 
   # 
