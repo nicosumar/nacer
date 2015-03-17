@@ -13,6 +13,10 @@
   - else
     %table
       %tr
+        %th 
+          Proceso de 
+          %br
+          Pago Nº
         %th Efector
         %th Concepto de facturación
         %th Fecha de proceso
@@ -21,6 +25,7 @@
         %th Estado del pago
       - @pagos_sumar.each do |pago_sumar|
         %tr.clickable{ :onclick => "location.href=\'#{pago_sumar_path(pago_sumar)}\'", :title => "Ver detalles del proceso de pago" }
+          %td= pago_sumar.numero_de_proceso
           %td= pago_sumar.efector.nombre
           %td= pago_sumar.concepto_de_facturacion.concepto
           %td= pago_sumar.fecha_de_proceso.strftime("%d/%m/%Y")

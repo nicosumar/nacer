@@ -76,8 +76,11 @@ class PagoSumar < ActiveRecord::Base
     end
 
     value_ids.reject! { |x| !(x.is_a? Fixnum)}
-    self.expedientes_sumar << ExpedienteSumar.find(value_ids)
-
+    # Borro los seleccionados y agrego nuevamente
+    ActiveRecord::Base.transaction do 
+      self.expedientes_sumar.clear
+      self.expedientes_sumar << ExpedienteSumar.find(value_ids)
+    end
   end
 
   def numero_de_proceso

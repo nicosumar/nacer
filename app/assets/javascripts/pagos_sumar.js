@@ -147,7 +147,7 @@ function generarResumen(obj, context) {
 }
 
 function enviarPago(objs, context) {
-  $("form").first().submit();
+  $( "form[id*='pago_sumar']" )[0].submit();
 }
 
 function maquetaExpedientes(expediente) {

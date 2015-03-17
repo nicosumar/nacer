@@ -102,6 +102,7 @@ class PagosSumarController < ApplicationController
 
     @pago_sumar = PagoSumar.find(params[:id])
 
+    raise 'a'
     if @pago_sumar.update_attributes(params[:pago_sumar])
       redirect_to @pago_sumar, notice: 'Pago sumar was successfully updated.' 
     else
