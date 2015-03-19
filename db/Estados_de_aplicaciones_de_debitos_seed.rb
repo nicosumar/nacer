@@ -12,3 +12,9 @@ EstadoDeAplicacionDeDebito.create({
   nombre: "Reservado"
   }, without_protection: true)
 
+# ID: 3
+EstadoDeAplicacionDeDebito.create({
+  codigo: "N",
+  nombre: "Anulación de reserva"
+  }, without_protection: true)
+

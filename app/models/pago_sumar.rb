@@ -56,6 +56,8 @@ class PagoSumar < ActiveRecord::Base
 
     value_ids.each do |id|
       if id.is_a? Fixnum
+        # ver si hay una nueva o modificar
+        
         self.aplicaciones_de_notas_de_debito.build(nota_de_debito_id: id)
       else
         self.aplicaciones_de_notas_de_debito.clear 

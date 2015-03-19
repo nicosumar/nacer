@@ -30,7 +30,22 @@ class AplicacionDeNotaDeDebito < ActiveRecord::Base
   
   def actualizar_reservado_de_nota_de_debito
     reservado = (nota_de_debito.reservado + monto )
-    nota_de_debito.update_attributes(:reservado => reservado)
+    nota_de_debito.update_attributes(reservado: reservado)
   end
+
+  # 
+  # Anula la aplicacion reservada marcandola como anulada
+  # 
+  # @return [Boolean] true si pudo anularla, false, si se complicó
+  def anular_reserva
+    ActiveRecord::Base.transaction do 
+      estado_anulacion = EstadoDeAplicacionDeDebito.where(codigo: "N").first
+      # anulo la aplicacion
+      self.update_attributes(estado_de_aplicacion_de_debito: estado_anulacion)  
+      #restituyo el reservado de la ND
+      self.nota_de_debito.update_attributes(reservado: self.nota_de_debito.reservado - self.monto)
+    end # end transaction
+    true
+  end # end anular_reserva
 
 end

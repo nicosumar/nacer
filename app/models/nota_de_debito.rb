@@ -16,17 +16,41 @@ class NotaDeDebito < ActiveRecord::Base
   end
 
   # 
+  # Marca como anuladas las prestaciones cuyo estado es "Reservado"
+  # @param pago_sumar [PagoSumar] Proceso de pago vinculado a las aplicaciones
+  # 
+  # @return [type] [description]
+  def anular_aplicaciones_reservadas(pago_sumar)
+    return false unless pago_sumar.is_a? PagoSumar
+    
+    estado_reservado = EstadoDeAplicacionDeDebito.where(codigo: "R").first
+    aplicaciones_anuladas = []
+
+    # Anulo cada una de las aplicaciones vinculadas a este proceso de pago y guardo las aplicaciones q fueron anuladas
+    transaction do
+      self.aplicaciones_de_notas_de_debito.
+           where(pago_sumar_id: pago_sumar.id).
+           where(estado_de_aplicacion_de_debito_id: estado_reservado.id ).
+           each { |aplicacion|  aplicaciones_anuladas.push(aplicacion) if aplicacion.anular_reserva}  
+    #rescue
+    #  errors.add(:aplicaciones_de_notas_de_debito, "No se pudieron anular algunas aplicaciones. La anulacion no se ha llevado acabo")
+    #  return 0
+    end
+    aplicaciones_anuladas
+  end
+
+  # 
   # Genera una nota de debito desde un informe de debito prestacional
   # @param arg_InformeDeDebito InformeDebitoPrestacional 
   # 
   # @return [NotaDeDebito] [Nota de debito creada]
   def self.nueva_desde_informe(arg_InformeDeDebito)
 
-  	if arg_InformeDeDebito.class != InformeDebitoPrestacional
-  		return false
-  	end
+    if arg_InformeDeDebito.class != InformeDebitoPrestacional
+      return false
+    end
 
-  	NotaDeDebito.create([
+    NotaDeDebito.create([
           { 
             efector_id: arg_InformeDeDebito.efector.id ,
             concepto_de_facturacion_id: arg_InformeDeDebito.concepto_de_facturacion.id,
@@ -37,7 +61,13 @@ class NotaDeDebito < ActiveRecord::Base
         ])
   end
 
+  # 
+  # Devuelve las notas de debito que poseen un monto disponible para aplicación
+  # 
+  # @return [ActiveRecord::Relation] Relacion de las notas de debito q tienen disponible para aplicacion
   def self.disponibles_para_aplicacion
+    joins(:aplicaciones_de_notas_de_debito).
+    where("aplicaciones_de_notas_de_debito.estado_de_aplicacion_de_debito_id != 3").
     where("notas_de_debito.remanente - notas_de_debito.reservado > 0")
   end
 
@@ -47,7 +77,7 @@ class NotaDeDebito < ActiveRecord::Base
   # @param efector [Efector] Efector por el cual realizar el filtro
   # @param incluir_administrados = false [Boolean] [Indica si incluye o no las nd de sus administrados]
   # 
-  # @return [type] [description]
+  # @return [ActiveRecord::Relation] [description]
   def self.por_efector(efector, incluir_administrados = false)
     return false unless efector.is_a?(Efector)
     efectores = []
@@ -60,5 +90,6 @@ class NotaDeDebito < ActiveRecord::Base
     end
     return where(efector_id: efectores)
   end # end por_efector
+
 
 end

@@ -3,7 +3,7 @@ class CreateEstadosDeAplicacionesDeDebitos < ActiveRecord::Migration
   def up
     create_table :estados_de_aplicaciones_de_debitos do |t|
       t.column :codigo, "char(3)"
-      t.column :nombre, "varchar(15)"
+      t.column :nombre, "varchar(25)"
       t.timestamps
     end
 
