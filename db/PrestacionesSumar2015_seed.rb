@@ -17,7 +17,7 @@ ActiveRecord::Base.transaction do
   fecha_de_inicio = Date.new(2012, 8, 1)
 
   # Fecha de inicio del nomenclador nuevo
-  fecha_de_inicio_nueva = Date.new(2015, 3, 1)
+  fecha_de_inicio_nueva = Date.new(2015, 4, 1)
 
   # Obtener el nomenclador
   nomenclador_sumar = Nomenclador.find(5)
@@ -930,9 +930,94 @@ ActiveRecord::Base.transaction do
   prestacion.update_attributes!(nombre: "Cardiopatías congénitas - Módulo I - Embolización de colaterales de ramas pulmonares con hemodinamia intervencionista")
   prestacion.grupos_poblacionales << de_6_a_9
 
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK015"
+  prestacion = Prestacion.find(422)
+  prestacion.grupos_poblacionales << de_6_a_9
 
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK016"
+  prestacion = Prestacion.find(423)
+  prestacion.grupos_poblacionales << de_6_a_9
 
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK035"
+  prestacion = Prestacion.find(424)
+  prestacion.grupos_poblacionales << de_6_a_9
 
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK037"
+  prestacion = Prestacion.find(426)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "ITK017"
+  prestacion = Prestacion.find(427)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "XMX002" (no catastróficas)
+  prestacion = Prestacion.find(447)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "XMX003" (no catastróficas)
+  prestacion = Prestacion.find(448)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "XMX004" (no catastróficas)
+  prestacion = Prestacion.find(449)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "XMX005" (no catastróficas)
+  prestacion = Prestacion.find(450)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "XMX006" (no catastróficas)
+  prestacion = Prestacion.find(451)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "XMX008" (no catastróficas)
+  prestacion = Prestacion.find(453)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Agregar el grupo poblacional de 6 a 9 años en la prestación "XMX009" (no catastróficas)
+  prestacion = Prestacion.find(454)
+  prestacion.grupos_poblacionales << de_6_a_9
+
+  # Modificar el nombre de la prestación "CTC010" (id: 524)
+  prestacion = Prestacion.find(524)
+  prestacion.update_attributes!(nombre: "Control odontológico")
+
+  # Modificar el nombre de la prestación "IMV011" (id: 526)
+  prestacion = Prestacion.find(526)
+  prestacion.update_attributes!(nombre: "Dosis aplicada de doble viral (rubéola + sarampión)")
+
+  # Corregir los diagnósticos de la prestación "CAW006" con id 537
+  prestacion = Prestacion.find(537)
+  prestacion.diagnosticos.delete_all
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A75")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B80")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B78")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B81")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D96")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D61")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D62")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B90")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K73")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K96")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K83")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K86")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T79")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T83")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T89")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("T90")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Y70")
+
+  # Añadir el grupo poblacional de 10 a 19 años a las prestaciones NTN002
+  prestacion = Prestacion.find(816)
+  prestacion.grupos_poblacionales << adolescentes
+  prestacion = Prestacion.find(817)
+  prestacion.grupos_poblacionales << adolescentes
 
 
 
@@ -999,7 +1084,6 @@ prestacion = Prestacion.where(codigo: "TLM020").first
 prestacion.sexos << [Sexo.find_by_codigo!("F")]
 prestacion.grupos_poblacionales << [GrupoPoblacional.find_by_codigo("D")]
 prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98") # Medicina preventiva
-
 
 
 

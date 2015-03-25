@@ -129,4 +129,27 @@ GrupoPdss.create!([
     :seccion_pdss_id => 3,
     :orden => 2
   },
+  {
+    # :id => 16
+    :nombre => "Cardiopatías congénitas: Módulos quirúrgicos",
+    :codigo => "3.3",
+    :seccion_pdss_id => 3,
+    :prestaciones_modularizadas => true,
+    :orden => 3
+  },
+  {
+    # :id => 17
+    :nombre => "Cardiopatías congénitas: Prácticas complementarias a módulos quirúrgicos",
+    :codigo => "3.4",
+    :seccion_pdss_id => 3,
+    :prestaciones_modularizadas => true,
+    :orden => 4
+  },
+  {
+    # :id => 18
+    :nombre => "Cuidado de la salud",
+    :codigo => "4.1",
+    :seccion_pdss_id => 4,
+    :orden => 1
+  },
 ])

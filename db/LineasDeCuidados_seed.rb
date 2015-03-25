@@ -223,14 +223,29 @@ LineaDeCuidado.create!([
     :codigo => "OBE"
   },
   {
-    # :id => 44
-    :nombre => "Obesidad",
-    :codigo => "OBE"
-  },
-  {
     # :id => 45
     :nombre => "Sobrepeso",
     :codigo => "SOB"
+  },
+  {
+    # :id => 46
+    :nombre => "Consumo episódico excesivo de alcohol y/u otras sustancias psicoactivas",
+    :codigo => "CEE"
+  },
+  {
+    # :id => 47
+    :nombre => "Hemorragia en el 1er o 2do trimestre",
+    :codigo => "H12"
+  },
+  {
+    # :id => 48
+    :nombre => "Intento de suicidio",
+    :codigo => "SUI"
+  },
+  {
+    # :id => 49
+    :nombre => "Víctima de violencia sexual",
+    :codigo => "VSX"
   },
 
 ])

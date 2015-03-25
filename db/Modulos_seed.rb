@@ -107,9 +107,14 @@ Modulo.create([
     :codigo => "CC3_B"
   },
   {
-    #:id => 18,
+    #:id => 22,
     :nombre => "Prácticas de alta complejidad CCC IV (pacientes con CEC y baja complejidad - CIV simple sin otras malformaciones)",
     :codigo => "CC4_B"
+  },
+  {
+    #:id => 23,
+    :nombre => "Módulos de cardiopatías congénitas",
+    :codigo => "MCC_B"
   },
 
 ])

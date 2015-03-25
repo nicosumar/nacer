@@ -1791,186 +1791,472 @@ PrestacionPdss.create([
     modulo_id: 20,
     tipo_de_prestacion_id: 9
   },
-
-
-
-
-
   {
-    # id: 104
-    nombre: "Cierre de ductus",
-    grupo_pdss_id: 10,
-    orden: 11,
-    linea_de_cuidado_id: 34,
-    modulo_id: 16,
-    tipo_de_prestacion_id: 9
-  },
-  {
-    # id: 105
-    nombre: "Cerclaje de arteria pulmonar",
-    grupo_pdss_id: 10,
+    # id: 209
+    nombre: "Cirugía de Glenn",
+    grupo_pdss_id: 16,
     orden: 12,
     linea_de_cuidado_id: 34,
-    modulo_id: 16,
+    modulo_id: 21,
     tipo_de_prestacion_id: 9
   },
   {
-    # id: 106
-    nombre: "Anastomosis subclavio-pulmonar",
-    grupo_pdss_id: 10,
+    # id: 210
+    nombre: "Cierre de CIA con cirugía convencional",
+    grupo_pdss_id: 16,
     orden: 13,
     linea_de_cuidado_id: 34,
-    modulo_id: 16,
+    modulo_id: 21,
     tipo_de_prestacion_id: 9
   },
   {
-    # id: 107
-    nombre: "Corrección de coartación de la aorta",
-    grupo_pdss_id: 10,
+    # id: 211
+    nombre: "Cirugía correctora de anomalía parcial del retorno venoso pulmonar",
+    grupo_pdss_id: 16,
     orden: 14,
     linea_de_cuidado_id: 34,
-    modulo_id: 16,
+    modulo_id: 21,
     tipo_de_prestacion_id: 9
   },
   {
-    # id: 108
-    nombre: "Cirugía de Glenn",
-    grupo_pdss_id: 10,
+    # id: 212
+    nombre: "Cirugía correctora de canal A-V parcial",
+    grupo_pdss_id: 16,
     orden: 15,
     linea_de_cuidado_id: 34,
-    modulo_id: 17,
+    modulo_id: 21,
     tipo_de_prestacion_id: 9
   },
   {
-    # id: 109
-    nombre: "Cierre de CIA con cirugía convencional",
-    grupo_pdss_id: 10,
+    # id: 213
+    nombre: "Cierre de CIV con cirugía convencional",
+    grupo_pdss_id: 16,
     orden: 16,
     linea_de_cuidado_id: 34,
-    modulo_id: 17,
-    tipo_de_prestacion_id: 9
-  },
-  {
-    # id: 110
-    nombre: "Cirugía correctora",
-    grupo_pdss_id: 10,
-    orden: 17,
-    linea_de_cuidado_id: 34,
-    modulo_id: 17,
-    tipo_de_prestacion_id: 9
-  },
-  {
-    # id: 111
-    nombre: "Correctora de ventana aortopulmonar",
-    grupo_pdss_id: 10,
-    orden: 18,
-    linea_de_cuidado_id: 34,
-    modulo_id: 17,
-    tipo_de_prestacion_id: 9
-  },
-  {
-    # id: 112
-    nombre: "Correctora de canal A-V parcial",
-    grupo_pdss_id: 10,
-    orden: 19,
-    linea_de_cuidado_id: 34,
-    modulo_id: 17,
-    tipo_de_prestacion_id: 9
-  },
-  {
-    # id: 113
-    nombre: "Cierre de CIV con cirugía convencional",
-    grupo_pdss_id: 10,
-    orden: 20,
-    linea_de_cuidado_id: 34,
-    modulo_id: 18,
+    modulo_id: 22,
     tipo_de_prestacion_id: 9
   },
 
-  # SECCIÓN 2 - Grupo 11
+  # SECCIÓN 3 - Grupo 17
 
   {
-    # id: 114
-    nombre: "Alprostadil",
-    grupo_pdss_id: 11,
+    # id: 214
+    nombre: "Óxido nitríco y dispenser para su administración",
+    grupo_pdss_id: 17,
     orden: 1,
     linea_de_cuidado_id: 34,
-    modulo_id: 19,
+    modulo_id: 23,
     tipo_de_prestacion_id: 11
   },
   {
-    # id: 115
-    nombre: "Óxido nitríco y dispenser para su administración",
-    grupo_pdss_id: 11,
+    # id: 215
+    nombre: "Levosimendán",
+    grupo_pdss_id: 17,
     orden: 2,
     linea_de_cuidado_id: 34,
-    modulo_id: 19,
+    modulo_id: 23,
     tipo_de_prestacion_id: 11
   },
   {
-    # id: 116
-    nombre: "Levosimendán",
-    grupo_pdss_id: 11,
+    # id: 216
+    nombre: "Factor VII activado recombinante",
+    grupo_pdss_id: 17,
     orden: 3,
     linea_de_cuidado_id: 34,
-    modulo_id: 19,
+    modulo_id: 23,
     tipo_de_prestacion_id: 11
   },
   {
-    # id: 117
-    nombre: "Factor VII activado recombinante",
-    grupo_pdss_id: 11,
+    # id: 217
+    nombre: "Iloprost",
+    grupo_pdss_id: 17,
     orden: 4,
     linea_de_cuidado_id: 34,
-    modulo_id: 19,
+    modulo_id: 23,
     tipo_de_prestacion_id: 11
   },
   {
-    # id: 118
-    nombre: "Iloprost",
-    grupo_pdss_id: 11,
+    # id: 218
+    nombre: "Trometanol",
+    grupo_pdss_id: 17,
     orden: 5,
     linea_de_cuidado_id: 34,
-    modulo_id: 19,
+    modulo_id: 23,
     tipo_de_prestacion_id: 11
   },
   {
-    # id: 119
-    nombre: "Trometanol",
-    grupo_pdss_id: 11,
+    # id: 219
+    nombre: "Nutrición parenteral total",
+    grupo_pdss_id: 17,
     orden: 6,
     linea_de_cuidado_id: 34,
-    modulo_id: 19,
+    modulo_id: 23,
     tipo_de_prestacion_id: 11
   },
   {
-    # id: 120
-    nombre: "Surfactante",
-    grupo_pdss_id: 11,
+    # id: 220
+    nombre: "Prótesis y órtesis",
+    grupo_pdss_id: 17,
     orden: 7,
     linea_de_cuidado_id: 34,
-    modulo_id: 19,
-    tipo_de_prestacion_id: 11
-  },
-  {
-    # id: 121
-    nombre: "Nutrición parenteral total",
-    grupo_pdss_id: 11,
-    orden: 8,
-    linea_de_cuidado_id: 34,
-    modulo_id: 19,
-    tipo_de_prestacion_id: 11
-  },
-  {
-    # id: 122
-    nombre: "Prótesis y órtesis",
-    grupo_pdss_id: 11,
-    orden: 9,
-    linea_de_cuidado_id: 34,
-    modulo_id: 19,
+    modulo_id: 23,
     tipo_de_prestacion_id: 11
   },
 
+  # SECCIÓN 4 - Grupo 18
+
+  {
+    # id: 221
+    nombre: "Anemia leve y moderada en mujeres (inicial)",
+    grupo_pdss_id: 18,
+    orden: 1,
+    linea_de_cuidado_id: 40,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 222
+    nombre: "Anemia leve y moderada en mujeres (ulterior)",
+    grupo_pdss_id: 18,
+    orden: 2,
+    linea_de_cuidado_id: 40,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 223
+    nombre: "Asma bronquial (inicial)",
+    grupo_pdss_id: 18,
+    orden: 3,
+    linea_de_cuidado_id: 41,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 224
+    nombre: "Asma bronquial (ulterior)",
+    grupo_pdss_id: 18,
+    orden: 4,
+    linea_de_cuidado_id: 41,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 225
+    nombre: "Asma bronquial (urgencia)",
+    grupo_pdss_id: 18,
+    orden: 5,
+    linea_de_cuidado_id: 41,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 226
+    nombre: "Prevención de comportamientos adictivos: tabaquismo, uso de drogas, alcoholismo",
+    grupo_pdss_id: 18,
+    orden: 6,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 227
+    nombre: "Pautas nutricionales respetando la cultura alimentaria de comunidades indígenas",
+    grupo_pdss_id: 18,
+    orden: 7,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 228
+    nombre: "Prevención de accidentes",
+    grupo_pdss_id: 18,
+    orden: 8,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 229
+    nombre: "Prevención de VIH e infecciones de transmisión sexual",
+    grupo_pdss_id: 18,
+    orden: 9,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 230
+    nombre: "Prevención de violencia de género",
+    grupo_pdss_id: 18,
+    orden: 10,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 231
+    nombre: "Prevención de violencia familiar",
+    grupo_pdss_id: 18,
+    orden: 11,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 232
+    nombre: "Promoción de hábitos saludables: salud bucal, educación alimentaria, pautas de higiene, trastornos de la alimentación",
+    grupo_pdss_id: 18,
+    orden: 12,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 233
+    nombre: "Promoción de pautas alimentarias",
+    grupo_pdss_id: 18,
+    orden: 13,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 234
+    nombre: "Promoción de salud sexual y reproductiva",
+    grupo_pdss_id: 18,
+    orden: 14,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 235
+    nombre: "Salud sexual, confidencialidad, género y derecho (actividad en sala de espera)",
+    grupo_pdss_id: 18,
+    orden: 15,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
+  },
+  {
+    # id: 236
+    nombre: "Búsqueda activa de adolescentes para valoración integral",
+    grupo_pdss_id: 18,
+    orden: 16,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 3
+  },
+  {
+    # id: 237
+    nombre: "Búsqueda activa de embarazadas adolescentes por agente sanitario y/o personal de salud",
+    grupo_pdss_id: 18,
+    orden: 17,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 3
+  },
+  {
+    # id: 238
+    nombre: "Seguimiento por consumo episódico excesivo de alcohol y/u otras sustancias psicoactivas (inicial)",
+    grupo_pdss_id: 18,
+    orden: 18,
+    linea_de_cuidado_id: 46,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 239
+    nombre: "Seguimiento por consumo episódico excesivo de alcohol y/u otras sustancias psicoactivas (ulterior)",
+    grupo_pdss_id: 18,
+    orden: 19,
+    linea_de_cuidado_id: 46,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 240
+    nombre: "Consumo episódico excesivo de alcohol y/u otras sustancias psicoactivas (urgencia/consultorio externo)",
+    grupo_pdss_id: 18,
+    orden: 20,
+    linea_de_cuidado_id: 46,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 241
+    nombre: "Examen periódico de salud del adolescente",
+    grupo_pdss_id: 18,
+    orden: 21,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 242
+    nombre: "Control de salud individual para población indígena en terreno",
+    grupo_pdss_id: 18,
+    orden: 22,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 243
+    nombre: "Control ginecológico",
+    grupo_pdss_id: 18,
+    orden: 23,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 244
+    nombre: "Control odontológico",
+    grupo_pdss_id: 18,
+    orden: 24,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 245
+    nombre: "Control oftalmológico",
+    grupo_pdss_id: 18,
+    orden: 25,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 246
+    nombre: "Dosis aplicada de doble viral (rubéola + sarampión)",
+    grupo_pdss_id: 18,
+    orden: 26,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
+  },
+  {
+    # id: 247
+    nombre: "Dosis aplicada de doble adultos en mayores de 16 años",
+    grupo_pdss_id: 18,
+    orden: 27,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
+  },
+  {
+    # id: 248
+    nombre: "Dosis aplicada de dTap triple acelular (refuerzo a los 11 años)",
+    grupo_pdss_id: 18,
+    orden: 28,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
+  },
+  {
+    # id: 249
+    nombre: "Dosis aplicada de inmunización anti hepatitis B monovalente (a partir 11 años, no inmunizados previamente)",
+    grupo_pdss_id: 18,
+    orden: 29,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
+  },
+  {
+    # id: 250
+    nombre: "Dosis aplicada de vacuna antigripal en personas con factores de riesgo",
+    grupo_pdss_id: 18,
+    orden: 30,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
+  },
+  {
+    # id: 251
+    nombre: "Dosis aplicada vacuna contra VPH en niñas 11 años",
+    grupo_pdss_id: 18,
+    orden: 31,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
+  },
+  {
+    # id: 252
+    nombre: "Consejería en salud sexual (en terreno)",
+    grupo_pdss_id: 18,
+    orden: 32,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 15
+  },
+  {
+    # id: 253
+    nombre: "Salud sexual en adolescente",
+    grupo_pdss_id: 18,
+    orden: 33,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 15
+  },
+  {
+    # id: 254
+    nombre: "Diagnóstico temprano y confidencial de embarazo en adolescente",
+    grupo_pdss_id: 18,
+    orden: 34,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 255
+    nombre: "Consulta para confirmación diagnóstica en población indígena con riesgo detectado en terreno",
+    grupo_pdss_id: 18,
+    orden: 35,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 3
+  },
+  {
+    # id: 256
+    nombre: "Consejería post-aborto",
+    grupo_pdss_id: 18,
+    orden: 36,
+    linea_de_cuidado_id: 47,
+    tipo_de_prestacion_id: 15
+  },
+  {
+    # id: 257
+    nombre: "Intento de suicidio (urgencia)",
+    grupo_pdss_id: 18,
+    orden: 37,
+    linea_de_cuidado_id: 48,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 258
+    nombre: "Seguimiento por intento de suicidio",
+    grupo_pdss_id: 18,
+    orden: 38,
+    linea_de_cuidado_id: 48,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 259
+    nombre: "Diagnóstica y de seguimiento de leucemia (inicial)",
+    grupo_pdss_id: 18,
+    orden: 39,
+    linea_de_cuidado_id: 42,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 260
+    nombre: "Diagnóstica y de seguimiento de leucemia (ulterior)",
+    grupo_pdss_id: 18,
+    orden: 40,
+    linea_de_cuidado_id: 42,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 261
+    nombre: "Notificación de inicio de tratamiento en tiempo oportuno (leucemia)",
+    grupo_pdss_id: 18,
+    orden: 41,
+    linea_de_cuidado_id: 42,
+    tipo_de_prestacion_id: 12
+  },
+  {
+    # id: 262
+    nombre: "Diagnóstica y de seguimiento de linfoma (inicial)",
+    grupo_pdss_id: 18,
+    orden: 42,
+    linea_de_cuidado_id: 43,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 263
+    nombre: "Diagnóstica y de seguimiento de linfoma (ulterior)",
+    grupo_pdss_id: 18,
+    orden: 43,
+    linea_de_cuidado_id: 43,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 264
+    nombre: "Notificación de inicio de tratamiento en tiempo oportuno (linfoma)",
+    grupo_pdss_id: 18,
+    orden: 44,
+    linea_de_cuidado_id: 43,
+    tipo_de_prestacion_id: 12
+  },
 
 
 
@@ -2958,138 +3244,10 @@ PrestacionPdss.create([
 
 
 
-  {
-    # id: 262
-    nombre: "Examen periódico de salud del adolescente",
-    codigo: "CTC001",
-    orden: 1,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: true
-  },
-  {
-    # id: 263
-    nombre: "Control de salud individual para población indígena en terreno",
-    codigo: "CTC009",
-    orden: 2,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: true
-  },
-  {
-    # id: 264
-    nombre: "Control ginecológico",
-    codigo: "CTC008",
-    orden: 3,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 265
-    nombre: "Control odontológico",
-    codigo: "CTC010",
-    orden: 4,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: true
-  },
-  {
-    # id: 266
-    nombre: "Control oftalmológico",
-    codigo: "CTC011",
-    orden: 5,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 267
-    nombre: "Doble viral (rubéola + sarampión)",
-    codigo: "IMV011",
-    orden: 6,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
-  },
-  {
-    # id: 268
-    nombre: "Dosis aplicada de doble adultos > 16 años",
-    codigo: "IMV010",
-    orden: 7,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
-  },
-  {
-    # id: 269
-    nombre: "Dosis aplicada de dTap triple acelular (refuerzo a los 11 años)",
-    codigo: "IMV008",
-    orden: 8,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
-  },
-  {
-    # id: 270
-    nombre: "Dosis apl. inmuniz. anti hepatitis B monovalente (a partir 11 años no inmuniz. prev.)",
-    codigo: "IMV009",
-    orden: 9,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
-  },
-  {
-    # id: 271
-    nombre: "Dosis aplicada de vacuna antigripal en personas con factores de riesgo",
-    codigo: "IMV013",
-    orden: 10,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
-  },
-  {
-    # id: 272
-    nombre: "Dosis aplicada vacuna contra VPH en niñas 11 años",
-    codigo: "IMV014",
-    orden: 11,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
-  },
+
+
+
+
   {
     # id: 273
     nombre: "Prevención de comportamientos adictivos: tabaquismo, uso de drogas, alcoholismo",
@@ -3234,162 +3392,18 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 14,
     rural: true
   },
-  {
-    # id: 285
-    nombre: "Post-aborto",
-    codigo: "COT018",
-    orden: 24,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 15,
-    rural: true
-  },
-  {
-    # id: 286
-    nombre: "Salud Sexual (terreno)",
-    codigo: "COT016",
-    orden: 25,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 15,
-    rural: true
-  },
-  {
-    # id: 287
-    nombre: "Salud sexual en adolescente",
-    codigo: "COT015",
-    orden: 26,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 15,
-    rural: true
-  },
-  {
-    # id: 288
-    nombre: "Búsqueda activa de adolescentes para valoración integral",
-    codigo: "CAW005",
-    orden: 27,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 3,
-    rural: true
-  },
-  {
-    # id: 289
-    nombre: "Búsq. activa de emb. adolescentes por agente sanitario y/o personal de salud",
-    codigo: "CAW004",
-    orden: 28,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 3,
-    rural: true
-  },
-  {
-    # id: 290
-    nombre: "Consulta p/ conf. diagnóstica en Población Indígena con riesgo detectado en terreno",
-    codigo: "CAW006",
-    orden: 29,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 3,
-    rural: false
-  },
-  {
-    # id: 291
-    nombre: "Anemia leve y moderada en mujeres (inicial)",
-    codigo: "CTC001",
-    orden: 30,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 3,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 292
-    nombre: "Anemia leve y moderada en mujeres (ulterior)",
-    codigo: "CTC002",
-    orden: 31,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 3,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 293
-    nombre: "Asma bronquial (urgencia)",
-    codigo: "CTC012",
-    orden: 32,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 20,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 294
-    nombre: "Asma bronquial (inicial)",
-    codigo: "CTC001",
-    orden: 33,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 20,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 295
-    nombre: "Asma bronquial (ulterior)",
-    codigo: "CTC002",
-    orden: 34,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 20,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 296
-    nombre: "Consumo episódico exc. alcohol y/o otras sust. psicoact. (urgencia/consult. ext.)",
-    codigo: "CTC012",
-    orden: 35,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 23,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 297
-    nombre: "Intento de suicidio (urgencia)",
-    codigo: "CTC012",
-    orden: 36,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 23,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
+
+
+
+
+
+
+
+
+
+
+
+
   {
     # id: 298
     nombre: "Víctima de violencia sexual (urgencia)",
@@ -3402,102 +3416,10 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 4,
     rural: false
   },
-  {
-    # id: 299
-    nombre: "Diagnóstica y de seguimiento de leucemia (inicial)",
-    codigo: "CTC001",
-    orden: 38,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 300
-    nombre: "Diagnóstica y de seguimiento de leucemia (ulterior)",
-    codigo: "CTC002",
-    orden: 39,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 301
-    nombre: "Diagnóstica y de seguimiento de linfoma (inicial)",
-    codigo: "CTC001",
-    orden: 40,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 302
-    nombre: "Diagnóstica y de seguimiento de linfoma (ulterior)",
-    codigo: "CTC002",
-    orden: 41,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 303
-    nombre: "Diagnóstico temprano y confidencial de embarazo en adolescente",
-    codigo: "CTC003",
-    orden: 42,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 24,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 304
-    nombre: "Seg. por consumo episódico exc. alcohol y/o otras sust. psicoactivas (inicial)",
-    codigo: "CTC001",
-    orden: 43,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 25,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 305
-    nombre: "Seg. por consumo episódico exc. alcohol y/o otras sust. psicoactivas (ulterior)",
-    codigo: "CTC002",
-    orden: 44,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 25,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
-  {
-    # id: 306
-    nombre: "Seguimiento por intento de suicidio",
-    codigo: "CTC001",
-    orden: 45,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 25,
-    tipo_de_prestacion_id: 4,
-    rural: false
-  },
+
+
+
+
   {
     # id: 307
     nombre: "Obesidad (inicial)",
@@ -3594,18 +3516,11 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 6,
     rural: false
   },
-  {
-    # id: 315
-    nombre: "Notificación de inicio de tratamiento en tiempo oportuno (leucemia-linfoma)",
-    codigo: "NTN002",
-    orden: 54,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 12,
-    rural: false
-  },
+
+
+
+
+
   {
     # id: 316
     nombre: "Examen periódico de salud",
