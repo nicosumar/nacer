@@ -11,15 +11,65 @@ class NotaDeDebito < ActiveRecord::Base
   validates :monto, presence: true
   validates :observaciones, presence: true
 
+  # 
+  # Devuelve el monto disponible para ser aplicado en un proceso de pago
+  # 
+  # @return [BigDecimal] Monto disponible
   def disponible_para_aplicacion
     self.remanente - self.reservado
+  end
+
+  # 
+  #  Genera aplicaciones reservadas vinculadas proceso de pago
+  # @param pago_sumar [type] [description]
+  # 
+  # @return [type] [description]
+  def reservar_para_pago(pago_sumar)
+    unless pago_sumar.is_a? PagoSumar
+      errors.add(:base, "El argumento debe ser un pago sumar")
+      return false
+    end
+
+    #  Verifico que el proceso de pago refiera al administrador/autoadministrado
+    # del efector administrado/autoadministrado de la nota de debito
+    efectores = []
+    if pago_sumar.efector.es_administrador? 
+      efectores << pago_sumar.efector.id
+      efectores << pago_sumar.efectores_administrados.map { |e| e.id }
+      efector_ok =  efectores.include?(self.efector_id)
+    elsif pago_sumar.es_autoadministrado?
+      efector_ok = (pago_sumar.efector_id == self.efector_id)
+    end
+
+    unless efector_ok
+      errors.add(:base, "El efector de pago no se corresponde para esta nota de debito")
+      return false
+    end
+
+    # Verifico que no exista una aplicacion para este proceso de pago
+    if self.aplicaciones_de_notas_de_debito.where(pago_sumar_id: pago_sumar.id).present?
+      errors.add(:base, "Ya existe una aplicacion para este proceso de pago.")
+      return false
+    end
+
+    transaction do
+      begin
+        self.aplicaciones_de_notas_de_debito.build
+        self.save
+      rescue Exception => e
+        errors.add(:base, "Ocurrio un error en la transaccion. Detalles: #{e.me}")
+        
+      end
+    end
+
+
   end
 
   # 
   # Marca como anuladas las prestaciones cuyo estado es "Reservado"
   # @param pago_sumar [PagoSumar] Proceso de pago vinculado a las aplicaciones
   # 
-  # @return [type] [description]
+  # @return [AplicacionDeNotaDeDebito] [Devuelve un array con las aplicaciones anuladas]
   def anular_aplicaciones_reservadas(pago_sumar)
     return false unless pago_sumar.is_a? PagoSumar
     
@@ -72,7 +122,7 @@ class NotaDeDebito < ActiveRecord::Base
   end
 
   # 
-  # Devuelve las notas de credito disponibles para un efector. 
+  #  Devuelve las notas de debito disponibles para un efector. 
   # Si el efector es administrador, incluye las ND disponibles para sus administrados
   # @param efector [Efector] Efector por el cual realizar el filtro
   # @param incluir_administrados = false [Boolean] [Indica si incluye o no las nd de sus administrados]

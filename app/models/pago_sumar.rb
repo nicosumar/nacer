@@ -48,27 +48,62 @@ class PagoSumar < ActiveRecord::Base
 
   end
 
+  # 
+  #  Crea nuevas aplicaciones de debito para una nota de debito vinculada a este proceso de pago
+  #  Marca como anuladas las aplicaciones de notas de debitos que ya estaban vinculadas y no se 
+  # volvieron a asignar
+  # 
+  # @param value_ids [Array] [Array con los ids de notas de debito a vincular]
+  # 
+  # @return [type] [description]
   def nota_de_debito_ids=(value_ids)
     unless value_ids.is_a? Array
+      errors.add(:aplicaciones_de_notas_de_debito, "Las notas de debito indicadas no son correctas")
       return nil 
-      raise ArgumentError
     end
 
     value_ids.each do |id|
-      if id.is_a? Fixnum
-        # ver si hay una nueva o modificar
-        
-        self.aplicaciones_de_notas_de_debito.build(nota_de_debito_id: id)
-      else
-        self.aplicaciones_de_notas_de_debito.clear 
+      unless id.is_a? Fixnum
         errors.add(:aplicaciones_de_notas_de_debito, "Uno de los ids de notas de debito no es valido - ID: #{id}")
-        raise ArgumentError 
+        return nil 
       end
     end
+
+    nd_incluidas  = value_ids & self.nota_de_debito_ids # interseccion de arrays
+    nd_nuevas     = value_ids - nd_incluidas # las enviadas menos las que ya estaban
+    nd_eliminadas =  self.nota_de_debito_ids - nd_incluidas
+
+    transaction do 
+      #vinculo las que no estaban anteriormente
+       
+      
+      #desvinculo las nd que ya estaban reservadas y se editaron (no se envian en el array)
+      
+
+      
+      # Agrego las notas de debito que no existian anteriormente
+      nd_nuevas.each do | n_id|
+        self.aplicaciones_de_notas_de_debito.build(nota_de_debito_id: n_id)
+      end
+
+      # Anulo las aplicaciones reservadas que se quitaron del array anterior
+      notas_anuladas = NotaDeDebito.find nd_eliminadas
+      notas_anuladas.each do |na|
+        na.anular_aplicaciones_reservadas(self)
+      end
+      self.save
+    end # end transaction
   end
 
+  # 
+  #  Devuelve los ids de las notas de debito cuyas aplicaciones (reservadas o aplicadas)
+  # estan vinculadas a este proceso de pago
+  # 
+  # @return [Fixnum] Ids de las notas vinculadas
   def nota_de_debito_ids
-    self.aplicaciones_de_notas_de_debito.map { |e| e.nota_de_debito_id } 
+    estados_aceptados = EstadoDeAplicacionDeDebito.where("estados_de_aplicaciones_de_debitos.id != 3 ").map { |e| e.id }
+
+    self.aplicaciones_de_notas_de_debito.where(estado_de_aplicacion_de_debito_id: estados_aceptados).map { |e| e.nota_de_debito_id } 
   end
 
   def expediente_sumar_ids=(value_ids)
