@@ -6,7 +6,7 @@ class AplicacionDeNotaDeDebito < ActiveRecord::Base
   attr_accessible :nota_de_debito_id, :estado_de_aplicacion_de_debito_id
 
   validate :verificar_integridad_de_montos, on: :create
-  after_create :actualizar_reservado_de_nota_de_debito
+  # after_create :actualizar_reservado_de_nota_de_debito
   
 
   after_initialize :init
@@ -21,12 +21,14 @@ class AplicacionDeNotaDeDebito < ActiveRecord::Base
     self.monto = nd.remanente - nd.reservado
     # Si:
     #         remanente (monto disponible para aplicacion) -
-    #      -  reservado (monto ya reservado por otros procesos de pago)
-    #      -  monto actual a reservar
+    #      +  reservado (monto ya reservado por otros procesos de pago)
+    #      +  monto actual a reservar
     #      es menor o igual al monto original -> no paso ninguna macana
-    if (nd.remanente - nd.reservado - self.monto) > nd.monto
+    if (nd.remanente + nd.reservado + self.monto) > nd.monto
       errors.add(:monto, "supera el remanente disponible para la nota de debito")
+      return false
     end
+    true
   end
   
   def actualizar_reservado_de_nota_de_debito

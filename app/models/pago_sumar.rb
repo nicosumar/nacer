@@ -40,7 +40,7 @@ class PagoSumar < ActiveRecord::Base
     total_de_debitos = 0.0
     
     self.expedientes_sumar.each do |exp|
-      total_aprobado = exp.monto_aprobado
+      total_aprobado += exp.monto_aprobado
     end
 
     total_de_debitos = self.aplicaciones_de_notas_de_debito.sum(:monto)
