@@ -48,15 +48,7 @@ class PagoSumar < ActiveRecord::Base
 
   end
 
-  # 
-  #  Crea nuevas aplicaciones de debito para una nota de debito vinculada a este proceso de pago
-  #  Marca como anuladas las aplicaciones de notas de debitos que ya estaban vinculadas y no se 
-  # volvieron a asignar
-  # 
-  # @param value_ids [Array] [Array con los ids de notas de debito a vincular]
-  # 
-  # @return [type] [description]
-  def nota_de_debito_ids=(value_ids)
+  def asociar_notas_de_debito(value_ids)
     unless value_ids.is_a? Array
       errors.add(:aplicaciones_de_notas_de_debito, "Las notas de debito indicadas no son correctas")
       return nil 
@@ -73,9 +65,65 @@ class PagoSumar < ActiveRecord::Base
     nd_nuevas     = value_ids - nd_incluidas # las enviadas menos las que ya estaban
     nd_eliminadas =  self.nota_de_debito_ids - nd_incluidas
 
+    transaction do
+      begin
+        # Busco para cada nota de debito el efector que corresponde con los incluidos en este proceso de pago
+        if self.efector.es_administrador? 
+          efectores = []
+          efectores << pago_sumar.efector
+          efectores << pago_sumar.efector.efectores_administrados.map { |e| e }
+          efectores.
+        NotaDeDebito.find(value_ids).each do |nd|
+          
+        end
+
+      rescue Exception => e
+        
+      end
+    end
+    
+  end
+
+
+  # 
+  #  Crea nuevas aplicaciones de debito para una nota de debito vinculada a este proceso de pago
+  #  Marca como anuladas las aplicaciones de notas de debitos que ya estaban vinculadas y no se 
+  # volvieron a asignar
+  # 
+  # @param value_ids [Array] [Array con los ids de notas de debito a vincular]
+  # 
+  # @return [type] [description]
+  def nota_de_debito_ids=(value_ids)
+    unless value_ids.is_a? Array
+      errors.add(:base, "No se puede encontrar la nota de debito sin el ID. Contacte con el departamento de sistemas.")
+      raise ActiveRecord::RecordNotFound
+    end
+
+    value_ids.each do |id|
+      unless id.is_a? Fixnum
+        errors.add(:base, "Uno de los ids de notas de debito no es valido - ID: #{id}")
+        raise ActiveRecord::RecordNotFound
+      end
+    end
+
+    nd_incluidas  = value_ids & self.nota_de_debito_ids # interseccion de arrays
+    nd_nuevas     = value_ids - nd_incluidas # las enviadas menos las que ya estaban
+    nd_eliminadas =  self.nota_de_debito_ids - nd_incluidas
+
     transaction do 
+      begin
+
+        self.expediente_sumar_ids=()
+        NotaDeDebito.find(nd_nuevas).each do |nd|
+
+          nd.reservar_para_pago(pago_sumar, monto?ASD?FASDf)
+        end
+        
+      rescue Exception => e
+        errors.add(:base, "Ocurrio un error al asignar las notas de debito. Detalle: #{e.message}")
+      end
       #vinculo las que no estaban anteriormente
-       
+      
       
       #desvinculo las nd que ya estaban reservadas y se editaron (no se envian en el array)
       

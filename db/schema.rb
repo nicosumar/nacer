@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150108160510) do
+ActiveRecord::Schema.define(:version => 20150330151634) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -210,6 +210,12 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
     t.string   "nombre"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "beneficiarios_trazadora_11", :id => false, :force => true do |t|
+    t.string "clave_de_beneficiario"
+    t.date   "fecha_de_asistencia"
+    t.string "cuie"
   end
 
   create_table "busquedas", :force => true do |t|
@@ -652,7 +658,7 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
 
   create_table "estados_de_aplicaciones_de_debitos", :force => true do |t|
     t.string   "codigo",     :limit => 3
-    t.string   "nombre",     :limit => 15
+    t.string   "nombre",     :limit => 25
     t.datetime "created_at",               :null => false
     t.datetime "updated_at",               :null => false
   end
@@ -829,9 +835,22 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
     t.integer  "liquidacion_sumar_anexo_administrativo_id"
     t.integer  "liquidacion_sumar_anexo_medico_id"
     t.integer  "estado_del_proceso_id"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at",                                                               :null => false
+    t.datetime "updated_at",                                                               :null => false
     t.integer  "expediente_sumar_id"
+    t.decimal  "monto_aprobado",                            :precision => 15, :scale => 4
+    t.decimal  "devueltos_administracion_monto",            :precision => 15, :scale => 4
+    t.integer  "devueltos_administracion_cantidad"
+    t.decimal  "devueltos_medica_monto",                    :precision => 15, :scale => 4
+    t.integer  "devueltos_medica_cantidad"
+    t.decimal  "rechazos_administracion_monto",             :precision => 15, :scale => 4
+    t.integer  "rechazos_administracion_cantidad"
+    t.decimal  "rechazos_medica_monto",                     :precision => 15, :scale => 4
+    t.integer  "rechazos_medica_cantidad"
+    t.integer  "aprobados_administracion_cantidad"
+    t.decimal  "aprobados_administracion_monto",            :precision => 15, :scale => 4
+    t.integer  "aprobados_medica_cantidad"
+    t.decimal  "aprobados_medica_monto",                    :precision => 15, :scale => 4
   end
 
   add_index "liquidaciones_informes", ["efector_id"], :name => "liquidaciones_informes_efector_id_idx"
@@ -912,6 +931,8 @@ ActiveRecord::Schema.define(:version => 20150108160510) do
   end
 
   add_index "liquidaciones_sumar_cuasifacturas_detalles", ["liquidaciones_sumar_cuasifacturas_id"], :name => "liquidaciones_sumar_cuasifact_liquidaciones_sumar_cuasifact_idx"
+  add_index "liquidaciones_sumar_cuasifacturas_detalles", ["prestacion_incluida_id"], :name => "liquidaciones_sumar_cuasifacturas_de_prestacion_incluida_id_idx"
+  add_index "liquidaciones_sumar_cuasifacturas_detalles", ["prestacion_liquidada_id"], :name => "liquidaciones_sumar_cuasifacturas_d_prestacion_liquidada_id_idx", :unique => true
 
   create_table "metodos_de_validacion", :force => true do |t|
     t.string   "nombre"

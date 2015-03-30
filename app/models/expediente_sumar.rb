@@ -57,25 +57,7 @@ class ExpedienteSumar < ActiveRecord::Base
   def monto_aprobado
     return 0 unless self.es_de_pago? 
 
-      r = ActiveRecord::Base.connection.exec_query <<-SQL
-        select sum(aprobado) aprobado
-        FROM
-        (
-          select c.monto_total - (sum(CASE WHEN amp.estado_de_la_prestacion_id in(6,10, 11) THEN pl.monto ELSE 0::numeric END) + 
-                      sum(CASE WHEN aap.estado_de_la_prestacion_id in(6,10, 11) THEN pl.monto ELSE 0::numeric END) ) "aprobado"
-          from liquidaciones_sumar l
-            join liquidaciones_sumar_cuasifacturas c on c.liquidacion_sumar_id = l.id
-            join efectores e on e.id  = c.efector_id
-            join liquidaciones_informes li on li.efector_id = e.id and li.liquidacion_sumar_id = l.id 
-            join prestaciones_liquidadas pl ON pl.liquidacion_id = l.id and pl.efector_id = e.id 
-            join expedientes_sumar es on es.id = li.expediente_sumar_id
-            left join anexos_medicos_prestaciones amp ON amp.prestacion_liquidada_id = pl.id 
-            left JOIN anexos_administrativos_prestaciones aap ON aap.prestacion_liquidada_id = pl.id
-          where es.id = #{self.id}
-          group by  es.numero, e.cuie, e.nombre,  c.monto_total 
-        ) a
-      SQL
-      r.rows[0][0].to_f
+    self.liquidaciones_informes.sum(:monto_aprobado)
   end
 
   # 

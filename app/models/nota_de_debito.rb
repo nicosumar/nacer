@@ -35,6 +35,11 @@ class NotaDeDebito < ActiveRecord::Base
     errors.add(:monto, "La nota de débito no posee monto disponible para aplicación" ) unless self.disponible_para_aplicacion > 0
     errors.add(:base, "La reserva de monto debe ser mayor a cero") if maximo_monto_de_reserva == 0
 
+    # Verifico que el concepto de esta ND es el mismo del proceso de pago
+    if pago_sumar.concepto_de_facturacion_id != self.concepto_de_facturacion_id
+      errors.add(:concepto_de_facturacion_id, "El proceso de pago es para el concepto #{pago_sumar.concepto_de_facturacion.nombre} y la nota de debito es solo puede aplicarse a #{self.concepto_de_facturacion.nombre}")
+    end
+
     #  Verifico que el proceso de pago refiera al administrador/autoadministrado
     # del efector administrado/autoadministrado de la nota de debito
     efectores = []
@@ -58,7 +63,6 @@ class NotaDeDebito < ActiveRecord::Base
       elsif maximo_monto_de_reserva > self.disponible_para_aplicacion 
         self.disponible_para_aplicacion 
       end
-                            
 
     transaction do
       begin
