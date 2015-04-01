@@ -123,13 +123,6 @@ GrupoPdss.create!([
     :orden => 2
   },
   {
-    # :id => 15
-    :nombre => "Cardiopatías congénitas: Estudios complementarios",
-    :codigo => "3.2",
-    :seccion_pdss_id => 3,
-    :orden => 2
-  },
-  {
     # :id => 16
     :nombre => "Cardiopatías congénitas: Módulos quirúrgicos",
     :codigo => "3.3",
@@ -152,4 +145,83 @@ GrupoPdss.create!([
     :seccion_pdss_id => 4,
     :orden => 1
   },
+  {
+    # :id => 19
+    :nombre => "Cardiopatías congénitas: Estudios complementarios",
+    :codigo => "4.2",
+    :seccion_pdss_id => 4,
+    :orden => 2
+  },
+  {
+    # :id => 20
+    :nombre => "Cardiopatías congénitas: Módulos quirúrgicos",
+    :codigo => "4.3",
+    :seccion_pdss_id => 4,
+    :prestaciones_modularizadas => true,
+    :orden => 3
+  },
+  {
+    # :id => 21
+    :nombre => "Cardiopatías congénitas: Prácticas complementarias a módulos quirúrgicos",
+    :codigo => "4.4",
+    :seccion_pdss_id => 4,
+    :prestaciones_modularizadas => true,
+    :orden => 4
+  },
+  {
+    # :id => 22
+    :nombre => "Cuidado de la salud",
+    :codigo => "5.1",
+    :seccion_pdss_id => 5,
+    :orden => 1
+  },
+  {
+    # :id => 23
+    :nombre => "Niños y niñas de 0 a 5 años - Recién nacido: módulos de malformaciones quirúrgicas",
+    :codigo => "6.1",
+    :seccion_pdss_id => 6,
+    :orden => 1
+  },
+  {
+    # :id => 24
+    :nombre => "Niños y niñas de 0 a 5 años - Recién nacido: módulos de prematurez",
+    :codigo => "6.2",
+    :seccion_pdss_id => 6,
+    :orden => 2
+  },
+  {
+    # :id => 25
+    :nombre => "Niños y niñas de 0 a 5 años - Cardiopatías congénitas: módulos quirúrgicos",
+    :codigo => "6.3",
+    :seccion_pdss_id => 6,
+    :orden => 3
+  },
+  {
+    # :id => 26
+    :nombre => "Niños y niñas de 0 a 5 años - Cardiopatías congénitas: Prácticas complementarias a módulos quirúrgicos",
+    :codigo => "6.4",
+    :seccion_pdss_id => 6,
+    :orden => 4
+  },
+  {
+    # :id => 27
+    :nombre => "Niños y niñas de 6 a 9 años y adolescentes - Cardiopatías congénitas: módulos quirúrgicos",
+    :codigo => "6.5",
+    :seccion_pdss_id => 6,
+    :orden => 5
+  },
+  {
+    # :id => 28
+    :nombre => "Niños y niñas de 6 a 9 años y adolescentes - Cardiopatías congénitas: Prácticas complementarias a módulos quirúrgicos",
+    :codigo => "6.6",
+    :seccion_pdss_id => 6,
+    :orden => 6
+  },
+  {
+    # :id => 29
+    :nombre => "Prácticas, imagenología y análisis de laboratorio",
+    :codigo => "7.1",
+    :seccion_pdss_id => 7,
+    :orden => 1
+  }
 ])

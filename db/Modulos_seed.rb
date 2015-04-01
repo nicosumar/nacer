@@ -116,5 +116,89 @@ Modulo.create([
     :nombre => "Módulos de cardiopatías congénitas",
     :codigo => "MCC_B"
   },
-
+  {
+    #:id => 24,
+    :nombre => "Atresia esofágica",
+    :codigo => "AES"
+  },
+  {
+    #:id => 25,
+    :nombre => "Gastrosquisis",
+    :codigo => "GQS"
+  },
+  {
+    #:id => 26,
+    :nombre => "Oclusión intestinal",
+    :codigo => "OCI"
+  },
+  {
+    #:id => 27,
+    :nombre => "RNPT de 500 a 1500 g con requerimiento de ARM o CPAP",
+    :codigo => "RNPT_ARM"
+  },
+  {
+    #:id => 28,
+    :nombre => "RNPT de 500 a 1500 g sin requerimiento de ARM o CPAP",
+    :codigo => "RNPT"
+  },
+  {
+    #:id => 29,
+    :nombre => "Prácticas de alta complejidad CCC V (pacientes con CEC y mediana complejidad no neonatos - CIV con otras patologías asociadas)",
+    :codigo => "CC5_A"
+  },
+  {
+    #:id => 30,
+    :nombre => "Prácticas de alta complejidad CCC VI (pacientes con CEC y alta complejidad neonatos - TGV y otros similares)",
+    :codigo => "CC6_A"
+  },
+  {
+    #:id => 31,
+    :nombre => "Prácticas de alta complejidad CCC VII",
+    :codigo => "CC7_A"
+  },
+  {
+    #:id => 32,
+    :nombre => "Módulos de cardiopatías congénitas",
+    :codigo => "MCC_C"
+  },
+  {
+    #:id => 29,
+    :nombre => "Prácticas de alta complejidad CCC V (pacientes con CEC y mediana complejidad no neonatos - CIV con otras patologías asociadas)",
+    :codigo => "CC5_A"
+  },
+  {
+    #:id => 30,
+    :nombre => "Prácticas de alta complejidad CCC VI (pacientes con CEC y alta complejidad neonatos - TGV y otros similares)",
+    :codigo => "CC6_A"
+  },
+  {
+    #:id => 31,
+    :nombre => "Prácticas de alta complejidad CCC VII",
+    :codigo => "CC7_A"
+  },
+  {
+    #:id => 32,
+    :nombre => "Módulos de cardiopatías congénitas",
+    :codigo => "MCC_C"
+  },
+  {
+    #:id => 33,
+    :nombre => "Prácticas de alta complejidad CCC V (pacientes con CEC y mediana complejidad)",
+    :codigo => "CC5_B"
+  },
+  {
+    #:id => 34,
+    :nombre => "Prácticas de alta complejidad CCC VI (pacientes con CEC y alta complejidad)",
+    :codigo => "CC6_B"
+  },
+  {
+    #:id => 35,
+    :nombre => "Prácticas de alta complejidad CCC VII",
+    :codigo => "CC7_B"
+  },
+  {
+    #:id => 36,
+    :nombre => "Módulos de cardiopatías congénitas",
+    :codigo => "MCC_D"
+  }
 ])

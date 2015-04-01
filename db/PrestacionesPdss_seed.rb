@@ -1730,9 +1730,9 @@ PrestacionPdss.create([
   },
   {
     # id: 202
-    nombre: "Reintervención por hemodinamia",
+    nombre: "Reintervención por ductus residual con hemodinamia intervencionista",
     grupo_pdss_id: 16,
-    orden: 5,
+    orden: 6,
     linea_de_cuidado_id: 34,
     modulo_id: 20,
     tipo_de_prestacion_id: 9
@@ -1741,16 +1741,16 @@ PrestacionPdss.create([
     # id: 203
     nombre: "Corrección de coartación de la aorta con hemodinamia intervencionista",
     grupo_pdss_id: 16,
-    orden: 6,
+    orden: 7,
     linea_de_cuidado_id: 34,
     modulo_id: 20,
     tipo_de_prestacion_id: 9
   },
   {
     # id: 204
-    nombre: "Reintervención por hemodinamia",
+    nombre: "Reintervención por recoartación de aorta con hemodinamia intervencionista",
     grupo_pdss_id: 16,
-    orden: 7,
+    orden: 8,
     linea_de_cuidado_id: 34,
     modulo_id: 20,
     tipo_de_prestacion_id: 9
@@ -1759,7 +1759,7 @@ PrestacionPdss.create([
     # id: 205
     nombre: "Cierre de CIA con hemodinamia intervencionista",
     grupo_pdss_id: 16,
-    orden: 8,
+    orden: 9,
     linea_de_cuidado_id: 34,
     modulo_id: 20,
     tipo_de_prestacion_id: 9
@@ -1768,7 +1768,7 @@ PrestacionPdss.create([
     # id: 206
     nombre: "Cierre de CIV con hemodinamia intervencionista",
     grupo_pdss_id: 16,
-    orden: 9,
+    orden: 10,
     linea_de_cuidado_id: 34,
     modulo_id: 20,
     tipo_de_prestacion_id: 9
@@ -1777,7 +1777,7 @@ PrestacionPdss.create([
     # id: 207
     nombre: "Colocación de Stent en ramas pulmonares con hemodinamia intervencionista",
     grupo_pdss_id: 16,
-    orden: 10,
+    orden: 11,
     linea_de_cuidado_id: 34,
     modulo_id: 20,
     tipo_de_prestacion_id: 9
@@ -1786,7 +1786,7 @@ PrestacionPdss.create([
     # id: 208
     nombre: "Embolización de colaterales de ramas pulmonares con hemodinamia intervencionista",
     grupo_pdss_id: 16,
-    orden: 11,
+    orden: 12,
     linea_de_cuidado_id: 34,
     modulo_id: 20,
     tipo_de_prestacion_id: 9
@@ -1795,7 +1795,7 @@ PrestacionPdss.create([
     # id: 209
     nombre: "Cirugía de Glenn",
     grupo_pdss_id: 16,
-    orden: 12,
+    orden: 13,
     linea_de_cuidado_id: 34,
     modulo_id: 21,
     tipo_de_prestacion_id: 9
@@ -1804,7 +1804,7 @@ PrestacionPdss.create([
     # id: 210
     nombre: "Cierre de CIA con cirugía convencional",
     grupo_pdss_id: 16,
-    orden: 13,
+    orden: 14,
     linea_de_cuidado_id: 34,
     modulo_id: 21,
     tipo_de_prestacion_id: 9
@@ -1813,7 +1813,7 @@ PrestacionPdss.create([
     # id: 211
     nombre: "Cirugía correctora de anomalía parcial del retorno venoso pulmonar",
     grupo_pdss_id: 16,
-    orden: 14,
+    orden: 15,
     linea_de_cuidado_id: 34,
     modulo_id: 21,
     tipo_de_prestacion_id: 9
@@ -1822,7 +1822,7 @@ PrestacionPdss.create([
     # id: 212
     nombre: "Cirugía correctora de canal A-V parcial",
     grupo_pdss_id: 16,
-    orden: 15,
+    orden: 16,
     linea_de_cuidado_id: 34,
     modulo_id: 21,
     tipo_de_prestacion_id: 9
@@ -1831,7 +1831,7 @@ PrestacionPdss.create([
     # id: 213
     nombre: "Cierre de CIV con cirugía convencional",
     grupo_pdss_id: 16,
-    orden: 16,
+    orden: 17,
     linea_de_cuidado_id: 34,
     modulo_id: 22,
     tipo_de_prestacion_id: 9
@@ -2257,1881 +2257,1214 @@ PrestacionPdss.create([
     linea_de_cuidado_id: 43,
     tipo_de_prestacion_id: 12
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   {
-    # id: 15
-    nombre: "Laboratorio prueba de embarazo",
-    codigo: "LBLxxx",
-    orden: 15,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 16
-    nombre: "Lab. Ctrol. prenatal  de 1ra. Vez (incluye: grupo y factor, hemoglobina, glucemia, orina completa, VDRL, Chagas, VIH, toxoplasmosis y Hbs antígeno).",
-    codigo: "LBLxxx",
-    orden: 16,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 17
-    nombre: "Laboratorio Ulterior de Control Prenatal  (Incluye Hemoglobina, Glucemia, Orina Completa, VDRL, VIH)",
-    codigo: "LBLxxx",
-    orden: 17,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 21
-    nombre: "Ronda Sanit. Compl. orientada a detecc. población de riesgo en área rural.",
-    codigo: "ROX001",
-    orden: 21,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 22
-    nombre: "Ronda Sanit. Compl. orientada a detecc. población de riesgo en pobl. indígena.",
-    codigo: "ROX002",
-    orden: 22,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 23
-    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
-    codigo: "DSY001",
-    orden: 23,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 5,
-    rural: true
-  },
-  {
-    # id: 48
-    nombre: "Electrocardiograma en embarazo",
-    codigo: "PRP004",
-    orden: 48,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 49
-    nombre: "Transp. por ref. de zona A  de emb. y niños menores de 6 años hasta 50 km",
-    codigo: "TLM081",
-    orden: 49,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 50
-    nombre: "Transp. por ref. de zona B  de emb. y niños menores de 6 años (+ de 50 km)",
-    codigo: "TLM082",
-    orden: 50,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 51
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION.",
-    codigo: "LBLxxx",
-    orden: 51,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 52
-    nombre: "Ecografía en control prenatal",
-    codigo: "IGR031",
-    orden: 52,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 53
-    nombre: "Rx de cráneo F y P en embarazadas",
-    codigo: "IGR022",
-    orden: 53,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 63
-    nombre: "Proteinuria rápida con tira reactiva",
-    codigo: "PRP030",
-    orden: 10,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 64
-    nombre: "Hemograma completo",
-    codigo: "LBL057",
-    orden: 11,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 65
-    nombre: "Coagulograma con fibrinógeno: KPTT",
-    codigo: "LBL069",
-    orden: 12,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 66
-    nombre: "Coagulograma con fibrinógeno: Tiempo de protrombina",
-    codigo: "LBL131",
-    orden: 13,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 67
-    nombre: "Coagulograma con fibrinógeno: Cuantificación de fibrinógeno",
-    codigo: "LBL023",
-    orden: 14,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 68
-    nombre: "Coagulograma con fibrinógeno: Tiempo de trombina",
-    codigo: "LBL132",
-    orden: 15,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 69
-    nombre: "Glucemia",
-    codigo: "LBL045",
-    orden: 16,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 70
-    nombre: "Uricemia",
-    codigo: "LBL002",
-    orden: 17,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 71
-    nombre: "Creatinina sérica",
-    codigo: "LBL022",
-    orden: 18,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 72
-    nombre: "Creatinina urinaria (24 hs)",
-    codigo: "LBL021",
-    orden: 19,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 73
-    nombre: "Proteinuria (24hs)",
-    codigo: "LBL090",
-    orden: 20,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 74
-    nombre: "Enzimas hepáticas: Transaminasas",
-    codigo: "LBL112",
-    orden: 21,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 75
-    nombre: "Enzimas hepáticas: Fosfatasa alcalina",
-    codigo: "LBL040",
-    orden: 22,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 76
-    nombre: "Enzimas hepáticas: Gamma GT",
-    codigo: "LBL044",
-    orden: 23,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 77
-    nombre: "Bilirrubina",
-    codigo: "LBL012",
-    orden: 24,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 78
-    nombre: "HDL y LDL",
-    codigo: "LBL052",
-    orden: 25,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 79
-    nombre: "Orina Completa",
-    codigo: "LBL079",
-    orden: 26,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 80
-    nombre: "Ecografía Obstétrica",
-    codigo: "IGR031",
-    orden: 27,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 81
-    nombre: "Eco doppler Fetal",
-    codigo: "IGR037",
-    orden: 28,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 82
-    nombre: "Ecografía Renal",
-    codigo: "IGR038",
-    orden: 29,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 83
-    nombre: "Monitoreo fetal ante parto",
-    codigo: "PRP031",
-    orden: 30,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 91
-    nombre: "Hemograma completo",
-    codigo: "LBL057",
-    orden: 38,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 92
-    nombre: "Coagulograma: KPTT",
-    codigo: "LBL069",
-    orden: 39,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 93
-    nombre: "Coagulograma: Tiempo de protrombina",
-    codigo: "LBL131",
-    orden: 40,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 94
-    nombre: "Coagulograma: Tiempo de trombina",
-    codigo: "LBL132",
-    orden: 41,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 95
-    nombre: "Hemoglobina glicosilada",
-    codigo: "LBL056",
-    orden: 42,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 96
-    nombre: "Fructosamina",
-    codigo: "LBL135",
-    orden: 43,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 97
-    nombre: "Urea",
-    codigo: "LBL117",
-    orden: 44,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 98
-    nombre: "Ácido úrico",
-    codigo: "LBL002",
+    # id: 265
+    nombre: "Obesidad (inicial)",
+    grupo_pdss_id: 18,
     orden: 45,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    linea_de_cuidado_id: 44,
+    tipo_de_prestacion_id: 4
   },
   {
-    # id: 99
-    nombre: "Creatinina sérica",
-    codigo: "LBL022",
+    # id: 266
+    nombre: "Obesidad (ulterior)",
+    grupo_pdss_id: 18,
     orden: 46,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    linea_de_cuidado_id: 44,
+    tipo_de_prestacion_id: 4
   },
   {
-    # id: 100
-    nombre: "Creatinina en orina",
-    codigo: "LBL021",
+    # id: 267
+    nombre: "Sobrepeso (inicial)",
+    grupo_pdss_id: 18,
     orden: 47,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    linea_de_cuidado_id: 45,
+    tipo_de_prestacion_id: 4
   },
   {
-    # id: 101
-    nombre: "Proteinuria (24hs)",
-    codigo: "LBL090",
+    # id: 268
+    nombre: "Sobrepeso (ulterior)",
+    grupo_pdss_id: 18,
     orden: 48,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    linea_de_cuidado_id: 45,
+    tipo_de_prestacion_id: 4
   },
   {
-    # id: 102
-    nombre: "Urocultivo",
-    codigo: "LBL118",
+    # id: 269
+    nombre: "Víctima de violencia sexual (urgencia)",
+    grupo_pdss_id: 18,
     orden: 49,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 103
-    nombre: "Prueba de tolerancia a la glucosa",
-    codigo: "LBL094",
-    orden: 50,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 104
-    nombre: "Ecografía Obstétrica",
-    codigo: "IGR031",
-    orden: 51,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 105
-    nombre: "Ecocardiograma fetal",
-    codigo: "IGR039",
-    orden: 52,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 106
-    nombre: "Monitoreo fetal ante parto",
-    codigo: "PRP031",
-    orden: 53,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 107
-    nombre: "Electrocardiograma",
-    codigo: "PRP004",
-    orden: 54,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 111
-    nombre: "Ecografía ginecológica",
-    codigo: "IGR008",
-    orden: 58,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 12,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 112
-    nombre: "Hemograma",
-    codigo: "LBL057",
-    orden: 59,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 12,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 114
-    nombre: "Ecografía Obstétrica",
-    codigo: "IGR031",
-    orden: 61,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 13,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 115
-    nombre: "Electrocardiograma",
-    codigo: "PRP004",
-    orden: 62,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 13,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 116
-    nombre: "Monitoreo fetal ante parto",
-    codigo: "PRP031",
-    orden: 63,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 13,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    linea_de_cuidado_id: 49,
+    tipo_de_prestacion_id: 4
   },
 
-
-
-
-
-
+  # SECCIÓN 4 - Grupo 19
 
   {
-    # id: 126
-    nombre: "Traslado de la gestante con diagnóstico de patología del embarazo; APP o malformación fetal mayor a centro de referencia",
-    codigo: "TLM041",
+    # id: 270
+    nombre: "Ergometría",
+    grupo_pdss_id: 19,
     orden: 1,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 4,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 9,
-    rural: false
+    linea_de_cuidado_id: 34,
+    tipo_de_prestacion_id: 13
   },
   {
-    # id: 142
-    nombre: "Traslado del RN prematuro de 500 a 1500 gramos, o de un RN con malformación congénita quirúrgica",
-    codigo: "TLM040",
-    orden: 1,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 6,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: false
-  },
-
-
-
-
-
-
-
-
-
-
-
-  {
-    # id: 191
-    nombre: "Ronda Sanit. completa orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 14,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    # id: 271
+    nombre: "Holter de 24 hs",
+    grupo_pdss_id: 19,
+    orden: 2,
+    linea_de_cuidado_id: 34,
+    tipo_de_prestacion_id: 13
   },
   {
-    # id: 192
-    nombre: "Ronda Sanit. Compl. orientada a detecc. de población de riesgo en pobl. indígena",
-    codigo: "ROX002",
-    orden: 15,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    # id: 272
+    nombre: "Presurometría",
+    grupo_pdss_id: 19,
+    orden: 3,
+    linea_de_cuidado_id: 34,
+    tipo_de_prestacion_id: 13
   },
-  {
-    # id: 193
-    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
-    codigo: "DSY001",
-    orden: 16,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 5,
-    rural: true
-  },
-
-
-
-
-
-  {
-    # id: 197
-    nombre: "Informe de comité de auditoría de muerte materna y/o infantil recibido y aprobado por el Ministerio de Salud de la Provincia, según ordenamiento",
-    codigo: "AUH002",
-    orden: 20,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 2,
-    rural: false
-  },
-
-
-
-
-
-
-  {
-    # id: 214
-    nombre: "Electrocardiograma en niños menores de 6 años",
-    codigo: "PRP004",
-    orden: 37,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-
-
-
-
-  {
-    # id: 216
-    nombre: "Transp. por ref. de zona A de emb. y niños menores de 6 años hasta 50 km",
-    codigo: "TLM081",
-    orden: 39,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 217
-    nombre: "Transp. por ref. de zona B de emb. y niños menores de 6 años (+ de 50 km)",
-    codigo: "TLM082",
-    orden: 40,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 218
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "LBLxxx",
-    orden: 41,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 219
-    nombre: "Eco. bilateral de caderas en niños menores de 2 meses",
-    codigo: "IGR005",
-    orden: 42,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 220
-    nombre: "Rx de tórax Fy P en niños menores de 6 años",
-    codigo: "IGR026",
-    orden: 43,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 221
-    nombre: "Rx de cráneo F y P en niños menores de 6 años",
-    codigo: "IGR022",
-    orden: 44,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 222
-    nombre: "Rx de huesos cortos en niños menores de 6 años c/patología prevalente",
-    codigo: "IGR017",
-    orden: 45,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 223
-    nombre: "Rx de huesos largos en niños menores de 6 años c/patología prevalente",
-    codigo: "IGR025",
-    orden: 46,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 224
-    nombre: "Eco-doppler en niños menores de 6 años",
-    codigo: "IGR004",
-    orden: 47,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-
-
-
-  {
-    # id: 232
-    nombre: "Ronda Sanit. completa orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 8,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 233
-    nombre: "Ronda Sanit. completa orientada a detección de pobl. de riesgo en población indígena",
-    codigo: "ROX002",
-    orden: 9,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-
-
-
-
-
-
-
-
-
-
-  {
-    # id: 258
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "PRPxxx",
-    orden: 34,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 259
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "LBLxxx",
-    orden: 35,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 260
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "IGRxxx",
-    orden: 36,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
   {
     # id: 273
-    nombre: "Prevención de comportamientos adictivos: tabaquismo, uso de drogas, alcoholismo",
-    codigo: "TAT010",
-    orden: 12,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Hemodinamia diagnóstica",
+    grupo_pdss_id: 19,
+    orden: 4,
+    linea_de_cuidado_id: 34,
+    tipo_de_prestacion_id: 6
   },
   {
     # id: 274
-    nombre: "Pautas nutricionales respetando cultura alimentaria de comunidades indígenas",
-    codigo: "TAT004",
-    orden: 13,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Resonancia magnética",
+    grupo_pdss_id: 19,
+    orden: 5,
+    linea_de_cuidado_id: 34,
+    tipo_de_prestacion_id: 6
   },
   {
     # id: 275
-    nombre: "Prevención de accidentes",
-    codigo: "TAT005",
-    orden: 14,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Tomografía",
+    grupo_pdss_id: 19,
+    orden: 6,
+    linea_de_cuidado_id: 34,
+    tipo_de_prestacion_id: 6
   },
+
+  # SECCIÓN 4 - Grupo 20
+
   {
     # id: 276
-    nombre: "Prevención de VIH e infecciones de transmisión Sexual",
-    codigo: "TAT007",
-    orden: 15,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Cierre de ductus con cirugía convencional",
+    grupo_pdss_id: 20,
+    orden: 1,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 277
-    nombre: "Prevención de violencia de género",
-    codigo: "TAT008",
-    orden: 16,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Corrección de coartación de la aorta con cirugía convencional",
+    grupo_pdss_id: 20,
+    orden: 2,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 278
-    nombre: "Prevención violencia familiar",
-    codigo: "TAT009",
-    orden: 17,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Reoperación por coartación de aorta residual",
+    grupo_pdss_id: 20,
+    orden: 3,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 279
-    nombre: "Prom. Háb. saludables: salud bucal, educ. alim., pautas de higiene, trast. de la alim.",
-    codigo: "TAT011",
-    orden: 18,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Cierre de ductus con hemodinamia intervencionista",
+    grupo_pdss_id: 20,
+    orden: 4,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 280
-    nombre: "Promoción de pautas alimentarias",
-    codigo: "TAT012",
-    orden: 19,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Reintervención por ductus residual con hemodinamia intervencionista",
+    grupo_pdss_id: 20,
+    orden: 5,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 281
-    nombre: "Promoción de salud sexual y reproductiva",
-    codigo: "TAT013",
-    orden: 20,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Corrección de coartación de la aorta con hemodinamia intervencionista",
+    grupo_pdss_id: 20,
+    orden: 6,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 282
-    nombre: "Salud sexual, confidencialidad, género y derecho (actividad en sala de espera)",
-    codigo: "TAT014",
-    orden: 21,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Reintervención por recoartación de aorta con hemodinamia intervencionista",
+    grupo_pdss_id: 20,
+    orden: 7,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 283
-    nombre: "Ronda Sanit. Compl. orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 22,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    nombre: "Cierre de CIA con hemodinamia intervencionista",
+    grupo_pdss_id: 20,
+    orden: 8,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 284
-    nombre: "Ronda Sanit. Compl. orientada a detección de pobl. de riesgo en pobl. indígena",
-    codigo: "ROX002",
-    orden: 23,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    nombre: "Cierre de CIV con hemodinamia intervencionista",
+    grupo_pdss_id: 20,
+    orden: 9,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 285
+    nombre: "Colocación de Stent en ramas pulmonares con hemodinamia intervencionista",
+    grupo_pdss_id: 20,
+    orden: 10,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 286
+    nombre: "Embolización de colaterales de ramas pulmonares con hemodinamia intervencionista",
+    grupo_pdss_id: 20,
+    orden: 11,
+    linea_de_cuidado_id: 34,
+    modulo_id: 20,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 287
+    nombre: "Cierre de CIA con cirugía convencional",
+    grupo_pdss_id: 20,
+    orden: 12,
+    linea_de_cuidado_id: 34,
+    modulo_id: 21,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 288
+    nombre: "Cirugía correctora de anomalía parcial del retorno venoso pulmonar",
+    grupo_pdss_id: 20,
+    orden: 13,
+    linea_de_cuidado_id: 34,
+    modulo_id: 21,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 289
+    nombre: "Cirugía correctora de canal A-V parcial",
+    grupo_pdss_id: 20,
+    orden: 14,
+    linea_de_cuidado_id: 34,
+    modulo_id: 21,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 290
+    nombre: "Cierre de CIV con cirugía convencional",
+    grupo_pdss_id: 20,
+    orden: 15,
+    linea_de_cuidado_id: 34,
+    modulo_id: 22,
+    tipo_de_prestacion_id: 9
   },
 
+  # SECCIÓN 4 - Grupo 21
 
+  {
+    # id: 291
+    nombre: "Óxido nitríco y dispenser para su administración",
+    grupo_pdss_id: 21,
+    orden: 1,
+    linea_de_cuidado_id: 34,
+    modulo_id: 23,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 292
+    nombre: "Levosimendán",
+    grupo_pdss_id: 21,
+    orden: 2,
+    linea_de_cuidado_id: 34,
+    modulo_id: 23,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 293
+    nombre: "Factor VII activado recombinante",
+    grupo_pdss_id: 21,
+    orden: 3,
+    linea_de_cuidado_id: 34,
+    modulo_id: 23,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 294
+    nombre: "Iloprost",
+    grupo_pdss_id: 21,
+    orden: 4,
+    linea_de_cuidado_id: 34,
+    modulo_id: 23,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 295
+    nombre: "Trometanol",
+    grupo_pdss_id: 21,
+    orden: 5,
+    linea_de_cuidado_id: 34,
+    modulo_id: 23,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 296
+    nombre: "Nutrición parenteral total",
+    grupo_pdss_id: 21,
+    orden: 6,
+    linea_de_cuidado_id: 34,
+    modulo_id: 23,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 297
+    nombre: "Prótesis y órtesis",
+    grupo_pdss_id: 21,
+    orden: 7,
+    linea_de_cuidado_id: 34,
+    modulo_id: 23,
+    tipo_de_prestacion_id: 11
+  },
 
-
-
-
-
-
-
-
-
+  # SECCIÓN 5 - Grupo 22
 
   {
     # id: 298
-    nombre: "Víctima de violencia sexual (urgencia)",
-    codigo: "CTC012",
-    orden: 37,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 23,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Anemia leve y moderada 20 a 49 años (inicial)",
+    grupo_pdss_id: 22,
+    orden: 1,
+    linea_de_cuidado_id: 50,
+    tipo_de_prestacion_id: 4
   },
-
-
-
-
+  {
+    # id: 299
+    nombre: "Anemia leve y moderada 20 a 49 años (ulterior)",
+    grupo_pdss_id: 22,
+    orden: 2,
+    linea_de_cuidado_id: 50,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 300
+    nombre: "Diagnóstica y seguimiento de CA cérvicouterino (inicial)",
+    grupo_pdss_id: 22,
+    orden: 3,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 301
+    nombre: "Diagnóstica y seguimiento de CA cérvicouterino (ulterior)",
+    grupo_pdss_id: 22,
+    orden: 4,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 302
+    nombre: "Colposcopía de lesión en cuello uterino, realizada por especialista en ASC-H, H-SIL, cáncer (CA cérvicouterino)",
+    grupo_pdss_id: 22,
+    orden: 5,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 13
+  },
+  {
+    # id: 303
+    nombre: "Biopsia de lesión en cuello uterino, realizada por especialista en ASC-H, H-SIL, cáncer (CA cérvicouterino)",
+    grupo_pdss_id: 22,
+    orden: 6,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 13
+  },
+  {
+    # id: 304
+    nombre: "Toma de muestra citológica (25 a 64 años) (tamizaje CA cérvicouterino)",
+    grupo_pdss_id: 22,
+    orden: 7,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 13
+  },
+  {
+    # id: 305
+    nombre: "Diagnóstico por biopsia en laboratorio de anatomía patológica, para aquellas mujeres con citología ASC-H, H-SIL, cáncer (CA cérvicouterino)",
+    grupo_pdss_id: 22,
+    orden: 8,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 1
+  },
+  {
+    # id: 306
+    nombre: "Lectura de la muestra tomada en mujeres entre 25 y 64 años, en laboratorio de Anatomía Patológica/Citología con diagnóstico firmado por anátomo-patólogo matriculado (tamizaje de CA cérvicouterino)",
+    grupo_pdss_id: 22,
+    orden: 9,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 1
+  },
   {
     # id: 307
-    nombre: "Obesidad (inicial)",
-    codigo: "CTC001",
-    orden: 46,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 17,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Notificación de caso positivo al responsable del servicio donde se realizó la toma de muestra (PAP) (CA cérvicouterino)",
+    grupo_pdss_id: 22,
+    orden: 10,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 12
   },
   {
     # id: 308
-    nombre: "Obesidad (ulterior)",
-    codigo: "CTC002",
-    orden: 47,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 17,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Notificación de caso positivo al responsable del servicio donde se realizó la toma de muestra (biopsia) (CA cérvicouterino)",
+    grupo_pdss_id: 22,
+    orden: 11,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 12
   },
   {
     # id: 309
-    nombre: "Sobrepeso (inicial)",
-    codigo: "CTC001",
-    orden: 48,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 17,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Notificación de inicio de tratamiento en tiempo oportuno en ASC-H, H-SIL, cáncer (CA cérvicouterino)",
+    grupo_pdss_id: 22,
+    orden: 12,
+    linea_de_cuidado_id: 51,
+    tipo_de_prestacion_id: 12
   },
   {
     # id: 310
-    nombre: "Sobrepeso (ulterior)",
-    codigo: "CTC002",
-    orden: 49,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 17,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Diagnóstica y seguimiento de CA de mama (inicial)",
+    grupo_pdss_id: 22,
+    orden: 13,
+    linea_de_cuidado_id: 52,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 311
-    nombre: "Colocación de DIU",
-    codigo: "PRP003",
-    orden: 50,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    nombre: "Diagnóstica y seguimiento de CA de mama (ulterior)",
+    grupo_pdss_id: 22,
+    orden: 14,
+    linea_de_cuidado_id: 52,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 312
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "PRPxxx",
-    orden: 51,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    nombre: "Biopsia para las mujeres con mamografía BIRADS 4 y 5 (CA mama)",
+    grupo_pdss_id: 22,
+    orden: 15,
+    linea_de_cuidado_id: 52,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 313
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "LBLxxx",
-    orden: 52,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Mamografía bilateral, craneocaudal y oblicua, con proyección axilar mujeres (en mayores de 49 años cada 2 años con mamografía negativa)",
+    grupo_pdss_id: 22,
+    orden: 16,
+    linea_de_cuidado_id: 52,
+    tipo_de_prestacion_id: 8
   },
   {
     # id: 314
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "IGRxxx",
-    orden: 53,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Mamografía variedad magnificada",
+    grupo_pdss_id: 22,
+    orden: 17,
+    linea_de_cuidado_id: 52,
+    tipo_de_prestacion_id: 8
   },
-
-
-
-
-
+  {
+    # id: 315
+    nombre: "Anatomía patológica de biopsia (CA mama)",
+    grupo_pdss_id: 22,
+    orden: 18,
+    linea_de_cuidado_id: 52,
+    tipo_de_prestacion_id: 1
+  },
   {
     # id: 316
-    nombre: "Examen periódico de salud",
-    codigo: "CTC001",
-    orden: 1,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: true
+    nombre: "Notificación de inicio de tratamiento en tiempo oportuno (CA mama)",
+    grupo_pdss_id: 22,
+    orden: 19,
+    linea_de_cuidado_id: 52,
+    tipo_de_prestacion_id: 12
   },
   {
     # id: 317
-    nombre: "Control de salud individual para población indígena en terreno",
-    codigo: "CTC009",
-    orden: 2,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: true
+    nombre: "Prevención de comportamientos adictivos: tabaquismo, uso de drogas, alcoholismo",
+    grupo_pdss_id: 22,
+    orden: 20,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 318
-    nombre: "Control ginecológico",
-    codigo: "CTC008",
-    orden: 3,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Pautas nutricionales respetando cultura alimentaria de comunidades indígenas",
+    grupo_pdss_id: 22,
+    orden: 21,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 319
-    nombre: "Control odontológico",
-    codigo: "CTC010",
-    orden: 4,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 1,
-    tipo_de_prestacion_id: 4,
-    rural: true
+    nombre: "Prevención de accidentes",
+    grupo_pdss_id: 22,
+    orden: 22,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 320
-    nombre: "Dosis aplicada de Doble adultos (dT)",
-    codigo: "IMV010",
-    orden: 5,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
+    nombre: "Prevención de VIH e infecciones de transmisión Sexual",
+    grupo_pdss_id: 22,
+    orden: 23,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 321
-    nombre: "Dosis aplicada de doble viral",
-    codigo: "IMV011",
-    orden: 6,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
+    nombre: "Prevención de violencia de género",
+    grupo_pdss_id: 22,
+    orden: 24,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 322
-    nombre: "Dosis aplicada de vacuna antrigripal en personas con factores de riesgo",
-    codigo: "IMV013",
-    orden: 7,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 8,
-    rural: true
+    nombre: "Prevención de violencia familiar",
+    grupo_pdss_id: 22,
+    orden: 25,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 323
-    nombre: "Control preconcepcional (inicial)",
-    codigo: "CTC004",
-    orden: 8,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Promoción de hábitos saludables: salud bucal, educación alimentaria, pautas de higiene, trastornos de la alimentación",
+    grupo_pdss_id: 22,
+    orden: 26,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 324
-    nombre: "Control preconcepcional (seguimiento)",
-    codigo: "CTC013",
-    orden: 9,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Promoción de pautas alimentarias",
+    grupo_pdss_id: 22,
+    orden: 27,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 325
-    nombre: "Post-aborto",
-    codigo: "COT018",
-    orden: 10,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 15,
-    rural: true
+    nombre: "Promoción de salud sexual y reproductiva",
+    grupo_pdss_id: 22,
+    orden: 28,
+    linea_de_cuidado_id: 4,
+    tipo_de_prestacion_id: 16
   },
   {
     # id: 326
-    nombre: "Salud sexual y procreación responsable",
-    codigo: "COT020",
-    orden: 11,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 15,
-    rural: true
+    nombre: "Control periódico de salud",
+    grupo_pdss_id: 22,
+    orden: 29,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 327
-    nombre: "Prevención de comportamientos adictivos: tabaquismo, uso de drogas, alcoholismo.",
-    codigo: "TAT010",
-    orden: 12,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Control de salud individual para población indígena en terreno",
+    grupo_pdss_id: 22,
+    orden: 30,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 328
-    nombre: "Pautas nutricionales respetando cultura alimentaria de comunidades indígenas",
-    codigo: "TAT004",
-    orden: 13,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Control odontológico",
+    grupo_pdss_id: 22,
+    orden: 31,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 329
-    nombre: "Prevención de accidentes",
-    codigo: "TAT005",
-    orden: 14,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Dosis aplicada de doble viral (rubéola + sarampión)",
+    grupo_pdss_id: 22,
+    orden: 32,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
   },
   {
     # id: 330
-    nombre: "Prevención de VIH e infecciones de transmisión sexual",
-    codigo: "TAT007",
-    orden: 15,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Dosis aplicada de vacuna antrigripal en personas con factores de riesgo",
+    grupo_pdss_id: 22,
+    orden: 33,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
   },
   {
     # id: 331
-    nombre: "Prevención de violencia de género",
-    codigo: "TAT008",
-    orden: 16,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Control preconcepcional (inicial)",
+    grupo_pdss_id: 22,
+    orden: 34,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 332
-    nombre: "Prevención violencia familiar",
-    codigo: "TAT009",
-    orden: 17,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Control preconcepcional (seguimiento)",
+    grupo_pdss_id: 22,
+    orden: 35,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 333
-    nombre: "Promoción de hábitos saludables: salud bucal, educación alimentaria, pautas de higiene, trastornos de la alimentación.",
-    codigo: "TAT011",
-    orden: 18,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Salud sexual y procreación responsable",
+    grupo_pdss_id: 22,
+    orden: 36,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 15
   },
   {
     # id: 334
-    nombre: "Promoción de pautas alimentarias",
-    codigo: "TAT012",
-    orden: 19,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Consulta para confirmación diagnóstica en población indígena con riesgo detectado en terreno",
+    grupo_pdss_id: 22,
+    orden: 37,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 3
   },
   {
     # id: 335
-    nombre: "Promoción de salud sexual y reproductiva",
-    codigo: "TAT013",
-    orden: 20,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
+    nombre: "Control ginecológico",
+    grupo_pdss_id: 22,
+    orden: 38,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 336
-    nombre: "Ronda sanitaria completa orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 21,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    nombre: "Dosis aplicada de doble adultos",
+    grupo_pdss_id: 22,
+    orden: 39,
+    linea_de_cuidado_id: 25,
+    tipo_de_prestacion_id: 8
   },
   {
     # id: 337
-    nombre: "Ronda sanit. compl. orientada a detección de población de riesgo en pobl. indígena",
-    codigo: "ROX002",
-    orden: 22,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    nombre: "Consejería post-aborto",
+    grupo_pdss_id: 22,
+    orden: 40,
+    linea_de_cuidado_id: 47,
+    tipo_de_prestacion_id: 15
   },
   {
     # id: 338
-    nombre: "Consulta  p/conf. diagnóstico en población indígena con riesgo detectado en terreno",
-    codigo: "CAW006",
-    orden: 23,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 3,
-    rural: false
+    nombre: "Víctima de violencia sexual (urgencia)",
+    grupo_pdss_id: 22,
+    orden: 41,
+    linea_de_cuidado_id: 49,
+    tipo_de_prestacion_id: 4
   },
+
+  # SECCIÓN 6 - Grupo 23
+
   {
     # id: 339
-    nombre: "Anemia leve y moderada 20 a 49 años (inicial)",
-    codigo: "CTC001",
-    orden: 24,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 3,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Cualquiera de los tipos de atresia esofágica",
+    grupo_pdss_id: 23,
+    orden: 1,
+    linea_de_cuidado_id: 53,
+    modulo_id: 24,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 340
-    nombre: "Anemia leve y moderada 20 a 49 años (ulterior)",
-    codigo: "CTC002",
-    orden: 25,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 3,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Defecto del cierre de la pared abdominal, excluido el onfalocele",
+    grupo_pdss_id: 23,
+    orden: 2,
+    linea_de_cuidado_id: 54,
+    modulo_id: 25,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 341
-    nombre: "Víctima de violencia sexual (urgencia)",
-    codigo: "CTC012",
-    orden: 26,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 23,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Cuadros de oclusión intestinal en el recién nacido, incluye: atresias intestinales, malrotación intestinal, vólvulo, compresiones externas, hernias y duplicación intestinal (no incluye la aganglionosis intestinal)",
+    grupo_pdss_id: 23,
+    orden: 3,
+    linea_de_cuidado_id: 55,
+    modulo_id: 26,
+    tipo_de_prestacion_id: 9
   },
+
+  # SECCIÓN 6 - Grupo 24
+
   {
     # id: 342
-    nombre: "Diagnóstica y seguimiento de CA cérvicouterino (inicial)",
-    codigo: "CTC001",
-    orden: 27,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Atención de recién nacido prematuro (500 a 1500 g) durante los primeros días de vida",
+    grupo_pdss_id: 24,
+    orden: 1,
+    linea_de_cuidado_id: 56,
+    modulo_id: 27,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 343
-    nombre: "Diagnóstica y seguimiento de CA cérvicouterino (ulterior)",
-    codigo: "CTC002",
-    orden: 28,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Atención de recién nacido prematuro (500 a 1500 g) durante los primeros días de vida, sin requerimiento de ARM ni CPAP",
+    grupo_pdss_id: 24,
+    orden: 2,
+    linea_de_cuidado_id: 56,
+    modulo_id: 28,
+    tipo_de_prestacion_id: 9
   },
+
+  # SECCIÓN 6 - Grupo 25
+
   {
     # id: 344
-    nombre: "Diagnóstica y seguimiento de CA de mama (inicial)",
-    codigo: "CTC001",
-    orden: 29,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Corrección de canal AV completo",
+    grupo_pdss_id: 25,
+    orden: 1,
+    linea_de_cuidado_id: 34,
+    modulo_id: 29,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 345
-    nombre: "Diagnóstica y seguimiento de CA de mama (ulterior)",
-    codigo: "CTC002",
-    orden: 30,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Correctora de Fallot",
+    grupo_pdss_id: 25,
+    orden: 2,
+    linea_de_cuidado_id: 34,
+    modulo_id: 29,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 346
-    nombre: "Biopsia para las mujeres con mamografía BIRADS 4 y 5 (CA mama)",
-    codigo: "PRP007",
-    orden: 31,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    nombre: "Correctora de doble salida de VD",
+    grupo_pdss_id: 25,
+    orden: 3,
+    linea_de_cuidado_id: 34,
+    modulo_id: 29,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 347
-    nombre: "Colposcopía de lesión en cuello uterino, realizada por especialista en ASC-H, H-SIL, cáncer (CA cérvicouterino)",
-    codigo: "PRP002",
-    orden: 32,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    nombre: "Cirugía de Fontan o by-pass total",
+    grupo_pdss_id: 25,
+    orden: 4,
+    linea_de_cuidado_id: 34,
+    modulo_id: 29,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 348
-    nombre: "Biopsia de lesión en cuello uterino, realizada por especialista en ASC-H, H-SIL, cáncer (CA cérvicouterino)",
-    codigo: "PRP007",
-    orden: 33,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    nombre: "Cierre de CIV y del defecto asociado",
+    grupo_pdss_id: 25,
+    orden: 5,
+    linea_de_cuidado_id: 34,
+    modulo_id: 29,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 349
-    nombre: "Toma de muestra citológica (25 a 64 años) (tamizaje CA cérvicouterino)",
-    codigo: "PRP018",
-    orden: 34,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 13,
-    rural: true
+    nombre: "Reemplazo o plástica valvular con prótesis u homoinjerto; cirugía de Ross",
+    grupo_pdss_id: 25,
+    orden: 6,
+    linea_de_cuidado_id: 34,
+    modulo_id: 29,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 350
-    nombre: "Mamografía bilateral, craneocaudal y oblicua, con proyección axilar mujeres (en mayores de 49 años cada 2 años con mamografía negativa)",
-    codigo: "IGR014",
-    orden: 35,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Cirugía de Rastelli",
+    grupo_pdss_id: 25,
+    orden: 7,
+    linea_de_cuidado_id: 34,
+    modulo_id: 29,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 351
-    nombre: "Mamografía variedad magnificada",
-    codigo: "IGR015",
-    orden: 36,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Switch arterial; Nikeido; doble switch",
+    grupo_pdss_id: 25,
+    orden: 8,
+    linea_de_cuidado_id: 34,
+    modulo_id: 30,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 352
-    nombre: "Anatomía patológica de biopsia (CA mama)",
-    codigo: "APA002",
-    orden: 37,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 1,
-    rural: false
+    nombre: "Plástica o reemplazo valvular",
+    grupo_pdss_id: 25,
+    orden: 9,
+    linea_de_cuidado_id: 34,
+    modulo_id: 30,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 353
-    nombre: "Diagnóstico por biopsia en laboratorio de anatomía patológica, para aquellas mujeres con citología ASC-H, H-SIL, cáncer (CA cérvicouterino)",
-    codigo: "APA002",
-    orden: 38,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 1,
-    rural: false
+    nombre: "Cierre de CIV más colocación de homoinjerto; recambio de homoinjerto; colocación de tubo con unifocalización",
+    grupo_pdss_id: 25,
+    orden: 10,
+    linea_de_cuidado_id: 34,
+    modulo_id: 30,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 354
-    nombre: "Lectura de la muestra tomada en mujeres entre 25 y 64 años, en laboratorio de Anatomía Patológica/Citología con diagnóstico firmado por anátomo-patólogo matriculado (tamizaje de CA cérvicouterino)",
-    codigo: "APA001",
-    orden: 39,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 1,
-    rural: false
+    nombre: "Correctora de tronco arterioso",
+    grupo_pdss_id: 25,
+    orden: 11,
+    linea_de_cuidado_id: 34,
+    modulo_id: 30,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 355
-    nombre: "Notificación de caso positivo al responsable del servicio donde se realizó la toma de muestra (PAP) (CA cérvicouterino)",
-    codigo: "NTN001",
-    orden: 40,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 12,
-    rural: false
+    nombre: "Correctora de ATRVP",
+    grupo_pdss_id: 25,
+    orden: 12,
+    linea_de_cuidado_id: 34,
+    modulo_id: 30,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 356
-    nombre: "Notificación de caso positivo al responsable del servicio donde se realizó la toma de muestra (biopsia) (CA cérvicouterino)",
-    codigo: "NTN003",
-    orden: 41,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 12,
-    rural: false
+    nombre: "Cirugía de Stansel con anastomosis; Glenn o Sano",
+    grupo_pdss_id: 25,
+    orden: 13,
+    linea_de_cuidado_id: 34,
+    modulo_id: 30,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 357
-    nombre: "Notif. inicio de tratam. en tiempo oport. ASC-H, H-SIL, cáncer  (CA cérvicouterino)",
-    codigo: "NTN002",
-    orden: 42,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 12,
-    rural: false
+    nombre: "Reconstrucción del arco aórtico",
+    grupo_pdss_id: 25,
+    orden: 14,
+    linea_de_cuidado_id: 34,
+    modulo_id: 30,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 358
-    nombre: "Notificación de inicio de tratamiento en tiempo oportuno (CA mama)",
-    codigo: "NTN002",
-    orden: 43,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 6,
-    tipo_de_prestacion_id: 12,
-    rural: false
+    nombre: "Reimplante o Takeuchi",
+    grupo_pdss_id: 25,
+    orden: 15,
+    linea_de_cuidado_id: 34,
+    modulo_id: 30,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 359
-    nombre: "Colocación DIU",
-    codigo: "PRP003",
-    orden: 44,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    nombre: "Norwood o Sano",
+    grupo_pdss_id: 25,
+    orden: 16,
+    linea_de_cuidado_id: 34,
+    modulo_id: 31,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 360
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "PRPxxx",
-    orden: 45,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    nombre: "Glenn",
+    grupo_pdss_id: 25,
+    orden: 17,
+    linea_de_cuidado_id: 34,
+    modulo_id: 31,
+    tipo_de_prestacion_id: 9
   },
   {
     # id: 361
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "LBLxxx",
-    orden: 46,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Fontan",
+    grupo_pdss_id: 25,
+    orden: 18,
+    linea_de_cuidado_id: 34,
+    modulo_id: 31,
+    tipo_de_prestacion_id: 9
   },
+
+  # SECCIÓN 6 - Grupo 26
+
   {
     # id: 362
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "IGRxxx",
-    orden: 47,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Alprostadil",
+    grupo_pdss_id: 26,
+    orden: 1,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
   },
   {
     # id: 363
-    nombre: "Consulta trabajador social",
-    codigo: "CTC015",
-    orden: 1,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 4,
-    rural: false
+    nombre: "Óxido nitríco y dispenser para su administración",
+    grupo_pdss_id: 26,
+    orden: 2,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
   },
   {
     # id: 364
-    nombre: "Cateterización",
-    codigo: "PRP001",
-    orden: 2,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    nombre: "Levosimendán",
+    grupo_pdss_id: 26,
+    orden: 3,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
   },
   {
     # id: 365
-    nombre: "Colocación de DIU",
-    codigo: "PRP003",
+    nombre: "Factor VII activado recombinante",
+    grupo_pdss_id: 26,
+    orden: 4,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 366
+    nombre: "Iloprost",
+    grupo_pdss_id: 26,
+    orden: 5,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 367
+    nombre: "Trometanol",
+    grupo_pdss_id: 26,
+    orden: 6,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 368
+    nombre: "Surfactante",
+    grupo_pdss_id: 26,
+    orden: 7,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 369
+    nombre: "Nutrición parenteral total",
+    grupo_pdss_id: 26,
+    orden: 8,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 370
+    nombre: "Prótesis y órtesis",
+    grupo_pdss_id: 26,
+    orden: 9,
+    linea_de_cuidado_id: 34,
+    modulo_id: 32,
+    tipo_de_prestacion_id: 11
+  },
+
+  # SECCIÓN 6 - Grupo 27
+
+  {
+    # id: 371
+    nombre: "Reoperación por residuo en canal AV completo",
+    grupo_pdss_id: 27,
+    orden: 1,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 372
+    nombre: "Correctora de Fallot",
+    grupo_pdss_id: 27,
+    orden: 2,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 373
+    nombre: "Reoperación por residuo en tetralogía de Fallot operada; recambio de homoinjerto; plástica de ramas pulmonares; cierre de CIV residual; obstrucción al tracto de salida VD",
+    grupo_pdss_id: 27,
     orden: 3,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: true
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 374
+    nombre: "Correctora de doble salida VD",
+    grupo_pdss_id: 27,
+    orden: 4,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 375
+    nombre: "Reoperación por residuo en DSVD operada; recambio de homoinjerto; desobstrucción subaórtica",
+    grupo_pdss_id: 27,
+    orden: 5,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 376
+    nombre: "Cirugía de Fontan o by-pass total",
+    grupo_pdss_id: 27,
+    orden: 6,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 377
+    nombre: "Reoperación por fallo del Fontan",
+    grupo_pdss_id: 27,
+    orden: 7,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 378
+    nombre: "Reoperación por residuo en CIV compleja operada",
+    grupo_pdss_id: 27,
+    orden: 8,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 379
+    nombre: "Reemplazo o plástica valvular con prótesis u homoinjerto; cirugía de Ross",
+    grupo_pdss_id: 27,
+    orden: 9,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 380
+    nombre: "Reoperación en patología valvular operada; recambio de válvula u homoinjerto",
+    grupo_pdss_id: 27,
+    orden: 10,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 381
+    nombre: "Reoperación por residuo en TGA o estenosis pulmonar operada",
+    grupo_pdss_id: 27,
+    orden: 11,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 382
+    nombre: "Reoperación por residuo en transposición de los grandes vasos operada",
+    grupo_pdss_id: 27,
+    orden: 12,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 383
+    nombre: "Plástica o reemplazo valvular",
+    grupo_pdss_id: 27,
+    orden: 13,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 384
+    nombre: "Reoperación por residuo en anomalía de Ebstein operada",
+    grupo_pdss_id: 27,
+    orden: 14,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 385
+    nombre: "Reoperación en atresia pulmonar con CIV operada",
+    grupo_pdss_id: 27,
+    orden: 15,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 386
+    nombre: "Reoperación en tronco arterial operado;recambio de homoinjerto",
+    grupo_pdss_id: 27,
+    orden: 16,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 387
+    nombre: "Reoperación en ventrículo único con obstrucción aórtica operado",
+    grupo_pdss_id: 27,
+    orden: 17,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 388
+    nombre: "Reoperación por residuo en interrupción del arco aórtico operada",
+    grupo_pdss_id: 27,
+    orden: 18,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 389
+    nombre: "Reimplante o Takeuchi",
+    grupo_pdss_id: 27,
+    orden: 19,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+  {
+    # id: 390
+    nombre: "Fontan",
+    grupo_pdss_id: 27,
+    orden: 20,
+    linea_de_cuidado_id: 34,
+    modulo_id: 33,
+    tipo_de_prestacion_id: 9
+  },
+
+  # SECCIÓN 6 - Grupo 28
+
+  {
+    # id: 391
+    nombre: "Óxido nitríco y dispenser para su administración",
+    grupo_pdss_id: 28,
+    orden: 1,
+    linea_de_cuidado_id: 34,
+    modulo_id: 36,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 392
+    nombre: "Levosimendán",
+    grupo_pdss_id: 28,
+    orden: 2,
+    linea_de_cuidado_id: 34,
+    modulo_id: 36,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 393
+    nombre: "Factor VII activado recombinante",
+    grupo_pdss_id: 28,
+    orden: 3,
+    linea_de_cuidado_id: 34,
+    modulo_id: 36,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 394
+    nombre: "Iloprost",
+    grupo_pdss_id: 28,
+    orden: 4,
+    linea_de_cuidado_id: 34,
+    modulo_id: 36,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 395
+    nombre: "Trometanol",
+    grupo_pdss_id: 28,
+    orden: 5,
+    linea_de_cuidado_id: 34,
+    modulo_id: 36,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 396
+    nombre: "Nutrición parenteral total",
+    grupo_pdss_id: 28,
+    orden: 6,
+    linea_de_cuidado_id: 34,
+    modulo_id: 36,
+    tipo_de_prestacion_id: 11
+  },
+  {
+    # id: 397
+    nombre: "Prótesis y órtesis",
+    grupo_pdss_id: 28,
+    orden: 7,
+    linea_de_cuidado_id: 34,
+    modulo_id: 36,
+    tipo_de_prestacion_id: 11
+  },
+
+  # SECCIÓN 7 - Grupo 29
+  {
+    # id: 398
+    nombre: "Consulta de trabajador social",
+    grupo_pdss_id: 29,
+    orden: 1,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 4
+  },
+  {
+    # id: 399
+    nombre: "Cateterización",
+    grupo_pdss_id: 29,
+    orden: 2,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
+  },
+  {
+    # id: 400
+    nombre: "Colocación de DIU",
+    grupo_pdss_id: 29,
+    orden: 3,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 366
     nombre: "Electrocardiograma",
-    codigo: "PRP004",
+    grupo_pdss_id: 29,
     orden: 4,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: true
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 367
@@ -6425,6 +5758,1300 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 10,
     rural: true
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+    # id: 15
+    nombre: "Laboratorio prueba de embarazo",
+    codigo: "LBLxxx",
+    orden: 15,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 16
+    nombre: "Lab. Ctrol. prenatal  de 1ra. Vez (incluye: grupo y factor, hemoglobina, glucemia, orina completa, VDRL, Chagas, VIH, toxoplasmosis y Hbs antígeno).",
+    codigo: "LBLxxx",
+    orden: 16,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 17
+    nombre: "Laboratorio Ulterior de Control Prenatal  (Incluye Hemoglobina, Glucemia, Orina Completa, VDRL, VIH)",
+    codigo: "LBLxxx",
+    orden: 17,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 21
+    nombre: "Ronda Sanit. Compl. orientada a detecc. población de riesgo en área rural.",
+    codigo: "ROX001",
+    orden: 21,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+  {
+    # id: 22
+    nombre: "Ronda Sanit. Compl. orientada a detecc. población de riesgo en pobl. indígena.",
+    codigo: "ROX002",
+    orden: 22,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+  {
+    # id: 23
+    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
+    codigo: "DSY001",
+    orden: 23,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 5,
+    rural: true
+  },
+  {
+    # id: 48
+    nombre: "Electrocardiograma en embarazo",
+    codigo: "PRP004",
+    orden: 48,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 49
+    nombre: "Transp. por ref. de zona A  de emb. y niños menores de 6 años hasta 50 km",
+    codigo: "TLM081",
+    orden: 49,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 17,
+    rural: true
+  },
+  {
+    # id: 50
+    nombre: "Transp. por ref. de zona B  de emb. y niños menores de 6 años (+ de 50 km)",
+    codigo: "TLM082",
+    orden: 50,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 17,
+    rural: true
+  },
+  {
+    # id: 51
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION.",
+    codigo: "LBLxxx",
+    orden: 51,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 52
+    nombre: "Ecografía en control prenatal",
+    codigo: "IGR031",
+    orden: 52,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: true
+  },
+  {
+    # id: 53
+    nombre: "Rx de cráneo F y P en embarazadas",
+    codigo: "IGR022",
+    orden: 53,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 1,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: true
+  },
+  {
+    # id: 63
+    nombre: "Proteinuria rápida con tira reactiva",
+    codigo: "PRP030",
+    orden: 10,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 64
+    nombre: "Hemograma completo",
+    codigo: "LBL057",
+    orden: 11,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 65
+    nombre: "Coagulograma con fibrinógeno: KPTT",
+    codigo: "LBL069",
+    orden: 12,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 66
+    nombre: "Coagulograma con fibrinógeno: Tiempo de protrombina",
+    codigo: "LBL131",
+    orden: 13,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 67
+    nombre: "Coagulograma con fibrinógeno: Cuantificación de fibrinógeno",
+    codigo: "LBL023",
+    orden: 14,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 68
+    nombre: "Coagulograma con fibrinógeno: Tiempo de trombina",
+    codigo: "LBL132",
+    orden: 15,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 69
+    nombre: "Glucemia",
+    codigo: "LBL045",
+    orden: 16,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 70
+    nombre: "Uricemia",
+    codigo: "LBL002",
+    orden: 17,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 71
+    nombre: "Creatinina sérica",
+    codigo: "LBL022",
+    orden: 18,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 72
+    nombre: "Creatinina urinaria (24 hs)",
+    codigo: "LBL021",
+    orden: 19,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 73
+    nombre: "Proteinuria (24hs)",
+    codigo: "LBL090",
+    orden: 20,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 74
+    nombre: "Enzimas hepáticas: Transaminasas",
+    codigo: "LBL112",
+    orden: 21,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 75
+    nombre: "Enzimas hepáticas: Fosfatasa alcalina",
+    codigo: "LBL040",
+    orden: 22,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 76
+    nombre: "Enzimas hepáticas: Gamma GT",
+    codigo: "LBL044",
+    orden: 23,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 77
+    nombre: "Bilirrubina",
+    codigo: "LBL012",
+    orden: 24,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 78
+    nombre: "HDL y LDL",
+    codigo: "LBL052",
+    orden: 25,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 79
+    nombre: "Orina Completa",
+    codigo: "LBL079",
+    orden: 26,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 80
+    nombre: "Ecografía Obstétrica",
+    codigo: "IGR031",
+    orden: 27,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 81
+    nombre: "Eco doppler Fetal",
+    codigo: "IGR037",
+    orden: 28,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 82
+    nombre: "Ecografía Renal",
+    codigo: "IGR038",
+    orden: 29,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 83
+    nombre: "Monitoreo fetal ante parto",
+    codigo: "PRP031",
+    orden: 30,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 10,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 91
+    nombre: "Hemograma completo",
+    codigo: "LBL057",
+    orden: 38,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 92
+    nombre: "Coagulograma: KPTT",
+    codigo: "LBL069",
+    orden: 39,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 93
+    nombre: "Coagulograma: Tiempo de protrombina",
+    codigo: "LBL131",
+    orden: 40,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 94
+    nombre: "Coagulograma: Tiempo de trombina",
+    codigo: "LBL132",
+    orden: 41,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 95
+    nombre: "Hemoglobina glicosilada",
+    codigo: "LBL056",
+    orden: 42,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 96
+    nombre: "Fructosamina",
+    codigo: "LBL135",
+    orden: 43,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 97
+    nombre: "Urea",
+    codigo: "LBL117",
+    orden: 44,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 98
+    nombre: "Ácido úrico",
+    codigo: "LBL002",
+    orden: 45,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 99
+    nombre: "Creatinina sérica",
+    codigo: "LBL022",
+    orden: 46,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 100
+    nombre: "Creatinina en orina",
+    codigo: "LBL021",
+    orden: 47,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 101
+    nombre: "Proteinuria (24hs)",
+    codigo: "LBL090",
+    orden: 48,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 102
+    nombre: "Urocultivo",
+    codigo: "LBL118",
+    orden: 49,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 103
+    nombre: "Prueba de tolerancia a la glucosa",
+    codigo: "LBL094",
+    orden: 50,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 104
+    nombre: "Ecografía Obstétrica",
+    codigo: "IGR031",
+    orden: 51,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 105
+    nombre: "Ecocardiograma fetal",
+    codigo: "IGR039",
+    orden: 52,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 106
+    nombre: "Monitoreo fetal ante parto",
+    codigo: "PRP031",
+    orden: 53,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 107
+    nombre: "Electrocardiograma",
+    codigo: "PRP004",
+    orden: 54,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 11,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 111
+    nombre: "Ecografía ginecológica",
+    codigo: "IGR008",
+    orden: 58,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 12,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 112
+    nombre: "Hemograma",
+    codigo: "LBL057",
+    orden: 59,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 12,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 114
+    nombre: "Ecografía Obstétrica",
+    codigo: "IGR031",
+    orden: 61,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 13,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 115
+    nombre: "Electrocardiograma",
+    codigo: "PRP004",
+    orden: 62,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 13,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 116
+    nombre: "Monitoreo fetal ante parto",
+    codigo: "PRP031",
+    orden: 63,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 1,
+    nosologia_id: 13,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+
+
+
+
+
+
+
+  {
+    # id: 126
+    nombre: "Traslado de la gestante con diagnóstico de patología del embarazo; APP o malformación fetal mayor a centro de referencia",
+    codigo: "TLM041",
+    orden: 1,
+    grupo_pdss_id: 1,
+    subgrupo_pdss_id: 2,
+    apartado_pdss_id: 4,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 9,
+    rural: false
+  },
+  {
+    # id: 142
+    nombre: "Traslado del RN prematuro de 500 a 1500 gramos, o de un RN con malformación congénita quirúrgica",
+    codigo: "TLM040",
+    orden: 1,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 6,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 17,
+    rural: false
+  },
+
+
+
+
+
+
+
+
+
+
+
+  {
+    # id: 191
+    nombre: "Ronda Sanit. completa orientada a detección de población de riesgo en área rural",
+    codigo: "ROX001",
+    orden: 14,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+  {
+    # id: 192
+    nombre: "Ronda Sanit. Compl. orientada a detecc. de población de riesgo en pobl. indígena",
+    codigo: "ROX002",
+    orden: 15,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+  {
+    # id: 193
+    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
+    codigo: "DSY001",
+    orden: 16,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 5,
+    rural: true
+  },
+
+
+
+
+
+  {
+    # id: 197
+    nombre: "Informe de comité de auditoría de muerte materna y/o infantil recibido y aprobado por el Ministerio de Salud de la Provincia, según ordenamiento",
+    codigo: "AUH002",
+    orden: 20,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 2,
+    rural: false
+  },
+
+
+
+
+
+
+  {
+    # id: 214
+    nombre: "Electrocardiograma en niños menores de 6 años",
+    codigo: "PRP004",
+    orden: 37,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+
+
+
+
+  {
+    # id: 216
+    nombre: "Transp. por ref. de zona A de emb. y niños menores de 6 años hasta 50 km",
+    codigo: "TLM081",
+    orden: 39,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 17,
+    rural: true
+  },
+  {
+    # id: 217
+    nombre: "Transp. por ref. de zona B de emb. y niños menores de 6 años (+ de 50 km)",
+    codigo: "TLM082",
+    orden: 40,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 17,
+    rural: true
+  },
+  {
+    # id: 218
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "LBLxxx",
+    orden: 41,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 219
+    nombre: "Eco. bilateral de caderas en niños menores de 2 meses",
+    codigo: "IGR005",
+    orden: 42,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+  {
+    # id: 220
+    nombre: "Rx de tórax Fy P en niños menores de 6 años",
+    codigo: "IGR026",
+    orden: 43,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: true
+  },
+  {
+    # id: 221
+    nombre: "Rx de cráneo F y P en niños menores de 6 años",
+    codigo: "IGR022",
+    orden: 44,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: true
+  },
+  {
+    # id: 222
+    nombre: "Rx de huesos cortos en niños menores de 6 años c/patología prevalente",
+    codigo: "IGR017",
+    orden: 45,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: true
+  },
+  {
+    # id: 223
+    nombre: "Rx de huesos largos en niños menores de 6 años c/patología prevalente",
+    codigo: "IGR025",
+    orden: 46,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: true
+  },
+  {
+    # id: 224
+    nombre: "Eco-doppler en niños menores de 6 años",
+    codigo: "IGR004",
+    orden: 47,
+    grupo_pdss_id: 2,
+    subgrupo_pdss_id: 10,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+
+
+
+  {
+    # id: 232
+    nombre: "Ronda Sanit. completa orientada a detección de población de riesgo en área rural",
+    codigo: "ROX001",
+    orden: 8,
+    grupo_pdss_id: 3,
+    subgrupo_pdss_id: 11,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+  {
+    # id: 233
+    nombre: "Ronda Sanit. completa orientada a detección de pobl. de riesgo en población indígena",
+    codigo: "ROX002",
+    orden: 9,
+    grupo_pdss_id: 3,
+    subgrupo_pdss_id: 11,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+
+
+
+
+
+
+
+
+
+
+  {
+    # id: 258
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "PRPxxx",
+    orden: 34,
+    grupo_pdss_id: 3,
+    subgrupo_pdss_id: 11,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 259
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "LBLxxx",
+    orden: 35,
+    grupo_pdss_id: 3,
+    subgrupo_pdss_id: 11,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 260
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "IGRxxx",
+    orden: 36,
+    grupo_pdss_id: 3,
+    subgrupo_pdss_id: 11,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+    # id: 282
+    nombre: "Salud sexual, confidencialidad, género y derecho (actividad en sala de espera)",
+    codigo: "TAT014",
+    orden: 21,
+    grupo_pdss_id: 4,
+    subgrupo_pdss_id: 12,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 283
+    nombre: "Ronda Sanit. Compl. orientada a detección de población de riesgo en área rural",
+    codigo: "ROX001",
+    orden: 22,
+    grupo_pdss_id: 4,
+    subgrupo_pdss_id: 12,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+  {
+    # id: 284
+    nombre: "Ronda Sanit. Compl. orientada a detección de pobl. de riesgo en pobl. indígena",
+    codigo: "ROX002",
+    orden: 23,
+    grupo_pdss_id: 4,
+    subgrupo_pdss_id: 12,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+    # id: 311
+    nombre: "Colocación de DIU",
+    codigo: "PRP003",
+    orden: 50,
+    grupo_pdss_id: 4,
+    subgrupo_pdss_id: 12,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 312
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "PRPxxx",
+    orden: 51,
+    grupo_pdss_id: 4,
+    subgrupo_pdss_id: 12,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 313
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "LBLxxx",
+    orden: 52,
+    grupo_pdss_id: 4,
+    subgrupo_pdss_id: 12,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 314
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "IGRxxx",
+    orden: 53,
+    grupo_pdss_id: 4,
+    subgrupo_pdss_id: 12,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+    # id: 327
+    nombre: "Prevención de comportamientos adictivos: tabaquismo, uso de drogas, alcoholismo.",
+    codigo: "TAT010",
+    orden: 12,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 328
+    nombre: "Pautas nutricionales respetando cultura alimentaria de comunidades indígenas",
+    codigo: "TAT004",
+    orden: 13,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 329
+    nombre: "Prevención de accidentes",
+    codigo: "TAT005",
+    orden: 14,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 330
+    nombre: "Prevención de VIH e infecciones de transmisión sexual",
+    codigo: "TAT007",
+    orden: 15,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 331
+    nombre: "Prevención de violencia de género",
+    codigo: "TAT008",
+    orden: 16,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 332
+    nombre: "Prevención violencia familiar",
+    codigo: "TAT009",
+    orden: 17,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 333
+    nombre: "Promoción de hábitos saludables: salud bucal, educación alimentaria, pautas de higiene, trastornos de la alimentación.",
+    codigo: "TAT011",
+    orden: 18,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 334
+    nombre: "Promoción de pautas alimentarias",
+    codigo: "TAT012",
+    orden: 19,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 335
+    nombre: "Promoción de salud sexual y reproductiva",
+    codigo: "TAT013",
+    orden: 20,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 16,
+    rural: true
+  },
+  {
+    # id: 336
+    nombre: "Ronda sanitaria completa orientada a detección de población de riesgo en área rural",
+    codigo: "ROX001",
+    orden: 21,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+  {
+    # id: 337
+    nombre: "Ronda sanit. compl. orientada a detección de población de riesgo en pobl. indígena",
+    codigo: "ROX002",
+    orden: 22,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: 2,
+    tipo_de_prestacion_id: 14,
+    rural: true
+  },
+
+
+
+
+
+
+
+
+
+
+
+  {
+    # id: 359
+    nombre: "Colocación DIU",
+    codigo: "PRP003",
+    orden: 44,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 360
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "PRPxxx",
+    orden: 45,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 13,
+    rural: false
+  },
+  {
+    # id: 361
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "LBLxxx",
+    orden: 46,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 10,
+    rural: false
+  },
+  {
+    # id: 362
+    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
+    codigo: "IGRxxx",
+    orden: 47,
+    grupo_pdss_id: 5,
+    subgrupo_pdss_id: 13,
+    apartado_pdss_id: nil,
+    nosologia_id: nil,
+    tipo_de_prestacion_id: 6,
+    rural: false
+  },
 ])
 
 PrestacionPdss.find(1).prestaciones << [Prestacion.find(258)]

@@ -247,5 +247,39 @@ LineaDeCuidado.create!([
     :nombre => "Víctima de violencia sexual",
     :codigo => "VSX"
   },
-
+  {
+    # :id => 50
+    :nombre => "Anemia leve y moderada",
+    :codigo => "ALM"
+  },
+  {
+    # :id => 51
+    :nombre => "Cáncer cérvicouterino",
+    :codigo => "CAU"
+  },
+  {
+    # :id => 52
+    :nombre => "Cáncer de mama",
+    :codigo => "CAM"
+  },
+  {
+    # :id => 53
+    :nombre => "Atresia esofágica",
+    :codigo => "AES"
+  },
+  {
+    # :id => 54
+    :nombre => "Gastrosquisis",
+    :codigo => "GQS"
+  },
+  {
+    # :id => 55
+    :nombre => "Oclusión intestinal",
+    :codigo => "OCI"
+  },
+  {
+    # :id => 56
+    :nombre => "RNPT de 500 a 1500 g",
+    :codigo => "RPT"
+  }
 ])

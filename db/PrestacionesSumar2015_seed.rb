@@ -1019,6 +1019,1448 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.find(817)
   prestacion.grupos_poblacionales << adolescentes
 
+  # Agregar el grupo poblacional de 10 a 19 años en las prestaciones diagnósticas de CC
+  prestacion = Prestacion.find(402) # PRP005xxx - Ergometría
+  prestacion.grupos_poblacionales << adolescentes
+  prestacion = Prestacion.find(403) # PRP034xxx - Holter
+  prestacion.grupos_poblacionales << adolescentes
+  prestacion = Prestacion.find(404) # PRP035xxx - Presurometría
+  prestacion.grupos_poblacionales << adolescentes
+  prestacion = Prestacion.find(405) # IGR040xxx - Hemodinamia diagnóstica
+  prestacion.grupos_poblacionales << adolescentes
+  prestacion = Prestacion.find(406) # IGR041xxx - RMN
+  prestacion.grupos_poblacionales << adolescentes
+  prestacion = Prestacion.find(407) # IGR030 - TAC
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK001"
+  prestacion = Prestacion.find(411)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK004"
+  prestacion = Prestacion.find(411)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK200" para el diagnóstico "035"
+  prestacion = Prestacion.find(819)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK005" para el diagnóstico "088"
+  prestacion = Prestacion.find(820)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK201" para el diagnóstico "088"
+  prestacion = Prestacion.find(821)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK006"
+  prestacion = Prestacion.find(413)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK201" para el diagnóstico "035"
+  prestacion = Prestacion.find(822)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK007"
+  prestacion = Prestacion.find(414)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK008"
+  prestacion = Prestacion.find(415)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK009"
+  prestacion = Prestacion.find(416)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK010"
+  prestacion = Prestacion.find(417)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK016"
+  prestacion = Prestacion.find(423)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK035"
+  prestacion = Prestacion.find(424)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK037"
+  prestacion = Prestacion.find(426)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "ITK017"
+  prestacion = Prestacion.find(427)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "XMX002" (no catastróficas)
+  prestacion = Prestacion.find(447)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "XMX003" (no catastróficas)
+  prestacion = Prestacion.find(448)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "XMX004" (no catastróficas)
+  prestacion = Prestacion.find(449)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "XMX005" (no catastróficas)
+  prestacion = Prestacion.find(450)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "XMX006" (no catastróficas)
+  prestacion = Prestacion.find(451)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "XMX008" (no catastróficas)
+  prestacion = Prestacion.find(453)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Agregar el grupo poblacional de 10 a 19 años en la prestación "XMX009" (no catastróficas)
+  prestacion = Prestacion.find(454)
+  prestacion.grupos_poblacionales << adolescentes
+
+  # Añadir diagnósticos faltantes a la prestación "NTN001" con id "588"
+  prestacion = Prestacion.find(588)
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X86")
+
+  # Añadir diagnósticos faltantes a la prestación "CTC001" con id "577"
+  prestacion = Prestacion.find(577)
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X30")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X19")
+
+  # Añadir diagnósticos faltantes a la prestación "PRP007" con id "579"
+  prestacion = Prestacion.find(579)
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X19")
+
+  # Añadir diagnósticos faltantes a la prestación "APA002" con id "585"
+  prestacion = Prestacion.find(585)
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X79")
+
+  # Añadir los diagnósticos faltantes a la prestación CTC009 con id 561
+  prestacion = Prestacion.find(561)
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A21")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B02")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K86")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X19")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X20")
+
+  # Corregir los diagnósticos de la prestación "CAW006" con id 571
+  prestacion = Prestacion.find(571)
+  prestacion.diagnosticos.delete_all
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A75")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B80")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B78")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B81")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B82")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D61")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D62")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("D72")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("B90")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K96")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K83")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("K86")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X70")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X75")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X76")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X79")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("X80")
+
+  # Eliminar el diagnóstico "Q43.1" de la prestación "ITQ011"
+  prestacion = Prestacion.find(571)
+  prestacion.diagnosticos.delete(Diagnostico.find_by_codigo!("Q43.1"))
+
+  # Eliminar el diagnóstico "026" de la prestación "ITK026"
+  prestacion = Prestacion.find(436)
+  prestacion.diagnosticos.delete(Diagnostico.find_by_codigo!("026"))
+
+  # Crear la prestación "ITK200" para los diagnósticos "027"/"028"
+  prestacion = Prestacion.create!({
+    # id: 823
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en CAV completo',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("027")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("028")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 15936.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 335.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2262.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar los grupos poblacionales de 6 a 9 años y 10 a 19 años en la prestación "ITK019"
+  prestacion = Prestacion.find(429)
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+
+  # Crear la prestación "ITK200" para los diagnósticos "139"/"140"/"141"
+  prestacion = Prestacion.create!({
+    # id: 824
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en tetralogía de Fallot operada; recambio de homoinjerto; plástica de ramas pulmonares; cierre de CIV residual; obstrucción al tracto de salida VD',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("139")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("140")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("141")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 15936.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 335.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2262.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar los grupos poblacionales de 6 a 9 años y 10 a 19 años en la prestación "ITK020"
+  prestacion = Prestacion.find(430)
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+
+  # Crear la prestación "ITK200" para los diagnósticos "052"/"054"/"055"/"056"
+  prestacion = Prestacion.create!({
+    # id: 825
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en DSVD operada; recambio de homoinjerto; desobstrucción subaórtica',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("052")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("054")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("055")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("056")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 15936.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 335.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2262.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar los grupos poblacionales de 6 a 9 años y 10 a 19 años en la prestación "ITK021"
+  prestacion = Prestacion.find(431)
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+
+  # Crear la prestación "ITK200" para la reoperación por fallo del Fontan
+  prestacion = Prestacion.create!({
+    # id: 826
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por fallo del Fontan',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("121")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("122")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("123")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("124")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("125")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("126")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("127")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("152")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 15936.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 335.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2262.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Crear la prestación "ITK200" para el diagnóstico "157"
+  prestacion = Prestacion.create!({
+    # id: 827
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en CIV compleja operada',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("157")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 15936.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 335.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2262.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar los grupos poblacionales de 6 a 9 años y 10 a 19 años en la prestación "ITK023"
+  prestacion = Prestacion.find(433)
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+
+  # Crear la prestación "ITK200" para las patologías valvulares operadas
+  prestacion = Prestacion.create!({
+    # id: 828
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación en patología valvular operada; recambio de válvula u homoinjerto',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("008")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("009")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("010")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("011")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("012")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("013")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("014")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("076")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("077")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("078")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("079")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("080")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("081")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("082")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("083")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("101")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("113")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("114")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("115")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("117")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("148")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("149")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("150")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("151")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("153")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 15936.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 335.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2262.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Crear la prestación "ITK200" para TGA o estenosis pulmonar ya operadas
+  prestacion = Prestacion.create!({
+    # id: 829
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en TGA o estenosis pulmonar operada',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("037")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("038")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("039")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("040")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("041")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("135")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("137")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 15.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 15936.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 335.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2262.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Crear la prestación "ITK200" para el diagnóstico "134"
+  prestacion = Prestacion.create!({
+    # id: 830
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en transposición de los grandes vasos operada',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("134")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 17243.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 342.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2268.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar los grupos poblacionales de 6 a 9 años y 10 a 19 años en la prestación "ITK026"
+  prestacion = Prestacion.find(436)
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+
+  # Crear la prestación "ITK200" para el diagnóstico "057"
+  prestacion = Prestacion.create!({
+    # id: 831
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en anomalía de Ebstein operada',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("057")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 17243.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 342.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2268.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Crear la prestación "ITK200" para los diagnósticos "109"/"110"
+  prestacion = Prestacion.create!({
+    # id: 832
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación en atresia pulmonar con CIV operada',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("109")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("110")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 17243.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 342.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2268.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Crear la prestación "ITK200" para el diagnóstico "153"
+  prestacion = Prestacion.create!({
+    # id: 833
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación en tronco arterial operado; recambio de homoinjerto',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("153")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 17243.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 342.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2268.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Crear la prestación "ITK200" para el diagnóstico "124"
+  prestacion = Prestacion.create!({
+    # id: 834
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación en ventrículo único con obstrucción aórtica operado',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("153")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 17243.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 342.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2268.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Crear la prestación "ITK200" para el diagnóstico "065"
+  prestacion = Prestacion.create!({
+    # id: 833
+    codigo: "ITK200",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
+    nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en interrupción del arco aórtico operada',
+    es_catastrofica: true,
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("065")
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 2.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  DatoReportableRequerido.create!({
+    prestacion_id: prestacion.id,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    fecha_de_inicio: fecha_de_inicio,
+    minimo: 0.0000,
+    maximo: 25.0000,
+    necesario: true,
+    obligatorio: true
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPREQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 17243.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1926.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQU"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 342.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DMPOSTQ"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2268.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQUM"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 861.0000,
+    adicional_por_prestacion: 0.0000,
+    dato_reportable_id: DatoReportable.id_del_codigo!("DEPOSTQSC"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Agregar los grupos poblacionales de 6 a 9 años y 10 a 19 años en la prestación "ITK038"
+  prestacion = Prestacion.find(442)
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+
+  # Agregar los grupos poblacionales de 6 a 9 años y 10 a 19 años en la prestación "ITK034"
+  prestacion = Prestacion.find(445)
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+
+  # Modificar la prestación 'PRP001' para que admita todos los diagnósticos
+  prestacion = Prestacion.find(620)
+  prestacion.diagnosticos << Diagnostico.where("codigo ~* '^[[:alpha:]][[:digit:]]{2}$'")
 
 
 
@@ -1027,12 +2469,7 @@ ActiveRecord::Base.transaction do
 
 
 
-  #Modificar las prestaciones diagnósticas de CC para habilitar los nuevos grupos de 6 a 9 y 10 a 19 años.
-  #prestaciones = Prestacion.find([402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417])
-  #prestaciones.each do |prestacion|
-  #  prestacion.grupos_poblacionales << de_6_a_9
-  #  prestacion.grupos_poblacionales << adolescentes
-  #end
+
 
 
 
