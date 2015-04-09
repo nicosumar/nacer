@@ -14,6 +14,8 @@ class PagoSumar < ActiveRecord::Base
   
   # Atributos a ser completados por el usuario
   attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id
+  
+  @nota_de_debito_ids = []
   attr_accessible :nota_de_debito_ids, :expediente_sumar_ids
   
   # Atributos solo actualizable luego de ser creado
@@ -28,11 +30,63 @@ class PagoSumar < ActiveRecord::Base
   after_initialize :init
   before_create :calcular_monto_a_pagar
 
+  # before_validation :validar_nd_y_expedientes
+  #validate :nota_de_debito_ids, :nota_de_debitosYExpedientes
+  validate :expiration_date_cannot_be_in_the_past, :discount_cannot_be_greater_than_total_value
+  validate :notas_de_debito_pertenecen_a_efectores_en_los_expedientes, if: expediente_sumar_ids.present?
 
+  def notas_de_debito_pertenecen_a_efectores_en_los_expedientes
+    #si hay ND
+    if nota_de_debito_ids.present?
+      
+      nd_no_relacionadas = []
+      nd_relacionadas = []
+      
+      expedientes_sumar.each do |exp|
+        efectores = []
+        fecha_de_creacion_del_expediente = exp.created_at.to_date
+        
+        # Obtengo los efectores para la fecha en que se liquido ( === fecha de creacion del expediente)
+        if self.efector.es_administrador?(fecha_de_creacion_del_expediente)
+          efectores << pago_sumar.efector
+          efectores << pago_sumar.efector.efectores_administrados(fecha_de_creacion_del_expediente).map { |e| e }
+        else
+          efectores << self.efector
+        end
+
+        # Busco sobre las notas de debito aun no relacioadas
+        (notas_de_debito - nd_relacionadas).each do |nd|
+          # Verifico que la ND pertenece a alguno de los efectores
+          if efectores.map { |e| e.id }.include? nd.efector_id
+            # La nota de debito ta OK, Pertenece a algun efector de los expedientes
+            # Ademas, si estaba relacionada a nd_no_relacionadas y aparece -> la borro de la lista
+            nd_relacionadas << nd 
+            nd_no_relacionadas.delete nd 
+          else
+            # si la ND no pertenece a estos efectores la marco
+            nd_no_relacionadas << nd 
+          end
+        end # end each nota de debito
+      end #end each expediente
+
+      if nd_no_relacionadas.size > 1
+        errors.add(:nota_de_debito_ids, "Las notas de debito numeros: #{nd_no_relacionadas.join(',')} no estan asociadas a los efectores incluidos en los expedientes #{expedientes_sumar.map { |e| e.numero }.joins(', ')}")
+        false
+      end
+    end
+  end
+  
   def init
     # o el valor de la base, o q busque el estado 2
     self.estado_del_proceso ||= EstadoDelProceso.find(2) # "En Curso"
     self.fecha_de_proceso ||= Date.today
+
+    estados_aceptados = EstadoDeAplicacionDeDebito.where("estados_de_aplicaciones_de_debitos.id != 3 ").
+                                                   map { |e| e.id }
+    
+    @nota_de_debito_ids = self.aplicaciones_de_notas_de_debito.
+                               where(estado_de_aplicacion_de_debito_id: estados_aceptados).
+                               map { |e| e.nota_de_debito_id } 
   end
 
   def calcular_monto_a_pagar
@@ -94,6 +148,7 @@ class PagoSumar < ActiveRecord::Base
   # 
   # @return [type] [description]
   def nota_de_debito_ids=(value_ids)
+
     unless value_ids.is_a? Array
       errors.add(:base, "No se puede encontrar la nota de debito sin el ID. Contacte con el departamento de sistemas.")
       raise ActiveRecord::RecordNotFound
@@ -105,7 +160,10 @@ class PagoSumar < ActiveRecord::Base
         raise ActiveRecord::RecordNotFound
       end
     end
+    @nota_de_debito_ids = value_ids
 
+
+=begin
     nd_incluidas  = value_ids & self.nota_de_debito_ids # interseccion de arrays
     nd_nuevas     = value_ids - nd_incluidas # las enviadas menos las que ya estaban
     nd_eliminadas =  self.nota_de_debito_ids - nd_incluidas
@@ -141,6 +199,7 @@ class PagoSumar < ActiveRecord::Base
       end
       self.save
     end # end transaction
+=end
   end
 
   # 
@@ -149,10 +208,9 @@ class PagoSumar < ActiveRecord::Base
   # 
   # @return [Fixnum] Ids de las notas vinculadas
   def nota_de_debito_ids
-    estados_aceptados = EstadoDeAplicacionDeDebito.where("estados_de_aplicaciones_de_debitos.id != 3 ").map { |e| e.id }
-
-    self.aplicaciones_de_notas_de_debito.where(estado_de_aplicacion_de_debito_id: estados_aceptados).map { |e| e.nota_de_debito_id } 
+    @nota_de_debito_ids
   end
+
 
   def expediente_sumar_ids=(value_ids)
     unless value_ids.is_a? Array
@@ -161,11 +219,15 @@ class PagoSumar < ActiveRecord::Base
     end
 
     value_ids.reject! { |x| !(x.is_a? Fixnum)}
+   
     # Borro los seleccionados y agrego nuevamente
     ActiveRecord::Base.transaction do 
       self.expedientes_sumar.clear
-      self.expedientes_sumar << ExpedienteSumar.find(value_ids)
+      # Verifico que el expediente corresponda al efector de pago
+      e = ExpedienteSumar.find(value_ids)
+      self.expedientes_sumar << e if e.efector_id == self.efector_id
     end
+    self.expediente_sumar_ids
   end
 
   def numero_de_proceso

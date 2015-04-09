@@ -149,20 +149,30 @@ class Efector < ActiveRecord::Base
 
   # 
   # Devuelve los efectores que administra
+  # @param a_la_fecha = Date.today [Date] [Fecha a la cual devolver los efectores administrados]
   # 
   # @return [Array<Efector>] Array de efectores administrados
-  def efectores_administrados
-    Efector.joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id").where(["administrador_id = ?",self.id])
+  def efectores_administrados(a_la_fecha = Date.today)
+    return nil unless a_la_fecha.is_a? Date
+
+    Efector.joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id").
+            where(["administrador_id = ?",self.id]).
+            where("
+              (fecha_de_inicio <= ? and fecha_de_finalizacion >= ?)
+                OR
+              (fecha_de_inicio <= ? and fecha_de_finalizacion is null )", a_la_fecha, a_la_fecha, a_la_fecha)
   end
  
   #
   # Devuelve si el efector es administrador. Considera administrador al efector si:
   # Tiene al menos un efector con convenio de administracion asociado a el como administrador
+  # @param a_la_fecha = Date.today [Date] [Fecha a la cual devolver los efectores administrados]
   #
   # @return [boolean] Verdadero si es administrador, falso en caso que no cumpla alguna de las dos condiciones
-  def es_administrador?
+  def es_administrador?(a_la_fecha = Date.today)
+    return nil unless a_la_fecha.is_a? Date
     # Tiene al menos un efector con convenio de administracion asociado a el como administrador
-    return false if self.efectores_administrados.size < 1
+    return false if self.efectores_administrados(a_la_fecha).size < 1
    
     return true
   end
