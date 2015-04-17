@@ -292,14 +292,14 @@ class RegistroMasivoDePrestaciones
             prestacion = Prestacion.find_by_codigo(codigo_de_prestacion)
             if !prestacion.present?
               prestacion_brindada.agregar_error(
-                "El código de prestación no existe (cadena evaluada: '#{codigo_prestacion}')"
+                "El código de prestación no existe (cadena evaluada: '#{codigo_de_prestacion}')"
               )
             end
             codigo_de_diagnostico = prestacion_brindada.codigo_de_prestacion_informado[6..-1]
             diagnostico = Diagnostico.find_by_codigo(codigo_de_diagnostico)
             if !diagnostico.present?
               prestacion_brindada.agregar_error(
-                "El código de diagnóstico no existe (cadena evaluada: '#{codigo_diagnostico}')"
+                "El código de diagnóstico no existe (cadena evaluada: '#{codigo_de_diagnostico}')"
               )
             else
               prestacion_brindada.diagnostico_id = diagnostico.id
