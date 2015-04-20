@@ -16,6 +16,7 @@ class PagoSumar < ActiveRecord::Base
   attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id
   
   @nota_de_debito_ids = []
+  attr_accessor notas_de_debito
   attr_accessible :nota_de_debito_ids, :expediente_sumar_ids
   
   # Atributos solo actualizable luego de ser creado
@@ -32,9 +33,17 @@ class PagoSumar < ActiveRecord::Base
 
   # before_validation :validar_nd_y_expedientes
   #validate :nota_de_debito_ids, :nota_de_debitosYExpedientes
-  validate :expiration_date_cannot_be_in_the_past, :discount_cannot_be_greater_than_total_value
   validate :notas_de_debito_pertenecen_a_efectores_en_los_expedientes, if: expediente_sumar_ids.present?
 
+  before_save :
+
+  # 
+  # Metodo llamado por validate.
+  # 
+  #  Verifica los efectores poseedores de notas de debito que afectan este proceso de pago
+  # se correspondan con los efectores incluidos en los expedientes de pago incluidos en este proceso.
+  #  La verificación toma en cuenta el estado de los conveios con los efectores al momento del proceso de pago
+  # 
   def notas_de_debito_pertenecen_a_efectores_en_los_expedientes
     #si hay ND
     if nota_de_debito_ids.present?
@@ -55,18 +64,19 @@ class PagoSumar < ActiveRecord::Base
         end
 
         # Busco sobre las notas de debito aun no relacioadas
-        (notas_de_debito - nd_relacionadas).each do |nd|
+        (self.notas_de_debito - nd_relacionadas).each do |nd|
           # Verifico que la ND pertenece a alguno de los efectores
           if efectores.map { |e| e.id }.include? nd.efector_id
             # La nota de debito ta OK, Pertenece a algun efector de los expedientes
             # Ademas, si estaba relacionada a nd_no_relacionadas y aparece -> la borro de la lista
             nd_relacionadas << nd 
-            nd_no_relacionadas.delete nd 
+            nd_no_relacionadas.delete nd
           else
             # si la ND no pertenece a estos efectores la marco
             nd_no_relacionadas << nd 
           end
         end # end each nota de debito
+
       end #end each expediente
 
       if nd_no_relacionadas.size > 1
@@ -102,6 +112,13 @@ class PagoSumar < ActiveRecord::Base
 
   end
 
+  # 
+  # Vincula las notas de debito indicadas al este proceso de pago.
+  #  El metodo reserva aplicaciones sobre la nota de debito para su pago y solicita 
+  # tantas aplicaciones de notas de debito como ocurrencias del efector exitan en cada expediente. 
+  # @param value_ids [type] [description]
+  # 
+  # @return [type] [description]
   def asociar_notas_de_debito(value_ids)
     unless value_ids.is_a? Array
       errors.add(:aplicaciones_de_notas_de_debito, "Las notas de debito indicadas no son correctas")
@@ -151,15 +168,20 @@ class PagoSumar < ActiveRecord::Base
 
     unless value_ids.is_a? Array
       errors.add(:base, "No se puede encontrar la nota de debito sin el ID. Contacte con el departamento de sistemas.")
-      raise ActiveRecord::RecordNotFound
     end
 
     value_ids.each do |id|
       unless id.is_a? Fixnum
         errors.add(:base, "Uno de los ids de notas de debito no es valido - ID: #{id}")
-        raise ActiveRecord::RecordNotFound
       end
     end
+    
+    begin
+      nds = NotaDeDebito.find (value_ids)
+    rescue Exception => e
+      errors.add(:base, "Uno de los ids de notas de debito no es valido ")
+    end
+    self.notas_de_debito = nds
     @nota_de_debito_ids = value_ids
 
 

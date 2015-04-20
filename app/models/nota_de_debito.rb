@@ -8,8 +8,8 @@ class NotaDeDebito < ActiveRecord::Base
   attr_accessible :monto, :numero, :observaciones, :remanente, :reservado
   attr_accessible :efector_id, :concepto_de_facturacion_id, :tipo_de_nota_debito_id 
 
-  validates :monto, presence: true
-  validates :observaciones, presence: true
+  validates :efector_id, :tipo_de_nota_debito_id, :concepto_de_facturacion_id, presence: true
+  validates :monto, :observaciones, presence: true
 
   # 
   # Devuelve el monto disponible para ser aplicado en un proceso de pago
