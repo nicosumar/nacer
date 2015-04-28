@@ -264,7 +264,7 @@ class ReporteRuby
         AND e.id in (11, 306, 24, 12, 274, 37, 300, 299, 290,  54, 199,  62, 
                       1,  32, 33, 34,  57, 58, 105, 127,  45, 377, 397, 396, 
                     263,  27, 36, 98,   5, 42, 285, 361, 294,  73, 338,  53, 
-                    197, 369, 166, 110, 77, 146)
+                    197, 369, 166, 110, 77, 146, 149, 210)
         GROUP BY e.nombre, pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo, peri.periodo
         
       SQL
