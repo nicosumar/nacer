@@ -109,15 +109,74 @@ ActiveRecord::Base.transaction do
   # Modificar los diagnosticos existentes y añadir los nuevos diagnósticos
   ActiveRecord::Base.connection.execute "
     UPDATE diagnosticos
-      SET grupo_de_diagnosticos_id = 18
-      WHERE codigo BETWEEN '001' AND '999';
-    UPDATE diagnosticos
       SET grupo_de_diagnosticos_id = 1
       WHERE codigo BETWEEN 'A01' AND 'A99';
     UPDATE diagnosticos
       SET grupo_de_diagnosticos_id = 2
       WHERE codigo BETWEEN 'B01' AND 'B99';
-    "
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 3
+      WHERE codigo BETWEEN 'D01' AND 'D99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 4
+      WHERE codigo BETWEEN 'F01' AND 'F99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 5
+      WHERE codigo BETWEEN 'H01' AND 'H99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 6
+      WHERE codigo BETWEEN 'K01' AND 'K99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 7
+      WHERE codigo BETWEEN 'L01' AND 'L99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 8
+      WHERE codigo BETWEEN 'N01' AND 'N99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 9, codigo = 'P16'
+      WHERE codigo = 'P20';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 9, codigo = 'P18'
+      WHERE codigo = 'P23';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 9, codigo = 'P19'
+      WHERE codigo = 'P24';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 10
+      WHERE codigo BETWEEN 'R01' AND 'R99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 11
+      WHERE codigo BETWEEN 'S01' AND 'S99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 12
+      WHERE codigo BETWEEN 'T01' AND 'T99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 13
+      WHERE codigo BETWEEN 'U01' AND 'U99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 14
+      WHERE codigo BETWEEN 'W01' AND 'W99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 15
+      WHERE codigo BETWEEN 'X01' AND 'X99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 16
+      WHERE codigo BETWEEN 'Y01' AND 'Y99';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 17
+      WHERE codigo = 'Z31';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 18
+      WHERE codigo BETWEEN '001' AND '999';
+    UPDATE diagnosticos
+      SET grupo_de_diagnosticos_id = 19
+      WHERE (
+        codigo ILIKE 'O%' OR
+        codigo ILIKE 'P0%' OR
+        codigo ILIKE 'Q%' OR
+        codigo ILIKE 'Z35%'
+      );
+  "
 
   Diagnostico.create!([
     {
@@ -650,7 +709,592 @@ ActiveRecord::Base.transaction do
       nombre: "Fisura labiopalatina/fisura palatina/labio leporino",
       grupo_de_diagnosticos_id: 7
     },
-  ])
+    {
+      codigo: "L72",
+      nombre: "Fractura de cúbito/Fractura de radio",
+      grupo_de_diagnosticos_id: 7
+    },
+    {
+      codigo: "L75",
+      nombre: "Fractura de fémur",
+      grupo_de_diagnosticos_id: 7
+    },
+    {
+      codigo: "L76",
+      nombre: "Otras fracturas",
+      grupo_de_diagnosticos_id: 7
+    },
+    {
+      codigo: "L79",
+      nombre: "Esguinces y distensiones NE",
+      grupo_de_diagnosticos_id: 7
+    },
+    {
+      codigo: "L82",
+      nombre: "Anomalías congénitas del aparato locomotor",
+      grupo_de_diagnosticos_id: 7
+    },
+    {
+      codigo: "L95",
+      nombre: "Osteoporosis",
+      grupo_de_diagnosticos_id: 7
+    },
+    {
+      codigo: "N01",
+      nombre: "Cefalea",
+      grupo_de_diagnosticos_id: 8
+    },
+    {
+      codigo: "N71",
+      nombre: "Meningitis / Encefalitis",
+      grupo_de_diagnosticos_id: 8
+    },
+    {
+      codigo: "N74",
+      nombre: "Neoplasias malignas del sistema nervioso",
+      grupo_de_diagnosticos_id: 8
+    },
+    {
+      codigo: "N80",
+      nombre: "Otros traumatismos craneales",
+      grupo_de_diagnosticos_id: 8
+    },
+    {
+      codigo: "N88",
+      nombre: "Epilepsia",
+      grupo_de_diagnosticos_id: 8
+    },
+    {
+      codigo: "N94",
+      nombre: "Neuritis / Neuropatías periféricas",
+      grupo_de_diagnosticos_id: 8
+    },
+    {
+      codigo: "P11",
+      nombre: "Problemas de la conducta alimentaria en niños",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P12",
+      nombre: "Enuresis",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P13",
+      nombre: "Encopresis",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P15",
+      nombre: "Abuso crónico del alcohol",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P17",
+      nombre: "Abuso del tabaco",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P17",
+      nombre: "Abuso del tabaco",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P22",
+      nombre: "Signos / síntomas del comportamiento del niño",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P23",
+      nombre: "Signos / síntomas del comportamiento del adolescente",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P24",
+      nombre: "Problemas específicos del aprendizaje",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P76",
+      nombre: "Depresión / Trastornos depresivos",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P77",
+      nombre: "Suicidio / Intento de suicidio",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "R02",
+      nombre: "Fatiga respiratoria / Disnea",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R05",
+      nombre: "Tos",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R07",
+      nombre: "Estornudos / Congestión nasal",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R08",
+      nombre: "Otros signos / síntomas nasales",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R09",
+      nombre: "Signos / Síntomas de los senos paranasales",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R21",
+      nombre: "Signos / Síntomas de la garganta/faringe/amígdalas",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R24",
+      nombre: "Hemoptisis",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R71",
+      nombre: "Tos ferina",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R73",
+      nombre: "Forúnculo / Absceso de la nariz",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R76",
+      nombre: "Amigdalitis aguda",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R77",
+      nombre: "Laringitis / Traqueítis aguda",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R89",
+      nombre: "Anomalías congénitas del aparato respiratorio",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "R97",
+      nombre: "Rinitis alérgica",
+      grupo_de_diagnosticos_id: 10
+    },
+    {
+      codigo: "S02",
+      nombre: "Prurito",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S06",
+      nombre: "Eritema / Rash localizado",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S07",
+      nombre: "Eritema / Rash generalizado",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S08",
+      nombre: "Cambios en el color de la piel",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S09",
+      nombre: "Dedo de la mano/del pie infectado",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S10",
+      nombre: "Infección dermatológica postraumática",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S12",
+      nombre: "Picadura de insecto",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S15",
+      nombre: "Cuerpo extraño en la piel",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S16",
+      nombre: "Contusión / Magulladura",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S17",
+      nombre: "Abrasión / Ampollas / Arañazos",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S30",
+      nombre: "Pie diabético",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S70",
+      nombre: "Herpes zóster",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S71",
+      nombre: "Herpes simple",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S72",
+      nombre: "Sarna y otras ascaridiasis",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S73",
+      nombre: "Pediculosis / Otras infestaciones de la piel",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S74",
+      nombre: "Dermatomicosis",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S75",
+      nombre: "Candidiasis / Moniliasis de la piel",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S80",
+      nombre: "Queratosis / Quemadura solar",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S86",
+      nombre: "Dermatitis seborreica",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S87",
+      nombre: "Dermatitis / Eccema atópico",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S88",
+      nombre: "Dermatitis de contacto/alérgica",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S89",
+      nombre: "Dermatitis del pañal",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S94",
+      nombre: "Uña encarnada",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S96",
+      nombre: "Acné",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "S98",
+      nombre: "Urticaria",
+      grupo_de_diagnosticos_id: 11
+    },
+    {
+      codigo: "T04",
+      nombre: "Problemas de alimentación en el lactante/niño",
+      grupo_de_diagnosticos_id: 12
+    },
+    {
+      codigo: "T05",
+      nombre: "Problemas de alimentación en el adulto",
+      grupo_de_diagnosticos_id: 12
+    },
+    {
+      codigo: "T10",
+      nombre: "Fallo/retraso del crecimiento",
+      grupo_de_diagnosticos_id: 12
+    },
+    {
+      codigo: "T12",
+      nombre: "Acidosis / Alcalosis",
+      grupo_de_diagnosticos_id: 12
+    },
+    {
+      codigo: "T13",
+      nombre: "Desequilibrios electrolíticos",
+      grupo_de_diagnosticos_id: 12
+    },
+    {
+      codigo: "T80",
+      nombre: "Anomalías congénitas endocrinas/metabólicas",
+      grupo_de_diagnosticos_id: 12
+    },
+    {
+      codigo: "T87",
+      nombre: "Hipoglucemia",
+      grupo_de_diagnosticos_id: 12
+    },
+    {
+      codigo: "T93",
+      nombre: "Trastornos del metabolismo lipídico",
+      grupo_de_diagnosticos_id: 12
+    },
+    {
+      codigo: "U04",
+      nombre: "Incontinencia urinaria",
+      grupo_de_diagnosticos_id: 13
+    },
+    {
+      codigo: "U06",
+      nombre: "Hematuria",
+      grupo_de_diagnosticos_id: 13
+    },
+    {
+      codigo: "U30",
+      nombre: "Insuficiencia renal aguda",
+      grupo_de_diagnosticos_id: 13
+    },
+    {
+      codigo: "U72",
+      nombre: "Uretritis",
+      grupo_de_diagnosticos_id: 13
+    },
+    {
+      codigo: "U85",
+      nombre: "Anomalías congénitas del aparato urinario",
+      grupo_de_diagnosticos_id: 13
+    },
+    {
+      codigo: "U88",
+      nombre: "Nefrosis / Glomerulonefritis",
+      grupo_de_diagnosticos_id: 13
+    },
+    {
+      codigo: "U90",
+      nombre: "Albuminuria/proteinuria ortostática",
+      grupo_de_diagnosticos_id: 13
+    },
+    {
+      codigo: "W05",
+      nombre: "Vómito/nausea del embarazo",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W11",
+      nombre: "Contracepción oral, en la mujer",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W80",
+      nombre: "Embarazo ectópico",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W80",
+      nombre: "Embarazo ectópico",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W81",
+      nombre: "Toxemia del embarazo",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W82",
+      nombre: "Aborto espontáneo",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W83",
+      nombre: "Aborto provocado",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W85",
+      nombre: "Diabetes gestacional",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W92",
+      nombre: "Parto complicado, recién nacido vivo",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W93",
+      nombre: "Parto complicado, recién nacido muerto",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W95",
+      nombre: "Otros problemas/enfermedades mamarias en el embarazo/puerperio",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W96",
+      nombre: "Otras complicaciones del puerperio",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "W99",
+      nombre: "Otros problemas/enfermedades del embarazo/parto",
+      grupo_de_diagnosticos_id: 14
+    },
+    {
+      codigo: "X05",
+      nombre: "Menstruación ausente/escasa",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X06",
+      nombre: "Menstruación excesiva",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X07",
+      nombre: "Menstruación irregular/frecuente",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X08",
+      nombre: "Sangrado intermenstrual",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X14",
+      nombre: "Secreción / Flujo vaginal excesivo",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X18",
+      nombre: "Dolor mamario, en la mujer",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X19",
+      nombre: "Dolor mamario, en la mujer",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X72",
+      nombre: "Candidiasis genital, en la mujer",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X73",
+      nombre: "Tricomoniasis genital, en la mujer",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X74",
+      nombre: "Enfermedad inflamatoria pélvica",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X77",
+      nombre: "Otras neoplasias genitales femeninas",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X78",
+      nombre: "Fibromioma uterino",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X83",
+      nombre: "Anomalías congénitas del aparato genital femenino",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X84",
+      nombre: "Vaginitis/vulvitis NE",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X87",
+      nombre: "Prolapso úterovaginal",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X88",
+      nombre: "Mastopatía fibroquística",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "X89",
+      nombre: "Sindrome de tensión premenstrual",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y71",
+      nombre: "Gonorrea, en el hombre",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y72",
+      nombre: "Herpes genital, en el hombre",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y73",
+      nombre: "Prostatitis/vesiculitis seminal",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y74",
+      nombre: "Orquitis / Epididimitis",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y75",
+      nombre: "Balanitis",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y76",
+      nombre: "Condiloma acuminado, en el hombre",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y81",
+      nombre: "Fimosis / Prepucio excesivo",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y82",
+      nombre: "Hipospadías",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y83",
+      nombre: "Testículo no descendido",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y84",
+      nombre: "Otras anomalías congénitas del aparato genital masculino",
+      grupo_de_diagnosticos_id: 15
+    },
+    {
+      codigo: "Y86",
+      nombre: "Hidrocele",
+      grupo_de_diagnosticos_id: 15
+    }
+])
 
   # Eliminar diagnósticos duplicados no asignados
   Diagnostico.find(239).destroy  # "A21"
