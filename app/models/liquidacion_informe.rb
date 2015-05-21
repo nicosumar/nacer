@@ -139,7 +139,7 @@ class LiquidacionInforme < ActiveRecord::Base
                     "WHERE #{r[:esquema]}.prestaciones_brindadas.id = p.prestacion_brindada_id\n"+  # filtro para el update
                     "AND p.liquidacion_id = #{self.liquidacion_sumar.id} \n "+    # La liquidacion en la que se genero esta prestacion
                     "AND p.efector_id = #{self.efector.id}\n "+                     # El efector al cual corresponde este informe de liquidacion
-                    "AND p.esquema = #{r[:esquema ]}"
+                    "AND p.esquema = '#{r[:esquema ]}'"
             })
         end #end each
 
