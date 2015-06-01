@@ -380,6 +380,22 @@ class PrestacionBrindada < ActiveRecord::Base
     return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) < 28
   end
 
+  def antes_del_mes?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return true unless beneficiario.present?
+
+    return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) =< 30
+  end
+
   def menor_de_un_anio?
     beneficiario =
       NovedadDelAfiliado.where(
