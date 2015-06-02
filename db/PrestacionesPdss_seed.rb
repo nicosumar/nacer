@@ -3459,7 +3459,7 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 13
   },
   {
-    # id: 366
+    # id: 401
     nombre: "Electrocardiograma",
     grupo_pdss_id: 29,
     orden: 4,
@@ -3467,17 +3467,16 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 13
   },
   {
-    # id: 367
+    # id: 402
     nombre: "Ergometría",
-    codigo: "PRP005",
+    grupo_pdss_id: 29,
     orden: 5,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
+
+
+  
   {
     # id: 368
     nombre: "Espirometría",

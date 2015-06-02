@@ -467,9 +467,17 @@ PrestacionPdss.find(395).prestaciones << [Prestacion.find(615)]
 PrestacionPdss.find(396).prestaciones << [Prestacion.find(617)]
 PrestacionPdss.find(397).prestaciones << [Prestacion.find(618)]
 
+# SECCIÓN 7 - Grupo 29
+PrestacionPdss.find(398).prestaciones << [Prestacion.find(619)]
+PrestacionPdss.find(399).prestaciones << [Prestacion.find(620)]
+PrestacionPdss.find(400).prestaciones << [Prestacion.find(558)]
+PrestacionPdss.find(401).prestaciones << [Prestacion.find(834)]
+PrestacionPdss.find(402).prestaciones << [Prestacion.find(622)]
 
 
 
+
+###
 
 
 

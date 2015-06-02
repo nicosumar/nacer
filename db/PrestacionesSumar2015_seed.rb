@@ -17,7 +17,7 @@ ActiveRecord::Base.transaction do
   fecha_de_inicio = Date.new(2012, 8, 1)
 
   # Fecha de inicio del nomenclador nuevo
-  fecha_de_inicio_nueva = Date.new(2015, 4, 1)
+  fecha_de_inicio_nueva = Date.new(2015, 5, 1)
 
   # Obtener el nomenclador
   nomenclador_sumar = Nomenclador.find(5)
@@ -39,42 +39,11 @@ ActiveRecord::Base.transaction do
   )
   prestacion.metodos_de_validacion << MetodoDeValidacion.find([1, 15])
 
-  # Crear adendas automáticas para añadir la prestación "IMV008" a los efectores que tuvieran habilitada otras prestaciones de
-  # inmunización en el embarazo
-  efectores_con_inmunizaciones_de_embarazo_autorizadas = PrestacionAutorizada.where(
-      prestacion_id: [264, 265, 266, 380, 381],
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación
+  convenios_con_inmunizaciones_de_embarazo_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [264, 265, 266],
       fecha_de_finalizacion: nil
-    ).collect{|pa| pa.efector_id}.uniq.sort
-
-  ultima_addenda_sistema = AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
-
-  efectores_con_inmunizaciones_de_embarazo_autorizadas.each do |ef|
-    # Solo la habilitamos en los efectores que no la tengan habilitada
-    if PrestacionAutorizada.where(efector_id: ef.id, prestacion_id: 764).size == 0
-      addenda = AddendaSumar.create!({
-          numero: "AD-001-" + '%03d' % (ultima_addenda_sistema += 1),
-          convenio_de_gestion_sumar_id: ConvenioDeGestionSumar.where(efector_id: ef.id).first.id,
-          firmante: nil,
-          fecha_de_suscripcion: fecha_de_inicio_nueva,
-          fecha_de_inicio: fecha_de_inicio_nueva,
-          observaciones: 'Adenda generada por sistema, por incorporación de la prestación "IMV008" en el grupo de embarazadas.',
-          creator_id: 1,
-          updater_id: 1,
-          created_at: ahora,
-          updated_at: ahora
-        })
-      PrestacionAutorizada.create!({
-          efector_id: ef.id,
-          prestacion_id: 764,
-          fecha_de_inicio: fecha_de_inicio_nueva,
-          autorizante_al_alta_id: addenda.id,
-          autorizante_al_alta_type: "AddendaSumar",
-          fecha_de_finalizacion: nil,
-          created_at: ahora,
-          updated_at: ahora,
-          creator_id: 1,
-          updater_id: 1
-        })
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
 
   # Añadir los diagnósticos de RCIU y malformaciones a la prestación "NTN006"
   prestacion = Prestacion.find(323)
@@ -194,54 +163,25 @@ ActiveRecord::Base.transaction do
   prestacion.grupos_poblacionales << menores_de_6
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98")
   AsignacionDePrecios.create!({
-    precio_por_unidad: # 20.0000, # Averiguar precios viejos
+    precio_por_unidad:  20.0000,
     adicional_por_prestacion: 0.0000,
     nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
   })
   AsignacionDePrecios.create!({
-    precio_por_unidad: # 40.0000, # Averiguar precios viejos
+    precio_por_unidad: 40.0000,
     adicional_por_prestacion: 0.0000,
     area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
     nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
   })
 
-  # Generamos una adenda para cada efector que tenga autorizada alguna prestación de inmunizaciones para niños 
-  # y habilitamos la nueva prestación.
-  efectores_con_inmunizaciones_para_ninios_autorizadas = PrestacionAutorizada.where(
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación
+  convenios_con_inmunizaciones_de_menores_autorizadas = PrestacionAutorizada.where(
       prestacion_id: [
           459, 460, 461, 462, 463, 464, 465, 466, 499, 500, 501, 502,
           503, 526, 527, 528, 529, 530, 531, 564, 565, 566, 765
         ],
       fecha_de_finalizacion: nil
-    ).collect{|pa| pa.efector_id}.uniq.sort
-
-  ultima_addenda_sistema = AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
-
-  efectores_con_inmunizaciones_autorizadas.each do |ef|
-    addenda = AddendaSumar.create!({
-        numero: "AD-001-" + '%03d' % (ultima_addenda_sistema += 1),
-        convenio_de_gestion_sumar_id: ConvenioDeGestionSumar.where(efector_id: ef.id).first.id,
-        firmante: nil,
-        fecha_de_suscripcion: fecha_de_inicio_nueva,
-        fecha_de_inicio: fecha_de_inicio_nueva,
-        observaciones: 'Adenda generada por sistema, por incorporación de la prestación "IMV015".',
-        creator_id: 1,
-        updater_id: 1,
-        created_at: ahora,
-        updated_at: ahora
-      })
-    PrestacionAutorizada.create!({
-        efector_id: ef.id,
-        prestacion_id: prestacion.id,
-        fecha_de_inicio: fecha_de_inicio_nueva,
-        autorizante_al_alta_id: addenda.id,
-        autorizante_al_alta_type: "AddendaSumar",
-        fecha_de_finalizacion: nil,
-        created_at: ahora,
-        updated_at: ahora,
-        creator_id: 1,
-        updater_id: 1
-      })
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
 
   # Corregir los diagnósticos de la prestación "CTC016" con id 468
   prestacion = Prestacion.find(468)
@@ -267,9 +207,6 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.find(472)
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("R78")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("R81")
-
-  # Agregar el diagnóstico "R77"
-  Diagnostico.create!({nombre: "Laringitis/Traqueítis aguda", codigo: "R77"})
 
   # Corregir los diagnósticos de la prestación "CTC012" con id 482
   prestacion = Prestacion.find(482)
@@ -377,55 +314,11 @@ ActiveRecord::Base.transaction do
     nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
   })
 
-  # Generamos una adenda para cada efector que tenga autorizada la prestación "NTN002" con id 520 dando de baja esa prestación
-  # y habilitando las dos nuevas.
-  ntn002_autorizadas = PrestacionAutorizada.where(prestacion_id: 520, fecha_de_finalizacion: nil)
-
-  ultima_addenda_sistema = AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
-
-  ntn002_autorizadas.each do |na|
-    addenda = AddendaSumar.create!({
-        numero: "AD-001-" + '%03d' % (ultima_addenda_sistema += 1),
-        convenio_de_gestion_sumar_id: (na.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? na.autorizante_al_alta_id : AddendaSumar.find(autorizante_al_alta_id).convenio_de_gestion_sumar_id),
-        firmante: nil,
-        fecha_de_suscripcion: fecha_de_inicio_nueva,
-        fecha_de_inicio: fecha_de_inicio_nueva,
-        observaciones: 'Adenda generada por sistema, por reemplazo de la prestación "NTN002".',
-        creator_id: 1,
-        updater_id: 1,
-        created_at: ahora,
-        updated_at: ahora
-      })
-    na.update_attributes({
-        fecha_de_finalizacion: fecha_de_inicio_nueva,
-        autorizante_de_la_baja_id: addenda.id,
-        autorizante_de_la_baja_type: "AddendaSumar"
-      })
-    PrestacionAutorizada.create!({
-        efector_id: na.efector_id,
-        prestacion_id: 816,
-        fecha_de_inicio: fecha_de_inicio_nueva,
-        autorizante_al_alta_id: addenda.id,
-        autorizante_al_alta_type: "AddendaSumar",
-        fecha_de_finalizacion: nil,
-        created_at: ahora,
-        updated_at: ahora,
-        creator_id: 1,
-        updater_id: 1
-      })
-    PrestacionAutorizada.create!({
-        efector_id: na.efector_id,
-        prestacion_id: 817,
-        fecha_de_inicio: fecha_de_inicio_nueva,
-        autorizante_al_alta_id: addenda.id,
-        autorizante_al_alta_type: "AddendaSumar",
-        fecha_de_finalizacion: nil,
-        created_at: ahora,
-        updated_at: ahora,
-        creator_id: 1,
-        updater_id: 1
-      })
-  end
+  # Guardamos el listado de convenios que hay que adendar para desdoblar la prestación
+  convenios_con_notificacion_de_leucemia_autorizada = PrestacionAutorizada.where(
+      prestacion_id: 520,
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
 
   # Agregar el grupo poblacional de 6 a 9 años en las prestaciones diagnósticas de CC
   prestacion = Prestacion.find(402) # PRP005xxx - Ergometría
@@ -2458,24 +2351,190 @@ ActiveRecord::Base.transaction do
   prestacion = Prestacion.find(445)
   prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
 
+  ### ANEXO ###
+
   # Modificar la prestación 'PRP001' para que admita todos los diagnósticos
   prestacion = Prestacion.find(620)
-  prestacion.diagnosticos << Diagnostico.where("codigo ~* '^[[:alpha:]][[:digit:]]{2}$'")
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # No modifico la prestación 'PRP003' de acuerdo al SIRGe que admite todos los diagnósticos y grupos porque debe estar mal definido
+  #prestacion = Prestacion.find(558)
+  #prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  #prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "PRP004 - Electrocardiograma" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 834,
+    codigo: "PRP004",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("P004"),
+    nombre: 'Electrocardiograma',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_algun_electrocardiograma_autorizado = PrestacionAutorizada.where(
+      prestacion_id: [317, 483, 621, 767, 768],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modificar los grupos poblacionales y diagnósticos de la prestación "PRP005" del anexo
+  prestacion = Prestacion.find(622)
+  prestacion.grupos_poblacionales = [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
 
 
 
+  ##### GENERAR ADENDAS ÚNICAS POR CONVENIOS DE GESTIÓN #####
 
+  convenios_de_gestion_sumar_para_adendar = ConvenioDeGestionSumar.find(
+      (
+        convenios_con_inmunizaciones_de_embarazo_autorizadas +
+        convenios_con_inmunizaciones_de_menores_autorizadas +
+        convenios_con_notificacion_de_leucemia_autorizada +
+        convenios_con_algun_electrocardiograma_autorizado
+      ).uniq.sort
+    )
 
+  ultima_addenda_sistema = AddendaSumar.where("numero ILIKE 'AD-001-%'").order("numero DESC").limit(1).first.numero.split("-")[2].to_i
 
+  convenios_de_gestion_sumar_para_adendar.each do |cgs|
 
+    # Obtener el referente a la fecha de inicio nueva para el efector del convenio
+    referente = Efector.find(cgs.efector_id).referente_al_dia(fecha_de_inicio_nueva)
 
+    addenda = AddendaSumar.create!({
+        numero: "AD-001-" + '%03d' % (ultima_addenda_sistema += 1),
+        convenio_de_gestion_sumar_id: cgs.id,
+        firmante: (referente.present? ? Contacto.find(referente.contacto_id).mostrado.mb_chars.upcase.to_s : nil),
+        fecha_de_suscripcion: fecha_de_inicio_nueva,
+        fecha_de_inicio: fecha_de_inicio_nueva,
+        observaciones: 'Adenda generada por sistema, por incorporación de nuevas prestaciones en el PSS 2015.',
+        creator_id: 1,
+        updater_id: 1,
+        created_at: ahora,
+        updated_at: ahora
+      })
 
+    # Verificar si tenemos que adendar (añadir) la prestación de inmunización en el embarazo
+    if convenios_con_inmunizaciones_de_embarazo_autorizadas.member?(cgs.id) && PrestacionAutorizada.where(efector_id: cgs.efector_id, prestacion_id: 764).size == 0
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 764,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
 
+    # Verificar si tenemos que adendar (añadir) la prestación de inmunización contra neumococo
+    if convenios_con_inmunizaciones_de_menores_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 815,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
 
+    if convenios_con_notificacion_de_leucemia_autorizada.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: 520,
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).first.update_attributes!({
+          fecha_de_finalizacion: fecha_de_inicio_nueva,
+          autorizante_de_la_baja_id: addenda.id,
+          autorizante_de_la_baja_type: "AddendaSumar"
+        })
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 816,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 817,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_algun_electrocardiograma_autorizado.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [317, 483, 621, 767, 768],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 834,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    # TO_DO: Aprovechar para arreglar el pedo de efectores rurales con prestaciones urbanas.
+  end # convenios_de_gestion_sumar_para_adendar.each do |cgs|
 
 
 # Revisión general de prestaciones surgidas de la evaluación a partir de la incorporación de los modelos PDSS
 
+
+
+
+
+
+
+############### PARA REVISAR ########################
 
 # Logoaudiometría (faltó definir los grupos poblacionales habilitados)
 prestacion = Prestacion.where(codigo: "PRP020").first
@@ -2521,8 +2580,6 @@ prestacion = Prestacion.where(codigo: "TLM020").first
 prestacion.sexos << [Sexo.find_by_codigo!("F")]
 prestacion.grupos_poblacionales << [GrupoPoblacional.find_by_codigo("D")]
 prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98") # Medicina preventiva
-
-
 
 
 
