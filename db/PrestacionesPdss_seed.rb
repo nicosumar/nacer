@@ -3474,585 +3474,436 @@ PrestacionPdss.create([
     linea_de_cuidado_id: nil,
     tipo_de_prestacion_id: 13
   },
-
-
-  
-  {
-    # id: 368
-    nombre: "Espirometría",
-    codigo: "PRP006",
-    orden: 6,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 369
-    nombre: "Escisión/remoción/toma para biopsia/punción lumbar",
-    codigo: "PRP007",
-    orden: 7,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 370
-    nombre: "Extracción de sangre",
-    codigo: "PRP008",
-    orden: 8,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: true
-  },
-  {
-    # id: 371
-    nombre: "Incisión/drenaje/lavado",
-    codigo: "PRP009",
-    orden: 9,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: true
-  },
-  {
-    # id: 372
-    nombre: "Inyección/infiltración local/venopuntura",
-    codigo: "PRP010",
-    orden: 10,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: true
-  },
-  {
-    # id: 373
-    nombre: "Medicina física/rehabilitación",
-    codigo: "PRP011",
-    orden: 11,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 374
-    nombre: "Pruebas de sensibilización",
-    codigo: "PRP014",
-    orden: 12,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 375
-    nombre: "Registro de trazados eléctricos cerebrales",
-    codigo: "PRP016",
-    orden: 13,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 376
-    nombre: "Oftalmoscopía binocular indirecta (OBI)",
-    codigo: "PRP017",
-    orden: 14,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 377
-    nombre: "Audiometría tonal",
-    codigo: "PRP019",
-    orden: 15,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 378
-    nombre: "Logoaudiometría",
-    codigo: "PRP020",
-    orden: 16,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 379
-    nombre: "Inactivación de caries",
-    codigo: "PRP026",
-    orden: 17,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 380
-    nombre: "Fondo de ojo",
-    codigo: "PRP028",
-    orden: 18,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 381
-    nombre: "Punción de médula ósea",
-    codigo: "PRP029",
-    orden: 19,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 382
-    nombre: "Proteinuria rápida con tira reactiva",
-    codigo: "PRP030",
-    orden: 20,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: true
-  },
-  {
-    # id: 383
-    nombre: "Monitoreo fetal anteparto",
-    codigo: "PRP031",
-    orden: 21,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 384
-    nombre: "Tartrectomía y cepillado mecánico",
-    codigo: "PRP033",
-    orden: 22,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 385
-    nombre: "Densitometría ósea",
-    codigo: "IGR002",
-    orden: 23,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 386
-    nombre: "Ecocardiograma con fracción de eyección",
-    codigo: "IGR003",
-    orden: 24,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 387
-    nombre: "Eco-Doppler color",
-    codigo: "IGR004",
-    orden: 25,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 388
-    nombre: "Ecografía bilateral de caderas (menores de 2 meses)",
-    codigo: "IGR005",
-    orden: 26,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 389
-    nombre: "Ecografía cerebral",
-    codigo: "IGR006",
-    orden: 27,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 390
-    nombre: "Ecografía de cuello",
-    codigo: "IGR007",
-    orden: 28,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 391
-    nombre: "Ecografía ginecológica",
-    codigo: "IGR008",
-    orden: 29,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 392
-    nombre: "Ecografìa mamaria",
-    codigo: "IGR009",
-    orden: 30,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 393
-    nombre: "Ecografía tiroidea",
-    codigo: "IGR010",
-    orden: 31,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 394
-    nombre: "Fibrocolonoscopía",
-    codigo: "IGR011",
-    orden: 32,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 395
-    nombre: "Fibrogastroscopía",
-    codigo: "IGR012",
-    orden: 33,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 396
-    nombre: "Fibrorectosigmoideoscopía",
-    codigo: "IGR013",
-    orden: 34,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 397
-    nombre: "Rx codo, antebrazo, muñeca, mano, dedos, rodilla, pierna, tobillo, pie (total o focalizada) (fte. y perf.)",
-    codigo: "IGR017",
-    orden: 35,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 398
-    nombre: "Rx colon por enema, evacuado e insuflado (con o sin doble contraste)",
-    codigo: "IGR018",
-    orden: 36,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 399
-    nombre: "Rx columna cervical (total o focalizada) (fte. y perf.)",
-    codigo: "IGR019",
-    orden: 37,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 400
-    nombre: "Rx columna dorsal (total o focalizada) (fte. y perf.)",
-    codigo: "IGR020",
-    orden: 38,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 401
-    nombre: "Rx columna lumbar (total o focalizada) (fte. y perf.)",
-    codigo: "IGR021",
-    orden: 39,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 402
-    nombre: "Rx cráneo (fte. y perfil), Rx senos paranasales",
-    codigo: "IGR022",
-    orden: 40,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
   {
     # id: 403
-    nombre: "Rx estudio seriado tránsito esofagogastroduodenal contrastado",
-    codigo: "IGR023",
-    orden: 41,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Espirometría",
+    grupo_pdss_id: 29,
+    orden: 6,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 404
-    nombre: "Rx estudio tránsito de intestino delgado y cecoapendicular",
-    codigo: "IGR024",
-    orden: 42,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Escisión / Remoción / Toma para biopsia / Punción lumbar",
+    grupo_pdss_id: 29,
+    orden: 7,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 405
-    nombre: "Rx hombro, húmero, pelvis, cadera y fémur (total o focalizada) (fte. y perf.)",
-    codigo: "IGR025",
-    orden: 43,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
+    nombre: "Extracción de sangre",
+    grupo_pdss_id: 29,
+    orden: 8,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 406
-    nombre: "Rx o TeleRx tórax (total o focalizada) (fte. y perf.)",
-    codigo: "IGR026",
-    orden: 44,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
+    nombre: "Incisión / Drenaje / Lavado",
+    grupo_pdss_id: 29,
+    orden: 9,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 407
-    nombre: "Rx sacrococcígea (total o focalizada) (fte. y perf.)",
-    codigo: "IGR028",
-    orden: 45,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
+    nombre: "Inyección / Infiltración local / Venopuntura",
+    grupo_pdss_id: 29,
+    orden: 10,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 408
-    nombre: "Rx simple de abdomen (fte. y perf.)",
-    codigo: "IGR029",
-    orden: 46,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
+    nombre: "Medicina física / Rehabilitación",
+    grupo_pdss_id: 29,
+    orden: 11,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 409
-    nombre: "Tomografía axial computada (TAC) (cerebro-espinal)",
-    codigo: "IGR030",
-    orden: 47,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Pruebas de sensibilización",
+    grupo_pdss_id: 29,
+    orden: 12,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 410
-    nombre: "Ecografia obstétrica",
-    codigo: "IGR031",
-    orden: 48,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
+    nombre: "Registro de trazados eléctricos cerebrales",
+    grupo_pdss_id: 29,
+    orden: 13,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 411
-    nombre: "Ecografia abdominal",
-    codigo: "IGR032",
-    orden: 49,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Oftalmoscopía binocular indirecta (OBI)",
+    grupo_pdss_id: 29,
+    orden: 14,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 412
-    nombre: "Eco doppler fetal",
-    codigo: "IGR037",
-    orden: 50,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Audiometría tonal",
+    grupo_pdss_id: 29,
+    orden: 15,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 413
-    nombre: "Ecografía renal",
-    codigo: "IGR038",
-    orden: 51,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Logoaudiometría",
+    grupo_pdss_id: 29,
+    orden: 16,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
+  },
+  {
+    # id: 413
+    nombre: "Logoaudiometría",
+    grupo_pdss_id: 29,
+    orden: 16,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 414
-    nombre: "Ecocardiograma fetal",
-    codigo: "IGR039",
-    orden: 52,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
+    nombre: "Fondo de ojo",
+    grupo_pdss_id: 29,
+    orden: 17,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
   {
     # id: 415
-    nombre: "Medulograma (recuento diferencial con tinción de MGG)",
-    codigo: "APA003",
-    orden: 53,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 1,
-    rural: false
+    nombre: "Punción de médula ósea",
+    grupo_pdss_id: 29,
+    orden: 18,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
   },
+  {
+    # id: 416
+    nombre: "Proteinuria rápida con tira reactiva",
+    grupo_pdss_id: 29,
+    orden: 19,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
+  },
+  {
+    # id: 417
+    nombre: "Monitoreo fetal anteparto",
+    grupo_pdss_id: 29,
+    orden: 20,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 13
+  },
+  {
+    # id: 418
+    nombre: "Densitometría ósea",
+    grupo_pdss_id: 29,
+    orden: 21,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 419
+    nombre: "Ecocardiograma con fracción de eyección",
+    grupo_pdss_id: 29,
+    orden: 22,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 420
+    nombre: "Eco-Doppler color",
+    grupo_pdss_id: 29,
+    orden: 23,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 421
+    nombre: "Ecografía bilateral de caderas (menores de 2 meses)",
+    grupo_pdss_id: 29,
+    orden: 24,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 422
+    nombre: "Ecografía cerebral",
+    grupo_pdss_id: 29,
+    orden: 25,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 423
+    nombre: "Ecografía de cuello",
+    grupo_pdss_id: 29,
+    orden: 26,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 424
+    nombre: "Ecografía ginecológica",
+    grupo_pdss_id: 29,
+    orden: 27,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 425
+    nombre: "Ecografìa mamaria",
+    grupo_pdss_id: 29,
+    orden: 28,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 426
+    nombre: "Ecografía tiroidea",
+    grupo_pdss_id: 29,
+    orden: 29,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 427
+    nombre: "Fibrocolonoscopía",
+    grupo_pdss_id: 29,
+    orden: 30,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 428
+    nombre: "Fibrogastroscopía",
+    grupo_pdss_id: 29,
+    orden: 31,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 429
+    nombre: "Fibrorrectosigmoideoscopía",
+    grupo_pdss_id: 29,
+    orden: 32,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 430
+    nombre: "Rx de codo, antebrazo, muñeca, mano, dedos, rodilla, pierna, tobillo, pie; total o focalizada (frente y perfil)",
+    grupo_pdss_id: 29,
+    orden: 33,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 431
+    nombre: "Rx de colon por enema, evacuado e insuflado (con o sin doble contraste)",
+    grupo_pdss_id: 29,
+    orden: 34,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 432
+    nombre: "Rx de columna cervical; total o focalizada (frente y perfil)",
+    grupo_pdss_id: 29,
+    orden: 35,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 433
+    nombre: "Rx de columna dorsal; total o focalizada (frente y perfil)",
+    grupo_pdss_id: 29,
+    orden: 36,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 434
+    nombre: "Rx de columna lumbar; total o focalizada (frente y perfil)",
+    grupo_pdss_id: 29,
+    orden: 37,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 435
+    nombre: "Rx de cráneo (frente y perfil); Rx de senos paranasales",
+    grupo_pdss_id: 29,
+    orden: 38,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 436
+    nombre: "Rx, estudio seriado del tránsito esofagogastroduodenal contrastado",
+    grupo_pdss_id: 29,
+    orden: 39,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 437
+    nombre: "Rx, estudio del tránsito de intestino delgado y cecoapendicular",
+    grupo_pdss_id: 29,
+    orden: 40,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 438
+    nombre: "Rx de hombro, húmero, pelvis, cadera y fémur (total o focalizada), frente y perfil",
+    grupo_pdss_id: 29,
+    orden: 41,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 439
+    nombre: "Rx o tele-Rx de tórax (total o focalizada), frente y perfil",
+    grupo_pdss_id: 29,
+    orden: 42,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 440
+    nombre: "Rx sacrococcígea (total o focalizada), frente y perfil",
+    grupo_pdss_id: 29,
+    orden: 43,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 441
+    nombre: "Rx simple de abdomen, frente y perfil",
+    grupo_pdss_id: 29,
+    orden: 44,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 442
+    nombre: "Tomografía axial computada (TAC)",
+    grupo_pdss_id: 29,
+    orden: 45,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 443
+    nombre: "Ecografia obstétrica",
+    grupo_pdss_id: 29,
+    orden: 46,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 444
+    nombre: "Ecografia abdominal",
+    grupo_pdss_id: 29,
+    orden: 47,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 445
+    nombre: "Eco-Doppler fetal",
+    grupo_pdss_id: 29,
+    orden: 48,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 446
+    nombre: "Ecografía renal",
+    grupo_pdss_id: 29,
+    orden: 49,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 447
+    nombre: "Ecocardiograma fetal",
+    grupo_pdss_id: 29,
+    orden: 50,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 448
+    nombre: "Medulograma (recuento diferencial con tinción de MGG)",
+    grupo_pdss_id: 29,
+    orden: 51,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 449
+    nombre: "Unidad móvil de alta complejidad de adultos",
+    grupo_pdss_id: 29,
+    orden: 52,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 450
+    nombre: "Unidad móvil de alta complejidad pediátrica/neonatal",
+    grupo_pdss_id: 29,
+    orden: 53,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 451
+    nombre: "Traslado del RN prematuro de 500 a 1500 gramos, o de un RN con malformación congénita quirúrgica",
+    grupo_pdss_id: 29,
+    orden: 54,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 452
+    nombre: "Traslado de la gestante con diagnóstico de patología del embarazo; APP o malformación fetal mayor a centro de referencia",
+    grupo_pdss_id: 29,
+    orden: 55,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 453
+    nombre: "Unidad móvil de baja o mediana complejidad (hasta 50 km)",
+    grupo_pdss_id: 29,
+    orden: 56,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+  {
+    # id: 454
+    nombre: "Unidad móvil de baja o mediana complejidad (más de 50 km)",
+    grupo_pdss_id: 29,
+    orden: 57,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 6
+  },
+
+
+
+
+
+
   {
     # id: 416
     nombre: "Ronda Sanitaria completa orientada a detección de población de riesgo en área rural",
@@ -4075,54 +3926,6 @@ PrestacionPdss.create([
     apartado_pdss_id: nil,
     nosologia_id: nil,
     tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 418
-    nombre: "Unidad móvil de alta complejidad adultos",
-    codigo: "TLM020",
-    orden: 56,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 419
-    nombre: "Unidad móvil de alta complejidad pediátrica/neonatal",
-    codigo: "TLM030",
-    orden: 57,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 420
-    nombre: "Unidad móvil de baja o mediana complejidad (hasta 50 km)",
-    codigo: "TLM081",
-    orden: 58,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 421
-    nombre: "Unidad móvil de baja o mediana complejidad (más de 50 km)",
-    codigo: "TLM082",
-    orden: 59,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
     rural: true
   },
   {
@@ -6437,31 +6240,6 @@ PrestacionPdss.create([
 
 
 
-
-  {
-    # id: 126
-    nombre: "Traslado de la gestante con diagnóstico de patología del embarazo; APP o malformación fetal mayor a centro de referencia",
-    codigo: "TLM041",
-    orden: 1,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 4,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 9,
-    rural: false
-  },
-  {
-    # id: 142
-    nombre: "Traslado del RN prematuro de 500 a 1500 gramos, o de un RN con malformación congénita quirúrgica",
-    codigo: "TLM040",
-    orden: 1,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 6,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: false
-  },
 
 
 

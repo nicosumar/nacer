@@ -64,6 +64,10 @@ ActiveRecord::Base.transaction do
   # Añadir los códigos de cardiopatías congénitas o el diagnóstico "K73" (figura en las líneas de cuidado pero no en la matriz PSS)
   # prestacion.diagnosticos << Diagnostico.where("codigo BETWEEN '001' AND '999'")
 
+  # Modificar los diagnósticos habilitados para la prestación "PRP021", eliminar el diagnóstico "H86" según SIRGe (admitido en PSS)
+  prestacion = Prestacion.find(383)
+  prestacion.diagnosticos = [Diagnostico.find_by_codigo!("A97")]
+
   # Modificar los diagnósticos habilitados para la prestación "ICI001"
   prestacion = Prestacion.find(390)
   prestacion.diagnosticos.delete_all
@@ -119,6 +123,9 @@ ActiveRecord::Base.transaction do
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q43.3")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q43.4")
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q79.3")
+
+  # Modificar la descripción de la prestación 'PRP035'
+  Prestacion.find(404).update_attributes!({nombre: "Presurometría"})
 
   # Eliminar el código de diagnóstico "003" de la prestación "ITK003"
   prestacion = Prestacion.find(410)
@@ -293,6 +300,12 @@ ActiveRecord::Base.transaction do
   prestacion.sexos << [sexo_femenino, sexo_masculino]
   prestacion.grupos_poblacionales << [de_6_a_9]
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("B73")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 1,
+    periodo: "1.year"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
   AsignacionDePrecios.create!({
     precio_por_unidad: 5.0000,
     adicional_por_prestacion: 0.0000,
@@ -308,6 +321,12 @@ ActiveRecord::Base.transaction do
   prestacion.sexos << [sexo_femenino, sexo_masculino]
   prestacion.grupos_poblacionales << [de_6_a_9]
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 1,
+    periodo: "1.year"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
   AsignacionDePrecios.create!({
     precio_por_unidad: 5.0000,
     adicional_por_prestacion: 0.0000,
@@ -2373,6 +2392,13 @@ ActiveRecord::Base.transaction do
   prestacion.sexos << [sexo_femenino, sexo_masculino]
   prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
   prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
   AsignacionDePrecios.create!({
     precio_por_unidad: 10.0000,
     adicional_por_prestacion: 0.0000,
@@ -2396,6 +2422,786 @@ ActiveRecord::Base.transaction do
   prestacion.grupos_poblacionales = [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
   prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
 
+  # No modifico la prestación 'PRP006' de acuerdo al SIRGe que admite todos los diagnósticos y grupos porque debe estar mal definido
+  #prestacion = Prestacion.find(623)
+  #prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  #prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modificar los grupos poblacionales y diagnósticos de la prestación "PRP007" del anexo
+  prestacion = Prestacion.find(624)
+  prestacion.grupos_poblacionales = [de_6_a_9, adolescentes, mujeres_20_a_64] # SIRGe admite el grupo menores_de_6 pero no el PSS
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modificar los diagnósticos de la prestación "PRP008" del anexo
+  prestacion = Prestacion.find(625)
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modificar los diagnósticos de la prestación "PRP009" del anexo
+  prestacion = Prestacion.find(626)
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modificar los diagnósticos de la prestación "PRP010" del anexo
+  prestacion = Prestacion.find(627)
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # No modifico la prestación 'PRP011' de acuerdo al SIRGe que admite todos los diagnósticos y grupos porque debe estar mal definido
+  #prestacion = Prestacion.find(628)
+  #prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  #prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # No modifico la prestación 'PRP014' de acuerdo al SIRGe que admite todos los diagnósticos y grupos porque debe estar mal definido
+  #prestacion = Prestacion.find(629)
+  #prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  #prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # No modifico la prestación 'PRP016' de acuerdo al SIRGe que admite todos los diagnósticos y grupos porque debe estar mal definido
+  #prestacion = Prestacion.find(630)
+  #prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  #prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'PRP017' de acuerdo al SIRGe que admite todos los diagnósticos y grupos (el PSS es más restrictivo)
+  prestacion = Prestacion.find(631)
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'PRP019' para que admita solo el grupo poblacional menores_de_6 (el SIRGe admite todos)
+  prestacion = Prestacion.find(632)
+  prestacion.grupos_poblacionales = [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'PRP020' para que admita solo el grupo poblacional menores_de_6 y todos los diagnósticos
+  prestacion = Prestacion.find(633)
+  prestacion.sexos << Sexo.find(:all)
+  prestacion.grupos_poblacionales = [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'PRP028' de acuerdo al SIRGe que admite todos los diagnósticos y grupos (el PSS es más restrictivo)
+  prestacion = Prestacion.find(634)
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # No modifico la prestación 'PRP029' de acuerdo al SIRGe que admite todos los diagnósticos y grupos porque debe estar mal definido
+  #prestacion = Prestacion.find(635)
+  #prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  #prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Guardamos el listado de convenios que hay que adendar para eliminar la prestación 'PRP030' del anexo (según PSS solo es para embarazos de alto riesgo)
+  convenios_con_uso_de_tiras_reactivas_autorizado = PrestacionAutorizada.where(
+      prestacion_id: 636,
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # No modifico la prestación 'PRP031' de acuerdo al SIRGe que admite todos los diagnósticos y grupos porque debe estar mal definido
+  #prestacion = Prestacion.find(351)
+  #prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  #prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'IGR002' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo para grupo mujeres_20_a_64)
+  prestacion = Prestacion.find(637)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "IGR003 - Ecocardiograma con fracción de eyección" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 835,
+    codigo: "IGR003",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R003"),
+    nombre: 'Ecocardiograma con fracción de eyección',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 50.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_algun_ecocardiograma_autorizado = PrestacionAutorizada.where(
+      prestacion_id: [638, 769, 770],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Crear una nueva prestación "IGR004 - Eco-Doppler color" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 836,
+    codigo: "IGR004",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R004"),
+    nombre: 'Eco-Doppler color',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 20.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_ecodoppler_autorizado = PrestacionAutorizada.where(
+      prestacion_id: 492,
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'IGR005' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo para grupo menores_de_6)
+  prestacion = Prestacion.find(487)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'IGR006' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo para grupo menores_de_6)
+  prestacion = Prestacion.find(639)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "IGR007 - Ecografía de cuello" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 837,
+    codigo: "IGR007",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R007"),
+    nombre: 'Ecografía de cuello',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_ecografias_de_cuello_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [640, 771, 772],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Crear una nueva prestación "IGR008 - Ecografía ginecológica" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 838,
+    codigo: "IGR008",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R008"),
+    nombre: 'Ecografía ginecológica',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino]
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 25.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_ecografias_ginecologicas_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [368, 641, 773, 774],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Crear una nueva prestación "IGR009 - Ecografía mamaria" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 839,
+    codigo: "IGR009",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R009"),
+    nombre: 'Ecografía mamaria',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino]
+  prestacion.grupos_poblacionales << [mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 25.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_ecografias_mamarias_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [642, 775, 776],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Crear una nueva prestación "IGR010 - Ecografía tiroidea" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 840,
+    codigo: "IGR010",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R010"),
+    nombre: 'Ecografía tiroidea',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino]
+  prestacion.grupos_poblacionales << [mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 20.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_ecografias_tiroideas_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [643, 777],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'IGR011' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo para grupo mujeres_20_a_64)
+  prestacion = Prestacion.find(644)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "IGR012 - Fibrogastroscopía" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 841,
+    codigo: "IGR012",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R012"),
+    nombre: 'Fibrogastroscopía',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino]
+  prestacion.grupos_poblacionales << [mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 100.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_fibrogastroscopias_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [645, 778],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'IGR013' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo para grupo mujeres_20_a_64)
+  prestacion = Prestacion.find(646)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "IGR017 - Rx de codo, antebrazo, muñeca, mano, dedos, rodilla, pierna, tobillo, pie (total o focalizada), frente y perfil" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 842,
+    codigo: "IGR017",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R017"),
+    nombre: 'Rx de codo, antebrazo, muñeca, mano, dedos, rodilla, pierna, tobillo, pie (total o focalizada), frente y perfil',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_rx_huesos_cortos_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [490, 779],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'IGR018' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo para grupo mujeres_20_a_64)
+  prestacion = Prestacion.find(647)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'IGR019' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (exceptúa grupo mujeres_20_a_64)
+  prestacion = Prestacion.find(648)
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'IGR020' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo grupos de_6_a_9 y adolescentes)
+  prestacion = Prestacion.find(649)
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'IGR021' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo grupos de_6_a_9 y adolescentes)
+  prestacion = Prestacion.find(650)
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "IGR022 - Rx de cráneo (frente y perfil); Rx de senos paranasales" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 843,
+    codigo: "IGR022",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R022"),
+    nombre: 'Rx de cráneo (frente y perfil); Rx de senos paranasales',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_rx_de_craneo_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [321, 489, 780],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'IGR023' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo grupos menores_de_6 y mujeres_20_a_64)
+  prestacion = Prestacion.find(651)
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'IGR024' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo grupo mujeres_20_a_64)
+  prestacion = Prestacion.find(652)
+  prestacion.sexos = [sexo_femenino]
+  prestacion.grupos_poblacionales = [mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "IGR025 - Rx de hombro, húmero, pelvis, cadera y ..." y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 844,
+    codigo: "IGR025",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R025"),
+    nombre: 'Rx de hombro, húmero, pelvis, cadera y fémur (total o focalizada), frente y perfil',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_rx_de_huesos_largos_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [491, 781],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Crear una nueva prestación "IGR026 - Rx o tele-Rx de tórax (total o focalizada) ..." y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 845,
+    codigo: "IGR026",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R026"),
+    nombre: 'Rx o tele-Rx de tórax (total o focalizada), frente y perfil',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 3,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 10.0000,
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_rx_de_torax_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [488, 653],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'IGR028' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo grupo mujeres_20_a_64)
+  prestacion = Prestacion.find(654)
+  prestacion.sexos = [sexo_femenino]
+  prestacion.grupos_poblacionales = [mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'IGR029' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo grupo menores_de_6)
+  prestacion = Prestacion.find(655)
+  prestacion.sexos = [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales = [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "IGR030 - Tomografía axial computada (TAC)" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 846,
+    codigo: "IGR030",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R030"),
+    nombre: 'Tomografía axial computada (TAC)',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 150.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_tac_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [656, 782],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Crear una nueva prestación "IGR031 - Ecografía obstétrica" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 847,
+    codigo: "IGR031",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R031"),
+    nombre: 'Ecografía obstétrica',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino]
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17 OR grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "9.months",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find([1, 15])
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 25.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 25.0000,
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_ecografias_obstetricas_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [320, 348],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Crear una nueva prestación "IGR031 - Ecografía obstétrica" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 848,
+    codigo: "IGR032",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R032"),
+    nombre: 'Ecografía abdominal',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 20.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_ecografias_abdominales_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [657, 783, 784],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'IGR037' de acuerdo al PSS y SIRGe que admite todos los diagnósticos
+  prestacion = Prestacion.find(349)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17 OR grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+
+  # Modifico la prestación 'IGR038' de acuerdo al PSS y SIRGe que admite todos los diagnósticos
+  prestacion = Prestacion.find(350)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17 OR grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+
+  # Modifico la prestación 'IGR039' de acuerdo al PSS y SIRGe que admite todos los diagnósticos
+  prestacion = Prestacion.find(364)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17 OR grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+
+  # Crear una nueva prestación "IGR031 - Ecografía obstétrica" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 849,
+    codigo: "APA003",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("A003"),
+    nombre: 'Medulograma (recuento diferencial con tinción de MGG)',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 150.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_medulogramas_autorizados = PrestacionAutorizada.where(
+      prestacion_id: [658, 785],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'TLM020 - Traslado en unidad móvil de alta complejidad para adultos'
+  prestacion = Prestacion.find(659)
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find([1, 15])
+
+  # Modifico la prestación 'TLM030 - Unidad móvil de alta complejidad (pediátrica/neonatal)'
+  prestacion = Prestacion.find(660)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+
+  # Modifico la prestación 'TLM040 - Traslado del RN prematuro ...'
+  prestacion = Prestacion.find(401)
+  prestacion.diagnosticos.delete_all
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("P07.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q03")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q05")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q39.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q39.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q39.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q41")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.0")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.1")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.2")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q42.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q43.3")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q43.4")
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("Q79.3")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+
+  # Modifico la prestación 'TLM041 - Traslado de la gestante ...'
+  prestacion = Prestacion.find(379)
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+
+  # Crear una nueva prestación "TLM081 - Unidad móvil de baja y ... (hasta 50 km)" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 850,
+    codigo: "TLM081",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("M081"),
+    nombre: 'Unidad móvil de baja o mediana complejidad (hasta 50 km)',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 3,
+    periodo: "1.year",
+    intervalo: "1.week"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  prestacion.documentaciones_respaldatorias << DocumentacionRespaldatoria.find(2)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 150.0000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 150.0000,
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_traslados_hasta_50_autorizados = PrestacionAutorizada.where(
+      prestacion_id: [318, 485],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Crear una nueva prestación "TLM082 - Unidad móvil de baja y ... (más de 50 km)" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 851,
+    codigo: "TLM082",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("M082"),
+    nombre: 'Unidad móvil de baja o mediana complejidad (más de 50 km)',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 3,
+    periodo: "1.year",
+    intervalo: "1.week"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  prestacion.documentaciones_respaldatorias << DocumentacionRespaldatoria.find(2)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1.0000,
+    adicional_por_prestacion: 150.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 1.0000,
+    adicional_por_prestacion: 150.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_traslados_mas_50_autorizados = PrestacionAutorizada.where(
+      prestacion_id: [319, 486],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+
+
+  ##### AÑADIR PRESTACIONES DE FLAP #####
+  # PRP036, PRP038, PRP039, PRP040, PRP047, IGR042, IGR043, IGR044, IGR045, IGR046, TLM042?, TLM043?
+
+  ##### AÑADIR PRESTACIONES DE PIE BOT #####
+  # PRP041, PRP042, PRP046
+
+  ##### AÑADIR PRESTACIONES DE DISPLASIA DE CADERA #####
+  # PRP044, PRP045, 
+  # Modificar diagnósticos de IGR005 (id: 487), añadiendo los diagnósticos de DCC
+
 
 
   ##### GENERAR ADENDAS ÚNICAS POR CONVENIOS DE GESTIÓN #####
@@ -2405,7 +3211,24 @@ ActiveRecord::Base.transaction do
         convenios_con_inmunizaciones_de_embarazo_autorizadas +
         convenios_con_inmunizaciones_de_menores_autorizadas +
         convenios_con_notificacion_de_leucemia_autorizada +
-        convenios_con_algun_electrocardiograma_autorizado
+        convenios_con_algun_electrocardiograma_autorizado +
+        convenios_con_uso_de_tiras_reactivas_autorizado +
+        convenios_con_algun_ecocardiograma_autorizado +
+        convenios_con_ecodoppler_autorizado +
+        convenios_con_ecografias_de_cuello_autorizadas +
+        convenios_con_ecografias_ginecologicas_autorizadas +
+        convenios_con_ecografias_mamarias_autorizadas +
+        convenios_con_ecografias_tiroideas_autorizadas +
+        convenios_con_fibrogastroscopias_autorizadas +
+        convenios_con_rx_huesos_cortos_autorizadas +
+        convenios_con_rx_de_craneo_autorizadas +
+        convenios_con_rx_de_huesos_largos_autorizadas +
+        convenios_con_rx_de_torax_autorizadas +
+        convenios_con_tac_autorizadas +
+        convenios_con_ecografias_obstetricas_autorizadas +
+        convenios_con_ecografias_abdominales_autorizadas +
+        convenios_con_medulogramas_autorizados +
+        convenios_con_traslados_hasta_50_autorizados
       ).uniq.sort
     )
 
@@ -2461,6 +3284,7 @@ ActiveRecord::Base.transaction do
         })
     end
 
+    # Verificar si tenemos que desdoblar la prestación 'NTN002'
     if convenios_con_notificacion_de_leucemia_autorizada.member?(cgs.id)
       PrestacionAutorizada.where(
           prestacion_id: 520,
@@ -2522,8 +3346,456 @@ ActiveRecord::Base.transaction do
         })
     end
 
+    if convenios_con_uso_de_tiras_reactivas_autorizado.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: 636,
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).first.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+    end
+
+    if convenios_con_algun_ecocardiograma_autorizado.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [638, 769, 770],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 835,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_ecodoppler_autorizado.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: 492,
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).first.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 836,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_ecografias_de_cuello_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [640, 771, 772],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 837,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_ecografias_ginecologicas_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [368, 641, 773, 774],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 838,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_ecografias_mamarias_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [642, 775, 776],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 840,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_ecografias_tiroideas_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [643, 777],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 840,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_fibrogastroscopias_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [645, 778],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 841,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_rx_huesos_cortos_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [490, 779],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 842,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_rx_de_craneo_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [321, 489, 780],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 843,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_rx_de_huesos_largos_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [491, 781],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 844,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_rx_de_torax_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [488, 653],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 845,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_tac_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [656, 782],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 846,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_ecografias_obstetricas_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [320, 348],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 847,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_ecografias_abdominales_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [657, 783, 784],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 848,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_medulogramas_autorizados.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [658, 785],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 849,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_traslados_hasta_50_autorizados.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [318, 485],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 850,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_traslados_mas_50_autorizados.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [319, 486],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 851,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
     # TO_DO: Aprovechar para arreglar el pedo de efectores rurales con prestaciones urbanas.
   end # convenios_de_gestion_sumar_para_adendar.each do |cgs|
+
+  # Desactivar las prestaciones que fueron reemplazadas o dadas de baja
+  Prestacion.find([
+      520, 317, 483, 621, 767, 768, 636, 638, 769, 770, 492, 640, 771, 772, 368, 641, 773, 774,
+      642, 775, 776, 643, 777, 645, 778, 490, 779, 312, 489, 780, 491, 781, 488, 653, 320, 348,
+      657, 783, 784, 658, 785, 318, 485, 319, 486
+    ]).each do |p|
+      p.update_attributes!({activa: false})
+  end
+
 
 
 # Revisión general de prestaciones surgidas de la evaluación a partir de la incorporación de los modelos PDSS
@@ -2536,11 +3808,6 @@ ActiveRecord::Base.transaction do
 
 ############### PARA REVISAR ########################
 
-# Logoaudiometría (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(codigo: "PRP020").first
-prestacion.sexos << Sexo.find(:all)
-prestacion.grupos_poblacionales << GrupoPoblacional.find([1, 2])
-prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
 
 # Monotest (faltó definir los grupos poblacionales habilitados)
 prestacion = Prestacion.where(codigo: "LBL078").first
@@ -2574,12 +3841,6 @@ Prestacion.find(350).metodos_de_validacion << [MetodoDeValidacion.find(1)]
 
 # Falta el método de validación de "beneficiaria_embarazada?" en la prestación "Monitoreo fetal anteparto"
 Prestacion.find(351).metodos_de_validacion << [MetodoDeValidacion.find(1)]
-
-# Traslado en unidad móvil de alta complejidad para adultos (faltó definir los grupos poblacionales habilitados y diagnósticos)
-prestacion = Prestacion.where(codigo: "TLM020").first
-prestacion.sexos << [Sexo.find_by_codigo!("F")]
-prestacion.grupos_poblacionales << [GrupoPoblacional.find_by_codigo("D")]
-prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98") # Medicina preventiva
 
 
 
