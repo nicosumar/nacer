@@ -635,6 +635,8 @@ class InscripcionMasiva
       cadena = "IGNORADO"
     end
 
+    return cadena.to_i if (cadena.to_i > 0)
+  
     return hash_distritos[departamento_id].values[hash_distritos[departamento_id].keys.collect{|n| n.mb_chars.upcase.to_s}.index(cadena) || 1000]
 
   end
