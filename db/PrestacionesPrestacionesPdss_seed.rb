@@ -550,6 +550,32 @@ PrestacionPdss.find(476).prestaciones << [Prestacion.find(336)]
 PrestacionPdss.find(477).prestaciones << Prestacion.find([679, 853])
 PrestacionPdss.find(478).prestaciones << [Prestacion.find(680)]
 PrestacionPdss.find(479).prestaciones << [Prestacion.find(681)]
+PrestacionPdss.find(480).prestaciones << [Prestacion.find(682)]
+PrestacionPdss.find(481).prestaciones << [Prestacion.find(683)]
+PrestacionPdss.find(482).prestaciones << [Prestacion.find(684)]
+PrestacionPdss.find(483).prestaciones << [Prestacion.find(685)]
+PrestacionPdss.find(484).prestaciones << [Prestacion.find(686)]
+PrestacionPdss.find(485).prestaciones << [Prestacion.find(687)]
+PrestacionPdss.find(486).prestaciones << [Prestacion.find(688)]
+PrestacionPdss.find(487).prestaciones << [Prestacion.find(689)]
+PrestacionPdss.find(488).prestaciones << [Prestacion.find(690)]
+PrestacionPdss.find(489).prestaciones << [Prestacion.find(691)]
+PrestacionPdss.find(490).prestaciones << [Prestacion.find(692)]
+PrestacionPdss.find(491).prestaciones << [Prestacion.find(693)]
+PrestacionPdss.find(492).prestaciones << Prestacion.find([343, 793])
+PrestacionPdss.find(493).prestaciones << [Prestacion.find(694)]
+PrestacionPdss.find(494).prestaciones << [Prestacion.find(695)]
+PrestacionPdss.find(495).prestaciones << [Prestacion.find(696)]
+PrestacionPdss.find(496).prestaciones << Prestacion.find([344, 794])
+PrestacionPdss.find(497).prestaciones << [Prestacion.find(854)]
+PrestacionPdss.find(498).prestaciones << [Prestacion.find(698)]
+PrestacionPdss.find(499).prestaciones << [Prestacion.find(271)]
+PrestacionPdss.find(500).prestaciones << [Prestacion.find(272)]
+PrestacionPdss.find(501).prestaciones << [Prestacion.find(699)]
+PrestacionPdss.find(502).prestaciones << [Prestacion.find(855)]
+PrestacionPdss.find(503).prestaciones << [Prestacion.find(286)]
+PrestacionPdss.find(504).prestaciones << [Prestacion.find(856)]
+PrestacionPdss.find(505).prestaciones << [Prestacion.find(701)]
 
 
 

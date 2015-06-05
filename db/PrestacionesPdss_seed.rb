@@ -4098,313 +4098,223 @@ PrestacionPdss.create([
     linea_de_cuidado_id: nil,
     tipo_de_prestacion_id: 10
   },
-
-
-
-
   {
-    # id: 450
+    # id: 480
     nombre: "Electroforesis de proteínas",
-    codigo: "LBL027",
-    orden: 88,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 83,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 451
+    # id: 481
     nombre: "Eritrosedimentación",
-    codigo: "LBL028",
-    orden: 89,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 84,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 452
+    # id: 482
     nombre: "Esputo seriado",
-    codigo: "LBL029",
-    orden: 90,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 85,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 453
+    # id: 483
     nombre: "Estado ácido base",
-    codigo: "LBL030",
-    orden: 91,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 86,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 454
+    # id: 484
     nombre: "Estudio citoquímico de médula ósea: PAS-Peroxidasa-Esterasas",
-    codigo: "LBL031",
-    orden: 92,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 87,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 455
+    # id: 485
     nombre: "Estudio citogenético de médula ósea (técnica de bandeo G)",
-    codigo: "LBL032",
-    orden: 93,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 88,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 456
+    # id: 486
     nombre: "Estudio de genética molecular de médula ósea (BCR/ABL, MLL/AF4 y TEL/AML1 por técnicas de RT-PCR o FISH)",
-    codigo: "LBL033",
-    orden: 94,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 89,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 457
+    # id: 487
     nombre: "Factor de coagulación 5, 7, 8, 9 y 10",
-    codigo: "LBL034",
-    orden: 95,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 90,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 458
+    # id: 488
     nombre: "Fenilalanina",
-    codigo: "LBL035",
-    orden: 96,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 91,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 459
+    # id: 489
     nombre: "Fenilcetonuria",
-    codigo: "LBL036",
-    orden: 97,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 92,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 460
+    # id: 490
     nombre: "Ferremia",
-    codigo: "LBL037",
-    orden: 98,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 93,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 461
+    # id: 491
     nombre: "Ferritina",
-    codigo: "LBL038",
-    orden: 99,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 94,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 462
+    # id: 492
     nombre: "Fosfatasa alcalina y ácida",
-    codigo: "LBL040",
-    orden: 100,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 95,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 463
+    # id: 493
     nombre: "Fosfatemia",
-    codigo: "LBL041",
-    orden: 101,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 96,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 464
+    # id: 494
     nombre: "FSH",
-    codigo: "LBL042",
-    orden: 102,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 97,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 465
+    # id: 495
     nombre: "Galactosemia",
-    codigo: "LBL043",
-    orden: 103,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 98,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 466
+    # id: 496
     nombre: "Gamma-GT (gamma glutamil transpeptidasa)",
-    codigo: "LBL044",
-    orden: 104,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 99,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 467
+    # id: 497
     nombre: "Glucemia",
-    codigo: "LBL045",
-    orden: 105,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 100,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 468
+    # id: 498
     nombre: "Glucosuria",
-    codigo: "LBL046",
-    orden: 106,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 101,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 469
+    # id: 499
     nombre: "Gonadotrofina coriónica humana en sangre",
-    codigo: "LBL047",
-    orden: 107,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 102,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 470
+    # id: 500
     nombre: "Gonadotrofina coriónica humana en orina",
-    codigo: "LBL048",
-    orden: 108,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 103,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 471
+    # id: 501
     nombre: "Grasas en material fecal cualitativa",
-    codigo: "LBL049",
-    orden: 109,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 104,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 472
+    # id: 502
     nombre: "Grupo y factor",
-    codigo: "LBL050",
-    orden: 110,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 105,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 473
+    # id: 503
     nombre: "Hbs Ag",
-    codigo: "LBL051",
-    orden: 111,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 106,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 474
+    # id: 504
     nombre: "HDL y LDL",
-    codigo: "LBL052",
-    orden: 112,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 107,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
+  {
+    # id: 505
+    nombre: "Hematocrito",
+    grupo_pdss_id: 29,
+    orden: 108,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+
+
+
+
+
+
+
   {
     # id: 475
-    nombre: "Hematocrito",
     codigo: "LBL053",
     orden: 113,
     grupo_pdss_id: 6,
