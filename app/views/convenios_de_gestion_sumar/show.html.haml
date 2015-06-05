@@ -6,9 +6,9 @@
   #action-links
     - if can? :update, ConvenioDeGestionSumar
       = link_to "Modificar", edit_convenio_de_gestion_sumar_path(@convenio_de_gestion)
-    - if can? :read, Addenda
+    - if can? :read, AddendaSumar
       = link_to "Ver las adendas", addendas_del_convenio_de_gestion_sumar_path(@convenio_de_gestion)
-    - if can? :create, Addenda
+    - if can? :create, AddendaSumar
       = link_to "Agregar una adenda", new_addenda_sumar_url(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)
     - if can? :create, ConvenioDeGestionSumar
       = link_to "Generar documento", convenio_de_gestion_sumar_path(@convenio_de_gestion, :format => :odt)

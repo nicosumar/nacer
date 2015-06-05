@@ -20,7 +20,7 @@ class LiquidacionSumarAnexoMedico < ActiveRecord::Base
 
     unless aprobado
       agrega_estado_insert = ", estado_de_la_prestacion_id, motivo_de_rechazo_id "
-      agrega_estado_dato = ", #{EstadoDeLaPrestacion.find(7).id}, #{MotivoDeRechazo.find(6).id} " #7: devuelta para refacturar - 6: Falta doc reespaldatoria
+      agrega_estado_dato = ", #{EstadoDeLaPrestacion.find(7).id}, #{MotivoDeRechazo.find(26).id} " #7: devuelta para refacturar - 6: Falta doc reespaldatoria
     end
 
     transaction do 

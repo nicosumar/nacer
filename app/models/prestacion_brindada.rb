@@ -60,6 +60,11 @@ class PrestacionBrindada < ActiveRecord::Base
     where(:estado_de_la_prestacion_id => id_de_estado)
   end
 
+  def self.vencidas
+    where(estado_de_la_prestacion_id: 11,
+          estado_de_la_prestacion_liquidada_id: 13)
+  end
+
   #
   # self.del_beneficiario
   # Devuelve los registros filtrados de acuerdo con la clave de beneficiario pasada como parámetro
@@ -794,8 +799,7 @@ class PrestacionBrindada < ActiveRecord::Base
                   "    estado_de_la_prestacion_liquidada_id = 13, \n"+
                   "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo};' \n"+
                   "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo} ;' \n"+
-                  "                                   END, \n"+
-                  "    updated_at = now() \n"+
+                  "                                   END \n"+
                   "FROM vista_global_de_prestaciones_brindadas vpb \n"+
                   "WHERE  vpb.fecha_de_la_prestacion < (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones})\n"+
                   "AND vpb.prestacion_id in (#{prestaciones_ids} ) \n"+
@@ -806,6 +810,72 @@ class PrestacionBrindada < ActiveRecord::Base
           })
     end
     #a.cmd_tuples
+  end
+
+  #
+  # Marca las prestaciones brindadas que no posean asignacion de precio para el efector
+  # que la brindo
+  # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
+  #
+  # @return [Fixnum] Cantidad de prestaciones vencidas
+  def self.marcar_prestaciones_sin_asignacion_de_precio(liquidacion)
+
+    cq = CustomQuery.buscar({
+        sql:  "SELECT DISTINCT vpb.esquema\n"+
+              "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+              " JOIN prestaciones p ON p.id = vpb.prestacion_id\n"+
+              " JOIN efectores e ON e.id = vpb.efector_id\n"+
+              "WHERE vpb.estado_de_la_prestacion_id IN (1, 2,3,7)\n"+
+              "AND p.area_de_prestacion_id is null\n"+
+              "AND not exists ( SELECT ap.id \n"+
+              "                   FROM asignaciones_de_precios ap \n"+
+              "                 WHERE ap.area_de_prestacion_id = e.area_de_prestacion_id\n"+
+              "                 AND vpb.prestacion_id = ap.prestacion_id \n"+
+              "                 AND ap.nomenclador_id =     \n"+
+              "                                        ( select id from nomencladores \n"+
+              "                                           where activo = 't' \n"+
+              "                                          and nomenclador_sumar = 't' \n"+
+              "                                          and (vpb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+              "                                          or  \n"+
+              "                                         (vpb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+              "                                         limit 1\n"+
+              "                                        )\n"+
+              "                )"
+      })
+    ActiveRecord::Base.transaction do
+      cq.each do |r|
+        ActiveRecord::Base.connection.schema_search_path = "#{r[:esquema]}, public"
+        puts "puso el esquema #{ActiveRecord::Base.connection.schema_search_path}"
+        upd = CustomQuery.ejecutar({
+            sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
+                  "SET estado_de_la_prestacion_liquidada_id = 15, \n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La Prestación no cuenta con asignacion de precios en este nomenclador #{liquidacion.periodo.periodo}' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La Prestación no cuenta con asignacion de precios en este nomenclador #{liquidacion.periodo.periodo}') \n"+
+                  "                                   END \n"+
+                  "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+                  " JOIN prestaciones p ON p.id = vpb.prestacion_id\n"+
+                  " JOIN efectores e ON e.id = vpb.efector_id\n"+
+                  "WHERE vpb.estado_de_la_prestacion_id IN (1, 2,3,7)\n"+
+                  "AND p.area_de_prestacion_id is null\n"+
+                  "AND not exists ( SELECT ap.id \n"+
+                  "                   FROM asignaciones_de_precios ap \n"+
+                  "                 WHERE ap.area_de_prestacion_id = e.area_de_prestacion_id\n"+
+                  "                 AND vpb.prestacion_id = ap.prestacion_id \n"+
+                  "                 AND ap.nomenclador_id =     \n"+
+                  "                                        ( select id from nomencladores \n"+
+                  "                                           where activo = 't' \n"+
+                  "                                          and nomenclador_sumar = 't' \n"+
+                  "                                          and (vpb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+                  "                                          or  \n"+
+                  "                                         (vpb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+                  "                                         limit 1\n"+
+                  "                                        )\n"+
+                  "                )\n"+
+                  "and vpb.esquema = '#{r[:esquema]}'\n"+
+                  "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id"
+          })
+      end
+    end # end transaction
   end
 
   #
@@ -843,7 +913,6 @@ class PrestacionBrindada < ActiveRecord::Base
                   "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación brindada al beneficiario no posee periodo de actividad al periodo de liquidación #{liquidacion.periodo.periodo}' \n"+
                   "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La prestación brindada al beneficiario no posee periodo de actividad al periodo de liquidación #{liquidacion.periodo.periodo}') ,\n"+
                   "                                   END \n"+
-                  "    updated_at = now()\n"+
                   "FROM vista_global_de_prestaciones_brindadas vpb\n"+
                   " INNER JOIN     afiliados af ON (af.clave_de_beneficiario = vpb.clave_de_beneficiario) \n"+
                   "WHERE vpb.estado_de_la_prestacion_id IN (1,2,3,7)\n"+

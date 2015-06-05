@@ -40,7 +40,7 @@
 
   %h3 Efectores asociados con esta unidad de alta de datos para facturación
   %div.field
-    = f.select :efector_ids, options_for_select(@efectores, @efector_ids), {}, |
+    = f.select :efector_ids, options_for_select(@efectores_sin_uads, @efector_ids), {}, |
       { :multiple => true, :class => "multi_select" } |
 
   %div.actions

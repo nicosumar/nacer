@@ -57,6 +57,14 @@ $(document).ready(function() {
       }
     }
     options.dropdownCssClass = "bigdrop";
+
+    // Agrega las opciones adicionales de creacion.
+    // TODO: reemplazar por $.extend y sacar el eval
+    if( select.data('opciones') != undefined){
+      opc = select.data('opciones');
+      for(var o in opc)
+        eval("options."+ o +" = opc."+o );
+    }
     select.select2(options);
     
     if(select.hasClass('encadenado') && select.data('id-padre') != undefined && select.data('parametro') !== undefined ){

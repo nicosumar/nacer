@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141008105646) do
+ActiveRecord::Schema.define(:version => 20150203162330) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -162,16 +162,18 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
   add_index "anexos_medicos_prestaciones", ["motivo_de_rechazo_id"], :name => "anexos_medicos_prestaciones_motivo_de_rechazo_id_idx"
   add_index "anexos_medicos_prestaciones", ["prestacion_liquidada_id"], :name => "anexos_medicos_prestaciones_prestacion_liquidada_id_idx"
 
-  create_table "apartados_pdss", :force => true do |t|
-    t.string   "nombre"
-    t.integer  "subgrupo_pdss_id"
-    t.string   "codigo"
-    t.integer  "orden"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+  create_table "aplicaciones_de_notas_de_debito", :force => true do |t|
+    t.integer  "nota_de_debito_id",                                :null => false
+    t.integer  "pago_sumar_id",                                    :null => false
+    t.date     "fecha_de_aplicacion",                              :null => false
+    t.decimal  "monto",                                            :null => false
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+    t.integer  "estado_de_aplicacion_de_debito_id", :default => 2, :null => false
   end
 
-  add_index "apartados_pdss", ["subgrupo_pdss_id"], :name => "index_apartados_pdss_on_subgrupo_pdss_id"
+  add_index "aplicaciones_de_notas_de_debito", ["nota_de_debito_id"], :name => "index_aplicaciones_de_notas_de_debito_on_nota_de_debito_id"
+  add_index "aplicaciones_de_notas_de_debito", ["pago_sumar_id"], :name => "index_aplicaciones_de_notas_de_debito_on_pago_sumar_id"
 
   create_table "areas_de_prestacion", :force => true do |t|
     t.string "nombre"
@@ -203,6 +205,18 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
   end
 
   add_index "asignaciones_de_precios", ["nomenclador_id", "prestacion_id", "area_de_prestacion_id", "dato_reportable_id"], :name => "index_unique_on_nomenclador_prestacion_area_ddrr", :unique => true
+
+  create_table "bancos", :force => true do |t|
+    t.string   "nombre"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "beneficiarios_trazadora_11", :id => false, :force => true do |t|
+    t.string "clave_de_beneficiario"
+    t.date   "fecha_de_asistencia"
+    t.string "cuie"
+  end
 
   create_table "busquedas", :force => true do |t|
     t.integer  "modelo_id",   :null => false
@@ -410,6 +424,24 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
     t.integer  "nomenclador_id"
   end
 
+  create_table "cuentas_bancarias", :force => true do |t|
+    t.string   "denominacion"
+    t.string   "numero"
+    t.string   "cbu",                        :limit => 27
+    t.string   "cuenta_contable"
+    t.integer  "tipo_de_cuenta_bancaria_id"
+    t.integer  "banco_id"
+    t.integer  "sucursal_bancaria_id"
+    t.integer  "entidad_id"
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+  end
+
+  add_index "cuentas_bancarias", ["banco_id"], :name => "index_cuentas_bancarias_on_banco_id"
+  add_index "cuentas_bancarias", ["numero", "banco_id", "sucursal_bancaria_id"], :name => "cuentas_bancarias_numero_banco_id_sucursal_bancaria_id_key", :unique => true
+  add_index "cuentas_bancarias", ["sucursal_bancaria_id"], :name => "index_cuentas_bancarias_on_sucursal_bancaria_id"
+  add_index "cuentas_bancarias", ["tipo_de_cuenta_bancaria_id"], :name => "index_cuentas_bancarias_on_tipo_de_cuenta_bancaria_id"
+
   create_table "datos_adicionales", :force => true do |t|
     t.string   "nombre",                 :null => false
     t.string   "tipo_postgres",          :null => false
@@ -615,6 +647,22 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
   add_index "efectores", ["cuie"], :name => "efectores_cuie_idx"
   add_index "efectores", ["provincia_id"], :name => "efectores_provincia_id_idx"
 
+  create_table "entidades", :force => true do |t|
+    t.integer  "entidad_id"
+    t.string   "entidad_type"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "entidades", ["entidad_id", "entidad_type"], :name => "entidades_entidad_id_entidad_type_key", :unique => true
+
+  create_table "estados_de_aplicaciones_de_debitos", :force => true do |t|
+    t.string   "codigo",     :limit => 3
+    t.string   "nombre",     :limit => 15
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+  end
+
   create_table "estados_de_las_novedades", :force => true do |t|
     t.string  "nombre"
     t.string  "codigo"
@@ -643,6 +691,7 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
     t.integer  "liquidacion_sumar_id"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.integer  "pago_sumar_id"
   end
 
   add_index "expedientes_sumar", ["tipo_de_expediente_id"], :name => "index_expedientes_sumar_on_tipo_de_expediente_id"
@@ -672,14 +721,6 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
 
   create_table "grupos_de_prestaciones", :force => true do |t|
     t.string "nombre", :null => false
-  end
-
-  create_table "grupos_pdss", :force => true do |t|
-    t.string   "nombre"
-    t.string   "codigo"
-    t.integer  "orden"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
   end
 
   create_table "grupos_poblacionales", :force => true do |t|
@@ -960,6 +1001,19 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
     t.string   "categoria"
   end
 
+  create_table "movimientos_bancarios_autorizados", :force => true do |t|
+    t.integer  "cuenta_bancaria_origen_id",  :null => false
+    t.integer  "cuenta_bancaria_destino_id", :null => false
+    t.integer  "concepto_de_facturacion_id", :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "movimientos_bancarios_autorizados", ["concepto_de_facturacion_id"], :name => "index_movimientos_banc_autorizado_on_concepto_de_facturacion_id"
+  add_index "movimientos_bancarios_autorizados", ["cuenta_bancaria_destino_id"], :name => "index_movimientos_banc_autorizado_on_cuenta_bancaria_destino_id"
+  add_index "movimientos_bancarios_autorizados", ["cuenta_bancaria_origen_id", "cuenta_bancaria_destino_id", "concepto_de_facturacion_id"], :name => "movimientos_bancarios_autoriz_cuenta_bancaria_origen_id_cue_key", :unique => true
+  add_index "movimientos_bancarios_autorizados", ["cuenta_bancaria_origen_id"], :name => "index_movimientos_banc_autorizado_on_cuenta_bancaria_origen_id"
+
   create_table "niveles_de_instruccion", :force => true do |t|
     t.string "nombre"
     t.string "codigo"
@@ -981,13 +1035,6 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
   add_index "nomencladores", ["fecha_de_inicio", "nomenclador_sumar", "fecha_de_finalizacion", "activo"], :name => "nomencladores_fecha_de_inicio_nomenclador_sumar_fecha_de_fi_idx"
   add_index "nomencladores", ["fecha_de_inicio"], :name => "nomencladores_fecha_de_inicio_idx"
   add_index "nomencladores", ["nomenclador_sumar"], :name => "nomencladores_nomenclador_sumar_idx"
-
-  create_table "nosologias", :force => true do |t|
-    t.string   "nombre"
-    t.string   "codigo"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
 
   create_table "notas_de_debito", :force => true do |t|
     t.string   "numero",                                                                     :null => false
@@ -1013,6 +1060,45 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
     t.boolean "define_si_es_catastrofica", :default => true
     t.boolean "es_catastrofica",           :default => false
   end
+
+  create_table "organismos_gubernamentales", :force => true do |t|
+    t.text     "nombre"
+    t.text     "domicilio"
+    t.integer  "provincia_id"
+    t.integer  "departamento_id"
+    t.integer  "distrito_id"
+    t.text     "codigo_postal"
+    t.text     "telefonos"
+    t.text     "email"
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.boolean  "gestionable",     :default => false, :null => false
+  end
+
+  add_index "organismos_gubernamentales", ["departamento_id"], :name => "index_organismos_gubernamentales_on_departamento_id"
+  add_index "organismos_gubernamentales", ["distrito_id"], :name => "index_organismos_gubernamentales_on_distrito_id"
+  add_index "organismos_gubernamentales", ["provincia_id"], :name => "index_organismos_gubernamentales_on_provincia_id"
+
+  create_table "pagos_sumar", :force => true do |t|
+    t.integer  "efector_id",                                                                   :null => false
+    t.integer  "concepto_de_facturacion_id",                                                   :null => false
+    t.integer  "cuenta_bancaria_origen_id",                                                    :null => false
+    t.integer  "cuenta_bancaria_destino_id",                                                   :null => false
+    t.integer  "estado_del_proceso_id",                                     :default => 2,     :null => false
+    t.date     "fecha_de_proceso"
+    t.boolean  "informado_sirge",                                           :default => false, :null => false
+    t.date     "fecha_informado_sirge"
+    t.boolean  "notificado",                                                :default => false, :null => false
+    t.date     "fecha_de_notificacion"
+    t.decimal  "monto",                      :precision => 15, :scale => 4
+    t.datetime "created_at",                                                                   :null => false
+    t.datetime "updated_at",                                                                   :null => false
+  end
+
+  add_index "pagos_sumar", ["concepto_de_facturacion_id"], :name => "index_pagos_sumar_on_concepto_de_facturacion_id"
+  add_index "pagos_sumar", ["cuenta_bancaria_destino_id"], :name => "index_pagos_sumar_on_cuenta_bancaria_destino_id"
+  add_index "pagos_sumar", ["cuenta_bancaria_origen_id"], :name => "index_pagos_sumar_on_cuenta_bancaria_origen_id"
+  add_index "pagos_sumar", ["efector_id"], :name => "index_pagos_sumar_on_efector_id"
 
   create_table "paises", :force => true do |t|
     t.integer "pais_bio_id"
@@ -1300,35 +1386,6 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
 
   add_index "prestaciones_nacer_sumar", ["prestacion_nacer_id", "prestacion_sumar_id"], :name => "index_prestaciones_nacer_sumar_unq", :unique => true
 
-  create_table "prestaciones_pdss", :force => true do |t|
-    t.string   "nombre",                                   :null => false
-    t.string   "codigo",                                   :null => false
-    t.integer  "orden",                                    :null => false
-    t.integer  "grupo_pdss_id",                            :null => false
-    t.integer  "subgrupo_pdss_id"
-    t.integer  "apartado_pdss_id"
-    t.integer  "nosologia_id"
-    t.integer  "tipo_de_prestacion_id"
-    t.boolean  "rural",                 :default => false
-    t.datetime "created_at",                               :null => false
-    t.datetime "updated_at",                               :null => false
-  end
-
-  add_index "prestaciones_pdss", ["apartado_pdss_id"], :name => "index_prestaciones_pdss_on_apartado_pdss_id"
-  add_index "prestaciones_pdss", ["grupo_pdss_id"], :name => "index_prestaciones_pdss_on_grupo_pdss_id"
-  add_index "prestaciones_pdss", ["nosologia_id"], :name => "index_prestaciones_pdss_on_nosologia_id"
-  add_index "prestaciones_pdss", ["subgrupo_pdss_id"], :name => "index_prestaciones_pdss_on_subgrupo_pdss_id"
-  add_index "prestaciones_pdss", ["tipo_de_prestacion_id"], :name => "index_prestaciones_pdss_on_tipo_de_prestacion_id"
-
-  create_table "prestaciones_prestaciones_pdss", :id => false, :force => true do |t|
-    t.integer "prestacion_pdss_id", :null => false
-    t.integer "prestacion_id",      :null => false
-  end
-
-  add_index "prestaciones_prestaciones_pdss", ["prestacion_id"], :name => "index_prestaciones_prestaciones_pdss_on_prestacion_id"
-  add_index "prestaciones_prestaciones_pdss", ["prestacion_pdss_id", "prestacion_id"], :name => "prestaciones_prestaciones_pdss_uniq", :unique => true
-  add_index "prestaciones_prestaciones_pdss", ["prestacion_pdss_id"], :name => "index_prestaciones_prestaciones_pdss_on_prestacion_pdss_id"
-
   create_table "prestaciones_sexos", :id => false, :force => true do |t|
     t.integer "prestacion_id"
     t.integer "sexo_id"
@@ -1454,22 +1511,39 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
     t.string  "nombre",                   :null => false
   end
 
-  create_table "subgrupos_pdss", :force => true do |t|
+  create_table "sucursales_bancarias", :force => true do |t|
     t.string   "nombre"
-    t.integer  "grupo_pdss_id"
-    t.string   "codigo"
-    t.integer  "orden"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.string   "numero",          :null => false
+    t.integer  "banco_id",        :null => false
+    t.integer  "pais_id",         :null => false
+    t.integer  "provincia_id",    :null => false
+    t.integer  "departamento_id"
+    t.integer  "distrito_id"
+    t.text     "observaciones"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
-  add_index "subgrupos_pdss", ["grupo_pdss_id"], :name => "index_subgrupos_pdss_on_grupo_pdss_id"
+  add_index "sucursales_bancarias", ["banco_id", "numero"], :name => "sucursales_bancarias_banco_id_numero_key", :unique => true
+  add_index "sucursales_bancarias", ["banco_id"], :name => "index_sucursales_bancarias_on_banco_id"
+  add_index "sucursales_bancarias", ["departamento_id"], :name => "index_sucursales_bancarias_on_departamento_id"
+  add_index "sucursales_bancarias", ["distrito_id"], :name => "index_sucursales_bancarias_on_distrito_id"
+  add_index "sucursales_bancarias", ["pais_id"], :name => "index_sucursales_bancarias_on_pais_id"
+  add_index "sucursales_bancarias", ["provincia_id"], :name => "index_sucursales_bancarias_on_provincia_id"
 
   create_table "tipos_de_agrupacion", :force => true do |t|
     t.string   "nombre",                  :null => false
     t.string   "codigo",     :limit => 3, :null => false
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false
+  end
+
+  create_table "tipos_de_cuenta_bancaria", :force => true do |t|
+    t.string   "nombre"
+    t.string   "nombre_corto", :limit => 15
+    t.string   "codigo",       :limit => 3
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
   create_table "tipos_de_debitos_prestacionales", :force => true do |t|
@@ -1614,5 +1688,39 @@ ActiveRecord::Schema.define(:version => 20141008105646) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
+
+  create_table "users_copy", :force => true do |t|
+    t.string    "nombre",                                                 :null => false
+    t.string    "apellido",                                               :null => false
+    t.date      "fecha_de_nacimiento"
+    t.integer   "sexo_id"
+    t.text      "observaciones",                                          :null => false
+    t.boolean   "authorized",                          :default => false, :null => false
+    t.timestamp "authorized_at",          :limit => 6
+    t.integer   "authorized_by"
+    t.string    "email",                               :default => "",    :null => false
+    t.string    "encrypted_password",                  :default => "",    :null => false
+    t.string    "reset_password_token"
+    t.timestamp "reset_password_sent_at", :limit => 6
+    t.integer   "sign_in_count",                       :default => 0
+    t.timestamp "current_sign_in_at",     :limit => 6
+    t.timestamp "last_sign_in_at",        :limit => 6
+    t.string    "current_sign_in_ip"
+    t.string    "last_sign_in_ip"
+    t.string    "confirmation_token"
+    t.timestamp "confirmed_at",           :limit => 6
+    t.timestamp "confirmation_sent_at",   :limit => 6
+    t.string    "unconfirmed_email"
+    t.integer   "failed_attempts",                     :default => 0
+    t.string    "unlock_token"
+    t.timestamp "locked_at",              :limit => 6
+    t.boolean   "cuenta_eliminada",                    :default => false
+  end
+
+  add_index "users_copy", ["confirmation_token"], :name => "index_users_on_confirmation_token_copy", :unique => true
+  add_index "users_copy", ["current_sign_in_at"], :name => "index_users_on_current_sign_in_at_copy"
+  add_index "users_copy", ["email"], :name => "index_users_on_email_copy", :unique => true
+  add_index "users_copy", ["reset_password_token"], :name => "index_users_on_reset_password_token_copy", :unique => true
+  add_index "users_copy", ["unlock_token"], :name => "index_users_on_unlock_token_copy", :unique => true
 
 end

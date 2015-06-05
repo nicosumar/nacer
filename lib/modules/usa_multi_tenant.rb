@@ -44,7 +44,8 @@ module UsaMultiTenant
     args.delete(:sql)
     pvalores = args.values
     parametros = psql + pvalores
-    
+    parametros = parametros.first if parametros.size == 1 
+
     esquemas.each do |esq|
       begin
         set_schema(esq['nombre'])
