@@ -34,7 +34,7 @@ PrestacionPdss.create([
     grupo_pdss_id: 1,
     orden: 1,
     linea_de_cuidado_id: 1,
-    tipo_de_prestacion_id: 4,
+    tipo_de_prestacion_id: 4
   },
   {
     # id: 2
@@ -3856,7 +3856,7 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 52,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 6
+    tipo_de_prestacion_id: 17
   },
   {
     # id: 450
@@ -3864,7 +3864,7 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 53,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 6
+    tipo_de_prestacion_id: 17
   },
   {
     # id: 451
@@ -3872,7 +3872,7 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 54,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 6
+    tipo_de_prestacion_id: 17
   },
   {
     # id: 452
@@ -3880,7 +3880,7 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 55,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 6
+    tipo_de_prestacion_id: 17
   },
   {
     # id: 453
@@ -3888,7 +3888,7 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 56,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 6
+    tipo_de_prestacion_id: 17
   },
   {
     # id: 454
@@ -3896,374 +3896,212 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 57,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 6
-  },
-
-
-
-
-
-
-  {
-    # id: 416
-    nombre: "Ronda Sanitaria completa orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 54,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    tipo_de_prestacion_id: 17
   },
   {
-    # id: 417
-    nombre: "Ronda Sanitaria completa orientada a detección de población de riesgo en población indígena",
-    codigo: "ROX002",
-    orden: 55,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 422
-    nombre: "Materna",
-    codigo: "AUH001",
-    orden: 60,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 2,
-    rural: false
-  },
-  {
-    # id: 423
-    nombre: "Infantil",
-    codigo: "AUH002",
-    orden: 61,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 2,
-    rural: false
-  },
-  {
-    # id: 424
-    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
-    codigo: "DSY001",
-    orden: 62,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 5,
-    rural: true
-  },
-  {
-    # id: 425
+    # id: 455
     nombre: "17 Hidroxiprogesterona",
-    codigo: "LBL001",
-    orden: 63,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 58,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 426
+    # id: 456
     nombre: "Ácido úrico",
-    codigo: "LBL002",
-    orden: 64,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 59,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 427
+    # id: 457
     nombre: "Ácidos biliares",
-    codigo: "LBL003",
-    orden: 65,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 60,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 428
+    # id: 458
     nombre: "Amilasa pancreática",
-    codigo: "LBL004",
-    orden: 66,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 61,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 429
+    # id: 459
     nombre: "Antibiograma micobacterias",
-    codigo: "LBL005",
-    orden: 67,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 62,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 430
+    # id: 460
     nombre: "Anticuerpos antitreponémicos",
-    codigo: "LBL006",
-    orden: 68,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 63,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 431
+    # id: 461
     nombre: "Apolipoproteína B",
-    codigo: "LBL008",
-    orden: 69,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 64,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 432
+    # id: 462
     nombre: "ASTO",
-    codigo: "LBL009",
-    orden: 70,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 65,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 433
+    # id: 463
     nombre: "Baciloscopía",
-    codigo: "LBL010",
-    orden: 71,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 66,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 434
+    # id: 464
     nombre: "Bacteriología directa y cultivo",
-    codigo: "LBL011",
-    orden: 72,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 67,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 435
+    # id: 465
     nombre: "Bilirrubinas totales y fraccionadas",
-    codigo: "LBL012",
-    orden: 73,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 68,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 436
+    # id: 466
     nombre: "Biotinidasa neonatal",
-    codigo: "LBL013",
-    orden: 74,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 69,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 437
+    # id: 467
     nombre: "Calcemia",
-    codigo: "LBL014",
-    orden: 75,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 70,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 438
+    # id: 468
     nombre: "Calciuria",
-    codigo: "LBL015",
-    orden: 76,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 71,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 439
+    # id: 469
     nombre: "Campo oscuro",
-    codigo: "LBL016",
-    orden: 77,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    grupo_pdss_id: 29,
+    orden: 72,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 440
+    # id: 470
     nombre: "Citología",
-    codigo: "LBL017",
-    orden: 78,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 73,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 441
+    # id: 471
     nombre: "Colesterol",
-    codigo: "LBL018",
-    orden: 79,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 74,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 442
+    # id: 472
     nombre: "Coprocultivo",
-    codigo: "LBL019",
-    orden: 80,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 75,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 443
+    # id: 473
     nombre: "CPK",
-    codigo: "LBL020",
-    orden: 81,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 76,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 444
+    # id: 474
     nombre: "Creatinina en orina",
-    codigo: "LBL021",
-    orden: 82,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 77,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 445
+    # id: 475
     nombre: "Creatinina sérica",
-    codigo: "LBL022",
-    orden: 83,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 78,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 446
-    nombre: "Cuantificación fibrinógeno",
-    codigo: "LBL023",
-    orden: 84,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    # id: 476
+    nombre: "Cuantificación de fibrinógeno",
+    grupo_pdss_id: 29,
+    orden: 79,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 447
+    # id: 477
     nombre: "Cultivo Streptococo B hemolítico",
-    codigo: "LBL024",
-    orden: 85,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 80,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 448
-    nombre: "Cultivo vaginal exudado flujo",
-    codigo: "LBL025",
-    orden: 86,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    # id: 478
+    nombre: "Cultivo vaginal / Exudado de flujo",
+    grupo_pdss_id: 29,
+    orden: 81,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 449
+    # id: 479
     nombre: "Cultivo y antibiograma general",
-    codigo: "LBL026",
-    orden: 87,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 82,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
+
+
+
+
   {
     # id: 450
     nombre: "Electroforesis de proteínas",
@@ -5560,1892 +5398,63 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 10,
     rural: true
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   {
-    # id: 15
-    nombre: "Laboratorio prueba de embarazo",
-    codigo: "LBLxxx",
-    orden: 15,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 16
-    nombre: "Lab. Ctrol. prenatal  de 1ra. Vez (incluye: grupo y factor, hemoglobina, glucemia, orina completa, VDRL, Chagas, VIH, toxoplasmosis y Hbs antígeno).",
-    codigo: "LBLxxx",
-    orden: 16,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 17
-    nombre: "Laboratorio Ulterior de Control Prenatal  (Incluye Hemoglobina, Glucemia, Orina Completa, VDRL, VIH)",
-    codigo: "LBLxxx",
-    orden: 17,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 21
-    nombre: "Ronda Sanit. Compl. orientada a detecc. población de riesgo en área rural.",
+    # id: 416
+    nombre: "Ronda Sanitaria completa orientada a detección de población de riesgo en área rural",
     codigo: "ROX001",
-    orden: 21,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 22
-    nombre: "Ronda Sanit. Compl. orientada a detecc. población de riesgo en pobl. indígena.",
-    codigo: "ROX002",
-    orden: 22,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 23
-    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
-    codigo: "DSY001",
-    orden: 23,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 5,
-    rural: true
-  },
-  {
-    # id: 48
-    nombre: "Electrocardiograma en embarazo",
-    codigo: "PRP004",
-    orden: 48,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 49
-    nombre: "Transp. por ref. de zona A  de emb. y niños menores de 6 años hasta 50 km",
-    codigo: "TLM081",
-    orden: 49,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 50
-    nombre: "Transp. por ref. de zona B  de emb. y niños menores de 6 años (+ de 50 km)",
-    codigo: "TLM082",
-    orden: 50,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 51
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION.",
-    codigo: "LBLxxx",
-    orden: 51,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 52
-    nombre: "Ecografía en control prenatal",
-    codigo: "IGR031",
-    orden: 52,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 53
-    nombre: "Rx de cráneo F y P en embarazadas",
-    codigo: "IGR022",
-    orden: 53,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 1,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 63
-    nombre: "Proteinuria rápida con tira reactiva",
-    codigo: "PRP030",
-    orden: 10,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 64
-    nombre: "Hemograma completo",
-    codigo: "LBL057",
-    orden: 11,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 65
-    nombre: "Coagulograma con fibrinógeno: KPTT",
-    codigo: "LBL069",
-    orden: 12,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 66
-    nombre: "Coagulograma con fibrinógeno: Tiempo de protrombina",
-    codigo: "LBL131",
-    orden: 13,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 67
-    nombre: "Coagulograma con fibrinógeno: Cuantificación de fibrinógeno",
-    codigo: "LBL023",
-    orden: 14,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 68
-    nombre: "Coagulograma con fibrinógeno: Tiempo de trombina",
-    codigo: "LBL132",
-    orden: 15,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 69
-    nombre: "Glucemia",
-    codigo: "LBL045",
-    orden: 16,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 70
-    nombre: "Uricemia",
-    codigo: "LBL002",
-    orden: 17,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 71
-    nombre: "Creatinina sérica",
-    codigo: "LBL022",
-    orden: 18,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 72
-    nombre: "Creatinina urinaria (24 hs)",
-    codigo: "LBL021",
-    orden: 19,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 73
-    nombre: "Proteinuria (24hs)",
-    codigo: "LBL090",
-    orden: 20,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 74
-    nombre: "Enzimas hepáticas: Transaminasas",
-    codigo: "LBL112",
-    orden: 21,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 75
-    nombre: "Enzimas hepáticas: Fosfatasa alcalina",
-    codigo: "LBL040",
-    orden: 22,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 76
-    nombre: "Enzimas hepáticas: Gamma GT",
-    codigo: "LBL044",
-    orden: 23,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 77
-    nombre: "Bilirrubina",
-    codigo: "LBL012",
-    orden: 24,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 78
-    nombre: "HDL y LDL",
-    codigo: "LBL052",
-    orden: 25,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 79
-    nombre: "Orina Completa",
-    codigo: "LBL079",
-    orden: 26,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 80
-    nombre: "Ecografía Obstétrica",
-    codigo: "IGR031",
-    orden: 27,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 81
-    nombre: "Eco doppler Fetal",
-    codigo: "IGR037",
-    orden: 28,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 82
-    nombre: "Ecografía Renal",
-    codigo: "IGR038",
-    orden: 29,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 83
-    nombre: "Monitoreo fetal ante parto",
-    codigo: "PRP031",
-    orden: 30,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 10,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 91
-    nombre: "Hemograma completo",
-    codigo: "LBL057",
-    orden: 38,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 92
-    nombre: "Coagulograma: KPTT",
-    codigo: "LBL069",
-    orden: 39,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 93
-    nombre: "Coagulograma: Tiempo de protrombina",
-    codigo: "LBL131",
-    orden: 40,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 94
-    nombre: "Coagulograma: Tiempo de trombina",
-    codigo: "LBL132",
-    orden: 41,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 95
-    nombre: "Hemoglobina glicosilada",
-    codigo: "LBL056",
-    orden: 42,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 96
-    nombre: "Fructosamina",
-    codigo: "LBL135",
-    orden: 43,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 97
-    nombre: "Urea",
-    codigo: "LBL117",
-    orden: 44,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 98
-    nombre: "Ácido úrico",
-    codigo: "LBL002",
-    orden: 45,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 99
-    nombre: "Creatinina sérica",
-    codigo: "LBL022",
-    orden: 46,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 100
-    nombre: "Creatinina en orina",
-    codigo: "LBL021",
-    orden: 47,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 101
-    nombre: "Proteinuria (24hs)",
-    codigo: "LBL090",
-    orden: 48,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 102
-    nombre: "Urocultivo",
-    codigo: "LBL118",
-    orden: 49,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 103
-    nombre: "Prueba de tolerancia a la glucosa",
-    codigo: "LBL094",
-    orden: 50,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 104
-    nombre: "Ecografía Obstétrica",
-    codigo: "IGR031",
-    orden: 51,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 105
-    nombre: "Ecocardiograma fetal",
-    codigo: "IGR039",
-    orden: 52,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 106
-    nombre: "Monitoreo fetal ante parto",
-    codigo: "PRP031",
-    orden: 53,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 107
-    nombre: "Electrocardiograma",
-    codigo: "PRP004",
     orden: 54,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 11,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 111
-    nombre: "Ecografía ginecológica",
-    codigo: "IGR008",
-    orden: 58,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 12,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 112
-    nombre: "Hemograma",
-    codigo: "LBL057",
-    orden: 59,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 12,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 114
-    nombre: "Ecografía Obstétrica",
-    codigo: "IGR031",
-    orden: 61,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 13,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 115
-    nombre: "Electrocardiograma",
-    codigo: "PRP004",
-    orden: 62,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 13,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 116
-    nombre: "Monitoreo fetal ante parto",
-    codigo: "PRP031",
-    orden: 63,
-    grupo_pdss_id: 1,
-    subgrupo_pdss_id: 2,
-    apartado_pdss_id: 1,
-    nosologia_id: 13,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  {
-    # id: 191
-    nombre: "Ronda Sanit. completa orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 14,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
+    grupo_pdss_id: 6,
+    subgrupo_pdss_id: nil,
     apartado_pdss_id: nil,
-    nosologia_id: 2,
+    nosologia_id: nil,
     tipo_de_prestacion_id: 14,
     rural: true
   },
   {
-    # id: 192
-    nombre: "Ronda Sanit. Compl. orientada a detecc. de población de riesgo en pobl. indígena",
+    # id: 417
+    nombre: "Ronda Sanitaria completa orientada a detección de población de riesgo en población indígena",
     codigo: "ROX002",
-    orden: 15,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
+    orden: 55,
+    grupo_pdss_id: 6,
+    subgrupo_pdss_id: nil,
     apartado_pdss_id: nil,
-    nosologia_id: 2,
+    nosologia_id: nil,
     tipo_de_prestacion_id: 14,
     rural: true
   },
   {
-    # id: 193
-    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
-    codigo: "DSY001",
-    orden: 16,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
+    # id: 422
+    nombre: "Materna",
+    codigo: "AUH001",
+    orden: 60,
+    grupo_pdss_id: 6,
+    subgrupo_pdss_id: nil,
     apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 5,
-    rural: true
-  },
-
-
-
-
-
-  {
-    # id: 197
-    nombre: "Informe de comité de auditoría de muerte materna y/o infantil recibido y aprobado por el Ministerio de Salud de la Provincia, según ordenamiento",
-    codigo: "AUH002",
-    orden: 20,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
+    nosologia_id: nil,
     tipo_de_prestacion_id: 2,
     rural: false
   },
-
-
-
-
-
-
   {
-    # id: 214
-    nombre: "Electrocardiograma en niños menores de 6 años",
-    codigo: "PRP004",
-    orden: 37,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
+    # id: 423
+    nombre: "Infantil",
+    codigo: "AUH002",
+    orden: 61,
+    grupo_pdss_id: 6,
+    subgrupo_pdss_id: nil,
     apartado_pdss_id: nil,
     nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-
-
-
-
-  {
-    # id: 216
-    nombre: "Transp. por ref. de zona A de emb. y niños menores de 6 años hasta 50 km",
-    codigo: "TLM081",
-    orden: 39,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 217
-    nombre: "Transp. por ref. de zona B de emb. y niños menores de 6 años (+ de 50 km)",
-    codigo: "TLM082",
-    orden: 40,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 17,
-    rural: true
-  },
-  {
-    # id: 218
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "LBLxxx",
-    orden: 41,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
+    tipo_de_prestacion_id: 2,
     rural: false
   },
   {
-    # id: 219
-    nombre: "Eco. bilateral de caderas en niños menores de 2 meses",
-    codigo: "IGR005",
-    orden: 42,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
+    # id: 424
+    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
+    codigo: "DSY001",
+    orden: 62,
+    grupo_pdss_id: 6,
+    subgrupo_pdss_id: nil,
     apartado_pdss_id: nil,
     nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-  {
-    # id: 220
-    nombre: "Rx de tórax Fy P en niños menores de 6 años",
-    codigo: "IGR026",
-    orden: 43,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
+    tipo_de_prestacion_id: 5,
     rural: true
-  },
-  {
-    # id: 221
-    nombre: "Rx de cráneo F y P en niños menores de 6 años",
-    codigo: "IGR022",
-    orden: 44,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 222
-    nombre: "Rx de huesos cortos en niños menores de 6 años c/patología prevalente",
-    codigo: "IGR017",
-    orden: 45,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 223
-    nombre: "Rx de huesos largos en niños menores de 6 años c/patología prevalente",
-    codigo: "IGR025",
-    orden: 46,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: true
-  },
-  {
-    # id: 224
-    nombre: "Eco-doppler en niños menores de 6 años",
-    codigo: "IGR004",
-    orden: 47,
-    grupo_pdss_id: 2,
-    subgrupo_pdss_id: 10,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-
-
-
-  {
-    # id: 232
-    nombre: "Ronda Sanit. completa orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 8,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 233
-    nombre: "Ronda Sanit. completa orientada a detección de pobl. de riesgo en población indígena",
-    codigo: "ROX002",
-    orden: 9,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-
-
-
-
-
-
-
-
-
-
-  {
-    # id: 258
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "PRPxxx",
-    orden: 34,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 259
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "LBLxxx",
-    orden: 35,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 260
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "IGRxxx",
-    orden: 36,
-    grupo_pdss_id: 3,
-    subgrupo_pdss_id: 11,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  {
-    # id: 282
-    nombre: "Salud sexual, confidencialidad, género y derecho (actividad en sala de espera)",
-    codigo: "TAT014",
-    orden: 21,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 283
-    nombre: "Ronda Sanit. Compl. orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 22,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 284
-    nombre: "Ronda Sanit. Compl. orientada a detección de pobl. de riesgo en pobl. indígena",
-    codigo: "ROX002",
-    orden: 23,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  {
-    # id: 311
-    nombre: "Colocación de DIU",
-    codigo: "PRP003",
-    orden: 50,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 312
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "PRPxxx",
-    orden: 51,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 313
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "LBLxxx",
-    orden: 52,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 314
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "IGRxxx",
-    orden: 53,
-    grupo_pdss_id: 4,
-    subgrupo_pdss_id: 12,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  {
-    # id: 327
-    nombre: "Prevención de comportamientos adictivos: tabaquismo, uso de drogas, alcoholismo.",
-    codigo: "TAT010",
-    orden: 12,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 328
-    nombre: "Pautas nutricionales respetando cultura alimentaria de comunidades indígenas",
-    codigo: "TAT004",
-    orden: 13,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 329
-    nombre: "Prevención de accidentes",
-    codigo: "TAT005",
-    orden: 14,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 330
-    nombre: "Prevención de VIH e infecciones de transmisión sexual",
-    codigo: "TAT007",
-    orden: 15,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 331
-    nombre: "Prevención de violencia de género",
-    codigo: "TAT008",
-    orden: 16,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 332
-    nombre: "Prevención violencia familiar",
-    codigo: "TAT009",
-    orden: 17,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 333
-    nombre: "Promoción de hábitos saludables: salud bucal, educación alimentaria, pautas de higiene, trastornos de la alimentación.",
-    codigo: "TAT011",
-    orden: 18,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 334
-    nombre: "Promoción de pautas alimentarias",
-    codigo: "TAT012",
-    orden: 19,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 335
-    nombre: "Promoción de salud sexual y reproductiva",
-    codigo: "TAT013",
-    orden: 20,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 16,
-    rural: true
-  },
-  {
-    # id: 336
-    nombre: "Ronda sanitaria completa orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 21,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-  {
-    # id: 337
-    nombre: "Ronda sanit. compl. orientada a detección de población de riesgo en pobl. indígena",
-    codigo: "ROX002",
-    orden: 22,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: 2,
-    tipo_de_prestacion_id: 14,
-    rural: true
-  },
-
-
-
-
-
-
-
-
-
-
-
-  {
-    # id: 359
-    nombre: "Colocación DIU",
-    codigo: "PRP003",
-    orden: 44,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 360
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "PRPxxx",
-    orden: 45,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 13,
-    rural: false
-  },
-  {
-    # id: 361
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "LBLxxx",
-    orden: 46,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 362
-    nombre: "Ver en Matriz de codificación, II - OBJETO DE LA PRESTACION",
-    codigo: "IGRxxx",
-    orden: 47,
-    grupo_pdss_id: 5,
-    subgrupo_pdss_id: 13,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 6,
-    rural: false
-  },
-])
-
-PrestacionPdss.find(1).prestaciones << [Prestacion.find(258)]
-PrestacionPdss.find(2).prestaciones << [Prestacion.find(259)]
-PrestacionPdss.find(3).prestaciones << [Prestacion.find(260)]
-PrestacionPdss.find(4).prestaciones << [Prestacion.find(261)]
-PrestacionPdss.find(5).prestaciones << [Prestacion.find(262)]
-PrestacionPdss.find(6).prestaciones << [Prestacion.find(263)]
-PrestacionPdss.find(7).prestaciones << [Prestacion.find(764)]
-PrestacionPdss.find(8).prestaciones << [Prestacion.find(264)]
-PrestacionPdss.find(9).prestaciones << [Prestacion.find(265)]
-PrestacionPdss.find(10).prestaciones << [Prestacion.find(266)]
-PrestacionPdss.find(11).prestaciones << [Prestacion.find(267)]
-PrestacionPdss.find(12).prestaciones << [Prestacion.find(268)]
-PrestacionPdss.find(13).prestaciones << [Prestacion.find(269)]
-PrestacionPdss.find(14).prestaciones << [Prestacion.find(270)]
-PrestacionPdss.find(15).prestaciones << Prestacion.find([271, 272])
-PrestacionPdss.find(16).prestaciones << Prestacion.find([273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286])
-PrestacionPdss.find(17).prestaciones << Prestacion.find([287, 288, 289, 290, 291, 292])
-PrestacionPdss.find(18).prestaciones << [Prestacion.find(293)]
-PrestacionPdss.find(19).prestaciones << [Prestacion.find(294)]
-PrestacionPdss.find(20).prestaciones << [Prestacion.find(295)]
-PrestacionPdss.find(21).prestaciones << [Prestacion.find(592)]
-PrestacionPdss.find(22).prestaciones << [Prestacion.find(593)]
-PrestacionPdss.find(23).prestaciones << [Prestacion.find(607)]
-PrestacionPdss.find(24).prestaciones << [Prestacion.find(296)]
-PrestacionPdss.find(25).prestaciones << [Prestacion.find(297)]
-PrestacionPdss.find(26).prestaciones << [Prestacion.find(594)]
-PrestacionPdss.find(27).prestaciones << [Prestacion.find(595)]
-PrestacionPdss.find(28).prestaciones << [Prestacion.find(596)]
-PrestacionPdss.find(29).prestaciones << [Prestacion.find(298)]
-PrestacionPdss.find(30).prestaciones << [Prestacion.find(299)]
-PrestacionPdss.find(31).prestaciones << [Prestacion.find(300)]
-PrestacionPdss.find(32).prestaciones << [Prestacion.find(301)]
-PrestacionPdss.find(33).prestaciones << [Prestacion.find(302)]
-PrestacionPdss.find(34).prestaciones << [Prestacion.find(303)]
-PrestacionPdss.find(35).prestaciones << [Prestacion.find(304)]
-PrestacionPdss.find(36).prestaciones << [Prestacion.find(305)]
-PrestacionPdss.find(37).prestaciones << [Prestacion.find(306)]
-PrestacionPdss.find(38).prestaciones << [Prestacion.find(307)]
-PrestacionPdss.find(39).prestaciones << [Prestacion.find(308)]
-PrestacionPdss.find(40).prestaciones << [Prestacion.find(309)]
-PrestacionPdss.find(41).prestaciones << [Prestacion.find(310)]
-PrestacionPdss.find(42).prestaciones << [Prestacion.find(311)]
-PrestacionPdss.find(43).prestaciones << [Prestacion.find(312)]
-PrestacionPdss.find(44).prestaciones << [Prestacion.find(313)]
-PrestacionPdss.find(45).prestaciones << [Prestacion.find(314)]
-PrestacionPdss.find(46).prestaciones << [Prestacion.find(315)]
-PrestacionPdss.find(47).prestaciones << [Prestacion.find(316)]
-PrestacionPdss.find(48).prestaciones << [Prestacion.find(317)]
-PrestacionPdss.find(49).prestaciones << [Prestacion.find(318)]
-PrestacionPdss.find(50).prestaciones << [Prestacion.find(319)]
-PrestacionPdss.find(51)
-PrestacionPdss.find(52).prestaciones << [Prestacion.find(320)]
-PrestacionPdss.find(53).prestaciones << [Prestacion.find(321)]
-PrestacionPdss.find(54).prestaciones << [Prestacion.find(322)]
-PrestacionPdss.find(55).prestaciones << [Prestacion.find(323)]
-PrestacionPdss.find(56).prestaciones << [Prestacion.find(324)]
-PrestacionPdss.find(57).prestaciones << [Prestacion.find(325)]
-PrestacionPdss.find(58).prestaciones << [Prestacion.find(326)]
-PrestacionPdss.find(59).prestaciones << [Prestacion.find(327)]
-PrestacionPdss.find(60).prestaciones << [Prestacion.find(328)]
-PrestacionPdss.find(61).prestaciones << [Prestacion.find(329)]
-PrestacionPdss.find(62).prestaciones << [Prestacion.find(330)]
-PrestacionPdss.find(63).prestaciones << [Prestacion.find(331)]
-PrestacionPdss.find(64).prestaciones << [Prestacion.find(332)]
-PrestacionPdss.find(65).prestaciones << [Prestacion.find(333)]
-PrestacionPdss.find(66).prestaciones << [Prestacion.find(334)]
-PrestacionPdss.find(67).prestaciones << [Prestacion.find(336)]
-PrestacionPdss.find(68).prestaciones << [Prestacion.find(335)]
-PrestacionPdss.find(69).prestaciones << [Prestacion.find(337)]
-PrestacionPdss.find(70).prestaciones << [Prestacion.find(338)]
-PrestacionPdss.find(71).prestaciones << [Prestacion.find(339)]
-PrestacionPdss.find(72).prestaciones << [Prestacion.find(340)]
-PrestacionPdss.find(73).prestaciones << [Prestacion.find(341)]
-PrestacionPdss.find(74).prestaciones << [Prestacion.find(342)]
-PrestacionPdss.find(75).prestaciones << [Prestacion.find(343)]
-PrestacionPdss.find(76).prestaciones << [Prestacion.find(344)]
-PrestacionPdss.find(77).prestaciones << [Prestacion.find(345)]
-PrestacionPdss.find(78).prestaciones << [Prestacion.find(346)]
-PrestacionPdss.find(79).prestaciones << [Prestacion.find(347)]
-PrestacionPdss.find(80).prestaciones << [Prestacion.find(348)]
-PrestacionPdss.find(81).prestaciones << [Prestacion.find(349)]
-PrestacionPdss.find(82).prestaciones << [Prestacion.find(350)]
-PrestacionPdss.find(83).prestaciones << [Prestacion.find(351)]
-PrestacionPdss.find(84).prestaciones << [Prestacion.find(352)]
-PrestacionPdss.find(85).prestaciones << [Prestacion.find(353)]
-PrestacionPdss.find(86).prestaciones << [Prestacion.find(354)]
-PrestacionPdss.find(87).prestaciones << [Prestacion.find(355)]
-PrestacionPdss.find(88).prestaciones << [Prestacion.find(356)]
-PrestacionPdss.find(89).prestaciones << [Prestacion.find(357)]
-PrestacionPdss.find(90).prestaciones << [Prestacion.find(358)]
-PrestacionPdss.find(91).prestaciones << [Prestacion.find(332)]
-PrestacionPdss.find(92).prestaciones << [Prestacion.find(333)]
-PrestacionPdss.find(93).prestaciones << [Prestacion.find(334)]
-PrestacionPdss.find(94).prestaciones << [Prestacion.find(335)]
-PrestacionPdss.find(95).prestaciones << [Prestacion.find(359)]
-PrestacionPdss.find(96).prestaciones << [Prestacion.find(360)]
-PrestacionPdss.find(97).prestaciones << [Prestacion.find(361)]
-PrestacionPdss.find(98).prestaciones << [Prestacion.find(338)]
-PrestacionPdss.find(99).prestaciones << [Prestacion.find(339)]
-PrestacionPdss.find(100).prestaciones << [Prestacion.find(340)]
-PrestacionPdss.find(101).prestaciones << [Prestacion.find(341)]
-PrestacionPdss.find(102).prestaciones << [Prestacion.find(362)]
-PrestacionPdss.find(103).prestaciones << [Prestacion.find(363)]
-PrestacionPdss.find(104).prestaciones << [Prestacion.find(348)]
-PrestacionPdss.find(105).prestaciones << [Prestacion.find(364)]
-PrestacionPdss.find(106).prestaciones << [Prestacion.find(351)]
-PrestacionPdss.find(107).prestaciones << [Prestacion.find(317)]
-PrestacionPdss.find(108).prestaciones << [Prestacion.find(365)]
-PrestacionPdss.find(109).prestaciones << [Prestacion.find(366)]
-PrestacionPdss.find(110).prestaciones << [Prestacion.find(367)]
-PrestacionPdss.find(111).prestaciones << [Prestacion.find(368)]
-PrestacionPdss.find(112).prestaciones << [Prestacion.find(332)]
-PrestacionPdss.find(113).prestaciones << [Prestacion.find(369)]
-PrestacionPdss.find(114).prestaciones << [Prestacion.find(348)]
-PrestacionPdss.find(115).prestaciones << [Prestacion.find(317)]
-PrestacionPdss.find(116).prestaciones << [Prestacion.find(351)]
-PrestacionPdss.find(117).prestaciones << [Prestacion.find(370)]
-PrestacionPdss.find(118).prestaciones << [Prestacion.find(371)]
-PrestacionPdss.find(119).prestaciones << [Prestacion.find(372)]
-PrestacionPdss.find(120).prestaciones << [Prestacion.find(373)]
-PrestacionPdss.find(121).prestaciones << [Prestacion.find(374)]
-PrestacionPdss.find(122).prestaciones << [Prestacion.find(375)]
-PrestacionPdss.find(123).prestaciones << [Prestacion.find(376)]
-PrestacionPdss.find(124).prestaciones << [Prestacion.find(377)]
-PrestacionPdss.find(125).prestaciones << [Prestacion.find(378)]
-PrestacionPdss.find(126).prestaciones << [Prestacion.find(379)]
-PrestacionPdss.find(127).prestaciones << Prestacion.find([380, 381])
-PrestacionPdss.find(128).prestaciones << [Prestacion.find(382)]
-PrestacionPdss.find(129).prestaciones << [Prestacion.find(383)]
-PrestacionPdss.find(130).prestaciones << [Prestacion.find(384)]
-PrestacionPdss.find(131).prestaciones << [Prestacion.find(385)]
-PrestacionPdss.find(132).prestaciones << [Prestacion.find(386)]
-PrestacionPdss.find(133).prestaciones << [Prestacion.find(387)]
-PrestacionPdss.find(134).prestaciones << [Prestacion.find(390)]
-PrestacionPdss.find(135).prestaciones << [Prestacion.find(391)]
-PrestacionPdss.find(136).prestaciones << [Prestacion.find(392)]
-PrestacionPdss.find(137).prestaciones << [Prestacion.find(396)]
-PrestacionPdss.find(138).prestaciones << [Prestacion.find(397)]
-PrestacionPdss.find(139).prestaciones << [Prestacion.find(398)]
-PrestacionPdss.find(140).prestaciones << [Prestacion.find(399)]
-PrestacionPdss.find(141).prestaciones << [Prestacion.find(400)]
-PrestacionPdss.find(142).prestaciones << [Prestacion.find(401)]
-PrestacionPdss.find(143).prestaciones << [Prestacion.find(402)]
-PrestacionPdss.find(144).prestaciones << [Prestacion.find(403)]
-PrestacionPdss.find(145).prestaciones << [Prestacion.find(404)]
-PrestacionPdss.find(146).prestaciones << [Prestacion.find(405)]
-PrestacionPdss.find(147).prestaciones << [Prestacion.find(406)]
-PrestacionPdss.find(148).prestaciones << [Prestacion.find(407)]
-PrestacionPdss.find(149).prestaciones << [Prestacion.find(408)]
-PrestacionPdss.find(150).prestaciones << [Prestacion.find(409)]
-PrestacionPdss.find(151).prestaciones << [Prestacion.find(410)]
-PrestacionPdss.find(152).prestaciones << [Prestacion.find(411)]
-PrestacionPdss.find(153).prestaciones << [Prestacion.find(412)]
-PrestacionPdss.find(154).prestaciones << [Prestacion.find(413)]
-PrestacionPdss.find(155).prestaciones << [Prestacion.find(414)]
-PrestacionPdss.find(156).prestaciones << [Prestacion.find(415)]
-PrestacionPdss.find(157).prestaciones << [Prestacion.find(416)]
-PrestacionPdss.find(158).prestaciones << [Prestacion.find(417)]
-PrestacionPdss.find(159).prestaciones << [Prestacion.find(418)]
-PrestacionPdss.find(160).prestaciones << [Prestacion.find(419)]
-PrestacionPdss.find(161).prestaciones << [Prestacion.find(420)]
-PrestacionPdss.find(162).prestaciones << [Prestacion.find(421)]
-PrestacionPdss.find(163).prestaciones << [Prestacion.find(422)]
-PrestacionPdss.find(164).prestaciones << [Prestacion.find(423)]
-PrestacionPdss.find(165).prestaciones << [Prestacion.find(424)]
-PrestacionPdss.find(166).prestaciones << [Prestacion.find(425)]
-PrestacionPdss.find(167).prestaciones << [Prestacion.find(426)]
-PrestacionPdss.find(168).prestaciones << [Prestacion.find(427)]
-PrestacionPdss.find(169).prestaciones << [Prestacion.find(446)]
-PrestacionPdss.find(170).prestaciones << [Prestacion.find(447)]
-PrestacionPdss.find(171).prestaciones << [Prestacion.find(448)]
-PrestacionPdss.find(172).prestaciones << [Prestacion.find(449)]
-PrestacionPdss.find(173).prestaciones << [Prestacion.find(450)]
-PrestacionPdss.find(174).prestaciones << [Prestacion.find(451)]
-PrestacionPdss.find(175).prestaciones << [Prestacion.find(452)]
-PrestacionPdss.find(176).prestaciones << [Prestacion.find(453)]
-PrestacionPdss.find(177).prestaciones << [Prestacion.find(454)]
-PrestacionPdss.find(178).prestaciones << [Prestacion.find(455)]
-PrestacionPdss.find(179).prestaciones << [Prestacion.find(456)]
-PrestacionPdss.find(180).prestaciones << [Prestacion.find(457)]
-PrestacionPdss.find(181).prestaciones << [Prestacion.find(458)]
-PrestacionPdss.find(182).prestaciones << [Prestacion.find(459)]
-PrestacionPdss.find(183).prestaciones << [Prestacion.find(460)]
-PrestacionPdss.find(184).prestaciones << [Prestacion.find(461)]
-PrestacionPdss.find(185).prestaciones << [Prestacion.find(462)]
-PrestacionPdss.find(186).prestaciones << [Prestacion.find(463)]
-PrestacionPdss.find(187).prestaciones << [Prestacion.find(464)]
-PrestacionPdss.find(188).prestaciones << [Prestacion.find(465)]
-PrestacionPdss.find(189).prestaciones << [Prestacion.find(765)]
-PrestacionPdss.find(190).prestaciones << [Prestacion.find(466)]
-PrestacionPdss.find(191).prestaciones << [Prestacion.find(592)]
-PrestacionPdss.find(192).prestaciones << [Prestacion.find(593)]
-PrestacionPdss.find(193).prestaciones << [Prestacion.find(607)]
-PrestacionPdss.find(194).prestaciones << [Prestacion.find(467)]
-PrestacionPdss.find(195).prestaciones << [Prestacion.find(595)]
-PrestacionPdss.find(196).prestaciones << [Prestacion.find(594)]
-PrestacionPdss.find(197).prestaciones << [Prestacion.find(382)]
-PrestacionPdss.find(198).prestaciones << [Prestacion.find(468)]
-PrestacionPdss.find(199).prestaciones << [Prestacion.find(469)]
-PrestacionPdss.find(200).prestaciones << [Prestacion.find(470)]
-PrestacionPdss.find(201).prestaciones << [Prestacion.find(471)]
-PrestacionPdss.find(202).prestaciones << [Prestacion.find(472)]
-PrestacionPdss.find(203).prestaciones << [Prestacion.find(473)]
-PrestacionPdss.find(204).prestaciones << [Prestacion.find(474)]
-PrestacionPdss.find(205).prestaciones << [Prestacion.find(475)]
-PrestacionPdss.find(206).prestaciones << [Prestacion.find(476)]
-PrestacionPdss.find(207).prestaciones << [Prestacion.find(477)]
-PrestacionPdss.find(208).prestaciones << [Prestacion.find(478)]
-PrestacionPdss.find(209).prestaciones << [Prestacion.find(479)]
-PrestacionPdss.find(210).prestaciones << [Prestacion.find(480)]
-PrestacionPdss.find(211).prestaciones << [Prestacion.find(608)]
-PrestacionPdss.find(212).prestaciones << [Prestacion.find(481)]
-PrestacionPdss.find(213).prestaciones << [Prestacion.find(482)]
-PrestacionPdss.find(214).prestaciones << [Prestacion.find(483)]
-PrestacionPdss.find(215).prestaciones << [Prestacion.find(484)]
-PrestacionPdss.find(216).prestaciones << [Prestacion.find(485)]
-PrestacionPdss.find(217).prestaciones << [Prestacion.find(486)]
-PrestacionPdss.find(218)
-PrestacionPdss.find(219).prestaciones << [Prestacion.find(487)]
-PrestacionPdss.find(220).prestaciones << [Prestacion.find(488)]
-PrestacionPdss.find(221).prestaciones << [Prestacion.find(489)]
-PrestacionPdss.find(222).prestaciones << [Prestacion.find(490)]
-PrestacionPdss.find(223).prestaciones << [Prestacion.find(491)]
-PrestacionPdss.find(224).prestaciones << [Prestacion.find(492)]
-PrestacionPdss.find(225).prestaciones << [Prestacion.find(493)]
-PrestacionPdss.find(226).prestaciones << [Prestacion.find(494)]
-PrestacionPdss.find(227).prestaciones << [Prestacion.find(495)]
-PrestacionPdss.find(228).prestaciones << [Prestacion.find(496)]
-PrestacionPdss.find(229).prestaciones << [Prestacion.find(597)]
-PrestacionPdss.find(230).prestaciones << [Prestacion.find(609)]
-PrestacionPdss.find(231).prestaciones << [Prestacion.find(603)]
-PrestacionPdss.find(232).prestaciones << [Prestacion.find(592)]
-PrestacionPdss.find(233).prestaciones << [Prestacion.find(593)]
-PrestacionPdss.find(234).prestaciones << [Prestacion.find(497)]
-PrestacionPdss.find(235).prestaciones << [Prestacion.find(498)]
-PrestacionPdss.find(236).prestaciones << [Prestacion.find(499)]
-PrestacionPdss.find(237).prestaciones << [Prestacion.find(500)]
-PrestacionPdss.find(238).prestaciones << [Prestacion.find(501)]
-PrestacionPdss.find(239).prestaciones << [Prestacion.find(502)]
-PrestacionPdss.find(240).prestaciones << [Prestacion.find(765)]
-PrestacionPdss.find(241).prestaciones << [Prestacion.find(503)]
-PrestacionPdss.find(242).prestaciones << [Prestacion.find(504)]
-PrestacionPdss.find(243).prestaciones << [Prestacion.find(505)]
-PrestacionPdss.find(244).prestaciones << [Prestacion.find(506)]
-PrestacionPdss.find(245).prestaciones << [Prestacion.find(507)]
-PrestacionPdss.find(246).prestaciones << [Prestacion.find(508)]
-PrestacionPdss.find(247).prestaciones << [Prestacion.find(509)]
-PrestacionPdss.find(248).prestaciones << [Prestacion.find(510)]
-PrestacionPdss.find(249).prestaciones << [Prestacion.find(511)]
-PrestacionPdss.find(250).prestaciones << [Prestacion.find(512)]
-PrestacionPdss.find(251).prestaciones << [Prestacion.find(513)]
-PrestacionPdss.find(252).prestaciones << [Prestacion.find(514)]
-PrestacionPdss.find(253).prestaciones << [Prestacion.find(515)]
-PrestacionPdss.find(254).prestaciones << [Prestacion.find(516)]
-PrestacionPdss.find(255).prestaciones << [Prestacion.find(517)]
-PrestacionPdss.find(256).prestaciones << [Prestacion.find(518)]
-PrestacionPdss.find(257).prestaciones << [Prestacion.find(519)]
-PrestacionPdss.find(258)
-PrestacionPdss.find(259)
-PrestacionPdss.find(260)
-PrestacionPdss.find(261).prestaciones << [Prestacion.find(520)]
-PrestacionPdss.find(262).prestaciones << [Prestacion.find(521)]
-PrestacionPdss.find(263).prestaciones << [Prestacion.find(522)]
-PrestacionPdss.find(264).prestaciones << [Prestacion.find(523)]
-PrestacionPdss.find(265).prestaciones << [Prestacion.find(524)]
-PrestacionPdss.find(266).prestaciones << [Prestacion.find(525)]
-PrestacionPdss.find(267).prestaciones << [Prestacion.find(526)]
-PrestacionPdss.find(268).prestaciones << [Prestacion.find(527)]
-PrestacionPdss.find(269).prestaciones << [Prestacion.find(528)]
-PrestacionPdss.find(270).prestaciones << [Prestacion.find(529)]
-PrestacionPdss.find(271).prestaciones << [Prestacion.find(530)]
-PrestacionPdss.find(272).prestaciones << [Prestacion.find(531)]
-PrestacionPdss.find(273).prestaciones << [Prestacion.find(598)]
-PrestacionPdss.find(274).prestaciones << [Prestacion.find(597)]
-PrestacionPdss.find(275).prestaciones << [Prestacion.find(600)]
-PrestacionPdss.find(276).prestaciones << [Prestacion.find(599)]
-PrestacionPdss.find(277).prestaciones << [Prestacion.find(601)]
-PrestacionPdss.find(278).prestaciones << [Prestacion.find(602)]
-PrestacionPdss.find(279).prestaciones << [Prestacion.find(603)]
-PrestacionPdss.find(280).prestaciones << [Prestacion.find(604)]
-PrestacionPdss.find(281).prestaciones << [Prestacion.find(605)]
-PrestacionPdss.find(282).prestaciones << [Prestacion.find(606)]
-PrestacionPdss.find(283).prestaciones << [Prestacion.find(592)]
-PrestacionPdss.find(284).prestaciones << [Prestacion.find(593)]
-PrestacionPdss.find(285).prestaciones << [Prestacion.find(532)]
-PrestacionPdss.find(286).prestaciones << [Prestacion.find(533)]
-PrestacionPdss.find(287).prestaciones << [Prestacion.find(534)]
-PrestacionPdss.find(288).prestaciones << [Prestacion.find(535)]
-PrestacionPdss.find(289).prestaciones << [Prestacion.find(536)]
-PrestacionPdss.find(290).prestaciones << [Prestacion.find(537)]
-PrestacionPdss.find(291).prestaciones << [Prestacion.find(538)]
-PrestacionPdss.find(292).prestaciones << [Prestacion.find(539)]
-PrestacionPdss.find(293).prestaciones << [Prestacion.find(540)]
-PrestacionPdss.find(294).prestaciones << [Prestacion.find(541)]
-PrestacionPdss.find(295).prestaciones << [Prestacion.find(542)]
-PrestacionPdss.find(296).prestaciones << [Prestacion.find(543)]
-PrestacionPdss.find(297).prestaciones << [Prestacion.find(544)]
-PrestacionPdss.find(298).prestaciones << [Prestacion.find(545)]
-PrestacionPdss.find(299).prestaciones << [Prestacion.find(546)]
-PrestacionPdss.find(300).prestaciones << [Prestacion.find(547)]
-PrestacionPdss.find(301).prestaciones << [Prestacion.find(548)]
-PrestacionPdss.find(302).prestaciones << [Prestacion.find(549)]
-PrestacionPdss.find(303).prestaciones << [Prestacion.find(550)]
-PrestacionPdss.find(304).prestaciones << [Prestacion.find(551)]
-PrestacionPdss.find(305).prestaciones << [Prestacion.find(552)]
-PrestacionPdss.find(306).prestaciones << [Prestacion.find(553)]
-PrestacionPdss.find(307).prestaciones << [Prestacion.find(554)]
-PrestacionPdss.find(308).prestaciones << [Prestacion.find(555)]
-PrestacionPdss.find(309).prestaciones << [Prestacion.find(556)]
-PrestacionPdss.find(310).prestaciones << [Prestacion.find(557)]
-PrestacionPdss.find(311).prestaciones << [Prestacion.find(558)]
-PrestacionPdss.find(312)
-PrestacionPdss.find(313)
-PrestacionPdss.find(314)
-PrestacionPdss.find(315).prestaciones << [Prestacion.find(559)]
-PrestacionPdss.find(316).prestaciones << [Prestacion.find(560)]
-PrestacionPdss.find(317).prestaciones << [Prestacion.find(561)]
-PrestacionPdss.find(318).prestaciones << [Prestacion.find(562)]
-PrestacionPdss.find(319).prestaciones << [Prestacion.find(563)]
-PrestacionPdss.find(320).prestaciones << [Prestacion.find(564)]
-PrestacionPdss.find(321).prestaciones << [Prestacion.find(565)]
-PrestacionPdss.find(322).prestaciones << [Prestacion.find(566)]
-PrestacionPdss.find(323).prestaciones << [Prestacion.find(567)]
-PrestacionPdss.find(324).prestaciones << [Prestacion.find(568)]
-PrestacionPdss.find(325).prestaciones << [Prestacion.find(569)]
-PrestacionPdss.find(326).prestaciones << [Prestacion.find(570)]
-PrestacionPdss.find(327).prestaciones << [Prestacion.find(598)]
-PrestacionPdss.find(328).prestaciones << [Prestacion.find(597)]
-PrestacionPdss.find(329).prestaciones << [Prestacion.find(600)]
-PrestacionPdss.find(330).prestaciones << [Prestacion.find(599)]
-PrestacionPdss.find(331).prestaciones << [Prestacion.find(601)]
-PrestacionPdss.find(332).prestaciones << [Prestacion.find(602)]
-PrestacionPdss.find(333).prestaciones << [Prestacion.find(603)]
-PrestacionPdss.find(334).prestaciones << [Prestacion.find(604)]
-PrestacionPdss.find(335).prestaciones << [Prestacion.find(605)]
-PrestacionPdss.find(336).prestaciones << [Prestacion.find(592)]
-PrestacionPdss.find(337).prestaciones << [Prestacion.find(593)]
-PrestacionPdss.find(338).prestaciones << [Prestacion.find(571)]
-PrestacionPdss.find(339).prestaciones << [Prestacion.find(572)]
-PrestacionPdss.find(340).prestaciones << [Prestacion.find(573)]
-PrestacionPdss.find(341).prestaciones << [Prestacion.find(574)]
-PrestacionPdss.find(342).prestaciones << [Prestacion.find(575)]
-PrestacionPdss.find(343).prestaciones << [Prestacion.find(576)]
-PrestacionPdss.find(344).prestaciones << [Prestacion.find(577)]
-PrestacionPdss.find(345).prestaciones << [Prestacion.find(578)]
-PrestacionPdss.find(346).prestaciones << [Prestacion.find(579)]
-PrestacionPdss.find(347).prestaciones << [Prestacion.find(580)]
-PrestacionPdss.find(348).prestaciones << [Prestacion.find(581)]
-PrestacionPdss.find(349).prestaciones << [Prestacion.find(582)]
-PrestacionPdss.find(350).prestaciones << [Prestacion.find(583)]
-PrestacionPdss.find(351).prestaciones << [Prestacion.find(584)]
-PrestacionPdss.find(352).prestaciones << [Prestacion.find(585)]
-PrestacionPdss.find(353).prestaciones << [Prestacion.find(586)]
-PrestacionPdss.find(354).prestaciones << [Prestacion.find(587)]
-PrestacionPdss.find(355).prestaciones << [Prestacion.find(588)]
-PrestacionPdss.find(356).prestaciones << [Prestacion.find(589)]
-PrestacionPdss.find(357).prestaciones << [Prestacion.find(590)]
-PrestacionPdss.find(358).prestaciones << [Prestacion.find(591)]
-PrestacionPdss.find(359).prestaciones << [Prestacion.find(558)]
-PrestacionPdss.find(360)
-PrestacionPdss.find(361)
-PrestacionPdss.find(362)
-PrestacionPdss.find(363).prestaciones << [Prestacion.find(619)]
-PrestacionPdss.find(364).prestaciones << [Prestacion.find(620)]
-PrestacionPdss.find(365).prestaciones << [Prestacion.find(558)]
-PrestacionPdss.find(366).prestaciones << Prestacion.find([621, 767, 768])
-PrestacionPdss.find(367).prestaciones << [Prestacion.find(622)]
-PrestacionPdss.find(368).prestaciones << [Prestacion.find(623)]
-PrestacionPdss.find(369).prestaciones << [Prestacion.find(624)]
-PrestacionPdss.find(370).prestaciones << [Prestacion.find(625)]
-PrestacionPdss.find(371).prestaciones << [Prestacion.find(626)]
-PrestacionPdss.find(372).prestaciones << [Prestacion.find(627)]
-PrestacionPdss.find(373).prestaciones << [Prestacion.find(628)]
-PrestacionPdss.find(374).prestaciones << [Prestacion.find(629)]
-PrestacionPdss.find(375).prestaciones << [Prestacion.find(630)]
-PrestacionPdss.find(376).prestaciones << [Prestacion.find(631)]
-PrestacionPdss.find(377).prestaciones << [Prestacion.find(632)]
-PrestacionPdss.find(378).prestaciones << [Prestacion.find(633)]
-PrestacionPdss.find(379).prestaciones << Prestacion.find([484, 505])
-PrestacionPdss.find(380).prestaciones << [Prestacion.find(634)]
-PrestacionPdss.find(381).prestaciones << [Prestacion.find(635)]
-PrestacionPdss.find(382).prestaciones << [Prestacion.find(636)]
-PrestacionPdss.find(383).prestaciones << [Prestacion.find(351)]
-PrestacionPdss.find(384).prestaciones << [Prestacion.find(269)]
-PrestacionPdss.find(385).prestaciones << [Prestacion.find(637)]
-PrestacionPdss.find(386).prestaciones << Prestacion.find([638, 769, 770])
-PrestacionPdss.find(387).prestaciones << [Prestacion.find(492)]
-PrestacionPdss.find(388).prestaciones << [Prestacion.find(487)]
-PrestacionPdss.find(389).prestaciones << [Prestacion.find(639)]
-PrestacionPdss.find(390).prestaciones << Prestacion.find([640, 771, 772])
-PrestacionPdss.find(391).prestaciones << Prestacion.find([641, 773, 774])
-PrestacionPdss.find(392).prestaciones << Prestacion.find([642, 775, 776])
-PrestacionPdss.find(393).prestaciones << Prestacion.find([643, 777])
-PrestacionPdss.find(394).prestaciones << [Prestacion.find(644)]
-PrestacionPdss.find(395).prestaciones << Prestacion.find([645, 778])
-PrestacionPdss.find(396).prestaciones << [Prestacion.find(646)]
-PrestacionPdss.find(397).prestaciones << [Prestacion.find(779)]
-PrestacionPdss.find(398).prestaciones << [Prestacion.find(647)]
-PrestacionPdss.find(399).prestaciones << [Prestacion.find(648)]
-PrestacionPdss.find(400).prestaciones << [Prestacion.find(649)]
-PrestacionPdss.find(401).prestaciones << [Prestacion.find(650)]
-PrestacionPdss.find(402).prestaciones << [Prestacion.find(780)]
-PrestacionPdss.find(403).prestaciones << [Prestacion.find(651)]
-PrestacionPdss.find(404).prestaciones << [Prestacion.find(652)]
-PrestacionPdss.find(405).prestaciones << [Prestacion.find(781)]
-PrestacionPdss.find(406).prestaciones << [Prestacion.find(653)]
-PrestacionPdss.find(407).prestaciones << [Prestacion.find(654)]
-PrestacionPdss.find(408).prestaciones << [Prestacion.find(655)]
-PrestacionPdss.find(409).prestaciones << Prestacion.find([656, 782])
-PrestacionPdss.find(410).prestaciones << [Prestacion.find(320)]
-PrestacionPdss.find(411).prestaciones << Prestacion.find([657, 783, 784])
-PrestacionPdss.find(412).prestaciones
-PrestacionPdss.find(413).prestaciones
-PrestacionPdss.find(414).prestaciones
-PrestacionPdss.find(415).prestaciones << Prestacion.find([658, 785])
-PrestacionPdss.find(416).prestaciones << [Prestacion.find(592)]
-PrestacionPdss.find(417).prestaciones << [Prestacion.find(593)]
-PrestacionPdss.find(418).prestaciones << [Prestacion.find(659)]
-PrestacionPdss.find(419).prestaciones << [Prestacion.find(660)]
-PrestacionPdss.find(420).prestaciones << [Prestacion.find(485)]
-PrestacionPdss.find(421).prestaciones << [Prestacion.find(486)]
-PrestacionPdss.find(422).prestaciones << [Prestacion.find(298)]
-PrestacionPdss.find(423).prestaciones << [Prestacion.find(382)]
-PrestacionPdss.find(424).prestaciones << [Prestacion.find(607)]
-PrestacionPdss.find(425).prestaciones << [Prestacion.find(661)]
-PrestacionPdss.find(426).prestaciones << [Prestacion.find(662)]
-PrestacionPdss.find(427).prestaciones << [Prestacion.find(663)]
-PrestacionPdss.find(428).prestaciones << [Prestacion.find(664)]
-PrestacionPdss.find(429).prestaciones << [Prestacion.find(665)]
-PrestacionPdss.find(430).prestaciones << [Prestacion.find(666)]
-PrestacionPdss.find(431).prestaciones << [Prestacion.find(667)]
-PrestacionPdss.find(432).prestaciones << [Prestacion.find(668)]
-PrestacionPdss.find(433).prestaciones << [Prestacion.find(669)]
-PrestacionPdss.find(434).prestaciones << [Prestacion.find(670)]
-PrestacionPdss.find(435).prestaciones << [Prestacion.find(786)]
-PrestacionPdss.find(436).prestaciones << [Prestacion.find(671)]
-PrestacionPdss.find(437).prestaciones << [Prestacion.find(672)]
-PrestacionPdss.find(438).prestaciones << [Prestacion.find(673)]
-PrestacionPdss.find(439).prestaciones << [Prestacion.find(674)]
-PrestacionPdss.find(440).prestaciones << [Prestacion.find(675)]
-PrestacionPdss.find(441).prestaciones << [Prestacion.find(676)]
-PrestacionPdss.find(442).prestaciones << [Prestacion.find(677)]
-PrestacionPdss.find(443).prestaciones << [Prestacion.find(678)]
-PrestacionPdss.find(444).prestaciones << [Prestacion.find(787)]
-PrestacionPdss.find(445).prestaciones << [Prestacion.find(788)]
-PrestacionPdss.find(446).prestaciones << [Prestacion.find(789)]
-PrestacionPdss.find(447).prestaciones << [Prestacion.find(679)]
-PrestacionPdss.find(448).prestaciones << [Prestacion.find(680)]
-PrestacionPdss.find(449).prestaciones << [Prestacion.find(681)]
-PrestacionPdss.find(450).prestaciones << [Prestacion.find(682)]
-PrestacionPdss.find(451).prestaciones << [Prestacion.find(683)]
-PrestacionPdss.find(452).prestaciones << [Prestacion.find(684)]
-PrestacionPdss.find(453).prestaciones << [Prestacion.find(685)]
-PrestacionPdss.find(454).prestaciones << Prestacion.find([686, 790])
-PrestacionPdss.find(455).prestaciones << Prestacion.find([687, 791])
-PrestacionPdss.find(456).prestaciones << Prestacion.find([688, 792])
-PrestacionPdss.find(457).prestaciones << [Prestacion.find(689)]
-PrestacionPdss.find(458).prestaciones << [Prestacion.find(690)]
-PrestacionPdss.find(459).prestaciones << [Prestacion.find(691)]
-PrestacionPdss.find(460).prestaciones << [Prestacion.find(692)]
-PrestacionPdss.find(461).prestaciones << [Prestacion.find(693)]
-PrestacionPdss.find(462).prestaciones << [Prestacion.find(793)]
-PrestacionPdss.find(463).prestaciones << [Prestacion.find(694)]
-PrestacionPdss.find(464).prestaciones << [Prestacion.find(695)]
-PrestacionPdss.find(465).prestaciones << [Prestacion.find(696)]
-PrestacionPdss.find(466).prestaciones << [Prestacion.find(794)]
-PrestacionPdss.find(467).prestaciones << [Prestacion.find(697)]
-PrestacionPdss.find(468).prestaciones << [Prestacion.find(698)]
-PrestacionPdss.find(469).prestaciones << [Prestacion.find(271)]
-PrestacionPdss.find(470).prestaciones << [Prestacion.find(272)]
-PrestacionPdss.find(471).prestaciones << [Prestacion.find(699)]
-PrestacionPdss.find(472).prestaciones << [Prestacion.find(700)]
-PrestacionPdss.find(473).prestaciones << [Prestacion.find(286)]
-PrestacionPdss.find(474).prestaciones << [Prestacion.find(795)]
-PrestacionPdss.find(475).prestaciones << [Prestacion.find(701)]
-PrestacionPdss.find(476).prestaciones << [Prestacion.find(702)]
-PrestacionPdss.find(477).prestaciones << [Prestacion.find(703)]
-PrestacionPdss.find(478)
-PrestacionPdss.find(479).prestaciones << [Prestacion.find(704)]
-PrestacionPdss.find(480).prestaciones << [Prestacion.find(705)]
-PrestacionPdss.find(481).prestaciones << [Prestacion.find(706)]
-PrestacionPdss.find(482).prestaciones << [Prestacion.find(707)]
-PrestacionPdss.find(483).prestaciones << [Prestacion.find(708)]
-PrestacionPdss.find(484).prestaciones << [Prestacion.find(709)]
-PrestacionPdss.find(485).prestaciones << [Prestacion.find(710)]
-PrestacionPdss.find(486).prestaciones << [Prestacion.find(711)]
-PrestacionPdss.find(487).prestaciones << [Prestacion.find(796)]
-PrestacionPdss.find(488).prestaciones << [Prestacion.find(712)]
-PrestacionPdss.find(489).prestaciones << Prestacion.find([713, 797])
-PrestacionPdss.find(490).prestaciones << [Prestacion.find(714)]
-PrestacionPdss.find(491).prestaciones << [Prestacion.find(798)]
-PrestacionPdss.find(492).prestaciones << [Prestacion.find(715)]
-PrestacionPdss.find(493).prestaciones << [Prestacion.find(716)]
-PrestacionPdss.find(494).prestaciones << [Prestacion.find(717)]
-PrestacionPdss.find(495).prestaciones << [Prestacion.find(718)]
-PrestacionPdss.find(496).prestaciones << [Prestacion.find(719)]
-PrestacionPdss.find(497).prestaciones << [Prestacion.find(720)]
-PrestacionPdss.find(498).prestaciones << [Prestacion.find(721)]
-PrestacionPdss.find(499).prestaciones << [Prestacion.find(722)]
-PrestacionPdss.find(500).prestaciones << [Prestacion.find(723)]
-PrestacionPdss.find(501).prestaciones << [Prestacion.find(724)]
-PrestacionPdss.find(502).prestaciones << [Prestacion.find(799)]
-PrestacionPdss.find(503).prestaciones << [Prestacion.find(725)]
-PrestacionPdss.find(504).prestaciones << [Prestacion.find(726)]
-PrestacionPdss.find(505).prestaciones << [Prestacion.find(727)]
-PrestacionPdss.find(506).prestaciones << [Prestacion.find(728)]
-PrestacionPdss.find(507).prestaciones << [Prestacion.find(729)]
-PrestacionPdss.find(508).prestaciones << [Prestacion.find(730)]
-PrestacionPdss.find(509).prestaciones << [Prestacion.find(731)]
-PrestacionPdss.find(510).prestaciones << [Prestacion.find(732)]
-PrestacionPdss.find(511).prestaciones << [Prestacion.find(733)]
-PrestacionPdss.find(512).prestaciones << [Prestacion.find(800)]
-PrestacionPdss.find(513).prestaciones << [Prestacion.find(734)]
-PrestacionPdss.find(514).prestaciones << [Prestacion.find(735)]
-PrestacionPdss.find(515).prestaciones << [Prestacion.find(736)]
-PrestacionPdss.find(516).prestaciones << [Prestacion.find(801)]
-PrestacionPdss.find(517).prestaciones << [Prestacion.find(737)]
-PrestacionPdss.find(518).prestaciones << [Prestacion.find(738)]
-PrestacionPdss.find(519).prestaciones << [Prestacion.find(739)]
-PrestacionPdss.find(520).prestaciones << [Prestacion.find(740)]
-PrestacionPdss.find(521).prestaciones << [Prestacion.find(802)]
-PrestacionPdss.find(522).prestaciones << [Prestacion.find(741)]
-PrestacionPdss.find(523).prestaciones << [Prestacion.find(742)]
-PrestacionPdss.find(524).prestaciones << [Prestacion.find(743)]
-PrestacionPdss.find(525).prestaciones << [Prestacion.find(744)]
-PrestacionPdss.find(526).prestaciones << [Prestacion.find(745)]
-PrestacionPdss.find(527).prestaciones << [Prestacion.find(746)]
-PrestacionPdss.find(528).prestaciones << [Prestacion.find(747)]
-PrestacionPdss.find(529).prestaciones << [Prestacion.find(748)]
-PrestacionPdss.find(530).prestaciones << [Prestacion.find(749)]
-PrestacionPdss.find(531).prestaciones << [Prestacion.find(750)]
-PrestacionPdss.find(532).prestaciones << [Prestacion.find(803)]
-PrestacionPdss.find(533).prestaciones << [Prestacion.find(804)]
-PrestacionPdss.find(534).prestaciones << [Prestacion.find(805)]
-PrestacionPdss.find(535).prestaciones << [Prestacion.find(751)]
-PrestacionPdss.find(536).prestaciones << [Prestacion.find(752)]
-PrestacionPdss.find(537).prestaciones << [Prestacion.find(753)]
-PrestacionPdss.find(538).prestaciones << [Prestacion.find(754)]
-PrestacionPdss.find(539).prestaciones << [Prestacion.find(806)]
-PrestacionPdss.find(540).prestaciones << [Prestacion.find(807)]
-PrestacionPdss.find(541).prestaciones << [Prestacion.find(808)]
-PrestacionPdss.find(542).prestaciones << [Prestacion.find(755)]
-PrestacionPdss.find(543).prestaciones << [Prestacion.find(809)]
-PrestacionPdss.find(544).prestaciones << [Prestacion.find(810)]
-PrestacionPdss.find(545).prestaciones << [Prestacion.find(756)]
-PrestacionPdss.find(546).prestaciones << [Prestacion.find(757)]
-PrestacionPdss.find(547).prestaciones << [Prestacion.find(758)]
-PrestacionPdss.find(548).prestaciones << [Prestacion.find(759)]
-PrestacionPdss.find(549).prestaciones << [Prestacion.find(760)]
-PrestacionPdss.find(550).prestaciones << [Prestacion.find(811)]
-PrestacionPdss.find(551).prestaciones << [Prestacion.find(761)]
-PrestacionPdss.find(552).prestaciones << [Prestacion.find(762)]
-PrestacionPdss.find(553).prestaciones << [Prestacion.find(812)]
-PrestacionPdss.find(554).prestaciones << [Prestacion.find(813)]
-PrestacionPdss.find(555).prestaciones << [Prestacion.find(814)]
-PrestacionPdss.find(556).prestaciones << [Prestacion.find(763)]
-PrestacionPdss.find(557).prestaciones << [Prestacion.find(766)]
-
-# Revisión general de prestaciones surgidas de la evaluación a partir de la incorporación de los modelos PDSS
-
-
-# Logoaudiometría (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(codigo: "PRP020").first
-prestacion.sexos << Sexo.find(:all)
-prestacion.grupos_poblacionales << GrupoPoblacional.find([1, 2])
-prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
-
-# Monotest (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(codigo: "LBL078").first
-prestacion.sexos << Sexo.find(:all)
-prestacion.grupos_poblacionales << GrupoPoblacional.find(:all)
-prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
-
-# Reacción de Widal (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(codigo: "LBL096").first
-prestacion.sexos << Sexo.find(:all)
-prestacion.grupos_poblacionales << GrupoPoblacional.find(:all)
-prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
-
-# Receptores libres de transferrinas (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(codigo: "LBL097").first
-prestacion.sexos << Sexo.find(:all)
-prestacion.grupos_poblacionales << GrupoPoblacional.find(:all)
-prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
-
-# Sangre oculta en heces (faltó definir los grupos poblacionales habilitados)
-prestacion = Prestacion.where(codigo: "LBL098").first
-prestacion.sexos << Sexo.find(:all)
-prestacion.grupos_poblacionales << GrupoPoblacional.find(:all)
-prestacion.diagnosticos << Diagnostico.find_by_codigo!("A97") # Sin enfermedad
-
-# Cambio la descripción del código LBL112
-Prestacion.where(id: 342, codigo: "LBL112").first.update_attributes({nombre: "Enzimas hepáticas: Transaminasas TGO/TGP (embarazo de alto riesgo)"})
-
-# Falta el método de validación de "beneficiaria_embarazada?" en la prestación "Ecografía renal"
-Prestacion.find(350).metodos_de_validacion << [MetodoDeValidacion.find(1)]
-
-# Falta el método de validación de "beneficiaria_embarazada?" en la prestación "Monitoreo fetal anteparto"
-Prestacion.find(351).metodos_de_validacion << [MetodoDeValidacion.find(1)]
-
-# Cambio la descripción del código IMV008 / Añado métodos de validación faltantes
-prestacion = Prestacion.where(id: 764, codigo: "IMV008").first
-prestacion.update_attributes({nombre: "Dosis aplicada de vacuna triple bacteriana acelular (dTpa) en el embarazo"})
-CantidadDePrestacionesPorPeriodo.create!(
-  {
-    prestacion_id: prestacion.id,
-    cantidad_maxima: 2,
-    periodo: "9.months",
-    intervalo: "1.month"
   }
-)
-prestacion.metodos_de_validacion << MetodoDeValidacion.find([1, 15])
-
-# Traslado en unidad móvil de alta complejidad para adultos (faltó definir los grupos poblacionales habilitados y diagnósticos)
-prestacion = Prestacion.where(codigo: "TLM020").first
-prestacion.sexos << [Sexo.find_by_codigo!("F")]
-prestacion.grupos_poblacionales << [GrupoPoblacional.find_by_codigo("D")]
-prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98") # Medicina preventiva

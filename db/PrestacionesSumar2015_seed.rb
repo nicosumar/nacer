@@ -3190,6 +3190,187 @@ ActiveRecord::Base.transaction do
       fecha_de_finalizacion: nil
     ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
 
+  # Modifico la prestación 'LBL001' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (para todo el grupo menores_de_6, no solo neonatos)
+  prestacion = Prestacion.find(661)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  prestacion.metodos_de_validacion = MetodoDeValidacion.find(15)
+
+  # Crear una nueva prestación "LBL002" y unificar las prestaciones ya existentes
+  prestacion = Prestacion.create!({
+    # id: 852,
+    codigo: "LBL002",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L002"),
+    nombre: 'Ácido úrico',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino, sexo_masculino]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 2.5000,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Guardamos el listado de convenios que hay que adendar para añadir la nueva prestación y eliminar las anteriores
+  convenios_con_lbl002_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: [338, 662],
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico la prestación 'LBL003' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo en embarazo)
+  prestacion = Prestacion.find(663)
+  prestacion.sexos = [sexo_femenino]
+  prestacion.grupos_poblacionales = [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  prestacion.metodos_de_validacion = MetodoDeValidacion.find([1, 15])
+
+  # Modifico la prestación 'LBL004' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo de_6_a_9 y adolescentes)
+  prestacion = Prestacion.find(664)
+  prestacion.grupos_poblacionales = [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL005' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (todos los grupos)
+  prestacion = Prestacion.find(665)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL006' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (todos los grupos)
+  prestacion = Prestacion.find(666)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL008' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (todos excepto menores_de_6)
+  prestacion = Prestacion.find(667)
+  prestacion.grupos_poblacionales = [de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL009' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (todos los grupos)
+  prestacion = Prestacion.find(668)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL010' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (todos los grupos)
+  prestacion = Prestacion.find(669)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL011' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (todos los grupos)
+  prestacion = Prestacion.find(670)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico las prestaciones 'LBL012' de acuerdo al PSS y SIRGe (menores de 6 y embarazo de alto riesgo)
+  prestacion = Prestacion.find(345)
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+  prestacion = Prestacion.find(786)
+  prestacion.grupos_poblacionales = [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL013' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo menores_de_6)
+  prestacion = Prestacion.find(671)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL014' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (excepto grupo mujeres_20_a_64)
+  prestacion = Prestacion.find(672)
+  prestacion.grupos_poblacionales = [menores_de_6, de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL015' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo de_6_a_9 y adolescentes)
+  prestacion = Prestacion.find(673)
+  prestacion.grupos_poblacionales = [de_6_a_9, adolescentes]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL016' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (excepto grupo de_6_a_9)
+  prestacion = Prestacion.find(674)
+  prestacion.grupos_poblacionales = [menores_de_6, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL017' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo en mujeres_20_a_64)
+  prestacion = Prestacion.find(675)
+  prestacion.grupos_poblacionales = [mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL018' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (todos los grupos)
+  prestacion = Prestacion.find(676)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL019' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo menores_de_6 y de_6_a_9)
+  prestacion = Prestacion.find(677)
+  prestacion.grupos_poblacionales = [menores_de_6, de_6_a_9]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico la prestación 'LBL020' de acuerdo al PSS y SIRGe que admite todos los diagnósticos (solo mujeres_20_a_64)
+  prestacion = Prestacion.find(678)
+  prestacion.grupos_poblacionales = [mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico las prestaciones 'LBL021' de acuerdo al PSS y SIRGe (todos excepto menores de 6 y embarazo de alto riesgo)
+  prestacion = Prestacion.find(340)
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+  prestacion = Prestacion.find(787)
+  prestacion.grupos_poblacionales = [de_6_a_9, adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico las prestaciones 'LBL023' de acuerdo al PSS y SIRGe (solo embarazo de alto riesgo)
+  prestacion = Prestacion.find(336)
+  prestacion.update_attributes!({nombre: 'Cuantificación de fibrinógeno (embarazo de alto riesgo)'})
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id = 19 AND codigo NOT ILIKE 'Z35%'")
+
+  # Guardamos el listado de convenios que hay que adendar para eliminar la prestación general
+  convenios_con_lbl023_autorizadas = PrestacionAutorizada.where(
+      prestacion_id: 789,
+      fecha_de_finalizacion: nil
+    ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
+
+  # Modifico las prestaciones 'LBL024' de acuerdo al PSS y SIRGe (solo menores_de_6, y embarazadas)
+  prestacion = Prestacion.find(679)
+  prestacion.grupos_poblacionales = [menores_de_6]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Crear una nueva prestación "LBL024" para embarazadas
+  prestacion = Prestacion.create!({
+    # id: 853,
+    codigo: "LBL024",
+    objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L024"),
+    nombre: 'Cultivo Streptococo B hemolítico (embarazadas)',
+    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+  })
+  prestacion.sexos << [sexo_femenino]
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year",
+    intervalo: "1.month"
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find([1, 15])
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 6.2500,
+    adicional_por_prestacion: 0.0000,
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+  AsignacionDePrecios.create!({
+    precio_por_unidad: 6.2500,
+    adicional_por_prestacion: 0.0000,
+    area_de_prestacion_id: AreaDePrestacion.id_del_codigo!("R"),
+    nomenclador_id: nomenclador_sumar.id, prestacion_id: prestacion.id, created_at: ahora, updated_at: ahora
+  })
+
+  # Modifico las prestaciones 'LBL025' de acuerdo al PSS y SIRGe (adolescentes mujeres, mujeres_20_a_64, y embarazadas)
+  prestacion = Prestacion.find(680)
+  prestacion.grupos_poblacionales = [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+  # Modifico las prestaciones 'LBL026' de acuerdo al PSS y SIRGe (todos los grupos)
+  prestacion = Prestacion.find(681)
+  prestacion.diagnosticos << Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+
+
+
 
 
   ##### AÑADIR PRESTACIONES DE FLAP #####
@@ -3228,7 +3409,9 @@ ActiveRecord::Base.transaction do
         convenios_con_ecografias_obstetricas_autorizadas +
         convenios_con_ecografias_abdominales_autorizadas +
         convenios_con_medulogramas_autorizados +
-        convenios_con_traslados_hasta_50_autorizados
+        convenios_con_traslados_hasta_50_autorizados +
+        convenios_con_lbl002_autorizadas +
+        convenios_con_lbl023_autorizadas
       ).uniq.sort
     )
 
@@ -3784,6 +3967,44 @@ ActiveRecord::Base.transaction do
         })
     end
 
+    if convenios_con_lbl002_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: [338, 662],
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+      PrestacionAutorizada.create!({
+          efector_id: cgs.efector_id,
+          prestacion_id: 852,
+          fecha_de_inicio: fecha_de_inicio_nueva,
+          autorizante_al_alta_id: addenda.id,
+          autorizante_al_alta_type: "AddendaSumar",
+          fecha_de_finalizacion: nil,
+          created_at: ahora,
+          updated_at: ahora,
+          creator_id: 1,
+          updater_id: 1
+        })
+    end
+
+    if convenios_con_lbl023_autorizadas.member?(cgs.id)
+      PrestacionAutorizada.where(
+          prestacion_id: 789,
+          fecha_de_finalizacion: nil,
+          efector_id: cgs.efector_id
+        ).each{ |pa| pa.update_attributes!({
+            fecha_de_finalizacion: fecha_de_inicio_nueva,
+            autorizante_de_la_baja_id: addenda.id,
+            autorizante_de_la_baja_type: "AddendaSumar"
+          })
+        }
+    end
+
     # TO_DO: Aprovechar para arreglar el pedo de efectores rurales con prestaciones urbanas.
   end # convenios_de_gestion_sumar_para_adendar.each do |cgs|
 
@@ -3791,7 +4012,7 @@ ActiveRecord::Base.transaction do
   Prestacion.find([
       520, 317, 483, 621, 767, 768, 636, 638, 769, 770, 492, 640, 771, 772, 368, 641, 773, 774,
       642, 775, 776, 643, 777, 645, 778, 490, 779, 312, 489, 780, 491, 781, 488, 653, 320, 348,
-      657, 783, 784, 658, 785, 318, 485, 319, 486
+      657, 783, 784, 658, 785, 318, 485, 319, 486, 338, 662, 789
     ]).each do |p|
       p.update_attributes!({activa: false})
   end
