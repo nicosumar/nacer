@@ -584,7 +584,7 @@ PrestacionPdss.find(505).prestaciones << [Prestacion.find(701)]
 
 
 
-
+=begin
 PrestacionPdss.find(216).prestaciones << [Prestacion.find(485)]
 PrestacionPdss.find(217).prestaciones << [Prestacion.find(486)]
 PrestacionPdss.find(218)
@@ -982,3 +982,4 @@ PrestacionPdss.find(192).prestaciones << [Prestacion.find(593)]
 PrestacionPdss.find(193).prestaciones << [Prestacion.find(607)]
 PrestacionPdss.find(197).prestaciones << [Prestacion.find(382)]
 PrestacionPdss.find(214).prestaciones << [Prestacion.find(483)]
+=end

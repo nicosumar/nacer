@@ -79,7 +79,7 @@ LineaDeCuidado.create!([
   },
   {
     # :id => 16
-    :nombre => "Amenaza de parto prematuro - Diabetes gestacional - Hemorragia posparto - Hipertensión crónica - Hipertensión gestacional - Restricción del crecimiento intrauterino - Atresia esofágica - Gastrosquisis - Oclusión intestinal - Cardiopatías congénitas - Otras neonatales",
+    :nombre => "Amenaza de parto prematuro - Diabetes gestacional - Hemorragia posparto - Hipertensión crónica - Hipertensión gestacional - RCIU - Atresia esofágica - Gastrosquisis - Oclusión intestinal - Cardiopatías congénitas - Otras neonatales",
     :codigo => "ETC"
   },
   {

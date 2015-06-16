@@ -2,7 +2,7 @@
 class Diagnostico < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :codigo, :nombre
+  attr_accessible :codigo, :nombre, :grupo_de_diagnosticos_id
 
   # Asociaciones
   belongs_to :grupo_de_diagnosticos, inverse_of: :diagnostico

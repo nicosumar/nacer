@@ -1294,10 +1294,9 @@ ActiveRecord::Base.transaction do
       nombre: "Hidrocele",
       grupo_de_diagnosticos_id: 15
     }
-])
+  ])
 
   # Eliminar diagnósticos duplicados no asignados
-  Diagnostico.find(239).destroy  # "A21"
+  Diagnostico.where(id: 239).first ? Diagnostico.where(id: 239).first.destroy : nil # "A21"
 
-  end
 end

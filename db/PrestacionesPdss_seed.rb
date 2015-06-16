@@ -4305,7 +4305,8 @@ PrestacionPdss.create([
     orden: 108,
     linea_de_cuidado_id: nil,
     tipo_de_prestacion_id: 10
-  },
+  }
+])
 
 
 
@@ -4313,6 +4314,7 @@ PrestacionPdss.create([
 
 
 
+=begin
   {
     # id: 475
     codigo: "LBL053",
@@ -5307,7 +5309,7 @@ PrestacionPdss.create([
     nosologia_id: nil,
     tipo_de_prestacion_id: 10,
     rural: true
-  }
+  },
   {
     # id: 416
     nombre: "Ronda Sanitaria completa orientada a detección de población de riesgo en área rural",
@@ -5368,3 +5370,4 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 5,
     rural: true
   }
+=end

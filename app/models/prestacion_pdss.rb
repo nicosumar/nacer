@@ -6,7 +6,6 @@ class PrestacionPdss < ActiveRecord::Base
   attr_accessible :tipo_de_prestacion_id, :modulo_id
 
   # Asociaciones
-  belongs_to :seccion_pdss, :through => :grupo_pdss
   belongs_to :grupo_pdss
   belongs_to :linea_de_cuidado
   belongs_to :modulo
