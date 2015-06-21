@@ -4305,1069 +4305,683 @@ PrestacionPdss.create([
     orden: 108,
     linea_de_cuidado_id: nil,
     tipo_de_prestacion_id: 10
-  }
-])
-
-
-
-
-
-
-
-=begin
-  {
-    # id: 475
-    codigo: "LBL053",
-    orden: 113,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 476
-    nombre: "Hemocultivo aerobio anaerobio",
-    codigo: "LBL054",
-    orden: 114,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 477
-    nombre: "Hemoglobina",
-    codigo: "LBL055",
-    orden: 115,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 478
-    nombre: "Hemoglobina glicosilada",
-    codigo: "LBL056",
-    orden: 116,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 479
-    nombre: "Hemograma completo",
-    codigo: "LBL057",
-    orden: 117,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 480
-    nombre: "Hepatitis B anti HBS anticore total",
-    codigo: "LBL058",
-    orden: 118,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 481
-    nombre: "Hepatograma",
-    codigo: "LBL059",
-    orden: 119,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 482
-    nombre: "Hidatidosis por hemoaglutinación",
-    codigo: "LBL060",
-    orden: 120,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 483
-    nombre: "Hidatidosis por IFI",
-    codigo: "LBL061",
-    orden: 121,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 484
-    nombre: "Hisopado de fauces",
-    codigo: "LBL062",
-    orden: 122,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 485
-    nombre: "Homocistina",
-    codigo: "LBL063",
-    orden: 123,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 486
-    nombre: "IFI infecciones respiratorias",
-    codigo: "LBL064",
-    orden: 124,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 487
-    nombre: "IFI y hemoaglutinación directa para Chagas",
-    codigo: "LBL065",
-    orden: 125,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 488
-    nombre: "Insulinemia basal",
-    codigo: "LBL066",
-    orden: 126,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 489
-    nombre: "Inmunofenotipo de médula ósea por citometría de flujo",
-    codigo: "LBL067",
-    orden: 127,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 490
-    nombre: "Ionograma plasmático y orina",
-    codigo: "LBL068",
-    orden: 128,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 491
-    nombre: "KPTT",
-    codigo: "LBL069",
-    orden: 129,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 492
-    nombre: "LDH",
-    codigo: "LBL070",
-    orden: 130,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 493
-    nombre: "Leucocitos en material fecal",
-    codigo: "LBL071",
-    orden: 131,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 494
-    nombre: "LH",
-    codigo: "LBL072",
-    orden: 132,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 495
-    nombre: "Lipidograma electroforético",
-    codigo: "LBL073",
-    orden: 133,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 496
-    nombre: "Líquido cefalorraquídeo citoquímico y bacteriológico",
-    codigo: "LBL074",
-    orden: 134,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 497
-    nombre: "Líquido cefalorraquídeo - Recuento celular (cámara), citología (MGG, cytospin) e histoquímica",
-    codigo: "LBL075",
-    orden: 135,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 498
-    nombre: "Micológico",
-    codigo: "LBL076",
-    orden: 136,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 499
-    nombre: "Microalbuminuria",
-    codigo: "LBL077",
-    orden: 137,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
-  },
-  {
-    # id: 500
-    nombre: "Monotest",
-    codigo: "LBL078",
-    orden: 138,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 501
-    nombre: "Orina completa",
-    codigo: "LBL079",
-    orden: 139,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 502
-    nombre: "Parasitemia para Chagas",
-    codigo: "LBL080",
-    orden: 140,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 503
-    nombre: "Parasitológico de materia fecal",
-    codigo: "LBL081",
-    orden: 141,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 504
-    nombre: "pH en materia fecal",
-    codigo: "LBL082",
-    orden: 142,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
-  },
-  {
-    # id: 505
-    nombre: "Porcentaje de saturación de hierro funcional",
-    codigo: "LBL083",
-    orden: 143,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
   },
   {
     # id: 506
-    nombre: "PPD",
-    codigo: "LBL084",
-    orden: 144,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Hemocultivo aerobio anaerobio",
+    grupo_pdss_id: 29,
+    orden: 109,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 507
-    nombre: "Productos de degradación del fibrinógeno (PDF)",
-    codigo: "LBL085",
-    orden: 145,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Hemoglobina",
+    grupo_pdss_id: 29,
+    orden: 110,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 508
-    nombre: "Progesterona",
-    codigo: "LBL086",
-    orden: 146,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Hemoglobina glicosilada",
+    grupo_pdss_id: 29,
+    orden: 111,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 509
-    nombre: "Prolactina",
-    codigo: "LBL087",
-    orden: 147,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Hemograma completo",
+    grupo_pdss_id: 29,
+    orden: 112,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 510
-    nombre: "Proteína C reactiva",
-    codigo: "LBL088",
-    orden: 148,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Hepatitis B anti HBS anticore total",
+    grupo_pdss_id: 29,
+    orden: 113,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 511
-    nombre: "Proteínas totales y fraccionadas",
-    codigo: "LBL089",
-    orden: 149,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Hepatograma",
+    grupo_pdss_id: 29,
+    orden: 114,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 512
-    nombre: "Proteinuria",
-    codigo: "LBL090",
-    orden: 150,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Hidatidosis por hemoaglutinación",
+    grupo_pdss_id: 29,
+    orden: 115,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 513
-    nombre: "Protoporfirina libre eritrocitaria",
-    codigo: "LBL091",
-    orden: 151,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Hidatidosis por IFI",
+    grupo_pdss_id: 29,
+    orden: 116,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 514
-    nombre: "Prueba de Coombs directa",
-    codigo: "LBL092",
-    orden: 152,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Hisopado de fauces",
+    grupo_pdss_id: 29,
+    orden: 117,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 515
-    nombre: "Prueba de Coombs indirecta cuantitativa",
-    codigo: "LBL093",
-    orden: 153,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Homocistina",
+    grupo_pdss_id: 29,
+    orden: 118,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 516
-    nombre: "Prueba de tolerancia a la glucosa",
-    codigo: "LBL094",
-    orden: 154,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "IFI infecciones respiratorias",
+    grupo_pdss_id: 29,
+    orden: 119,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 517
-    nombre: "Reacción de Hudleson",
-    codigo: "LBL095",
-    orden: 155,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "IFI y hemoaglutinación directa para Chagas",
+    grupo_pdss_id: 29,
+    orden: 120,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 518
-    nombre: "Reacción de Widal",
-    codigo: "LBL096",
-    orden: 156,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Insulinemia basal",
+    grupo_pdss_id: 29,
+    orden: 121,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 519
-    nombre: "Receptores libres de transferrina",
-    codigo: "LBL097",
-    orden: 157,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Inmunofenotipo de médula ósea por citometría de flujo",
+    grupo_pdss_id: 29,
+    orden: 122,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 520
-    nombre: "Sangre oculta en heces",
-    codigo: "LBL098",
-    orden: 158,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Ionograma plasmático y orina",
+    grupo_pdss_id: 29,
+    orden: 123,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 521
-    nombre: "Serología para Chagas (Elisa)",
-    codigo: "LBL099",
-    orden: 159,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "KPTT",
+    grupo_pdss_id: 29,
+    orden: 124,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 522
-    nombre: "Serología para hepatitis A IgM",
-    codigo: "LBL100",
-    orden: 160,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "LDH",
+    grupo_pdss_id: 29,
+    orden: 125,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 523
-    nombre: "Serología para hepatitis A total",
-    codigo: "LBL101",
-    orden: 161,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Leucocitos en material fecal",
+    grupo_pdss_id: 29,
+    orden: 126,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 524
-    nombre: "Serología para rubéola IgM",
-    codigo: "LBL102",
-    orden: 162,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "LH",
+    grupo_pdss_id: 29,
+    orden: 127,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 525
-    nombre: "Sideremia",
-    codigo: "LBL103",
-    orden: 163,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Lipidograma electroforético",
+    grupo_pdss_id: 29,
+    orden: 128,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 526
-    nombre: "T3",
-    codigo: "LBL104",
-    orden: 164,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Líquido cefalorraquídeo citoquímico y bacteriológico",
+    grupo_pdss_id: 29,
+    orden: 129,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 527
-    nombre: "T4 libre",
-    codigo: "LBL105",
-    orden: 165,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Líquido cefalorraquídeo - Recuento celular (cámara), citología (MGG, cytospin) e histoquímica",
+    grupo_pdss_id: 29,
+    orden: 130,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 528
-    nombre: "Test de Graham",
-    codigo: "LBL106",
-    orden: 166,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Micológico",
+    grupo_pdss_id: 29,
+    orden: 131,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 529
-    nombre: "Test de látex",
-    codigo: "LBL107",
-    orden: 167,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Microalbuminuria",
+    grupo_pdss_id: 29,
+    orden: 132,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 530
-    nombre: "TIBC",
-    codigo: "LBL108",
-    orden: 168,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Monotest",
+    grupo_pdss_id: 29,
+    orden: 133,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 531
-    nombre: "Tiempo de lisis de euglobulina",
-    codigo: "LBL109",
-    orden: 169,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Orina completa",
+    grupo_pdss_id: 29,
+    orden: 134,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 532
-    nombre: "Toxoplasmosis por IFI",
-    codigo: "LBL110",
-    orden: 170,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Parasitemia para Chagas",
+    grupo_pdss_id: 29,
+    orden: 135,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 533
-    nombre: "Toxoplasmosis por MEIA",
-    codigo: "LBL111",
-    orden: 171,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Parasitológico de materia fecal",
+    grupo_pdss_id: 29,
+    orden: 136,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 534
-    nombre: "Transaminasas TGO/TGP",
-    codigo: "LBL112",
-    orden: 172,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "pH en materia fecal",
+    grupo_pdss_id: 29,
+    orden: 137,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 535
-    nombre: "Transferrinas",
-    codigo: "LBL113",
-    orden: 173,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Porcentaje de saturación de hierro funcional",
+    grupo_pdss_id: 29,
+    orden: 138,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 536
-    nombre: "Triglicéridos",
-    codigo: "LBL114",
-    orden: 174,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "PPD",
+    grupo_pdss_id: 29,
+    orden: 139,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 537
-    nombre: "Tripsina catiónica inmunorreactiva",
-    codigo: "LBL115",
-    orden: 175,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Productos de degradación del fibrinógeno (PDF)",
+    grupo_pdss_id: 29,
+    orden: 140,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 538
-    nombre: "TSH",
-    codigo: "LBL116",
-    orden: 176,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Progesterona",
+    grupo_pdss_id: 29,
+    orden: 141,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 539
-    nombre: "Urea",
-    codigo: "LBL117",
-    orden: 177,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Prolactina",
+    grupo_pdss_id: 29,
+    orden: 142,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 540
-    nombre: "Urocultivo",
-    codigo: "LBL118",
-    orden: 178,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Proteína C reactiva",
+    grupo_pdss_id: 29,
+    orden: 143,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
-  {
-    # id: 541
-    nombre: "VDRL",
-    codigo: "LBL119",
-    orden: 179,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Proteínas totales y fraccionadas",
+    grupo_pdss_id: 29,
+    orden: 144,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 542
-    nombre: "Vibrio cholerae cultivo e identificación",
-    codigo: "LBL120",
-    orden: 180,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Proteinuria",
+    grupo_pdss_id: 29,
+    orden: 145,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 543
-    nombre: "VIH Elisa",
-    codigo: "LBL121",
-    orden: 181,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Protoporfirina libre eritrocitaria",
+    grupo_pdss_id: 29,
+    orden: 146,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 544
-    nombre: "VIH Western Blot",
-    codigo: "LBL122",
-    orden: 182,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Prueba de Coombs directa",
+    grupo_pdss_id: 29,
+    orden: 147,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 545
-    nombre: "Serología para hepatitis C",
-    codigo: "LBL123",
-    orden: 183,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Prueba de Coombs indirecta cuantitativa",
+    grupo_pdss_id: 29,
+    orden: 148,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 546
-    nombre: "Magnesemia",
-    codigo: "LBL124",
-    orden: 184,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Prueba de tolerancia a la glucosa",
+    grupo_pdss_id: 29,
+    orden: 149,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 547
-    nombre: "Serología LCR",
-    codigo: "LBL125",
-    orden: 185,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Reacción de Hudleson",
+    grupo_pdss_id: 29,
+    orden: 150,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 548
-    nombre: "Recuento plaquetas",
-    codigo: "LBL126",
-    orden: 186,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Reacción de Widal",
+    grupo_pdss_id: 29,
+    orden: 151,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 549
-    nombre: "Antígeno P24",
-    codigo: "LBL127",
-    orden: 187,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: false
+    nombre: "Receptores libres de transferrina",
+    grupo_pdss_id: 29,
+    orden: 152,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 550
-    nombre: "Hemoaglutinación indirecta Chagas",
-    codigo: "LBL128",
-    orden: 188,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Sangre oculta en heces",
+    grupo_pdss_id: 29,
+    orden: 153,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 551
-    nombre: "IgE sérica",
-    codigo: "LBL129",
-    orden: 189,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Serología para Chagas (Elisa)",
+    grupo_pdss_id: 29,
+    orden: 154,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 552
-    nombre: "Tiempo de coagulación y sangría",
-    codigo: "LBL130",
-    orden: 190,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Serología para hepatitis A IgM",
+    grupo_pdss_id: 29,
+    orden: 155,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 553
-    nombre: "Tiempo de protrombina",
-    codigo: "LBL131",
-    orden: 191,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Serología para hepatitis A total",
+    grupo_pdss_id: 29,
+    orden: 156,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 554
-    nombre: "Tiempo de trombina",
-    codigo: "LBL132",
-    orden: 192,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Serología para rubéola IgM",
+    grupo_pdss_id: 29,
+    orden: 157,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 555
-    nombre: "Frotis de sangre periférica",
-    codigo: "LBL133",
-    orden: 193,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "Sideremia",
+    grupo_pdss_id: 29,
+    orden: 158,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 556
-    nombre: "Recuento reticulocitario",
-    codigo: "LBL134",
-    orden: 194,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    nombre: "T3",
+    grupo_pdss_id: 29,
+    orden: 159,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
     # id: 557
+    nombre: "T4 libre",
+    grupo_pdss_id: 29,
+    orden: 160,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 558
+    nombre: "Test de Graham",
+    grupo_pdss_id: 29,
+    orden: 161,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 559
+    nombre: "Test de látex",
+    grupo_pdss_id: 29,
+    orden: 162,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 560
+    nombre: "TIBC",
+    grupo_pdss_id: 29,
+    orden: 163,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 561
+    nombre: "Tiempo de lisis de euglobulina",
+    grupo_pdss_id: 29,
+    orden: 164,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 562
+    nombre: "Toxoplasmosis por IFI",
+    grupo_pdss_id: 29,
+    orden: 165,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 563
+    nombre: "Toxoplasmosis por MEIA",
+    grupo_pdss_id: 29,
+    orden: 166,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 564
+    nombre: "Transaminasas TGO/TGP",
+    grupo_pdss_id: 29,
+    orden: 167,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 565
+    nombre: "Transferrinas",
+    grupo_pdss_id: 29,
+    orden: 168,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 566
+    nombre: "Triglicéridos",
+    grupo_pdss_id: 29,
+    orden: 169,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 567
+    nombre: "Tripsina catiónica inmunorreactiva",
+    grupo_pdss_id: 29,
+    orden: 170,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 568
+    nombre: "TSH",
+    grupo_pdss_id: 29,
+    orden: 171,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 569
+    nombre: "Urea",
+    grupo_pdss_id: 29,
+    orden: 172,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 570
+    nombre: "Urocultivo",
+    grupo_pdss_id: 29,
+    orden: 173,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 571
+    nombre: "VDRL",
+    grupo_pdss_id: 29,
+    orden: 174,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 572
+    nombre: "Vibrio cholerae cultivo e identificación",
+    grupo_pdss_id: 29,
+    orden: 175,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 573
+    nombre: "VIH Elisa",
+    grupo_pdss_id: 29,
+    orden: 176,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 574
+    nombre: "VIH Western Blot",
+    grupo_pdss_id: 29,
+    orden: 177,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 575
+    nombre: "Serología para hepatitis C",
+    grupo_pdss_id: 29,
+    orden: 178,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 576
+    nombre: "Magnesemia",
+    grupo_pdss_id: 29,
+    orden: 179,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 577
+    nombre: "Serología LCR",
+    grupo_pdss_id: 29,
+    orden: 180,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 578
+    nombre: "Recuento plaquetas",
+    grupo_pdss_id: 29,
+    orden: 181,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 579
+    nombre: "Antígeno P24",
+    grupo_pdss_id: 29,
+    orden: 182,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 580
+    nombre: "Hemoaglutinación indirecta Chagas",
+    grupo_pdss_id: 29,
+    orden: 183,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 581
+    nombre: "IgE sérica",
+    grupo_pdss_id: 29,
+    orden: 184,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 582
+    nombre: "Tiempo de coagulación y sangría",
+    grupo_pdss_id: 29,
+    orden: 185,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 583
+    nombre: "Tiempo de protrombina",
+    grupo_pdss_id: 29,
+    orden: 186,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 584
+    nombre: "Tiempo de trombina",
+    grupo_pdss_id: 29,
+    orden: 187,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 585
+    nombre: "Frotis de sangre periférica",
+    grupo_pdss_id: 29,
+    orden: 188,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 586
+    nombre: "Recuento reticulocitario",
+    grupo_pdss_id: 29,
+    orden: 189,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
+  },
+  {
+    # id: 587
     nombre: "Fructosamina",
-    codigo: "LBL135",
-    orden: 195,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 10,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 190,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 416
+    # id: 588
     nombre: "Ronda Sanitaria completa orientada a detección de población de riesgo en área rural",
-    codigo: "ROX001",
-    orden: 54,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 191,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 417
+    # id: 589
     nombre: "Ronda Sanitaria completa orientada a detección de población de riesgo en población indígena",
-    codigo: "ROX002",
-    orden: 55,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 14,
-    rural: true
+    grupo_pdss_id: 29,
+    orden: 192,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   },
   {
-    # id: 422
-    nombre: "Materna",
-    codigo: "AUH001",
-    orden: 60,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 2,
-    rural: false
-  },
-  {
-    # id: 423
-    nombre: "Infantil",
-    codigo: "AUH002",
-    orden: 61,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 2,
-    rural: false
-  },
-  {
-    # id: 424
-    nombre: "Diagnóstico socio-epidemiológico de población en riesgo por efector, (Informe final de ronda entregado y aprobado)",
-    codigo: "DSY001",
-    orden: 62,
-    grupo_pdss_id: 6,
-    subgrupo_pdss_id: nil,
-    apartado_pdss_id: nil,
-    nosologia_id: nil,
-    tipo_de_prestacion_id: 5,
-    rural: true
+    # id: 590
+    nombre: "Diagnóstico socio epidemiológico de población en riesgo por efector (informe final de ronda entregado y aprobado)",
+    grupo_pdss_id: 29,
+    orden: 193,
+    linea_de_cuidado_id: nil,
+    tipo_de_prestacion_id: 10
   }
-=end
+])
