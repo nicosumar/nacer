@@ -487,6 +487,7 @@ ActiveRecord::Schema.define(:version => 20150601150740) do
     t.integer "grupo_de_diagnosticos_id"
   end
 
+  add_index "diagnosticos", ["codigo"], :name => "unq_codigo", :unique => true
   add_index "diagnosticos", ["grupo_de_diagnosticos_id"], :name => "index_diagnosticos_on_grupo_de_diagnosticos_id"
 
   create_table "diagnosticos_prestaciones", :id => false, :force => true do |t|

@@ -3563,14 +3563,6 @@ PrestacionPdss.create([
     tipo_de_prestacion_id: 13
   },
   {
-    # id: 413
-    nombre: "Logoaudiometría",
-    grupo_pdss_id: 29,
-    orden: 16,
-    linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 13
-  },
-  {
     # id: 414
     nombre: "Fondo de ojo",
     grupo_pdss_id: 29,
@@ -4586,6 +4578,8 @@ PrestacionPdss.create([
     linea_de_cuidado_id: nil,
     tipo_de_prestacion_id: 10
   },
+  {
+    # id: 541
     nombre: "Proteínas totales y fraccionadas",
     grupo_pdss_id: 29,
     orden: 144,

@@ -319,7 +319,7 @@ ActiveRecord::Base.transaction do
     unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
-  prestacion.grupos_poblacionales << [de_6_a_9]
+  prestacion.grupos_poblacionales << [de_6_a_9, adolescentes]
   prestacion.diagnosticos << Diagnostico.find_by_codigo!("B72")
   CantidadDePrestacionesPorPeriodo.create!({
     prestacion_id: prestacion.id,
@@ -335,7 +335,7 @@ ActiveRecord::Base.transaction do
 
   # Guardamos el listado de convenios que hay que adendar para desdoblar la prestación
   convenios_con_notificacion_de_leucemia_autorizada = PrestacionAutorizada.where(
-      prestacion_id: 520,
+      prestacion_id: [520, 559],
       fecha_de_finalizacion: nil
     ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
 
@@ -2271,7 +2271,7 @@ ActiveRecord::Base.transaction do
 
   # Crear la prestación "ITK200" para el diagnóstico "065"
   prestacion = Prestacion.create!({
-    # id: 833
+    # id: 835
     codigo: "ITK200",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("K200"),
     nombre: 'Cardiopatías congénitas - Módulo V - Reoperación por residuo en interrupción del arco aórtico operada',
@@ -2383,7 +2383,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "PRP004 - Electrocardiograma" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 834,
+    # id: 836,
     codigo: "PRP004",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("P004"),
     nombre: 'Electrocardiograma',
@@ -2430,7 +2430,7 @@ ActiveRecord::Base.transaction do
   # Modificar los grupos poblacionales y diagnósticos de la prestación "PRP007" del anexo
   prestacion = Prestacion.find(624)
   prestacion.grupos_poblacionales = [de_6_a_9, adolescentes, mujeres_20_a_64] # SIRGe admite el grupo menores_de_6 pero no el PSS
-  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17")
+  prestacion.diagnosticos = Diagnostico.where("grupo_de_diagnosticos_id BETWEEN 1 AND 17 AND codigo NOT IN ('X19', 'X30', 'X86')")
 
   # Modificar los diagnósticos de la prestación "PRP008" del anexo
   prestacion = Prestacion.find(625)
@@ -2502,7 +2502,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR003 - Ecocardiograma con fracción de eyección" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 835,
+    # id: 837,
     codigo: "IGR003",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R003"),
     nombre: 'Ecocardiograma con fracción de eyección',
@@ -2532,7 +2532,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR004 - Eco-Doppler color" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 836,
+    # id: 838,
     codigo: "IGR004",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R004"),
     nombre: 'Eco-Doppler color',
@@ -2570,7 +2570,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR007 - Ecografía de cuello" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 837,
+    # id: 839,
     codigo: "IGR007",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R007"),
     nombre: 'Ecografía de cuello',
@@ -2600,7 +2600,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR008 - Ecografía ginecológica" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 838,
+    # id: 840,
     codigo: "IGR008",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R008"),
     nombre: 'Ecografía ginecológica',
@@ -2630,7 +2630,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR009 - Ecografía mamaria" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 839,
+    # id: 841,
     codigo: "IGR009",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R009"),
     nombre: 'Ecografía mamaria',
@@ -2660,7 +2660,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR010 - Ecografía tiroidea" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 840,
+    # id: 842,
     codigo: "IGR010",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R010"),
     nombre: 'Ecografía tiroidea',
@@ -2694,7 +2694,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR012 - Fibrogastroscopía" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 841,
+    # id: 843,
     codigo: "IGR012",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R012"),
     nombre: 'Fibrogastroscopía',
@@ -2728,7 +2728,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR017 - Rx de codo, antebrazo, muñeca, mano, dedos, rodilla, pierna, tobillo, pie (total o focalizada), frente y perfil" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 842,
+    # id: 844,
     codigo: "IGR017",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R017"),
     nombre: 'Rx de codo, antebrazo, muñeca, mano, dedos, rodilla, pierna, tobillo, pie (total o focalizada), frente y perfil',
@@ -2786,7 +2786,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR022 - Rx de cráneo (frente y perfil); Rx de senos paranasales" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 843,
+    # id: 845,
     codigo: "IGR022",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R022"),
     nombre: 'Rx de cráneo (frente y perfil); Rx de senos paranasales',
@@ -2834,7 +2834,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR025 - Rx de hombro, húmero, pelvis, cadera y ..." y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 844,
+    # id: 846,
     codigo: "IGR025",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R025"),
     nombre: 'Rx de hombro, húmero, pelvis, cadera y fémur (total o focalizada), frente y perfil',
@@ -2870,7 +2870,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR026 - Rx o tele-Rx de tórax (total o focalizada) ..." y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 845,
+    # id: 847,
     codigo: "IGR026",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R026"),
     nombre: 'Rx o tele-Rx de tórax (total o focalizada), frente y perfil',
@@ -2918,7 +2918,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR030 - Tomografía axial computada (TAC)" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 846,
+    # id: 848,
     codigo: "IGR030",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R030"),
     nombre: 'Tomografía axial computada (TAC)',
@@ -2948,7 +2948,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR031 - Ecografía obstétrica" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 847,
+    # id: 849,
     codigo: "IGR031",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R031"),
     nombre: 'Ecografía obstétrica',
@@ -2984,7 +2984,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR031 - Ecografía obstétrica" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 848,
+    # id: 850,
     codigo: "IGR032",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("R032"),
     nombre: 'Ecografía abdominal',
@@ -3026,7 +3026,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "IGR031 - Ecografía obstétrica" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 849,
+    # id: 851,
     codigo: "APA003",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("A003"),
     nombre: 'Medulograma (recuento diferencial con tinción de MGG)',
@@ -3118,7 +3118,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "TLM081 - Unidad móvil de baja y ... (hasta 50 km)" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 850,
+    # id: 852,
     codigo: "TLM081",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("M081"),
     nombre: 'Unidad móvil de baja o mediana complejidad (hasta 50 km)',
@@ -3163,7 +3163,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "TLM082 - Unidad móvil de baja y ... (más de 50 km)" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 851,
+    # id: 853,
     codigo: "TLM082",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("M082"),
     nombre: 'Unidad móvil de baja o mediana complejidad (más de 50 km)',
@@ -3213,7 +3213,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL002" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
-    # id: 852,
+    # id: 854,
     codigo: "LBL002",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L002"),
     nombre: 'Ácido úrico',
@@ -3348,7 +3348,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL024" para embarazadas
   prestacion = Prestacion.create!({
-    # id: 853,
+    # id: 855,
     codigo: "LBL024",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L024"),
     nombre: 'Cultivo Streptococo B hemolítico (embarazadas)',
@@ -3492,7 +3492,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL045 - Glucemia" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 854,
+    # id: 856,
     codigo: "LBL045",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L045"),
     nombre: 'Glucemia',
@@ -3550,7 +3550,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL050 - Grupo y factor" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 855,
+    # id: 857,
     codigo: "LBL050",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L050"),
     nombre: 'Grupo y factor',
@@ -3592,7 +3592,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL052 - HDL y LDL" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 856,
+    # id: 858,
     codigo: "LBL052",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L052"),
     nombre: 'HDL y LDL',
@@ -3632,7 +3632,7 @@ ActiveRecord::Base.transaction do
 
   # Desdoblar la prestación "LBL054" para menores de 6 años y embarazo de alto riesgo
   prestacion = Prestacion.create!({
-    # id: 857,
+    # id: 859,
     codigo: "LBL054",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L054"),
     nombre: 'Hemocultivo aerobio anaerobio',
@@ -3661,7 +3661,7 @@ ActiveRecord::Base.transaction do
   })
 
   prestacion = Prestacion.create!({
-    # id: 858,
+    # id: 860,
     codigo: "LBL054",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L054"),
     nombre: 'Hemocultivo aerobio anaerobio (embarazo de alto riesgo)',
@@ -3697,7 +3697,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL055" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 859,
+    # id: 861,
     codigo: "LBL055",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L055"),
     nombre: 'Hemoglobina',
@@ -3737,7 +3737,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL057" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 860,
+    # id: 862,
     codigo: "LBL057",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L057"),
     nombre: 'Hemograma completo',
@@ -3804,7 +3804,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL065" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 861,
+    # id: 863,
     codigo: "LBL065",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L065"),
     nombre: 'IFI y hemoaglutinación directa para Chagas',
@@ -3839,7 +3839,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL067" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 862,
+    # id: 864,
     codigo: "LBL067",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L067"),
     nombre: 'Inmunofenotipo de médula ósea por citometría de flujo',
@@ -3874,7 +3874,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL069" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 863,
+    # id: 865,
     codigo: "LBL069",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L069"),
     nombre: 'KPTT',
@@ -3957,7 +3957,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL079" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 864,
+    # id: 866,
     codigo: "LBL079",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L079"),
     nombre: 'Orina completa',
@@ -4046,7 +4046,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL090" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 865,
+    # id: 867,
     codigo: "LBL090",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L090"),
     nombre: 'Proteinuria',
@@ -4093,7 +4093,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL094" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 866,
+    # id: 868,
     codigo: "LBL094",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L094"),
     nombre: 'Prueba de tolerancia a la glucosa',
@@ -4152,7 +4152,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL099" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 867,
+    # id: 869,
     codigo: "LBL099",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L099"),
     nombre: 'Serología para Chagas (Elisa)',
@@ -4240,7 +4240,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL110" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 868,
+    # id: 870,
     codigo: "LBL110",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L110"),
     nombre: 'Toxoplasmosis por IFI',
@@ -4270,7 +4270,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL111" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 869,
+    # id: 871,
     codigo: "LBL111",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L111"),
     nombre: 'Toxoplasmosis por MEIA',
@@ -4306,7 +4306,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL112" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 870,
+    # id: 872,
     codigo: "LBL112",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L112"),
     nombre: 'Transaminasas TGO/TGP',
@@ -4362,7 +4362,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL117" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 871,
+    # id: 873,
     codigo: "LBL117",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L117"),
     nombre: 'Urea',
@@ -4398,7 +4398,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL118" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 872,
+    # id: 874,
     codigo: "LBL118",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L118"),
     nombre: 'Urocultivo',
@@ -4434,7 +4434,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL119" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 873,
+    # id: 875,
     codigo: "LBL119",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L119"),
     nombre: 'VDRL',
@@ -4475,7 +4475,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL121" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 874,
+    # id: 876,
     codigo: "LBL121",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L121"),
     nombre: 'VIH Elisa',
@@ -4511,7 +4511,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL122" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 875,
+    # id: 877,
     codigo: "LBL122",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L122"),
     nombre: 'VIH Western Blot',
@@ -4562,7 +4562,7 @@ ActiveRecord::Base.transaction do
 
   # Desdoblar la prestación "LBL126" para menores de 6 años y embarazo de alto riesgo
   prestacion = Prestacion.create!({
-    # id: 876,
+    # id: 878,
     codigo: "LBL126",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L126"),
     nombre: 'Recuento de plaquetas',
@@ -4591,7 +4591,7 @@ ActiveRecord::Base.transaction do
   })
 
   prestacion = Prestacion.create!({
-    # id: 877,
+    # id: 879,
     codigo: "LBL126",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L126"),
     nombre: 'Recuento de plaquetas',
@@ -4632,7 +4632,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL128" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 878,
+    # id: 880,
     codigo: "LBL128",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L128"),
     nombre: 'Hemoaglutinación indirecta para Chagas',
@@ -4676,7 +4676,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL131" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 879,
+    # id: 881,
     codigo: "LBL131",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L131"),
     nombre: 'Tiempo de protrombina',
@@ -4712,7 +4712,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL131" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 880,
+    # id: 882,
     codigo: "LBL132",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L132"),
     nombre: 'Tiempo de trombina',
@@ -4757,7 +4757,7 @@ ActiveRecord::Base.transaction do
 
   # Crear una nueva prestación "LBL135" para unificar las restantes
   prestacion = Prestacion.create!({
-    # id: 881,
+    # id: 883,
     codigo: "LBL135",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("L135"),
     nombre: 'Fructosamina',
@@ -4919,7 +4919,7 @@ ActiveRecord::Base.transaction do
     # Verificar si tenemos que desdoblar la prestación 'NTN002'
     if convenios_con_notificacion_de_leucemia_autorizada.member?(cgs.id)
       PrestacionAutorizada.where(
-          prestacion_id: 520,
+          prestacion_id: [520, 559],
           fecha_de_finalizacion: nil,
           efector_id: cgs.efector_id
         ).first.update_attributes!({
@@ -4966,7 +4966,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 834,
+          prestacion_id: 836,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5003,7 +5003,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 835,
+          prestacion_id: 837,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5027,7 +5027,7 @@ ActiveRecord::Base.transaction do
           })
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 836,
+          prestacion_id: 838,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5052,7 +5052,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 837,
+          prestacion_id: 839,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5077,7 +5077,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 838,
+          prestacion_id: 840,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5102,7 +5102,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 839,
+          prestacion_id: 841,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5127,7 +5127,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 840,
+          prestacion_id: 842,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5152,7 +5152,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 841,
+          prestacion_id: 843,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5177,7 +5177,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 842,
+          prestacion_id: 844,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5202,7 +5202,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 843,
+          prestacion_id: 845,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5227,7 +5227,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 844,
+          prestacion_id: 846,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5252,7 +5252,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 845,
+          prestacion_id: 847,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5277,7 +5277,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 846,
+          prestacion_id: 848,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5302,7 +5302,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 847,
+          prestacion_id: 849,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5327,7 +5327,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 848,
+          prestacion_id: 850,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5352,7 +5352,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 849,
+          prestacion_id: 851,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5377,7 +5377,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 850,
+          prestacion_id: 852,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5402,7 +5402,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 851,
+          prestacion_id: 853,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5427,7 +5427,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 852,
+          prestacion_id: 854,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5504,7 +5504,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 854,
+          prestacion_id: 856,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5529,7 +5529,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 855,
+          prestacion_id: 857,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5554,7 +5554,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 856,
+          prestacion_id: 858,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5579,7 +5579,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 857,
+          prestacion_id: 859,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5591,7 +5591,7 @@ ActiveRecord::Base.transaction do
         })
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 858,
+          prestacion_id: 860,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5601,6 +5601,7 @@ ActiveRecord::Base.transaction do
           creator_id: 1,
           updater_id: 1
         })
+    end
 
     if convenios_con_lbl055_autorizadas.member?(cgs.id)
       PrestacionAutorizada.where(
@@ -5615,7 +5616,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 859,
+          prestacion_id: 861,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5625,6 +5626,7 @@ ActiveRecord::Base.transaction do
           creator_id: 1,
           updater_id: 1
         })
+    end
 
     if convenios_con_lbl057_autorizadas.member?(cgs.id)
       PrestacionAutorizada.where(
@@ -5639,7 +5641,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 860,
+          prestacion_id: 862,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5664,7 +5666,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 861,
+          prestacion_id: 863,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5689,7 +5691,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 862,
+          prestacion_id: 864,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5699,6 +5701,7 @@ ActiveRecord::Base.transaction do
           creator_id: 1,
           updater_id: 1
         })
+    end
 
     if convenios_con_lbl069_autorizadas.member?(cgs.id)
       PrestacionAutorizada.where(
@@ -5713,7 +5716,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 863,
+          prestacion_id: 865,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5738,7 +5741,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 864,
+          prestacion_id: 866,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5763,7 +5766,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 865,
+          prestacion_id: 867,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5788,7 +5791,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 866,
+          prestacion_id: 868,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5813,7 +5816,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 867,
+          prestacion_id: 869,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5838,7 +5841,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 868,
+          prestacion_id: 870,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5863,7 +5866,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 869,
+          prestacion_id: 871,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5888,7 +5891,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 870,
+          prestacion_id: 872,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5913,7 +5916,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 871,
+          prestacion_id: 873,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5938,7 +5941,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 872,
+          prestacion_id: 874,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5963,7 +5966,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 873,
+          prestacion_id: 875,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -5988,7 +5991,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 874,
+          prestacion_id: 876,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -6013,7 +6016,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 875,
+          prestacion_id: 877,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -6038,7 +6041,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 876,
+          prestacion_id: 878,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -6050,7 +6053,7 @@ ActiveRecord::Base.transaction do
         })
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 877,
+          prestacion_id: 879,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -6060,6 +6063,7 @@ ActiveRecord::Base.transaction do
           creator_id: 1,
           updater_id: 1
         })
+    end
 
     if convenios_con_lbl128_autorizadas.member?(cgs.id)
       PrestacionAutorizada.where(
@@ -6074,7 +6078,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 878,
+          prestacion_id: 880,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -6099,7 +6103,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 879,
+          prestacion_id: 881,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -6124,7 +6128,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 880,
+          prestacion_id: 882,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -6149,7 +6153,7 @@ ActiveRecord::Base.transaction do
         }
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 881,
+          prestacion_id: 883,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -6167,11 +6171,11 @@ ActiveRecord::Base.transaction do
   # Desactivar las prestaciones que fueron reemplazadas o dadas de baja
   Prestacion.find([
       520, 317, 483, 621, 767, 768, 636, 638, 769, 770, 492, 640, 771, 772, 368, 641, 773, 774,
-      642, 775, 776, 643, 777, 645, 778, 490, 779, 312, 489, 780, 491, 781, 488, 653, 320, 348,
+      642, 775, 776, 643, 777, 645, 778, 490, 779, 321, 489, 780, 491, 781, 488, 653, 320, 348,
       657, 783, 784, 658, 785, 318, 485, 319, 486, 338, 662, 789, 790, 791, 792, 275, 288, 337,
       697, 273, 700, 346, 795, 702, 274, 287, 703, 332, 704, 278, 796, 713, 797, 333, 798, 341,
       800, 363, 801, 280, 802, 284, 803, 285, 804, 342, 805, 361, 806, 362, 807, 277, 290, 808,
-      282, 291, 809, 283, 292, 810, 759, 281, 811, 334, 812, 335, 813, 360, 766
+      282, 291, 809, 283, 292, 810, 759, 281, 811, 334, 812, 335, 813, 360, 766, 559
     ]).each do |p|
       p.update_attributes!({activa: false})
   end

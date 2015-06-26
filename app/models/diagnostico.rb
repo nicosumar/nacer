@@ -6,6 +6,7 @@ class Diagnostico < ActiveRecord::Base
 
   # Asociaciones
   belongs_to :grupo_de_diagnosticos, inverse_of: :diagnostico
+  has_and_belongs_to_many :sexos
   has_many :prestaciones_liquidadas
 
   # Devuelve el valor del campo 'nombre', pero truncado a 100 caracteres.

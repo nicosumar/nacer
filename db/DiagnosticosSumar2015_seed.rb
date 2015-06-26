@@ -106,8 +106,12 @@ ActiveRecord::Base.transaction do
     }
   ])
 
+  # Eliminar diagnósticos duplicados no asignados
+  Diagnostico.where(id: 239).first ? Diagnostico.where(id: 239).first.destroy : nil # "A21"
+
   # Modificar los diagnosticos existentes y añadir los nuevos diagnósticos
   ActiveRecord::Base.connection.execute "
+    CREATE UNIQUE INDEX unq_codigo ON diagnosticos (codigo);
     UPDATE diagnosticos
       SET grupo_de_diagnosticos_id = 1
       WHERE codigo BETWEEN 'A01' AND 'A99';
@@ -133,14 +137,8 @@ ActiveRecord::Base.transaction do
       SET grupo_de_diagnosticos_id = 8
       WHERE codigo BETWEEN 'N01' AND 'N99';
     UPDATE diagnosticos
-      SET grupo_de_diagnosticos_id = 9, codigo = 'P16'
-      WHERE codigo = 'P20';
-    UPDATE diagnosticos
-      SET grupo_de_diagnosticos_id = 9, codigo = 'P18'
-      WHERE codigo = 'P23';
-    UPDATE diagnosticos
-      SET grupo_de_diagnosticos_id = 9, codigo = 'P19'
-      WHERE codigo = 'P24';
+      SET grupo_de_diagnosticos_id = 9
+      WHERE codigo IN ('P20', 'P23', 'P24', 'P98');
     UPDATE diagnosticos
       SET grupo_de_diagnosticos_id = 10
       WHERE codigo BETWEEN 'R01' AND 'R99';
@@ -590,11 +588,6 @@ ActiveRecord::Base.transaction do
       grupo_de_diagnosticos_id: 6
     },
     {
-      codigo: "K85",
-      nombre: "Elevación de la presión arterial",
-      grupo_de_diagnosticos_id: 6
-    },
-    {
       codigo: "K87",
       nombre: "Hipertensión con afectación del órgano diana",
       grupo_de_diagnosticos_id: 6
@@ -695,26 +688,6 @@ ActiveRecord::Base.transaction do
       grupo_de_diagnosticos_id: 7
     },
     {
-      codigo: "L30",
-      nombre: "Displasia congénita de cadera",
-      grupo_de_diagnosticos_id: 7
-    },
-    {
-      codigo: "L31",
-      nombre: "Pie bot",
-      grupo_de_diagnosticos_id: 7
-    },
-    {
-      codigo: "L32",
-      nombre: "Fisura labiopalatina/fisura palatina/labio leporino",
-      grupo_de_diagnosticos_id: 7
-    },
-    {
-      codigo: "L72",
-      nombre: "Fractura de cúbito/Fractura de radio",
-      grupo_de_diagnosticos_id: 7
-    },
-    {
       codigo: "L75",
       nombre: "Fractura de fémur",
       grupo_de_diagnosticos_id: 7
@@ -770,58 +743,48 @@ ActiveRecord::Base.transaction do
       grupo_de_diagnosticos_id: 8
     },
     {
-      codigo: "P11",
+      codigo: "P16",
       nombre: "Problemas de la conducta alimentaria en niños",
       grupo_de_diagnosticos_id: 9
     },
     {
-      codigo: "P12",
+      codigo: "P17",
       nombre: "Enuresis",
       grupo_de_diagnosticos_id: 9
     },
     {
-      codigo: "P13",
+      codigo: "P18",
       nombre: "Encopresis",
       grupo_de_diagnosticos_id: 9
     },
     {
-      codigo: "P15",
+      codigo: "P19",
       nombre: "Abuso crónico del alcohol",
       grupo_de_diagnosticos_id: 9
     },
     {
-      codigo: "P17",
-      nombre: "Abuso del tabaco",
-      grupo_de_diagnosticos_id: 9
-    },
-    {
-      codigo: "P17",
-      nombre: "Abuso del tabaco",
-      grupo_de_diagnosticos_id: 9
-    },
-    {
       codigo: "P22",
+      nombre: "Abuso del tabaco",
+      grupo_de_diagnosticos_id: 9
+    },
+    {
+      codigo: "P71",
       nombre: "Signos / síntomas del comportamiento del niño",
       grupo_de_diagnosticos_id: 9
     },
     {
-      codigo: "P23",
+      codigo: "P72",
       nombre: "Signos / síntomas del comportamiento del adolescente",
       grupo_de_diagnosticos_id: 9
     },
     {
-      codigo: "P24",
+      codigo: "P73",
       nombre: "Problemas específicos del aprendizaje",
       grupo_de_diagnosticos_id: 9
     },
     {
-      codigo: "P76",
+      codigo: "P86",
       nombre: "Depresión / Trastornos depresivos",
-      grupo_de_diagnosticos_id: 9
-    },
-    {
-      codigo: "P77",
-      nombre: "Suicidio / Intento de suicidio",
       grupo_de_diagnosticos_id: 9
     },
     {
@@ -1105,11 +1068,6 @@ ActiveRecord::Base.transaction do
       grupo_de_diagnosticos_id: 14
     },
     {
-      codigo: "W80",
-      nombre: "Embarazo ectópico",
-      grupo_de_diagnosticos_id: 14
-    },
-    {
       codigo: "W81",
       nombre: "Toxemia del embarazo",
       grupo_de_diagnosticos_id: 14
@@ -1181,11 +1139,6 @@ ActiveRecord::Base.transaction do
     },
     {
       codigo: "X18",
-      nombre: "Dolor mamario, en la mujer",
-      grupo_de_diagnosticos_id: 15
-    },
-    {
-      codigo: "X19",
       nombre: "Dolor mamario, en la mujer",
       grupo_de_diagnosticos_id: 15
     },
@@ -1295,8 +1248,5 @@ ActiveRecord::Base.transaction do
       grupo_de_diagnosticos_id: 15
     }
   ])
-
-  # Eliminar diagnósticos duplicados no asignados
-  Diagnostico.where(id: 239).first ? Diagnostico.where(id: 239).first.destroy : nil # "A21"
 
 end
