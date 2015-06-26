@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150601150740) do
+ActiveRecord::Schema.define(:version => 20150624012451) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -496,6 +496,11 @@ ActiveRecord::Schema.define(:version => 20150601150740) do
   end
 
   add_index "diagnosticos_prestaciones", ["diagnostico_id", "prestacion_id"], :name => "uniq_diagnosticos_prestaciones", :unique => true
+
+  create_table "diagnosticos_sexos", :force => true do |t|
+    t.integer "diagnostico_id"
+    t.integer "sexo_id"
+  end
 
   create_table "discapacidades", :force => true do |t|
     t.string "nombre"
