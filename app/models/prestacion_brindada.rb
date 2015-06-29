@@ -393,7 +393,7 @@ class PrestacionBrindada < ActiveRecord::Base
 
     return true unless beneficiario.present?
 
-    return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) =< 30
+    return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) <= 30
   end
 
   def menor_de_un_anio?
