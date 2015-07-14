@@ -1,3 +1,4 @@
+#encoding: utf-8
 class AddMetodoDeValidacion < ActiveRecord::Migration
   def up
   	MetodoDeValidacion.create!(

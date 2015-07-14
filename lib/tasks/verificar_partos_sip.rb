@@ -104,8 +104,8 @@ class VerificarPartosSip
                 motivos_de_rechazo += (motivos_de_rechazo.size > 0 ? "; " : "") + "No se registró el peso al nacer del recién nacido en la carga de la HCPB"
               end
 
-              # Verificar que se haya informado cómo egresó el recién nacido
-              if !partos_sip.first.egreso_del_rn.present?
+              # Verificar que se haya informado cómo egresó el recién nacido si fue un nacimiento vivo
+              if (partos_sip.first.nacimiento.nil? || partos_sip.first.nacimiento == "A") && !partos_sip.first.egreso_del_rn.present?
                 motivos_de_rechazo += (motivos_de_rechazo.size > 0 ? "; " : "") + "No se registró cómo egresó el recién nacido en la carga de la HCPB"
               end
 
