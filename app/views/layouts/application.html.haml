@@ -19,9 +19,7 @@
           #search
             %form{:method => 'get', :action => '/busqueda/'}
               %fieldset
-                %input{ |
-                  :type => 'text', :name => 'terminos', :id => 'busqueda', |
-                  :size => '22', :placeholder => 'Buscar', :value => ''} |
+                %input{ :type => 'text', :name => 'terminos', :id => 'busqueda', :size => '22', :placeholder => 'Buscar', :value => ''} 
                 %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}
 
           -# NUEVO MENÚ
