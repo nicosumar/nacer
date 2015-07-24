@@ -1,24 +1,37 @@
+- unless prestaciones.any?{|p| p["rural"] == "t"}
+  %p Solo pueden habilitarse a efectores urbanos
+
 %table.prestaciones_pdss
   %thead
     %tr
-      - if prestaciones.any?{|p| p["nosologia"].present?}
-        %th Nosología / Acciones preventivas
+      - if prestaciones.any?{|p| p["linea_de_cuidado"].present?}
+        %th Línea de cuidado
+      - if prestaciones.any?{|p| p["modulo"].present?}
+        %th Módulo
       %th Tipo de prestación
       %th Nombre de la prestación
       %th Código
-      %th Área
+      - if prestaciones.any?{|p| p["rural"] == "t"}
+        %th Área
       %th Autorizada
   %tbody
     - prestaciones.each do |p|
       %tr{:title => p["autorizada"] == "t" ? "Autorizada por: #{p["tipo_de_autorizador"]} #{p["numero_de_autorizador"]}, a partir del #{p["fecha_de_inicio"]}." : ""}
-        - if prestaciones.any?{|p| p["nosologia"].present?}
+        - if prestaciones.any?{|p| p["linea_de_cuidado"].present?}
           %td
-            - if p["nosologia"].nil?
-              Con ref. a nosologías de este grupo
+            - if p["linea_de_cuidado"].nil?
+              = ""
             - else
-              = p["nosologia"]
+              = p["linea_de_cuidado"]
+        - if prestaciones.any?{|p| p["modulo"].present?}
+          %td
+            - if p["modulo"].nil?
+              = ""
+            - else
+              = p["modulo"]
         %td.centrado= p["tipo_de_prestacion"]
         %td= p["nombre_de_prestacion"]
         %td.centrado= p["codigo_de_prestacion"]
-        %td.centrado= (p["rural"] == "t" ? "Urbana/Rural" : "Urbana")
+        - if prestaciones.any?{|p| p["rural"] == "t"}
+          %td.centrado= (p["rural"] == "t" ? "Urbana/Rural" : "Urbana")
         %td.centrado= p["autorizada"] == "t" ? "Sí" : "No"

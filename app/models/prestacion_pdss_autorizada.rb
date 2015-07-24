@@ -34,20 +34,20 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
 
   # PRESENTACION - devuelve un objeto para presentación en la vista. Evaluar el uso de funciones específicas para la capa de presentación
   # self.efector_y_fecha
-  # Devuelve todas las prestaciones del PDSS, serializadas en un Hash con su grupo, subgrupo, apartado, etc. e
+  # Devuelve todas las prestaciones del PDSS, serializadas en un Hash con su sección y grupo, subgrupo, e
   # indicando cuáles prestaciones están autorizadas según el objeto pasado como parámetro.
   def self.efector_y_fecha(efector_id, fecha = Date.today)
     qres = ActiveRecord::Base.connection.exec_query( <<-SQL
-        SELECT
+        SELECT DISTINCT ON (sp.orden, gp.orden, pp.orden)
+            sp.id "seccion_pdss_id",
             gp.id "grupo_pdss_id",
-            sp.id "subgrupo_pdss_id",
-            ap.id "apartado_pdss_id",
             pp.id "prestacion_pdss_id",
-            n.nombre "nosologia",
+            lc.nombre "linea_de_cuidado",
+            mp.nombre "modulo",
             tdp.nombre "tipo_de_prestacion",
-            pp.codigo "codigo_de_prestacion",
+            p.codigo "codigo_de_prestacion",
             pp.nombre "nombre_de_prestacion",
-            pp.rural "rural",
+            --pp.rural "rural",
             CASE WHEN ppa.autorizante_al_alta_type IS NOT NULL THEN 't'::boolean ELSE 'f'::boolean END "autorizada",
             CASE
               WHEN ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar' THEN 'Convenio de gestión'::varchar(255)
@@ -62,10 +62,12 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
             to_char(ppa.fecha_de_inicio, 'DD/MM/YYYY') "fecha_de_inicio"
           FROM
             prestaciones_pdss pp
+            LEFT JOIN prestaciones_prestaciones_pdss ppp ON pp.id = ppp.prestacion_pdss_id
+            LEFT JOIN prestaciones p ON p.id = ppp.prestacion_id
             LEFT JOIN grupos_pdss gp ON gp.id = pp.grupo_pdss_id
-            LEFT JOIN subgrupos_pdss sp ON sp.id = pp.subgrupo_pdss_id
-            LEFT JOIN apartados_pdss ap ON ap.id = pp.apartado_pdss_id
-            LEFT JOIN nosologias n ON n.id = pp.nosologia_id
+            LEFT JOIN secciones_pdss sp ON sp.id = gp.seccion_pdss_id
+            LEFT JOIN lineas_de_cuidado lc ON lc.id = pp.linea_de_cuidado_id
+            LEFT JOIN modulos mp ON mp.id = pp.modulo_id
             LEFT JOIN tipos_de_prestaciones tdp ON tdp.id = pp.tipo_de_prestacion_id
             LEFT JOIN prestaciones_pdss_autorizadas ppa ON (
               ppa.efector_id = #{efector_id}
@@ -81,31 +83,23 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
               ppa.autorizante_al_alta_type = 'AddendaSumar' AND
               ppa.autorizante_al_alta_id = ads.id
             )
-          ORDER BY gp.orden, sp.orden, ap.orden, pp.orden;
+          ORDER BY sp.orden, gp.orden, pp.orden;
       SQL
     )
 
-    grupos = []
-    GrupoPdss.where(true).order(:orden).select([:id, :codigo, :nombre]).each do |g|
-      if g.subgrupos_pdss.size > 0
-        subgrupos_del_grupo = []
-        SubgrupoPdss.where(:grupo_pdss_id => g.id).order(:orden).select([:id, :codigo, :nombre]).each do |s|
-          if s.apartados_pdss.size > 0
-            apartados_del_subgrupo = []
-            ApartadoPdss.where(:subgrupo_pdss_id => s.id).order(:orden).select([:id, :codigo, :nombre]).each do |a|
-              apartados_del_subgrupo << a.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == g.id.to_s && r[1] == s.id.to_s && r[2] == a.id.to_s}))
-            end
-            subgrupos_del_grupo << s.attributes.merge!(:apartados => apartados_del_subgrupo)
-          else
-            subgrupos_del_grupo << s.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == g.id.to_s && r[1] == s.id.to_s}))
-          end
+    secciones = []
+    SeccionPdss.where(true).order(:orden).select([:id, :codigo, :nombre]).each do |s|
+      if s.grupos_pdss.size > 0
+        grupos_de_la_seccion = []
+        GrupoPdss.where(:seccion_pdss_id => s.id).order(:orden).select([:id, :codigo, :nombre]).each do |g|
+          grupos_de_la_seccion << g.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == s.id.to_s && r[1] == g.id.to_s}))
         end
-        grupos << g.attributes.merge!(:subgrupos => subgrupos_del_grupo)
+        secciones << s.attributes.merge!(:grupos => grupos_de_la_seccion)
       else
-        grupos << g.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == g.id.to_s}))
+        secciones << s.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == s.id.to_s}))
       end
     end
-    return grupos
+    return secciones
   end
 
   def self.obtener_prestaciones(nombres, valores)
@@ -113,7 +107,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
     valores.each do |r|
       atributos = {}
       r.each_with_index do |v, i|
-        atributos.merge!(nombres[i] => v) if i > 2
+        atributos.merge!(nombres[i] => v) if i > 1
       end
       prestaciones << atributos
     end

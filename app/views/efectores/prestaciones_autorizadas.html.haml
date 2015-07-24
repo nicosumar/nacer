@@ -25,21 +25,15 @@
     %h2
       Plan de servicios de salud autorizado para el efector al día
       = Date.today.strftime("%d/%m/%Y")
-    - PrestacionPdssAutorizada.efector_y_fecha(@efector.id, Date.today).each do |grupo|
-      %div.grupo_pdss{:id => grupo["nombre"]}
-        %h4= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
-        - if grupo.has_key? :subgrupos
-          - grupo[:subgrupos].each do |subgrupo|
-            %div.subgrupo_pdss{:id => subgrupo["nombre"]}
-              %h4= (subgrupo["codigo"].present? ? subgrupo["codigo"] + ") " : "") + subgrupo["nombre"]
-              - if subgrupo.has_key? :apartados
-                - subgrupo[:apartados].each do |apartado|
-                  %div.apartado_pdss{:id => apartado["nombre"]}
-                    %h4.first-header= (apartado["codigo"].present? ? apartado["codigo"] + ") " : "") + apartado["nombre"]
-                    = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => apartado[:prestaciones]}
-              - else
-                = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => subgrupo[:prestaciones]}
+    - PrestacionPdssAutorizada.efector_y_fecha(@efector.id, Date.today).each do |seccion|
+      %div.seccion_pdss{:id => seccion["nombre"]}
+        %h4= (seccion["codigo"].present? ? seccion["codigo"] + ") " : "") + seccion["nombre"]
+        - if seccion.has_key? :grupos
+          - seccion[:grupos].each do |grupo|
+            %div.grupo_pdss{:id => grupo["nombre"]}
+              %h4= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
+              = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones]}
         - else
-          = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones]}
+          = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => seccion[:prestaciones]}
   - else
     No hay información sobre las prestaciones autorizadas para el convenio

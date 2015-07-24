@@ -7,7 +7,7 @@ class AreaDePrestacion < ActiveRecord::Base
   attr_accessible :codigo, :nombre
 
   # Asociaciones
-  #has_many :efectores
+  has_and_belongs_to_many :prestaciones_pdss
 
   # Validaciones
   #validates_presence_of :nombre

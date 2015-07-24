@@ -11,5 +11,6 @@ class PrestacionPdss < ActiveRecord::Base
   belongs_to :modulo
   belongs_to :tipo_de_prestacion
   has_and_belongs_to_many :prestaciones
+  has_and_belongs_to_many :areas_de_prestacion
 
 end

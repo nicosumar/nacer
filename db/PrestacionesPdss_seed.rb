@@ -4960,7 +4960,7 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 191,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 10
+    tipo_de_prestacion_id: 14
   },
   {
     # id: 589
@@ -4968,7 +4968,7 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 192,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 10
+    tipo_de_prestacion_id: 14
   },
   {
     # id: 590
@@ -4976,6 +4976,6 @@ PrestacionPdss.create([
     grupo_pdss_id: 29,
     orden: 193,
     linea_de_cuidado_id: nil,
-    tipo_de_prestacion_id: 10
+    tipo_de_prestacion_id: 5
   }
 ])

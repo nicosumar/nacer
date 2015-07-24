@@ -1,0 +1,1 @@
+AreaDePrestacion.find(1).prestaciones_pdss = PrestacionPdss.find_by(activa: true)
