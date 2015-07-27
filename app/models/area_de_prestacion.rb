@@ -7,7 +7,7 @@ class AreaDePrestacion < ActiveRecord::Base
   attr_accessible :codigo, :nombre
 
   # Asociaciones
-  has_and_belongs_to_many :prestaciones_pdss
+  has_and_belongs_to_many :prestaciones_pdss, join_table: "areas_de_prestacion_prestaciones_pdss"
 
   # Validaciones
   #validates_presence_of :nombre

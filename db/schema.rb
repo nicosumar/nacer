@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150601150740) do
+ActiveRecord::Schema.define(:version => 20150724205707) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -168,6 +168,11 @@ ActiveRecord::Schema.define(:version => 20150601150740) do
   end
 
   add_index "areas_de_prestacion", ["codigo"], :name => "index_areas_de_prestacion_on_codigo", :unique => true
+
+  create_table "areas_de_prestacion_prestaciones_pdss", :id => false, :force => true do |t|
+    t.integer "area_de_prestacion_id"
+    t.integer "prestacion_pdss_id"
+  end
 
   create_table "asignaciones_de_nomenclador", :force => true do |t|
     t.integer  "efector_id",            :null => false

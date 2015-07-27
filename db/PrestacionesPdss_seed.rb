@@ -2813,7 +2813,7 @@ PrestacionPdss.create([
   },
   {
     # id: 330
-    nombre: "Dosis aplicada de vacuna antrigripal en personas con factores de riesgo",
+    nombre: "Dosis aplicada de vacuna antigripal en personas con factores de riesgo",
     grupo_pdss_id: 22,
     orden: 33,
     linea_de_cuidado_id: 25,

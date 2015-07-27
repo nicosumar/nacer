@@ -47,7 +47,6 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
             tdp.nombre "tipo_de_prestacion",
             p.codigo "codigo_de_prestacion",
             pp.nombre "nombre_de_prestacion",
-            --pp.rural "rural",
             CASE WHEN ppa.autorizante_al_alta_type IS NOT NULL THEN 't'::boolean ELSE 'f'::boolean END "autorizada",
             CASE
               WHEN ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar' THEN 'Convenio de gestión'::varchar(255)
@@ -59,7 +58,14 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
               WHEN ppa.autorizante_al_alta_type = 'AddendaSumar' THEN ads.numero
               ELSE NULL::varchar(255)
             END "numero_de_autorizador",
-            to_char(ppa.fecha_de_inicio, 'DD/MM/YYYY') "fecha_de_inicio"
+            to_char(ppa.fecha_de_inicio, 'DD/MM/YYYY') "fecha_de_inicio",
+            CASE
+              WHEN EXISTS (
+                  SELECT * FROM areas_de_prestacion_prestaciones_pdss appp
+                    WHERE appp.prestacion_pdss_id = pp.id AND appp.area_de_prestacion_id = '2'
+                ) THEN 't'::boolean
+              ELSE 'f'::boolean
+            END "rural"
           FROM
             prestaciones_pdss pp
             LEFT JOIN prestaciones_prestaciones_pdss ppp ON pp.id = ppp.prestacion_pdss_id
