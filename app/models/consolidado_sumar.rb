@@ -21,7 +21,9 @@ class ConsolidadoSumar < ActiveRecord::Base
           # Busco el administrador
           if e.es_administrado? 
             administrador = e.administrador_sumar
-          else 
+          elsif e.es_autoadministrado?
+            next
+          else
             administrador = e
           end
 
