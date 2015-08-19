@@ -17,7 +17,7 @@ ActiveRecord::Base.transaction do
   fecha_de_inicio = Date.new(2012, 8, 1)
 
   # Fecha de inicio del nomenclador nuevo
-  fecha_de_inicio_nueva = Date.new(2015, 6, 1)
+  fecha_de_inicio_nueva = Date.new(2015, 7, 1)
 
   # Obtener el nomenclador
   nomenclador_sumar = Nomenclador.find(5)
@@ -3167,7 +3167,7 @@ ActiveRecord::Base.transaction do
     codigo: "TLM082",
     objeto_de_la_prestacion_id: ObjetoDeLaPrestacion.id_del_codigo!("M082"),
     nombre: 'Unidad móvil de baja o mediana complejidad (más de 50 km)',
-    unidad_de_medida_id: um_unitaria.id, created_at: ahora, updated_at: ahora, activa: true
+    unidad_de_medida_id: UnidadDeMedida.find_by_codigo("K"), created_at: ahora, updated_at: ahora, activa: true
   })
   prestacion.sexos << [sexo_femenino, sexo_masculino]
   prestacion.grupos_poblacionales << [menores_de_6, de_6_a_9, adolescentes, mujeres_20_a_64]
