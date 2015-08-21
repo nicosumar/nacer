@@ -4,6 +4,6 @@ class AgregarColumnaProcesoDeDatosAUnidadesDeAltaDeDatos < ActiveRecord::Migrati
   end
 
   # RECREAR EL TRIGGER crear_esquema_para_uad
-  load 'db/sp/trigger_crear_esquema_para_uad.rb'
+  load 'db/sp/trigger_function_crear_esquema_para_uad.rb'
 
 end

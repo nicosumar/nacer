@@ -247,9 +247,9 @@ DEPENDENCIES
   chosen-rails (~> 1.1.0)
   cocoon (>= 1.2)
   coffee-rails
+  composite_primary_keys (~> 5.0.0)
   daemons
   delayed_job_active_record
-  composite_primary_keys (~> 5.0.0)
   devise
   haml
   hirb-unicode
