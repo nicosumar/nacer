@@ -19,12 +19,16 @@ class ConsolidadoSumar < ActiveRecord::Base
         documento_generable.tipo_de_agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas |
 
           # Busco el administrador
-
           if e.es_administrado? 
             administrador = e.administrador_sumar
-          else
+          elsif e.es_autoadministrado?
             next
+          else
+            administrador = e
           end
+
+          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando Consolidado para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
+          
           # Verifico que no haya generado anteriormente el consolidado de este efector administrador
           c = ConsolidadoSumar.where(efector_id: administrador.id, liquidacion_sumar_id: liquidacion_sumar.id)
           
@@ -41,13 +45,23 @@ class ConsolidadoSumar < ActiveRecord::Base
 
             # Genero el detalle y cabecera si la suma de las cuasifacturas de los administrados es mayor a cero
             total_consolidado = 0
+            
+            total_cuasifactura_administrador = 0
+            if administrador.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0
+              total_cuasifactura_administrador += administrador.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
+            end
+
+            total_cuasifactura_administrados = 0
             administrador.efectores_administrados.each do |ea|
               if ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0
-                total_consolidado += ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
+                total_cuasifactura_administrados += ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
               end
             end
-            
-            if total_consolidado > 0 
+
+            total_consolidado = total_cuasifactura_administrador + total_cuasifactura_administrados
+           
+            # Si el administrador ha facturado pero ningun administrado lo ha hecho, solo creo la cabecera
+            if total_consolidado > 0
               #Verifico que exista la secuencia para los consolidados. Sino que la cree
               self.generar_secuencia administrador
 
@@ -60,7 +74,7 @@ class ConsolidadoSumar < ActiveRecord::Base
               })
               consolidado.numero_de_consolidado = documento_generable.obtener_numeracion(consolidado.id)
               consolidado.save
-              
+                          
               # Genero el detalle del consolidado
               administrador.efectores_administrados.each do |ea|
                 

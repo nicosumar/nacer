@@ -17,10 +17,10 @@ class LiquidacionesSumarAnexosMedicosController < ApplicationController
     # Crea la instancia del grid (o lleva los resultados del model al grid)
     @detalle_anexo = initialize_grid(
       AnexoMedicoPrestacion,
-      include: [{prestacion_liquidada: :afiliado}, {prestacion_liquidada: :prestacion_incluida}, :estado_de_la_prestacion ],
+      include: [ {prestacion_liquidada: :prestacion_incluida}, :estado_de_la_prestacion ],
       joins:  "join prestaciones_liquidadas on prestaciones_liquidadas.id = anexos_medicos_prestaciones.prestacion_liquidada_id\n"+
               "join prestaciones_incluidas on prestaciones_incluidas.id = prestaciones_liquidadas.prestacion_incluida_id\n"+
-              "join afiliados on afiliados.clave_de_beneficiario = prestaciones_liquidadas.clave_de_beneficiario\n",
+              "left join afiliados on afiliados.clave_de_beneficiario = prestaciones_liquidadas.clave_de_beneficiario\n",
       order: "afiliados.numero_de_documento",
       conditions: condiciones
       )

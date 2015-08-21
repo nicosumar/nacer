@@ -13,14 +13,8 @@ class Efector < ActiveRecord::Base
   attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria, :cuie
   attr_accessible :categorizado_cone
 
-
   # Atributos protegidos
   # attr_protected :cuie
-
-
-  # Atributos solo lectura
-
-  attr_readonly :cuie
 
   # Asociaciones
   has_one :convenio_de_gestion
@@ -36,6 +30,7 @@ class Efector < ActiveRecord::Base
   has_one :administrador, :through => :convenio_de_administracion
   has_one :administrador_sumar, :through => :convenio_de_administracion_sumar, :source => "administrador"
   has_many :prestaciones_autorizadas
+  has_many :prestaciones_pdss_autorizadas
   has_many :asignaciones_de_nomenclador
   has_many :referentes
   # Asociaciones referentes a la liquidacion
@@ -168,18 +163,16 @@ class Efector < ActiveRecord::Base
     end 
   end
 
-
   # 
   # Devuelve los conceptos que alguna vez ha facturado
   # 
-  # @return [Array<ConceptoDeFacturacion>] Array de conceptos de facturación
+  # @return [ActiveRecord::Relation<ConceptoDeFacturacion>] Array de conceptos de facturación
   def conceptos_que_facturo
-    ConceptoDeFacturacion.select("DISTINCT conceptos_de_facturacion.*")
-              .joins("JOIN liquidaciones_sumar l on l.concepto_de_facturacion_id = conceptos_de_facturacion.id\n"+
-                     "JOIN prestaciones_liquidadas pl on pl.liquidacion_id = l.id")
-              .where("pl.efector_id = #{self.id}").order(:concepto)
+    ConceptoDeFacturacion.select("DISTINCT conceptos_de_facturacion.*").
+              joins("JOIN liquidaciones_sumar l ON l.concepto_de_facturacion_id = conceptos_de_facturacion.id\n").
+              where("EXISTS ( SELECT id FROM prestaciones_liquidadas WHERE liquidacion_id = l.id AND efector_id = #{self.id}) ").
+              order(:concepto)
   end
-
 
   # 
   # Devuelve los conceptos que ha facturado o consolidado
@@ -198,6 +191,7 @@ class Efector < ActiveRecord::Base
 
   # 
   # Devuelve los periodos que alguna vez ha facturado
+  # para un concepto. o para todos
   # 
   # @return [Array<Periodo>] Array con los conceptos de facturacion
   def periodos_facturados( arg_concepto = [])
@@ -209,11 +203,11 @@ class Efector < ActiveRecord::Base
     if arg_concepto.empty?
       arg_concepto = ConceptoDeFacturacion.all.map {|c| c.id}
     end
-    Periodo.select("DISTINCT periodos.*")
-           .joins("join liquidaciones_sumar l on l.periodo_id = periodos.id\n"+ 
-                  "join prestaciones_liquidadas pl on pl.liquidacion_id = l.id ")
-           .where("pl.efector_id = #{self.id}\n"+
-                  "AND l.concepto_de_facturacion_id IN (#{arg_concepto.join(', ') })").order(:periodo)
+    Periodo.select("DISTINCT periodos.*").
+            joins("join liquidaciones_sumar l on l.periodo_id = periodos.id\n").
+            where("l.concepto_de_facturacion_id IN (#{arg_concepto.join(', ') })").
+            where("EXISTS (SELECT id FROM prestaciones_liquidadas where efector_id = #{self.id} and liquidacion_id = l.id)").
+            order(:periodo)
   end
 
 
@@ -305,7 +299,7 @@ class Efector < ActiveRecord::Base
 
   # self.que_no_tengan_convenio_sumar
   # Devuelve los efectores que no tienen convenio de gestión sumar
-  def self.que_no_tengan_convenio
+  def self.que_no_tengan_convenio_sumar
     Efector.find_by_sql("
       SELECT *
         FROM efectores
@@ -414,7 +408,7 @@ class Efector < ActiveRecord::Base
 
   # self.sumar_que_son_administrados
   # Devuelve los efectores que tienen un convenio de administración.
-  def self.que_son_administrados
+  def self.que_son_administrados_sumar
     Efector.find_by_sql("
       SELECT *
         FROM efectores
@@ -554,7 +548,5 @@ class Efector < ActiveRecord::Base
     end
     
   end
-
-
 
 end

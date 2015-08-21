@@ -1,14 +1,16 @@
 # -*- encoding : utf-8 -*-
 class ApplicationController < ActionController::Base
   protect_from_forgery
+  attr_reader :uad_actual
   helper :all
-  helper_method :admin_required, :modelos_autorizados
+  helper_method :admin_required, :modelos_autorizados, :uad_actual
   before_filter :establecer_uad
 
   # establecer_uad
   # Cambia la ruta de búsqueda de esquemas de PostgreSQL para que el usuario acceda prioritariamente
   # a las tablas asociadas con la UAD en la que está habilitado a operar.
   def establecer_uad
+    @uad_actual = nil
     if !session[:codigo_uad_actual].blank?
       # Algunos recomiendan limpiar la caché antes de cambiar la ruta de búsqueda
       # de esquemas (parece que por un bug ya corregido, pero no lastima a nadie hacerlo).
@@ -18,12 +20,13 @@ class ApplicationController < ActionController::Base
       begin
         # Cambiamos la ruta de búsqueda sobre la conexión ActiveRecord
         ActiveRecord::Base.connection.schema_search_path = "uad_#{session[:codigo_uad_actual]}, public"
+        @uad_actual = UnidadDeAltaDeDatos.find_by_codigo!(session[:codigo_uad_actual])
       rescue
         Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
         redirect_to(root_url,
           :flash => { :tipo => :error, :titulo => "Se produjo un error al iniciar la sesión",
-            :mensaje  => "Sus credenciales son correctas, pero se produjo un error desconocido al intentar asignar su UAD. " +
-                         "Póngase en contacto con los administradores del sistema para solucionar este inconveniente."
+            :mensaje => "Sus credenciales son correctas, pero se produjo un error desconocido al intentar asignar su UAD. " +
+                        "Póngase en contacto con los administradores del sistema para solucionar este inconveniente."
           }
         )
         return false
@@ -52,6 +55,10 @@ class ApplicationController < ActionController::Base
   def redirect_to_stored(info)
     redirect_to((session[:return_to] || root_url), :flash => info)
     session[:return_to] = nil
+  end
+
+  def current_ability
+    @current_ability ||= Ability.new(current_user, session)
   end
 
   def parametro_fecha(hash, clave)

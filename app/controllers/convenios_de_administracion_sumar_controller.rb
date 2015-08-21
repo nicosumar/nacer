@@ -18,29 +18,29 @@ class ConveniosDeAdministracionSumarController < ApplicationController
 
     # Obtener el listado de convenios
     @convenios_de_administracion =
-      ConvenioDeAdministracionSumar.paginate( :page => params[:page], :per_page => 20,
-        :include => [:efector, :administrador], :order => "updated_at DESC"
+      ConvenioDeAdministracionSumar.accessible_by(current_ability).paginate( :page => params[:page], :per_page => 20,
+        :include => [:efector, :administrador], :order => "convenios_de_administracion_sumar.updated_at DESC"
       )
   end
 
   # GET /convenios_de_administracion_sumar/:id
   def show
-    # Verificar los permisos del usuario
-    if cannot? :read, ConvenioDeAdministracionSumar
-      redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."
-        }
-      )
-      return
-    end
-
     # Obtener el convenio
     begin
       @convenio_de_administracion = ConvenioDeAdministracionSumar.find(params[:id], :include => [:efector, :administrador])
     rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Verificar los permisos del usuario
+    if cannot? :read, @convenio_de_administracion
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )

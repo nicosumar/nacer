@@ -37,6 +37,8 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
       begin
         documento_generable.tipo_de_agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas |
 
+          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando cuasifactura para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
+
           # 1) Creo la cabecera de la cuasifactura
           total_cuasifactura = pliquidadas.sum(:monto)
           

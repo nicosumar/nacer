@@ -24,7 +24,8 @@
   %div.field
     %span.field_name Administrador
     %span.field_value= @convenio_de_administracion.administrador.nombre
-    = link_to "Ver detalles del efector", @convenio_de_administracion.administrador
+    - if can?(:read, @convenio_de_administracion.administrador)
+      = link_to "Ver detalles del efector", @convenio_de_administracion.administrador
 
   %h3 Datos del firmante y fechas
   %div.field_content

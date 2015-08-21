@@ -311,6 +311,8 @@ class Afiliado < ActiveRecord::Base
       return GrupoPoblacional.find_by_codigo("C")
     elsif sexo.codigo == "F" && (20..64) === edad_en_anios(fecha_de_la_prestacion)
       return GrupoPoblacional.find_by_codigo("D")
+    elsif sexo.codigo == "M" && (20..64) === edad_en_anios(fecha_de_la_prestacion)
+      return GrupoPoblacional.find_by_codigo("E")
     end
 
     return nil

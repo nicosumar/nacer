@@ -70,7 +70,7 @@ class SeparadorDeNombresYSexos
   end
 
   def separar_nombres(nombre)
-    tokens = UnicodeUtils.upcase(nombre.chomp.strip.gsub(",", "").gsub(/  /, " ")).split(" ", -1)
+    tokens = nombre.chomp.strip.gsub(",", "").gsub(/  /, " ").mb_chars.upcase.to_s.split(" ", -1)
 
     mejor_p = 0.0
     mejor_solucion = {}

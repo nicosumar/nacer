@@ -374,11 +374,41 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("ExpedienteSumar", "Expedientes·Sumar·")
   inflect.irregular("Expediente·Sumar·", "ExpedientesSumar")
 
-  #Tipos de expedientes
+  # Tipos de expedientes
   inflect.irregular("tipo_de_expediente", "tipos·_de·_expedientes·")
   inflect.irregular("tipo·_de·_expediente·", "tipos_de_expedientes")
   inflect.irregular("TipoDeExpediente", "Tipos·De·Expedientes·")
   inflect.irregular("Tipo·De·Expediente·", "TiposDeExpedientes")
+
+  # Secciones del PDSS
+  inflect.irregular("seccion_pdss", "secciones·_pdss·")
+  inflect.irregular("seccion·_pdss·", "secciones_pdss")
+  inflect.irregular("SeccionPdss", "Secciones·Pdss·")
+  inflect.irregular("Seccion·Pdss·", "SeccionesPdss")
+
+  # Grupos del PDSS
+  inflect.irregular("grupo_pdss", "grupos·_pdss·")
+  inflect.irregular("grupo·_pdss·", "grupos_pdss")
+  inflect.irregular("GrupoPdss", "Grupos·Pdss·")
+  inflect.irregular("Grupo·Pdss·", "GruposPdss")
+
+#  # Apartados para subgrupos del PDSS
+#  inflect.irregular("apartado_pdss", "apartados·_pdss·")
+#  inflect.irregular("apartado·_pdss·", "apartados_pdss")
+#  inflect.irregular("ApartadoPdss", "Apartados·Pdss·")
+#  inflect.irregular("Apartado·Pdss·", "ApartadosPdss")
+
+  # Prestaciones del PDSS
+  inflect.irregular("prestacion_pdss", "prestaciones·_pdss·")
+  inflect.irregular("prestacion·_pdss·", "prestaciones_pdss")
+  inflect.irregular("PrestacionPdss", "Prestaciones·Pdss·")
+  inflect.irregular("Prestacion·Pdss·", "PrestacionesPdss")
+
+  # Prestaciones PDSS autorizadas por efector
+  inflect.irregular("prestacion_pdss_autorizada", "prestaciones·_pdss·_autorizadas·")
+  inflect.irregular("prestacion·_pdss·_autorizada·", "prestaciones_pdss_autorizadas")
+  inflect.irregular("PrestacionPdssAutorizada", "Prestaciones·Pdss·Autorizadas·")
+  inflect.irregular("Prestacion·Pdss·Autorizada·", "PrestacionesPdssAutorizadas")
 
   #Detalles de debitos prestacionales
   inflect.irregular("detalle_de_debito_prestacional", "detalles·_de·_debitos·_prestacionales·")
@@ -445,6 +475,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("parto·_sip·", "partos_sip")
   inflect.irregular("PartoSip", "Partos·Sip·")
   inflect.irregular("Parto·Sip·", "PartosSip")
+
+  # Líneas de cuidado
+  inflect.irregular("linea_de_cuidado", "lineas·_de·_cuidado·")
+  inflect.irregular("linea·_de·_cuidado·", "lineas_de_cuidado")
+  inflect.irregular("LineaDeCuidado", "Lineas·De·Cuidado·")
+  inflect.irregular("Linea·De·Cuidado·", "LineasDeCuidado")
+
+  # Grupos de diagnósticos
+  inflect.irregular("grupo_de_diagnosticos", "grupos·_de·_diagnosticos·")
+  inflect.irregular("grupo·_de·_diagnosticos·", "grupos_de_diagnosticos")
+  inflect.irregular("GrupoDeDiagnosticos", "Grupos·De·Diagnosticos·")
+  inflect.irregular("Grupo·De·Diagnosticos·", "GruposDeDiagnosticos")
 
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")

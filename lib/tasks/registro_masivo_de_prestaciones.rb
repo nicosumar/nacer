@@ -391,26 +391,17 @@ class RegistroMasivoDePrestaciones
               "El código de diagnóstico no existe (cadena evaluada: '#{codigo_diagnostico}')"
             )
           else
-            prestacion_brindada.diagnostico_id = diagnostico.id
-          end
-          if prestacion.present? && diagnostico.present?
-            # Obtener todas las prestaciones que tengan el código informado y admitan el diagnóstico informado
-            prestaciones = Prestacion.where(
-              "codigo = ?
-                AND EXISTS (
-                  SELECT *
-                    FROM diagnosticos_prestaciones
-                    WHERE
-                      diagnosticos_prestaciones.prestacion_id = prestaciones.id
-                      AND diagnosticos_prestaciones.diagnostico_id = ?
-                )",
-                codigo_de_prestacion, diagnostico.id
+            codigo_de_prestacion = prestacion_brindada.codigo_de_prestacion_informado[0..5]
+            prestacion = Prestacion.find_by_codigo(codigo_de_prestacion)
+            if !prestacion.present?
+              prestacion_brindada.agregar_error(
+                "El código de prestación no existe (cadena evaluada: '#{codigo_de_prestacion}')"
               )
 
             # Registrar el error si no se encuentra una prestación para esa combinación de código y diagnóstico
             if prestaciones.size == 0
               prestacion_brindada.agregar_error(
-                "No se encontró una prestación con código '#{codigo_de_prestacion}' y diagnóstico '#{diagnostico.nombre} (#{codigo_de_diagnostico})'"
+                "El código de diagnóstico no existe (cadena evaluada: '#{codigo_de_diagnostico}')"
               )
             end
           end

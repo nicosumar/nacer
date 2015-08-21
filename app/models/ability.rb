@@ -2,7 +2,7 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
+  def initialize(user, session)
     cannot :manage, :all
 
     if user.in_group? :administradores
@@ -126,11 +126,15 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :read, LiquidacionSumar
     end
 
     if user.in_group? :inscripcion_uad
       can :read, Afiliado
       can :manage, NovedadDelAfiliado
+      can :read, Efector, :unidad_de_alta_de_datos => { :id => UnidadDeAltaDeDatos.find_by_codigo!(session[:codigo_uad_actual]).id }
+      can :read, ConvenioDeGestionSumar, :efector => { :id => UnidadDeAltaDeDatos.find_by_codigo!(session[:codigo_uad_actual]).efectores.collect{|e| e.id} }
+      can :read, ConvenioDeAdministracionSumar, :efector => { :id => UnidadDeAltaDeDatos.find_by_codigo!(session[:codigo_uad_actual]).efectores.collect{|e| e.id} }
     end
 
     if user.in_group? :facturacion_uad
@@ -160,6 +164,7 @@ class Ability
       can :read, PrestacionAutorizada
       can :read, UnidadDeAltaDeDatos
       can :read, User
+      can :read, LiquidacionSumar
     end
 
     if user.in_group? :usuarios_uads_verificacion

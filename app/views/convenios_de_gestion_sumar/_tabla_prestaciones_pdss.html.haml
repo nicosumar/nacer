@@ -1,0 +1,26 @@
+- if prestaciones.any?{|p| p["autorizada"] == "t"}
+  %table.prestaciones_pdss
+    %thead
+      %tr
+        - if prestaciones.any?{|p| p["nosologia"].present?}
+          %th Nosología / Acciones preventivas
+        %th Tipo de prestación
+        %th Nombre de la prestación
+        %th Código
+        %th Área
+    %tbody
+      - prestaciones.each do |p|
+        - if p["autorizada"] == "t"
+          %tr
+            - if prestaciones.any?{|p| p["nosologia"].present?}
+              %td
+                - if p["nosologia"].nil?
+                  Con ref. a nosologías de este grupo
+                - else
+                  = p["nosologia"]
+            %td.centrado= p["tipo_de_prestacion"]
+            %td= p["nombre_de_prestacion"]
+            %td.centrado= p["codigo_de_prestacion"]
+            %td.centrado= (p["rural"] == "t" ? "Urbana/Rural" : "Urbana")
+- else
+  %p No existen prestaciones autorizadas para este grupo

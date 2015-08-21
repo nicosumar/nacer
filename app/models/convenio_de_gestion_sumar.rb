@@ -14,6 +14,7 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
   belongs_to :efector
   belongs_to :firmante, :class_name => "Referente"
   has_many :prestaciones_autorizadas, :as => :autorizante_al_alta
+  has_many :prestaciones_pdss_autorizadas, :as => :autorizante_al_alta
   has_many :addendas_sumar
 
   # Validaciones
@@ -41,4 +42,9 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
 
     return !error_de_fecha
   end
+
+  def prestaciones_pdss_autorizadas_decoradas
+    PrestacionPdssAutorizada.efector_y_fecha(self.efector_id, self.fecha_de_inicio)
+  end
+
 end

@@ -8,7 +8,6 @@ class PrestacionBrindada < ActiveRecord::Base
   # CAMBIADO POR UNA ASOCIACIÓN AL MODELO DE MÉTODOS DE VALIDACIÓN (LOS MÉTODOS DE VALIDACIÓN FALLADOS SE PERSISTEN A LA BB.DD.)
   # Advertencias generadas por las validaciones
   #attr_accessor :advertencias, :datos_reportables_incompletos
-  attr_reader :datos_reportables_asociados_attributes
 
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :cantidad_de_unidades, :clave_de_beneficiario, :cuasi_factura_id, :diagnostico_id, :efector_id
@@ -24,7 +23,7 @@ class PrestacionBrindada < ActiveRecord::Base
   belongs_to :diagnostico
   belongs_to :efector
   belongs_to :estado_de_la_prestacion
-  belongs_to :estado_de_la_prestacion_liquidada, :class_name => "EstadoDeLaPrestacion"
+  belongs_to :estado_de_la_prestacion_liquidada, class_name: "EstadoDeLaPrestacion"
   belongs_to :nomenclador
   belongs_to :prestacion
   belongs_to :creator, :class_name => "User"
@@ -59,6 +58,11 @@ class PrestacionBrindada < ActiveRecord::Base
   # Devuelve los registros filtrados de acuerdo con el ID de estado pasado como parámetro
   def self.con_estado(id_de_estado)
     where(:estado_de_la_prestacion_id => id_de_estado)
+  end
+
+  def self.vencidas
+    where(estado_de_la_prestacion_id: 11,
+          estado_de_la_prestacion_liquidada_id: 13)
   end
 
   #
@@ -385,6 +389,22 @@ class PrestacionBrindada < ActiveRecord::Base
     return true unless beneficiario.present?
 
     return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) < 28
+  end
+
+  def antes_del_mes?
+    beneficiario =
+      NovedadDelAfiliado.where(
+        :clave_de_beneficiario => clave_de_beneficiario,
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P", "I"]),
+        :tipo_de_novedad_id => TipoDeNovedad.where(:codigo => ["A", "M"])
+      ).first
+    if not beneficiario
+      beneficiario = Afiliado.find_by_clave_de_beneficiario(clave_de_beneficiario)
+    end
+
+    return true unless beneficiario.present?
+
+    return (beneficiario.edad_en_dias(fecha_de_la_prestacion) || 0) <= 30
   end
 
   def menor_de_un_anio?
@@ -805,8 +825,7 @@ class PrestacionBrindada < ActiveRecord::Base
                   "    estado_de_la_prestacion_liquidada_id = 13, \n"+
                   "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo};' \n"+
                   "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  'La prestación se encuentra vencida al periodo #{liquidacion.periodo.periodo} ;' \n"+
-                  "                                   END, \n"+
-                  "    updated_at = now() \n"+
+                  "                                   END \n"+
                   "FROM vista_global_de_prestaciones_brindadas vpb \n"+
                   "WHERE  vpb.fecha_de_la_prestacion < (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') -  #{vigencia_perstaciones})\n"+
                   "AND vpb.prestacion_id in (#{prestaciones_ids} ) \n"+
@@ -817,6 +836,72 @@ class PrestacionBrindada < ActiveRecord::Base
           })
     end
     #a.cmd_tuples
+  end
+
+  #
+  # Marca las prestaciones brindadas que no posean asignacion de precio para el efector
+  # que la brindo
+  # @param periodo [LiquidacionSumar] Liquidacion en la cual se estan venciendo las prestaciones
+  #
+  # @return [Fixnum] Cantidad de prestaciones vencidas
+  def self.marcar_prestaciones_sin_asignacion_de_precio(liquidacion)
+
+    cq = CustomQuery.buscar({
+        sql:  "SELECT DISTINCT vpb.esquema\n"+
+              "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+              " JOIN prestaciones p ON p.id = vpb.prestacion_id\n"+
+              " JOIN efectores e ON e.id = vpb.efector_id\n"+
+              "WHERE vpb.estado_de_la_prestacion_id IN (1, 2,3,7)\n"+
+              "AND p.area_de_prestacion_id is null\n"+
+              "AND not exists ( SELECT ap.id \n"+
+              "                   FROM asignaciones_de_precios ap \n"+
+              "                 WHERE ap.area_de_prestacion_id = e.area_de_prestacion_id\n"+
+              "                 AND vpb.prestacion_id = ap.prestacion_id \n"+
+              "                 AND ap.nomenclador_id =     \n"+
+              "                                        ( select id from nomencladores \n"+
+              "                                           where activo = 't' \n"+
+              "                                          and nomenclador_sumar = 't' \n"+
+              "                                          and (vpb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+              "                                          or  \n"+
+              "                                         (vpb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+              "                                         limit 1\n"+
+              "                                        )\n"+
+              "                )"
+      })
+    ActiveRecord::Base.transaction do
+      cq.each do |r|
+        ActiveRecord::Base.connection.schema_search_path = "#{r[:esquema]}, public"
+        puts "puso el esquema #{ActiveRecord::Base.connection.schema_search_path}"
+        upd = CustomQuery.ejecutar({
+            sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n"+
+                  "SET estado_de_la_prestacion_liquidada_id = 15, \n"+
+                  "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La Prestación no cuenta con asignacion de precios en este nomenclador #{liquidacion.periodo.periodo}' \n"+
+                  "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La Prestación no cuenta con asignacion de precios en este nomenclador #{liquidacion.periodo.periodo}') \n"+
+                  "                                   END \n"+
+                  "FROM vista_global_de_prestaciones_brindadas vpb\n"+
+                  " JOIN prestaciones p ON p.id = vpb.prestacion_id\n"+
+                  " JOIN efectores e ON e.id = vpb.efector_id\n"+
+                  "WHERE vpb.estado_de_la_prestacion_id IN (1, 2,3,7)\n"+
+                  "AND p.area_de_prestacion_id is null\n"+
+                  "AND not exists ( SELECT ap.id \n"+
+                  "                   FROM asignaciones_de_precios ap \n"+
+                  "                 WHERE ap.area_de_prestacion_id = e.area_de_prestacion_id\n"+
+                  "                 AND vpb.prestacion_id = ap.prestacion_id \n"+
+                  "                 AND ap.nomenclador_id =     \n"+
+                  "                                        ( select id from nomencladores \n"+
+                  "                                           where activo = 't' \n"+
+                  "                                          and nomenclador_sumar = 't' \n"+
+                  "                                          and (vpb.fecha_de_la_prestacion BETWEEN fecha_de_inicio and fecha_de_finalizacion\n"+
+                  "                                          or  \n"+
+                  "                                         (vpb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
+                  "                                         limit 1\n"+
+                  "                                        )\n"+
+                  "                )\n"+
+                  "and vpb.esquema = '#{r[:esquema]}'\n"+
+                  "AND #{r[:esquema]}.prestaciones_brindadas.id = vpb.id"
+          })
+      end
+    end # end transaction
   end
 
   #
@@ -854,7 +939,6 @@ class PrestacionBrindada < ActiveRecord::Base
                   "    observaciones_de_liquidacion = CASE WHEN #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion IS NULL THEN 'La prestación brindada al beneficiario no posee periodo de actividad al periodo de liquidación #{liquidacion.periodo.periodo}' \n"+
                   "                                        ELSE #{r[:esquema]}.prestaciones_brindadas.observaciones_de_liquidacion ||  (E' \\n La prestación brindada al beneficiario no posee periodo de actividad al periodo de liquidación #{liquidacion.periodo.periodo}') ,\n"+
                   "                                   END \n"+
-                  "    updated_at = now()\n"+
                   "FROM vista_global_de_prestaciones_brindadas vpb\n"+
                   " INNER JOIN     afiliados af ON (af.clave_de_beneficiario = vpb.clave_de_beneficiario) \n"+
                   "WHERE vpb.estado_de_la_prestacion_id IN (1,2,3,7)\n"+
@@ -889,13 +973,16 @@ class PrestacionBrindada < ActiveRecord::Base
     begin
       ActiveRecord::Base.transaction do
 
-       cq = CustomQuery.buscar({
-        sql:  "SELECT DISTINCT esquema\n"+
-              "FROM prestaciones_liquidadas\n"+
-              "WHERE liquidacion_id = #{liquidacion.id}"
-        })
+        cq = CustomQuery.buscar({
+         sql:  "SELECT DISTINCT esquema\n"+
+               "FROM prestaciones_liquidadas\n"+
+               "WHERE liquidacion_id = #{liquidacion.id}"
+         })
 
         cq.each do |r|
+
+          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Marcando prestaciones para el esquema #{r[:esquema]} - Liquidacion #{liquidacion.id} "
+
           upd = CustomQuery.ejecutar({
               sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n "+
                     "SET estado_de_la_prestacion_id = #{estado_aceptada_id}, \n "+
@@ -912,19 +999,14 @@ class PrestacionBrindada < ActiveRecord::Base
     rescue Exception => e
       raise "Ocurrio un problema: #{e.message}"
     end #end begin/rescue
+
   end #end method
 
-
   #
-
   # Revisa todas las prestaciones brindadas buscando prestaciones duplicadas en
-
   # base a que posean el mismo beneficiario, en la misma fecha, se haya realizado en
-
   # el mismo efector y sea la misma prestación
-
   #
-
   # @return [type] [description]
   def self.anular_prestaciones_duplicadas
 
@@ -950,7 +1032,6 @@ class PrestacionBrindada < ActiveRecord::Base
         })
 
       # Si hay alguna en estado 3, tomo esa
-
       aprobado = casos.find {|c| c[:estado_de_la_prestacion_id] == '3'}
       if aprobado.blank?
         # Si hay alguna en estado 7 (refacturado) y ninguna en 3, tomo esa
@@ -1439,5 +1520,18 @@ class PrestacionBrindada < ActiveRecord::Base
     end # resultado.rows.each
 
   end # def self.procesar_datos_externos
+
+  def prestaciones_liquidadas
+    esquema_actual = ActiveRecord::Base.connection.exec_query("SELECT current_schema();").rows[0][0]
+
+    # Devolvemos las prestaciones liquidadas asociadas con esta prestación brindada, o un
+    # ActiveRecord::Relation sin datos si el esquema actual es una UAD que no realiza facturación
+    uad = UnidadDeAltaDeDatos.find_by_codigo((esquema_actual.match(/uad_([0-9]{3})/) || [])[1])
+    if uad.present? && uad.facturacion
+      PrestacionLiquidada.where(:unidad_de_alta_de_datos_id => uad.id, :prestacion_brindada_id => self.id)
+    else
+      PrestacionLiquidada.where("'f'::boolean")
+    end
+  end #end ~ def prestaciones_liquidadas
 
 end#end class

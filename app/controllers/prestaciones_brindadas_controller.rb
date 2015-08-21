@@ -88,6 +88,12 @@ class PrestacionesBrindadasController < ApplicationController
             PrestacionBrindada.con_advertencias_visibles.paginate(:page => params[:page], :per_page => 20,
               :include => [:prestacion, :diagnostico], :order => "prestaciones_brindadas.updated_at DESC"
             )
+        # Para las prestaciones vencidas, devolver las brindadas cuyo estado de brindada sea 11 y de liquidacion 13 (vencidas)
+        elsif @estado_de_la_prestacion_id == 13
+          @prestaciones_brindadas = 
+            PrestacionBrindada.vencidas.paginate(:page => params[:page], :per_page => 20,
+              :include => [:prestacion, :diagnostico], :order => "prestaciones_brindadas.updated_at DESC"
+            )
         else
           @prestaciones_brindadas =
             PrestacionBrindada.con_estado(@estado_de_la_prestacion_id).paginate(:page => params[:page], :per_page => 20,

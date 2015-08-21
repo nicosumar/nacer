@@ -46,20 +46,23 @@
   
   %h3 Prestaciones que se autorizan a través esta adenda
   %div.field
+    -# raise '2'
     = f.select :prestacion_autorizada_alta_ids, |
-      options_for_select(@prestaciones_alta, @prestacion_autorizada_alta_ids), {}, |
+      grouped_options_for_select(@prestaciones_alta, @prestacion_autorizada_alta_ids), {}, |
       { |
         :multiple => true, :size => 10, |
-        :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" |
+        :class => "select2", |
+        :data  => {opciones: {closeOnSelect: false}} |
       } |
 
   %h3 Prestaciones que se dan de baja a través de esta adenda
   %div.field
     = f.select :prestacion_autorizada_baja_ids, |
-      options_for_select(@prestaciones_baja, @prestacion_autorizada_baja_ids), {}, |
+      grouped_options_for_select(@prestaciones_baja, @prestacion_autorizada_baja_ids), {}, |
       { |
         :multiple => true, :size => 10, |
-        :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" |
+        :class => "select2", |
+        :data  => {opciones: {closeOnSelect: false}} |
       } |
 
   %h3 Observaciones

@@ -362,7 +362,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
       return 3 if edad < 1
       return 4 if edad < 6
       return 5 if edad < 20
-      return 6 if sexo_id == Sexo.id_del_codigo("F") && edad < 64
+      return 6 if edad < 64
     end
 
     return nil
@@ -896,7 +896,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
               n5.codigo AS \"TutorAlfabetizacion\",
               n1.alfab_tutor_anios_ultimo_nivel AS \"TutorAlfabetAniosUltimoNivel\",
               n1.e_mail AS \"Email\",
-              n1.numero_de_celular AS \"NumeroCelular\",
+              REGEXP_REPLACE(LEFT(n1.numero_de_celular, 20), E'\\t', '', 'g') AS \"NumeroCelular\",
               n1.fecha_de_la_ultima_menstruacion AS \"FUM\",
               REGEXP_REPLACE(
                 (CASE
@@ -1022,6 +1022,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
       return GrupoPoblacional.find_by_codigo("C")
     elsif sexo.codigo == "F" && (20..64) === edad_en_anios(fecha_de_la_prestacion)
       return GrupoPoblacional.find_by_codigo("D")
+    elsif sexo.codigo == "M" && (20..64) === edad_en_anios(fecha_de_la_prestacion)
+      return GrupoPoblacional.find_by_codigo("E")
     end
 
   end

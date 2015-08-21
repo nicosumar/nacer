@@ -37,7 +37,7 @@ class LiquidacionInforme < ActiveRecord::Base
           # Si el efector no liquido prestaciones
           next if pliquidadas.size == 0
 
-          logger.warn "Creando informe para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} - Administrador: #{e.nombre}"
+          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando informe para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
           
           
           # Solo los efectores administradores o autoadministrados generan expediente
@@ -49,14 +49,14 @@ class LiquidacionInforme < ActiveRecord::Base
               expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} "]).first.id
             else
               expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} " +
-                                                            "AND expedientes_sumar.id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
+                                                            "AND id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
             end
           else
             if ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} "]).size == 1
               expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} "]).first.id
             else
               expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} " +
-                                                            "AND expedientes_sumar.id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
+                                                            "AND id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
             end
           end
 
@@ -111,35 +111,45 @@ class LiquidacionInforme < ActiveRecord::Base
                 " ELSE  aap.estado_de_la_prestacion_id\n"+
                 "END\n"+
                 "FROM  liquidaciones_informes li\n"+
-                " JOIN anexos_medicos_prestaciones amp ON amp.liquidacion_sumar_anexo_medico_id = li.liquidacion_sumar_anexo_medico_id\n"+
-                "LEFT JOIN anexos_administrativos_prestaciones aap ON amp.prestacion_liquidada_id = aap.prestacion_liquidada_id\n"+
+                "  JOIN anexos_medicos_prestaciones amp ON amp.liquidacion_sumar_anexo_medico_id = li.liquidacion_sumar_anexo_medico_id\n"+
+                "  LEFT JOIN anexos_administrativos_prestaciones aap ON amp.prestacion_liquidada_id = aap.prestacion_liquidada_id\n"+
                 "WHERE prestaciones_liquidadas.id = amp.prestacion_liquidada_id \n"+
                 "AND li.id = #{self.id}"
         })
 
-        esquemas = UnidadDeAltaDeDatos.joins(:efectores).merge(Efector.where(id: self.efector.id))
-        cq = CustomQuery.ejecutar ({
-          esquemas: esquemas,
-          sql:  "UPDATE prestaciones_brindadas \n "+
-                "   SET estado_de_la_prestacion_id = p.estado_de_la_prestacion_liquidada_id \n "+
-                "FROM prestaciones_liquidadas p \n "+
-                " JOIN anexos_medicos_prestaciones amp on amp.prestacion_liquidada_id = p.id \n"+
-                "WHERE p.efector_id in (select ef.id \n "+
-                "                                      FROM efectores ef \n "+
-                "                                         JOIN unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
-                "                                      WHERE 'uad_' ||  u.codigo = current_schema() )\n "+
-                "AND prestaciones_brindadas.id = p.prestacion_brindada_id\n"+  # filtro para el update
-                "AND  p.liquidacion_id = #{self.liquidacion_sumar.id} \n "+    # La liquidacion en la que se genero esta prestacion
-                "AND p.efector_id = #{self.efector.id}\n "                     # El efector al cual corresponde este informe de liquidacion
-          })
+        cq = CustomQuery.buscar({
+          sql:  "SELECT distinct pl.esquema\n"+
+                "FROM prestaciones_liquidadas pl \n"+
+                " JOIN liquidaciones_informes li on pl.liquidacion_id = li.liquidacion_sumar_id\n"+
+                " JOIN anexos_medicos_prestaciones amp ON amp.liquidacion_sumar_anexo_medico_id = li.liquidacion_sumar_anexo_medico_id\n"+
+                "  LEFT JOIN anexos_administrativos_prestaciones aap ON amp.prestacion_liquidada_id = aap.prestacion_liquidada_id\n"+
+                "WHERE pl.id = amp.prestacion_liquidada_id \n"+
+                "AND li.id = #{self.id}"
+         })
+
+        cq.each do |r|
+          raise ActiveRecord::Rollback, "No se encontraron esquemas para la actualizacion de prestaciones brindadas." if r[:esquema].blank?
+
+          upd = CustomQuery.ejecutar({
+              sql:  "UPDATE #{r[:esquema]}.prestaciones_brindadas \n "+
+                    "SET estado_de_la_prestacion_id = p.estado_de_la_prestacion_liquidada_id, \n "+
+                    "    updated_at = NOW()\n"+
+                    "FROM prestaciones_liquidadas p \n "+
+                    " JOIN anexos_medicos_prestaciones amp on amp.prestacion_liquidada_id = p.id \n"+
+                    "WHERE #{r[:esquema]}.prestaciones_brindadas.id = p.prestacion_brindada_id\n"+  # filtro para el update
+                    "AND p.liquidacion_id = #{self.liquidacion_sumar.id} \n "+    # La liquidacion en la que se genero esta prestacion
+                    "AND p.efector_id = #{self.efector.id}\n "+                     # El efector al cual corresponde este informe de liquidacion
+                    "AND p.esquema = '#{r[:esquema ]}'"
+            })
+        end #end each
 
         estado_cerrado = EstadoDelProceso.where(codigo: "B").first # Estado de finalizado y cerrado
 
         self.estado_del_proceso = estado_cerrado
         self.save
         
-      end
-    end
+      end #end transaction
+    end #end if
     return cq
   end
 

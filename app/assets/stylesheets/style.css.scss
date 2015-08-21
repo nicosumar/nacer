@@ -40,6 +40,24 @@ h1, h2, h3, h4 {
   clear: both;
 }
 
+.grupo_pdss {
+  padding: 0px 10px 10px 10px;
+  margin-bottom: 15px;
+  background: #9966CC;
+}
+
+.subgrupo_pdss {
+  padding: 0px 10px 10px 10px;
+  margin-bottom: 15px;
+  background: #0099FF;
+}
+
+.apartado_pdss {
+  padding: 5px 15px 5px 15px;
+  margin-bottom: 15px;
+  background: #0099FF;
+}
+
 .first-header {
   padding-top: 0;
 }
@@ -232,24 +250,30 @@ table {
   border-collapse: collapse;
   font-size: 12px;
   font-family: Arial, Helvetica, sans-serif;
-  text-align: left; }
+  text-align: left;
+  &.prestaciones_pdss {
+    background-color: #e0e0e0;
+    border: 1px solid #000000;
+    width: 100%;
+  }
+}
 
 
 table th {
   background: none repeat scroll 0 0 #333333;
-  border-bottom: 2px solid #FFFFFF;
-  border-top: 1px solid transparent;
+  border: 1px solid #000000;
   color: white;
   padding: 8px;
+  margin: 0px;
   text-align: center; }
 
 table tr {
+  border: 1px solid #000000;
 }
 
 table td {
   background: none repeat scroll 0 0 transparent;
-  border-bottom: 2px solid #FFFFFF;
-  border-top: 1px solid transparent;
+  border: 1px solid #000000;
   color: #1A1A1A;
   padding: 8px;
   &.centrado {
@@ -386,6 +410,10 @@ div.actions {
 
 input[type=submit] {
   margin-right: 20px;
+}
+
+.field_content ul {
+  padding-left: 15px;
 }
 
 div.field label {
@@ -525,7 +553,7 @@ div.field_with_warnings {
 .infobox-ajax-advertencia,
 .infobox-ajax-ok,
 .infobox-ajax-error {
-  border: none; 
+  border: none;
   padding: 15px;
   background-color: #000;
   border-radius: 5px;

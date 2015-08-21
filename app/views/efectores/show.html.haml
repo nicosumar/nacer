@@ -8,7 +8,7 @@
       = link_to "Modificar el efector", edit_efector_path(@efector)
     - if can? :read, Referente
       = link_to "Ver referentes", referentes_del_efector_path(@efector)
-    - if can?(:read, PrestacionAutorizada) && @efector.tiene_convenio?
+    - if can?(:read, @efector) && @efector.tiene_convenio?
       = link_to "Ver prestaciones autorizadas", prestaciones_autorizadas_del_efector_path(@efector)
 
 = render :partial => "shared/info"
@@ -44,7 +44,8 @@
     %div.field_content
       %span.field_name Convenio de gestión Sumar
       %span.field_value= @efector.convenio_de_gestion_sumar.numero
-      = link_to "Ver detalles del convenio", @efector.convenio_de_gestion_sumar
+      - if can? :read, @efector.convenio_de_gestion_sumar
+        = link_to "Ver detalles del convenio", @efector.convenio_de_gestion_sumar
     - if @efector.convenio_de_administracion_sumar
       %div.field_content
         %span.field_name Administrado por un tercero
@@ -52,11 +53,13 @@
       %div.field_content
         %span.field_name Convenio de administración Sumar
         %span.field_value= @efector.convenio_de_administracion_sumar.numero
-        = link_to "Ver detalles del convenio", @efector.convenio_de_administracion_sumar
+        - if can? :read, @efector.convenio_de_administracion_sumar
+          = link_to "Ver detalles del convenio", @efector.convenio_de_administracion_sumar
       %div.field_content
         %span.field_name Administrador
         %span.field_value= @efector.administrador_sumar.cuie.to_s + " - " + @efector.administrador_sumar.nombre_corto
-        = link_to "Ver detalles del efector", @efector.administrador_sumar
+        - if can? :read, @efector.administrador_sumar
+          = link_to "Ver detalles del efector", @efector.administrador_sumar
     - else
       %div.field_content
         %span.field_name Administrado por un tercero
@@ -162,7 +165,7 @@
     - else
       %span.field_value No
   %div.field_content
-    %span.field_name Efector de alto impacto
+    %span.field_name Efector priorizado
     - if @efector.alto_impacto
       %span.field_value Sí
     - else
@@ -195,105 +198,107 @@
         %span.field_name Habilitado
         %span.field_value No
 
-  %h3 Infraestructura
-  %div.field_content
-    %span.field_name Camas de internación
-    - if !@efector.camas_de_internacion.blank?
-      %span.field_value= @efector.camas_de_internacion
-    - else
-      %span.field_empty No se ha ingresado la cantidad de camas de internación
-  %div.field_content
-    %span.field_name Ambientes
-    - if !@efector.ambientes.blank?
-      %span.field_value= @efector.ambientes
-    - else
-      %span.field_empty No se ha ingresado la cantidad de ambientes
+  -#
+    %h3 Infraestructura
+    %div.field_content
+      %span.field_name Camas de internación
+      - if !@efector.camas_de_internacion.blank?
+        %span.field_value= @efector.camas_de_internacion
+      - else
+        %span.field_empty No se ha ingresado la cantidad de camas de internación
+    %div.field_content
+      %span.field_name Ambientes
+      - if !@efector.ambientes.blank?
+        %span.field_value= @efector.ambientes
+      - else
+        %span.field_empty No se ha ingresado la cantidad de ambientes
 
-  %h3 Datos de facturación
-  %div.field_content
-    %span.field_name CUIT
-    - if !@efector.cuit.blank?
-      %span.field_value= @efector.cuit
-    - else
-      %span.field_empty No se ha ingresado el número de CUIT
-  %div.field_content
-    %span.field_name Condición ante el IVA
-    - if !@efector.condicion_iva.blank?
-      %span.field_value= @efector.condicion_iva
-    - else
-      %span.field_empty No se ha ingresado la condición ante el IVA
-  %div.field_content
-    %span.field_name Fecha de inicio de actividades
-    - if !@efector.fecha_inicio_de_actividades.blank?
-      %span.field_value= @efector.fecha_inicio_de_actividades.strftime("%Y-%m-%d")
-    - else
-      %span.field_empty No se ha ingresado la fecha de inicio de actividades
-  %div.field_content
-    %span.field_name Condición ante II.BB.
-    - if !@efector.condicion_iibb.blank?
-      %span.field_value= @efector.condicion_iibb
-    - else
-      %span.field_empty No se ha ingresado la condición ante II.BB.
-  %div.field_content
-    %span.field_name Datos bancarios
-    - if !@efector.datos_bancarios.blank?
-      %span.field_value= @efector.datos_bancarios
-    - else
-      %span.field_empty No se han ingresado los datos bancarios
+  - if current_user.in_group? [:facturacion, :convenios, :auditoria_control, :contabilidad, :liquidacion_uad]
+    %h3 Datos de facturación
+    %div.field_content
+      %span.field_name CUIT
+      - if !@efector.cuit.blank?
+        %span.field_value= @efector.cuit
+      - else
+        %span.field_empty No se ha ingresado el número de CUIT
+    %div.field_content
+      %span.field_name Condición ante el IVA
+      - if !@efector.condicion_iva.blank?
+        %span.field_value= @efector.condicion_iva
+      - else
+        %span.field_empty No se ha ingresado la condición ante el IVA
+    %div.field_content
+      %span.field_name Fecha de inicio de actividades
+      - if !@efector.fecha_inicio_de_actividades.blank?
+        %span.field_value= @efector.fecha_inicio_de_actividades.strftime("%Y-%m-%d")
+      - else
+        %span.field_empty No se ha ingresado la fecha de inicio de actividades
+    %div.field_content
+      %span.field_name Condición ante II.BB.
+      - if !@efector.condicion_iibb.blank?
+        %span.field_value= @efector.condicion_iibb
+      - else
+        %span.field_empty No se ha ingresado la condición ante II.BB.
+    %div.field_content
+      %span.field_name Datos bancarios
+      - if !@efector.datos_bancarios.blank?
+        %span.field_value= @efector.datos_bancarios
+      - else
+        %span.field_empty No se han ingresado los datos bancarios
 
-  %h3 Cuentas bancarias
+    %h3 Cuentas bancarias
 
-  %h4 Cuenta bancaria principal
-  %div.field_content
-    %span.field_name Banco
-    - if !@efector.banco_cuenta_principal.blank?
-      %span.field_value= @efector.banco_cuenta_principal
-    - else
-      %span.field_empty No se ha ingresado el banco al que pertenece la cuenta principal
-  %div.field_content
-    %span.field_name Número de cuenta
-    - if !@efector.numero_de_cuenta_principal.blank?
-      %span.field_value= @efector.numero_de_cuenta_principal
-    - else
-      %span.field_empty No se ha ingresado el número de la cuenta principal
-  %div.field_content
-    %span.field_name Denominación de cuenta
-    - if !@efector.denominacion_cuenta_principal.blank?
-      %span.field_value= @efector.denominacion_cuenta_principal
-    - else
-      %span.field_empty No se ha ingresado la denominación de la cuenta principal
-  %div.field_content
-    %span.field_name Sucursal
-    - if !@efector.sucursal_cuenta_principal.blank?
-      %span.field_value= @efector.sucursal_cuenta_principal
-    - else
-      %span.field_empty No se ha ingresado la sucursal a la que pertenece la cuenta principal
+    %h4 Cuenta bancaria principal
+    %div.field_content
+      %span.field_name Banco
+      - if !@efector.banco_cuenta_principal.blank?
+        %span.field_value= @efector.banco_cuenta_principal
+      - else
+        %span.field_empty No se ha ingresado el banco al que pertenece la cuenta principal
+    %div.field_content
+      %span.field_name Número de cuenta
+      - if !@efector.numero_de_cuenta_principal.blank?
+        %span.field_value= @efector.numero_de_cuenta_principal
+      - else
+        %span.field_empty No se ha ingresado el número de la cuenta principal
+    %div.field_content
+      %span.field_name Denominación de cuenta
+      - if !@efector.denominacion_cuenta_principal.blank?
+        %span.field_value= @efector.denominacion_cuenta_principal
+      - else
+        %span.field_empty No se ha ingresado la denominación de la cuenta principal
+    %div.field_content
+      %span.field_name Sucursal
+      - if !@efector.sucursal_cuenta_principal.blank?
+        %span.field_value= @efector.sucursal_cuenta_principal
+      - else
+        %span.field_empty No se ha ingresado la sucursal a la que pertenece la cuenta principal
 
-  %h4 Cuenta bancaria secundaria
-  %div.field_content
-    %span.field_name Banco
-    - if !@efector.banco_cuenta_secundaria.blank?
-      %span.field_value= @efector.banco_cuenta_secundaria
-    - else
-      %span.field_empty No se ha ingresado el banco al que pertenece la cuenta secundaria
-  %div.field_content
-    %span.field_name Número de cuenta
-    - if !@efector.numero_de_cuenta_secundaria.blank?
-      %span.field_value= @efector.numero_de_cuenta_secundaria
-    - else
-      %span.field_empty No se ha ingresado el número de la cuenta secundaria
-  %div.field_content
-    %span.field_name Denominación de cuenta
-    - if !@efector.denominacion_cuenta_secundaria.blank?
-      %span.field_value= @efector.denominacion_cuenta_secundaria
-    - else
-      %span.field_empty No se ha ingresado la denominación de la cuenta secundaria
-  %div.field_content
-    %span.field_name Sucursal
-    - if !@efector.sucursal_cuenta_secundaria.blank?
-      %span.field_value= @efector.sucursal_cuenta_secundaria
-    - else
-      %span.field_empty No se ha ingresado la sucursal a la que pertenece la cuenta secundaria
+    %h4 Cuenta bancaria secundaria
+    %div.field_content
+      %span.field_name Banco
+      - if !@efector.banco_cuenta_secundaria.blank?
+        %span.field_value= @efector.banco_cuenta_secundaria
+      - else
+        %span.field_empty No se ha ingresado el banco al que pertenece la cuenta secundaria
+    %div.field_content
+      %span.field_name Número de cuenta
+      - if !@efector.numero_de_cuenta_secundaria.blank?
+        %span.field_value= @efector.numero_de_cuenta_secundaria
+      - else
+        %span.field_empty No se ha ingresado el número de la cuenta secundaria
+    %div.field_content
+      %span.field_name Denominación de cuenta
+      - if !@efector.denominacion_cuenta_secundaria.blank?
+        %span.field_value= @efector.denominacion_cuenta_secundaria
+      - else
+        %span.field_empty No se ha ingresado la denominación de la cuenta secundaria
+    %div.field_content
+      %span.field_name Sucursal
+      - if !@efector.sucursal_cuenta_secundaria.blank?
+        %span.field_value= @efector.sucursal_cuenta_secundaria
+      - else
+        %span.field_empty No se ha ingresado la sucursal a la que pertenece la cuenta secundaria
 
   %h3 Observaciones
   %div.field_content

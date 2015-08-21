@@ -42,6 +42,9 @@ gem 'thinreports-rails'
 gem 'axlsx'
 gem 'axlsx_rails'
 
+# Claves primarias compuestas
+gem 'composite_primary_keys', '~> 5.0.0'
+
 # UI Gems
 gem 'cocoon', '>= 1.2'
 gem 'wice_grid', '>=3.4.0'

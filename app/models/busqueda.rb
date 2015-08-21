@@ -38,13 +38,13 @@ class Busqueda < ActiveRecord::Base
       # Crear la vista temporal con los objetos coincidentes de la tabla de búsquedas
       connection.execute "
         CREATE OR REPLACE TEMPORARY VIEW objetos_encontrados AS
-          SELECT id, modelo_type
+          SELECT id, modelo_type, modelo_id
             FROM busquedas
             WHERE
               \'#{tsquery}\'::tsquery @@ vector_fts
               AND modelo_type IN (\'#{modelos_a_buscar.collect{ |m| m.to_s.singularize.camelize }.join("', '")}\')
           UNION
-          SELECT id, modelo_type
+          SELECT id, modelo_type, modelo_id
             FROM busquedas_locales
             WHERE
               \'#{tsquery}\'::tsquery @@ vector_fts

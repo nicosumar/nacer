@@ -17,7 +17,7 @@ class AnexoMedicoPrestacion < ActiveRecord::Base
         WHERE
           pi.prestacion_id IN (SELECT id FROM prestaciones WHERE codigo IN ('ITQ001', 'ITQ002'))
           AND li.estado_del_proceso_id IN (2)
-          AND lsam.estado_del_proceso_id IN (2)
+          AND lsam.estado_del_proceso_id IN (2, 3)
           AND pl.fecha_de_la_prestacion >= '2014-07-01';
     ")
   end
