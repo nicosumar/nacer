@@ -1057,7 +1057,7 @@ class CrearNuevoNomencladorSumarJulio2015 < ActiveRecord::Migration
           ('6', '593', '150.0000', '0.0000', now(), now(), '1', NULL),
           ('6', '593', '300.0000', '0.0000', now(), now(), '2', NULL),
           ('6', '607', '500.0000', '0.0000', now(), now(), '1', NULL),
-          ('6', '607', '100.0000', '0.0000', now(), now(), '2', NULL);        
+          ('6', '607', '500.0000', '0.0000', now(), now(), '2', NULL);        
     SQL
   end
 
