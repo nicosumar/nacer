@@ -16,7 +16,7 @@ class Diagnostico < ActiveRecord::Base
   end
   
   def nombre_y_codigo
-     nombre_corto + " - " + codigo
+     codigo + " - " + nombre_corto 
   end
 
 end

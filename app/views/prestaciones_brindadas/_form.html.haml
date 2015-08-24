@@ -49,50 +49,60 @@
 
   #prestacion.field
     - if @prestacion_brindada.persisted?
-      = f.hidden_field :prestacion_id, :value => @prestacion_brindada.prestacion_id
+      =# f.hidden_field :prestacion_id, :value => @prestacion_brindada.prestacion_id
       %div.field_content
         %span.field_name Prestación*
         %span.field_value= @prestacion_brindada.prestacion.nombre
     - else
       = f.label :prestacion_id, "Prestación*"
-      = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
-        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione una prestación...", |
-        :style => "width: 600px;"} |
+      = f.hidden_field :prestacion_id, class: 'select2 ajax', data: { source: prestaciones_autorizadas_path, coleccion: 'prestaciones', parametros_adicionales: "clave_de_beneficiario: '#{@prestacion_brindada.clave_de_beneficiario}', fecha_de_la_prestacion: '#{@prestacion_brindada.fecha_de_la_prestacion}', efector_id: '#{@prestacion_brindada.efector.id}'",funcion_de_formato_seleccionada: "maquetaPrestacionesSeleccionadas", funcion_de_formato: "maquetaPrestaciones", opciones: {closeOnSelect: true, dropdownAutoWidth: true, minimumInputLength: 2, width: '60%', placeholder: 'Seleccione una prestación...' } }
+  
+  #diagnostico.field
+    = f.label :diagnostico_id, "Diagnóstico*"
+    = f.hidden_field :diagnostico_id, class: 'select2 ajax dependiente', data: { source: diagnosticos_por_prestacion_path, coleccion: 'diagnosticos', id_padre: "prestacion_brindada_prestacion_id", funcion_de_formato_seleccionada: "maquetaDiagnosticosSeleccionados", funcion_de_formato: "maquetaDiagnosticos", opciones: {closeOnSelect: true, dropdownAutoWidth: true, minimumInputLength: 0, width: '60%', placeholder: 'Seleccione un diagnostico...' } }
 
-  -# Modificación porque 'chosen' establece el width en 0 cuando un div superior tiene la propiedad display en 'none'.
-  - if @diagnosticos.size > 0
-    #diagnostico.field
-      - if @diagnosticos.size == 1
-        = f.hidden_field :diagnostico_id, :value => @diagnosticos.first[1]
-        %div.field_content
-          %span.field_name Diagnóstico*
-          %span.field_value= @diagnosticos.first[0]
-      - else
-        = f.label :diagnostico_id, "Diagnóstico*"
-        = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
-          {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione un diagnóstico...", |
-          :style => "width: 600px;"} |
-  - else
-    #diagnostico.field
-
-  - if @prestacion_brindada.prestacion && !@prestacion_brindada.prestacion.comunitaria
-    #historia_clinica.field
-      = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
-      = f.text_field :historia_clinica, {:size => 15}
-  - else
-    #historia_clinica.field{:style => "display: none;"}
-      = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
-      = f.text_field :historia_clinica, {:size => 15}
-
-  #cantidad_de_unidades.field{:style => "display: none;"}
-    = f.label :cantidad_de_unidades, "Cantidad de unidades*"
-    = f.text_field :cantidad_de_unidades, {:size => 6}
+  #historia_clinica.field
+  
+  #cantidad_de_unidades.field
 
   #es_catastrofica.field{:style => "display: none;"}
-    = f.label :es_catastrofica, "Es catastrófica*"
-    = f.check_box :es_catastrofica
 
   #atributos_reportables
+
+  -# Modificación porque 'chosen' establece el width en 0 cuando un div superior tiene la propiedad display en 'none'.
+  / - if @diagnosticos.size > 0
+  /   #diagnostico.field
+  /     - if @diagnosticos.size == 1
+  /       = f.hidden_field :diagnostico_id, :value => @diagnosticos.first[1]
+  /       %div.field_content
+  /         %span.field_name Diagnóstico*
+  /         %span.field_value= @diagnosticos.first[0]
+  /     - else
+  /       = f.label :diagnostico_id, "Diagnóstico*"
+  /       = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
+  /         {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione un diagnóstico...", |
+  /         :style => "width: 600px;"} |
+  /- else
+  /  #diagnostico.field
+
+  / - if @prestacion_brindada.prestacion && !@prestacion_brindada.prestacion.comunitaria
+  /   #historia_clinica.field
+  /     = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+  /     = f.text_field :historia_clinica, {:size => 15}
+  / - else
+  /   #historia_clinica.field{:style => "display: none;"}
+  /     = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+  /     = f.text_field :historia_clinica, {:size => 15}
+
+  / #cantidad_de_unidades.field{:style => "display: none;"}
+  /   = f.label :cantidad_de_unidades, "Cantidad de unidades*"
+  /   = f.text_field :cantidad_de_unidades, {:size => 6}
+
+  / #es_catastrofica.field{:style => "display: none;"}
+  /   = f.label :es_catastrofica, "Es catastrófica*"
+  /   = f.check_box :es_catastrofica
+
+  #atributos_reportables2
     - if @prestacion_brindada.persisted? && @prestacion_brindada.datos_reportables_asociados.size > 0
       %h3 Atributos reportables
       -# @prestacion_brindada.datos_reportables_asociados.order(:id).each_with_index do |dra, i|

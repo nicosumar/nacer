@@ -21,11 +21,13 @@ class ConsolidadoSumar < ActiveRecord::Base
           # Busco el administrador
           if e.es_administrado? 
             administrador = e.administrador_sumar
+          elsif e.es_autoadministrado?
+            next
           else 
             administrador = e
           end
 
-          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando Consolidado para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
+          loagger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando Consolidado para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
           
           # Verifico que no haya generado anteriormente el consolidado de este efector administrador
           c = ConsolidadoSumar.where(efector_id: administrador.id, liquidacion_sumar_id: liquidacion_sumar.id)
