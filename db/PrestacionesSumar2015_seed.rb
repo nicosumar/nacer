@@ -4791,7 +4791,38 @@ ActiveRecord::Base.transaction do
       fecha_de_finalizacion: nil
     ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
 
+  # Desdoblar la prestación IMV013 con id 265, modificando la descripción y creando otra para el puerperio
+  prestacion = Prestacion.find(265)
+  prestacion.update_attributes!({nombre: "Dosis aplicada de vacuna antigripal en el embarazo"})
 
+  prestacion = Prestacion.create!({
+    # id: 884,
+    :codigo => "IMV013",
+    :objeto_de_la_prestacion_id => ObjetoDeLaPrestacion.id_del_codigo!("V013"),
+    :nombre => "Dosis aplicada de vacuna antigripal en el puerperio",
+    :otorga_cobertura => true,
+    :unidad_de_medida_id => um_unitaria.id, :created_at => ahora, :updated_at => ahora, :activa => true
+  })
+  prestacion.sexos << sexo_femenino
+  prestacion.grupos_poblacionales << [adolescentes, mujeres_20_a_64]
+  prestacion.diagnosticos << Diagnostico.find_by_codigo!("A98")
+  CantidadDePrestacionesPorPeriodo.create!({
+    prestacion_id: prestacion.id,
+    cantidad_maxima: 2,
+    periodo: "1.year"
+  })
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 2.0000,
+    :adicional_por_prestacion => 0.0000,
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  AsignacionDePrecios.create!({
+    :precio_por_unidad => 4.0000,
+    :adicional_por_prestacion => 0.0000,
+    :area_de_prestacion_id => AreaDePrestacion.id_del_codigo!("R"),
+    :nomenclador_id => nomenclador_sumar.id, :prestacion_id => prestacion.id, :created_at => ahora, :updated_at => ahora
+  })
+  prestacion.metodos_de_validacion << MetodoDeValidacion.find(15)
 
 
   ##### AÑADIR PRESTACIONES DE FLAP #####
@@ -4884,11 +4915,25 @@ ActiveRecord::Base.transaction do
     addenda.updater_id = 1
     addenda.save
 
-    # Verificar si tenemos que adendar (añadir) la prestación de inmunización en el embarazo
-    if convenios_con_inmunizaciones_de_embarazo_autorizadas.member?(cgs.id) && PrestacionAutorizada.where(efector_id: cgs.efector_id, prestacion_id: 764).size == 0
+    # Verificar si tenemos que adendar (añadir) las prestaciones de inmunización en el embarazo
+    if convenios_con_inmunizaciones_de_embarazo_autorizadas.member?(cgs.id)
+      if PrestacionAutorizada.where(efector_id: cgs.efector_id, prestacion_id: 764).size == 0
+        PrestacionAutorizada.create!({
+            efector_id: cgs.efector_id,
+            prestacion_id: 764,
+            fecha_de_inicio: fecha_de_inicio_nueva,
+            autorizante_al_alta_id: addenda.id,
+            autorizante_al_alta_type: "AddendaSumar",
+            fecha_de_finalizacion: nil,
+            created_at: ahora,
+            updated_at: ahora,
+            creator_id: 1,
+            updater_id: 1
+          })
+      end
       PrestacionAutorizada.create!({
           efector_id: cgs.efector_id,
-          prestacion_id: 764,
+          prestacion_id: 884,
           fecha_de_inicio: fecha_de_inicio_nueva,
           autorizante_al_alta_id: addenda.id,
           autorizante_al_alta_type: "AddendaSumar",
@@ -4897,7 +4942,7 @@ ActiveRecord::Base.transaction do
           updated_at: ahora,
           creator_id: 1,
           updater_id: 1
-        })
+        })      
     end
 
     # Verificar si tenemos que adendar (añadir) la prestación de inmunización contra neumococo

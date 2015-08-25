@@ -1112,7 +1112,7 @@ class PrestacionBrindada < ActiveRecord::Base
     :dato_reportable_1_id => {
       :etiqueta => "Dato reportable 1 (ID)",
       :patron_de_validacion => /[1-9][0-9]*|^$/, # ID (entero), o en blanco
-      :obtener => lambda {|cadena| begin DatoReportable.find(cadena.strip.to_i rescue nil end}
+      :obtener => lambda {|cadena| begin DatoReportable.find(cadena.strip.to_i) rescue nil end}
     },
     :dato_reportable_1_valor => {
       :etiqueta => "Dato reportable 1 (valor)",
