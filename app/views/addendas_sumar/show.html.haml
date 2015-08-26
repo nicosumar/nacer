@@ -6,6 +6,7 @@
   - if can? :update, @addenda
     #action-links
       = link_to "Modificar la adenda", edit_addenda_sumar_path(@addenda)
+      = link_to "Generar documento", addenda_sumar_path(@addenda, :format => :odt)
 
 = render :partial => "shared/info"
 
