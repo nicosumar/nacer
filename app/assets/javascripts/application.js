@@ -35,8 +35,14 @@ function JSONize(str) {
 }
 
 //TODO: Para browsers mas viejos usar "void 0" en lugar de la keyword undefined. Testearlo despues
-$(document).ready(function() {
-  $('.select2').each(function(i, e){
+function generar_select2(dom_id){
+  var selector = "";
+  if(dom_id == undefined)
+    selector = '.select2';
+  else
+    selector = '#' + dom_id;
+  
+  $(selector).each(function(i, e){
     var select = $(e);
     options = {
       minimumInputLength: (select.data('caracteresminimos') == undefined) ? '0' : select.data('caracteresminimos'),
@@ -231,11 +237,12 @@ $(document).ready(function() {
         }
       });
     }
-  })    
-});
+  })
+}
 
 //Usar la clase "jquery_fecha" para cambiar un input text a jquery con calendar
 $(document).ready(function() {
+  generar_select2();
   $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true }); 
 
   $(".solo_numeros").on("keypress keyup blur",function (event) {

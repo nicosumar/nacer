@@ -1,11 +1,44 @@
+var refrescar = true;
 $(document).ready(function() {
-  $('#prestacion_brindada_prestacion_id').on("select2:select", function (e) { 
-    alert("alert!!!");
-  });
+
+  $('#prestacion_brindada_prestacion_id').on("select2-removed", function(e) { 
+    $('#historia_clinica').empty();
+    $('#cantidad_de_unidades').empty();
+    $('#diagnostico').empty();
+    $('#atributos_reportables').empty();
+  })
 
   $('#prestacion_brindada_prestacion_id').on("change", function (e) {
     prestacion = $("#prestacion_brindada_prestacion_id").select2('data');
-    datos_reportables = prestacion.datos_reportables;
+    if(prestacion == null )
+      return;
+    else
+      datos_reportables = prestacion.datos_reportables;
+
+    //#diagnostico.field
+    div_diag = $('#diagnostico').empty();
+    var diag_html = "";
+    if(prestacion.diagnosticos.length == 1){
+      diag_html += '<input id="prestacion_brindada_diagnostico_id" name="prestacion_brindada[diagnostico_id]" type="hidden" value="'+prestacion.diagnosticos[0].id +'">';
+      diag_html += '<div class="field_content">';
+      diag_html += '  <span class="field_name">Diagnóstico*</span>';
+      diag_html += '  <span class="field_value">'+ prestacion.diagnosticos[0].nombre +'</span>';
+      diag_html += '</div>';
+      div_diag.append(diag_html);
+    }
+    else
+    {
+      diag_html += '<label for="prestacion_brindada_diagnostico_id">Diagnóstico*</label>';
+      diag_html += '<select id="prestacion_brindada_diagnostico_id" name="prestacion_brindada[diagnostico_id]"></select>';
+      div_diag.append(diag_html);
+      for (var j = 0; j < prestacion.diagnosticos.length; j++) {
+        $("#prestacion_brindada_diagnostico_id").append($('<option>', { 
+              value: prestacion.diagnosticos[j].id,
+              text : prestacion.diagnosticos[j].nombre
+          }));
+      };
+      $("#prestacion_brindada_diagnostico_id").chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
+    }
 
     //#historia_clinica.field
     div_hc = $('#historia_clinica').empty();
@@ -17,83 +50,83 @@ $(document).ready(function() {
     //#cantidad_de_unidades.field
     div_cantidad_de_unidades = $('#cantidad_de_unidades').empty();
     if (parseInt(prestacion.unidad_de_medida_max) > 1 ) {
+      div_cantidad_de_unidades.css('display', 'inline-block');
+      div_cantidad_de_unidades.append('<label for="prestacion_brindada_cantidad_de_unidades">'+prestacion.unidad_de_medida_nombre+'*</label>');
+      div_cantidad_de_unidades.append('<input id="prestacion_brindada_cantidad_de_unidades" name="prestacion_brindada[cantidad_de_unidades]" size="6" type="text">');
+    }
+    else{
+      div_cantidad_de_unidades.css('display', 'none');
       div_cantidad_de_unidades.append('<input id="prestacion_brindada_cantidad_de_unidades" name="prestacion_brindada[cantidad_de_unidades]" size="6" type="text" value="1.0">');
-    };
-    
+    }
+
     //#atributos_reportables
+    div_atributos = $('#atributos_reportables').empty();
     if (datos_reportables.length > 0) {
-      div_atributos = $('#atributos_reportables').empty();
       div_atributos.append('<h3>Atributos Reportables</h3>');
       
-      for (var i = datos_reportables.length - 1; i >= 0; i--) {
-    //       /*$.each(f.informes_filtros, function(indice, ifiltro){
-    //         if(ifiltro.informe_filtro_validador_ui.tipo == "LOV")
-    //         {
-    //           $( "#filtros" ).append('<label for="reporte_parametros'+ifiltro.posicion+'">'+ifiltro.nombre+'</label>  ');
-    //           $( "#filtros" ).append('<select id="reporte_parametros_'+ifiltro.posicion+'" name="reporte[parametros]['+ifiltro.posicion+']"></select><br>');
-    //         }*/
+      for (var i = 0; i < datos_reportables.length; i++) {
         var div_padre;
         // Me fijo si el atributo corresponde a algun grupo
         if (datos_reportables[i].nombre_de_grupo.length > 0 ) {
           // Si corresponde, busco si ya esta creado
-          div_grupo = $("#titulo_de_grupo_"+ datos_reportables[i].nombre_de_grupo.substring(0,2));
+          div_grupo = $("#titulo_de_grupo_"+ datos_reportables[i].codigo_de_grupo);
           if ( div_grupo.length == 0 ) {
             //No existe, creo el div
-            div_atributos.append('<div id="titulo_de_grupo_'+ datos_reportables[i].nombre_de_grupo.substring(0,2) + '"><h4>'+ datos_reportables[i].nombre_de_grupo +'</h4></div>');
-            div_padre = $("#titulo_de_grupo_"+ datos_reportables[i].nombre_de_grupo.substring(0,2));
+            div_atributos.append('<div id="titulo_de_grupo_'+ datos_reportables[i].codigo_de_grupo + '"><h4>'+ datos_reportables[i].nombre_de_grupo +'</h4></div>');
+            div_padre = $("#titulo_de_grupo_"+ datos_reportables[i].codigo_de_grupo);
           }
           else
            div_padre = div_grupo;
         } 
-        else
-        {
-          // Si no corresponde a ningun grupo, lo pongo a la bartola
+        else // Si no corresponde a ningun grupo, lo pongo a la bartola
           div_padre = div_atributos;
-        };
-        
+
+        //Nombre y id de dato reportable requerido
+        id_dato_reportable_requerido = "prestacion_brindada_datos_reportables_asociados_attributes_" + i.toString() + "_dato_reportable_requerido_id";
+        nombre_dato_reportable_requerido = "prestacion_brindada[datos_reportables_asociados_attributes][" + i.toString() + "][dato_reportable_requerido_id]";
+
+        //Nombre y id de dato reportable asociado
         id_html = "prestacion_brindada_datos_reportables_asociados_attributes_" + i.toString() + "_valor_" + datos_reportables[i].tipo;
-        
         nombre_html = "prestacion_brindada[datos_reportables_asociados_attributes][" + i.toString() + "][valor_"+ datos_reportables[i].tipo +"]";
-        
-        div_field_ini = '<div class="field">';
-        div_field_fin = '</div>';
-        
-        div_padre.append( div_field_ini + '<label for="'+id_html+'">'+ datos_reportables[i].nombre +'</label>  ');
+
+        var html_campo = "";
+        html_campo +='<input id="'+id_dato_reportable_requerido+'" name="'+nombre_dato_reportable_requerido+'" type="hidden" value="'+datos_reportables[i].dato_reportable_id+'">';
+        html_campo += '<div class="field">';
+        html_campo += '  <label for="'+id_html+'">'+ datos_reportables[i].nombre +'</label>';
+
         if (datos_reportables[i].enumerable) {
-    
-          div_padre.append('<select id="'+ id_html+'" name="'+ nombre_html+'"></select>');
-          
-          for (var j = 0; i <= datos_reportables[i].valores.length - 1; j++) {
-            $("#"+id_html).append($('<option>', { 
-                  value: datos_reportables[i].valores[0],
-                  text : datos_reportables[i].valores[1]
-              }));
-          };
-          div_padre.append(div_field_fin);
+          html_campo += '<select id="'+ id_html+'" name="'+ nombre_html+'" class="multi_select" style="width: 600px;" data-placeholder="Seleccione una opción...">';
+          html_campo += '<option value="" selected></option>'
+          for (var j = 0; j <= datos_reportables[i].valores.length - 1; j++) 
+            html_campo += '<option value="'+datos_reportables[i].valores[j].id+'">'+datos_reportables[i].valores[j].nombre+'</option>';
+          html_campo += '</select>';
         }
         else
         {
           switch(datos_reportables[i].tipo){
             case "integer":
-            div_padre.append('<input type="text" id="'+ id_html+'" name="'+ nombre_html +'" class="solo_numeros"><br>');
+            html_campo += '<input type="text" id="'+ id_html+'" name="'+ nombre_html +'" class="solo_numeros">';
             break;
    
             case "big_decimal":
-            div_padre.append('<input type="text" id="'+ id_html+'" name="'+ nombre_html +'"><br>');
+            html_campo += '<input type="text" id="'+ id_html+'" name="'+ nombre_html +'">';
             break;
 
             case "string":
-            div_padre.append('<input type="text" id="'+ id_html+'" name="'+ nombre_html +'"><br>')
-            $("#"+id_html).autoGrowInput({comfortZone: 6, maxWidth: 15});
+            html_campo += '<input type="text" id="'+ id_html+'" name="'+ nombre_html +'">';
             break;
 
             case "date":
-            div_padre.append('<input type="text" id="'+ id_html+'" name="'+ nombre_html +'" class="jquery_fecha"><br>');
+            html_campo += '<input type="text" id="'+ id_html+'" name="'+ nombre_html +'" class="jquery_fecha">';
             break;
           }
         }
-        div_padre.append(div_field_fin);
-      }
+        //div_padre.append(div_field_fin);
+        html_campo += "</div>";
+        div_padre.append(html_campo);
+      } //end for
+      //ejecuto los validadores para los campos creados
+
       $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true }); 
       $(".solo_numeros").on("keypress keyup blur",function (event) {
         $(this).val($(this).val().replace(/[^0-9\.]/g,''));
@@ -101,33 +134,10 @@ $(document).ready(function() {
         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57) && event.which != 8) 
           event.preventDefault();
       });
+      $(".multi_select").chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
     };
-
-  /*  enumerable: false
-nombre_de_grupo: "Detalle de la internación"
-orden: 1
-tipo: "integer"*/
-    
-
-  //   }
-  //   // body...
-  //    alert(self);
-  //    // prestacion_brindada_datos_reportables_asociados_attributes_0_valor_big_decimal
-     
-  //    // prestacion_brindada_datos_reportables_asociados_attributes_1_valor_integer
-
-  //    // prestacion_brindada[datos_reportables_asociados_attributes][0][valor_integer]
-     
-  //    // prestacion_brindada_datos_reportables_asociados_attributes_2_valor_date
-  //    // prestacion_brindada_datos_reportables_asociados_attributes_3_valor_string
-
-  //    //tiene asoc
-  //    // prestacion_brindada_datos_reportables_asociados_attributes_4_valor_integer
-  //     // Access to full data
-  //     //console.log($(this).select2('data'));
-  
   });
-
+  
 });
 
 function maquetaPrestaciones(prestacion) {
@@ -142,7 +152,12 @@ function maquetaPrestacionesSeleccionadas(prestacion) {
 
   markup += prestacion.codigo + " - " + prestacion.nombre ;
 
+  if (refrescar) {
+    $("#prestacion_brindada_prestacion_id").trigger('change');
+    refrescar = false;
+  };
   return markup;
+
 }
 
 function maquetaDiagnosticos(diagnostico) {
