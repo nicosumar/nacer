@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+require 'will_paginate/array'
+
 class PrestacionesController < ApplicationController
   before_filter :authenticate_user!
 
@@ -23,23 +25,24 @@ class PrestacionesController < ApplicationController
 
       # Generar el listado de prestaciones válidas
       autorizadas_por_efector =
-        Prestacion.includes(:diagnosticos).find(
+        Prestacion.includes(:diagnosticos).where( id: (
           efector.prestaciones_autorizadas_al_dia(fecha_de_la_prestacion).
                   joins("join prestaciones on prestaciones.id = prestaciones_autorizadas.prestacion_id").
                   where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')").
                   where(condicion_id).
-                  paginate(page: x, per_page: y).
-                  collect{ |p| p.prestacion_id }
-        )
+                  collect{ |p| p.prestacion_id })
+        ).order("prestaciones.codigo, prestaciones.nombre")
 
       autorizadas_por_grupo = beneficiario.grupo_poblacional_al_dia(fecha_de_la_prestacion)
                                           .prestaciones_autorizadas
                                           .where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')")
       autorizadas_por_sexo = beneficiario.sexo.prestaciones_autorizadas
                                               .where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')")
-      @prestaciones = autorizadas_por_efector.keep_if do |p|
+      prestaciones = autorizadas_por_efector.keep_if do |p|
         autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
       end
+      
+      @prestaciones = prestaciones.paginate(page: x, per_page: y)
 
       hash_prestaciones = []
       @prestaciones.each do |p| 
@@ -95,7 +98,7 @@ class PrestacionesController < ApplicationController
       
       respond_to do |format|
           format.json {
-            render json: {total: hash_prestaciones.size, prestaciones: hash_prestaciones }
+            render json: {total: prestaciones.size, prestaciones: hash_prestaciones }
           }
       end
     rescue Exception => e
