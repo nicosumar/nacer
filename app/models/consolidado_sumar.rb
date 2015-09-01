@@ -27,7 +27,7 @@ class ConsolidadoSumar < ActiveRecord::Base
             administrador = e
           end
 
-          loagger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando Consolidado para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
+          logger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando Consolidado para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
           
           # Verifico que no haya generado anteriormente el consolidado de este efector administrador
           c = ConsolidadoSumar.where(efector_id: administrador.id, liquidacion_sumar_id: liquidacion_sumar.id)
