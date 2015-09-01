@@ -500,7 +500,10 @@ ActiveRecord::Schema.define(:version => 20150819195538) do
     t.integer "prestacion_id"
   end
 
+  add_index "diagnosticos_prestaciones", ["diagnostico_id", "prestacion_id"], :name => "diagnosticos_prestaciones_diagnostico_id_prestacion_id_idx", :unique => true
   add_index "diagnosticos_prestaciones", ["diagnostico_id", "prestacion_id"], :name => "uniq_diagnosticos_prestaciones", :unique => true
+  add_index "diagnosticos_prestaciones", ["diagnostico_id"], :name => "diagnosticos_prestaciones_diagnostico_id_idx"
+  add_index "diagnosticos_prestaciones", ["prestacion_id"], :name => "diagnosticos_prestaciones_prestacion_id_idx"
 
   create_table "diagnosticos_sexos", :id => false, :force => true do |t|
     t.integer "diagnostico_id"
@@ -1217,6 +1220,7 @@ ActiveRecord::Schema.define(:version => 20150819195538) do
   end
 
   add_index "prestaciones", ["concepto_de_facturacion_id"], :name => "prestaciones_concepto_de_facturacion_id_idx"
+  add_index "prestaciones", ["id"], :name => "prestaciones_id_idx", :unique => true
 
   create_table "prestaciones_autorizadas", :force => true do |t|
     t.integer  "efector_id",                  :null => false
