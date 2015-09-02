@@ -234,7 +234,8 @@ class LiquidacionSumar < ActiveRecord::Base
               "                  (vpb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
               "             WHEN vpb.clave_de_beneficiario is null then TRUE\n"+
               "        END\n"+
-              "      ) "
+              "      ) \n"+
+              "  AND pi.nomenclador_id = nom.id "
         })
 
       if cq
@@ -284,7 +285,8 @@ class LiquidacionSumar < ActiveRecord::Base
               "                        (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
               "                        limit 1\n"+
               "                        )\n"+
-              "AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
+              "AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
+              "AND pi.nomenclador_id = nom.id "
       })
       if cq
         logger.warn ("Tabla de prestaciones Liquidadas datos generada")
