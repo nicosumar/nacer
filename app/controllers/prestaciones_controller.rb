@@ -3,7 +3,7 @@ class PrestacionesController < ApplicationController
   before_filter :authenticate_user!
 
   def autorizadas
-    
+
     begin
 
       cadena = params[:q]
@@ -32,17 +32,17 @@ class PrestacionesController < ApplicationController
                   collect{ |p| p.prestacion_id }
         )
 
-      autorizadas_por_grupo = beneficiario.grupo_poblacional_al_dia(fecha_de_la_prestacion)
-                                          .prestaciones_autorizadas
-                                          .where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')")
-      autorizadas_por_sexo = beneficiario.sexo.prestaciones_autorizadas
-                                              .where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')")
+      autorizadas_por_grupo = beneficiario.grupo_poblacional_al_dia(fecha_de_la_prestacion).
+                                          prestaciones_autorizadas.
+                                          where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')")
+      autorizadas_por_sexo = beneficiario.sexo.prestaciones_autorizadas.
+                                              where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')")
       @prestaciones = autorizadas_por_efector.keep_if do |p|
         autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
       end
 
       hash_prestaciones = []
-      @prestaciones.each do |p| 
+      @prestaciones.each do |p|
         
         hash_dr= []
         hash_diagnosticos = []
