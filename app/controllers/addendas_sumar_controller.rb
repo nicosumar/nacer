@@ -64,29 +64,30 @@ class AddendasSumarController < ApplicationController
               r.add_field :o_a, "o"
             end
             r.add_field :efector_nombre, @convenio_de_gestion.efector.nombre
-            if @convenio_de_gestion.firmante.present?
-              if @convenio_de_gestion.firmante.contacto.sexo.present?
-                if @convenio_de_gestion.firmante.contacto.sexo.codigo == "F"
+            referente = @convenio_de_gestion.efector.referente_al_dia(@addenda.fecha_de_inicio)
+            if referente.present?
+              if referente.contacto.sexo.present?
+                if referente.contacto.sexo.codigo == "F"
                   r.add_field :articulo_contacto, "la"
                 else
                   r.add_field :articulo_contacto, "el"
                 end
               end
-              r.add_field :contacto_mostrado, @convenio_de_gestion.firmante.contacto.mostrado
-              if @convenio_de_gestion.firmante.contacto.tipo_de_documento.present?
-                r.add_field :tipo_de_documento_codigo, @convenio_de_gestion.firmante.contacto.tipo_de_documento.codigo
+              r.add_field :contacto_mostrado, referente.contacto.mostrado
+              if referente.contacto.tipo_de_documento.present?
+                r.add_field :tipo_de_documento_codigo, referente.contacto.tipo_de_documento.codigo
               end
-              if !@convenio_de_gestion.firmante.contacto.dni.blank?
-                r.add_field :contacto_dni, number_with_delimiter(@convenio_de_gestion.firmante.contacto.dni, {:delimiter => "."})
+              if !referente.contacto.dni.blank?
+                r.add_field :contacto_dni, number_with_delimiter(referente.contacto.dni, {:delimiter => "."})
               end
-              if !@convenio_de_gestion.firmante.contacto.firma_primera_linea.blank?
-                r.add_field :contacto_firma_primera_linea, @convenio_de_gestion.firmante.contacto.firma_primera_linea.strip
+              if !referente.contacto.firma_primera_linea.blank?
+                r.add_field :contacto_firma_primera_linea, referente.contacto.firma_primera_linea.strip
               end
-              if !@convenio_de_gestion.firmante.contacto.firma_segunda_linea.blank?
-                r.add_field :contacto_firma_segunda_linea, @convenio_de_gestion.firmante.contacto.firma_segunda_linea.strip
+              if !referente.contacto.firma_segunda_linea.blank?
+                r.add_field :contacto_firma_segunda_linea, referente.contacto.firma_segunda_linea.strip
               end
-              if !@convenio_de_gestion.firmante.contacto.firma_tercera_linea.blank?
-                r.add_field :contacto_firma_tercera_linea, @convenio_de_gestion.firmante.contacto.firma_tercera_linea.strip
+              if !referente.contacto.firma_tercera_linea.blank?
+                r.add_field :contacto_firma_tercera_linea, referente.contacto.firma_tercera_linea.strip
               end
             end
             if !@convenio_de_gestion.efector.domicilio.blank?

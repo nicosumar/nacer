@@ -1,5 +1,5 @@
 class LiquidacionInforme < ActiveRecord::Base
-  
+
   belongs_to :liquidacion_sumar
   belongs_to :liquidacion_sumar_cuasifactura
   belongs_to :liquidacion_sumar_anexo_administrativo
@@ -7,7 +7,7 @@ class LiquidacionInforme < ActiveRecord::Base
   belongs_to :estado_del_proceso
   belongs_to :efector
   belongs_to :expediente_sumar
-  
+
   attr_accessible :observaciones, :liquidacion_sumar, :estado_del_proceso, :expediente_sumar, :liquidacion_sumar_cuasifactura
   attr_accessible :efector_id, :liquidacion_sumar_cuasifactura_id, :liquidacion_sumar_id, :expediente_sumar_id, :estado_del_proceso_id
   attr_accessible :liquidacion_sumar_cuasifactura_attributes, :expediente_sumar_attributes
