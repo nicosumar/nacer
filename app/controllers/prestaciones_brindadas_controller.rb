@@ -258,6 +258,19 @@ class PrestacionesBrindadasController < ApplicationController
           }
         )
         return
+      elsif @beneficiario.is_a?(Afiliado)
+        novedad = NovedadDelAfiliado.new
+        novedad.copiar_atributos_del_afiliado(@beneficiario)
+        novedad.generar_advertencias
+        if novedad.advertencias.size > 0
+          redirect_to(
+            root_url,
+            :flash => {:tipo => :error, :titulo => "Empadronamiento incorrecto o inválido",
+              :mensaje => "No se pueden registrar prestaciones a beneficiarios que poseen una inscripción rechazada, anulada, o con datos obligatorios incompletos. Verifique y corrija la situación de registro del beneficiario o de la beneficiaria en el padrón antes de intentar registrar la prestación."
+            }
+          )
+          return
+        end
       end
     end
 
