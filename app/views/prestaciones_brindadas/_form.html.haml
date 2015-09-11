@@ -21,7 +21,7 @@
     %span.field_name Nombre
     %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
   %div.field_content
-    %span.field_name= "Documento " + (@beneficiario.clase_de_documento.present? ? @beneficiario.clase_de_documento.nombre.downcase : "")
+    %span.field_name= "Documento" + (@beneficiario.clase_de_documento.present? ? " " + @beneficiario.clase_de_documento.nombre.downcase : "")
     %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
       @beneficiario.numero_de_documento.to_s |
   %div.field_content
