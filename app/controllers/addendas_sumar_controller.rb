@@ -112,11 +112,11 @@ class AddendasSumarController < ApplicationController
 
           end
 
-        archivo = report.generate("lib/tasks/datos/documentos/Adenda prestacional #{@addenda.numero} - #{@convenio_de_gestion.efector.nombre}.odt")
+        archivo = report.generate("lib/tasks/datos/documentos/Adenda prestacional #{@addenda.numero} - #{@convenio_de_gestion.efector.nombre.gsub("/", "\\/")}.odt")
 
         File.chmod(0644, "lib/tasks/datos/documentos/Adenda prestacional #{@addenda.numero} - #{@convenio_de_gestion.efector.nombre}.odt")
 
-        send_file(archivo)
+        send_file(archivo.gsub("/", "\\/"))
       end
 
       format.html do
