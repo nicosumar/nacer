@@ -17,7 +17,6 @@ group :development do
   gem 'hirb-unicode'
   gem "better_errors"
   gem "binding_of_caller"
-  gem 'thin'
 end
 
 gem 'jquery-rails'

@@ -59,7 +59,7 @@ class PrestacionesBrindadasController < ApplicationController
       if params[:estado_de_la_prestacion_id].blank?
         # No hay filtro, devolver todas las prestaciones brindadas
         @prestaciones_brindadas =
-          PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico],
+          PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico, :creator, :efector],
             :order => "updated_at DESC"
           )
         @estado_de_la_prestacion_id = nil
