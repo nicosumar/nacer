@@ -70,7 +70,7 @@ uads_a_procesar.each do |uad|
                               SQL
 
     prestaciones_a_procesar.each do |fila|
-      archivo.puts fila.except("prestacion_brindada_id").values.join("\t")
+      archivo.puts fila.except("prestacion_brindada_id").values.map{|v| v.gsub("\t", "")}.join("\t")
     end # Prestaciones a procesar
 
     archivo.close
