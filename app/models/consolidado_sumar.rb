@@ -23,7 +23,7 @@ class ConsolidadoSumar < ActiveRecord::Base
             administrador = e.administrador_sumar
           elsif e.es_autoadministrado?
             next
-          else
+          else 
             administrador = e
           end
 

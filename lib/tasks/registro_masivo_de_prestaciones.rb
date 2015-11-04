@@ -403,6 +403,30 @@ class RegistroMasivoDePrestaciones
               prestacion_brindada.agregar_error(
                 "El código de diagnóstico no existe (cadena evaluada: '#{codigo_de_diagnostico}')"
               )
+            else
+              prestacion_brindada.diagnostico_id = diagnostico.id
+            end
+            if prestacion.present? && diagnostico.present?
+              # Obtener todas las prestaciones que tengan el código informado y admitan el diagnóstico informado
+              prestaciones = Prestacion.where(
+                " codigo = ?
+                  AND EXISTS (
+                    SELECT *
+                      FROM diagnosticos_prestaciones
+                      WHERE
+                        diagnosticos_prestaciones.prestacion_id = prestaciones.id
+                        AND diagnosticos_prestaciones.diagnostico_id = ?
+                  )
+                  AND activa",
+                  codigo_de_prestacion, diagnostico.id
+                )
+
+              # Registrar el error si no se encuentra una prestación para esa combinación de código y diagnóstico
+              if prestaciones.size == 0
+                prestacion_brindada.agregar_error(
+                  "No se encontró una prestación activa con código '#{codigo_de_prestacion}' y diagnóstico '#{diagnostico.nombre} (#{codigo_de_diagnostico})'"
+                )
+              end
             end
           end
         end
@@ -788,7 +812,7 @@ class RegistroMasivoDePrestaciones
   end
 
   def a_codigo_de_prestacion(cadena)
-    texto = cadena.to_s.strip.gsub(/[ -\.,]/, "").gsub("NULL", "").upcase
+    texto = cadena.to_s.strip.gsub(/[ -,]/, "").gsub("NULL", "").upcase
     return (texto.blank? ? nil : texto)
   end
 

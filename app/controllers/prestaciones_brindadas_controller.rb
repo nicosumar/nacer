@@ -59,7 +59,7 @@ class PrestacionesBrindadasController < ApplicationController
       if params[:estado_de_la_prestacion_id].blank?
         # No hay filtro, devolver todas las prestaciones brindadas
         @prestaciones_brindadas =
-          PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico],
+          PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico, :creator, :efector],
             :order => "updated_at DESC"
           )
         @estado_de_la_prestacion_id = nil
@@ -258,6 +258,19 @@ class PrestacionesBrindadasController < ApplicationController
           }
         )
         return
+      elsif @beneficiario.is_a?(Afiliado)
+        novedad = NovedadDelAfiliado.new
+        novedad.copiar_atributos_del_afiliado(@beneficiario)
+        novedad.generar_advertencias
+        if novedad.advertencias.size > 0
+          redirect_to(
+            root_url,
+            :flash => {:tipo => :error, :titulo => "Empadronamiento incorrecto o inválido",
+              :mensaje => "No se pueden registrar prestaciones a beneficiarios que poseen una inscripción rechazada, anulada, o con datos obligatorios incompletos. Verifique y corrija la situación de registro del beneficiario o de la beneficiaria en el padrón antes de intentar registrar la prestación."
+            }
+          )
+          return
+        end
       end
     end
 
@@ -308,49 +321,27 @@ class PrestacionesBrindadasController < ApplicationController
     end
 
     # Generar el listado de prestaciones válidas
-    autorizadas_por_efector =
-      Prestacion.find(
-        @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
-          |p| p.prestacion_id
-        }
-      )
-    if !params[:comunitaria]
-      autorizadas_por_grupo =
-        @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
-      autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
-      @prestaciones =
-        autorizadas_por_efector.keep_if{
-            |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
-          }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
-    else
-      @prestaciones = autorizadas_por_efector.keep_if{|p| p.comunitaria}.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
-    end
+    # autorizadas_por_efector =
+    #   Prestacion.find(
+    #     @prestacion_brindada.efector.prestaciones_autorizadas_al_dia(@prestacion_brindada.fecha_de_la_prestacion).collect{
+    #       |p| p.prestacion_id
+    #     }
+    #   )
+    # if !params[:comunitaria]
+    #   autorizadas_por_grupo =
+    #     @beneficiario.grupo_poblacional_al_dia(@prestacion_brindada.fecha_de_la_prestacion).prestaciones_autorizadas
+    #   autorizadas_por_sexo = @beneficiario.sexo.prestaciones_autorizadas
+    #   @prestaciones =
+    #     autorizadas_por_efector.keep_if{
+    #         |p| autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
+    #       }.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
+    # else
+    #   @prestaciones = autorizadas_por_efector.keep_if{|p| p.comunitaria}.collect{ |p| [p.nombre_corto + " - " + p.codigo, p.id] }.sort
+    # end
 
-    @diagnosticos = []
+    # @diagnosticos = []
 
-    # Modificado: 21/07/2014 - Eliminamos las advertencias por pantalla para evitar que los usuarios dejen de registrar
-    # las prestaciones brindadas. La idea es que se cargue todo, independientemente de lo que se liquide después.
-
-    # Mostrar advertencias en pantalla si la prestación ya está vencida o el beneficiario no está activo
-#    if !@prestacion_brindada.beneficiario_activo?
-#      flash.now[:tipo] = :advertencia
-#      flash.now[:titulo] = "Advertencia"
-#      if @beneficiario.sexo.codigo == "F"
-#        flash.now[:mensaje] = ["La beneficiaria no se encontraba activa a la fecha de la prestación"]
-#      else
-#        flash.now[:mensaje] = ["El beneficiario no se encontraba activo a la fecha de la prestación"]
-#      end
-#    end
-#
-#    if !@prestacion_brindada.prestacion_vigente?
-#      if flash.now[:tipo].present?
-#        flash.now[:mensaje] << "La prestación se encuentra vencida"
-#      else
-#        flash.now[:tipo] = :advertencia
-#        flash.now[:titulo] = "Advertencia"
-#        flash.now[:mensaje] = ["La prestación se encuentra vencida"]
-#      end
-#    end
+   
   end
 
   # GET /prestaciones_brindadas/:id/edit

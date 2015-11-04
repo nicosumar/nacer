@@ -29,6 +29,7 @@
           %td= p.id
           %td= p.nombre
           %td= p.nombre_largo
+          %td= link_to "ver", p
           %td= link_to "Ver", :controller => "paises", :action => "show", :id => p.id
           %td= link_to "Editar", :controller => "paises", :action => "edit", :id => p.id
   = will_paginate @paises, :inner_window => 2, :outer_window => 0

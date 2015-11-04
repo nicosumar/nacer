@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  get "prestaciones/autorizadas"
+  get "diagnosticos/por_prestacion"
+
   resources :documentos_generables
   resources :notas_de_debito
 

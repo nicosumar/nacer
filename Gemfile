@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.22'
 gem 'pg'
 gem 'json'
 
@@ -17,7 +17,6 @@ group :development do
   gem 'hirb-unicode'
   gem "better_errors"
   gem "binding_of_caller"
-  gem 'thin'
 end
 
 gem 'jquery-rails'
@@ -49,5 +48,6 @@ gem 'composite_primary_keys', '~> 5.0.0'
 gem 'cocoon', '>= 1.2'
 gem 'wice_grid', '>=3.4.0'
 gem 'chosen-rails', '~> 1.1.0'
+gem 'test-unit', '~> 3.0'
 gem "select2-rails"
 

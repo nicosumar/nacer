@@ -21,7 +21,7 @@
     %span.field_name Nombre
     %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
   %div.field_content
-    %span.field_name= "Documento " + @beneficiario.clase_de_documento.nombre.downcase
+    %span.field_name= "Documento" + (@beneficiario.clase_de_documento.present? ? " " + @beneficiario.clase_de_documento.nombre.downcase : "")
     %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
       @beneficiario.numero_de_documento.to_s |
   %div.field_content
@@ -52,15 +52,17 @@
       = f.hidden_field :prestacion_id, :value => @prestacion_brindada.prestacion_id
       %div.field_content
         %span.field_name Prestación*
-        %span.field_value= @prestacion_brindada.prestacion.nombre
+        %span.field_value= @prestacion_brindada.prestacion.codigo + ' - ' + @prestacion_brindada.prestacion.nombre
     - else
-      = f.label :prestacion_id, "Prestación*"
-      = f.select :prestacion_id, options_for_select(@prestaciones, @prestacion_brindada.prestacion_id), |
-        {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione una prestación...", |
-        :style => "width: 600px;"} |
+      - if @prestacion_brindada.clave_de_beneficiario.present?
+        - parametro_adicional = "clave_de_beneficiario: '#{@prestacion_brindada.clave_de_beneficiario}', "
+      - else
+        - parametro_adicional = "comunitaria: 'true', "
 
-  -# Modificación porque 'chosen' establece el width en 0 cuando un div superior tiene la propiedad display en 'none'.
-  - if @diagnosticos.size > 0
+      = f.label :prestacion_id, "Prestación*"
+      = f.hidden_field :prestacion_id, class: 'select2 ajax', data: { source: prestaciones_autorizadas_path, coleccion: 'prestaciones', parametros_adicionales: " #{parametro_adicional} fecha_de_la_prestacion: '#{@prestacion_brindada.fecha_de_la_prestacion}', efector_id: '#{@prestacion_brindada.efector.id}'",funcion_de_formato_seleccionada: "maquetaPrestacionesSeleccionadas", funcion_de_formato: "maquetaPrestaciones", opciones: {closeOnSelect: true, dropdownAutoWidth: true, width: '60%', placeholder: 'Seleccione una prestación...' } }
+
+  - if @prestacion_brindada.persisted?
     #diagnostico.field
       - if @diagnosticos.size == 1
         = f.hidden_field :diagnostico_id, :value => @diagnosticos.first[1]
@@ -73,29 +75,37 @@
           {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione un diagnóstico...", |
           :style => "width: 600px;"} |
   - else
-    #diagnostico.field
+    #diagnostico.field  
 
-  - if @prestacion_brindada.prestacion && !@prestacion_brindada.prestacion.comunitaria
-    #historia_clinica.field
-      = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
-      = f.text_field :historia_clinica, {:size => 15}
+  - if @prestacion_brindada.persisted?
+    - if @prestacion_brindada.prestacion && !@prestacion_brindada.prestacion.comunitaria
+      #historia_clinica.field
+        = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+        = f.text_field :historia_clinica, {:size => 15}
+    - else
+      #historia_clinica.field{:style => "display: none;"}
+        = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+        = f.text_field :historia_clinica, {:size => 15}
   - else
-    #historia_clinica.field{:style => "display: none;"}
-      = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
-      = f.text_field :historia_clinica, {:size => 15}
+    #historia_clinica.field
 
-  #cantidad_de_unidades.field{:style => "display: none;"}
-    = f.label :cantidad_de_unidades, "Cantidad de unidades*"
-    = f.text_field :cantidad_de_unidades, {:size => 6}
+  - if @prestacion_brindada.persisted? 
+    - if @prestacion_brindada.prestacion.unidades_maximas > 1
+      #cantidad_de_unidades.field
+        = f.label :cantidad_de_unidades, "Cantidad de unidades*"
+        = f.text_field :cantidad_de_unidades, {:size => 6}
+    - else
+      #cantidad_de_unidades.field{:style => "display: none;"}
+        = f.label :cantidad_de_unidades, (@prestacion_brindada.prestacion.unidad_de_medida.nombre + "*")
+        = f.text_field :cantidad_de_unidades, {:size => 6}
+  - else
+    #cantidad_de_unidades.field
 
   #es_catastrofica.field{:style => "display: none;"}
-    = f.label :es_catastrofica, "Es catastrófica*"
-    = f.check_box :es_catastrofica
 
   #atributos_reportables
     - if @prestacion_brindada.persisted? && @prestacion_brindada.datos_reportables_asociados.size > 0
-      %h3 Atributos reportables
-      -# @prestacion_brindada.datos_reportables_asociados.order(:id).each_with_index do |dra, i|
+      %h3 Atributos Reportables
       - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
         - drr = dra.dato_reportable_requerido
         - dr = drr.dato_reportable
@@ -116,27 +126,13 @@
             - case
               - when dr.enumerable
                 = dra_f.select :valor_integer, options_from_collection_for_select( |
-                  eval(dr.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre), |
+                  eval(dr.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre, dra.valor_integer), |
                   eval(dr.opciones_de_formateo || "{}").merge(:include_blank => true), |
-                  {:class => "multi_select", :placeholder => "Seleccione una opción"} |
+                  {:class => "multi_select", style: "width: 600px", data: {:placeholder => "Seleccione una opción..."} } |
               - when dr.tipo_ruby == "date"
-                -# TODO: Averiguar por qué mierda no está tomando el valor pasado en :default para establecer el valor
-                  # inicial del control
-                  # = dra_f.date_select :valor_date, {:default => dra.valor_date, :include_blank => true}, |
-                  #   eval(dra.dato_reportable.opciones_de_formateo || "{}") |
-                -
-                = dra_f.select :"valor_date(3i)", options_for_select((1..31).collect{|d| [d.to_s, d]}, dra.valor_date ? |
-                  dra.valor_date.day : nil), :include_blank => true |
-                -
-                = dra_f.select :"valor_date(2i)", options_for_select([["enero", 1], ["febrero", 2], ["marzo", 3], ["abril", 4], |
-                  ["mayo", 5], ["junio", 6], ["julio", 7], ["agosto", 8], ["septiembre", 9], ["octubre", 10], ["noviembre", 11], |
-                  ["diciembre", 12]], dra.valor_date ? dra.valor_date.month : nil), :include_blank => true |
-                -
-                = dra_f.select :"valor_date(1i)", options_for_select(((Date.today.year - 1)..(Date.today.year + 1)).collect{ |y| |
-                  [y.to_s, y]}, dra.valor_date ? dra.valor_date.year : nil), :include_blank => true |
+                = dra_f.text_field ("valor_" + dr.tipo_ruby).to_sym, { :class => "jquery_fecha", value: dra.valor_date }
               - else
-                = dra_f.text_field ("valor_" + dr.tipo_ruby).to_sym, eval(dr.opciones_de_formateo || "{}").merge( |
-                  :value => eval("dra.valor_" + dr.tipo_ruby)) |
+                = dra_f.text_field ("valor_" + dr.tipo_ruby).to_sym, eval(dr.opciones_de_formateo || "{}").merge( :value => eval("dra.valor_" + dr.tipo_ruby)) 
             - if dra.errors.size > 0
               </div>
 

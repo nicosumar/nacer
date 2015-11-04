@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class AddendasSumarController < ApplicationController
+  include ActionView::Helpers::NumberHelper
   before_filter :authenticate_user!
 
   # GET /addendas_sumar
@@ -50,6 +51,78 @@ class AddendasSumarController < ApplicationController
       )
     end
     @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
+
+    respond_to do |format|
+      format.odt do
+          report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de adenda prestacional.odt") do |r|
+            r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
+            if @convenio_de_gestion.efector.grupo_de_efectores.tipo_de_efector == "PSB"
+              r.add_field :efector_articulo, "la"
+              r.add_field :o_a, "a"
+            else
+              r.add_field :efector_articulo, "el"
+              r.add_field :o_a, "o"
+            end
+            r.add_field :efector_nombre, @convenio_de_gestion.efector.nombre
+            referente = @convenio_de_gestion.efector.referente_al_dia(@addenda.fecha_de_inicio)
+            if referente.present?
+              if referente.contacto.sexo.present?
+                if referente.contacto.sexo.codigo == "F"
+                  r.add_field :articulo_contacto, "la"
+                else
+                  r.add_field :articulo_contacto, "el"
+                end
+              end
+              r.add_field :contacto_mostrado, referente.contacto.mostrado
+              if referente.contacto.tipo_de_documento.present?
+                r.add_field :tipo_de_documento_codigo, referente.contacto.tipo_de_documento.codigo
+              end
+              if !referente.contacto.dni.blank?
+                r.add_field :contacto_dni, number_with_delimiter(referente.contacto.dni, {:delimiter => "."})
+              end
+              if !referente.contacto.firma_primera_linea.blank?
+                r.add_field :contacto_firma_primera_linea, referente.contacto.firma_primera_linea.strip
+              end
+              if !referente.contacto.firma_segunda_linea.blank?
+                r.add_field :contacto_firma_segunda_linea, referente.contacto.firma_segunda_linea.strip
+              end
+              if !referente.contacto.firma_tercera_linea.blank?
+                r.add_field :contacto_firma_tercera_linea, referente.contacto.firma_tercera_linea.strip
+              end
+            end
+            if !@convenio_de_gestion.efector.domicilio.blank?
+              r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.to_s.strip.gsub(".", ",")
+            end
+
+            @bajas_de_prestaciones = @addenda.prestaciones_autorizadas_baja.includes(:prestacion).order("prestaciones.codigo").collect{|pa| {codigo: pa.prestacion.codigo, nombre: pa.prestacion.nombre} }
+
+            r.add_table("Bajas", @bajas_de_prestaciones, header: true) do |t|
+              t.add_column(:prestacion_codigo, :codigo)
+              t.add_column(:prestacion_nombre, :nombre)
+            end
+
+            @altas_de_prestaciones = @addenda.prestaciones_autorizadas_alta.includes(:prestacion).order("prestaciones.codigo").collect{|pa| {codigo: pa.prestacion.codigo, nombre: pa.prestacion.nombre} }
+
+            r.add_table("Altas", @altas_de_prestaciones, header: true) do |t|
+              t.add_column(:prestacion_codigo, :codigo)
+              t.add_column(:prestacion_nombre, :nombre)
+            end
+
+            r.add_field :suscripcion_mes_y_anio, I18n.l(@addenda.fecha_de_suscripcion, :format => :month_and_year)
+
+          end
+
+        archivo = report.generate("lib/tasks/datos/documentos/Adenda prestacional #{@addenda.numero} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
+
+        File.chmod(0644, "lib/tasks/datos/documentos/Adenda prestacional #{@addenda.numero} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
+
+        send_file(archivo)
+      end
+
+      format.html do
+      end
+    end
+
   end
 
   # GET /addendas_sumar/new

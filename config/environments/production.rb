@@ -47,7 +47,7 @@ Nacer::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( efectores.js novedades_de_los_afiliados.js users_sign_in.js verificacion.js prestaciones_brindadas.js)
+  config.assets.precompile += %w( efectores.js novedades_de_los_afiliados.js users_sign_in.js verificacion.js )
 
   # Enable delivery errors
   config.action_mailer.raise_delivery_errors = true
