@@ -807,12 +807,12 @@ archivo.puts "Bajas por vencimiento de CEB\t" + serie_mujeres[:bajas_ceb].join("
 archivo.puts ""
 
 archivo.puts "Hombres"
-archivo.puts "Activos\t" + serie_mujeres[:activos].join("\t")
-archivo.puts "Con CEB\t" + serie_mujeres[:ceb].join("\t")
-archivo.puts "Altas por activación\t" + serie_mujeres[:altas_actividad].join("\t")
-archivo.puts "Altas por recuperación de CEB\t" + serie_mujeres[:altas_ceb].join("\t")
-archivo.puts "Bajas por inactivación\t" + serie_mujeres[:bajas_actividad].join("\t")
-archivo.puts "Bajas por vencimiento de CEB\t" + serie_mujeres[:bajas_ceb].join("\t")
+archivo.puts "Activos\t" + serie_hombres[:activos].join("\t")
+archivo.puts "Con CEB\t" + serie_hombres[:ceb].join("\t")
+archivo.puts "Altas por activación\t" + serie_hombres[:altas_actividad].join("\t")
+archivo.puts "Altas por recuperación de CEB\t" + serie_hombres[:altas_ceb].join("\t")
+archivo.puts "Bajas por inactivación\t" + serie_hombres[:bajas_actividad].join("\t")
+archivo.puts "Bajas por vencimiento de CEB\t" + serie_hombres[:bajas_ceb].join("\t")
 archivo.puts ""
 
 archivo.close
