@@ -1,6 +1,6 @@
 # ~~ encoding: utf-8 ~~
 
-fecha = Date.new(2014, 1, 1)
+fecha = Date.new(2014, 10, 1)
 archivo = File.open('lib/tasks/datos/Estimaciones_CA_2016.csv', "w")
 serie_menores_de_6 = {:activos => [], :ceb => [], :altas_actividad => [], :altas_ceb => [], :bajas_actividad => [], :bajas_ceb => []}
 serie_6_a_9 = {:activos => [], :ceb => [], :altas_actividad => [], :altas_ceb => [], :bajas_actividad => [], :bajas_ceb => []}
@@ -9,7 +9,7 @@ serie_mujeres = {:activos => [], :ceb => [], :altas_actividad => [], :altas_ceb 
 serie_hombres = {:activos => [], :ceb => [], :altas_actividad => [], :altas_ceb => [], :bajas_actividad => [], :bajas_ceb => []}
 i = 0
 
-while fecha <= Date.new(2014, 9, 1) do
+while fecha <= Date.new(2015, 9, 1) do
 
   serie_menores_de_6[:activos][i] = ActiveRecord::Base.connection.exec_query( <<-SQL
       -- Afiliados activos (por grupo etario)
