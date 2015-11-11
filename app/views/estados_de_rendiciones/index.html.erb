@@ -1,0 +1,23 @@
+<h1>Listing estados_de_rendiciones</h1>
+
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @estados_de_rendiciones.each do |estado_de_rendicion| %>
+  <tr>
+    <td><%= estado_de_rendicion.nombre %></td>
+    <td><%= link_to 'Show', estado_de_rendicion %></td>
+    <td><%= link_to 'Edit', edit_estado_de_rendicion_path(estado_de_rendicion) %></td>
+    <td><%= link_to 'Destroy', estado_de_rendicion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Estado de rendicion', new_estado_de_rendicion_path %>

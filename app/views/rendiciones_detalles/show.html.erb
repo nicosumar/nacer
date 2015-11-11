@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Rendicion:</b>
+  <%= @rendicion_detalle.rendicion_id %>
+</p>
+
+<p>
+  <b>Fecha:</b>
+  <%= @rendicion_detalle.fecha %>
+</p>
+
+<p>
+  <b>Nro factura:</b>
+  <%= @rendicion_detalle.nro_factura %>
+</p>
+
+<p>
+  <b>Detalle:</b>
+  <%= @rendicion_detalle.detalle %>
+</p>
+
+<p>
+  <b>Cant:</b>
+  <%= @rendicion_detalle.cant %>
+</p>
+
+<p>
+  <b>Nro cheque:</b>
+  <%= @rendicion_detalle.nro_cheque %>
+</p>
+
+<p>
+  <b>Tipo de gasto:</b>
+  <%= @rendicion_detalle.tipo_de_gasto_id %>
+</p>
+
+<p>
+  <b>Importe gasto:</b>
+  <%= @rendicion_detalle.importe_gasto %>
+</p>
+
+
+<%= link_to 'Edit', edit_rendicion_detalle_path(@rendicion_detalle) %> |
+<%= link_to 'Back', rendiciones_detalles_path %>

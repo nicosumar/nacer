@@ -486,6 +486,30 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("Informe", "Informes·")
   inflect.irregular("Informe·", "Informes")
 
+
+  #Estadod de rendicion
+  inflect.irregular("estado_de_rendicion", "estados·_de·_rendicion·")
+  inflect.irregular("estado·_de·_rendicion·", "estados_de_rendicion")
+  inflect.irregular("EstadoDeRendicion", "Estados·De·Rendicion·")
+  inflect.irregular("Estado·De·Rendicion·", "EstadosDeRendicion")
+
+   # Periodos de Rendicion
+  inflect.irregular("periodo_de_rendicion", "periodos·_de·_rendicion·")
+  inflect.irregular("periodo·_de·_rendicion·", "periodos_de_rendicion")
+  inflect.irregular("PeriodoDeRendicion", "Periodos·De·Rendicion·")
+  inflect.irregular("Periodo·De·Rendicion·", "PeriodosDeRendicion")
+
+  inflect.irregular("tipo_de_gasto", "tipos·_de·_gasto·")
+  inflect.irregular("tipo·_de·_gasto·", "tipos_de_gasto")
+  inflect.irregular("TipoDeGasto", "Tipos·De·Gasto·")
+  inflect.irregular("Tipo·De·Gasto·", "TiposDeGasto")
+
+  # Estados de Rendicion
+  inflect.irregular("rendicion_detalle", "rendiciones·_detalles·")
+  inflect.irregular("rendicion·_detalle·", "rendiciones_detalles")
+  inflect.irregular("RendicionDetalle", "Rendiciones·Detalles·")
+  inflect.irregular("Rendicion·Detalle·", "RendicionesDetalles")
+
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")
   inflect.human("departamento_bio_id", "código identificador de departamento (Bioestadística)")
@@ -596,6 +620,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   #Tablas de configuracion
   #Paises
   inflect.human("pais_bio_id", "Id de Bioestadística")
+
 
   #
 

@@ -1,0 +1,36 @@
+#content-header
+  %h1 Listing rendiciones
+  #action-links
+    = link_to 'Nueva Rendicion', new_rendicion_path
+#content-body
+  %h2.first-header Listado de Rendiciones
+  %table
+    %thead
+      %tr
+        %th Nº
+        %th Efector
+        %th Periodo rendicion
+        %th Estado rendicion
+        %th Observaciones
+        %th{colspan:3} Acciones
+    %tbody
+      - @rendiciones.each do |rendicion|
+        %tr.clickable{ :onclick => "location.href=\'#{rendicion_path(rendicion)}\'", :title => "Editar" }
+          %td= rendicion.id
+          %td= rendicion.efector.nombre
+          %td= rendicion.periodo_de_rendicion.nombre
+          %td= rendicion.estado_de_rendicion.nombre
+          %td= rendicion.observaciones
+          %td
+            #action-links
+              = link_to 'Detalle', rendicion
+          %td
+            #action-links
+              = link_to 'Editar', edit_rendicion_path(rendicion)
+          %td
+            #action-links
+              = link_to 'Cambiar Estado', actualizar_estado_rendicion_path(rendicion)        
+          %td
+            #action-links
+              = link_to 'Imprimir', imprimir_rendicion_path(rendicion)       
+

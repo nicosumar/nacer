@@ -670,6 +670,7 @@ DEPENDENCIES
   cancan
   capistrano
   chosen-rails (~> 1.1.0)
+  cocaine
   cocoon (>= 1.2)
   coffee-rails
   composite_primary_keys (~> 5.0.0)

@@ -1,0 +1,29 @@
+<%= form_for(@periodo_de_rendicion) do |f| %>
+  <% if @periodo_de_rendicion.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@periodo_de_rendicion.errors.count, "error") %> prohibited this periodo_de_rendicion from being saved:</h2>
+
+      <ul>
+      <% @periodo_de_rendicion.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :nombre %><br />
+    <%= f.text_field :nombre %>
+  </div>
+  <div class="field">
+    <%= f.label :fecha_desde %><br />
+    <%= f.date_select :fecha_desde %>
+  </div>
+  <div class="field">
+    <%= f.label :fecha_hasta %><br />
+    <%= f.date_select :fecha_hasta %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

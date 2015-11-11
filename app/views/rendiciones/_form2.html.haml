@@ -1,0 +1,50 @@
+#content-header
+  %h1 Listado de detalle de rendion del efector:
+  - if @rendicion.estado_de_rendicion.id == ?
+    #errorExplanation
+      %h2
+        = pluralize(@post.errors.count, "error")
+            prohibited
+            this post from being saved:
+      %ul
+        - @post.errors.full_messages.each do |msg|
+          %li= msg
+  #action-links
+    = link_to 'Volver', rendiciones_path
+#content-body
+  %div.field_content 
+    %span.field_name Efector:
+    %span.field_value= @rendicion.efector.nombre
+  %div.field_content 
+    %span.field_name Periodo de rendicion:
+    %span.field_value= @rendicion.periodo_de_rendicion.nombre
+  -#%div.field_content 
+  -#  %span.field_name Estado de actual:
+  -#  %span.field_value= @rendicion.estado_de_rendicion.nombre
+  %div.field_content 
+    %span.field_name Nuevo estado de Rendición:
+    = form_for(@rendicion) do |f|
+      = f.select(:estado_de_rendicion_id, @estado_de_rendicion,{include_blank: true}, class: "select2")
+  %div.field_content 
+    %span.field_name Observaciones:
+    %span.field_value= @rendicion.observaciones
+  %hr{width:"100%"}
+    %table
+      %tr
+        %th Fecha
+        %th Nro factura
+        %th Detalle
+        %th Cant
+        %th Nro cheque
+        %th Tipo gasto
+        %th Importe gasto
+      - @rendicion.rendiciones_detalles.each do |rendicion_detalle|
+        %tr
+          %td= rendicion_detalle.fecha.strftime("%d-%m-%Y")
+          %td= rendicion_detalle.nro_factura
+          %td= rendicion_detalle.detalle
+          %td= rendicion_detalle.cant
+          %td= rendicion_detalle.nro_cheque
+          %td= rendicion_detalle.tipo_de_gasto.nombre
+          %td= rendicion_detalle.importe_gasto
+    %hr{width:"100%"}

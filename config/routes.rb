@@ -1,6 +1,31 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  resources :rendiciones_detalles
+
+
+  resources :rendiciones do
+    resources :rendiciones_detalles, except: [:show]
+    get :actualizar_estado, on: :member
+    get :imprimir, on: :member
+  end
+
+
+  resources :tipos_de_gasto
+
+
+  resources :tipos_des_gastos
+
+
+  resources :periodos_de_rendicion
+
+
+  resources :estados_de_rendiciones
+
+
+  
+
+
   get "prestaciones/autorizadas"
   get "diagnosticos/por_prestacion"
 

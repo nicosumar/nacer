@@ -1,0 +1,49 @@
+<%= form_for(@rendicion_detalle) do |f| %>
+  <% if @rendicion_detalle.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@rendicion_detalle.errors.count, "error") %> prohibited this rendicion_detalle from being saved:</h2>
+
+      <ul>
+      <% @rendicion_detalle.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :rendicion_id %><br />
+    <%= f.text_field :rendicion_id %>
+  </div>
+  <div class="field">
+    <%= f.label :fecha %><br />
+    <%= f.date_select :fecha %>
+  </div>
+  <div class="field">
+    <%= f.label :nro_factura %><br />
+    <%= f.text_field :nro_factura %>
+  </div>
+  <div class="field">
+    <%= f.label :detalle %><br />
+    <%= f.text_field :detalle %>
+  </div>
+  <div class="field">
+    <%= f.label :cant %><br />
+    <%= f.number_field :cant %>
+  </div>
+  <div class="field">
+    <%= f.label :nro_cheque %><br />
+    <%= f.number_field :nro_cheque %>
+  </div>
+  <div class="field">
+    <%= f.label :tipo_de_gasto_id %><br />
+    <%= f.text_field :tipo_de_gasto_id %>
+  </div>
+  <div class="field">
+    <%= f.label :importe_gasto %><br />
+    <%= f.number_field :importe_gasto %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Nombre:</b>
+  <%= @tipo_de_gasto.nombre %>
+</p>
+
+<p>
+  <b>Tipo:</b>
+  <%= @tipo_de_gasto.tipo %>
+</p>
+
+
+<%= link_to 'Edit', edit_tipo_de_gasto_path(@tipo_de_gasto) %> |
+<%= link_to 'Back', tipos_de_gasto_path %>

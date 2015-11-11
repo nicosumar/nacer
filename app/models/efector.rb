@@ -45,7 +45,8 @@ class Efector < ActiveRecord::Base
   #Asociaciones referentes a informes de debitos
   has_many :informes_debitos_prestacionales
   has_many :notas_de_debito
-
+  # Asociacion rendicion
+  has_many :rendiciones
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   scope :efectores_administrados, joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id")
 

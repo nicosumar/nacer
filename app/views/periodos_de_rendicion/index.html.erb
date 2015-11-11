@@ -1,0 +1,27 @@
+<h1>Listing periodos_de_rendicion</h1>
+
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th>Fecha desde</th>
+    <th>Fecha hasta</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @periodos_de_rendicion.each do |periodo_de_rendicion| %>
+  <tr>
+    <td><%= periodo_de_rendicion.nombre %></td>
+    <td><%= periodo_de_rendicion.fecha_desde %></td>
+    <td><%= periodo_de_rendicion.fecha_hasta %></td>
+    <td><%= link_to 'Show', periodo_de_rendicion %></td>
+    <td><%= link_to 'Edit', edit_periodo_de_rendicion_path(periodo_de_rendicion) %></td>
+    <td><%= link_to 'Destroy', periodo_de_rendicion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Periodo de rendicion', new_periodo_de_rendicion_path %>

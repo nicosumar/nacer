@@ -1,0 +1,10 @@
+%tr.nested-fields
+  %td= f.text_field :fecha,  {width: "10px", size: "5", class: "jquery_fecha",  style: "font-size: 5"}
+  %td= f.text_field :nro_factura, :size => 5
+  %td= f.text_area :detalle, {rows: "3"}
+  %td= f.number_field :cant, :size => 2
+  %td= f.number_field :nro_cheque, :width => "5px"
+  %td= f.select(:tipo_de_gasto_id, @tipos_de_gasto,{include_blank: true}, class: "select2")
+  %td= f.number_field :importe_gasto, :size => 6
+  %td= link_to_remove_association "Quitar fila", f
+ 

@@ -1,0 +1,11 @@
+#content-header
+  %h1 CCrear nueva rendición
+
+= render :partial => "shared/info", :locals => { :registro => @rendicion }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de rendiciones
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+  = render 'form'
+
+

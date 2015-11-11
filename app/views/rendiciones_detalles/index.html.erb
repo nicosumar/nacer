@@ -1,0 +1,37 @@
+<h1>Listing rendiciones_detalles</h1>
+
+<table>
+  <tr>
+    <th>Rendicion</th>
+    <th>Fecha</th>
+    <th>Nro factura</th>
+    <th>Detalle</th>
+    <th>Cant</th>
+    <th>Nro cheque</th>
+    <th>Tipo de gasto</th>
+    <th>Importe gasto</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @rendiciones_detalles.each do |rendicion_detalle| %>
+  <tr>
+    <td><%= rendicion_detalle.rendicion_id %></td>
+    <td><%= rendicion_detalle.fecha %></td>
+    <td><%= rendicion_detalle.nro_factura %></td>
+    <td><%= rendicion_detalle.detalle %></td>
+    <td><%= rendicion_detalle.cant %></td>
+    <td><%= rendicion_detalle.nro_cheque %></td>
+    <td><%= rendicion_detalle.tipo_de_gasto_id %></td>
+    <td><%= rendicion_detalle.importe_gasto %></td>
+    <td><%= link_to 'Show', rendicion_detalle %></td>
+    <td><%= link_to 'Edit', edit_rendicion_detalle_path(rendicion_detalle) %></td>
+    <td><%= link_to 'Destroy', rendicion_detalle, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Rendicion detalle', new_rendicion_detalle_path %>

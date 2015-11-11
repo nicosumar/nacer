@@ -252,6 +252,10 @@ $(document).ready(function() {
       event.preventDefault();
   });
 });
+$(document).on('change', 'input', function() {
+  // Does some stuff and logs the event to the console
+   $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true }); 
+});
 
 jQuery(function($){
         $.datepicker.regional['es'] = {

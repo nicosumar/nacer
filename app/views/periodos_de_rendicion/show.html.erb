@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Nombre:</b>
+  <%= @periodo_de_rendicion.nombre %>
+</p>
+
+<p>
+  <b>Fecha desde:</b>
+  <%= @periodo_de_rendicion.fecha_desde %>
+</p>
+
+<p>
+  <b>Fecha hasta:</b>
+  <%= @periodo_de_rendicion.fecha_hasta %>
+</p>
+
+
+<%= link_to 'Edit', edit_periodo_de_rendicion_path(@periodo_de_rendicion) %> |
+<%= link_to 'Back', periodos_de_rendicion_path %>

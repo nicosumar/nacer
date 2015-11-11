@@ -1,0 +1,2 @@
+module EstadosDeRendicionesHelper
+end
