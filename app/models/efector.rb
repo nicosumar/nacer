@@ -50,7 +50,7 @@ class Efector < ActiveRecord::Base
   scope :efectores_administrados, joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id")
 
   # Validaciones
-  validates_presence_of :nombre
+  validates_presence_of :nombre, :area_de_prestacion
   validates_uniqueness_of :cuie, :allow_nil => true
 
   def referente_al_dia(fecha=Date.today)
