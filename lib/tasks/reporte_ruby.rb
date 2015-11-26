@@ -231,7 +231,7 @@ class ReporteRuby
       unless grupo_numero == -1
         sql << <<-SQL
           SELECT e.nombre "Efector", spdss.nombre "Sección", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación", d.codigo "Diagnóstico",
-            peri.periodo, count(p.*) "Cant.", round(sum(pl.monto),2) "Total"
+            peri.periodo, count(pdss.*) "Cant.", round(sum(pl.monto),2) "Total"
           FROM prestaciones_incluidas pi 
             INNER JOIN  prestaciones_liquidadas pl ON pl.prestacion_incluida_id = pi.id 
             INNER JOIN  efectores e ON e.id = pl.efector_id
@@ -245,7 +245,7 @@ class ReporteRuby
             INNER JOIN  grupos_pdss gpdss ON gpdss.id = pdss.grupo_pdss_id
             INNER JOIN  secciones_pdss spdss ON spdss.id = gpdss.seccion_pdss_id
             INNER JOIN  diagnosticos_prestaciones dp ON dp.prestacion_id = p.id
-            INNER JOIN  diagnosticos d ON d.id = dp.diagnostico_id
+            INNER JOIN  diagnosticos d ON d.id = dp.diagnostico_id and d.id = pl.diagnostico_id
           WHERE (  
             #{filtro_prest.join(" OR\n")}  
             )
@@ -271,7 +271,7 @@ class ReporteRuby
             INNER JOIN  prestaciones p ON p.id = pi.prestacion_id
             INNER JOIN  prestaciones_prestaciones_pdss pppdss ON pppdss.prestacion_id = p.id 
             INNER JOIN  diagnosticos_prestaciones dp ON dp.prestacion_id = p.id
-            INNER JOIN  diagnosticos d ON d.id = dp.diagnostico_id
+            INNER JOIN  diagnosticos d ON d.id = dp.diagnostico_id and d.id = pl.diagnostico_id
           WHERE (  
             #{filtro_prest.join(" OR\n")}  
             )
