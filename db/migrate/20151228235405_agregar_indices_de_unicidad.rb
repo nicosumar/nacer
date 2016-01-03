@@ -8,7 +8,7 @@ class AgregarIndicesDeUnicidad < ActiveRecord::Migration
   end
 
   def down
-    remove_index :metodos_de_validacion, name: "index_metodos_de_validacion_on_metodo_uniq"
+    remove_index :metodos_de_validacion, name: "index_metodos_de_validacion_on_metodo"
     remove_index :metodos_de_validacion_prestaciones, name: "idx_uniq_on_metodos_de_validacion_prestaciones_mmvv_pp"
   end
 end

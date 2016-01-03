@@ -494,6 +494,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("TratamientoInstauradoCu", "Tratamientos·Instaurados·Cu·")
   inflect.irregular("Tratamiento·Instaurado·Cu·", "TratamientosInstauradosCu")
 
+  # Datos reportables definidos por el SIRGE
+  inflect.irregular("dato_reportable_sirge", "datos·_reportables·_sirge·")
+  inflect.irregular("dato·_reportable·_sirge·", "datos_reportables_sirge")
+  inflect.irregular("DatoReportableSirge", "Datos·Reportables·Sirge·")
+  inflect.irregular("Dato·Reportable·Sirge·", "DatosReportablesSirge")
+
+  # Datos reportables requeridos por el SIRGE (por prestación)
+  inflect.irregular("dato_reportable_requerido_sirge", "datos·_reportables·_requeridos·_sirge·")
+  inflect.irregular("dato·_reportable·_requerido·_sirge·", "datos_reportables_requeridos_sirge")
+  inflect.irregular("DatoReportableRequeridoSirge", "Datos·Reportables·Requeridos·Sirge·")
+  inflect.irregular("Dato·Reportable·Requerido·Sirge·", "DatosReportablesRequeridosSirge")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

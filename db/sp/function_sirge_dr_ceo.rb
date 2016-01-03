@@ -19,7 +19,7 @@ ActiveRecord::Base.connection.execute <<-SQL
           -- Buscar los ID de los datos reportables asociados
           SELECT * INTO prestacion_liquidada FROM prestaciones_liquidadas WHERE id = prestacion_liquidada_id;
           SELECT * INTO dato_reportable_ceo_c FROM datos_reportables WHERE codigo = 'CEO_C';
-          SELECT * INTO dato_reportable_ceo_e FROM datos_reportables WHERE codigo = 'CEO_P';
+          SELECT * INTO dato_reportable_ceo_e FROM datos_reportables WHERE codigo = 'CEO_E';
           SELECT * INTO dato_reportable_ceo_o FROM datos_reportables WHERE codigo = 'CEO_O';
 
           -- Buscamos los valores de los datos reportables del índice CeO

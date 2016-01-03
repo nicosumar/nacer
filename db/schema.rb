@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151231210115) do
+ActiveRecord::Schema.define(:version => 20160103144346) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -453,6 +453,28 @@ ActiveRecord::Schema.define(:version => 20151231210115) do
     t.boolean "obligatorio",                                          :default => false
     t.decimal "minimo",                :precision => 15, :scale => 4
     t.decimal "maximo",                :precision => 15, :scale => 4
+  end
+
+  create_table "datos_reportables_requeridos_sirge", :force => true do |t|
+    t.integer  "prestacion_id",            :null => false
+    t.integer  "dato_reportable_sirge_id", :null => false
+    t.integer  "orden",                    :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+  end
+
+  add_index "datos_reportables_requeridos_sirge", ["dato_reportable_sirge_id"], :name => "idx_drrs_on_dato_reportable_sirge_id"
+  add_index "datos_reportables_requeridos_sirge", ["prestacion_id", "dato_reportable_sirge_id"], :name => "idx_uniq_drrs_on_prestacion_drs", :unique => true
+  add_index "datos_reportables_requeridos_sirge", ["prestacion_id", "orden"], :name => "idx_uniq_drrs_on_prestacion_orden", :unique => true
+  add_index "datos_reportables_requeridos_sirge", ["prestacion_id"], :name => "index_datos_reportables_requeridos_sirge_on_prestacion_id"
+
+  create_table "datos_reportables_sirge", :force => true do |t|
+    t.string   "nombre",                    :null => false
+    t.string   "codigo",                    :null => false
+    t.integer  "sirge_id",                  :null => false
+    t.string   "funcion_de_transformacion", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   create_table "departamentos", :force => true do |t|
@@ -1308,6 +1330,7 @@ ActiveRecord::Schema.define(:version => 20151231210115) do
   end
 
   add_index "prestaciones_liquidadas", ["clave_de_beneficiario"], :name => "prestaciones_liquidadas_clave_de_beneficiario_idx"
+  add_index "prestaciones_liquidadas", ["estado_de_la_prestacion_liquidada_id"], :name => "idx_on_prestaciones_liquidadas_epli"
   add_index "prestaciones_liquidadas", ["liquidacion_id", "unidad_de_alta_de_datos_id", "efector_id", "prestacion_incluida_id", "fecha_de_la_prestacion", "clave_de_beneficiario"], :name => "prestaciones_liquidadas_liquidacion_id_unidad_de_alta_de_da_key", :unique => true
 
   create_table "prestaciones_liquidadas_advertencias", :force => true do |t|
