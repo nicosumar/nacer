@@ -52,6 +52,7 @@ class Efector < ActiveRecord::Base
   # Validaciones
   validates_presence_of :nombre
   validates_uniqueness_of :cuie, :allow_nil => true
+  validates :area_de_prestacion, presence: true, if: "convenio_de_gestion_sumar.present?"
 
   def referente_al_dia(fecha=Date.today)
     self.referentes.where(["(fecha_de_inicio <= ? and fecha_de_finalizacion is null) or ? between fecha_de_inicio and fecha_de_finalizacion",
