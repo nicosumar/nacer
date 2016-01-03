@@ -343,9 +343,28 @@ class PrestacionBrindada < ActiveRecord::Base
     if cpod_c && cpod_p && cpod_o
       return (cpod_c + cpod_p + cpod_o) <= 32
     else
-    return false
+      return true
+    end
+  end
+
+  def indice_ceod_valido?
+    self.datos_reportables_asociados.each do |dra|
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CEOD_C'
+        ceod_c = dra.valor_integer
+      end
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CEOD_E'
+        ceod_e = dra.valor_integer
+      end
+      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CEOD_O'
+        ceod_o = dra.valor_integer
+      end
     end
 
+    if ceod_c && ceod_e && ceod_o
+      return (ceod_c + ceod_e + ceod_o) <= 32
+    else
+      return true
+    end
   end
 
   def recien_nacido?
