@@ -1112,7 +1112,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     Prestacion.find(260).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first
     Prestacion.find(260).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
-    # Prestación CTC010A97 - Consulta de salud buco-dental en niños 
+    # Prestación CTC010A97 - Consulta de salud buco-dental en niños menores de 6 años
     DatoReportableRequerido.create!({                     # Dar de alta como opcional a partir de la fecha_anexo_1
       prestacion: Prestacion.find(457),
       dato_reportable: dr_ceo_c,
@@ -1180,6 +1180,21 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       })
     Prestacion.find(457).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_ceo_valido?").first
     Prestacion.find(457).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
+
+    # CTC001H86 - Consulta de niños con especialistas (hipoacusia en lactante "No pasa" con OEA)
+    DatoReportableRequerido.find(258).update_attributes!({ # Dar de baja, no se exige más
+      fecha_de_finalizacion: Date.new(2015, 7, 1)
+    })
+
+    # PRP022H86 - Rescreening de hipoacusia en lactante "No pasa" con BERA
+    DatoReportableRequerido.find(259).update_attributes!({ # Dar de baja, no se exige más (oído derecho)
+      fecha_de_finalizacion: Date.new(2015, 7, 1)
+    })
+
+    # PRP022H86 - Rescreening de hipoacusia en lactante "No pasa" con BERA
+    DatoReportableRequerido.find(260).update_attributes!({ # Dar de baja, no se exige más (oído izquierdo)
+      fecha_de_finalizacion: Date.new(2015, 7, 1)
+    })
 
     # Prestación CTC010A97 - Control odontológico (6 a 9 años)
     DatoReportableRequerido.find(267).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
@@ -1896,6 +1911,16 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       obligatorio: true
     })
     DatoReportableRequerido.find(334).update_attributes!({ # Carga al SITAM
+      fecha_de_finalizacion: Date.new(2015, 7, 1)
+    })
+
+    # NTN001X75/X86 - Notificación de caso positivo (CA cérvico-uterino)
+    DatoReportableRequerido.find(335).update_attributes!({ # Dar de baja, no se exige más
+      fecha_de_finalizacion: Date.new(2015, 7, 1)
+    })
+
+    # NTN003X75 - Notificación de caso positivo (CA cérvico-uterino)
+    DatoReportableRequerido.find(336).update_attributes!({ # Dar de baja, no se exige más
       fecha_de_finalizacion: Date.new(2015, 7, 1)
     })
 

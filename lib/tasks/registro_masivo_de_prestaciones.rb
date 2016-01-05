@@ -448,7 +448,12 @@ class RegistroMasivoDePrestaciones
                     :diagnostico_id => diagnostico.id
                   })
                   dras = []
-                  pb.prestacion.datos_reportables_requeridos.each do |drr|
+                  pb.prestacion.datos_reportables_requeridos.where(
+                    "fecha_de_inicio <= ? AND (
+                       fecha_de_finalizacion IS NULL
+                       OR fecha_de_finalizacion > ?
+                    )", pb.fecha_de_la_prestacion, pb.fecha_de_la_prestacion).
+                    each do |drr|
                     if drr.dato_reportable_id == pb_benef_prest.dato_reportable_1_id
                       dra_valor = pb_benef_prest.dato_reportable_1_valor
                     elsif drr.dato_reportable_id == pb_benef_prest.dato_reportable_2_id
@@ -595,7 +600,12 @@ class RegistroMasivoDePrestaciones
       })
       prestacion_brindada.es_catastrofica = prestacion_brindada.prestacion.es_catastrofica
       dras = []
-      prestacion_brindada.prestacion.datos_reportables_requeridos.each do |drr|
+      prestacion_brindada.prestacion.datos_reportables_requeridos.where(
+        "fecha_de_inicio <= ? AND (
+           fecha_de_finalizacion IS NULL
+           OR fecha_de_finalizacion > ?
+        )", prestacion_brindada.fecha_de_la_prestacion, prestacion_brindada.fecha_de_la_prestacion).
+        each do |drr|
         if drr.dato_reportable_id == pb.dato_reportable_1_id
           dra_valor = pb.dato_reportable_1_valor
         elsif drr.dato_reportable_id == pb.dato_reportable_2_id
