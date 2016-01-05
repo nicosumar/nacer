@@ -1182,7 +1182,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     Prestacion.find(457).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación CTC010A97 - Control odontológico (6 a 9 años)
-    DatoReportableRequerido.find(29).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+    DatoReportableRequerido.find(267).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
       fecha_de_finalizacion: fecha_anexo_2
     })
     DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
@@ -1194,7 +1194,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       minimo: 0.0,
       maximo: 32.0
     })
-    DatoReportableRequerido.find(30).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+    DatoReportableRequerido.find(268).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
       fecha_de_finalizacion: fecha_anexo_2
     })
     DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
@@ -1206,7 +1206,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       minimo: 0.0,
       maximo: 32.0
     })
-    DatoReportableRequerido.find(31).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+    DatoReportableRequerido.find(269).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
       fecha_de_finalizacion: fecha_anexo_2
     })
     DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2

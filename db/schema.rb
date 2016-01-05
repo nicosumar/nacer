@@ -1330,7 +1330,6 @@ ActiveRecord::Schema.define(:version => 20160103144346) do
   end
 
   add_index "prestaciones_liquidadas", ["clave_de_beneficiario"], :name => "prestaciones_liquidadas_clave_de_beneficiario_idx"
-  add_index "prestaciones_liquidadas", ["estado_de_la_prestacion_liquidada_id"], :name => "idx_on_prestaciones_liquidadas_epli"
   add_index "prestaciones_liquidadas", ["liquidacion_id", "unidad_de_alta_de_datos_id", "efector_id", "prestacion_incluida_id", "fecha_de_la_prestacion", "clave_de_beneficiario"], :name => "prestaciones_liquidadas_liquidacion_id_unidad_de_alta_de_da_key", :unique => true
 
   create_table "prestaciones_liquidadas_advertencias", :force => true do |t|
