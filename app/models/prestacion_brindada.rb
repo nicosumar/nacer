@@ -329,39 +329,51 @@ class PrestacionBrindada < ActiveRecord::Base
 
   def indice_cpod_valido?
     self.datos_reportables_asociados.each do |dra|
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_C'
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CPOD_C'
         cpod_c = dra.valor_integer
+      else
+        cpod_c = nil
       end
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_P'
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CPOD_P'
         cpod_p = dra.valor_integer
+      else
+        cpod_p = nil
       end
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_O'
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CPOD_O'
         cpod_o = dra.valor_integer
+      else
+        cpod_o = nil
       end
     end
 
-    if cpod_c && cpod_p && cpod_o
+    if cpod_c.present? && cpod_p.present? && cpod_o.present?
       return (cpod_c + cpod_p + cpod_o) <= 32
     else
       return true
     end
   end
 
-  def indice_ceod_valido?
+  def indice_ceo_valido?
     self.datos_reportables_asociados.each do |dra|
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CEOD_C'
-        ceod_c = dra.valor_integer
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CEO_C'
+        ceo_c = dra.valor_integer
+      else
+        ceo_c = nil
       end
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CEOD_E'
-        ceod_e = dra.valor_integer
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CEO_E'
+        ceo_e = dra.valor_integer
+      else
+        ceo_e = nil
       end
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CEOD_O'
-        ceod_o = dra.valor_integer
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CEO_O'
+        ceo_o = dra.valor_integer
+      else
+        ceo_o = nil
       end
     end
 
-    if ceod_c && ceod_e && ceod_o
-      return (ceod_c + ceod_e + ceod_o) <= 32
+    if ceo_c.present? && ceo_e.present? && ceo_o.present?
+      return (ceo_c + ceo_e + ceo_o) <= 32
     else
       return true
     end
