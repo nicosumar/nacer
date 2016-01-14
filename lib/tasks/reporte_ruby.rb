@@ -299,6 +299,453 @@ class ReporteRuby
     return cq
   end # end 
 
+  def self.bimestral(arg_grupo, arg_bimestre, arg_nomenclador, arg_anio)
+    
+    if arg_bimestre.to_i < 1 and arg_bimestre > 6
+      return []
+    end
+
+    case arg_grupo
+    when 1 then return self.grupo_embarazadas(arg_bimestre, arg_nomenclador, arg_anio)
+    when 2 then return self.grupo_0_a_6(arg_bimestre, arg_nomenclador, arg_anio)
+    when 3 then return self.grupo_6_a_9(arg_bimestre, arg_nomenclador, arg_anio)
+    when 4 then return self.grupo_10_a_19(arg_bimestre, arg_nomenclador, arg_anio)
+    when 5 then return self.mujeres_20_a_64(arg_bimestre, arg_nomenclador, arg_anio)
+    else return []
+    end
+
+  end
+  
+  def self.grupo_embarazadas(arg_bimestre, arg_nomenclador, arg_anio)
+
+    meses = case arg_bimestre
+      when 1 then [1,2].join(", ")
+      when 2 then [3,4].join(", ")
+      when 3 then [5,6].join(", ")
+      when 4 then [7,8].join(", ")
+      when 5 then [9,10].join(", ")
+      when 6 then [11, 12].join(", ")
+      else return false
+    end
+    sql = ""
+    sql_resto = ""
+    resp = []
+    filtro_prest = []
+    
+    # array con la primer dimension el id de la prestacion, la segunda un array de diagnosticos
+    prestaciones_paquete_basico_diagnostico = [
+      [["CTC005"],["W78"]], #CTC005W78
+      [["CTC006"],["W78"]], #CTC006W78
+      [["CTC010"],["W78"]], #CTC010W78
+      [["TAT001"],["A98"]], #TAT001A98
+      [["ITQ001"],["W90"]], #ITQ001W90
+      [["ITQ001"],["W91"]], #ITQ001W91
+      [["ITQ002"],["W88"]], #ITQ002W88
+      [["ITQ002"],["W89"]], #ITQ002W89
+      [["ITQ005"],["W06"]], #ITQ005W06
+      [["ITQ006"],["W07"]], #ITQ006W07
+      [["ITQ007"],["W08"]], #ITQ007W08
+      [["NTN006"],["O10.0", "O10.4", "O11", "O14", "O15", "O16", 
+                   "O24.4", "P05", "O47", "O72", "O72.1", "O72.2", 
+                   "O98.4", "Q39.0", "Q39.1", "Q39.2", "Q79.3", "Q41", 
+                   "Q42", "Q43.3", "Q43.4", "Q42.0", "Q42.1", "Q42.2", 
+                   "Q42.3", "Q03", "Q05", "Q43.1"]] #NTN006 - todos los diagnosticos
+    ]
+
+    prestaciones_paquete_basico_diagnostico.each do |r| 
+      r[0].each do |p|  #prestacion
+        r[1].each do |d|  #diagnostico
+          cod_prestacion = p
+          cod_diagnostico = d
+            filtro_prest << "( pi.prestacion_codigo = '#{cod_prestacion}' and d.codigo = '#{cod_diagnostico}' )"
+        end # end diagnostico
+      end # end prestaciones
+    end # end resultado 
+
+    sql_b = <<-SQL 
+      FROM prestaciones_incluidas pi
+        INNER JOIN prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id 
+        INNER JOIN  prestaciones_prestaciones_pdss pppdss ON pppdss.prestacion_id = pi.prestacion_id 
+        INNER JOIN  prestaciones_pdss pdss ON pdss.id = pppdss.prestacion_pdss_id
+        INNER JOIN  grupos_pdss gpdss ON gpdss.id = pdss.grupo_pdss_id
+        INNER JOIN  secciones_pdss spdss ON spdss.id = gpdss.seccion_pdss_id
+        INNER JOIN diagnosticos d on d.id = p.diagnostico_id 
+        INNER JOIN efectores e on e.id = p.efector_id 
+        INNER JOIN liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = p.id  
+        INNER JOIN nomencladores n on n.id = pi.nomenclador_id 
+      WHERE p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada 
+      AND ( 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND n.fecha_de_finalizacion IS NULL) OR 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND p.fecha_de_la_prestacion < n.fecha_de_finalizacion )   
+          )
+      AND extract(month from p.fecha_de_la_prestacion )  in (#{meses} )
+      AND extract(year from p.fecha_de_la_prestacion ) = ? 
+      AND spdss.id = 1
+    SQL
+
+    sql = <<-SQL
+      SELECT 'Embarazadas' "Grupo", 'Priorizadas' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND ( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+
+      UNION
+
+      SELECT 'Embarazadas' "Grupo", 'Resto' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND NOT( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+    SQL
+
+
+    cq = CustomQuery.buscar (
+    {
+      sql: sql,
+      values: [arg_anio, arg_anio]
+    })
+
+    return cq
+
+  end # end metodo
+
+  def self.grupo_0_a_6(arg_bimestre, arg_nomenclador, arg_anio)
+
+    meses = case arg_bimestre
+      when 1 then [1,2].join(", ")
+      when 2 then [3,4].join(", ")
+      when 3 then [5,6].join(", ")
+      when 4 then [7,8].join(", ")
+      when 5 then [9,10].join(", ")
+      when 6 then [11, 12].join(", ")
+      else return false
+    end
+    sql = ""
+    sql_resto = ""
+    resp = []
+    filtro_prest = []
+
+    prestaciones_paquete_basico_diagnostico = [
+      [["CTC001"],["A97"]], #CTC001A97
+      [["CTC001"],["A97"]]  #CTC001A97
+    ]
+
+    prestaciones_paquete_basico_diagnostico.each do |r| 
+      r[0].each do |p|  #prestacion
+        r[1].each do |d|  #diagnostico
+          cod_prestacion = p
+          cod_diagnostico = d
+            filtro_prest << "( pi.prestacion_codigo = '#{cod_prestacion}' and d.codigo = '#{cod_diagnostico}' )"
+        end # end diagnostico
+      end # end prestaciones
+    end # end resultado 
+
+    sql_b = <<-SQL 
+      FROM prestaciones_incluidas pi
+        INNER JOIN prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id 
+        INNER JOIN  prestaciones_prestaciones_pdss pppdss ON pppdss.prestacion_id = pi.prestacion_id 
+        INNER JOIN  prestaciones_pdss pdss ON pdss.id = pppdss.prestacion_pdss_id
+        INNER JOIN  grupos_pdss gpdss ON gpdss.id = pdss.grupo_pdss_id
+        INNER JOIN  secciones_pdss spdss ON spdss.id = gpdss.seccion_pdss_id
+        INNER JOIN diagnosticos d on d.id = p.diagnostico_id 
+        INNER JOIN efectores e on e.id = p.efector_id 
+        INNER JOIN liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = p.id  
+        INNER JOIN nomencladores n on n.id = pi.nomenclador_id 
+      WHERE p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada 
+      AND ( 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND n.fecha_de_finalizacion IS NULL) OR 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND p.fecha_de_la_prestacion < n.fecha_de_finalizacion )   
+          )
+      AND extract(month from p.fecha_de_la_prestacion )  in (#{meses} )
+      AND extract(year from p.fecha_de_la_prestacion ) = ? 
+      AND spdss.id = 2
+    SQL
+
+    sql = <<-SQL
+      SELECT 'Cero a Cinco' "Grupo", 'Priorizadas' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND ( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+
+      UNION
+
+      SELECT 'Cero a Cinco' "Grupo", 'Resto' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND NOT( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+    SQL
+
+
+    cq = CustomQuery.buscar (
+    {
+      sql: sql,
+      values: [arg_anio, arg_anio]
+    })
+    return cq
+
+  end # end metodo
+
+  def self.grupo_6_a_9(arg_bimestre, arg_nomenclador, arg_anio)
+    
+    meses = case arg_bimestre
+      when 1 then [1,2].join(", ")
+      when 2 then [3,4].join(", ")
+      when 3 then [5,6].join(", ")
+      when 4 then [7,8].join(", ")
+      when 5 then [9,10].join(", ")
+      when 6 then [11, 12].join(", ")
+      else return false
+    end
+    
+    sql = ""
+    sql_resto = ""
+    resp = []
+    filtro_prest = []
+    
+    prestaciones_paquete_basico_diagnostico = [
+      [["CTC001"],["A97"]],  #CTC001A97
+      [["IMV001"],["A98"]],  #IMV001A98
+      [["CTC002"],["T83"]]   #CTC002T83
+    ]
+
+    prestaciones_paquete_basico_diagnostico.each do |r| 
+      r[0].each do |p|  #prestacion
+        r[1].each do |d|  #diagnostico
+          cod_prestacion = p
+          cod_diagnostico = d
+            filtro_prest << "( pi.prestacion_codigo = '#{cod_prestacion}' and d.codigo = '#{cod_diagnostico}' )"
+        end # end diagnostico
+      end # end prestaciones
+    end # end resultado 
+
+    sql_b = <<-SQL 
+      FROM prestaciones_incluidas pi
+        INNER JOIN prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id 
+        INNER JOIN  prestaciones_prestaciones_pdss pppdss ON pppdss.prestacion_id = pi.prestacion_id 
+        INNER JOIN  prestaciones_pdss pdss ON pdss.id = pppdss.prestacion_pdss_id
+        INNER JOIN  grupos_pdss gpdss ON gpdss.id = pdss.grupo_pdss_id
+        INNER JOIN  secciones_pdss spdss ON spdss.id = gpdss.seccion_pdss_id
+        INNER JOIN diagnosticos d on d.id = p.diagnostico_id 
+        INNER JOIN efectores e on e.id = p.efector_id 
+        INNER JOIN liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = p.id  
+        INNER JOIN nomencladores n on n.id = pi.nomenclador_id 
+      WHERE p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada 
+      AND ( 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND n.fecha_de_finalizacion IS NULL) OR 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND p.fecha_de_la_prestacion < n.fecha_de_finalizacion )   
+          )
+      AND extract(month from p.fecha_de_la_prestacion )  in (#{meses} )
+      AND extract(year from p.fecha_de_la_prestacion ) = ? 
+      AND spdss.id = 3
+    SQL
+
+    sql = <<-SQL
+      SELECT 'Seis a Nueve' "Grupo", 'Priorizadas' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND ( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+
+      UNION
+
+      SELECT 'Seis a Nueve' "Grupo", 'Resto' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND NOT( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+    SQL
+
+    cq = CustomQuery.buscar (
+    {
+      sql: sql,
+      values: [arg_anio, arg_anio]
+    })
+    return cq
+
+  end #end method
+
+  def self.grupo_10_a_19(arg_bimestre, arg_nomenclador, arg_anio)
+    
+    meses = case arg_bimestre
+      when 1 then [1,2].join(", ")
+      when 2 then [3,4].join(", ")
+      when 3 then [5,6].join(", ")
+      when 4 then [7,8].join(", ")
+      when 5 then [9,10].join(", ")
+      when 6 then [11, 12].join(", ")
+      else return false
+    end
+    
+    sql = ""
+    sql_resto = ""
+    resp = []
+    filtro_prest = []
+    
+    prestaciones_paquete_basico_diagnostico = [
+      [["CTC001"],["A97"]], #CTC001A97
+      [["IMV001"],["A98"]], #CTC001A97
+      [["TAT010"],["A98"]], #TAT010A98
+      [["TAT005"],["A98"]], #TAT005A98
+      [["TAT007"],["A98"]], #TAT007A98
+      [["TAT008"],["A98"]], #TAT008A98
+      [["TAT009"],["A98"]], #TAT009A98
+      [["TAT011"],["A98"]], #TAT011A98
+      [["TAT012"],["A98"]], #TAT012A98
+      [["TAT013"],["A98"]], #TAT013A98
+      [["TAT014"],["A98"]]  #TAT014A98
+    ]
+
+    prestaciones_paquete_basico_diagnostico.each do |r| 
+      r[0].each do |p|  #prestacion
+        r[1].each do |d|  #diagnostico
+          cod_prestacion = p
+          cod_diagnostico = d
+            filtro_prest << "( pi.prestacion_codigo = '#{cod_prestacion}' and d.codigo = '#{cod_diagnostico}' )"
+        end # end diagnostico
+      end # end prestaciones
+    end # end resultado 
+
+    sql_b = <<-SQL 
+      FROM prestaciones_incluidas pi
+        INNER JOIN prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id 
+        INNER JOIN  prestaciones_prestaciones_pdss pppdss ON pppdss.prestacion_id = pi.prestacion_id 
+        INNER JOIN  prestaciones_pdss pdss ON pdss.id = pppdss.prestacion_pdss_id
+        INNER JOIN  grupos_pdss gpdss ON gpdss.id = pdss.grupo_pdss_id
+        INNER JOIN  secciones_pdss spdss ON spdss.id = gpdss.seccion_pdss_id
+        INNER JOIN diagnosticos d on d.id = p.diagnostico_id 
+        INNER JOIN efectores e on e.id = p.efector_id 
+        INNER JOIN liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = p.id  
+        INNER JOIN nomencladores n on n.id = pi.nomenclador_id 
+      WHERE p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada 
+      AND ( 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND n.fecha_de_finalizacion IS NULL) OR 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND p.fecha_de_la_prestacion < n.fecha_de_finalizacion )   
+          )
+      AND extract(month from p.fecha_de_la_prestacion )  in (#{meses} )
+      AND extract(year from p.fecha_de_la_prestacion ) = ? 
+      AND spdss.id = 4
+    SQL
+
+    sql = <<-SQL
+      SELECT 'Diez a Diecinueve' "Grupo", 'Priorizadas' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND ( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+
+      UNION
+
+      SELECT 'Diez a Diecinueve' "Grupo", 'Resto' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND NOT( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+    SQL
+
+
+    cq = CustomQuery.buscar (
+    {
+      sql: sql,
+      values: [arg_anio, arg_anio]
+    })
+    return cq
+
+  end #end method
+
+  def self.mujeres_20_a_64(arg_bimestre, arg_nomenclador, arg_anio)
+    
+    meses = case arg_bimestre
+      when 1 then [1,2].join(", ")
+      when 2 then [3,4].join(", ")
+      when 3 then [5,6].join(", ")
+      when 4 then [7,8].join(", ")
+      when 5 then [9,10].join(", ")
+      when 6 then [11, 12].join(", ")
+      else return false
+    end
+    
+    sql = ""
+    sql_resto = ""
+    resp = []
+    filtro_prest = []
+    
+    prestaciones_paquete_basico_diagnostico = [
+      [["CTC001"],["A97"]],   #CTC001A97
+      [["CTC008"],["A97"]],   #CTC008A97
+      [["TAT007"],["A98"]],  #TAT007A98
+      [["TAT013"],["A98"]],  #TAT013A98
+      [["PRP018"],["A98"]],  #PRP018A98
+      [["IGR014"],["A98"]],  #IGR014A98
+      [["APA002"],["X76"]],  #APA002X76
+      [["APA002"],["A98"]],  #APA002A98
+      [["APA002"],["X75"]],  #APA002X75
+      [["APA002"],["X80"]],  #APA002X80
+      [["APA001"],["A98"]],  #APA001A98
+      [["APA001"],["X86"]],  #APA001X86
+      [["APA001"],["X75"]],  #APA001X75
+      [["NTN002"],["X75"]]   #NTN002X75
+    ]
+
+    prestaciones_paquete_basico_diagnostico.each do |r| 
+      r[0].each do |p|  #prestacion
+        r[1].each do |d|  #diagnostico
+          cod_prestacion = p
+          cod_diagnostico = d
+            filtro_prest << "( pi.prestacion_codigo = '#{cod_prestacion}' and d.codigo = '#{cod_diagnostico}' )"
+        end # end diagnostico
+      end # end prestaciones
+    end # end resultado 
+
+    sql_b = <<-SQL 
+      FROM prestaciones_incluidas pi
+        INNER JOIN prestaciones_liquidadas p on p.prestacion_incluida_id = pi.id 
+        INNER JOIN  prestaciones_prestaciones_pdss pppdss ON pppdss.prestacion_id = pi.prestacion_id 
+        INNER JOIN  prestaciones_pdss pdss ON pdss.id = pppdss.prestacion_pdss_id
+        INNER JOIN  grupos_pdss gpdss ON gpdss.id = pdss.grupo_pdss_id
+        INNER JOIN  secciones_pdss spdss ON spdss.id = gpdss.seccion_pdss_id
+        INNER JOIN diagnosticos d on d.id = p.diagnostico_id 
+        INNER JOIN efectores e on e.id = p.efector_id 
+        INNER JOIN liquidaciones_sumar_cuasifacturas_detalles det on det.prestacion_liquidada_id = p.id  
+        INNER JOIN nomencladores n on n.id = pi.nomenclador_id 
+      WHERE p.estado_de_la_prestacion_liquidada_id in (5, 12) --aceptada pendiente de pago, o pagada 
+      AND ( 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND n.fecha_de_finalizacion IS NULL) OR 
+            (p.fecha_de_la_prestacion >= n.fecha_de_inicio AND p.fecha_de_la_prestacion < n.fecha_de_finalizacion )   
+          )
+      AND extract(month from p.fecha_de_la_prestacion )  in (#{meses} )
+      AND extract(year from p.fecha_de_la_prestacion ) = ? 
+      AND spdss.id = 5
+    SQL
+
+    sql = <<-SQL
+      SELECT 'Veinte a Sesenta y cuatro' "Grupo", 'Priorizadas' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND ( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+
+      UNION
+
+      SELECT 'Veinte a Sesenta y cuatro' "Grupo", 'Resto' "Tipo", pi.prestacion_codigo||'-'||pi.prestacion_nombre "Prestación",
+             d.codigo "Diagnóstico", count(*) "Cant.", round(sum(p.monto),2) "Total"
+      #{sql_b}
+      AND NOT( #{filtro_prest.join(" OR ")} )
+      GROUP BY pi.prestacion_codigo||'-'||pi.prestacion_nombre, d.codigo 
+    SQL
+
+
+    cq = CustomQuery.buscar (
+    {
+      sql: sql,
+      values: [arg_anio, arg_anio]
+    })
+    return cq
+
+  end
+
 end # end class
 
 
