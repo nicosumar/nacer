@@ -159,8 +159,7 @@ class Periodo < ActiveRecord::Base
             PARTITION BY
               sq.pl_efector_id,
               sq.pl_fecha_de_la_prestacion,
-              sq.pi_prestacion_id,
-              sq.pl_diagnostico_id,
+              p.codigo || d.codigo,
               sq.pl_clave_de_beneficiario
           ) "orden",
           e.cuie "efector"
