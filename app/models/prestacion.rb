@@ -124,6 +124,7 @@ class Prestacion < ActiveRecord::Base
               WHERE efector_id = \'#{efector_id}\' AND fecha_de_finalizacion IS NULL
           )
           AND objeto_de_la_prestacion_id IS NOT NULL
+          AND activa
         ORDER BY codigo;")
   end
 

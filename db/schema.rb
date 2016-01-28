@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150819195538) do
+ActiveRecord::Schema.define(:version => 20160122023337) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -455,6 +455,28 @@ ActiveRecord::Schema.define(:version => 20150819195538) do
     t.decimal "maximo",                :precision => 15, :scale => 4
   end
 
+  create_table "datos_reportables_requeridos_sirge", :force => true do |t|
+    t.integer  "prestacion_id",            :null => false
+    t.integer  "dato_reportable_sirge_id", :null => false
+    t.integer  "orden",                    :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+  end
+
+  add_index "datos_reportables_requeridos_sirge", ["dato_reportable_sirge_id"], :name => "idx_drrs_on_dato_reportable_sirge_id"
+  add_index "datos_reportables_requeridos_sirge", ["prestacion_id", "dato_reportable_sirge_id"], :name => "idx_uniq_drrs_on_prestacion_drs", :unique => true
+  add_index "datos_reportables_requeridos_sirge", ["prestacion_id", "orden"], :name => "idx_uniq_drrs_on_prestacion_orden", :unique => true
+  add_index "datos_reportables_requeridos_sirge", ["prestacion_id"], :name => "index_datos_reportables_requeridos_sirge_on_prestacion_id"
+
+  create_table "datos_reportables_sirge", :force => true do |t|
+    t.string   "nombre",                    :null => false
+    t.string   "codigo",                    :null => false
+    t.integer  "sirge_id",                  :null => false
+    t.string   "funcion_de_transformacion", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
   create_table "departamentos", :force => true do |t|
     t.string  "nombre",                :null => false
     t.integer "provincia_id",          :null => false
@@ -494,6 +516,24 @@ ActiveRecord::Schema.define(:version => 20150819195538) do
 
   add_index "diagnosticos", ["codigo"], :name => "unq_codigo", :unique => true
   add_index "diagnosticos", ["grupo_de_diagnosticos_id"], :name => "index_diagnosticos_on_grupo_de_diagnosticos_id"
+
+  create_table "diagnosticos_biopsias", :force => true do |t|
+    t.string  "codigo"
+    t.string  "nombre"
+    t.integer "codigo_sirge"
+  end
+
+  create_table "diagnosticos_biopsias_mamas", :force => true do |t|
+    t.string  "codigo"
+    t.string  "nombre"
+    t.integer "codigo_sirge"
+  end
+
+  create_table "diagnosticos_citologias", :force => true do |t|
+    t.string  "codigo"
+    t.string  "nombre"
+    t.integer "codigo_sirge"
+  end
 
   create_table "diagnosticos_prestaciones", :id => false, :force => true do |t|
     t.integer "diagnostico_id"
@@ -914,10 +954,14 @@ ActiveRecord::Schema.define(:version => 20150819195538) do
     t.boolean  "visible",      :default => true
   end
 
+  add_index "metodos_de_validacion", ["metodo"], :name => "index_metodos_de_validacion_on_metodo", :unique => true
+
   create_table "metodos_de_validacion_prestaciones", :id => false, :force => true do |t|
     t.integer "metodo_de_validacion_id"
     t.integer "prestacion_id"
   end
+
+  add_index "metodos_de_validacion_prestaciones", ["metodo_de_validacion_id", "prestacion_id"], :name => "idx_uniq_on_metodos_de_validacion_prestaciones_mmvv_pp", :unique => true
 
   create_table "migra_anexos", :id => false, :force => true do |t|
     t.integer "id",                                   :null => false
@@ -1446,6 +1490,18 @@ ActiveRecord::Schema.define(:version => 20150819195538) do
     t.integer  "updater_id"
   end
 
+  create_table "resultados_de_otoemisiones", :force => true do |t|
+    t.string "nombre"
+    t.string "codigo"
+    t.string "subcodigo_sirge"
+  end
+
+  create_table "resultados_vdrl", :force => true do |t|
+    t.string "codigo"
+    t.string "nombre"
+    t.string "codigo_sirge"
+  end
+
   create_table "secciones_pdss", :force => true do |t|
     t.string  "nombre"
     t.string  "codigo"
@@ -1537,6 +1593,12 @@ ActiveRecord::Schema.define(:version => 20150819195538) do
     t.string   "descripcion"
     t.datetime "created_at",               :null => false
     t.datetime "updated_at",               :null => false
+  end
+
+  create_table "tratamientos_instaurados_cu", :force => true do |t|
+    t.string  "nombre"
+    t.string  "codigo"
+    t.integer "codigo_sirge"
   end
 
   create_table "tribus_originarias", :force => true do |t|

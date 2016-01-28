@@ -328,24 +328,45 @@ class PrestacionBrindada < ActiveRecord::Base
   end
 
   def indice_cpod_valido?
+    cpod_c = cpod_p = cpod_o = nil
     self.datos_reportables_asociados.each do |dra|
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_C'
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CPOD_C' then
         cpod_c = dra.valor_integer
       end
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_P'
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CPOD_P'
         cpod_p = dra.valor_integer
       end
-      if dra.dato_reportable_requerido.dato_reportable.codigo = 'CPOD_O'
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CPOD_O'
         cpod_o = dra.valor_integer
       end
     end
 
-    if cpod_c && cpod_p && cpod_o
+    if cpod_c.present? && cpod_p.present? && cpod_o.present?
       return (cpod_c + cpod_p + cpod_o) <= 32
     else
-    return false
+      return true
+    end
+  end
+
+  def indice_ceo_valido?
+    ceo_c = ceo_e = ceo_o = nil
+    self.datos_reportables_asociados.each do |dra|
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CEO_C'
+        ceo_c = dra.valor_integer
+      end
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CEO_E'
+        ceo_e = dra.valor_integer
+      end
+      if dra.dato_reportable_requerido.dato_reportable.codigo == 'CEO_O'
+        ceo_o = dra.valor_integer
+      end
     end
 
+    if ceo_c.present? && ceo_e.present? && ceo_o.present?
+      return (ceo_c + ceo_e + ceo_o) <= 32
+    else
+      return true
+    end
   end
 
   def recien_nacido?
