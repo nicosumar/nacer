@@ -39,7 +39,6 @@ class LiquidacionesSumarAnexosAdministrativosController < ApplicationController
   def finalizar_anexo
     @liquidacion_sumar_anexo_administrativo = LiquidacionSumarAnexoAdministrativo.find(params[:id])
 
-    @rendicion.update
     @liquidacion_sumar_anexo_administrativo.finalizar_anexo
 
     redirect_to @liquidacion_sumar_anexo_administrativo,:flash => { :tipo => :ok, :titulo => "El anexo se finalizó correctamente" } 

@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+require 'will_paginate/array'
+
 class PrestacionesController < ApplicationController
   before_filter :authenticate_user!
 
@@ -8,38 +10,70 @@ class PrestacionesController < ApplicationController
 
       cadena = params[:q]
       ids = eval( params[:ids] ) if params[:ids].present?
+      comunitaria = eval(params[:comunitaria]) if params[:comunitaria].present?
       x = params[:page]
       y = params[:per]
       
+      unless comunitaria
+        beneficiario =
+          NovedadDelAfiliado.where(
+            :clave_de_beneficiario => params[:clave_de_beneficiario],
+            :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["I", "R", "P", "Z", "U", "S"]),
+            :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("A")
+          ).first
+        if not beneficiario.present?
+          beneficiario =
+            NovedadDelAfiliado.where(
+              :clave_de_beneficiario => params[:clave_de_beneficiario],
+              :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
+              :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("M")
+            ).first
+        end
+        if not beneficiario.present?
+          beneficiario = Afiliado.find_by_clave_de_beneficiario(params[:clave_de_beneficiario])
+        end
+      end
 
-      beneficiario = Afiliado.where(clave_de_beneficiario: params[:clave_de_beneficiario]).first
       fecha_de_la_prestacion = params[:fecha_de_la_prestacion].to_date
       efector = Efector.find(params[:efector_id])
 
       condicion_id = "1=1"
       if ids.present? 
-        condicion_id = "prestacion_id = #{ids.to_s}"
+        condicion_id = ["prestacion_id = ?", ids.to_s]
+      else
+        condicion_id = ["(prestaciones.codigo ilike ? OR prestaciones.nombre ilike ?)","%#{cadena}%", "%#{cadena}%"]
+      end
+
+      if comunitaria
+        condicion_comunitaria =["comunitaria = ?", comunitaria]
+      else
+        condicion_comunitaria = "1=1"
       end
 
       # Generar el listado de prestaciones válidas
       autorizadas_por_efector =
-        Prestacion.includes(:diagnosticos).find(
+        Prestacion.includes(:diagnosticos).where( id: (
           efector.prestaciones_autorizadas_al_dia(fecha_de_la_prestacion).
                   joins("join prestaciones on prestaciones.id = prestaciones_autorizadas.prestacion_id").
-                  where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')").
-                  where(condicion_id).
-                  paginate(page: x, per_page: y).
-                  collect{ |p| p.prestacion_id }
-        )
+                  where(condicion_id ).
+                  where(condicion_comunitaria).
+                  collect{ |p| p.prestacion_id })
+        ).order("prestaciones.codigo, prestaciones.nombre")
 
-      autorizadas_por_grupo = beneficiario.grupo_poblacional_al_dia(fecha_de_la_prestacion).
-                                          prestaciones_autorizadas.
-                                          where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')")
-      autorizadas_por_sexo = beneficiario.sexo.prestaciones_autorizadas.
-                                              where("(prestaciones.codigo ilike '%#{cadena}%' OR prestaciones.nombre ilike '%#{cadena}%')")
-      @prestaciones = autorizadas_por_efector.keep_if do |p|
-        autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
+      unless comunitaria
+        autorizadas_por_grupo = beneficiario.grupo_poblacional_al_dia(fecha_de_la_prestacion).
+                                            prestaciones_autorizadas.
+                                            where(condicion_id)
+        autorizadas_por_sexo = beneficiario.sexo.prestaciones_autorizadas.
+                                                where(condicion_id )
+        prestaciones = autorizadas_por_efector.keep_if do |p|
+          autorizadas_por_sexo.member?(p) && autorizadas_por_grupo.member?(p)
+        end
+      else
+        prestaciones = autorizadas_por_efector
       end
+      
+      @prestaciones = prestaciones.paginate(page: x, per_page: y)
 
       hash_prestaciones = []
       @prestaciones.each do |p|
@@ -47,30 +81,36 @@ class PrestacionesController < ApplicationController
         hash_dr= []
         hash_diagnosticos = []
 
-        p.datos_reportables.order(:nombre_de_grupo, :orden_de_grupo).select("datos_reportables.*, datos_reportables_requeridos.id dr_id").each do |dr|
-
-          hash_valores_enum = []
-          
-          if dr.clase_para_enumeracion.present? 
-            eval(dr.clase_para_enumeracion).all.each do |val|
-              hash_valores_enum << {
-                id: val.id,
-                nombre: val.nombre
-              }
+        p.datos_reportables.where("
+            datos_reportables_requeridos.fecha_de_inicio <= ?
+            AND (
+              datos_reportables_requeridos.fecha_de_finalizacion > ?
+              OR datos_reportables_requeridos.fecha_de_finalizacion IS NULL
+            )",
+            fecha_de_la_prestacion,
+            fecha_de_la_prestacion
+          ).order("nombre_de_grupo, orden_de_grupo NULLS FIRST").
+          select("datos_reportables.*, datos_reportables_requeridos.id dr_id").each do |dr|
+            hash_valores_enum = []
+            if dr.clase_para_enumeracion.present?
+              eval(dr.clase_para_enumeracion).all.each do |val|
+                hash_valores_enum << {
+                  id: val.id,
+                  nombre: val.nombre
+                }
+              end
             end
+            hash_dr << {
+              nombre_de_grupo: (dr.nombre_de_grupo.present? ? dr.nombre_de_grupo : ""),
+              codigo_de_grupo: (dr.codigo_de_grupo.present? ? dr.codigo_de_grupo : ""),
+              nombre: dr.nombre,
+              dato_reportable_id: dr.dr_id,
+              orden: (dr.orden_de_grupo.present? ? dr.orden_de_grupo : ""),
+              tipo: dr.tipo_ruby,
+              enumerable: dr.clase_para_enumeracion.present?,
+              valores: hash_valores_enum
+            }
           end
-
-          hash_dr << {
-            nombre_de_grupo: (dr.nombre_de_grupo.present? ? dr.nombre_de_grupo : ""),
-            codigo_de_grupo: (dr.codigo_de_grupo.present? ? dr.codigo_de_grupo : ""),
-            nombre: dr.nombre,
-            dato_reportable_id: dr.dr_id,
-            orden: (dr.orden_de_grupo.present? ? dr.orden_de_grupo : ""),
-            tipo: dr.tipo_ruby,
-            enumerable: dr.clase_para_enumeracion.present?,
-            valores: hash_valores_enum
-          }
-        end
         
         p.diagnosticos.each do |d|
           hash_diagnosticos << {
@@ -95,7 +135,7 @@ class PrestacionesController < ApplicationController
       
       respond_to do |format|
           format.json {
-            render json: {total: hash_prestaciones.size, prestaciones: hash_prestaciones }
+            render json: {total: prestaciones.size, prestaciones: hash_prestaciones }
           }
       end
     rescue Exception => e

@@ -2,7 +2,7 @@
 class DatoReportableRequerido < ActiveRecord::Base
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :dato_reportable_id, :fecha_de_inicio, :fecha_de_finalizacion, :minimo, :maximo, :necesario, :obligatorio, :prestacion_id
+  attr_accessible :prestacion, :dato_reportable, :fecha_de_inicio, :fecha_de_finalizacion, :minimo, :maximo, :necesario, :obligatorio
 
   # Asociaciones
   belongs_to :dato_reportable

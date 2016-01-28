@@ -234,7 +234,8 @@ class LiquidacionSumar < ActiveRecord::Base
               "                  (vpb.fecha_de_la_prestacion between pa.fecha_de_inicio and pa.fecha_de_finalizacion )\n"+
               "             WHEN vpb.clave_de_beneficiario is null then TRUE\n"+
               "        END\n"+
-              "      ) "
+              "      ) \n"+
+              "  AND pi.nomenclador_id = nom.id "
         })
 
       if cq
@@ -284,7 +285,9 @@ class LiquidacionSumar < ActiveRecord::Base
               "                        (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
               "                        limit 1\n"+
               "                        )\n"+
-              "AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
+              "AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
+              "AND pi.nomenclador_id = nom.id "
+
       })
       if cq
         logger.warn ("Tabla de prestaciones Liquidadas datos generada")
@@ -435,7 +438,9 @@ class LiquidacionSumar < ActiveRecord::Base
 
     # Comprobar que no existen cuasifacturas generadas para poder eliminar
     unless self.liquidaciones_sumar_cuasifacturas.size > 0
-      ActiveRecord::Base.connection.execute "delete \n"+
+      ActiveRecord::Base.connection.execute "
+              SET session_replication_role = replica;
+               delete \n"+
               "from prestaciones_liquidadas_advertencias\n"+
               "where liquidacion_id = #{self.id};\n"+
               "delete \n"+
@@ -448,7 +453,8 @@ class LiquidacionSumar < ActiveRecord::Base
               ";\n"+
               "delete\n"+
               "from prestaciones_incluidas\n"+
-              "where liquidacion_id = #{self.id}"
+              "where liquidacion_id = #{self.id};
+              SET session_replication_role = DEFAULT;"
     else
       raise "Las cuasifacturas ya han sido generadas!"
     end 

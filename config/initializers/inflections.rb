@@ -476,6 +476,36 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("GrupoDeDiagnosticos", "Grupos·De·Diagnosticos·")
   inflect.irregular("Grupo·De·Diagnosticos·", "GruposDeDiagnosticos")
 
+  # Resultados de otoemisiones
+  inflect.irregular("resultado_de_otoemision", "resultados·_de·_otoemisiones·")
+  inflect.irregular("resultado·_de·_otoemision·", "resultados_de_otoemisiones")
+  inflect.irregular("ResultadoDeOtoemision", "Resultados·De·Otoemisiones·")
+  inflect.irregular("Resultado·De·Otoemision·", "ResultadosDeOtoemisiones")
+
+  # Resultados VDRL
+  inflect.irregular("resultado_vdrl", "resultados·_vdrl·")
+  inflect.irregular("resultado·_vdrl·", "resultados_vdrl")
+  inflect.irregular("ResultadoVdrl", "Resultados·Vdrl·")
+  inflect.irregular("Resultado·Vdrl·", "ResultadosVdrl")
+
+  # Tratamientos instaurados (CA de cuello)
+  inflect.irregular("tratamiento_instaurado_cu", "tratamientos·_instaurados·_cu·")
+  inflect.irregular("tratamiento·_instaurado·_cu·", "tratamientos_instaurdados_cu")
+  inflect.irregular("TratamientoInstauradoCu", "Tratamientos·Instaurados·Cu·")
+  inflect.irregular("Tratamiento·Instaurado·Cu·", "TratamientosInstauradosCu")
+
+  # Datos reportables definidos por el SIRGE
+  inflect.irregular("dato_reportable_sirge", "datos·_reportables·_sirge·")
+  inflect.irregular("dato·_reportable·_sirge·", "datos_reportables_sirge")
+  inflect.irregular("DatoReportableSirge", "Datos·Reportables·Sirge·")
+  inflect.irregular("Dato·Reportable·Sirge·", "DatosReportablesSirge")
+
+  # Datos reportables requeridos por el SIRGE (por prestación)
+  inflect.irregular("dato_reportable_requerido_sirge", "datos·_reportables·_requeridos·_sirge·")
+  inflect.irregular("dato·_reportable·_requerido·_sirge·", "datos_reportables_requeridos_sirge")
+  inflect.irregular("DatoReportableRequeridoSirge", "Datos·Reportables·Requeridos·Sirge·")
+  inflect.irregular("Dato·Reportable·Requerido·Sirge·", "DatosReportablesRequeridosSirge")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

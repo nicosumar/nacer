@@ -36,6 +36,7 @@
           %th Código de prestación
           %th Beneficiario
           %th Última modificación
+          %th Creador del registro
       %tbody
         - @prestaciones_brindadas.each do |p|
           %tr.clickable{ :onclick => "location.href=\'#{prestacion_brindada_path(p)}\'", :title => "Ver detalles de la prestación" }
@@ -54,6 +55,7 @@
             - else
               %td Comunitaria
             %td= p.updated_at ? p.updated_at.strftime("%d/%m/%Y %H:%M:%S") : ''
+            %td= p.creator.nombre.to_s + " " + p.creator.apellido.to_s
     = will_paginate @prestaciones_brindadas, :inner_window => 2, :outer_window => 0
   - else
     %p No existen prestaciones en el estado seleccionado
