@@ -5,7 +5,7 @@ class PrestacionesController < ApplicationController
   before_filter :authenticate_user!
 
   def autorizadas
-    
+
     begin
 
       cadena = params[:q]
@@ -76,7 +76,7 @@ class PrestacionesController < ApplicationController
       @prestaciones = prestaciones.paginate(page: x, per_page: y)
 
       hash_prestaciones = []
-      @prestaciones.each do |p| 
+      @prestaciones.each do |p|
         
         hash_dr= []
         hash_diagnosticos = []
