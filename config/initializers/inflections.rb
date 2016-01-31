@@ -476,6 +476,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("GrupoDeDiagnosticos", "Grupos·De·Diagnosticos·")
   inflect.irregular("Grupo·De·Diagnosticos·", "GruposDeDiagnosticos")
 
+  # Resultados de otoemisiones
+  inflect.irregular("resultado_de_otoemision", "resultados·_de·_otoemisiones·")
+  inflect.irregular("resultado·_de·_otoemision·", "resultados_de_otoemisiones")
+  inflect.irregular("ResultadoDeOtoemision", "Resultados·De·Otoemisiones·")
+  inflect.irregular("Resultado·De·Otoemision·", "ResultadosDeOtoemisiones")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

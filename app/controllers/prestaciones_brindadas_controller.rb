@@ -722,7 +722,7 @@ class PrestacionesBrindadasController < ApplicationController
     end
   end
 
-  # DELETE /novedades_de_los_afiliados/:id
+  # DELETE /prestaciones_brindadas/:id
   def destroy
     # Verificar los permisos del usuario
     if cannot? :update, PrestacionBrindada
