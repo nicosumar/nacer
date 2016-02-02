@@ -6,7 +6,13 @@ class CrearFuncionesDeTransformacionParaSirge < ActiveRecord::Migration
     load 'db/sp/function_sirge_dr_registro_edad_gestacional.rb'
     load 'db/sp/function_sirge_dr_resultado_oea_od.rb'
     load 'db/sp/function_sirge_dr_resultado_oea_oi.rb'
-#    load 'db/sp/function_sirge_dr_perimetro_cefalico.rb'
+    load 'db/sp/function_sirge_dr_resultado_obi.rb'
+    load 'db/sp/function_sirge_dr_perimetro_cefalico.rb'
+    load 'db/sp/function_sirge_dr_resultado_biopsia.rb'
+    load 'db/sp/function_sirge_dr_resultado_biopsia_mama.rb'
+    load 'db/sp/function_sirge_dr_resultado_vdrl.rb'
+    load 'db/sp/function_sirge_dr_cpod.rb'
+    load 'db/sp/function_sirge_dr_ceod.rb'
   end
 
   def down

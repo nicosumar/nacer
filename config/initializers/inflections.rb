@@ -482,6 +482,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("ResultadoDeOtoemision", "Resultados·De·Otoemisiones·")
   inflect.irregular("Resultado·De·Otoemision·", "ResultadosDeOtoemisiones")
 
+  # Resultados VDRL
+  inflect.irregular("resultado_vdrl", "resultados·_vdrl·")
+  inflect.irregular("resultado·_vdrl·", "resultados_vdrl")
+  inflect.irregular("ResultadoVdrl", "Resultados·Vdrl·")
+  inflect.irregular("Resultado·Vdrl·", "ResultadosVdrl")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")

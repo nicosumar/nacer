@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151021203747) do
+ActiveRecord::Schema.define(:version => 20151231210115) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -495,6 +495,24 @@ ActiveRecord::Schema.define(:version => 20151021203747) do
   add_index "diagnosticos", ["codigo"], :name => "unq_codigo", :unique => true
   add_index "diagnosticos", ["grupo_de_diagnosticos_id"], :name => "index_diagnosticos_on_grupo_de_diagnosticos_id"
 
+  create_table "diagnosticos_biopsias", :force => true do |t|
+    t.string  "codigo"
+    t.string  "nombre"
+    t.integer "codigo_sirge"
+  end
+
+  create_table "diagnosticos_biopsias_mamas", :force => true do |t|
+    t.string  "codigo"
+    t.string  "nombre"
+    t.integer "codigo_sirge"
+  end
+
+  create_table "diagnosticos_citologias", :force => true do |t|
+    t.string  "codigo"
+    t.string  "nombre"
+    t.integer "codigo_sirge"
+  end
+
   create_table "diagnosticos_prestaciones", :id => false, :force => true do |t|
     t.integer "diagnostico_id"
     t.integer "prestacion_id"
@@ -914,10 +932,14 @@ ActiveRecord::Schema.define(:version => 20151021203747) do
     t.boolean  "visible",      :default => true
   end
 
+  add_index "metodos_de_validacion", ["metodo"], :name => "index_metodos_de_validacion_on_metodo", :unique => true
+
   create_table "metodos_de_validacion_prestaciones", :id => false, :force => true do |t|
     t.integer "metodo_de_validacion_id"
     t.integer "prestacion_id"
   end
+
+  add_index "metodos_de_validacion_prestaciones", ["metodo_de_validacion_id", "prestacion_id"], :name => "idx_uniq_on_metodos_de_validacion_prestaciones_mmvv_pp", :unique => true
 
   create_table "migra_anexos", :id => false, :force => true do |t|
     t.integer "id",                                   :null => false
@@ -1444,6 +1466,18 @@ ActiveRecord::Schema.define(:version => 20151021203747) do
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.integer  "updater_id"
+  end
+
+  create_table "resultados_de_otoemisiones", :force => true do |t|
+    t.string "nombre"
+    t.string "codigo"
+    t.string "subcodigo_sirge"
+  end
+
+  create_table "resultados_vdrl", :force => true do |t|
+    t.string "codigo"
+    t.string "nombre"
+    t.string "codigo_sirge"
   end
 
   create_table "secciones_pdss", :force => true do |t|

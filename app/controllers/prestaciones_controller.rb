@@ -89,7 +89,7 @@ class PrestacionesController < ApplicationController
             )",
             fecha_de_la_prestacion,
             fecha_de_la_prestacion
-          ).order(:nombre_de_grupo, :orden_de_grupo).
+          ).order("nombre_de_grupo, orden_de_grupo NULLS FIRST").
           select("datos_reportables.*, datos_reportables_requeridos.id dr_id").each do |dr|
             hash_valores_enum = []
             if dr.clase_para_enumeracion.present?
