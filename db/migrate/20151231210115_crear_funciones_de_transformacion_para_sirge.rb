@@ -12,7 +12,10 @@ class CrearFuncionesDeTransformacionParaSirge < ActiveRecord::Migration
     load 'db/sp/function_sirge_dr_resultado_biopsia_mama.rb'
     load 'db/sp/function_sirge_dr_resultado_vdrl.rb'
     load 'db/sp/function_sirge_dr_cpod.rb'
-    load 'db/sp/function_sirge_dr_ceod.rb'
+    load 'db/sp/function_sirge_dr_ceo.rb'
+    load 'db/sp/function_sirge_dr_resultado_birads.rb'
+    load 'db/sp/function_sirge_dr_resultado_citologia.rb'
+    load 'db/sp/function_sirge_dr_tratamiento_instaurado_cu.rb'
   end
 
   def down

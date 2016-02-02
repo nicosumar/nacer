@@ -154,22 +154,6 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       })
 
     # Nueva definición para el DR "Diagnóstico anatomopatológico (citología)"
-    dr_diagapc = DatoReportable.create!({
-        nombre: "Diagnóstico anatomopatológico",
-        codigo: "DIAGAPC",
-        tipo_postgres: "integer",
-        tipo_ruby: "integer",
-        sirge_id: 11,
-        enumerable: true,
-        clase_para_enumeracion: "DiagnosticoCitologia",
-        integra_grupo: false,
-        nombre_de_grupo: nil,
-        codigo_de_grupo: nil,
-        orden_de_grupo: nil,
-        opciones_de_formateo: nil
-      })
-
-    # Nueva definición para el DR "Diagnóstico anatomopatológico (citología)"
     dr_vdrl = DatoReportable.create!({
         nombre: "Resultado del estudio",
         codigo: "VDRL",
@@ -197,52 +181,63 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     dr_cpod_o = DatoReportable.where(codigo: "CPOD_O").first
     dr_cpod_o.update_attributes!({sirge_id: 6})
 
-    # Nueva definición para el DR "Índice ceod: Caries"
-    dr_ceod_c = DatoReportable.create!({
-        nombre: "Caries",
-        codigo: "CEOD_C",
+    # Mantenemos la definición del DR "Índice CeO: Caries"
+    dr_ceo_c = DatoReportable.where(codigo: "CEO_C").first
+    dr_ceo_c.update_attributes!({sirge_id: 6})
+
+    # Mantenemos la definición del DR "Índice CeO: Extracción indicada"
+    dr_ceo_e = DatoReportable.where(codigo: "CEO_E").first
+    dr_ceo_e.update_attributes!({sirge_id: 6})
+
+    # Mantenemos la definición del DR "Índice CeO: Obturados"
+    dr_ceo_o = DatoReportable.where(codigo: "CEO_O").first
+    dr_ceo_o.update_attributes!({sirge_id: 6})
+
+    # Nueva definición para el DR "Resultado expresado en BIRADS"
+    dr_birads2 = DatoReportable.create!({
+        nombre: "Resultado expresado en BIRADS",
+        codigo: "BIRADS2",
         tipo_postgres: "integer",
         tipo_ruby: "integer",
-        sirge_id: 6,
+        sirge_id: 12,
         enumerable: false,
         clase_para_enumeracion: nil,
-        integra_grupo: true,
-        nombre_de_grupo: "Índice ceod",
-        codigo_de_grupo: "ceod",
-        orden_de_grupo: 1,
+        integra_grupo: false,
+        nombre_de_grupo: nil,
+        codigo_de_grupo: nil,
+        orden_de_grupo: nil,
         opciones_de_formateo: "{:size => 6}"
       })
 
-    # Nueva definición para el DR "Índice ceod: Extracción indicada"
-    dr_ceod_e = DatoReportable.create!({
-        nombre: "Extracción indicada",
-        codigo: "CEOD_E",
+    # Nueva definición para el DR "Diagnóstico anatomopatológico (citología)"
+    dr_diagapc = DatoReportable.create!({
+        nombre: "Diagnóstico anatomopatológico",
+        codigo: "DIAGAPC",
         tipo_postgres: "integer",
         tipo_ruby: "integer",
-        sirge_id: 6,
-        enumerable: false,
-        clase_para_enumeracion: nil,
-        integra_grupo: true,
-        nombre_de_grupo: "Índice ceod",
-        codigo_de_grupo: "ceod",
-        orden_de_grupo: 2,
-        opciones_de_formateo: "{:size => 6}"
+        sirge_id: 11,
+        enumerable: true,
+        clase_para_enumeracion: "DiagnosticoCitologia",
+        integra_grupo: false,
+        nombre_de_grupo: nil,
+        codigo_de_grupo: nil,
+        orden_de_grupo: nil,
+        opciones_de_formateo: nil
       })
 
-    # Nueva definición para el DR "Índice ceod: Obturados"
-    dr_ceod_o = DatoReportable.create!({
-        nombre: "Obturados",
-        codigo: "CEOD_O",
+    dr_tratc = DatoReportable.create!({
+        nombre: "Tratamiento instaurado",
+        codigo: "TRATC",
         tipo_postgres: "integer",
         tipo_ruby: "integer",
-        sirge_id: 6,
-        enumerable: false,
-        clase_para_enumeracion: nil,
-        integra_grupo: true,
-        nombre_de_grupo: "Índice ceod",
-        codigo_de_grupo: "ceod",
-        orden_de_grupo: 3,
-        opciones_de_formateo: "{:size => 6}"
+        sirge_id: 14,
+        enumerable: true,
+        clase_para_enumeracion: "TratamientoInstauradoCu",
+        integra_grupo: false,
+        nombre_de_grupo: nil,
+        codigo_de_grupo: nil,
+        orden_de_grupo: nil,
+        opciones_de_formateo: nil
       })
 
 
@@ -463,6 +458,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     # Añadir el método de validación para el DR tensión arterial
     Prestacion.find(353).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+    Prestacion.find(353).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación CTC022O24.4 - Consulta de seguimiento de diabetes gestacional
     DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
@@ -503,6 +499,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     # Añadir el método de validación para el DR tensión arterial
     Prestacion.find(354).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+    Prestacion.find(354).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación CTC007O10/O10.4 - Consulta inicial de la embarazada con hipertensión crónica
     DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
@@ -543,6 +540,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     # Añadir el método de validación para el DR tensión arterial
     Prestacion.find(324).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+    Prestacion.find(324).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
 
     # Prestación CTC022O10/O10.4 - Consulta de seguimiento de la embarazada con hipertensión crónica
@@ -584,6 +582,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     # Añadir el método de validación para el DR tensión arterial
     Prestacion.find(325).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+    Prestacion.find(325).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación CTC007O16 - Consulta inicial de hipertensión gestacional
     DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
@@ -624,6 +623,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     # Añadir el método de validación para el DR tensión arterial
     Prestacion.find(326).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+    Prestacion.find(326).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación CTC022O16 - Consulta de seguimiento de hipertensión gestacional
     DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
@@ -664,6 +664,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     # Añadir el método de validación para el DR tensión arterial
     Prestacion.find(327).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+    Prestacion.find(327).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación CTC017P05 - Consulta de seguimiento post alta
     DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
@@ -704,7 +705,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     # Añadir el método de validación para el DR tensión arterial
     Prestacion.find(369).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
-
+    Prestacion.find(369).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación PRP021A97/H86 - Otoemisiones acústicas para DTH en RN y Rescreening de hipoacusia en lactante "No pasa"
     DatoReportableRequerido.find(33).update_attributes!({  # Resultado OD: dar de baja
@@ -845,7 +846,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       necesario: false,
       obligatorio: true,
       minimo: 8.000,
-      maximo: 60.000
+      maximo: 80.000
     })
     DatoReportableRequerido.find(264).update_attributes!({ # Talla en centímetros: dar de baja
       fecha_de_finalizacion: fecha_anexo_1
@@ -857,7 +858,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       necesario: false,
       obligatorio: true,
       minimo: 80.0,
-      maximo: 170.0
+      maximo: 180.0
     })
     DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
       prestacion: Prestacion.find(493),
@@ -891,7 +892,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       necesario: false,
       obligatorio: true,
       minimo: 8.000,
-      maximo: 60.000
+      maximo: 80.000
     })
     DatoReportableRequerido.find(266).update_attributes!({ # Talla en centímetros: dar de baja
       fecha_de_finalizacion: fecha_anexo_1
@@ -903,7 +904,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       necesario: false,
       obligatorio: true,
       minimo: 80.0,
-      maximo: 170.0
+      maximo: 180.0
     })
     DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
       prestacion: Prestacion.find(494),
@@ -1038,7 +1039,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       obligatorio: true
     })
     DatoReportableRequerido.find(332).update_attributes!({ # Carga al SITAM
-      fecha_de_finalizacion: fecha_anexo_1
+      fecha_de_finalizacion: Date.new(2015, 7, 1)
     })
 
     # Prestación APA002X76 - Anatomía patológica de biopsia CA de mama
@@ -1052,6 +1053,8 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       necesario: false,
       obligatorio: true
     })
+    # Añadir el método de validación para verificación de DR completos
+    Prestacion.find(585).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación LBL119A97/W78 - VDRL
     DatoReportableRequerido.create!({                      # Resultado del estudio
@@ -1061,6 +1064,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
       necesario: false,
       obligatorio: true
     })
+    Prestacion.find(875).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
 
     ###
@@ -1106,11 +1110,12 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     # Añadir el método de validación para el DR Índice CPOD
     Prestacion.find(260).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first
+    Prestacion.find(260).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
     # Prestación CTC010A97 - Consulta de salud buco-dental en niños 
     DatoReportableRequerido.create!({                     # Dar de alta como opcional a partir de la fecha_anexo_1
       prestacion: Prestacion.find(457),
-      dato_reportable: dr_ceod_c,
+      dato_reportable: dr_ceo_c,
       fecha_de_inicio: fecha_anexo_1,
       fecha_de_finalizacion: fecha_anexo_2,
       necesario: false,
@@ -1120,7 +1125,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
       prestacion: Prestacion.find(457),
-      dato_reportable: dr_ceod_c,
+      dato_reportable: dr_ceo_c,
       fecha_de_inicio: fecha_anexo_2,
       necesario: false,
       obligatorio: true,
@@ -1129,7 +1134,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     DatoReportableRequerido.create!({                     # Dar de alta como opcional a partir de la fecha_anexo_1
       prestacion: Prestacion.find(457),
-      dato_reportable: dr_ceod_e,
+      dato_reportable: dr_ceo_e,
       fecha_de_inicio: fecha_anexo_1,
       fecha_de_finalizacion: fecha_anexo_2,
       necesario: false,
@@ -1139,7 +1144,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
       prestacion: Prestacion.find(457),
-      dato_reportable: dr_ceod_e,
+      dato_reportable: dr_ceo_e,
       fecha_de_inicio: fecha_anexo_2,
       necesario: false,
       obligatorio: true,
@@ -1148,7 +1153,7 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     DatoReportableRequerido.create!({                     # Dar de alta como opcional a partir de la fecha_anexo_1
       prestacion: Prestacion.find(457),
-      dato_reportable: dr_ceod_o,
+      dato_reportable: dr_ceo_o,
       fecha_de_inicio: fecha_anexo_1,
       fecha_de_finalizacion: fecha_anexo_2,
       necesario: false,
@@ -1158,22 +1163,759 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     })
     DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
       prestacion: Prestacion.find(457),
-      dato_reportable: dr_ceod_o,
+      dato_reportable: dr_ceo_o,
       fecha_de_inicio: fecha_anexo_2,
       necesario: false,
       obligatorio: true,
       minimo: 0.0,
       maximo: 32.0
     })
-    # Añadir el método de validación para el DR Índice CEOD
+    # Añadir el método de validación para el DR Índice CeO
     MetodoDeValidacion.create!({
         nombre: "Verificar que el número de dientes con caries, extracción indicada y obturados no superan los 32",
-        metodo: "indice_ceod_valido?",
-        mensaje: "En el índice CEOD la suma de la cantidad de dientes cariados, con extracción indicada y obturados no puede superar los 32",
+        metodo: "indice_ceo_valido?",
+        mensaje: "En el índice CeO la suma de la cantidad de dientes cariados, con extracción indicada y obturados no puede superar los 32",
         genera_error: true,
         visible: true
       })
-    Prestacion.find(457).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_ceod_valido?").first
+    Prestacion.find(457).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_ceo_valido?").first
+    Prestacion.find(457).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
+
+    # Prestación CTC010A97 - Control odontológico (6 a 9 años)
+    DatoReportableRequerido.find(29).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_ceo_c,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.find(30).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_ceo_e,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.find(31).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_ceo_o,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    # Añadir el método de validación para el DR Índice CeO
+    Prestacion.find(495).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_ceo_valido?").first
+    # Añadir los campos para relever el Ínidice CPOD
+    DatoReportableRequerido.create!({                     # Dar de alta como opcional a partir de la fecha_anexo_1
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_cpod_c,
+      fecha_de_inicio: fecha_anexo_1,
+      fecha_de_finalizacion: fecha_anexo_2,
+      necesario: false,
+      obligatorio: false,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_cpod_c,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como opcional a partir de la fecha_anexo_1
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_cpod_p,
+      fecha_de_inicio: fecha_anexo_1,
+      fecha_de_finalizacion: fecha_anexo_2,
+      necesario: false,
+      obligatorio: false,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_cpod_p,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como opcional a partir de la fecha_anexo_1
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_cpod_o,
+      fecha_de_inicio: fecha_anexo_1,
+      fecha_de_finalizacion: fecha_anexo_2,
+      necesario: false,
+      obligatorio: false,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(495),
+      dato_reportable: dr_cpod_o,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    # Añadir el método de validación para el DR Índice CPOD
+    Prestacion.find(495).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first
+    Prestacion.find(495).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
+
+    # Prestación CTC001T79/T82 - Obesidad inicial (6 a 9 años)
+    DatoReportableRequerido.find(273).update_attributes!({ # Peso en kg: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(516),
+      dato_reportable: dr_pkg2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 8.000,
+      maximo: 80.000
+    })
+    DatoReportableRequerido.find(274).update_attributes!({ # Talla en centímetros: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Talla en cm: dar de alta con nuevos rangos
+      prestacion: Prestacion.find(516),
+      dato_reportable: dr_tcm2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 80.0,
+      maximo: 180.0
+    })
+    DatoReportableRequerido.find(275).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(516),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(276).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(516),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+
+    # Prestación CTC002T79/T82 - Obesidad ulterior (6 a 9 años)
+    DatoReportableRequerido.find(277).update_attributes!({ # Peso en kg: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(517),
+      dato_reportable: dr_pkg2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 8.000,
+      maximo: 80.000
+    })
+    DatoReportableRequerido.find(278).update_attributes!({ # Talla en centímetros: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Talla en cm: dar de alta con nuevos rangos
+      prestacion: Prestacion.find(517),
+      dato_reportable: dr_tcm2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 80.0,
+      maximo: 180.0
+    })
+    DatoReportableRequerido.find(279).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(517),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(280).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(517),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+
+    # Prestación CTC001T83 - Sobrepeso inicial (6 a 9 años)
+    DatoReportableRequerido.find(281).update_attributes!({ # Peso en kg: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(518),
+      dato_reportable: dr_pkg2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 8.000,
+      maximo: 80.000
+    })
+    DatoReportableRequerido.find(282).update_attributes!({ # Talla en centímetros: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Talla en cm: dar de alta con nuevos rangos
+      prestacion: Prestacion.find(518),
+      dato_reportable: dr_tcm2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 80.0,
+      maximo: 180.0
+    })
+    DatoReportableRequerido.find(283).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(518),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(284).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(518),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+
+    # Prestación CTC002T83 - Sobrepeso ulterior (6 a 9 años)
+    DatoReportableRequerido.find(285).update_attributes!({ # Peso en kg: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(519),
+      dato_reportable: dr_pkg2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 8.000,
+      maximo: 80.000
+    })
+    DatoReportableRequerido.find(286).update_attributes!({ # Talla en centímetros: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Talla en cm: dar de alta con nuevos rangos
+      prestacion: Prestacion.find(519),
+      dato_reportable: dr_tcm2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 80.0,
+      maximo: 180.0
+    })
+    DatoReportableRequerido.find(287).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(519),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(288).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(519),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+
+    # Prestación CTC010A97 - Control odontológico (10 a 19 años)
+    DatoReportableRequerido.find(297).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(524),
+      dato_reportable: dr_cpod_c,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.find(298).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(524),
+      dato_reportable: dr_cpod_p,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.find(299).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                     # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(524),
+      dato_reportable: dr_cpod_o,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    # Añadir el método de validación para el DR Índice CPOD
+    Prestacion.find(524).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first
+    Prestacion.find(524).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
+
+    # Prestación CTC001T79/T82 - Obesidad inicial (10 a 19 años)
+    DatoReportableRequerido.find(306).update_attributes!({ # Peso en kg: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(554),
+      dato_reportable: dr_pkg2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 10.000,
+      maximo: 200.000
+    })
+    DatoReportableRequerido.find(307).update_attributes!({ # Talla en centímetros: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Talla en cm: dar de alta con nuevos rangos
+      prestacion: Prestacion.find(554),
+      dato_reportable: dr_tcm2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 100.0,
+      maximo: 210.0
+    })
+    DatoReportableRequerido.find(308).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(554),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(309).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(554),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    # Añadir el método de validación para el DR Tensión arterial
+    Prestacion.find(554).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+
+    # Prestación CTC002T79/T82 - Obesidad ulterior (10 a 19 años)
+    DatoReportableRequerido.find(310).update_attributes!({ # Peso en kg: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(555),
+      dato_reportable: dr_pkg2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 10.000,
+      maximo: 200.000
+    })
+    DatoReportableRequerido.find(311).update_attributes!({ # Talla en centímetros: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Talla en cm: dar de alta con nuevos rangos
+      prestacion: Prestacion.find(555),
+      dato_reportable: dr_tcm2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 100.0,
+      maximo: 210.0
+    })
+    DatoReportableRequerido.find(312).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(555),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(313).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(555),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    # Añadir el método de validación para el DR Tensión arterial
+    Prestacion.find(555).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+
+    # Prestación CTC001T83 - Sobrepeso inicial (10 a 19 años)
+    DatoReportableRequerido.find(314).update_attributes!({ # Peso en kg: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(556),
+      dato_reportable: dr_pkg2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 10.000,
+      maximo: 200.000
+    })
+    DatoReportableRequerido.find(315).update_attributes!({ # Talla en centímetros: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Talla en cm: dar de alta con nuevos rangos
+      prestacion: Prestacion.find(556),
+      dato_reportable: dr_tcm2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 100.0,
+      maximo: 210.0
+    })
+    DatoReportableRequerido.find(316).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(556),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(317).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(556),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    # Añadir el método de validación para el DR Tensión arterial
+    Prestacion.find(556).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+
+    # Prestación CTC002T83 - Sobrepeso ulterior (10 a 19 años)
+    DatoReportableRequerido.find(318).update_attributes!({ # Peso en kg: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Peso en kg: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(557),
+      dato_reportable: dr_pkg2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 10.000,
+      maximo: 200.000
+    })
+    DatoReportableRequerido.find(319).update_attributes!({ # Talla en centímetros: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Talla en cm: dar de alta con nuevos rangos
+      prestacion: Prestacion.find(557),
+      dato_reportable: dr_tcm2,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 100.0,
+      maximo: 210.0
+    })
+    DatoReportableRequerido.find(320).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(557),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(321).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(557),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    # Añadir el método de validación para el DR Tensión arterial
+    Prestacion.find(557).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+
+    # Prestación CTC001A97 - Examen periódico de salud (mujeres 20 a 64 años)
+    DatoReportableRequerido.find(322).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(560),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(323).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(560),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    # Añadir el método de validación para el DR Tensión arterial
+    Prestacion.find(560).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+
+    # Prestación CTC009A97 - Control de salud individual para población indígena en terreno (mujeres 20 a 64 años)
+    DatoReportableRequerido.find(324).update_attributes!({ # TA sistólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA sistólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(561),
+      dato_reportable: dr_tas,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    DatoReportableRequerido.find(325).update_attributes!({ # TA diastólica: dar de baja
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # TA diastólica: dar de alta con nuevos rangos de validación
+      prestacion: Prestacion.find(561),
+      dato_reportable: dr_tad,
+      fecha_de_inicio: fecha_anexo_1,
+      necesario: false,
+      obligatorio: true,
+      minimo: 30.0,
+      maximo: 300.0
+    })
+    # Añadir el método de validación para el DR Tensión arterial
+    Prestacion.find(561).metodos_de_validacion << MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first
+
+    # Prestación CTC010A97 - Control odontológico (Mujeres 20 a 64 años)
+    DatoReportableRequerido.find(326).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                      # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(563),
+      dato_reportable: dr_cpod_c,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.find(327).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                      # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(563),
+      dato_reportable: dr_cpod_p,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    DatoReportableRequerido.find(328).update_attributes!({ # Dar de baja como opcional a partir de la fecha_anexo_2
+      fecha_de_finalizacion: fecha_anexo_2
+    })
+    DatoReportableRequerido.create!({                      # Dar de alta como obligatorio a partir de la fecha_anexo_2
+      prestacion: Prestacion.find(563),
+      dato_reportable: dr_cpod_o,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 32.0
+    })
+    # Añadir el método de validación para el DR Índice CPOD
+    Prestacion.find(563).metodos_de_validacion << MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first
+    Prestacion.find(563).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
+
+    # Prestación IGR014A98 - Mamografía bilateral, craneocaudal y oblicua
+    DatoReportableRequerido.find(330).update_attributes!({ # Dar de baja el dato anterior a partir de la fecha_anexo_1
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Dar de alta como opcional a partir de la fecha_anexo_1
+      prestacion: Prestacion.find(583),
+      dato_reportable: dr_birads2,
+      fecha_de_inicio: fecha_anexo_1,
+      fecha_de_finalizacion: fecha_anexo_2,
+      necesario: false,
+      obligatorio: false,
+      minimo: 0.0,
+      maximo: 5.0
+    })
+    DatoReportableRequerido.create!({                      # Dar de alta como opcional a partir de la fecha_anexo_1
+      prestacion: Prestacion.find(583),
+      dato_reportable: dr_birads2,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true,
+      minimo: 0.0,
+      maximo: 5.0
+    })
+    # Añadir el método de validación para el DR Índice CPOD
+    Prestacion.find(583).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
+
+    # Prestación APA001A98/X86/X75/w78 - Lectura de la muestra (tamizaje CA cervicouterino)
+    DatoReportableRequerido.find(360).update_attributes!({ # Diagnóstico anatomopatológico
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Diagnóstico anatomopatológico: opcional
+      prestacion: Prestacion.find(312),
+      dato_reportable: dr_diagapc,
+      fecha_de_inicio: fecha_anexo_1,
+      fecha_de_finalizacion: fecha_anexo_2,
+      necesario: false,
+      obligatorio: false
+    })
+    DatoReportableRequerido.create!({                      # Diagnóstico anatomopatológico: obligatorio
+      prestacion: Prestacion.find(312),
+      dato_reportable: dr_diagapc,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true
+    })
+    DatoReportableRequerido.find(361).update_attributes!({ # Carga al SITAM
+      fecha_de_finalizacion: Date.new(2015, 7, 1)
+    })
+    Prestacion.find(312).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
+    DatoReportableRequerido.find(333).update_attributes!({ # Diagnóstico anatomopatológico
+      fecha_de_finalizacion: fecha_anexo_1
+    })
+    DatoReportableRequerido.create!({                      # Diagnóstico anatomopatológico: opcional
+      prestacion: Prestacion.find(587),
+      dato_reportable: dr_diagapc,
+      fecha_de_inicio: fecha_anexo_1,
+      fecha_de_finalizacion: fecha_anexo_2,
+      necesario: false,
+      obligatorio: false
+    })
+    DatoReportableRequerido.create!({                      # Diagnóstico anatomopatológico: obligatorio
+      prestacion: Prestacion.find(587),
+      dato_reportable: dr_diagapc,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true
+    })
+    DatoReportableRequerido.find(334).update_attributes!({ # Carga al SITAM
+      fecha_de_finalizacion: Date.new(2015, 7, 1)
+    })
+
+    # Prestación NTN002X75 - Notificación de inicio de tratamiento oportuno
+    DatoReportableRequerido.create!({                      # Tratamiento instaurado: opcional
+      prestacion: Prestacion.find(590),
+      dato_reportable: dr_tratc,
+      fecha_de_inicio: fecha_anexo_1,
+      fecha_de_finalizacion: fecha_anexo_2,
+      necesario: false,
+      obligatorio: false
+    })
+    DatoReportableRequerido.create!({                      # Tratamiento instaurado: obligatorio
+      prestacion: Prestacion.find(590),
+      dato_reportable: dr_tratc,
+      fecha_de_inicio: fecha_anexo_2,
+      necesario: false,
+      obligatorio: true
+    })
+    Prestacion.find(590).metodos_de_validacion << MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first
 
   end
 
@@ -1184,20 +1926,66 @@ class ModificacionDatosReportablesDoiu20 < ActiveRecord::Migration
     DatoReportableRequerido.where(fecha_de_finalizacion: fecha_anexo_1).each do |drr|
       drr.update_attributes!({ fecha_de_finalizacion: nil })
     end
+    DatoReportableRequerido.where(fecha_de_finalizacion: fecha_anexo_2).each do |drr|
+      drr.update_attributes!({ fecha_de_finalizacion: nil })
+    end
     DatoReportableRequerido.where(fecha_de_inicio: fecha_anexo_1).each do |drr|
       drr.destroy
     end
-    Prestacion.find(353).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
-    Prestacion.find(354).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
-    Prestacion.find(324).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
-    Prestacion.find(325).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
-    Prestacion.find(326).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
-    Prestacion.find(327).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
-    Prestacion.find(369).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    DatoReportableRequerido.where(fecha_de_inicio: fecha_anexo_2).each do |drr|
+      drr.destroy
+    end
+    Prestacion.find(590).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(312).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(583).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(563).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(563).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first)
+    Prestacion.find(561).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(560).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(557).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(556).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(555).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(554).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(524).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(524).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first)
     Prestacion.find(493).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
-    Prestacion.find(494).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(495).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(495).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first)
+    Prestacion.find(495).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "indice_ceo_valido?").first)
+    Prestacion.find(457).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(457).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "indice_ceo_valido?").first)
+    Prestacion.find(260).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
     Prestacion.find(260).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "indice_cpod_valido?").first)
-    Prestacion.find(457).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "indice_ceod_valido?").first)
-    MetodoDeValidacion.where(metodo: "indice_ceod_valido?").first.destroy
+    Prestacion.find(875).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(585).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(494).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(493).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(369).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(369).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(327).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(327).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(326).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(326).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(325).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(325).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(324).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(324).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(354).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(354).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    Prestacion.find(353).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "datos_reportables_asociados_completos?").first)
+    Prestacion.find(353).metodos_de_validacion.destroy(MetodoDeValidacion.where(metodo: "tension_arterial_valida?").first)
+    MetodoDeValidacion.where(metodo: "indice_ceo_valido?").first.destroy
+    DatoReportable.where(codigo: "TRATC").first.destroy
+    DatoReportable.where(codigo: "DIAGAPC").first.destroy
+    DatoReportable.where(codigo: "BIRADS2").first.destroy
+    DatoReportable.where(codigo: "VDRL").first.destroy
+    DatoReportable.where(codigo: "DIAGAPBM").first.destroy
+    DatoReportable.where(codigo: "DIAGAPB").first.destroy
+    DatoReportable.where(codigo: "PC2").first.destroy
+    DatoReportable.where(codigo: "ROI2").first.destroy
+    DatoReportable.where(codigo: "ROD2").first.destroy
+    DatoReportable.where(codigo: "EG2").first.destroy
+    DatoReportable.where(codigo: "TCM2").first.destroy
+    DatoReportable.where(codigo: "PKG2").first.destroy
   end
 end

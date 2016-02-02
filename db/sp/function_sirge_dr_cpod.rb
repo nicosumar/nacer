@@ -13,7 +13,7 @@ ActiveRecord::Base.connection.execute <<-SQL
           valor_cpod_c integer;              -- Valor de caries
           valor_cpod_p integer;              -- Valor de perdidos
           valor_cpod_o integer;              -- Valor de obturados
-          valor_de_retorno char(14);          -- El dato reportable asociado a devolver
+          valor_de_retorno char(14);         -- El dato reportable asociado a devolver
 
         BEGIN
           -- Buscar los ID de los datos reportables asociados

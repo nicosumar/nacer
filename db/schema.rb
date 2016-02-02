@@ -1573,6 +1573,12 @@ ActiveRecord::Schema.define(:version => 20151231210115) do
     t.datetime "updated_at",               :null => false
   end
 
+  create_table "tratamientos_instaurados_cu", :force => true do |t|
+    t.string  "nombre"
+    t.string  "codigo"
+    t.integer "codigo_sirge"
+  end
+
   create_table "tribus_originarias", :force => true do |t|
     t.string "nombre"
   end
