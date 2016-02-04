@@ -1,4 +1,3 @@
-Nacer
+#Sistema de gestión del seguro provincial
 
-Sistema de gestión de la información del Seguro Materno Infantil Provincial,
-Plan Nacer Mendoza.
+Sistema de gestión implementado por el área de sistemas informáticos del Programa Sumar Mendoza.
