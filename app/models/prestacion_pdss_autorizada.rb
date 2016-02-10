@@ -45,7 +45,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
             lc.nombre "linea_de_cuidado",
             mp.nombre "modulo",
             tdp.nombre "tipo_de_prestacion",
-            p.codigo "codigo_de_prestacion",
+            codigo_de_prestacion_con_diagnosticos(pp.id) "codigo_de_prestacion",
             pp.nombre "nombre_de_prestacion",
             CASE WHEN ppa.autorizante_al_alta_type IS NOT NULL THEN 't'::boolean ELSE 'f'::boolean END "autorizada",
             CASE

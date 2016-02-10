@@ -14,24 +14,24 @@ class PrestacionesBrindadasController < ApplicationController
       return
     end
 
-    # Verificar si se solicitó el historial de un beneficiario en particular o todas las prestaciones registradas en esta UAD
+    # Verificar si se solicitó el historial de un beneficiario en particular o todas las prestaciones
+    # registradas en esta UAD
     if params[:clave_de_beneficiario].present?
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => params[:clave_de_beneficiario],
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["I", "R", "P", "Z", "U", "S"]),
-          :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("A")
-        ).first
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
+          :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("M")
+        ).order("updated_at DESC").first
+      if not @beneficiario.present?
+        @beneficiario = Afiliado.find_by_clave_de_beneficiario(params[:clave_de_beneficiario])
+      end
       if not @beneficiario.present?
         @beneficiario =
           NovedadDelAfiliado.where(
             :clave_de_beneficiario => params[:clave_de_beneficiario],
-            :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
-            :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("M")
-          ).first
-      end
-      if not @beneficiario.present?
-        @beneficiario = Afiliado.find_by_clave_de_beneficiario(params[:clave_de_beneficiario])
+            :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("A")
+          ).order("updated_at DESC").first
       end
 
       if not @beneficiario.present?
@@ -59,7 +59,7 @@ class PrestacionesBrindadasController < ApplicationController
       if params[:estado_de_la_prestacion_id].blank?
         # No hay filtro, devolver todas las prestaciones brindadas
         @prestaciones_brindadas =
-          PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico],
+          PrestacionBrindada.paginate( :page => params[:page], :per_page => 20, :include => [:prestacion, :diagnostico, :creator, :efector],
             :order => "updated_at DESC"
           )
         @estado_de_la_prestacion_id = nil
@@ -141,19 +141,18 @@ class PrestacionesBrindadasController < ApplicationController
     @beneficiario =
       NovedadDelAfiliado.where(
         :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["I", "R", "P", "Z", "U", "S"]),
-        :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("A")
-      ).first
+        :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
+        :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("M")
+      ).order("updated_at DESC").first
+    if not @beneficiario.present?
+      @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
+    end
     if not @beneficiario.present?
       @beneficiario =
         NovedadDelAfiliado.where(
           :clave_de_beneficiario => @prestacion_brindada.clave_de_beneficiario,
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
-          :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("M")
-        ).first
-    end
-    if not @beneficiario.present?
-      @beneficiario = Afiliado.find_by_clave_de_beneficiario(@prestacion_brindada.clave_de_beneficiario)
+          :tipo_de_novedad_id => TipoDeNovedad.id_del_codigo("A")
+        ).order("updated_at DESC").first
     end
 
   end
@@ -221,23 +220,29 @@ class PrestacionesBrindadasController < ApplicationController
       # Obtener la novedad o el afiliado asociado a la clave
       @beneficiario =
         NovedadDelAfiliado.where(
-          :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
-          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["I", "R", "P", "Z", "U", "S"]),
-          :tipo_de_novedad_id => TipoDeNovedad.find_by_codigo("A")
+          :clave_de_beneficiario => (
+              params[:clave_de_beneficiario] ||
+              params[:prestacion_brindada][:clave_de_beneficiario]
+            ),
+          :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
+          :tipo_de_novedad_id => TipoDeNovedad.find_by_codigo("M")
         ).first
-      if not @beneficiario.present?
-        @beneficiario =
-          NovedadDelAfiliado.where(
-            :clave_de_beneficiario => (params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]),
-            :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["R", "P"]),
-            :tipo_de_novedad_id => TipoDeNovedad.find_by_codigo("M")
-          ).first
-      end
       if not @beneficiario.present?
         @beneficiario =
           Afiliado.find_by_clave_de_beneficiario(
             params[:clave_de_beneficiario] || params[:prestacion_brindada][:clave_de_beneficiario]
           )
+      end
+      if not @beneficiario.present?
+        @beneficiario =
+          NovedadDelAfiliado.where(
+            :clave_de_beneficiario => (
+              params[:clave_de_beneficiario] ||
+              params[:prestacion_brindada][:clave_de_beneficiario]
+            ),
+            :estado_de_la_novedad_id => EstadoDeLaNovedad.where(:codigo => ["I", "R", "P", "Z", "U", "S"]),
+            :tipo_de_novedad_id => TipoDeNovedad.find_by_codigo("A")
+          ).first
       end
 
       if not @beneficiario.present?
@@ -722,7 +727,7 @@ class PrestacionesBrindadasController < ApplicationController
     end
   end
 
-  # DELETE /novedades_de_los_afiliados/:id
+  # DELETE /prestaciones_brindadas/:id
   def destroy
     # Verificar los permisos del usuario
     if cannot? :update, PrestacionBrindada

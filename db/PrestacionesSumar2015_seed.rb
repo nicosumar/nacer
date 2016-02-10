@@ -2982,7 +2982,7 @@ ActiveRecord::Base.transaction do
       fecha_de_finalizacion: nil
     ).collect{|pa| (pa.autorizante_al_alta_type == 'ConvenioDeGestionSumar' ? pa.autorizante_al_alta_id : AddendaSumar.find(pa.autorizante_al_alta_id).convenio_de_gestion_sumar_id)}.uniq.sort
 
-  # Crear una nueva prestación "IGR031 - Ecografía obstétrica" y unificar las prestaciones ya existentes
+  # Crear una nueva prestación "IGR032 - Ecografía abdominal" y unificar las prestaciones ya existentes
   prestacion = Prestacion.create!({
     # id: 850,
     codigo: "IGR032",

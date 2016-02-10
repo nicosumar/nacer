@@ -5,7 +5,7 @@ class PrestacionesController < ApplicationController
   before_filter :authenticate_user!
 
   def autorizadas
-    
+
     begin
 
       cadena = params[:q]
@@ -76,35 +76,41 @@ class PrestacionesController < ApplicationController
       @prestaciones = prestaciones.paginate(page: x, per_page: y)
 
       hash_prestaciones = []
-      @prestaciones.each do |p| 
+      @prestaciones.each do |p|
         
         hash_dr= []
         hash_diagnosticos = []
 
-        p.datos_reportables.order(:nombre_de_grupo, :orden_de_grupo).select("datos_reportables.*, datos_reportables_requeridos.id dr_id").each do |dr|
-
-          hash_valores_enum = []
-          
-          if dr.clase_para_enumeracion.present? 
-            eval(dr.clase_para_enumeracion).all.each do |val|
-              hash_valores_enum << {
-                id: val.id,
-                nombre: val.nombre
-              }
+        p.datos_reportables.where("
+            datos_reportables_requeridos.fecha_de_inicio <= ?
+            AND (
+              datos_reportables_requeridos.fecha_de_finalizacion > ?
+              OR datos_reportables_requeridos.fecha_de_finalizacion IS NULL
+            )",
+            fecha_de_la_prestacion,
+            fecha_de_la_prestacion
+          ).order("nombre_de_grupo, orden_de_grupo NULLS FIRST").
+          select("datos_reportables.*, datos_reportables_requeridos.id dr_id").each do |dr|
+            hash_valores_enum = []
+            if dr.clase_para_enumeracion.present?
+              eval(dr.clase_para_enumeracion).all.each do |val|
+                hash_valores_enum << {
+                  id: val.id,
+                  nombre: val.nombre
+                }
+              end
             end
+            hash_dr << {
+              nombre_de_grupo: (dr.nombre_de_grupo.present? ? dr.nombre_de_grupo : ""),
+              codigo_de_grupo: (dr.codigo_de_grupo.present? ? dr.codigo_de_grupo : ""),
+              nombre: dr.nombre,
+              dato_reportable_id: dr.dr_id,
+              orden: (dr.orden_de_grupo.present? ? dr.orden_de_grupo : ""),
+              tipo: dr.tipo_ruby,
+              enumerable: dr.clase_para_enumeracion.present?,
+              valores: hash_valores_enum
+            }
           end
-
-          hash_dr << {
-            nombre_de_grupo: (dr.nombre_de_grupo.present? ? dr.nombre_de_grupo : ""),
-            codigo_de_grupo: (dr.codigo_de_grupo.present? ? dr.codigo_de_grupo : ""),
-            nombre: dr.nombre,
-            dato_reportable_id: dr.dr_id,
-            orden: (dr.orden_de_grupo.present? ? dr.orden_de_grupo : ""),
-            tipo: dr.tipo_ruby,
-            enumerable: dr.clase_para_enumeracion.present?,
-            valores: hash_valores_enum
-          }
-        end
         
         p.diagnosticos.each do |d|
           hash_diagnosticos << {

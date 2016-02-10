@@ -307,21 +307,22 @@ class RegistroMasivoDePrestaciones
             if prestacion.present? && diagnostico.present?
               # Obtener todas las prestaciones que tengan el código informado y admitan el diagnóstico informado
               prestaciones = Prestacion.where(
-                "codigo = ?
+                " codigo = ?
                   AND EXISTS (
                     SELECT *
                       FROM diagnosticos_prestaciones
                       WHERE
                         diagnosticos_prestaciones.prestacion_id = prestaciones.id
                         AND diagnosticos_prestaciones.diagnostico_id = ?
-                  )",
+                  )
+                  AND activa",
                   codigo_de_prestacion, diagnostico.id
                 )
 
               # Registrar el error si no se encuentra una prestación para esa combinación de código y diagnóstico
               if prestaciones.size == 0
                 prestacion_brindada.agregar_error(
-                  "No se encontró una prestación con código '#{codigo_de_prestacion}' y diagnóstico '#{diagnostico.nombre} (#{codigo_de_diagnostico})'"
+                  "No se encontró una prestación activa con código '#{codigo_de_prestacion}' y diagnóstico '#{diagnostico.nombre} (#{codigo_de_diagnostico})'"
                 )
               end
             end
@@ -447,7 +448,12 @@ class RegistroMasivoDePrestaciones
                     :diagnostico_id => diagnostico.id
                   })
                   dras = []
-                  pb.prestacion.datos_reportables_requeridos.each do |drr|
+                  pb.prestacion.datos_reportables_requeridos.where(
+                    "fecha_de_inicio <= ? AND (
+                       fecha_de_finalizacion IS NULL
+                       OR fecha_de_finalizacion > ?
+                    )", pb.fecha_de_la_prestacion, pb.fecha_de_la_prestacion).
+                    each do |drr|
                     if drr.dato_reportable_id == pb_benef_prest.dato_reportable_1_id
                       dra_valor = pb_benef_prest.dato_reportable_1_valor
                     elsif drr.dato_reportable_id == pb_benef_prest.dato_reportable_2_id
@@ -594,7 +600,12 @@ class RegistroMasivoDePrestaciones
       })
       prestacion_brindada.es_catastrofica = prestacion_brindada.prestacion.es_catastrofica
       dras = []
-      prestacion_brindada.prestacion.datos_reportables_requeridos.each do |drr|
+      prestacion_brindada.prestacion.datos_reportables_requeridos.where(
+        "fecha_de_inicio <= ? AND (
+           fecha_de_finalizacion IS NULL
+           OR fecha_de_finalizacion > ?
+        )", prestacion_brindada.fecha_de_la_prestacion, prestacion_brindada.fecha_de_la_prestacion).
+        each do |drr|
         if drr.dato_reportable_id == pb.dato_reportable_1_id
           dra_valor = pb.dato_reportable_1_valor
         elsif drr.dato_reportable_id == pb.dato_reportable_2_id
@@ -674,7 +685,7 @@ class RegistroMasivoDePrestaciones
   end
 
   def a_codigo_de_prestacion(cadena)
-    texto = cadena.to_s.strip.gsub(/[ -\.,]/, "").gsub("NULL", "").upcase
+    texto = cadena.to_s.strip.gsub(/[ -,]/, "").gsub("NULL", "").upcase
     return (texto.blank? ? nil : texto)
   end
 
