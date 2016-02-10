@@ -107,7 +107,26 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
     end
     return secciones
   end
+#-----------------------------------------------------------------------------------------
+def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
+  Date.today.strftime("%d/%m/%Y")
+  fecha = Date.today
+    qres = ActiveRecord::Base.connection.exec_query( <<-SQL
+                                                             SELECt
+                                                                ppa.*
+                                                                FROM
+                                                                prestaciones_pdss_autorizadas as ppa,
+                                                                prestaciones_prestaciones_pdss as pppdss
+                                                                WHERE
+                                                                ppa.efector_id = #{efector_id}
+                                                                AND ('#{fecha.iso8601}' between fecha_de_inicio and fecha_de_finalizacion OR (fecha_de_inicio <= '#{fecha.iso8601}' and fecha_de_finalizacion is null))
+                                                                AND  pppdss.prestacion_pdss_id = ppa.prestacion_pdss_id AND    pppdss.prestacion_pdss_id = '#{prestacion_id}'
 
+      SQL
+    )
+    return qres
+  end
+#-----------------------------------------------------------------------------------------
   def self.obtener_prestaciones(nombres, valores)
     prestaciones = []
     valores.each do |r|

@@ -1,10 +1,8 @@
-# Utilizamos el motor PostgreSQL
-production:
-  adapter: postgresql
-  encoding: unicode
-  database: nacer
-  username: nacer_adm
-
+# MySQL.  Versions 4.1 and 5.0 are recommended.
+#
+#
+# Be sure to use new-style password hashing:
+#   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
 development:
   adapter: postgresql
   encoding: unicode
@@ -14,5 +12,12 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: nacer_test
+  database: nacer_dev_test
   username: nacer_adm
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: nacer_dev_production
+  username: nacer_adm
+

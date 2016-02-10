@@ -14,6 +14,10 @@ class AddendaSumar < ActiveRecord::Base
   has_many :prestaciones_autorizadas_alta, :as => :autorizante_al_alta, :class_name => "PrestacionAutorizada"
   has_many :prestaciones_autorizadas_baja, :as => :autorizante_de_la_baja, :class_name => "PrestacionAutorizada"
 
+  has_many :prestaciones_pdss_autorizadas_alta, :as => :autorizante_al_alta, :class_name => "PrestacionPdssAutorizada"
+  has_many :prestaciones_pdss_autorizadas_baja, :as => :autorizante_de_la_baja, :class_name => "PrestacionPdssAutorizada"
+
+
   # Validaciones
   validates_presence_of :convenio_de_gestion_sumar_id, :fecha_de_inicio
   validates_uniqueness_of :numero

@@ -5,7 +5,7 @@
   %h1 Adendas del convenio de gestión
   #action-links
     - if can? :create, Addenda
-      = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @convenio_de_gestion.id)
+      = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion_sumar.id)
 
 = render :partial => "shared/info"
 

@@ -1,0 +1,10 @@
+= javascript_include_tag 'rendiciones'
+
+#content-header
+  %h1 Edicion de Rendiciones
+  #action-links
+    = link_to 'Mostrar', @rendicion
+    = link_to 'Volver', rendiciones_path
+#content-body
+  = render 'form'
+    

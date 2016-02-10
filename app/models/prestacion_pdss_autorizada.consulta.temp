@@ -1,0 +1,55 @@
+qres = ActiveRecord::Base.connection.exec_query( <<-SQL
+        SELECT DISTINCT ON (sp.orden, gp.orden, pp.orden)
+            sp.id "seccion_pdss_id",
+            gp.id "grupo_pdss_id",
+            pp.id "prestacion_pdss_id",
+            lc.nombre "linea_de_cuidado",
+            mp.nombre "modulo",
+            tdp.nombre "tipo_de_prestacion",
+            p.codigo "codigo_de_prestacion",
+            pp.nombre "nombre_de_prestacion",
+            CASE WHEN ppa.autorizante_al_alta_type IS NOT NULL THEN 't'::boolean ELSE 'f'::boolean END "autorizada",
+            CASE
+              WHEN ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar' THEN 'Convenio de gestión'::varchar(255)
+              WHEN ppa.autorizante_al_alta_type = 'AddendaSumar' THEN 'Adenda'::varchar(255)
+              ELSE NULL::varchar(255)
+            END "tipo_de_autorizador",
+            CASE
+              WHEN ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar' THEN cgs.numero
+              WHEN ppa.autorizante_al_alta_type = 'AddendaSumar' THEN ads.numero
+              ELSE NULL::varchar(255)
+            END "numero_de_autorizador",
+            to_char(ppa.fecha_de_inicio, 'DD/MM/YYYY') "fecha_de_inicio",
+            CASE
+              WHEN EXISTS (
+                  SELECT * FROM areas_de_prestacion_prestaciones_pdss appp
+                    WHERE appp.prestacion_pdss_id = pp.id AND appp.area_de_prestacion_id = '2'
+                ) THEN 't'::boolean
+              ELSE 'f'::boolean
+            END "rural"
+          FROM
+            prestaciones_pdss pp
+            LEFT JOIN prestaciones_prestaciones_pdss ppp ON pp.id = ppp.prestacion_pdss_id
+            LEFT JOIN prestaciones p ON p.id = ppp.prestacion_id
+            LEFT JOIN grupos_pdss gp ON gp.id = pp.grupo_pdss_id
+            LEFT JOIN secciones_pdss sp ON sp.id = gp.seccion_pdss_id
+            LEFT JOIN lineas_de_cuidado lc ON lc.id = pp.linea_de_cuidado_id
+            LEFT JOIN modulos mp ON mp.id = pp.modulo_id
+            LEFT JOIN tipos_de_prestaciones tdp ON tdp.id = pp.tipo_de_prestacion_id
+            LEFT JOIN prestaciones_pdss_autorizadas ppa ON (
+              ppa.efector_id = #{efector_id}
+              AND ppa.fecha_de_inicio <= '#{fecha.iso8601}'
+              AND (ppa.fecha_de_finalizacion IS NULL OR ppa.fecha_de_finalizacion > '#{fecha.iso8601}')
+              AND ppa.prestacion_pdss_id = pp.id
+              AND ppa.prestacion_pdss_id = '#{prestacion_id}'
+            )
+            LEFT JOIN convenios_de_gestion_sumar cgs ON (
+              ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar'
+              AND ppa.autorizante_al_alta_id = cgs.id
+            )
+            LEFT JOIN addendas_sumar ads ON (
+              ppa.autorizante_al_alta_type = 'AddendaSumar' AND
+              ppa.autorizante_al_alta_id = ads.id
+            )
+          ORDER BY sp.orden, gp.orden, pp.orden;
+      SQL

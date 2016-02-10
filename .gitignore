@@ -12,3 +12,4 @@ REVISION
 public/system
 lib/tasks/datos
 public/paperclip
+/nbproject/private/

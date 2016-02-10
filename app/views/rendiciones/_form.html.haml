@@ -13,23 +13,14 @@
     %br/
     = f.text_area :observaciones, {rows: "3"}
     #rendiciones_detalles
-      #action-links
-        = link_to_add_association 'Agregar Fila de detalle', f, :rendiciones_detalles, force_non_association_create: true, data: {'association-insertion-node' => 'tbody#rendiciones_detalles', 'association-insertion-method' => 'append', "cocoon:after-insert" => "true"}
       %br/
       %br/
-      %table{:border => "0", :width => "100%", :id => 'div_det_ren'}
+      %table{:border => "0", :width => "90%", :id => 'div_det_ren'}
         %thead
-          %tr
-            %th{:scope => "col", width: "5px"} Fecha
-            %th{:scope => "col", width: "5px"} Nro Factura
-            %th{:scope => "col", width: "5px"} Detalle
-            %th{:scope => "col", width: "5px"} Cant.
-            %th{:scope => "col", width: "10px"} Nro Cheque
-            %th{:scope => "col", width: "10px"} Fecha
-            %th{:scope => "col", width: "10px"} Importe Gasto
-            %th{:scope => "col", width: "10px"} Acciones
         %tbody#rendiciones_detalles
           = f.fields_for :rendiciones_detalles do |detalle|
             = render 'rendicion_detalle_fields', f: detalle
+      #action-links
+        = link_to_add_association 'Agregar Fila de detalle', f, :rendiciones_detalles, force_non_association_create: true, data: {'association-insertion-node' => 'tbody#rendiciones_detalles', 'association-insertion-method' => 'append', "cocoon:after-insert" => "true"}
   .actions
     = f.submit

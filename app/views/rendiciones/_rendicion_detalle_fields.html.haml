@@ -1,10 +1,44 @@
 %tr.nested-fields
+  %th{:colspan => "3", class: 'th_blank'}
+%tr.nested-fields
+  %th{:colspan => "3"} Detalle de registro
+%tr.nested-fields
+  %th Fecha
   %td= f.text_field :fecha,  {width: "10px", size: "5", class: "jquery_fecha",  style: "font-size: 5"}
+%tr.nested-fields
+  %th{:scope => "col"} Nro Factura
   %td= f.text_field :nro_factura, :size => 5
-  %td= f.text_area :detalle, {rows: "3"}
+%tr.nested-fields
+  %th{:scope => "col"} Detalle
+  %td= f.text_area :detalle, {rows: "2", cols: "50"}
+%tr.nested-fields
+  %th{:scope => "col"} Cant.
   %td= f.number_field :cant, :size => 2
+%tr.nested-fields
+  %th{:scope => "col"} Nro Cheque
   %td= f.number_field :nro_cheque, :width => "5px"
+%tr.nested-fields
+  %th{:scope => "col"} Tipo de Gasto
   %td= f.select(:tipo_de_gasto_id, @tipos_de_gasto,{include_blank: true}, class: "select2")
+%tr.nested-fields
+  %th{:scope => "col"} Importe de Gasto
   %td= f.number_field :importe_gasto, :size => 6
+%tr.nested-fields
+  %th{:scope => "col"} 
   %td= link_to_remove_association "Quitar fila", f
+
+
+
+
+-#%tr.nested-fields
+  -#%td= f.text_field :fecha,  {width: "10px", size: "5", class: "jquery_fecha",  style: "font-size: 5"}
+  -#%td= f.text_field :nro_factura, :size => 5
+  -#%td= f.text_area :detalle, {rows: "3"}
+  -#%td= f.number_field :cant, :size => 2
+  -#%td= f.number_field :nro_cheque, :width => "5px"
+  -#%td= f.select(:tipo_de_gasto_id, @tipos_de_gasto,{include_blank: true}, class: "select2")
+  -#%td= f.number_field :importe_gasto, :size => 6
+  -#%td= link_to_remove_association "Quitar fila", f
  
+-#:javascript
+-#  $('.jquery_fecha').datepicker({  dateFormat: "yy-mm-dd", showOn: "button", buttonImage: "/assets/calendar.gif", buttonImageOnly: true });

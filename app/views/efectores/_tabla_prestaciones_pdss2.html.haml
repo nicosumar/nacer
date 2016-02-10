@@ -34,10 +34,5 @@
         %td.centrado= p["codigo_de_prestacion"]
         - if prestaciones.any?{|p| p["rural"] == "t"}
           %td.centrado= (p["rural"] == "t" ? "Urbana/Rural" : "Urbana")
-        - #raise
-        - @estado= true
-        
-        - if prestaciones.any?{|p| p["autorizada"] == "t"} 
-          %td.centrado <input id="estado" name="estado" type="checkbox" value="1" checked = true />
-        - else 
-          %td.centrado <input id="estado" name="estado" type="checkbox" value="0" checked = false/>
+        %td.centrado= p["autorizada"] == "t" ? "Sí" : "No"
+        %td.centrado= 
