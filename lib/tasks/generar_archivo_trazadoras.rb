@@ -525,7 +525,7 @@ archivo.set_encoding("CP1252", :crlf_newline => true)
 UnidadDeAltaDeDatos.where(:facturacion => true).each do |uad|
   ActiveRecord::Base.connection.schema_search_path = "uad_#{uad.codigo}, public"
   res = ActiveRecord::Base.connection.exec_query "
-    SELECT
+    SELECT DISTINCT
         e.cuie \"CUIE\",
         pb.clave_de_beneficiario \"Clave beneficiario\",
         cd.codigo \"Clase de documento\",
