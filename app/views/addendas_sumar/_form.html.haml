@@ -44,26 +44,28 @@
       %span.field_name Fecha de inicio
       %span.field_value= @addenda.fecha_de_inicio.strftime("%d/%m/%Y")
   
-  %h3 Prestaciones que se autorizan a través esta adenda
   %div.field
-    -# raise '2'
-    = f.select :prestacion_autorizada_alta_ids, |
-      grouped_options_for_select(@prestaciones_alta, @prestacion_autorizada_alta_ids), {}, |
-      { |
-        :multiple => true, :size => 10, |
-        :class => "select2", |
-        :data  => {opciones: {closeOnSelect: false}} |
-      } |
-
-  %h3 Prestaciones que se dan de baja a través de esta adenda
-  %div.field
-    = f.select :prestacion_autorizada_baja_ids, |
-      grouped_options_for_select(@prestaciones_baja, @prestacion_autorizada_baja_ids), {}, |
-      { |
-        :multiple => true, :size => 10, |
-        :class => "select2", |
-        :data  => {opciones: {closeOnSelect: false}} |
-      } |
+  - if @convenio_de_gestion.efector.prestaciones_autorizadas_al_dia(Date.today).any?
+    = Date.today.strftime("%d/%m/%Y")
+    - PrestacionPdssAutorizada.efector_y_fecha(@convenio_de_gestion.efector.id, Date.today).each do |seccion|
+      %div.seccion_pdss{:id => seccion["nombre"]}
+        %h4= (seccion["codigo"].present? ? seccion["codigo"] + ") " : "") + seccion["nombre"]
+        - if seccion.has_key? :grupos
+          - seccion[:grupos].each do |grupo|
+            %div.grupo_pdss{:id => grupo["nombre"]}
+              %h4= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
+              = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones], efector: @convenio_de_gestion.efector, formulario: f}
+        - else
+          = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => seccion[:prestaciones], efector: @convenio_de_gestion.efector, formulario: f}
+  - else
+    No hay información sobre las prestaciones autorizadas para el convenio
+    -#= f.select :prestacion_autorizada_baja_ids, |
+    -#  grouped_options_for_select(@prestaciones_baja, @prestacion_autorizada_baja_ids), {}, |
+    -#  { |
+    -#    :multiple => true, :size => 10, |
+    -#    :class => "select2", |
+    -#    :data  => {opciones: {closeOnSelect: false}} |
+    -#  } |
 
   %h3 Observaciones
   %div.field

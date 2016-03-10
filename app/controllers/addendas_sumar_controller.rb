@@ -94,14 +94,24 @@ class AddendasSumarController < ApplicationController
               r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.to_s.strip.gsub(".", ",")
             end
 
-            @bajas_de_prestaciones = @addenda.prestaciones_autorizadas_baja.includes(:prestacion).order("prestaciones.codigo").collect{|pa| {codigo: pa.prestacion.codigo, nombre: pa.prestacion.nombre} }
+            @bajas_de_prestaciones =
+              PrestacionPdss.joins(:prestaciones).
+              where(prestaciones_prestaciones_pdss: {prestacion_id: @addenda.prestaciones_autorizadas_baja.map{|p| p.prestacion_id}.uniq}).
+              order(:grupo_pdss_id).
+              select("codigo_de_prestacion_con_diagnosticos(prestaciones_pdss.id) AS codigo, prestaciones_pdss.nombre AS nombre").
+              map{|pa| {codigo: pa.codigo, nombre: pa.nombre} }
 
             r.add_table("Bajas", @bajas_de_prestaciones, header: true) do |t|
               t.add_column(:prestacion_codigo, :codigo)
               t.add_column(:prestacion_nombre, :nombre)
             end
 
-            @altas_de_prestaciones = @addenda.prestaciones_autorizadas_alta.includes(:prestacion).order("prestaciones.codigo").collect{|pa| {codigo: pa.prestacion.codigo, nombre: pa.prestacion.nombre} }
+            @altas_de_prestaciones =
+              PrestacionPdss.joins(:prestaciones).
+              where(prestaciones_prestaciones_pdss: {prestacion_id: @addenda.prestaciones_autorizadas_alta.map{|p| p.prestacion_id}.uniq}).
+              order(:grupo_pdss_id).
+              select("codigo_de_prestacion_con_diagnosticos(prestaciones_pdss.id) AS codigo, prestaciones_pdss.nombre AS nombre").
+              map{|pa| {codigo: pa.codigo, nombre: pa.nombre} }
 
             r.add_table("Altas", @altas_de_prestaciones, header: true) do |t|
               t.add_column(:prestacion_codigo, :codigo)
@@ -165,23 +175,25 @@ class AddendasSumarController < ApplicationController
 
     # Crear los objetos necesarios para la vista
     @addenda = AddendaSumar.new
-    @prestaciones_alta =
-      Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
-        [ g[0] + " - " + g[1],
-          (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
-            [p.codigo + " - " + p.nombre_corto, p.id]
-          })
-        ]
-      }
-
-    @prestaciones_baja =
-      PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
-        [ g[0] + " - " + g[1],
-          (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
-            [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
-          })
-        ]
-      }
+#    Prestacion.no_autorizadas(@convenio_de_gestion.efector.id).collect{
+#        |p| [p.codigo + " - " + p.nombre_corto, p.id]
+#      }
+#    @prestaciones_alta =
+#      Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_de_prestaciones_id, grup.nombre]}.uniq.collect { |g|
+#        [ g[0] + " - " + g[1],
+#          (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo_pdss_id = ?", g[0]).collect { |p|
+#            [p.codigo + " - " + p.nombre_corto, p.id]
+#          })
+#        ]
+#      }
+#    @prestaciones_baja =
+#      PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
+#        [ g[0] + " - " + g[1],
+#          (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
+#            [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
+#          })
+#        ]
+#      }
     @prestacion_autorizada_alta_ids = []
     @prestacion_autorizada_baja_ids = []
   end
@@ -269,6 +281,7 @@ class AddendasSumarController < ApplicationController
     end
 
     # Obtener el convenio de gestión asociado
+    
     begin
       @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:addenda_sumar][:convenio_de_gestion_sumar_id])
     rescue ActiveRecord::RecordNotFound
@@ -281,82 +294,92 @@ class AddendasSumarController < ApplicationController
     end
     
     # Guardar las prestaciones seleccionadas para dar de alta y de baja
-    @prestacion_autorizada_alta_ids = (params[:addenda_sumar].delete(:prestacion_autorizada_alta_ids).reject(&:blank?) || []).uniq
-    @prestacion_autorizada_baja_ids = (params[:addenda_sumar].delete(:prestacion_autorizada_baja_ids).reject(&:blank?) || []).uniq
+    @prestacion_autorizada_ids = (params[:addenda_sumar][:prestacion_pdss_id])
+    
+    @convenio_degestion = ConvenioDeGestionSumar.find(params[:addenda_sumar][:convenio_de_gestion_sumar_id])
 
-    # Crear una nueva adenda desde los parámetros
-    @addenda = AddendaSumar.new(params[:addenda_sumar])
+   #pres[0] y pres[1]     
+    fecha_actual = Time.now
+    @addenda = AddendaSumar.new()
+    @addenda.creator_id = current_user.id
+    @addenda.updater_id = current_user.id
+    @addenda.convenio_de_gestion_sumar_id = params[:addenda_sumar][:convenio_de_gestion_sumar_id]
+    @addenda.firmante = params[:addenda_sumar][:firmante]
+    @addenda.fecha_de_suscripcion = parametro_fecha(params[:addenda_sumar], :fecha_de_suscripcion)
+    @addenda.fecha_de_inicio = parametro_fecha(params[:addenda_sumar], :fecha_de_inicio)
+    @addenda.observaciones = params[:addenda_sumar][:observaciones]
+    @addenda.numero = params[:addenda_sumar][:numero]
+   
+  
+    contador = 0;
+    if @addenda.save
+     # if contador <= 10
+     #   contador = contador +1
+     # else
 
-    prestaciones_alta = Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).collect{
-      |p| [p.codigo + " - " + p.nombre_corto, p.id]
-    }
-    prestaciones_baja = PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).collect{
-      |p| [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
-    }
+      #end
+      @prestacion_autorizada_ids.each do |pres|
 
-    # Verificar la validez del objeto
-    if @addenda.valid?
-      # Verificar que las selecciones de los parámetros coinciden con los valores permitidos
-      if ( @prestacion_autorizada_alta_ids.any?{|p_id| !((prestaciones_alta.collect{|p| p[1]}).member?(p_id.to_i))} ||
-           @prestacion_autorizada_baja_ids.any?{|p_id| !((prestaciones_baja.collect{|p| p[1]}).member?(p_id.to_i))} )
-        redirect_to( root_url,
-          :flash => { :tipo => :error, :titulo => "La petición no es válida",
-            :mensaje => "Se informará al administrador del sistema sobre el incidente."
-          }
-        )
-        return
-      end
+        actual = PrestacionPdssAutorizada.pres_autorizadas(@convenio_degestion.efector_id, fecha_actual, pres[0])
+        
+        if not actual.first
+          #no se encontro la prestacion por lo que el efector no la tiene autorizada
+          #hacemos un insert de la prestacion nueva siempre que se encuentre seleccionada
+          if not pres[1].blank?
+            CustomQuery.ejecutar(
+              {
+                sql: " 
+                                  INSERT INTO prestaciones_pdss_autorizadas
+                                  (efector_id, prestacion_pdss_id, fecha_de_inicio, autorizante_al_alta_type, autorizante_al_alta_id)
+                                  VALUES
+                                  (#{@convenio_de_gestion.efector_id}, #{pres[0]}, '#{ @addenda.fecha_de_inicio.strftime('%Y-%m-%d')}', 'AddendaSumar', #{ @addenda.id })",
+ 
+              }) 
+         #   unless guardado
+         #     raise ActiveRecord::Rollback, "Call tech support!"
+         #     return false 
+         #   end
+          end
+        else
+          #si esta y esta deseleccionada es que la da de baja
+          if pres[1].blank?    
+            #la doy de baja
+            CustomQuery.ejecutar(
+              {
+                sql: "
+                        UPDATE  prestaciones_pdss_autorizadas SET fecha_de_finalizacion = '#{ @addenda.fecha_de_inicio.strftime('%Y-%m-%d')}',
+                                                                            autorizante_de_la_baja_type= 'AddendaSumar' 
+                                                                            , autorizante_de_la_baja_id=  #{ @addenda.id }
+                                                                        WHERE efector_id = #{@convenio_de_gestion.efector_id} AND
+                                                                              prestacion_pdss_id = #{actual.first["prestacion_pdss_id"]}",
+                                 
+              }) 
+          #unless guardado
+          #    raise ActiveRecord::Rollback, "Call tech support!"
+          #    return false 
+          #  end
+          else
+            #si esta y esta seleccionada no hacemos nada
+            # CustomQuery.ejecutar(
+            #   {
+            #    sql: " 
+            #             INSERT INTO prestaciones_pdss_autorizadas
+            #                       (efector_id, prestacion_pdss_id, fecha_de_inicio, autorizante_al_alta_type, autorizante_al_alta_id)
+            #                       VALUES
+            #                       (#{@convenio_de_gestion.efector_id}, #{pres[0]}, '#{ @addenda.fecha_de_inicio.strftime('%Y-%m-%d')}', 'AddendaSumar', #{ @addenda.id })",
+                                 
+            #   })
+          end
 
-      # Registrar el usuario que realiza la creación
-      @addenda.creator_id = current_user.id
-      @addenda.updater_id = current_user.id
-
-      # Guardar la nueva addenda y sus prestaciones asociadas
-      if @addenda.save
-        @prestacion_autorizada_alta_ids.each do |prestacion_id|
-          prestacion_autorizada_alta = PrestacionAutorizada.new
-          prestacion_autorizada_alta.attributes = {
-            :efector_id => @convenio_de_gestion.efector_id,
-            :prestacion_id => prestacion_id,
-            :fecha_de_inicio => @addenda.fecha_de_inicio
-          }
-          @addenda.prestaciones_autorizadas_alta << prestacion_autorizada_alta
         end
-        @prestacion_autorizada_baja_ids.each do |prestacion_autorizada_id|
-          prestacion_autorizada_baja = PrestacionAutorizada.find(prestacion_autorizada_id)
-          prestacion_autorizada_baja.attributes = {
-            :fecha_de_finalizacion => @addenda.fecha_de_inicio
-          }
-          @addenda.prestaciones_autorizadas_baja << prestacion_autorizada_baja
-        end
       end
-
-      # Redirigir a la nueva adenda creada
       redirect_to(@addenda,
-        :flash => { :tipo => :ok, :titulo => 'La adenda se creó correctamente.' }
-      )
-    else
-      # Crear los objetos necesarios para regenerar la vista si hay algún error
-      @prestaciones_alta =
-        Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
-          [ g[0] + " - " + g[1],
-            (Prestacion.no_autorizadas_sumar(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
-              [p.codigo + " - " + p.nombre_corto, p.id]
-            })
-          ]
-        }
-
-      @prestaciones_baja =
-        PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
-          [ g[0] + " - " + g[1], 
-            (PrestacionAutorizada.autorizadas(@convenio_de_gestion.efector.id).where("grupo = ?", g[0]).collect { |p|
-              [p.prestacion.codigo + " - " + p.prestacion.nombre_corto, p.id]
-            })
-          ]
-        }
-      # Si no pasa las validaciones, volver a mostrar el formulario con los errores
-      render :action => "new"
+         :flash => { :tipo => :ok, :titulo => 'La adenda se creó correctamente.' }
+       )
+      return
     end
+    render :action => "new"
+    return
   end
 
   # PUT /addendas_sumar/:id
