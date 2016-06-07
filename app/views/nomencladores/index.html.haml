@@ -1,23 +1,26 @@
-%h1 Nomencladores
+- content_for :title do
+  Nomencladores
+#content-header
+  %h1 Nomencladores
+  #action-links
+    - if can? :create, Nomenclador
+      = link_to 'Nuevo Nomenclador', new_nomenclador_path
 
-%p#notice= notice
-
-%table
-  %thead
+#content-body
+  %table
     %tr
       %th Nomenclador
       %th Fecha de inicio
       %th Estado
-  %tbody
-    - @nomencladores.each do |n|
-      %tr.clickable{ :onclick => "location.href=\'#{nomenclador_path(n)}\'", :title => "Ver detalles del nomenclador #{n.nombre}" }
-        %td= n.nombre
-        %td= n.fecha_de_inicio
-        %td= (n.activo ? "Activo" : "Inactivo")
-= will_paginate @nomencladores, :inner_window => 2, :outer_window => 0
+      %th{colspan: '3'} Acciones
+    - @nomencladores.each do |nomenclador|
+      %tr
+        %td= nomenclador.nombre
+        %td= nomenclador.fecha_de_inicio
+        %td= (nomenclador.activo ? "Activo" : "Inactivo")
+        %td= link_to 'Ver', nomenclador_path(nomenclador)
+        %td= link_to 'Editar', edit_nomenclador_path(nomenclador)
+        %td= link_to 'Borrar', nomenclador, method: :delete, data: { confirm: "¿Esta seguro que desea eliminar el nomenclador #{nomenclador.nombre}?" }
+  = will_paginate @nomencladores, :inner_window => 2, :outer_window => 0
 
-- content_for :sidebar do
-  - if can? :create, Nomenclador
-    %h2 Tareas
-    %ul
-      %li= link_to "Crear nomenclador", new_nomenclador_url
+

@@ -46,6 +46,7 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.0.4)
+    byebug (9.0.3)
     cancan (1.6.9)
     capistrano (2.14.2)
       highline
@@ -232,6 +233,7 @@ DEPENDENCIES
   axlsx_rails
   better_errors
   binding_of_caller
+  byebug
   cancan
   capistrano
   chosen-rails (~> 1.1.0)
@@ -262,4 +264,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.10.3
+   1.11.2
