@@ -5,6 +5,9 @@ test/
 public/assets
 *.swp
 *~
+*.lock
+db/schema.rb
+config/database.yml
 vendor/data
 .project
 *.lnk
