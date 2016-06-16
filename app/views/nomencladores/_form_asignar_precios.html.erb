@@ -1,0 +1,151 @@
+<%= form_for(@nomenclador) do |f| %>
+
+    <h3>Sección: <%= @grupo_pdss.seccion_pdss.codigo + " - " + @grupo_pdss.seccion_pdss.nombre %></h3>    
+    <h4>Grupo: <%= @grupo_pdss.codigo + " - " + @grupo_pdss.nombre %></h4>
+    <% @grupo_pdss.prestaciones_pdss.each do |prestacion_pdss| %>
+      <hr>
+      <p>
+        <%= "<b>Línea de cuidado:</b> ".html_safe + prestacion_pdss.linea_de_cuidado.nombre if prestacion_pdss.linea_de_cuidado.present?%>
+        <%= "<br /><b>Módulo:</b> ".html_safe + prestacion_pdss.modulo.nombre if prestacion_pdss.modulo.present? %>
+        <%= "<br /><b>Tipo de prestación:</b> ".html_safe + prestacion_pdss.tipo_de_prestacion.nombre if prestacion_pdss.tipo_de_prestacion.present? %>
+        <%= "<br /><b>Nombre:</b> ".html_safe + prestacion_pdss.nombre %>
+        <br /><b>Prestaciones (asignar precios):</b>          
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Prestación</th>
+            <th>Dato reportable</th>
+            <th>Área de prestación</th>
+            <th>Adicional por prestación</th>
+            <th>Precio por unidad</th>
+            <th>Unidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% 
+            prestacion_pdss.prestaciones.each do |prestacion| 
+              asignaciones_de_precios = @nomenclador.asignaciones_de_precios.where(:prestacion_id => prestacion.id)
+              asignaciones_de_precios.each do |asignacion_de_precio| 
+          %>
+            <tr>
+              <td><%= asignacion_de_precio.prestacion.codigo %></td>
+              <td><%= asignacion_de_precio.prestacion.nombre %></td>
+              <td><%= asignacion_de_precio.dato_reportable.nombre if asignacion_de_precio.dato_reportable.present? %></td>
+              <td><%= asignacion_de_precio.area_de_prestacion.nombre %></td>
+              <td>
+                <%= f.fields_for "asignaciones_de_precios[#{asignacion_de_precio.id}]", asignacion_de_precio do |adp| %>
+                  <%= adp.number_field :adicional_por_prestacion, step: "0.01" %>
+                <% end %> 
+              </td>
+              <td>
+                <%= f.fields_for "asignaciones_de_precios[#{asignacion_de_precio.id}]", asignacion_de_precio do |adp| %>
+                  <%= adp.number_field :precio_por_unidad, step: "0.01" %>
+                <% end %> 
+              </td>
+              <td><%= asignacion_de_precio.prestacion.unidad_de_medida.nombre.downcase %></td>
+            </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  <% if @nomenclador.asignaciones_de_precios.any? %>  
+   <!--  <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Prestación</th>
+          <th>Dato reportable</th>
+          <th>Área de prestación</th>
+          <th>Adicional por prestación</th>
+          <th>Precio por unidad</th>
+          <th>Unidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @nomenclador.asignaciones_de_precios.each do |asignacion_de_precio| %>
+          <tr>
+            <td><%= asignacion_de_precio.prestacion.codigo %></td>
+            <td><%= asignacion_de_precio.prestacion.nombre %></td>
+            <td><%= asignacion_de_precio.dato_reportable.nombre if asignacion_de_precio.dato_reportable.present? %></td>
+            <td><%= asignacion_de_precio.area_de_prestacion.nombre %></td>
+            <td>
+              <%= f.fields_for "asignaciones_de_precios[#{asignacion_de_precio.id}]", asignacion_de_precio do |adp| %>
+                <%= adp.number_field :adicional_por_prestacion, step: "0.01" %>
+              <% end %> 
+            </td>
+            <td>
+              <%= f.fields_for "asignaciones_de_precios[#{asignacion_de_precio.id}]", asignacion_de_precio do |adp| %>
+                <%= adp.number_field :precio_por_unidad, step: "0.01" %>
+              <% end %> 
+            </td>
+            <td><%= asignacion_de_precio.prestacion.unidad_de_medida.nombre.downcase %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table> -->
+
+  <% end %><!-- /if -->
+
+<% end %><!-- /form_for -->
+
+<!-- / = form_for(@nomenclador) do |f|
+/   - if @nomenclador.errors.any?
+/     #error_explanation
+/       %h2= pluralize(@nomenclador.errors.count, "error impide").to_s + " que se guarde la información del nomenclador."
+/       %ul
+/         - @nomenclador.errors.full_messages.each do |msg|
+/           %li= msg
+
+
+/   %h3 Asignaciones de precios
+/   - if @nomenclador.asignaciones_de_precios.any?
+/     %table
+/       %thead
+/         %tr
+/           %th Código
+/           %th Prestación
+/           %th Dato reportable
+/           %th Area de prestacion
+/           %th Precio
+/       %tbody
+/         - @nomenclador.asignaciones_de_precios.each do |a|
+/           %tr
+/             %td= a.prestacion.codigo
+/             %td= a.prestacion.nombre
+/             %td= a.dato_reportable.nombre if a.dato_reportable.present?
+/             %td= a.area_de_prestacion.nombre
+/             %td
+/               = f.fields_for "asignaciones_de_precios[#{a.id}]", a do |adp|  
+/               = adp.number_field :adicional_por_prestacion
+/               = adp.number_field :precio_por_unidad
+              
+/   - else
+/     %p No se han definido asignaciones de precios para este nomenclador
+
+/   %h3 Información general
+/   %div.field
+/     = f.label :nombre
+/     %br/
+/     = f.text_field :nombre
+/   %div.field
+/     = f.label :fecha_de_inicio
+/     %br/
+/     = f.date_select :fecha_de_inicio
+/   %div.field
+/     = f.label :activo
+/     %br/
+/     = f.check_box :activo
+/   %h3 Información complementaria
+/   %div.field
+/     = f.label :observaciones
+/     %br/
+/     = f.text_area :observaciones
+/   %div.actions
+/     - if @nomenclador.new_record?
+/       = f.submit "Crear nomenclador"
+/     - else
+/       = f.submit "Actualizar datos del nomenclador"
+ -->

@@ -19,8 +19,8 @@
         %td= nomenclador.fecha_de_inicio
         %td= (nomenclador.activo ? "Activo" : "Inactivo")
         %td= link_to 'Ver', nomenclador_path(nomenclador)
-        %td= link_to 'Editar', edit_nomenclador_path(nomenclador)
-        %td= link_to 'Borrar', nomenclador, method: :delete, data: { confirm: "¿Esta seguro que desea eliminar el nomenclador #{nomenclador.nombre}?" }
+        %td= link_to 'Asignar precios', new_asignar_precios_nomenclador_path(nomenclador)
+        %td= link_to 'Asignar efectores', edit_nomenclador_path(nomenclador)
   = will_paginate @nomencladores, :inner_window => 2, :outer_window => 0
 
 

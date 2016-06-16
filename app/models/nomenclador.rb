@@ -9,7 +9,7 @@ class Nomenclador < ActiveRecord::Base
   has_many :efectores, :through => :asignaciones_de_nomenclador
   has_one  :regla
   
-
+  accepts_nested_attributes_for :asignaciones_de_precios, :asignaciones_de_nomenclador
 
   validates_presence_of :nombre, :fecha_de_inicio, :activo
 end

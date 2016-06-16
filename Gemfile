@@ -49,4 +49,4 @@ gem 'wice_grid', '>=3.4.0'
 gem 'chosen-rails', '~> 1.1.0'
 gem 'test-unit', '~> 3.0'
 gem "select2-rails"
-
+gem 'strong_parameters'
