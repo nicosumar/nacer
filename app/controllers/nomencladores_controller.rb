@@ -100,9 +100,9 @@ class NomencladoresController < ApplicationController
     end
 
     if @nomenclador.update_attributes(params[:nomenclador])
-      redirect_to nomenclador_path(@nomenclador), :notice => 'La información del nomenclador se actualizó correctamente.'
+      redirect_to new_asignar_precios_nomenclador_path(nomenclador), :notice => 'Los precios del grupo se actualizaron correctamente.'
     else
-      render :action => "edit"
+      render :action => "new_asignar_precios_por_grupo_pdss"
     end
   end
 
