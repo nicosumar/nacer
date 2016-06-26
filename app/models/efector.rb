@@ -31,7 +31,7 @@ class Efector < ActiveRecord::Base
   has_one :administrador_sumar, :through => :convenio_de_administracion_sumar, :source => "administrador"
   has_many :prestaciones_autorizadas
   has_many :prestaciones_pdss_autorizadas
-  has_many :asignaciones_de_nomenclador
+  has_many :asignaciones_de_nomenclador # Deprecated
   has_many :referentes
   # Asociaciones referentes a la liquidacion
   belongs_to :unidad_de_alta_de_datos

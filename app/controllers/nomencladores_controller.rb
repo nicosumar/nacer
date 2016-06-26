@@ -63,9 +63,10 @@ class NomencladoresController < ApplicationController
   end
 
   def new_asignar_precios
-    if can? :create, Nomenclador 
-      # Busco el nomenclador
-      @nomenclador = Nomenclador.find(params[:id])
+    # Busco el nomenclador
+    @nomenclador = Nomenclador.find(params[:id])
+    
+    if (can? :create, Nomenclador) && @nomenclador.can_edit?
       # Busco el nomenclador seleccionado
       @old_nomenclador = Nomenclador.where("id != ?", params[:id]).order("fecha_de_inicio DESC").first
       @secciones_pdss = SeccionPdss.all
@@ -84,8 +85,8 @@ class NomencladoresController < ApplicationController
   end
 
   def new_asignar_precios_por_grupo_pdss
-    if can? :create, Nomenclador 
-      @nomenclador = Nomenclador.find(params[:id])
+    @nomenclador = Nomenclador.find(params[:id])
+    if (can? :create, Nomenclador) && @nomenclador.can_edit? 
       @grupo_pdss = GrupoPdss.find(params[:grupo_pdss_id])
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
@@ -94,7 +95,7 @@ class NomencladoresController < ApplicationController
 
   def update_asignar_precios
     @nomenclador = Nomenclador.find(params[:id])
-    if cannot? :update, @nomenclador
+    if (cannot? :update, @nomenclador) || !@nomenclador.can_edit? 
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
       return
     end

@@ -12,15 +12,17 @@
       %th Nomenclador
       %th Fecha de inicio
       %th Estado
-      %th{colspan: '3'} Acciones
+      %th{colspan: '2'} Acciones
     - @nomencladores.each do |nomenclador|
       %tr
         %td= nomenclador.nombre
         %td= nomenclador.fecha_de_inicio
         %td= (nomenclador.activo ? "Activo" : "Inactivo")
         %td= link_to 'Ver', nomenclador_path(nomenclador)
-        %td= link_to 'Asignar precios', new_asignar_precios_nomenclador_path(nomenclador)
-        %td= link_to 'Asignar efectores', edit_nomenclador_path(nomenclador)
+        - if nomenclador.can_edit?
+          %td= link_to 'Asignar precios', new_asignar_precios_nomenclador_path(nomenclador)
+        - else
+          %td= 'Asignar precios'
   = will_paginate @nomencladores, :inner_window => 2, :outer_window => 0
 
 
