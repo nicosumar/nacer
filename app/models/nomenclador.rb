@@ -11,7 +11,7 @@ class Nomenclador < ActiveRecord::Base
   
   accepts_nested_attributes_for :asignaciones_de_precios
 
-  validates_presence_of :nombre, :fecha_de_inicio, :activo
+  validates_presence_of :nombre, :fecha_de_inicio
 
   def can_edit?
     return false if PrestacionLiquidada.where("created_at > ?", self.fecha_de_inicio).present?
