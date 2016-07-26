@@ -99,7 +99,11 @@ Nacer::Application.routes.draw do
   end
   resources :addendas, :except => :destroy
   resources :addendas_sumar, :except => :destroy
-  resources :nomencladores, :except => :destroy
+  resources :nomencladores, :except => :destroy do
+    get 'asignar_precios', :on => :member, :as => :new_asignar_precios, :action => :new_asignar_precios
+    get 'grupo_pdss/:grupo_pdss_id/asignar_precios', :on => :member, :as => :new_asignar_precios_por_grupo_pdss, :action => :new_asignar_precios_por_grupo_pdss
+    put 'update_asignar_precios', :on => :member, :as => :update_asignar_precios, :action => :update_asignar_precios
+  end
   resources :busqueda, :only => :index
   resources :verificador, :only => :index
   resources :padrones, :only => :index do

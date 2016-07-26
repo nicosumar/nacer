@@ -855,14 +855,20 @@ class PadronesController < ApplicationController
       # Procesamiento de la actualización del estado de las novedades
       esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
       ultima_uad = ''
-
+      i=0
       origen.each do |linea|
         # Obtener la siguiente línea del archivo
         linea.gsub!(/[\r\n]+/, '')
-
         # Separar los campos
         campos = linea.split("\t")
-        codigo_uad = valor(campos[0], :texto)
+        if i==0
+          codigo_uad = valor(campos[0], :texto).gsub!(/[^0-9A-Za-z]/, '')
+        else
+          codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
+        end
+        i += 1
+        puts i
+        # codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
         id_de_novedad = valor(campos[1], :entero)
         aceptado = valor(campos[2], :texto).upcase
         activo = valor(campos[3], :texto).upcase
@@ -885,14 +891,20 @@ class PadronesController < ApplicationController
           estado = EstadoDeLaNovedad.id_del_codigo("Z")
         end
 
-        ActiveRecord::Base.connection.execute "
-          UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
-            SET
-              estado_de_la_novedad_id = #{estado},
-              mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
-              mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja}
-            WHERE id = '#{id_de_novedad}';
-        "
+        ActiveRecord::Base.connection.execute "SELECT * FROM  uad_#{codigo_uad}.novedades_de_los_afiliados LIMIT 1;"
+        #   UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
+        #     SET
+        #       estado_de_la_novedad_id = #{estado},
+        #       mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
+        #       mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja}
+        #     WHERE id = '#{id_de_novedad}';
+        # "
+        # if i==0
+        #   codigo_uad = valor(campos[0], :texto).gsub!(/[^0-9A-Za-z]/, '')
+        # else
+        #   codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
+        # end
+        # i += 1
       end
       origen.close
       ActiveRecord::Base.connection.schema_search_path = esquema_actual

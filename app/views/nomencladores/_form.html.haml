@@ -19,11 +19,6 @@
     = f.label :activo
     %br/
     = f.check_box :activo
-  %h3 Información complementaria
-  %div.field
-    = f.label :observaciones
-    %br/
-    = f.text_area :observaciones
   %div.actions
     - if @nomenclador.new_record?
       = f.submit "Crear nomenclador"

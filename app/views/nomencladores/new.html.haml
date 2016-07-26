@@ -1,6 +1,11 @@
 - content_for :title do
-  Nuevo nomenclador
+  Nomencladores
 
-%h1 Nuevo nomenclador
+#content-header
+  %h1 Nuevo Nomenclador
+  #action-links
+    = link_to '<< Volver al listado', nomencladores_path
 
-= render 'form'
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @nomenclador }
+  = render 'form'

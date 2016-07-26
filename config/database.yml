@@ -8,9 +8,12 @@ production:
 development:
   adapter: postgresql
   encoding: unicode
-  database: nacer_dev
+  host: localhost
+  database: nacer
   username: nacer_adm
-
+  password: 
+  pool: 5
+  timeout: 5000
 test:
   adapter: postgresql
   encoding: unicode

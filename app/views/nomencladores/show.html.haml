@@ -1,44 +1,47 @@
 - content_for :title do
-  = "Nomenclador «" + @nomenclador.nombre + "»"
-%h1= "Nomenclador «" + @nomenclador.nombre + "»"
+  Nomencladores
 
-%p#notice= notice
+#content-header
+  %h1 Ver Nomenclador
+  #action-links
+    - if can? :read, Nomenclador
+      = link_to '<< Volver al listado', nomencladores_path
+    - if can? :update, Nomenclador
+      = link_to 'Editar', edit_nomenclador_path(@nomenclador)
+#content-body
+  %p#notice= notice
 
-%p
-  El nomenclador
-  %span.destacado= "«" + @nomenclador.nombre + "»"
-  entró en vigencia el día
-  %span.destacado= @nomenclador.fecha_de_inicio.strftime("%d/%m/%Y")
-  y se encuentra actualmente
-  - if @nomenclador.activo
-    %span.muy_destacado ACTIVO
+  %p
+    El nomenclador
+    %span.destacado= "«" + @nomenclador.nombre + "»"
+    entró en vigencia el día
+    %span.destacado= @nomenclador.fecha_de_inicio.strftime("%d/%m/%Y")
+    y se encuentra actualmente
+    - if @nomenclador.activo
+      %span.muy_destacado ACTIVO
+    - else
+      %span.muy_destacado INACTIVO
+
+  %h3 Asignaciones de precios
+  - if @nomenclador.asignaciones_de_precios.any?
+    %table
+      %thead
+        %tr
+          %th Código
+          %th Prestación
+          %th Dato reportable
+          %th Area de prestacion
+          %th Precio
+      %tbody
+        - @nomenclador.asignaciones_de_precios.each do |a|
+          %tr
+            %td= a.prestacion.codigo
+            %td= a.prestacion.nombre
+            %td= a.dato_reportable.nombre if a.dato_reportable.present?
+            %td= a.area_de_prestacion.nombre
+            %td
+              - if a.adicional_por_prestacion > 0.0
+                = "$ " + a.adicional_por_prestacion.to_s + " por prestación, más "
+              = "$ " + a.precio_por_unidad.to_s + " por " + a.prestacion.unidad_de_medida.nombre.downcase
   - else
-    %span.muy_destacado INACTIVO
-
-%h3 Asignaciones de precios
-- if @nomenclador.asignaciones_de_precios.any?
-  %table
-    %thead
-      %tr
-        %th Código
-        %th Prestación
-        %th Precio
-    %tbody
-      - @nomenclador.asignaciones_de_precios.each do |a|
-        %tr.clickable{ :onclick => "location.href=\'#{asignacion_de_precios_path(a)}\'", :title => "Modificar la asignación de precios a la prestación #{a.prestacion.codigo}" }
-          %td= a.prestacion.codigo
-          %td= a.prestacion.nombre
-          %td
-            - if a.adicional_por_prestacion > 0.0
-              = "$ " + a.adicional_por_prestacion.to_s + " por prestación, más "
-            = "$ " + a.precio_por_unidad.to_s + " por " + a.prestacion.unidad_de_medida.nombre.downcase
-- else
-  %p No se han definido asignaciones de precios para este nomenclador
-
-- content_for :sidebar do
-  - if can? :update, @nomenclador
-    %h2 Tareas
-    %ul
-      %li= link_to "Modificar nomenclador", edit_nomenclador_path(@nomenclador)
-      %li= link_to "Agregar una asignación de precios", new_asignacion_de_precios_url(:nomenclador_id => @nomenclador.id)
-
+    %p No se han definido asignaciones de precios para este nomenclador
