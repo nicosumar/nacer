@@ -1,0 +1,66 @@
+<%= form_for @prestacion do |f| %>
+  <h4>Información general</h4>
+  <div class="field">
+    <%= f.label "Código" %>
+    <%= f.text_field :codigo %>
+    <button>Validar</button>     
+  </div>
+  <div class="field">
+    <%= f.label "Nombre" %>
+    <%= f.text_field :nombre %>      
+  </div>
+  <div class="field">
+    <%= f.label "Unidad de medida" %>
+    <%= f.collection_select :unidad_de_medida_id, UnidadDeMedida.all, :id, :nombre %>      
+  </div>
+  <div class="field">
+    <%= f.label "Unidades máximas" %>
+    <%= f.number_field :unidades_maximas %>      
+  </div>
+  <div class="field">
+    <%= f.label "Otorga cobertura" %>
+    <%= f.check_box :otorga_cobertura %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Es comunitaria ?" %>
+    <%= f.check_box :comunitaria %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Requiere historia clínica ?" %>
+    <%= f.check_box :requiere_historia_clinica %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Es catastrófica ?" %>
+    <%= f.check_box :es_catastrofica %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Modifica lugar de atención ?" %>
+    <%= f.check_box :modifica_lugar_de_atencion %>      
+  </div>
+  <div class="field">
+    <%= f.label "Objeto de la prestación" %>
+    <%= f.collection_select :objeto_de_la_prestacion_id, ObjetoDeLaPrestacion.all, :id, :nombre %>      
+  </div>
+  <div class="field">
+    <%= f.label "Concepto de facturación" %>
+    <%= f.collection_select :concepto_de_facturacion_id, ConceptoDeFacturacion.all, :id, :concepto %>      
+  </div>
+  <div class="field">
+    <%= f.label "Tipo de tratamiento" %>
+    <%= f.collection_select :tipo_de_tratamiento_id, TipoDeTratamiento.all, :id, :nombre %>      
+  </div>
+
+  <hr>
+  <h4>Datos reportables</h4>
+
+  <hr>
+  <h4>Diagnósticos</h4>
+    <%= collection_select :grupo_liquidacion_en_efectores, :id, @efectores, :id, :nombre,{:selected => @efectores_ids}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'} %>
+  <hr>
+  <h4>Plan de salud</h4>
+
+  <div class="actions">
+    <%= f.submit "Crear" %>     
+  </div>
+  
+<% end %>

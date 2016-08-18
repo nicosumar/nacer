@@ -13,4 +13,8 @@ class PrestacionPdss < ActiveRecord::Base
   has_and_belongs_to_many :prestaciones
   has_and_belongs_to_many :areas_de_prestacion
 
+  def nombre_corto
+    self.grupo_pdss.seccion_pdss.nombre + " / " + self.grupo_pdss.nombre
+  end
+
 end

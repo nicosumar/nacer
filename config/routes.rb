@@ -59,11 +59,11 @@ Nacer::Application.routes.draw do
 
   resources :consolidados_sumar
   # rutas para la actualizacion asincronica
-  resources :anexos_medicos_prestaciones do
+  resources :anexos_medicos_prestaciones, :only => [] do
     put :update_status, on: :member
     put :update_motivo_rechazo, on: :member
   end
-  resources :anexos_administrativos_prestaciones do
+  resources :anexos_administrativos_prestaciones, :only => [] do
     put :update_status, on: :member
     put :update_motivo_rechazo, on: :member
   end
@@ -138,6 +138,10 @@ Nacer::Application.routes.draw do
       post 'aplicar', :as => :aplicar, :action => :aplicar
       post 'iniciar', :as => :iniciar, :action => :iniciar
     end
+  end
+
+  resources :prestaciones, :except => :destroy do
+    
   end
 
   root :to => 'inicio#index'
