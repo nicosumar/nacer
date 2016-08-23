@@ -3,6 +3,7 @@ require 'will_paginate/array'
 
 class PrestacionesController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :buscar_prestacion, only: [:update, :edit, :show, :destroy]
 
   def index
     x = params[:page]
@@ -72,15 +73,32 @@ class PrestacionesController < ApplicationController
   end
 
   def create
+    byebug
+    @prestacion = Prestacion.new(params[:prestacion])
+    
+    if @prestacion.save
+      redirect_to @prestacion, flash: { tipo: :ok, titulo: 'La prestación se creó correctamente.' }
+    else
+      render :new
+    end
   end
 
   def edit
   end
 
   def update
+    if @prestacion.update params[:prestacion]
+      redirect_to @prestacion, flash: { tipo: :ok, titulo: 'La prestación se actualizó correctamente.' }
+    else
+      render :edit
+    end
   end
 
   def show
+  end
+
+  def validar_codigo
+
   end
 
   def autorizadas
@@ -225,4 +243,11 @@ class PrestacionesController < ApplicationController
       end #end response
     end #end begin rescue 
   end
+
+  private
+
+    def buscar_prestacion
+      @prestacion = Prestacion.find(params[:id]).decorate
+    end
+
 end

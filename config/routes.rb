@@ -57,6 +57,9 @@ Nacer::Application.routes.draw do
     end
   end
 
+  resources :secciones_pdss, only: [] do
+    resources :grupos_pdss, only: :index
+  end
   resources :consolidados_sumar
   # rutas para la actualizacion asincronica
   resources :anexos_medicos_prestaciones, :only => [] do
@@ -140,8 +143,8 @@ Nacer::Application.routes.draw do
     end
   end
 
-  resources :prestaciones, :except => :destroy do
-    
+  resources :prestaciones, except: :destroy do
+    get :validar_codigo , on: :collection
   end
 
   root :to => 'inicio#index'

@@ -43,7 +43,7 @@
   </div>
   <div class="field">
     <%= f.label "Concepto de facturación" %>
-    <%= f.collection_select :concepto_de_facturacion_id, ConceptoDeFacturacion.all, :id, :concepto %>      
+    <%= f.collection_select :concepto_de_facturacion_id, ConceptoDeFacturacion.all, :id, :concepto, {}, {class: :hola} %>      
   </div>
   <div class="field">
     <%= f.label "Tipo de tratamiento" %>
@@ -51,16 +51,75 @@
   </div>
 
   <hr>
-  <h4>Datos reportables</h4>
 
-  <hr>
+  <h4>Sexos</h4>
+
+    <%= f.collection_select :sexo_ids, Sexo.all, :id, :nombre, 
+                            {selected: f.object.sexo_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Grupos poblacionales</h4>
+
+    <%= f.collection_select :grupo_poblacional_ids, GrupoPoblacional.all, :id, :nombre, 
+                            {selected: f.object.grupo_poblacional_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Documentación respaldatoria</h4>
+
+    <%= f.collection_select :documentacion_respaldatoria_ids, DocumentacionRespaldatoria.all, :id, :nombre, 
+                            {selected: f.object.documentacion_respaldatoria_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Datos reportables Requeridos</h4>
+
+    <%= f.collection_select :dato_reportabl_ids, DatoReportable.all, :id, :nombre, 
+                            {selected: f.object.dato_reportabl_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
   <h4>Diagnósticos</h4>
-    <%= collection_select :grupo_liquidacion_en_efectores, :id, @efectores, :id, :nombre,{:selected => @efectores_ids}, {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'} %>
-  <hr>
-  <h4>Plan de salud</h4>
 
+    <%= f.collection_select :diagnostico_ids, Diagnostico.all, :id, :nombre, 
+                            {selected: f.object.diagnostico_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Prestación P.D.S.S.</h4>
+
+  <div class="nested-fields-label-container">
+    <div class="small-label">Linea de cuidado</div>
+    <div class="small-label">Tipo de prestacion</div>
+    <div class="small-label">Módulo</div>
+    <div class="small-label">Seccion pdss</div>
+    <div class="small-label">Grupo pdss</div>
+  </div>
+
+  <div id="prestaciones_pdss">
+    <%= f.fields_for :prestaciones_pdss do |prestacion_pdss|  %>
+      <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
+    <% end %>
+
+    <div class="links">
+      <%= link_to_add_association 'agregar prestacion pdss', f, :prestaciones_pdss  %>
+    </div>
+  </div>
+
+
+  <br>
+  <br>
+  <h4>Plan de salud</h4>
   <div class="actions">
     <%= f.submit "Crear" %>     
   </div>
-  
+
 <% end %>
+
+<%= javascript_include_tag 'prestaciones/_form.js' %>

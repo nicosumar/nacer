@@ -259,10 +259,17 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("addenda·_sumar·", "addendas_sumar")
   inflect.irregular("AddendaSumar", "Addendas·Sumar·")
   inflect.irregular("Addenda·Sumar·", "AddendasSumar")
+
   inflect.irregular("documentacion_respaldatoria", "documentaciones·_respaldatorias·")
   inflect.irregular("documentacion·_respaldatoria·", "documentaciones_respaldatorias")
   inflect.irregular("DocumentacionRespaldatoria", "Documentaciones·Respaldatorias·")
   inflect.irregular("Documentacion·Respaldatoria·", "DocumentacionesRespaldatorias")
+
+  inflect.irregular("documentacion_respaldatoria_prestacion", "documentaciones·_respaldatorias·_prestaciones.")
+  inflect.irregular("documentacion·_respaldatoria·_prestacion", "documentaciones_respaldatorias_prestaciones")
+  inflect.irregular("DocumentacionRespaldatoriaPrestacion", "Documentaciones·Respaldatorias·Prestaciones.")
+  inflect.irregular("Documentacion·Respaldatoria·Prestacion", "DocumentacionesRespaldatoriasPrestaciones")
+
   inflect.irregular("metodo_de_validacion_fallado", "metodos·_de·_validacion·_fallados·")
   inflect.irregular("metodo·_de·_validacion·_fallado·", "metodos_de_validacion_fallados")
   inflect.irregular("MetodoDeValidacionFallado", "Metodos·De·Validacion·Fallados·")
@@ -403,6 +410,24 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("prestacion·_pdss·", "prestaciones_pdss")
   inflect.irregular("PrestacionPdss", "Prestaciones·Pdss·")
   inflect.irregular("Prestacion·Pdss·", "PrestacionesPdss")
+
+  # Prestaciones del PDSS
+  inflect.irregular("prestaciones_pdss", "prestaciones·_pdss·")
+  inflect.irregular("prestaciones·_pdss·", "prestaciones_pdss")
+  inflect.irregular("PrestacionesPdss", "Prestaciones·Pdss·")
+  inflect.irregular("Prestaciones·Pdss·", "PrestacionesPdss")
+
+  # Prestaciones Prestaciones del PDSS
+  inflect.irregular("prestacion_prestacion_pdss", "prestaciones·_prestaciones·_pdss·")
+  inflect.irregular("prestacion·_prestacion·_pdss·", "prestaciones_prestaciones_pdss")
+  inflect.irregular("PrestacionPrestacionPdss", "Prestaciones·Prestaciones·Pdss·")
+  inflect.irregular("Prestacion·Prestacion·Pdss·", "PrestacionesPrestacionesPdss")
+
+  # Corrección de mala pluralización irregular automática
+  inflect.irregular("prestaciones_prestaciones_pdss", "prestaciones·_prestaciones·_pdss·")
+  inflect.irregular("prestaciones·_prestaciones·_pdss·", "prestaciones_prestaciones_pdss")
+  inflect.irregular("PrestacionesPrestacionesPdss", "Prestaciones·Prestaciones·Pdss·")
+  inflect.irregular("Prestaciones·Prestaciones·Pdss·", "PrestacionesPrestacionesPdss")
 
   # Prestaciones PDSS autorizadas por efector
   inflect.irregular("prestacion_pdss_autorizada", "prestaciones·_pdss·_autorizadas·")

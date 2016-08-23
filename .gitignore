@@ -15,3 +15,11 @@ REVISION
 public/system
 lib/tasks/datos
 public/paperclip
+
+/Gemfile.lock
+/db/schema.rb
+/.project
+/.byebug_history
+
+/public/system/*
+public/attachments/*

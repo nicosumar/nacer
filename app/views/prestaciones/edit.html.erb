@@ -1,0 +1,23 @@
+<style type="text/css">
+  .select2-container{
+    width: 400px;
+  }
+</style>
+
+<% content_for :title do %>
+  Prestaciones
+<% end %>
+
+<div id="content-header">
+  <h1>Editar prestación</h1>
+  <div id="action-links"><%= link_to('Volver al listado', prestaciones_path) if can? :read, Prestacion %> </div>  
+</div>
+
+<div id="content-body">
+  <%= render 'form' %>
+</div>
+
+<script type="text/javascript">
+  $('#prestacion_objeto_de_la_prestacion_id').select2();
+  $('.select2-container').attr('style', 'width: 250 px;');
+</script>

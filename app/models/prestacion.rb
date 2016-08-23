@@ -4,10 +4,13 @@ class Prestacion < ActiveRecord::Base
   nilify_blanks
 
   # Los atributos siguientes pueden asignarse en forma masiva
-  attr_accessible :area_de_prestacion_id, :grupo_de_prestaciones_id, :subgrupo_de_prestaciones_id
-  attr_accessible :codigo, :activa, :nombre, :unidad_de_medida_id, :objeto_de_la_prestacion_id
-  attr_accessible :created_at, :updated_at, :comunitaria, :otorga_cobertura, :unidades_maximas
-  attr_accessible :requiere_historia_clinica, :concepto_de_facturacion_id, :tipo_de_tratamiento_id
+  attr_accessible :area_de_prestacion_id, :grupo_de_prestaciones_id, :subgrupo_de_prestaciones_id,
+                  :codigo, :activa, :nombre, :unidad_de_medida_id, :objeto_de_la_prestacion_id,
+                  :created_at, :updated_at, :comunitaria, :otorga_cobertura, :unidades_maximas,
+                  :requiere_historia_clinica, :concepto_de_facturacion_id, :tipo_de_tratamiento_id,
+                  :dato_reportabl_ids, :modifica_lugar_de_atencion, :diagnostico_ids, :prestaciones_pdss_attributes,
+                  :sexo_ids, :grupo_poblacional_ids, :documentacion_respaldatoria_ids
+
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
 
@@ -21,28 +24,44 @@ class Prestacion < ActiveRecord::Base
   #has_and_belongs_to_many :categorias_de_afiliados   # OBSOLETO: ya no existen categorías
 
   belongs_to :objeto_de_la_prestacion
-  has_one :tipo_de_prestacion, :through => :objeto_de_la_prestacion
+  has_one :tipo_de_prestacion, through: :objeto_de_la_prestacion
   has_and_belongs_to_many :diagnosticos
   belongs_to :unidad_de_medida
+  belongs_to :tipo_de_tratamiento
   has_many :datos_adicionales_por_prestacion
-  has_many :datos_adicionales, :through => :datos_adicionales_por_prestacion
+  has_many :datos_adicionales, through: :datos_adicionales_por_prestacion
   has_and_belongs_to_many :metodos_de_validacion
   has_and_belongs_to_many :sexos
   has_and_belongs_to_many :grupos_poblacionales
+
   has_many :datos_reportables_requeridos
-  has_many :datos_reportables, :through => :datos_reportables_requeridos, source: :dato_reportable
-  has_and_belongs_to_many :documentaciones_respaldatorias
+  has_many :datos_reportables, through: :datos_reportables_requeridos, source: :dato_reportable
+  
+  has_many :documentaciones_respaldatorias_prestaciones
+  has_many :documentaciones_respaldatorias, through: :documentaciones_respaldatorias_prestaciones
+  # has_and_belongs_to_many :documentaciones_respaldatorias
+  
+  # has_many :prestaciones_prestaciones_pdss
+  # has_many :prestaciones_pdss, through: :prestaciones_prestaciones_pdss
+  has_and_belongs_to_many :prestaciones_pdss
+
   # Relaciones para liquidacion
   belongs_to :concepto_de_facturacion
   has_many :asignaciones_de_precios
   has_many :nomencladores, through: :asignaciones_de_precios
   has_many :prestaciones_incluidas
   has_many :prestaciones_autorizadas
-  has_and_belongs_to_many :prestaciones_pdss
 
   # Validaciones
   # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
   validates_presence_of :codigo, :nombre, :unidad_de_medida_id
+
+  accepts_nested_attributes_for :prestaciones_pdss, reject_if: :all_blank, allow_destroy: true
+  # accepts_nested_attributes_for :prestaciones_prestaciones_pdss, reject_if: :all_blank, allow_destroy: true
+
+  before_save :asignar_nombre_a_prestaciones_pdss
+
+
 
   # En forma predeterminada, sólo se devuelven los registros activos
   #default_scope where(:activa => true)
@@ -58,6 +77,11 @@ class Prestacion < ActiveRecord::Base
 
   def codigo_de_unidad
     unidad_de_medida.codigo
+  end
+
+  def asignar_nombre_a_prestaciones_pdss
+    prestaciones_pdss.map { |ppdss| ppdss.nombre = self.nombre }
+    prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id:1 ).last.orden + i + 1 }
   end
 
 # TODO: cleanup

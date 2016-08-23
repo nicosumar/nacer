@@ -1,0 +1,9 @@
+<div class="nested-fields">
+  <%= f.collection_select :linea_de_cuidado_id, LineaDeCuidado.all, :id, :nombre, {}, {class: "small-input"} %> 
+  <%= f.collection_select :tipo_de_prestacion_id, TipoDePrestacion.all, :id, :nombre, {}, {class: "small-input"} %>      
+  <%= f.collection_select :modulo_id, Modulo.all, :id, :nombre, {}, {class: "small-input"} %>
+  <%= collection_select :seccion_pdss, :seccion_pdss_id, SeccionPdss.all, :id, :nombre, {}, {class: "small-input seccion-pdss-select", } %>  
+  <%= f.collection_select :grupo_pdss_id, SeccionPdss.first.grupos_pdss, :id, :nombre, {}, {class: "small-input grupo-pdss-select"} %>  
+
+  <br>
+</div>

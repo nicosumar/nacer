@@ -1,0 +1,38 @@
+$(document).ready(function(){
+
+  $(document).on( "change", ".seccion-pdss-select", function() {
+    var seccion_pdss_id = this.value;
+    var seccion_pdss_select = this
+    var grupo_pdss_select = $(this).parent().children(".grupo-pdss-select");
+
+    $.get( "/secciones_pdss/" + seccion_pdss_id + "/grupos_pdss.json", function( data ) {
+      
+      // resetea el grupo_pdss_select
+      grupo_pdss_select.empty();
+
+      // Agrega las opciones al grupo_pdss_select
+      for (var i in data) {
+          $(grupo_pdss_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
+      }
+
+    });
+  });     
+
+  $("#prestaciones_pdss a.add_fields").
+    data("association-insertion-position", 'before').
+    data("association-insertion-node", 'this');
+
+  $('#prestaciones_pdss').on('cocoon:after-insert',
+       function() {
+           $(".prestaciones-prestaciones-pdss-fields a.add_fields").
+               data("association-insertion-position", 'before').
+               data("association-insertion-node", 'this');
+           $('.prestaciones-prestaciones-pdss-fields').on('cocoon:after-insert',
+                function() {
+                  $(this).children(".prestacion_pdss_from_list").remove();
+                  $(this).children("a.add_fields").hide();
+                });
+       });
+
+});
+
