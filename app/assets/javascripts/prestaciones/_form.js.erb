@@ -1,10 +1,12 @@
 $(document).ready(function(){
 
+  // Función para buscar los grupos pdss de una sección pdss
   $(document).on( "change", ".seccion-pdss-select", function() {
     var seccion_pdss_id = this.value;
     var seccion_pdss_select = this
     var grupo_pdss_select = $(this).parent().children(".grupo-pdss-select");
 
+    // Llamada AJAX para buscar en el servidor
     $.get( "/secciones_pdss/" + seccion_pdss_id + "/grupos_pdss.json", function( data ) {
       
       // resetea el grupo_pdss_select
@@ -16,23 +18,29 @@ $(document).ready(function(){
       }
 
     });
-  });     
+  });
 
-  $("#prestaciones_pdss a.add_fields").
-    data("association-insertion-position", 'before').
-    data("association-insertion-node", 'this');
 
-  $('#prestaciones_pdss').on('cocoon:after-insert',
-       function() {
-           $(".prestaciones-prestaciones-pdss-fields a.add_fields").
-               data("association-insertion-position", 'before').
-               data("association-insertion-node", 'this');
-           $('.prestaciones-prestaciones-pdss-fields').on('cocoon:after-insert',
-                function() {
-                  $(this).children(".prestacion_pdss_from_list").remove();
-                  $(this).children("a.add_fields").hide();
-                });
-       });
+  // Inicialización del popup
+  $( "#popup-de-prestaciones-pdss" ).dialog({ autoOpen: false, 
+                                              width: 600, 
+                                              beforeClose: function( event, ui ) {$(this).text("");} 
+                                            });
+
+
+
+  //  Función para llenar el popup con prestaciones según el código ingresado
+  $("#validador-de-codigo").click(function(){
+    $( "#popup-de-prestaciones-pdss" ).dialog( "open" );
+    //  Llamada AJAX para buscar prestaciones por código
+    $.get( "/prestaciones.json?codigo=" + $("#prestacion_codigo").val(), function( data ) {
+      // Por cada prestación crea un texto con su nombre y un link para ir a editarlo 
+      $.each(data, function(k, data) {
+        $("#popup-de-prestaciones-pdss").append('<div>' + data.nombre + '<a href="/prestaciones/' + data.id  + '/edit"> Editar </a></div>');     
+      });
+
+    });   
+  });
 
 });
 

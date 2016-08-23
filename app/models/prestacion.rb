@@ -9,7 +9,8 @@ class Prestacion < ActiveRecord::Base
                   :created_at, :updated_at, :comunitaria, :otorga_cobertura, :unidades_maximas,
                   :requiere_historia_clinica, :concepto_de_facturacion_id, :tipo_de_tratamiento_id,
                   :dato_reportabl_ids, :modifica_lugar_de_atencion, :diagnostico_ids, :prestaciones_pdss_attributes,
-                  :sexo_ids, :grupo_poblacional_ids, :documentacion_respaldatoria_ids
+                  :sexo_ids, :grupo_poblacional_ids, :documentacion_respaldatoria_ids, :dato_adicional_ids, 
+                  :metodo_de_validacion_ids, :cantidades_de_prestaciones_por_periodo_attributes
 
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
@@ -30,6 +31,7 @@ class Prestacion < ActiveRecord::Base
   belongs_to :tipo_de_tratamiento
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, through: :datos_adicionales_por_prestacion
+  has_many :cantidades_de_prestaciones_por_periodo
   has_and_belongs_to_many :metodos_de_validacion
   has_and_belongs_to_many :sexos
   has_and_belongs_to_many :grupos_poblacionales
@@ -39,10 +41,7 @@ class Prestacion < ActiveRecord::Base
   
   has_many :documentaciones_respaldatorias_prestaciones
   has_many :documentaciones_respaldatorias, through: :documentaciones_respaldatorias_prestaciones
-  # has_and_belongs_to_many :documentaciones_respaldatorias
   
-  # has_many :prestaciones_prestaciones_pdss
-  # has_many :prestaciones_pdss, through: :prestaciones_prestaciones_pdss
   has_and_belongs_to_many :prestaciones_pdss
 
   # Relaciones para liquidacion
@@ -52,11 +51,13 @@ class Prestacion < ActiveRecord::Base
   has_many :prestaciones_incluidas
   has_many :prestaciones_autorizadas
 
+
   # Validaciones
   # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
   validates_presence_of :codigo, :nombre, :unidad_de_medida_id
 
   accepts_nested_attributes_for :prestaciones_pdss, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :cantidades_de_prestaciones_por_periodo, reject_if: :all_blank, allow_destroy: true
   # accepts_nested_attributes_for :prestaciones_prestaciones_pdss, reject_if: :all_blank, allow_destroy: true
 
   before_save :asignar_nombre_a_prestaciones_pdss
@@ -67,6 +68,8 @@ class Prestacion < ActiveRecord::Base
   #default_scope where(:activa => true)
 
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
+  scope :ordenadas_por_prestaciones_pdss, -> { joins(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
+
 
   # Devuelve el valor del campo 'nombre', pero truncado a 100 caracteres.
   def nombre_corto

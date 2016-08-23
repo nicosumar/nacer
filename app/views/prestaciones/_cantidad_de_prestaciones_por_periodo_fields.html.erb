@@ -1,0 +1,7 @@
+<div class="nested-fields">
+  <%= f.number_field :cantidad_maxima, {class: "small-number-field"} %>  
+  <%= f.select :periodo, options_for_select([["1 mes", "1.month"], ["3 meses", "3.months"], ["6 meses", "6.months"], ["9 meses", "9.months"], ["1 año", "1.years"] ]), {},{class: "small-input"} %> 
+  <%= f.select :intervalo, options_for_select([["1 semana", "1.week"], ["2 semanas", "2.weeks"], ["3 semanas", "3.weeks"], ["1 mes", "1.month"], ["2 meses", "2.months"], ["3 meses", "3.month"], ["4 meses", "4.meses"], ["5 meses", "5.meses"], ["6 meses", "6.meses"] ]), {},{class: "small-input"} %> 
+  <%= link_to_remove_association "borrar", f %>
+  <br>
+</div>

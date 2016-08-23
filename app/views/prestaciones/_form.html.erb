@@ -3,7 +3,7 @@
   <div class="field">
     <%= f.label "Código" %>
     <%= f.text_field :codigo %>
-    <button>Validar</button>     
+    <button type="button" id="validador-de-codigo">Validar</button>  
   </div>
   <div class="field">
     <%= f.label "Nombre" %>
@@ -92,14 +92,48 @@
   <br>
   <br>
 
+  <h4>Datos Adicionales</h4>
+
+    <%= f.collection_select :dato_adicional_ids, DatoAdicional.all, :id, :nombre, 
+                            {selected: f.object.dato_adicional_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Métodos de validación</h4>
+
+    <%= f.collection_select :metodo_de_validacion_ids, MetodoDeValidacion.all, :id, :nombre, 
+                            {selected: f.object.metodo_de_validacion_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Cantidad de prestaciones por período</h4>
+
+  <div class="nested-fields-label-container">
+    <div class="small-label">Cantidad máxima</div>
+    <div class="small-label">Período</div>
+    <div class="small-label">Intervalo</div>
+  </div>
+
+  <div id="cantidades_de_prestaciones_por_periodo">
+    <%= f.fields_for :cantidades_de_prestaciones_por_periodo do |cantidad_de_prestaciones_por_periodo|  %>
+      <%= render 'cantidad_de_prestaciones_por_periodo_fields', f: cantidad_de_prestaciones_por_periodo  %>
+    <% end %>
+<br>
+    <div class="links">
+      <%= link_to_add_association 'agregar', f, :cantidades_de_prestaciones_por_periodo  %>
+    </div>
+  </div>
+
   <h4>Prestación P.D.S.S.</h4>
 
   <div class="nested-fields-label-container">
+    <div class="small-label">Seccion pdss</div>
+    <div class="small-label">Grupo pdss</div>
     <div class="small-label">Linea de cuidado</div>
     <div class="small-label">Tipo de prestacion</div>
     <div class="small-label">Módulo</div>
-    <div class="small-label">Seccion pdss</div>
-    <div class="small-label">Grupo pdss</div>
   </div>
 
   <div id="prestaciones_pdss">
@@ -107,8 +141,10 @@
       <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
     <% end %>
 
+    <br>
+
     <div class="links">
-      <%= link_to_add_association 'agregar prestacion pdss', f, :prestaciones_pdss  %>
+      <%= link_to_add_association 'agregar', f, :prestaciones_pdss  %>
     </div>
   </div>
 
@@ -122,4 +158,5 @@
 
 <% end %>
 
+<div id="popup-de-prestaciones-pdss" title="Ese código ya existe en las siguientes prestaciones ¿desea editar alguna?"></div>
 <%= javascript_include_tag 'prestaciones/_form.js' %>

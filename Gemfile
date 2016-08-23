@@ -30,6 +30,7 @@ gem 'will_paginate'
 gem 'capistrano'
 gem 'text'
 gem 'nilify_blanks'
+gem 'has_scope'
 #gem 'unicode_utils'
 gem "paperclip", "~> 4.1"
 

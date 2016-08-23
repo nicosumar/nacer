@@ -6,10 +6,14 @@ class PrestacionesController < ApplicationController
   before_filter :buscar_prestacion, only: [:update, :edit, :show, :destroy]
 
   def index
-    x = params[:page]
-    y = params[:per]
-    @prestaciones = Prestacion.like_codigo(params[:codigo]).joins(:prestaciones_pdss => [:linea_de_cuidado, :grupo_pdss => [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC").paginate(page: x, per_page: y)
-    @secciones_grupo_pdss = PrestacionService.popular_a_plan_de_salud(@prestaciones)
+    @prestaciones = Prestacion.like_codigo(params[:codigo])
+    respond_to do |format|
+      format.html do 
+        @prestaciones = @prestaciones.ordenadas_por_prestaciones_pdss.paginate(page: params[:page], per_page: params[:per])
+        @secciones_grupo_pdss = PrestacionService.popular_a_plan_de_salud(@prestaciones)
+      end
+      format.json { render json: @prestaciones }
+    end 
   end
 
   def new
@@ -17,9 +21,7 @@ class PrestacionesController < ApplicationController
   end
 
   def create
-    byebug
     @prestacion = Prestacion.new(params[:prestacion])
-    
     if @prestacion.save
       redirect_to @prestacion, flash: { tipo: :ok, titulo: 'La prestación se creó correctamente.' }
     else
@@ -39,10 +41,6 @@ class PrestacionesController < ApplicationController
   end
 
   def show
-  end
-
-  def validar_codigo
-
   end
 
   def autorizadas
