@@ -66,6 +66,8 @@ class Prestacion < ActiveRecord::Base
   # En forma predeterminada, sólo se devuelven los registros activos
   #default_scope where(:activa => true)
 
+  scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
+
   # Devuelve el valor del campo 'nombre', pero truncado a 100 caracteres.
   def nombre_corto
     if nombre.length > 90 then

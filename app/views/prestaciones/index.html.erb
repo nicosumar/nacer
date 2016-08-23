@@ -8,6 +8,13 @@
 </div>
 
 <div id="content-body">
+  <h1>Filtrar</h1>
+  <%= form_tag(prestaciones_path, :method => "get") do %>
+    <%= label_tag(:codigo, "Código:") %>
+    <%= text_field_tag(:codigo) %>
+    <%= submit_tag("Filtrar") %>
+  <% end %> 
+  <hr>
   <table>
     <tr>
       <th>Seccion / Grupo</th>
@@ -58,39 +65,3 @@
   </table>
   <%= will_paginate @prestaciones, :inner_window => 2, :outer_window => 0 %>
 </div>
-
-<!-- <div id="content-body">
-  <table>
-    <tr>
-      <th>Seccion / Grupo</th>
-      <th>Línea de cuidado</th>
-      <th>Tipo</th>
-      <th>Nombre</th>
-      <th>Código</th>
-      <th>Diagnósticos</th>
-      <th>Acciones</th>
-    </tr>
-    <% @prestaciones.each do |prestacion| %>
-      <tr>
-        <td><%= (prestacion.prestaciones_pdss.first.present?) ? prestacion.prestaciones_pdss.first.nombre_corto : "Sin asignar"  %></td>
-        <td><%= (prestacion.prestaciones_pdss.first.present? && prestacion.prestaciones_pdss.first.linea_de_cuidado.present?) ? prestacion.prestaciones_pdss.first.linea_de_cuidado.nombre : "------"  %></td>
-        <td><%= prestacion.tipo_de_prestacion.nombre %></td>
-        <td><%= prestacion.nombre_corto %></td>
-        <td><%= prestacion.codigo %></td>
-        <td>
-          <% if prestacion.diagnosticos.count > 0 %>
-            <% prestacion.diagnosticos.each do |diagnostico| %>
-              <%= diagnostico.codigo + ", " %>
-            <% end %>
-          <% else %>
-            -------
-          <% end %>          
-        </td>
-        <td>Acciones</td>
-      </tr>
-    <% end %>
-  </table>
-  <%= will_paginate @prestaciones, :inner_window => 2, :outer_window => 0 %>
-</div> -->
-
-  
