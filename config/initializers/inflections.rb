@@ -91,10 +91,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("unidad·_de·_medida·", "unidades_de_medida")
   inflect.irregular("UnidadDeMedida", "Unidades·De·Medida·")
   inflect.irregular("Unidad·De·Medida·", "UnidadesDeMedida")
+
   inflect.irregular("asignacion_de_precios", "asignaciones·_de·_precios·")
   inflect.irregular("asignacion·_de·_precios·", "asignaciones_de_precios")
   inflect.irregular("AsignacionDePrecios", "Asignaciones·De·Precios·")
   inflect.irregular("Asignacion·De·Precios·", "AsignacionesDePrecios")
+
+  inflect.irregular("asignaciones_de_precios", "asignaciones·_de·_precios·")
+  inflect.irregular("asignaciones·_de·_precios·", "asignaciones_de_precios")
+  inflect.irregular("AsignacionesDePrecios", "Asignaciones·De·Precios·")
+  inflect.irregular("Asignaciones·De·Precios·", "AsignacionesDePrecios")
+
+
   inflect.irregular("asignacion_de_nomenclador", "asignaciones·_de·_nomenclador·")
   inflect.irregular("asignacion·_de·_nomenclador·", "asignaciones_de_nomenclador")
   inflect.irregular("AsignacionDeNomenclador", "Asignaciones·De·Nomenclador·")
@@ -375,6 +383,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("CantidadDePrestacionesPorPeriodo", "Cantidades·De·Prestaciones·Por·Periodo")
   inflect.irregular("Cantidad·De·Prestaciones·Por·Periodo", "CantidadesDePrestacionesPorPeriodo")
 
+  # Cantidad de prestaciones por periodo (tasas de uso)
+  inflect.irregular("cantidades_de_prestaciones_por_periodo", "cantidades·_de·_prestaciones·_por·_periodo·")
+  inflect.irregular("cantidades·_de·_prestaciones·_por·_periodo·", "cantidades_de_prestaciones_por_periodo")
+  inflect.irregular("CantidadesDePrestacionesPorPeriodo", "Cantidades·De·Prestaciones·Por·Periodo")
+  inflect.irregular("Cantidades·De·Prestaciones·Por·Periodo", "CantidadesDePrestacionesPorPeriodo")
+
   # Expedientes Sumar
   inflect.irregular("expediente_sumar", "expedientes·_sumar·")
   inflect.irregular("expediente·_sumar·", "expedientes_sumar")
@@ -539,7 +553,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("informe", "informes·")
   inflect.irregular("informe·", "informes")
   inflect.irregular("Informe", "Informes·")
-  inflect.irregular("Informe·", "Informes")
+  inflect.irregular("mes", "meses")
+  inflect.irregular("meses·", "meses")
+  inflect.irregular("año", "años")
+  inflect.irregular("años", "años")
+  inflect.irregular("semana", "semanas")
+  inflect.irregular("semanas", "semanas")
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")

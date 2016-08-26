@@ -98,4 +98,16 @@ module ApplicationHelper
 
   end
 
+  def obtener_nombre objeto
+    objeto.present? ? objeto.nombre : "Sin especificar"
+  end
+
+  def obtener_listado_de_nombres objetos
+    (objetos.present? ? objetos.pluck(:nombre).to_sentence : "Sin especificar").capitalize
+  end
+
+  def traducir_booleano booleano
+    booleano ? "Si" : "No"
+  end
+
 end

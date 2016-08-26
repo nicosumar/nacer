@@ -10,7 +10,8 @@ class Prestacion < ActiveRecord::Base
                   :requiere_historia_clinica, :concepto_de_facturacion_id, :tipo_de_tratamiento_id,
                   :dato_reportabl_ids, :modifica_lugar_de_atencion, :diagnostico_ids, :prestaciones_pdss_attributes,
                   :sexo_ids, :grupo_poblacional_ids, :documentacion_respaldatoria_ids, :dato_adicional_ids, 
-                  :metodo_de_validacion_ids, :cantidades_de_prestaciones_por_periodo_attributes
+                  :metodo_de_validacion_ids, :cantidades_de_prestaciones_por_periodo_attributes,
+                  :asignaciones_de_precios_attributes
 
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
@@ -58,7 +59,7 @@ class Prestacion < ActiveRecord::Base
 
   accepts_nested_attributes_for :prestaciones_pdss, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :cantidades_de_prestaciones_por_periodo, reject_if: :all_blank, allow_destroy: true
-  # accepts_nested_attributes_for :prestaciones_prestaciones_pdss, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :asignaciones_de_precios, reject_if: :all_blank, allow_destroy: true
 
   before_save :asignar_nombre_a_prestaciones_pdss
 

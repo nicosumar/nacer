@@ -830,10 +830,25 @@ div.field_with_warnings {
   width: 166px !important;
 }
 
-.nested-fields {
-  margin: 0 0 10px 0;
-}
-
 #popup-de-prestaciones-pdss a{
   color: blue;
+}
+
+.nested-fields {
+  margin: 0 0 15px 0;
+  display: inline-block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.nested-fields ul {
+  display: inline-block;
+  list-style-type: none;
+}
+
+
+.nested-fields li {
+    float: left;
 }

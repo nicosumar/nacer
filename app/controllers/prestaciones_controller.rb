@@ -2,8 +2,9 @@
 require 'will_paginate/array'
 
 class PrestacionesController < ApplicationController
+  load_and_authorize_resource except: [:index, :autorizadas]
   before_filter :authenticate_user!
-  before_filter :buscar_prestacion, only: [:update, :edit, :show, :destroy]
+  before_filter :buscar_prestacion, only: [:update, :edit, :show, :destroy, :edit_para_asignacion_de_precios]
 
   def index
     @prestaciones = Prestacion.like_codigo(params[:codigo])
@@ -21,9 +22,9 @@ class PrestacionesController < ApplicationController
   end
 
   def create
-    @prestacion = Prestacion.new(params[:prestacion])
+    @prestacion = Prestacion.new params[:prestacion]
     if @prestacion.save
-      redirect_to @prestacion, flash: { tipo: :ok, titulo: 'La prestación se creó correctamente.' }
+      redirect_to (params[:go_to] == "edit_para_asignacion_de_precios") ? edit_para_asignacion_de_precios_prestacion_path(@prestacion) : @prestacion
     else
       render :new
     end
@@ -32,15 +33,19 @@ class PrestacionesController < ApplicationController
   def edit
   end
 
+  def edit_para_asignacion_de_precios
+  end
+
   def update
-    if @prestacion.update params[:prestacion]
-      redirect_to @prestacion, flash: { tipo: :ok, titulo: 'La prestación se actualizó correctamente.' }
+    if @prestacion.update_attributes params[:prestacion]
+      redirect_to (params[:go_to] == "edit_para_asignacion_de_precios") ? edit_para_asignacion_de_precios_prestacion_path(@prestacion) : @prestacion
     else
-      render :edit
+      render (params[:from_action] == "edit_para_asignacion_de_precios") ? :edit_para_asignacion_de_precios : :edit
     end
   end
 
   def show
+    @prestacion = @prestacion.decorate
   end
 
   def autorizadas
@@ -189,7 +194,7 @@ class PrestacionesController < ApplicationController
   private
 
     def buscar_prestacion
-      @prestacion = Prestacion.find(params[:id]).decorate
+      @prestacion = Prestacion.find(params[:id])
     end
 
 end

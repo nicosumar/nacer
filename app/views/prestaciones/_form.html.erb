@@ -76,7 +76,7 @@
   <br>
   <br>
 
-  <h4>Datos reportables Requeridos</h4>
+  <h4>Datos reportables</h4>
 
     <%= f.collection_select :dato_reportabl_ids, DatoReportable.all, :id, :nombre, 
                             {selected: f.object.dato_reportabl_ids}, 
@@ -132,7 +132,7 @@
     <div class="small-label">Seccion pdss</div>
     <div class="small-label">Grupo pdss</div>
     <div class="small-label">Linea de cuidado</div>
-    <div class="small-label">Tipo de prestacion</div>
+    <div class="small-label">Tipo de prestación</div>
     <div class="small-label">Módulo</div>
   </div>
 
@@ -150,13 +150,16 @@
 
 
   <br>
-  <br>
-  <h4>Plan de salud</h4>
   <div class="actions">
-    <%= f.submit "Crear" %>     
+    <%= f.submit "Guardar" %>
+    <button class="btn btn-default" name="go_to" value="edit_para_asignacion_de_precios" type="submit">Guardar e ir asignar precios</button>    
   </div>
 
 <% end %>
 
-<div id="popup-de-prestaciones-pdss" title="Ese código ya existe en las siguientes prestaciones ¿desea editar alguna?"></div>
+<div id="popup-de-prestaciones-pdss" title="Ese código ya existe en (o forma parte de) otras prestaciones">
+  <br>
+  <div><b> Usted puede continuar con el formulario y utilizar el código ingresado, o quizá deseé editar una prestacion existente: <b></div>
+  <br>
+</div>
 <%= javascript_include_tag 'prestaciones/_form.js' %>

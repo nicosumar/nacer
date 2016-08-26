@@ -1,0 +1,18 @@
+<table>
+  <tr>
+    <th>Sección PDSS</th>
+    <th>Grupo PDSS</th> 
+    <th>Linea de cuidado</th>
+    <th>Tipo de prestación</th>
+    <th>Módulo</th>
+  </tr>
+  <% prestaciones_pdss.reverse.each do |prestacion_pdss| %>
+    <tr>
+      <td><%= prestacion_pdss.grupo_pdss.seccion_pdss.nombre %></td>
+      <td><%= prestacion_pdss.grupo_pdss.nombre %></td>
+      <td><%= prestacion_pdss.linea_de_cuidado.nombre %></td>
+      <td><%= prestacion_pdss.tipo_de_prestacion.nombre %></td>
+      <td><%= prestacion_pdss.modulo.nombre %></td> 
+    </tr>
+  <% end %>
+</table>
