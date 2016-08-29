@@ -57,7 +57,7 @@
                 -------
               <% end %>          
             </td>
-            <td>Acciones</td>
+            <td><%= link_to('Ver', prestacion_path(prestacion)) %> <br/> <%= link_to('Editar', edit_prestacion_path(prestacion)) %> <br/> <%= link_to('Asignar precios', edit_para_asignacion_de_precios_prestacion_path(prestacion)) %></td>
           </tr>
         <% end %>
       <% end %>

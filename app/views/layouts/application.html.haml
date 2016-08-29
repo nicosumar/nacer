@@ -175,6 +175,9 @@
                       %h3 PROCESOS
                       %ul
                         %li= link_to "Procesos relacionados con padrones", padrones_url if current_user.in_group? :administradores
+                      %h3 PRESTACIONES
+                      %ul
+                        %li= link_to "Listado de prestaciones", prestaciones_url if current_user.in_group? :administradores
 
             %li.menu_right
               %a.drop{:href => "#"} MI CUENTA

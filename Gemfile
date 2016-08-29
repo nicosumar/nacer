@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+gem 'rubyzip', '< 1.0.0'
 gem 'rails', '3.2.22'
 gem 'pg'
 gem 'json'
@@ -30,7 +31,6 @@ gem 'will_paginate'
 gem 'capistrano'
 gem 'text'
 gem 'nilify_blanks'
-gem 'has_scope'
 #gem 'unicode_utils'
 gem "paperclip", "~> 4.1"
 
@@ -45,7 +45,7 @@ gem 'axlsx_rails'
 gem 'composite_primary_keys', '~> 5.0.0'
 
 # UI Gems
-gem 'cocoon'
+gem 'cocoon', '>= 1.2'
 gem 'wice_grid', '>=3.4.0'
 gem 'chosen-rails', '~> 1.1.0'
 gem 'test-unit', '~> 3.0'
