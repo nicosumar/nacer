@@ -1,18 +1,22 @@
-<table>
-  <tr>
-    <th>Sección PDSS</th>
-    <th>Grupo PDSS</th> 
-    <th>Linea de cuidado</th>
-    <th>Tipo de prestación</th>
-    <th>Módulo</th>
-  </tr>
-  <% prestaciones_pdss.reverse.each do |prestacion_pdss| %>
+<% if prestaciones_pdss.present? %>
+  <table>
     <tr>
-      <td><%= prestacion_pdss.grupo_pdss.seccion_pdss.nombre %></td>
-      <td><%= prestacion_pdss.grupo_pdss.nombre %></td>
-      <td><%= prestacion_pdss.linea_de_cuidado.nombre %></td>
-      <td><%= prestacion_pdss.tipo_de_prestacion.nombre %></td>
-      <td><%= prestacion_pdss.modulo.nombre %></td> 
+      <th>Sección PDSS</th>
+      <th>Grupo PDSS</th> 
+      <th>Linea de cuidado</th>
+      <th>Tipo de prestación</th>
+      <th>Módulo</th>
     </tr>
-  <% end %>
-</table>
+    <% prestaciones_pdss.reverse.each do |prestacion_pdss| %>
+      <tr>
+        <td><%= prestacion_pdss.decorate.nombre_de_la_seccion %></td>
+        <td><%= obtener_nombre prestacion_pdss.grupo_pdss %></td>
+        <td><%= obtener_nombre prestacion_pdss.linea_de_cuidado %></td>
+        <td><%= obtener_nombre prestacion_pdss.tipo_de_prestacion %></td>
+        <td><%= obtener_nombre prestacion_pdss.modulo %></td> 
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  (Sin prestaciones pdss asociadas)
+<% end %>

@@ -16,7 +16,7 @@
   %>  
   <%= f.collection_select :linea_de_cuidado_id, LineaDeCuidado.all, :id, :nombre, {}, {class: "small-input"} %> 
   <%= f.collection_select :tipo_de_prestacion_id, TipoDePrestacion.all, :id, :nombre, {}, {class: "small-input"} %>      
-  <%= f.collection_select :modulo_id, Modulo.all, :id, :nombre, {}, {class: "small-input"} %>
+  <%= f.collection_select :modulo_id, Modulo.all, :id, :nombre, {prompt: 'Sin módulo'}, {class: "small-input"} %>
   <%= link_to_remove_association "borrar", f %>
 
   <br>

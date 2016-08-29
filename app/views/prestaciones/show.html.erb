@@ -117,6 +117,13 @@
     <%= render "prestaciones_pdss_en_tabla", prestaciones_pdss: @prestacion.prestaciones_pdss %>
   </div>
 
+  <hr>
+
+  <div class='field_content'>
+    <span class='field_name'><b>Asignaciones de precios</b></span>
+    <%= render "asignacion_de_precios_en_tabla", asignaciones_de_precios: @prestacion.asignaciones_de_precios %>
+  </div>
+
 <%= link_to 'Editar', edit_prestacion_path(@prestacion) %>
 </div>
 
