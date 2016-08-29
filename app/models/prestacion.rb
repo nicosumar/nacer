@@ -61,6 +61,7 @@ class Prestacion < ActiveRecord::Base
   accepts_nested_attributes_for :cantidades_de_prestaciones_por_periodo, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :asignaciones_de_precios, reject_if: :all_blank, allow_destroy: true
 
+  before_validation :asignar_codigo_a_prestacion
   before_save :asignar_nombre_a_prestaciones_pdss
 
 
@@ -83,11 +84,6 @@ class Prestacion < ActiveRecord::Base
 
   def codigo_de_unidad
     unidad_de_medida.codigo
-  end
-
-  def asignar_nombre_a_prestaciones_pdss
-    prestaciones_pdss.map { |ppdss| ppdss.nombre = self.nombre }
-    prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id:1 ).last.orden + i + 1 }
   end
 
 # TODO: cleanup
@@ -261,5 +257,16 @@ class Prestacion < ActiveRecord::Base
     raise ActiveRecord::RecordNotFound if codigo_id.nil?
     return codigo_id
   end
+
+  private
+
+    def asignar_codigo_a_prestacion
+      self.codigo = self.objeto_de_la_prestacion.codigo_para_la_prestacion
+    end
+    
+    def asignar_nombre_a_prestaciones_pdss
+      prestaciones_pdss.map { |ppdss| ppdss.nombre = self.nombre }
+      prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id:1 ).last.orden + i + 1 }
+    end
 
 end

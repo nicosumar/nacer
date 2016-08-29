@@ -7,7 +7,9 @@ class PrestacionesController < ApplicationController
   before_filter :buscar_prestacion, only: [:update, :edit, :show, :destroy, :edit_para_asignacion_de_precios]
 
   def index
-    @prestaciones = Prestacion.like_codigo(params[:codigo])
+    codigo = ObjetoDeLaPrestacion.find(params[:objeto_de_la_prestacion_id]).codigo_para_la_prestacion if params[:objeto_de_la_prestacion_id].present?
+    codigo = params[:codigo] if params[:codigo].present?
+    @prestaciones = Prestacion.like_codigo(codigo)
     respond_to do |format|
       format.html do 
         @prestaciones = @prestaciones.ordenadas_por_prestaciones_pdss.paginate(page: params[:page], per_page: params[:per])
@@ -22,7 +24,7 @@ class PrestacionesController < ApplicationController
   end
 
   def create
-    @prestacion = Prestacion.new params[:prestacion]
+    @prestacion = Prestacion.new params[:prestacion]    
     if @prestacion.save
       redirect_to (params[:go_to] == "edit_para_asignacion_de_precios") ? edit_para_asignacion_de_precios_prestacion_path(@prestacion) : @prestacion
     else

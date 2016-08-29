@@ -33,4 +33,12 @@ class ObjetoDeLaPrestacion < ActiveRecord::Base
     return codigo_id
   end
 
+  def full_codigo_y_nombre
+    self.codigo_para_la_prestacion + " - " + self.nombre
+  end
+
+  def codigo_para_la_prestacion
+    self.tipo_de_prestacion.codigo + self.codigo
+  end
+
 end

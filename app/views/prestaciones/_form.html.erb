@@ -1,10 +1,18 @@
 <%= form_for @prestacion do |f| %>
-  <h4>Información general</h4>
+  <h4>Código y validación</h4>
   <div class="field">
-    <%= f.label "Código" %>
-    <%= f.text_field :codigo %>
-    <button type="button" id="validador-de-codigo">Validar</button>  
+    <%= f.collection_select :objeto_de_la_prestacion_id, ObjetoDeLaPrestacion.all, :id, :full_codigo_y_nombre %>  
+    <button type="button" id="validador-de-codigo">Validar</button>      
   </div>
+
+  <h4>Diagnósticos</h4>
+  <%= f.collection_select :diagnostico_ids, Diagnostico.all, :id, :nombre_y_codigo, 
+                          {selected: f.object.diagnostico_ids}, 
+                          {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Información general</h4>
   <div class="field">
     <%= f.label "Nombre" %>
     <%= f.text_field :nombre %>      
@@ -36,10 +44,6 @@
   <div class="field">
     <%= f.label "¿ Modifica lugar de atención ?" %>
     <%= f.check_box :modifica_lugar_de_atencion %>      
-  </div>
-  <div class="field">
-    <%= f.label "Objeto de la prestación" %>
-    <%= f.collection_select :objeto_de_la_prestacion_id, ObjetoDeLaPrestacion.all, :id, :nombre %>      
   </div>
   <div class="field">
     <%= f.label "Concepto de facturación" %>
@@ -82,15 +86,7 @@
                             {selected: f.object.dato_reportabl_ids}, 
                             {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
   <br>
-  <br>
-
-  <h4>Diagnósticos</h4>
-
-    <%= f.collection_select :diagnostico_ids, Diagnostico.all, :id, :nombre_y_codigo, 
-                            {selected: f.object.diagnostico_ids}, 
-                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
-  <br>
-  <br>
+  <br> 
 
   <h4>Datos Adicionales</h4>
 
