@@ -86,7 +86,7 @@
 
   <h4>Diagnósticos</h4>
 
-    <%= f.collection_select :diagnostico_ids, Diagnostico.all, :id, :nombre, 
+    <%= f.collection_select :diagnostico_ids, Diagnostico.all, :id, :nombre_y_codigo, 
                             {selected: f.object.diagnostico_ids}, 
                             {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
   <br>
@@ -129,9 +129,9 @@
   <h4>Prestación P.D.S.S.</h4>
 
   <div class="nested-fields-label-container">
-    <div class="small-label">Seccion pdss</div>
+    <div class="small-label">Sección pdss</div>
     <div class="small-label">Grupo pdss</div>
-    <div class="small-label">Linea de cuidado</div>
+    <div class="small-label">Línea de cuidado</div>
     <div class="small-label">Tipo de prestación</div>
     <div class="small-label">Módulo</div>
   </div>

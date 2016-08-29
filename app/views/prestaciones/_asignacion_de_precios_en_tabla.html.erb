@@ -1,0 +1,22 @@
+<% if asignaciones_de_precios.present? %>
+<table>
+  <tr>
+    <th>Nomenclador</th>
+    <th>Dato reportable</th> 
+    <th>Área de prestación</th>
+    <th>Precio por unidad</th>
+    <th>Adicional por prestación</th>
+  </tr>
+  <% asignaciones_de_precios.reverse.each do |asignacion_de_precios| %>
+    <tr>
+      <td><%= obtener_nombre asignacion_de_precios.nomenclador %></td>
+      <td><%= obtener_nombre asignacion_de_precios.dato_reportable %></td>
+      <td><%= obtener_nombre asignacion_de_precios.area_de_prestacion %></td>
+      <td><%= asignacion_de_precios.precio_por_unidad %></td>
+      <td><%= asignacion_de_precios.adicional_por_prestacion %></td> 
+    </tr>
+  <% end %>
+</table>
+<% else %>
+  (sin precios asignados)
+<% end %>
