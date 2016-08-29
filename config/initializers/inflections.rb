@@ -91,10 +91,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("unidad·_de·_medida·", "unidades_de_medida")
   inflect.irregular("UnidadDeMedida", "Unidades·De·Medida·")
   inflect.irregular("Unidad·De·Medida·", "UnidadesDeMedida")
+
   inflect.irregular("asignacion_de_precios", "asignaciones·_de·_precios·")
   inflect.irregular("asignacion·_de·_precios·", "asignaciones_de_precios")
   inflect.irregular("AsignacionDePrecios", "Asignaciones·De·Precios·")
   inflect.irregular("Asignacion·De·Precios·", "AsignacionesDePrecios")
+
+  inflect.irregular("asignaciones_de_precios", "asignaciones·_de·_precios·")
+  inflect.irregular("asignaciones·_de·_precios·", "asignaciones_de_precios")
+  inflect.irregular("AsignacionesDePrecios", "Asignaciones·De·Precios·")
+  inflect.irregular("Asignaciones·De·Precios·", "AsignacionesDePrecios")
+
+
   inflect.irregular("asignacion_de_nomenclador", "asignaciones·_de·_nomenclador·")
   inflect.irregular("asignacion·_de·_nomenclador·", "asignaciones_de_nomenclador")
   inflect.irregular("AsignacionDeNomenclador", "Asignaciones·De·Nomenclador·")
@@ -259,10 +267,17 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("addenda·_sumar·", "addendas_sumar")
   inflect.irregular("AddendaSumar", "Addendas·Sumar·")
   inflect.irregular("Addenda·Sumar·", "AddendasSumar")
+
   inflect.irregular("documentacion_respaldatoria", "documentaciones·_respaldatorias·")
   inflect.irregular("documentacion·_respaldatoria·", "documentaciones_respaldatorias")
   inflect.irregular("DocumentacionRespaldatoria", "Documentaciones·Respaldatorias·")
   inflect.irregular("Documentacion·Respaldatoria·", "DocumentacionesRespaldatorias")
+
+  inflect.irregular("documentacion_respaldatoria_prestacion", "documentaciones·_respaldatorias·_prestaciones.")
+  inflect.irregular("documentacion·_respaldatoria·_prestacion", "documentaciones_respaldatorias_prestaciones")
+  inflect.irregular("DocumentacionRespaldatoriaPrestacion", "Documentaciones·Respaldatorias·Prestaciones.")
+  inflect.irregular("Documentacion·Respaldatoria·Prestacion", "DocumentacionesRespaldatoriasPrestaciones")
+
   inflect.irregular("metodo_de_validacion_fallado", "metodos·_de·_validacion·_fallados·")
   inflect.irregular("metodo·_de·_validacion·_fallado·", "metodos_de_validacion_fallados")
   inflect.irregular("MetodoDeValidacionFallado", "Metodos·De·Validacion·Fallados·")
@@ -368,6 +383,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("CantidadDePrestacionesPorPeriodo", "Cantidades·De·Prestaciones·Por·Periodo")
   inflect.irregular("Cantidad·De·Prestaciones·Por·Periodo", "CantidadesDePrestacionesPorPeriodo")
 
+  # Cantidad de prestaciones por periodo (tasas de uso)
+  inflect.irregular("cantidades_de_prestaciones_por_periodo", "cantidades·_de·_prestaciones·_por·_periodo·")
+  inflect.irregular("cantidades·_de·_prestaciones·_por·_periodo·", "cantidades_de_prestaciones_por_periodo")
+  inflect.irregular("CantidadesDePrestacionesPorPeriodo", "Cantidades·De·Prestaciones·Por·Periodo")
+  inflect.irregular("Cantidades·De·Prestaciones·Por·Periodo", "CantidadesDePrestacionesPorPeriodo")
+
   # Expedientes Sumar
   inflect.irregular("expediente_sumar", "expedientes·_sumar·")
   inflect.irregular("expediente·_sumar·", "expedientes_sumar")
@@ -403,6 +424,24 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("prestacion·_pdss·", "prestaciones_pdss")
   inflect.irregular("PrestacionPdss", "Prestaciones·Pdss·")
   inflect.irregular("Prestacion·Pdss·", "PrestacionesPdss")
+
+  # Prestaciones del PDSS
+  inflect.irregular("prestaciones_pdss", "prestaciones·_pdss·")
+  inflect.irregular("prestaciones·_pdss·", "prestaciones_pdss")
+  inflect.irregular("PrestacionesPdss", "Prestaciones·Pdss·")
+  inflect.irregular("Prestaciones·Pdss·", "PrestacionesPdss")
+
+  # Prestaciones Prestaciones del PDSS
+  inflect.irregular("prestacion_prestacion_pdss", "prestaciones·_prestaciones·_pdss·")
+  inflect.irregular("prestacion·_prestacion·_pdss·", "prestaciones_prestaciones_pdss")
+  inflect.irregular("PrestacionPrestacionPdss", "Prestaciones·Prestaciones·Pdss·")
+  inflect.irregular("Prestacion·Prestacion·Pdss·", "PrestacionesPrestacionesPdss")
+
+  # Corrección de mala pluralización irregular automática
+  inflect.irregular("prestaciones_prestaciones_pdss", "prestaciones·_prestaciones·_pdss·")
+  inflect.irregular("prestaciones·_prestaciones·_pdss·", "prestaciones_prestaciones_pdss")
+  inflect.irregular("PrestacionesPrestacionesPdss", "Prestaciones·Prestaciones·Pdss·")
+  inflect.irregular("Prestaciones·Prestaciones·Pdss·", "PrestacionesPrestacionesPdss")
 
   # Prestaciones PDSS autorizadas por efector
   inflect.irregular("prestacion_pdss_autorizada", "prestaciones·_pdss·_autorizadas·")
@@ -514,7 +553,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("informe", "informes·")
   inflect.irregular("informe·", "informes")
   inflect.irregular("Informe", "Informes·")
-  inflect.irregular("Informe·", "Informes")
+  inflect.irregular("mes", "meses")
+  inflect.irregular("meses·", "meses")
+  inflect.irregular("año", "años")
+  inflect.irregular("años", "años")
+  inflect.irregular("semana", "semanas")
+  inflect.irregular("semanas", "semanas")
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")

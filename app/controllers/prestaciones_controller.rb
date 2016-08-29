@@ -2,7 +2,51 @@
 require 'will_paginate/array'
 
 class PrestacionesController < ApplicationController
+  load_and_authorize_resource except: [:index, :autorizadas]
   before_filter :authenticate_user!
+  before_filter :buscar_prestacion, only: [:update, :edit, :show, :destroy, :edit_para_asignacion_de_precios]
+
+  def index
+    @prestaciones = Prestacion.like_codigo(params[:codigo])
+    respond_to do |format|
+      format.html do 
+        @prestaciones = @prestaciones.ordenadas_por_prestaciones_pdss.paginate(page: params[:page], per_page: params[:per])
+        @secciones_grupo_pdss = PrestacionService.popular_a_plan_de_salud(@prestaciones)
+      end
+      format.json { render json: @prestaciones }
+    end 
+  end
+
+  def new
+    @prestacion = Prestacion.new
+  end
+
+  def create
+    @prestacion = Prestacion.new params[:prestacion]
+    if @prestacion.save
+      redirect_to (params[:go_to] == "edit_para_asignacion_de_precios") ? edit_para_asignacion_de_precios_prestacion_path(@prestacion) : @prestacion
+    else
+      render :new
+    end
+  end
+
+  def edit
+  end
+
+  def edit_para_asignacion_de_precios
+  end
+
+  def update
+    if @prestacion.update_attributes params[:prestacion]
+      redirect_to (params[:go_to] == "edit_para_asignacion_de_precios") ? edit_para_asignacion_de_precios_prestacion_path(@prestacion) : @prestacion
+    else
+      render (params[:from_action] == "edit_para_asignacion_de_precios") ? :edit_para_asignacion_de_precios : :edit
+    end
+  end
+
+  def show
+    @prestacion = @prestacion.decorate
+  end
 
   def autorizadas
 
@@ -146,4 +190,11 @@ class PrestacionesController < ApplicationController
       end #end response
     end #end begin rescue 
   end
+
+  private
+
+    def buscar_prestacion
+      @prestacion = Prestacion.find(params[:id])
+    end
+
 end

@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+gem 'rubyzip', '< 1.0.0'
 gem 'rails', '3.2.22'
 gem 'pg'
 gem 'json'
@@ -50,3 +51,4 @@ gem 'chosen-rails', '~> 1.1.0'
 gem 'test-unit', '~> 3.0'
 gem "select2-rails"
 gem 'strong_parameters'
+gem 'draper'

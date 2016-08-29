@@ -22,6 +22,7 @@ class AsignacionDePrecios < ActiveRecord::Base
   validates_numericality_of :adicional_por_prestacion
   validate :precio_mayor_que_cero
   validate :adicional_mayor_o_igual_que_cero
+  validate :debe_ser_unica
 
   # precio_mayor_que_cero
   # Verifica que el precio_por_unidad sea mayor que cero (si existe)
@@ -42,4 +43,14 @@ class AsignacionDePrecios < ActiveRecord::Base
     end
     return true
   end
+
+  def debe_ser_unica
+    if AsignacionDePrecios.where(nomenclador_id: nomenclador_id, prestacion_id: prestacion_id, area_de_prestacion_id: area_de_prestacion_id, dato_reportable_id: dato_reportable_id).present?
+      errors.add(:base, 'Ya existe una asignación de precios con estas características para esta prestación')
+      return false
+    end
+    return true
+  end
+
+
 end

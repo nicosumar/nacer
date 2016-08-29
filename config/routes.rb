@@ -57,13 +57,16 @@ Nacer::Application.routes.draw do
     end
   end
 
+  resources :secciones_pdss, only: [] do
+    resources :grupos_pdss, only: :index
+  end
   resources :consolidados_sumar
   # rutas para la actualizacion asincronica
-  resources :anexos_medicos_prestaciones do
+  resources :anexos_medicos_prestaciones, :only => [] do
     put :update_status, on: :member
     put :update_motivo_rechazo, on: :member
   end
-  resources :anexos_administrativos_prestaciones do
+  resources :anexos_administrativos_prestaciones, :only => [] do
     put :update_status, on: :member
     put :update_motivo_rechazo, on: :member
   end
@@ -138,6 +141,11 @@ Nacer::Application.routes.draw do
       post 'aplicar', :as => :aplicar, :action => :aplicar
       post 'iniciar', :as => :iniciar, :action => :iniciar
     end
+  end
+
+  resources :prestaciones, except: :destroy do
+    get :validar_codigo , on: :collection
+    get :edit_para_asignacion_de_precios, on: :member
   end
 
   root :to => 'inicio#index'

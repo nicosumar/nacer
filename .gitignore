@@ -5,7 +5,6 @@ test/
 public/assets
 *.swp
 *~
-*.lock
 db/schema.rb
 config/database.yml
 vendor/data
@@ -15,3 +14,10 @@ REVISION
 public/system
 lib/tasks/datos
 public/paperclip
+
+/db/schema.rb
+/.project
+/.byebug_history
+
+/public/system/*
+public/attachments/*

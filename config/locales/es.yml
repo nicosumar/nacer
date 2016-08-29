@@ -1,4 +1,10 @@
 es:
+  week: "semana"
+  weeks: "semanas"
+  month: "mes"
+  months: "meses"
+  year: "año"
+  years: "años"
   number:
     percentage:
       format:

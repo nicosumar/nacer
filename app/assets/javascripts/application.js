@@ -6,7 +6,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require cocoon
 //= require select2
 //= require select2_locale_es
 //= require jquery.ui.datepicker
@@ -20,6 +19,7 @@
 //= require wice_grid 
 
 
+  //= require cocoon
 $(document).ready(function() {
   $('.multi_select').chosen({no_results_text: "Ningún resultado concuerda con", allow_single_deselect: true, disable_search_threshold: 10});
   $('input[type="submit"]').attr("data-disable-with", "Por favor, espere...");

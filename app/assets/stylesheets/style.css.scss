@@ -808,6 +808,47 @@ div.field_with_warnings {
 }
 
 .select2-results .select2-highlighted {
-    background: none repeat scroll 0 0 #72C2DB;
-    color: #FFFFFF;
+  background: none repeat scroll 0 0 #72C2DB;
+  color: #FFFFFF;
+}
+
+.nested-filds-label-container {
+  margin: 0 0 10px 0  
+}
+
+.small-label {
+   width:170px;
+   max-width:170px;
+   display: inline-block;
+}
+
+.small-input {
+  width: 170px !important;
+}
+
+.small-number-field {
+  width: 166px !important;
+}
+
+#popup-de-prestaciones-pdss a{
+  color: blue;
+}
+
+.nested-fields {
+  margin: 0 0 15px 0;
+  display: inline-block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.nested-fields ul {
+  display: inline-block;
+  list-style-type: none;
+}
+
+
+.nested-fields li {
+    float: left;
 }
