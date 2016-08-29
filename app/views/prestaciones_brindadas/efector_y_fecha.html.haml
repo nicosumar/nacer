@@ -9,67 +9,75 @@
 
 = render :partial => "shared/info", :locals => { :registro => @prestacion_brindada }
 
-#content-body
-  %h2.first-header-with-note Formulario de ingreso de datos de la prestación
-  %p.note Los campos marcados con asterisco (*) son obligatorios
+#content-body2
+  #content-body-text
+    %h2.first-header-with-note Formulario de ingreso de datos de la prestación
+    %p.note Los campos marcados con asterisco (*) son obligatorios
 
-  - if @prestacion_brindada.clave_de_beneficiario
-    %h3 Clave única de beneficiario asociada a la prestación
-    %div.field_content
-      %span.field_value= @prestacion_brindada.clave_de_beneficiario
-
-    %h3
-      Datos más recientes sobre
-      - if @beneficiario.sexo.codigo == 'F'
-        la beneficiaria, según
-      - else
-        el beneficiario, según
-      - if @beneficiario.is_a? NovedadDelAfiliado
-        = link_to "una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + " pendiente", @beneficiario, |
-          { :title => "Ver detalles de la solicitud en otra pestaña", :onclick => "this.target='_blank'" } |
-      - else
-        = link_to "el registro en el padrón de beneficiarios", @beneficiario, |
-          { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
-
-    %div.field_content
-      %span.field_name Nombre
-      %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
-    %div.field_content
-      %span.field_name= "Documento" + (@beneficiario.clase_de_documento.present? ? " " + @beneficiario.clase_de_documento.nombre.downcase : "")
-      %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
-        @beneficiario.numero_de_documento.to_s |
-    %div.field_content
-      %span.field_name Fecha de nacimiento
-      - if @beneficiario.fecha_de_nacimiento
-        %span.field_value
-          = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
-          = "(actualmente tiene"
-          = edad_entre(@beneficiario.fecha_de_nacimiento, Date.today) + ")"
-
-      - else
-        %span.field_empty No se ingresó la fecha de nacimiento
-
-  = form_for(@prestacion_brindada, :url => new_prestacion_brindada_path, :method => :get) do |f|
     - if @prestacion_brindada.clave_de_beneficiario
-      = f.hidden_field :clave_de_beneficiario, :value => @prestacion_brindada.clave_de_beneficiario
-    - else
-      = hidden_field_tag :comunitaria, true
-
-    %h3 Efector y fecha en que se brindó la prestación
-    - if @efectores.size == 1
+      %h3 Clave única de beneficiario asociada a la prestación
       %div.field_content
-        %span.field_name Efector*
-        %span.field_value= @efectores.first[0]
-      = f.hidden_field :efector_id, :value => @prestacion_brindada.efector_id
-    - else
-      %div.field
-        = f.label :efector_id, "Efector*"
-        = f.select :efector_id, options_for_select(@efectores, @prestacion_brindada.efector_id), { :include_blank => true }
-    %div.field
-      = f.label :fecha_de_la_prestacion, "Fecha de la prestación*"
-      = f.date_select :fecha_de_la_prestacion, { :start_year => (Date.today - 4.months).year, :end_year => Date.today.year, |
-        :include_blank => true } |
+        %span.field_value= @prestacion_brindada.clave_de_beneficiario
 
-    %div.actions
-      = f.submit "Continuar"
-      = link_to "Cancelar", root_url
+      %h3
+        Datos más recientes sobre
+        - if @beneficiario.sexo.codigo == 'F'
+          la beneficiaria, según
+        - else
+          el beneficiario, según
+        - if @beneficiario.is_a? NovedadDelAfiliado
+          = link_to "una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + " pendiente", @beneficiario, |
+            { :title => "Ver detalles de la solicitud en otra pestaña", :onclick => "this.target='_blank'" } |
+        - else
+          = link_to "el registro en el padrón de beneficiarios", @beneficiario, |
+            { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
+
+      %div.field_content
+        %span.field_name Nombre
+        %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
+      %div.field_content
+        %span.field_name= "Documento" + (@beneficiario.clase_de_documento.present? ? " " + @beneficiario.clase_de_documento.nombre.downcase : "")
+        %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
+          @beneficiario.numero_de_documento.to_s |
+      %div.field_content
+        %span.field_name Fecha de nacimiento
+        - if @beneficiario.fecha_de_nacimiento
+          %span.field_value
+            = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
+            = "(actualmente tiene"
+            = edad_entre(@beneficiario.fecha_de_nacimiento, Date.today) + ")"
+
+        - else
+          %span.field_empty No se ingresó la fecha de nacimiento
+
+    = form_for(@prestacion_brindada, :url => new_prestacion_brindada_path, :method => :get) do |f|
+      - if @prestacion_brindada.clave_de_beneficiario
+        = f.hidden_field :clave_de_beneficiario, :value => @prestacion_brindada.clave_de_beneficiario
+      - else
+        = hidden_field_tag :comunitaria, true
+
+      %h3 Efector y fecha en que se brindó la prestación
+      - if @efectores.size == 1
+        %div.field_content
+          %span.field_name Efector*
+          %span.field_value= @efectores.first[0]
+        = f.hidden_field :efector_id, :value => @prestacion_brindada.efector_id
+      - else
+        %div.field
+          = f.label :efector_id, "Efector*"
+          = f.select :efector_id, options_for_select(@efectores, @prestacion_brindada.efector_id), { :include_blank => true }
+      %div.field
+        = f.label :fecha_de_la_prestacion, "Fecha de la prestación*"
+        = f.date_select :fecha_de_la_prestacion, { :start_year => (Date.today - 4.months).year, :end_year => Date.today.year, |
+          :include_blank => true } |
+
+      %div.actions
+        = f.submit "Continuar"
+        = link_to "Cancelar", root_url
+
+  #content-body-info
+    %a{:href => "http://www.msal.gob.ar/sumar/", |
+      :onclick => "this.target='_blank'"} |
+      = ''
+      = image_tag "placas_info/" + rand(13..35).to_s + ".png"
+    
