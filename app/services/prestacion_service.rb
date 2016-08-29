@@ -5,6 +5,7 @@ class PrestacionService
     def popular_a_plan_de_salud prestaciones
       secciones_grupo_pdss = []
       linea_de_cuidado = { }
+      # byebug
       prestaciones.each do |prestacion|
         prestacion.prestaciones_pdss.each do |prestacion_pdss|
           seccion_pdss_id = prestacion_pdss.grupo_pdss.seccion_pdss.id
@@ -33,8 +34,11 @@ class PrestacionService
             seccion_grupo_pdss[:lineas_de_cuidado] << linea_de_cuidado
           end
 
-          linea_de_cuidado[:prestaciones] << prestacion
-          seccion_grupo_pdss[:prestaciones_count] += 1
+          prestaciones_array = linea_de_cuidado[:prestaciones].select {|prestacion| prestacion[:id] == prestacion.id }
+          if prestaciones_array.blank?
+            linea_de_cuidado[:prestaciones] << prestacion 
+            seccion_grupo_pdss[:prestaciones_count] += 1
+          end
         end
       end   
       
