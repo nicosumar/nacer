@@ -100,14 +100,6 @@
     </div>
   </div>
 
-  <h4>Datos Adicionales</h4>
-
-    <%= f.collection_select :dato_adicional_ids, DatoAdicional.all, :id, :nombre, 
-                            {selected: f.object.dato_adicional_ids}, 
-                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
-  <br>
-  <br>
-
   <h4>Métodos de validación</h4>
 
     <%= f.collection_select :metodo_de_validacion_ids, MetodoDeValidacion.all, :id, :nombre, 
@@ -140,7 +132,6 @@
     <div class="small-label">Sección pdss</div>
     <div class="small-label">Grupo pdss</div>
     <div class="small-label">Línea de cuidado</div>
-    <div class="small-label">Tipo de prestación</div>
     <div class="small-label">Módulo</div>
   </div>
 

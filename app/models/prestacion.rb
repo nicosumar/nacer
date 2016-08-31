@@ -63,7 +63,7 @@ class Prestacion < ActiveRecord::Base
   accepts_nested_attributes_for :datos_reportables_requeridos, reject_if: :all_blank, allow_destroy: false
 
   before_validation :asignar_codigo_a_prestacion
-  before_save :asignar_nombre_a_prestaciones_pdss
+  before_save :asignar_attributes_a_prestaciones_pdss
 
 
 
@@ -265,9 +265,12 @@ class Prestacion < ActiveRecord::Base
       self.codigo = self.objeto_de_la_prestacion.codigo_para_la_prestacion
     end
     
-    def asignar_nombre_a_prestaciones_pdss
-      prestaciones_pdss.map { |ppdss| ppdss.nombre = self.nombre }
-      prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id:1 ).last.orden + i + 1 }
+    def asignar_attributes_a_prestaciones_pdss
+      prestaciones_pdss.map { |ppdss| 
+        ppdss.nombre = self.nombre 
+        ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
+      }
+      prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id: ppdss.grupo_pdss_id).last.orden + i + 1 }
     end
 
 end
