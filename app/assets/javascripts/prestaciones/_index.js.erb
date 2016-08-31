@@ -1,0 +1,24 @@
+$(document).ready(function(){
+
+  // Función para buscar los grupos pdss de una sección pdss
+  $(document).on( "change", ".seccion-pdss-select", function() {
+    var seccion_pdss_id = this.value;
+    var seccion_pdss_select = this
+    var grupo_pdss_select = $(".grupo-pdss-select");
+
+    // Llamada AJAX para buscar en el servidor
+    $.get( "/secciones_pdss/" + seccion_pdss_id + "/grupos_pdss.json", function( data ) {
+      
+      // resetea el grupo_pdss_select
+      grupo_pdss_select.empty();
+
+      // Agrega las opciones al grupo_pdss_select
+      for (var i in data) {
+          $(grupo_pdss_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
+      }
+
+    });
+  });
+
+});
+

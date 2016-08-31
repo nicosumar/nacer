@@ -10,6 +10,7 @@ class PrestacionesController < ApplicationController
     codigo = ObjetoDeLaPrestacion.find(params[:objeto_de_la_prestacion_id]).codigo_para_la_prestacion if params[:objeto_de_la_prestacion_id].present?
     codigo = params[:codigo] if params[:codigo].present?
     @prestaciones = Prestacion.like_codigo(codigo)
+    @prestaciones = @prestaciones.by_grupo_pdss(params[:filter][:grupo_pdss_id]) if params[:filter].present?
     respond_to do |format|
       format.html do 
         @prestaciones = @prestaciones.ordenadas_por_prestaciones_pdss.paginate(page: params[:page], per_page: params[:per])
