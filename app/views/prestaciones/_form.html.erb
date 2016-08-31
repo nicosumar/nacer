@@ -46,6 +46,10 @@
     <%= f.check_box :modifica_lugar_de_atencion %>      
   </div>
   <div class="field">
+    <%= f.label "¿ Se encuentra activa ?" %>
+    <%= f.check_box :activa %>      
+  </div>
+  <div class="field">
     <%= f.label "Concepto de facturación" %>
     <%= f.collection_select :concepto_de_facturacion_id, ConceptoDeFacturacion.all, :id, :concepto, {}, {class: :hola} %>      
   </div>
