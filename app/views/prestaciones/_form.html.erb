@@ -80,13 +80,25 @@
   <br>
   <br>
 
-  <h4>Datos reportables</h4>
+  <h4>Datos reportables requeridos</h4>
 
-    <%= f.collection_select :dato_reportabl_ids, DatoReportable.all, :id, :nombre, 
-                            {selected: f.object.dato_reportabl_ids}, 
-                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
-  <br>
-  <br> 
+  <div class="nested-fields-label-container">
+    <div class="medium-label">Dato reportable</div>
+    <div class="medium-label">Inicio</div>
+    <div class="medium-label">Fin</div>
+    <div class="xsmall-label">Min.</div>
+    <div class="xsmall-label">Máx.</div>
+  </div>
+
+  <div id="datos_reportables_requeridos">
+    <%= f.fields_for :datos_reportables_requeridos do |dato_reportable_requerido|  %>
+      <%= render 'dato_reportable_requerido_fields', f: dato_reportable_requerido  %>
+    <% end %>
+    <br>
+    <div class="links">
+      <%= link_to_add_association 'agregar', f, :datos_reportables_requeridos  %>
+    </div>
+  </div>
 
   <h4>Datos Adicionales</h4>
 
@@ -116,7 +128,7 @@
     <%= f.fields_for :cantidades_de_prestaciones_por_periodo do |cantidad_de_prestaciones_por_periodo|  %>
       <%= render 'cantidad_de_prestaciones_por_periodo_fields', f: cantidad_de_prestaciones_por_periodo  %>
     <% end %>
-<br>
+    <br>
     <div class="links">
       <%= link_to_add_association 'agregar', f, :cantidades_de_prestaciones_por_periodo  %>
     </div>
