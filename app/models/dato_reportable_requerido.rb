@@ -8,4 +8,6 @@ class DatoReportableRequerido < ActiveRecord::Base
   belongs_to :dato_reportable
   belongs_to :prestacion
 
+  validates_presence_of :prestacion, :dato_reportable, :fecha_de_inicio
+
 end
