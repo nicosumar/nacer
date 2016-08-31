@@ -82,18 +82,8 @@
   </div>
 
   <div class='field_content'>
-    <div>Datos reportables requeridos</div>
-    <span class='field_value'><%= obtener_listado_de_nombres @prestacion.datos_reportables %></span>
-  </div>
-
-  <div class='field_content'>
     <div>Diagnosticos</div>
     <span class='field_value'><%= obtener_listado_de_nombres @prestacion.diagnosticos %></span>
-  </div>
-
-  <div class='field_content'>
-    <div>Datos adicionales</div>
-    <span class='field_value'><%= obtener_listado_de_nombres @prestacion.datos_adicionales %></span>
   </div>
 
   <div class='field_content'>
@@ -117,6 +107,13 @@
     <%= render "prestaciones_pdss_en_tabla", prestaciones_pdss: @prestacion.prestaciones_pdss %>
   </div>
 
+  <hr>
+
+  <div class='field_content'>
+    <span class='field_name'><b>Datos reportables requeridos</b></span>
+    <%= render "datos_reportables_requeridos_en_tabla", datos_reportables_requeridos: @prestacion.datos_reportables_requeridos %>
+  </div>
+  
   <hr>
 
   <div class='field_content'>
