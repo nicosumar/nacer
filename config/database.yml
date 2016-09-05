@@ -2,8 +2,8 @@
 production:
   adapter: postgresql
   encoding: unicode
-  database: nacer
   username: nacer_adm
+  password: nacer_adm
 
 development:
   adapter: postgresql

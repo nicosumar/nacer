@@ -20,8 +20,16 @@
 
 = render :partial => "shared/info", :locals => { :registro => @prestacion_brindada }
 
-#content-body
-  %h2.first-header-with-note Formulario de creación de una nueva prestación brindada
-  %p.note Los campos marcados con asterisco (*) son obligatorios
+#content-body2
+  #content-body-text
+    %h2.first-header-with-note Formulario de creación de una nueva prestación brindada
+    %p.note Los campos marcados con asterisco (*) son obligatorios
 
-  = render "form"
+    = render "form"
+
+  #content-body-info
+    %a{:href => "http://www.msal.gob.ar/sumar/", |
+      :onclick => "this.target='_blank'"} |
+      = ''
+      = image_tag "placas_info/" + rand(1..12).to_s + ".png"
+

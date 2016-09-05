@@ -117,7 +117,7 @@ a {
 #header {
   width: 960px;
   height: 159px;
-  background: image-url("cabecera.png") no-repeat 0px;
+  background: image-url("cabecera2016.png") no-repeat 0px;
   position: relative;
 }
 
@@ -182,9 +182,25 @@ a {
 }
 
 #content-body {
-  width: 920px;
+  width: 920px; 
   padding: 20px 20px 0px 20px;
   clear: both;
+}
+
+#content-body2 {
+  width: 920px; 
+  padding: 20px 20px 0px 20px;
+  clear: both;
+  display: flex;
+}
+
+#content-body-info {
+  float: right;
+}
+
+#content-body-text {
+  width: 695px;
+  float: left;
 }
 
 #resultados {
