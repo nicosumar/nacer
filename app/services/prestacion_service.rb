@@ -33,8 +33,8 @@ class PrestacionService
             linea_de_cuidado[:prestaciones] = []
             seccion_grupo_pdss[:lineas_de_cuidado] << linea_de_cuidado
           end
-
-          prestaciones_array = linea_de_cuidado[:prestaciones].select {|prestacion| prestacion[:id] == prestacion.id }
+          
+          prestaciones_array = linea_de_cuidado[:prestaciones].select {|p| p[:id] == prestacion.id }
           if prestaciones_array.blank?
             linea_de_cuidado[:prestaciones] << prestacion 
             seccion_grupo_pdss[:prestaciones_count] += 1

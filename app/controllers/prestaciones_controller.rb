@@ -106,7 +106,7 @@ class PrestacionesController < ApplicationController
                   where(condicion_id ).
                   where(condicion_comunitaria).
                   collect{ |p| p.prestacion_id })
-        ).order("prestaciones.codigo, prestaciones.nombre")
+        ).activas.order("prestaciones.codigo, prestaciones.nombre")
 
       unless comunitaria
         autorizadas_por_grupo = beneficiario.grupo_poblacional_al_dia(fecha_de_la_prestacion).

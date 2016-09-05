@@ -34,6 +34,7 @@
       <th>Línea de cuidado</th>
       <th>Tipo</th>
       <th>Nombre</th>
+      <th>Sexos</th>
       <th>Código</th>
       <th>Diagnósticos</th>
       <th>Acciones</th>
@@ -60,6 +61,7 @@
             <% end %>
             <td><%= prestacion.tipo_de_prestacion.nombre %></td>
             <td><%= prestacion.nombre_corto %></td>
+            <td><%= obtener_listado_de_nombres prestacion.sexos %></td>
             <td><%= prestacion.codigo %></td>
             <td>
               <% if prestacion.diagnosticos.count > 0 %>
