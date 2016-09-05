@@ -62,7 +62,7 @@ class Prestacion < ActiveRecord::Base
   accepts_nested_attributes_for :asignaciones_de_precios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :datos_reportables_requeridos, reject_if: :all_blank, allow_destroy: false
 
-  before_validation :asignar_codigo_a_prestacion
+  before_validation :asignar_attributes_a_prestacion
   before_save :asignar_attributes_a_prestaciones_pdss
 
 
@@ -261,8 +261,11 @@ class Prestacion < ActiveRecord::Base
 
   private
 
-    def asignar_codigo_a_prestacion
+    def asignar_attributes_a_prestacion
       self.codigo = self.objeto_de_la_prestacion.codigo_para_la_prestacion
+      datos_reportables_requeridos.map { |drr|
+        drr.prestacion = self
+      }
     end
     
     def asignar_attributes_a_prestaciones_pdss

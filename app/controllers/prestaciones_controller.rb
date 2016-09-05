@@ -22,6 +22,7 @@ class PrestacionesController < ApplicationController
 
   def new
     @prestacion = Prestacion.new
+    @prestacion.metodo_de_validacion_ids = [12,15]
   end
 
   def create

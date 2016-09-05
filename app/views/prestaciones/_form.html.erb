@@ -95,7 +95,7 @@
   </div>
 
   <div id="datos_reportables_requeridos">
-    <%= f.fields_for :datos_reportables_requeridos do |dato_reportable_requerido|  %>
+    <%= f.fields_for :datos_reportables_requeridos, @prestacion.datos_reportables_requeridos.activos do |dato_reportable_requerido|  %>
       <%= render 'dato_reportable_requerido_fields', f: dato_reportable_requerido  %>
     <% end %>
     <br>

@@ -10,4 +10,5 @@ class DatoReportableRequerido < ActiveRecord::Base
 
   validates_presence_of :prestacion, :dato_reportable, :fecha_de_inicio
 
+  scope :activos, -> {where("fecha_de_finalizacion IS NULL")}
 end
