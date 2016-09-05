@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160122023337) do
+ActiveRecord::Schema.define(:version => 20160905133926) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -430,10 +430,10 @@ ActiveRecord::Schema.define(:version => 20160122023337) do
   end
 
   create_table "datos_reportables", :force => true do |t|
-    t.string  "nombre",                 :null => false
-    t.string  "codigo",                 :null => false
-    t.string  "tipo_postgres",          :null => false
-    t.string  "tipo_ruby",              :null => false
+    t.string  "nombre",                                   :null => false
+    t.string  "codigo",                                   :null => false
+    t.string  "tipo_postgres",                            :null => false
+    t.string  "tipo_ruby",                                :null => false
     t.string  "sirge_id"
     t.boolean "enumerable"
     t.string  "clase_para_enumeracion"
@@ -442,6 +442,7 @@ ActiveRecord::Schema.define(:version => 20160122023337) do
     t.string  "codigo_de_grupo"
     t.integer "orden_de_grupo"
     t.string  "opciones_de_formateo"
+    t.boolean "activo",                 :default => true
   end
 
   create_table "datos_reportables_requeridos", :force => true do |t|

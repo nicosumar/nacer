@@ -9,6 +9,13 @@ class DatoReportable < ActiveRecord::Base
   has_many :prestaciones, :through => :datos_reportables_requeridos
   has_many :datos_reportables_requeridos
 
+  scope :activos, -> { where(activo: true) }
+  scope :ordered, -> { order("codigo ASC") }
+  
+  def codigo_y_nombre
+    return self.codigo + " - " + self.nombre
+  end
+
   # id_del_codigo
   # Devuelve el ID asociado con el código pasado
   def self.id_del_codigo(codigo)

@@ -33,4 +33,8 @@ class TipoDePrestacion < ActiveRecord::Base
     return codigo_id
   end
 
+  def codigo_y_nombre
+    self.codigo + " - " + self.nombre
+  end
+
 end

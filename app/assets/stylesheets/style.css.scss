@@ -816,6 +816,20 @@ div.field_with_warnings {
   margin: 0 0 10px 0  
 }
 
+.medium-label {
+   width:200px;
+   max-width:200px;
+   display: inline-block;
+}
+
+.medium-input {
+  width: 196px !important;
+}
+
+.medium-number-field {
+  width: 196px !important;
+}
+
 .small-label {
    width:170px;
    max-width:170px;
@@ -828,6 +842,20 @@ div.field_with_warnings {
 
 .small-number-field {
   width: 166px !important;
+}
+
+.xsmall-label {
+   width:125px;
+   max-width:125px;
+   display: inline-block;
+}
+
+.xsmall-input {
+  width: 117px !important;
+}
+
+.xsmall-number-field {
+  width: 117px !important;
 }
 
 #popup-de-prestaciones-pdss a{

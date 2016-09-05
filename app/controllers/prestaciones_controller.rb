@@ -7,22 +7,26 @@ class PrestacionesController < ApplicationController
   before_filter :buscar_prestacion, only: [:update, :edit, :show, :destroy, :edit_para_asignacion_de_precios]
 
   def index
-    @prestaciones = Prestacion.like_codigo(params[:codigo])
+    codigo = ObjetoDeLaPrestacion.find(params[:objeto_de_la_prestacion_id]).codigo_para_la_prestacion if params[:objeto_de_la_prestacion_id].present?
+    codigo = params[:codigo] if params[:codigo].present?
+    @prestaciones = Prestacion.like_codigo(codigo)
+    @prestaciones = @prestaciones.by_grupo_pdss(params[:filter][:grupo_pdss_id]) if params[:filter].present?
     respond_to do |format|
       format.html do 
         @prestaciones = @prestaciones.ordenadas_por_prestaciones_pdss.paginate(page: params[:page], per_page: params[:per])
         @secciones_grupo_pdss = PrestacionService.popular_a_plan_de_salud(@prestaciones)
       end
-      format.json { render json: @prestaciones }
+      format.json { render json: @prestaciones.order("nombre ASC") }
     end 
   end
 
   def new
     @prestacion = Prestacion.new
+    @prestacion.metodo_de_validacion_ids = [12,15]
   end
 
   def create
-    @prestacion = Prestacion.new params[:prestacion]
+    @prestacion = Prestacion.new params[:prestacion]    
     if @prestacion.save
       redirect_to (params[:go_to] == "edit_para_asignacion_de_precios") ? edit_para_asignacion_de_precios_prestacion_path(@prestacion) : @prestacion
     else
@@ -102,7 +106,7 @@ class PrestacionesController < ApplicationController
                   where(condicion_id ).
                   where(condicion_comunitaria).
                   collect{ |p| p.prestacion_id })
-        ).order("prestaciones.codigo, prestaciones.nombre")
+        ).activas.order("prestaciones.codigo, prestaciones.nombre")
 
       unless comunitaria
         autorizadas_por_grupo = beneficiario.grupo_poblacional_al_dia(fecha_de_la_prestacion).

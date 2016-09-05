@@ -9,10 +9,23 @@
 
 <div id="content-body">
   <h1>Filtrar</h1>
+  <div class="nested-fields-label-container">
+    <div class="small-label">Código</div>
+    <div class="small-label">Sección PDSS</div>
+    <div class="small-label">Grupo PDSS</div>
+    <div class="small-label"></div>
+  </div>
   <%= form_tag(prestaciones_path, :method => "get") do %>
-    <%= label_tag(:codigo, "Código:") %>
-    <%= text_field_tag(:codigo) %>
-    <%= submit_tag("Filtrar") %>
+    <div class="nested-fields-label-container">
+      <div class="small-label"><%= text_field_tag(:codigo) %></div>
+      <div class="small-label">
+        <%= collection_select(:filter, :seccion_pdss_id, SeccionPdss.all, :id, :nombre, {include_blank: 'Seleccione una sección'}, {class: "small-input seccion-pdss-select" }) %>  
+      </div>
+      <div class="small-label">
+        <%= collection_select(:filter, :grupo_pdss_id, SeccionPdss.first.grupos_pdss, :id, :nombre, {include_blank: 'Seleccione un grupo'}, {class: "small-input grupo-pdss-select"}) %>
+      </div>
+      <div class="small-label"><%= submit_tag("Filtrar") %></div>
+    </div>
   <% end %> 
   <hr>
   <table>
@@ -21,6 +34,7 @@
       <th>Línea de cuidado</th>
       <th>Tipo</th>
       <th>Nombre</th>
+      <th>Sexos</th>
       <th>Código</th>
       <th>Diagnósticos</th>
       <th>Acciones</th>
@@ -47,6 +61,7 @@
             <% end %>
             <td><%= prestacion.tipo_de_prestacion.nombre %></td>
             <td><%= prestacion.nombre_corto %></td>
+            <td><%= obtener_listado_de_nombres prestacion.sexos %></td>
             <td><%= prestacion.codigo %></td>
             <td>
               <% if prestacion.diagnosticos.count > 0 %>
@@ -65,3 +80,4 @@
   </table>
   <%= will_paginate @prestaciones, :inner_window => 2, :outer_window => 0 %>
 </div>
+<%= javascript_include_tag 'prestaciones/_index.js' %>

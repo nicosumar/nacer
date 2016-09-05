@@ -11,7 +11,7 @@ class Prestacion < ActiveRecord::Base
                   :dato_reportabl_ids, :modifica_lugar_de_atencion, :diagnostico_ids, :prestaciones_pdss_attributes,
                   :sexo_ids, :grupo_poblacional_ids, :documentacion_respaldatoria_ids, :dato_adicional_ids, 
                   :metodo_de_validacion_ids, :cantidades_de_prestaciones_por_periodo_attributes,
-                  :asignaciones_de_precios_attributes
+                  :asignaciones_de_precios_attributes, :datos_reportables_requeridos_attributes
 
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
@@ -60,17 +60,20 @@ class Prestacion < ActiveRecord::Base
   accepts_nested_attributes_for :prestaciones_pdss, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :cantidades_de_prestaciones_por_periodo, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :asignaciones_de_precios, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :datos_reportables_requeridos, reject_if: :all_blank, allow_destroy: false
 
-  before_save :asignar_nombre_a_prestaciones_pdss
+  before_validation :asignar_attributes_a_prestacion
+  before_save :asignar_attributes_a_prestaciones_pdss
 
 
 
   # En forma predeterminada, sólo se devuelven los registros activos
   #default_scope where(:activa => true)
 
+  scope :activas, -> { where(activa: true) }
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
   scope :ordenadas_por_prestaciones_pdss, -> { joins(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
-
+  scope :by_grupo_pdss, -> (grupo_pdss_id){ joins(prestaciones_pdss: [:grupo_pdss]).where("grupos_pdss.id = ?", grupo_pdss_id) if  grupo_pdss_id.present? }
 
   # Devuelve el valor del campo 'nombre', pero truncado a 100 caracteres.
   def nombre_corto
@@ -83,11 +86,6 @@ class Prestacion < ActiveRecord::Base
 
   def codigo_de_unidad
     unidad_de_medida.codigo
-  end
-
-  def asignar_nombre_a_prestaciones_pdss
-    prestaciones_pdss.map { |ppdss| ppdss.nombre = self.nombre }
-    prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id:1 ).last.orden + i + 1 }
   end
 
 # TODO: cleanup
@@ -261,5 +259,22 @@ class Prestacion < ActiveRecord::Base
     raise ActiveRecord::RecordNotFound if codigo_id.nil?
     return codigo_id
   end
+
+  private
+
+    def asignar_attributes_a_prestacion
+      self.codigo = self.objeto_de_la_prestacion.codigo_para_la_prestacion
+      datos_reportables_requeridos.map { |drr|
+        drr.prestacion = self
+      }
+    end
+    
+    def asignar_attributes_a_prestaciones_pdss
+      prestaciones_pdss.map { |ppdss| 
+        ppdss.nombre = self.nombre 
+        ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
+      }
+      prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id: ppdss.grupo_pdss_id).last.orden + i + 1 }
+    end
 
 end

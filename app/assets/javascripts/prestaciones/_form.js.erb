@@ -31,12 +31,15 @@ $(document).ready(function(){
 
   //  Función para llenar el popup con prestaciones según el código ingresado
   $("#validador-de-codigo").click(function(){
+    var selectObjetoDeLaPrestacion = document.getElementById("prestacion_objeto_de_la_prestacion_id");
+    var prestacion_objeto_de_la_prestacion_id = selectObjetoDeLaPrestacion.options[selectObjetoDeLaPrestacion.selectedIndex].value;
+
     //  Si el usuario no ha ingresado nungún código entonces muestra un mensaje sobre esto
     if($("#prestacion_codigo").val() == "") {
       alert("Por favor, ingresar un código a validar");
     } else {
       //  Llamada AJAX para buscar prestaciones por código
-      $.get( "/prestaciones.json?codigo=" + $("#prestacion_codigo").val(), function( data ) {
+      $.get( "/prestaciones.json?objeto_de_la_prestacion_id=" + prestacion_objeto_de_la_prestacion_id, function( data ) {
         //  Si no existe nunguna prestación con ese código entonces muestra un mensaje indicandolo
         if(data.length == 0){
           alert("¡No existe nunguna prestación con el código ingresado!");    
