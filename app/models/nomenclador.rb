@@ -9,6 +9,8 @@ class Nomenclador < ActiveRecord::Base
   has_many :efectores, :through => :asignaciones_de_nomenclador # Deprecated
   has_one  :regla
   
+  scope :ordenados, -> { order("fecha_de_inicio DESC") }
+
   accepts_nested_attributes_for :asignaciones_de_precios
 
   validates_presence_of :nombre, :fecha_de_inicio
