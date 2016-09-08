@@ -259,10 +259,18 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("dato·_reportable·_asociado·", "datos_reportables_asociados")
   inflect.irregular("DatoReportableAsociado", "Datos·Reportables·Asociados·")
   inflect.irregular("Dato·Reportable·Asociado·", "DatosReportablesAsociados")
+
+  # Datos reportables requeridos
   inflect.irregular("dato_reportable_requerido", "datos·_reportables·_requeridos·")
   inflect.irregular("dato·_reportable·_requerido·", "datos_reportables_requeridos")
   inflect.irregular("DatoReportableRequerido", "Datos·Reportables·Requeridos·")
   inflect.irregular("Dato·Reportable·Requerido·", "DatosReportablesRequeridos")
+  # Datos reportables requeridos - Corrección de mala pluralización irregular automática
+  inflect.irregular("datos_reportables_requeridos", "datos·_reportables·_requeridos·")
+  inflect.irregular("datos·_reportables·_requeridos·", "datos_reportables_requeridos")
+  inflect.irregular("DatosReportablesRequeridos", "Datos·Reportables·Requeridos·")
+  inflect.irregular("Datos·Reportables·Requeridos·", "DatosReportablesRequeridos")
+
   inflect.irregular("addenda_sumar", "addendas·_sumar·")
   inflect.irregular("addenda·_sumar·", "addendas_sumar")
   inflect.irregular("AddendaSumar", "Addendas·Sumar·")
