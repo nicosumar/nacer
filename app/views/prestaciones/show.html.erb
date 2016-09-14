@@ -6,8 +6,8 @@
   <h1>Prestaciones</h1>
   <div id="action-links">
     <%= link_to('<<  Volver al listado', prestaciones_path) if can? :read, Prestacion %>  
-    <%= link_to 'Editar', edit_prestacion_path(@prestacion) %>
-    <%= link_to 'Asignar precios', edit_para_asignacion_de_precios_prestacion_path(@prestacion) %>
+    <%= link_to 'Editar', edit_prestacion_path(@prestacion) if can? :manage, Prestacion %>
+    <%= link_to 'Asignar precios', edit_para_asignacion_de_precios_prestacion_path(@prestacion) if can? :manage, Prestacion%>
   </div> 
 
 </div>
@@ -21,6 +21,10 @@
   <div class='field_content'>
     <span class='field_name'>Nombre</span>
     <span class='field_value'><%= @prestacion.nombre %></span>
+  </div>
+    <div class='field_content'>
+    <span class='field_name'>Diagnosticos</span>
+    <span class='field_value'><%= obtener_listado_de_nombres_y_codigos @prestacion.diagnosticos %></span>
   </div>
   <div class='field_content'>
     <span class='field_name'>Unidad de medida</span>
@@ -86,11 +90,6 @@
   </div>
 
   <div class='field_content'>
-    <div>Diagnosticos</div>
-    <span class='field_value'><%= obtener_listado_de_nombres @prestacion.diagnosticos %></span>
-  </div>
-
-  <div class='field_content'>
     <div>Métodos de validación</div>
     <span class='field_value'><%= obtener_listado_de_nombres @prestacion.metodos_de_validacion %></span>
   </div>
@@ -125,6 +124,6 @@
     <%= render "asignacion_de_precios_en_tabla", asignaciones_de_precios: @prestacion.asignaciones_de_precios %>
   </div>
 
-<%= link_to 'Editar', edit_prestacion_path(@prestacion) %>
+<%= link_to 'Editar', edit_prestacion_path(@prestacion) if can? :manage, Prestacion %>
 </div>
 

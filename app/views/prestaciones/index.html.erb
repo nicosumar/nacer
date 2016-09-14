@@ -59,7 +59,7 @@
             %>
               <td rowspan="<%= linea_de_cuidado[:prestaciones].count %>"><%= linea_de_cuidado[:nombre] %></td>
             <% end %>
-            <td><%= prestacion.tipo_de_prestacion.nombre %></td>
+            <td><%= prestacion.tipo_de_prestacion.present? ? prestacion.tipo_de_prestacion.nombre : "Sin especificar" %></td>
             <td><%= prestacion.nombre_corto %></td>
             <td><%= obtener_listado_de_nombres prestacion.sexos %></td>
             <td><%= prestacion.codigo %></td>
@@ -72,7 +72,7 @@
                 -------
               <% end %>          
             </td>
-            <td><%= link_to('Ver', prestacion_path(prestacion)) %> <br/> <%= link_to('Editar', edit_prestacion_path(prestacion)) %> <br/> <%= link_to('Asignar precios', edit_para_asignacion_de_precios_prestacion_path(prestacion)) %></td>
+            <td><%= link_to('Ver', prestacion_path(prestacion)) if can? :read, Prestacion %> <br/> <%= link_to('Editar', edit_prestacion_path(prestacion)) if can? :manage, Prestacion %> <br/> <%= link_to('Asignar precios', edit_para_asignacion_de_precios_prestacion_path(prestacion)) if can? :manage, Prestacion %></td>
           </tr>
         <% end %>
       <% end %>

@@ -14,7 +14,7 @@ class PrestacionesController < ApplicationController
     respond_to do |format|
       format.html do 
         @prestaciones = @prestaciones.ordenadas_por_prestaciones_pdss.paginate(page: params[:page], per_page: params[:per])
-        @secciones_grupo_pdss = PrestacionService.popular_a_plan_de_salud(@prestaciones)
+        @secciones_grupo_pdss = PrestacionService.popular_a_plan_de_salud(@prestaciones)      
       end
       format.json { render json: @prestaciones.order("nombre ASC") }
     end 

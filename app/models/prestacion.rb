@@ -72,8 +72,8 @@ class Prestacion < ActiveRecord::Base
 
   scope :activas, -> { where(activa: true) }
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
-  scope :ordenadas_por_prestaciones_pdss, -> { joins(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
-  scope :by_grupo_pdss, -> (grupo_pdss_id){ joins(prestaciones_pdss: [:grupo_pdss]).where("grupos_pdss.id = ?", grupo_pdss_id) if  grupo_pdss_id.present? }
+  scope :ordenadas_por_prestaciones_pdss, -> { includes(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
+  scope :by_grupo_pdss, -> (grupo_pdss_id){ includes(prestaciones_pdss: [:grupo_pdss]).where("grupos_pdss.id = ?", grupo_pdss_id) if  grupo_pdss_id.present? }
 
   # Devuelve el valor del campo 'nombre', pero truncado a 100 caracteres.
   def nombre_corto

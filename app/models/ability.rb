@@ -53,6 +53,8 @@ class Ability
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
       can :read, VistaGlobalDePrestacionBrindada
+      can :manage, User
+      can :manage, UnidadDeAltaDeDatos
     end
 
     if user.in_group? :auditoria_medica
@@ -73,6 +75,7 @@ class Ability
       can :manage, AnexoMedicoPrestacion
       can :read, LiquidacionSumarAnexoAdministrativo
       can :read, AnexoAdministrativoPrestacion
+      can :manage, Prestacion
     end
 
     if user.in_group? :convenios
@@ -161,6 +164,7 @@ class Ability
       can :read, UnidadDeAltaDeDatos
       can :read, User
       can :read, LiquidacionSumar
+      can :read, Prestacion
     end
 
     if user.in_group? :usuarios_uads_verificacion

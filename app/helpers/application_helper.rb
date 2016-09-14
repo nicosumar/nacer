@@ -106,6 +106,20 @@ module ApplicationHelper
     (objetos.present? ? objetos.pluck(:nombre).to_sentence : "Sin especificar").capitalize
   end
 
+  def obtener_listado_de_codigos objetos
+    (objetos.present? ? objetos.pluck(:codigo).to_sentence : "").capitalize
+  end
+
+  def obtener_listado_de_nombres_y_codigos objetos
+    records = []
+    if objetos.present?
+      objetos.map { |d| records << d.codigo + " - " + d.nombre }
+      records.to_sentence.capitalize
+    else
+      "Sin especificar".capitalize
+    end
+  end
+
   def traducir_booleano booleano
     booleano ? "Si" : "No"
   end
