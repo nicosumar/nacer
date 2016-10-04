@@ -17,7 +17,7 @@ class Prestacion < ActiveRecord::Base
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
 
   # Los atributos siguientes solo pueden asignarse durante la creación
-  attr_readonly :codigo
+  # attr_readonly :codigo
 
   # Asociaciones
   #belongs_to :area_de_prestacion         # OBSOLETO en el nuevo nomenclador
