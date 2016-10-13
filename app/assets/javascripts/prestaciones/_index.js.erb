@@ -12,7 +12,7 @@ $(document).ready(function(){
       // resetea el grupo_pdss_select
       grupo_pdss_select.empty();
 
-      $(grupo_pdss_select).append('<option value=''>Seleccione un grupo</option>');
+      $(grupo_pdss_select).append("<option value=''>Seleccione un grupo</option>");
       // Agrega las opciones al grupo_pdss_select
       for (var i in data) {
           $(grupo_pdss_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
