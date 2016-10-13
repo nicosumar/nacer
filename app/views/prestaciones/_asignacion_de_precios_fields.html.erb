@@ -3,8 +3,8 @@
     <li><%= f.collection_select :nomenclador_id, Nomenclador.ordenados, :id, :nombre, {}, {class: "small-input"} %></li>
     <li><%= f.collection_select :dato_reportable_id, @prestacion.datos_reportables, :id, :nombre, {prompt: 'Sin dato reportable'}, {class: "small-input"} %> </li>
     <li><%= f.collection_select :area_de_prestacion_id, AreaDePrestacion.all, :id, :nombre, {}, {class: "small-input"} %> </li>
-    <li><%= f.number_field :precio_por_unidad, {class: "small-number-field"} %>  </li>
-    <li><%= f.number_field :adicional_por_prestacion, {class: "small-number-field"} %> </li>
+    <li><%= f.number_field :precio_por_unidad, {class: "small-number-field", :step => 0.1} %>  </li>
+    <li><%= f.number_field :adicional_por_prestacion, {class: "small-number-field", :step => 0.1} %> </li>
     
     <li><%= link_to_remove_association "borrar", f %></li>
   </ul>
