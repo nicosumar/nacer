@@ -891,20 +891,14 @@ class PadronesController < ApplicationController
           estado = EstadoDeLaNovedad.id_del_codigo("Z")
         end
 
-        ActiveRecord::Base.connection.execute "SELECT * FROM  uad_#{codigo_uad}.novedades_de_los_afiliados LIMIT 1;"
-        #   UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
-        #     SET
-        #       estado_de_la_novedad_id = #{estado},
-        #       mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
-        #       mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja}
-        #     WHERE id = '#{id_de_novedad}';
-        # "
-        # if i==0
-        #   codigo_uad = valor(campos[0], :texto).gsub!(/[^0-9A-Za-z]/, '')
-        # else
-        #   codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
-        # end
-        # i += 1
+        ActiveRecord::Base.connection.execute "
+          UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
+            SET
+              estado_de_la_novedad_id = #{estado},
+              mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
+              mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja}
+            WHERE id = '#{id_de_novedad}';
+        "
       end
       origen.close
       ActiveRecord::Base.connection.schema_search_path = esquema_actual
