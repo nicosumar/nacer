@@ -16,15 +16,6 @@ class Prestacion < ActiveRecord::Base
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
 
-  # Los atributos siguientes solo pueden asignarse durante la creación
-  # attr_readonly :codigo
-
-  # Asociaciones
-  #belongs_to :area_de_prestacion         # OBSOLETO en el nuevo nomenclador
-  #belongs_to :grupo_de_prestaciones      # OBSOLETO en el nuevo nomenclador
-  #belongs_to :subgrupo_de_prestaciones   # OBSOLETO en el nuevo nomenclador
-  #has_and_belongs_to_many :categorias_de_afiliados   # OBSOLETO: ya no existen categorías
-
   belongs_to :objeto_de_la_prestacion
   has_one :tipo_de_prestacion, through: :objeto_de_la_prestacion
   has_and_belongs_to_many :diagnosticos
@@ -52,10 +43,10 @@ class Prestacion < ActiveRecord::Base
   has_many :prestaciones_incluidas
   has_many :prestaciones_autorizadas
 
-
   # Validaciones
   # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
   validates_presence_of :codigo, :nombre, :unidad_de_medida_id
+  validate :validate_unique_asignaciones_de_precios
 
   accepts_nested_attributes_for :prestaciones_pdss, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :cantidades_de_prestaciones_por_periodo, reject_if: :all_blank, allow_destroy: true
@@ -64,8 +55,6 @@ class Prestacion < ActiveRecord::Base
 
   before_validation :asignar_attributes_a_prestacion
   before_save :asignar_attributes_a_prestaciones_pdss
-
-
 
   # En forma predeterminada, sólo se devuelven los registros activos
   #default_scope where(:activa => true)
@@ -88,15 +77,6 @@ class Prestacion < ActiveRecord::Base
   def codigo_de_unidad
     unidad_de_medida.codigo
   end
-
-# TODO: cleanup
-# La 'catastroficidad' se define ahora por prestación, y no en el objeto de la prestación asociado
-#  def define_si_es_catastrofica
-#    objeto_de_la_prestacion ? objeto_de_la_prestacion.define_si_es_catastrofica : true
-#  end
-#  def es_catastrofica
-#    define_si_es_catastrofica && (objeto_de_la_prestacion ? objeto_de_la_prestacion.es_catastrofica : false)
-#  end
 
   # Devuelve las prestaciones que han sido autorizadas para el ID del efector que se pasa
   # como parámetro.
@@ -276,6 +256,10 @@ class Prestacion < ActiveRecord::Base
         ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
       }
       prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id: ppdss.grupo_pdss_id).last.orden + i + 1 }
+    end
+
+    def validate_unique_asignaciones_de_precios
+      validate_uniqueness_of_in_memory(asignaciones_de_precios, [:nomenclador_id, :dato_reportable_id, :area_de_prestacion_id], 'Asignación de precio duplicada.')
     end
 
 end
