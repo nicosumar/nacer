@@ -255,7 +255,9 @@ class Prestacion < ActiveRecord::Base
         ppdss.nombre = self.nombre 
         ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
       }
-      prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.where(grupo_pdss_id: ppdss.grupo_pdss_id).last.orden + i + 1 }
+      if new_record? 
+        prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.last_orden_by_grupo_pdss_id(ppdss.grupo_pdss_id) + (i + 1) }
+      end
     end
 
     def validate_unique_asignaciones_de_precios
