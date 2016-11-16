@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160905133926) do
+ActiveRecord::Schema.define(:version => 20161116131756) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -536,6 +536,30 @@ ActiveRecord::Schema.define(:version => 20160905133926) do
     t.integer "codigo_sirge"
   end
 
+  create_table "diagnosticos_estadios", :force => true do |t|
+    t.text     "codigo"
+    t.text     "nombre"
+    t.integer  "codigo_sirge"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "diagnosticos_ganglios_linfaticos", :force => true do |t|
+    t.text     "codigo"
+    t.text     "nombre"
+    t.integer  "codigo_sirge"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "diagnosticos_metastasis", :force => true do |t|
+    t.text     "codigo"
+    t.text     "nombre"
+    t.integer  "codigo_sirge"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
   create_table "diagnosticos_prestaciones", :id => false, :force => true do |t|
     t.integer "diagnostico_id"
     t.integer "prestacion_id"
@@ -549,6 +573,14 @@ ActiveRecord::Schema.define(:version => 20160905133926) do
   create_table "diagnosticos_sexos", :id => false, :force => true do |t|
     t.integer "diagnostico_id"
     t.integer "sexo_id"
+  end
+
+  create_table "diagnosticos_tamanos", :force => true do |t|
+    t.text     "codigo"
+    t.text     "nombre"
+    t.integer  "codigo_sirge"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "discapacidades", :force => true do |t|
