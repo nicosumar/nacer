@@ -70,4 +70,72 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
     return true
   end
 
+  def get_cabecera
+    sql_cabecera =  "select c.numero_cuasifactura cuasifactura_numero,\n"+
+                    "       to_char(date(p.fecha_cierre), 'DD/MM/YYYY') cuasifactura_fecha,    --fecha de cuasifactura\n"+
+                    "       e.cuit efector_cuit,\n"+
+                    "       e.condicion_iva efector_iva ,\n"+
+                    "       e.fecha_inicio_de_actividades efector_inicio_actividades,\n"+
+                    "       e.condicion_iibb efector_iibb,\n"+
+                    "       e.datos_bancarios efector_datos_bancarios,\n"+
+                    "       e.cuie efector_codigo,\n"+
+                    "       convenios.numero efector_contrato,\n"+
+                    "       co.mostrado sello_mostrado,\n"+
+                    "       co.firma_primera_linea,\n"+
+                    "       co.firma_segunda_linea,\n"+
+                    "       co.firma_tercera_linea,\n"+
+                    "       EXTRACT(YEAR FROM p.fecha_recepcion - p.dias_de_prestacion)||'-'||to_char(EXTRACT(MONTH FROM p.fecha_recepcion - p.dias_de_prestacion), '00') ||' a '|| EXTRACT(YEAR FROM p.fecha_limite_prestaciones)||'-'||to_char(EXTRACT(MONTH FROM p.fecha_limite_prestaciones), '00') liquidacion_periodos,\n"+
+                    "       cf.concepto concepto_facturacion, \n"+
+                    "       e.id, e.nombre "+
+                    "from liquidaciones_sumar_cuasifacturas c\n"+
+                    "   join liquidaciones_sumar l on l.id = c.liquidacion_sumar_id\n"+
+                    "   join efectores e on e.id = c.efector_id\n"+
+                    "   join convenios_de_gestion_sumar convenios on ( convenios.efector_id = e.id )\n"+
+                    "   join referentes r on ( r.efector_id = e.id   )\n"+
+                    "   join contactos co on r.contacto_id = co.id \n"+
+                    "   join parametros_liquidaciones_sumar pl on pl.id = l.parametro_liquidacion_sumar_id\n"+
+                    "   join periodos p on p.id = l.periodo_id\n"+
+                    "   join conceptos_de_facturacion cf on cf.id = p.concepto_de_facturacion_id\n"+
+                    "where l.id = ? \n"+
+                    "and c.id = ? \n"+
+                    "and (p.fecha_cierre BETWEEN r.fecha_de_inicio and r.fecha_de_finalizacion\n"+
+                    "     or \n"+
+                    "    (p.fecha_cierre >= r.fecha_de_inicio and r.fecha_de_finalizacion is null)\n"+
+                    "    )"
+
+
+    cq_cabecera = CustomQuery.buscar (
+    {
+      :sql => sql_cabecera,
+      values: [self.liquidacion_sumar.id,self.id ]
+    })
+    cabecera = cq_cabecera.first
+    return cabecera
+  end
+
+  def get_detalles
+    sql_detalle = "select row_number() OVER () as no, * from ( \n"+
+                  "select  \n"+
+                  "       p.prestacion_nombre prestacion_nombre,\n"+
+                  "       p.prestacion_codigo prestacion_codigo,\n"+
+                  "       dc.prestacion_liquidada_id prestacion_liquidada_id,\n"+
+                  "       sum(dc.monto) cantidad, \n"+
+                  "       count(p.prestacion_nombre) cant \n "+
+                  "from liquidaciones_sumar_cuasifacturas c\n"+
+                  "        join liquidaciones_sumar_cuasifacturas_detalles dc on dc.liquidaciones_sumar_cuasifacturas_id = c.id\n"+
+                  "        join prestaciones_incluidas p on p.id = dc.prestacion_incluida_id\n"+
+                  "        join prestaciones pp on pp.id = p.prestacion_id\n"+
+                  "        join objetos_de_las_prestaciones op on op.id = pp.objeto_de_la_prestacion_id \n"+
+                  " where c.id = ? \n "+
+                  " group by p.prestacion_nombre,p.prestacion_codigo, dc.prestacion_liquidada_id\n "+
+                  " order by 2,1,3 \n " +
+                  " ) as det "
+
+    cq_detalle = CustomQuery.buscar (
+    {
+      sql: sql_detalle,
+      values: [self.id]
+    })
+    return cq_detalle
+  end
 end
