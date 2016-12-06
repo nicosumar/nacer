@@ -569,6 +569,9 @@ class AddendasSumarController < ApplicationController
       end
     end
 
+    redirect_to(addendas_sumar_url,
+       :flash => { :tipo => :ok, :titulo => 'Las adendas se crearon correctamente.' }
+     )
 
   end
 
