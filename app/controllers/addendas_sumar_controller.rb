@@ -540,6 +540,7 @@ class AddendasSumarController < ApplicationController
     addenda_base.fecha_de_inicio = parametro_fecha(params[:addenda_sumar], :fecha_de_inicio)
     addenda_base.observaciones = params[:addenda_sumar][:observaciones]
 
+
     # Recorro cada convenio y genero su addenda
     convenios_de_gestion_con_attributos.map do |key, convenio_con_atributos|
       convenio_de_gestion_sumar = ConvenioDeGestionSumar.find(convenio_con_atributos['convenio_de_gestion_sumar_id'])
@@ -547,7 +548,7 @@ class AddendasSumarController < ApplicationController
         addenda_sumar = addenda_base.dup
         addenda_sumar.convenio_de_gestion_sumar_id = convenio_con_atributos['convenio_de_gestion_sumar_id']
         addenda_sumar.firmante = convenio_con_atributos['firmante']
-        addenda_sumar.numero = convenio_con_atributos['numero']
+        addenda_sumar.numero = convenio_de_gestion_sumar.generar_numero_addenda_sumar_masivo
 
         if addenda_sumar.save
           prestaciones_autorizadas_alta_ids.each do |prestacion_id|

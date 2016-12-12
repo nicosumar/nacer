@@ -88,6 +88,7 @@ Nacer::Application.routes.draw do
   resources :convenios_de_administracion_sumar, :except => :destroy
   resources :convenios_de_gestion_sumar, :except => :destroy do
     get 'addendas', :on => :member, :as => :addendas_del
+    get 'firmante', :on => :member
   end
   resources :efectores, :except => :destroy do
     get 'prestaciones_autorizadas', :on => :member, :as => :prestaciones_autorizadas_del

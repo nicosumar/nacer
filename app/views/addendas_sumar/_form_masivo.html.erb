@@ -13,14 +13,12 @@
 
   <div class="nested-fields-label-container">
     <div class="medium-label">Convenio</div>
-    <div class="medium-label">Número</div>
     <div class="medium-label">Firmante</div>
   </div>
 
   <div class="nested-fields">
     <ul>
-      <li><%= f.collection_select :convenio_de_gestion_sumar_id, ConvenioDeGestionSumar.all, :id, :nombre, {}, {multiple: false, size: 5, style: 'width: 100%', class:'medium-input multi_select'} %></li>
-      <li><%= f.text_field :numero, {class: "medium-label"} %>  </li>
+      <li><%= f.collection_select :convenio_de_gestion_sumar_id, ConvenioDeGestionSumar.all, :id, :nombre, {}, {multiple: false, size: 5, style: 'width: 100%', class:'medium-input multi_select convenio-de-gestion-sumar-select'} %></li>
       <li><%= f.text_field :firmante, {class: "medium-label"} %> </li>
       <li><button id="button-add-convenio-numero-firmante" class="medium-label">Agregar</button> </li>
     </ul>
