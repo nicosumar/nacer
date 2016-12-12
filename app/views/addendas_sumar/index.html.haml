@@ -3,6 +3,9 @@
 
 #content-header
   %h1 Adendas Sumar
+  #action-links
+    - if can? :create, AddendaSumar
+      = link_to 'Nueva adenda masiva', new_masivo_addendas_sumar_path
 
 = render :partial => "shared/info"
 

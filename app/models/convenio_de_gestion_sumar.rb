@@ -43,6 +43,10 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
     return !error_de_fecha
   end
 
+  def nombre
+    numero.to_s + " " + efector.nombre
+  end
+
   def prestaciones_pdss_autorizadas_decoradas
     PrestacionPdssAutorizada.efector_y_fecha(self.efector_id, self.fecha_de_inicio)
   end

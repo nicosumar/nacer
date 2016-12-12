@@ -139,4 +139,50 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
     return prestaciones
   end
 
+  def self.list_to_authorize
+    qres = ActiveRecord::Base.connection.exec_query( <<-SQL
+        SELECT DISTINCT ON (sp.orden, gp.orden, pp.orden)
+            sp.id "seccion_pdss_id",
+            gp.id "grupo_pdss_id",
+            pp.id "prestacion_pdss_id",
+            lc.nombre "linea_de_cuidado",
+            mp.nombre "modulo",
+            tdp.nombre "tipo_de_prestacion",
+            codigo_de_prestacion_con_diagnosticos(pp.id) "codigo_de_prestacion",
+            pp.nombre "nombre_de_prestacion",
+            CASE
+              WHEN EXISTS (
+                  SELECT * FROM areas_de_prestacion_prestaciones_pdss appp
+                    WHERE appp.prestacion_pdss_id = pp.id AND appp.area_de_prestacion_id = '2'
+                ) THEN 't'::boolean
+              ELSE 'f'::boolean
+            END "rural"
+          FROM
+            prestaciones_pdss pp
+            LEFT JOIN prestaciones_prestaciones_pdss ppp ON pp.id = ppp.prestacion_pdss_id
+            LEFT JOIN prestaciones p ON p.id = ppp.prestacion_id
+            LEFT JOIN grupos_pdss gp ON gp.id = pp.grupo_pdss_id
+            LEFT JOIN secciones_pdss sp ON sp.id = gp.seccion_pdss_id
+            LEFT JOIN lineas_de_cuidado lc ON lc.id = pp.linea_de_cuidado_id
+            LEFT JOIN modulos mp ON mp.id = pp.modulo_id
+            LEFT JOIN tipos_de_prestaciones tdp ON tdp.id = pp.tipo_de_prestacion_id
+          ORDER BY sp.orden, gp.orden, pp.orden;
+      SQL
+    )
+
+    secciones = []
+    SeccionPdss.where(true).order(:orden).select([:id, :codigo, :nombre]).each do |s|
+      if s.grupos_pdss.size > 0
+        grupos_de_la_seccion = []
+        GrupoPdss.where(:seccion_pdss_id => s.id).order(:orden).select([:id, :codigo, :nombre]).each do |g|
+          grupos_de_la_seccion << g.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == s.id.to_s && r[1] == g.id.to_s}))
+        end
+        secciones << s.attributes.merge!(:grupos => grupos_de_la_seccion)
+      else
+        secciones << s.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == s.id.to_s}))
+      end
+    end
+    return secciones
+  end
+
 end
