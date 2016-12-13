@@ -4,7 +4,7 @@ class NomencladoresController < ApplicationController
 
   def index
     if can? :read, Nomenclador then
-      @nomencladores = Nomenclador.paginate(:page => params[:page], :per_page => 20, :order => "fecha_de_inicio")
+      @nomencladores = Nomenclador.paginate(:page => params[:page], :per_page => 20, :order => "fecha_de_inicio desc")
     else
       redirect_to root_url, :notice => "No está autorizado para realizar esta operación." 
     end
