@@ -43,6 +43,35 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
     return !error_de_fecha
   end
 
+  def nombre
+    numero.to_s + " " + efector.nombre
+  end
+
+  def generar_numero_addenda_sumar_masivo
+    numeros_de_addendas_sumar = addendas_sumar.where("numero like ?", "ADM-%").pluck("numero")
+    numero_addenda = 0
+    numero_convenio = self.numero[-3..-1]
+
+    if numeros_de_addendas_sumar.present?
+      numeros_de_addendas_sumar_array = []
+      numeros_de_addendas_sumar.map do |numero_addenda_param|
+        numero_addenda_str = numero_addenda_param[-4..-1]
+        if numero_addenda_str.include? "-"
+           numero_addenda_str.gsub! '-', '0'
+        end
+        numeros_de_addendas_sumar_array << numero_addenda_str.to_i
+      end
+      numero_addenda = numeros_de_addendas_sumar_array.sort.last
+    end
+    numero_addenda += 1
+    "ADM-#{numero_convenio}-#{numero_addenda.to_s.rjust(3, '0')}" 
+  end
+
+  def obtener_nombre_firmante
+    referente = efector.referentes.where(fecha_de_finalizacion: nil).last
+    referente.present? ? referente.contacto.mostrado : "Sin firmante"
+  end
+
   def prestaciones_pdss_autorizadas_decoradas
     PrestacionPdssAutorizada.efector_y_fecha(self.efector_id, self.fecha_de_inicio)
   end

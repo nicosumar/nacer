@@ -509,4 +509,71 @@ class AddendasSumarController < ApplicationController
     end
   end
 
+    # GET /addendas_sumar/new_masivo
+  def new_masivo
+    # Verificar los permisos del usuario
+    if cannot? :create, AddendaSumar
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Crear los objetos necesarios para la vista
+    @addenda = AddendaSumar.new
+    @prestacion_autorizada_alta_ids = []
+  end
+
+  def create_masivo
+    fecha_actual = Time.now
+    prestaciones_autorizadas_alta_ids = []
+
+    convenios_de_gestion_con_attributos = params[:addenda_sumar][:convenios_numeros_firmantes]
+    params[:addenda_sumar][:prestacion_pdss_id].map { |key, val| prestaciones_autorizadas_alta_ids << val if val.present? }
+
+    addenda_base = AddendaSumar.new()
+    addenda_base.creator_id = current_user.id
+    addenda_base.updater_id = current_user.id
+    addenda_base.fecha_de_suscripcion = parametro_fecha(params[:addenda_sumar], :fecha_de_suscripcion)
+    addenda_base.fecha_de_inicio = parametro_fecha(params[:addenda_sumar], :fecha_de_inicio)
+    addenda_base.observaciones = params[:addenda_sumar][:observaciones]
+
+
+    # Recorro cada convenio y genero su addenda
+    convenios_de_gestion_con_attributos.map do |key, convenio_con_atributos|
+      convenio_de_gestion_sumar = ConvenioDeGestionSumar.find(convenio_con_atributos['convenio_de_gestion_sumar_id'])
+      if convenio_de_gestion_sumar.present?
+        addenda_sumar = addenda_base.dup
+        addenda_sumar.convenio_de_gestion_sumar_id = convenio_con_atributos['convenio_de_gestion_sumar_id']
+        addenda_sumar.firmante = convenio_con_atributos['firmante']
+        addenda_sumar.numero = convenio_de_gestion_sumar.generar_numero_addenda_sumar_masivo
+
+        if addenda_sumar.save
+          prestaciones_autorizadas_alta_ids.each do |prestacion_id|
+            actual = PrestacionPdssAutorizada.pres_autorizadas(convenio_de_gestion_sumar.efector_id, fecha_actual, prestacion_id)
+            # Si no existe una prestació autorizada la autoriza.
+            if not actual.first
+              CustomQuery.ejecutar(
+                {
+                  sql: " 
+                        INSERT INTO prestaciones_pdss_autorizadas
+                        (efector_id, prestacion_pdss_id, fecha_de_inicio, autorizante_al_alta_type, autorizante_al_alta_id)
+                        VALUES
+                        (#{convenio_de_gestion_sumar.efector_id}, #{prestacion_id}, '#{ addenda_sumar.fecha_de_inicio.strftime('%Y-%m-%d')}', 'AddendaSumar', #{ addenda_sumar.id })",
+   
+                })
+            end
+          end
+        end
+      end
+    end
+
+    redirect_to(addendas_sumar_url,
+       :flash => { :tipo => :ok, :titulo => 'Las adendas se crearon correctamente.' }
+     )
+
+  end
+
 end

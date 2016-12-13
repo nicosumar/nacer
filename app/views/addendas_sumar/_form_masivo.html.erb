@@ -1,0 +1,56 @@
+<%= form_for :addenda_sumar, :url => create_masivo_addendas_sumar_path do |f| %>
+  <h4>Fechas</h4>
+  <div class="field">
+    <%= f.label :fecha_de_suscripcion, "Fecha de suscripción*" %>
+    <%= f.date_select :fecha_de_suscripcion %>    
+  </div> 
+  <div class="field">
+    <%= f.label :fecha_de_inicio, "Fecha de inicio*" %>
+    <%= f.date_select :fecha_de_inicio %> 
+  </div>  
+
+  <h4>Efectores a incluir en la adenda</h4>
+
+  <div class="nested-fields-label-container">
+    <div class="medium-label">Convenio</div>
+    <div class="medium-label">Firmante</div>
+  </div>
+
+  <div class="nested-fields">
+    <ul>
+      <li><%= f.collection_select :convenio_de_gestion_sumar_id, ConvenioDeGestionSumar.all, :id, :nombre, {}, {multiple: false, size: 5, style: 'width: 100%', class:'medium-input multi_select convenio-de-gestion-sumar-select'} %></li>
+      <li><%= f.text_field :firmante, {class: "medium-label"} %> </li>
+      <li><button id="button-add-convenio-numero-firmante" class="medium-label">Agregar</button> </li>
+    </ul>
+  </div>
+
+  <div id="convenios_numeros_firmantes">
+  </div>
+
+  <div class="field">
+    <% PrestacionPdssAutorizada.list_to_authorize.each do |seccion| %>
+      <div class="seccion_pdss">
+        <h4> <%= (seccion["codigo"].present? ? seccion["codigo"] + ") " : "") + seccion["nombre"] %> </h4>
+        <%  
+          if seccion.has_key? :grupos
+            seccion[:grupos].each do |grupo| 
+        %>
+              <div class="grupo_pdss">
+                <h4> <%= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"] %> </h4>
+                <%= render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones], efector: nil, formulario: f} %>
+              </div>
+            <% end %>
+        <% else %>
+          <%= render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => seccion[:prestaciones], efector: nil, formulario: f} %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Crear la adenda masiva" %>
+  </div>
+
+<% end %>
+
+<%= javascript_include_tag 'addendas_sumar/_form_masivo.js' %>

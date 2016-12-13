@@ -88,6 +88,7 @@ Nacer::Application.routes.draw do
   resources :convenios_de_administracion_sumar, :except => :destroy
   resources :convenios_de_gestion_sumar, :except => :destroy do
     get 'addendas', :on => :member, :as => :addendas_del
+    get 'firmante', :on => :member
   end
   resources :efectores, :except => :destroy do
     get 'prestaciones_autorizadas', :on => :member, :as => :prestaciones_autorizadas_del
@@ -101,7 +102,10 @@ Nacer::Application.routes.draw do
     get "informe_solicitado", on: :collection, as: :render_informe_default, action: :render_informe
   end
   resources :addendas, :except => :destroy
-  resources :addendas_sumar, :except => :destroy
+  resources :addendas_sumar, :except => :destroy do
+    get 'new_masivo', :on => :collection, :as => :new_masivo
+    post 'create_masivo', :on => :collection, :as => :create_masivo
+  end
   resources :nomencladores, :except => :destroy do
     get 'asignar_precios', :on => :member, :as => :new_asignar_precios, :action => :new_asignar_precios
     get 'grupo_pdss/:grupo_pdss_id/asignar_precios', :on => :member, :as => :new_asignar_precios_por_grupo_pdss, :action => :new_asignar_precios_por_grupo_pdss

@@ -3,6 +3,7 @@ class ConveniosDeGestionSumarController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
   before_filter :authenticate_user!
+  before_filter :set_convenio_de_gestion_sumar, only: [:firmante]
 
   # GET /convenios_de_gestion_sumar
   def index
@@ -585,4 +586,21 @@ class ConveniosDeGestionSumarController < ApplicationController
       return
     end
   end
+
+  def firmante
+    data = { error: "Convenio de gestión no existe en el sistema" }
+    if @convenio_de_gestion_sumar.present?
+      nombre_firmante = @convenio_de_gestion_sumar.obtener_nombre_firmante
+      data = { nombre_firmante: nombre_firmante, convenio_de_gestion_sumar_id: @convenio_de_gestion_sumar.id}
+    end
+    respond_to do |format|
+      format.json { render json:  data}
+    end 
+  end
+
+  private
+
+    def set_convenio_de_gestion_sumar
+      @convenio_de_gestion_sumar = ConvenioDeGestionSumar.find(params[:id])
+    end
 end
