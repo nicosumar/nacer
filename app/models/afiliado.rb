@@ -814,6 +814,47 @@ class Afiliado < ActiveRecord::Base
       ").rows[0].collect{ |v| v.to_i }
   end
 
+ #
+  # hombres_de_20_a_64_activos
+  # Calcula la cantidad de beneficiarios hombres activos que tienen entre 20 y 64 años a la fecha del parámetro
+  def self.hombres_de_20_a_64_activos(fecha_base = Date.new(Date.today.year, Date.today.month, 1))
+    ActiveRecord::Base.connection.exec_query(
+      "SELECT
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NULL) THEN
+               1::int8
+             ELSE
+               0::int8
+             END
+         ) AS activos_sin_ceb,
+         SUM(
+           CASE
+             WHEN (pc.fecha_de_inicio IS NOT NULL) THEN
+               1::int8
+             ELSE
+               0::int8
+           END
+         ) AS activos_con_ceb,
+         COUNT(*) AS activos_totales
+         FROM afiliados af
+           LEFT JOIN periodos_de_actividad pa ON (af.afiliado_id = pa.afiliado_id)
+           LEFT JOIN periodos_de_cobertura pc
+             ON (
+               af.afiliado_id = pc.afiliado_id
+               AND pc.fecha_de_inicio <= '#{fecha_base}'
+               AND (pc.fecha_de_finalizacion IS NULL OR pc.fecha_de_finalizacion > '#{fecha_base}')
+             )
+           LEFT JOIN sexos sx ON (af.sexo_id = sx.id)
+         WHERE
+           pa.fecha_de_inicio <= '#{fecha_base}'
+           AND (pa.fecha_de_finalizacion IS NULL OR pa.fecha_de_finalizacion > '#{fecha_base}')
+           AND af.fecha_de_nacimiento < '#{fecha_base - 20.years}'
+           AND af.fecha_de_nacimiento >= '#{fecha_base - 65.years}'
+           AND sx.codigo = 'M';
+      ").rows[0].collect{ |v| v.to_i }
+  end
+
   #
   # embarazadas_adolescentes_activas
   # Calcula la cantidad de beneficiarias activas que tienen entre 10 y 19 años a la fecha del parámetro y
@@ -903,6 +944,8 @@ class Afiliado < ActiveRecord::Base
            AND sx.codigo = 'F';
       ").rows[0].collect{ |v| v.to_i }
   end
+
+
 
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)
