@@ -23,7 +23,7 @@ $(document).ready(function(){
                                               + '</div>');
       $("#addenda_sumar_convenio_de_gestion_sumar_id" ).val(undefined)
       $("#addenda_sumar_firmante").val("")
-      var selectorConvenio = "select option[value='" + convenio_de_gestion_id + "']"
+      var selectorConvenio = "#addenda_sumar_convenio_de_gestion_sumar_id > option[value='" + convenio_de_gestion_id + "']"
       $(selectorConvenio).prop('disabled',true);
     }
 
