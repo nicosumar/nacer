@@ -18,12 +18,23 @@ class AddendaSumar < ActiveRecord::Base
   validates_presence_of :convenio_de_gestion_sumar_id, :fecha_de_inicio
   validates_uniqueness_of :numero
   validate :validar_fechas
+  #validate :validar_existencia_de_addenda_posterior
 
   # Verifica que la fecha de suscripción no sea posterior a la fecha de inicio
   def validar_fechas
     unless fecha_de_suscripcion.nil? or fecha_de_inicio.nil? then
       if fecha_de_suscripcion > fecha_de_inicio then
         errors.add(:fecha_de_suscripcion, "no puede ser posterior a la fecha de inicio.")
+        return false
+      end
+    end
+    return true
+  end
+
+  def validar_existencia_de_addenda_posterior
+    unless fecha_de_suscripcion.nil? or fecha_de_inicio.nil? or convenio_de_gestion_sumar.nil? then
+      if convenio_de_gestion_sumar.addendas_sumar.where("fecha_de_suscripcion >= ?", fecha_de_suscripcion).exists? then
+        errors.add(:fecha_de_suscripcion, "existe una adenda generada con fecha superior.")
         return false
       end
     end

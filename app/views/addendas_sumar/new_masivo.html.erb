@@ -7,8 +7,35 @@
   <div id="action-links"><%= link_to('Volver al listado', addendas_sumar_path) if can? :read, AddendaSumar %> </div>  
 </div>
 
+<% if @errors[:addendas_sumar_no_creadas].present? %>
+	<div id="info" class="infobox-error">
+		<h2>Ocurrió un error con los siguientes efectores</h2>
+		<p><ul>
+			<% @errors[:addendas_sumar_no_creadas].each do |error| %>
+				<li><%= error %></li>
+			<% end %>
+		</ul></p>
+		<h2>Vuelva a cargar la fecha de suscripción, de inicio y los convenios/efectores. Gracias.</h2>
+	</div>
+<%  end %>
+
+<% if @success[:addendas_sumar_creadas].present? %>
+	<div id="info" class="infobox-ok">
+		<h2>Se crearon las adendas para los siguientes efectores</h2>
+		<p><ul>
+			<% @success[:addendas_sumar_creadas].each do |msg| %>
+				<li><%= msg %></li>
+			<% end %>
+		</ul></p>
+	</div>
+<%  end %>
+
 <div id="content-body">
 	<h2>Formulario de creación masiva de adendas Sumar</h2>
-	<p>Los campos marcados con asteriscos (*) son obligatorios</p>
+	<p>Los campos marcados con asteriscos (*) son obligatorios<br>
+	<strong>IMPORTANE</strong><br>
+	- La fecha de inicio debe ser superior a la de suscripción.<br>
+	- No deben existir adendas para el efector posteriores a la fecha de suscripción.<br>
+	</p>
   <%= render 'form_masivo' %>
 </div>

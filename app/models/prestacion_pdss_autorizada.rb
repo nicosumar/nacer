@@ -127,6 +127,34 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
     return qres
   end
 #-----------------------------------------------------------------------------------------
+  def self.se_puede_addendar?(efector_id, fecha = Date.today, prestacion_pdss_id)
+    begin
+      fecha_actual = Date.today
+      if fecha < fecha_actual
+        fecha_actual = fecha
+      end
+      qres = ActiveRecord::Base.connection.exec_query( <<-SQL
+                                                               SELECT
+                                                                  COUNT(ppa.*)
+                                                                  FROM
+                                                                  prestaciones_pdss_autorizadas as ppa,
+                                                                  prestaciones_prestaciones_pdss as pppdss
+                                                                  WHERE
+                                                                  ppa.efector_id = #{efector_id}
+                                                                  AND ('#{fecha.iso8601}' between fecha_de_inicio and fecha_de_finalizacion 
+                                                                      OR (fecha_de_inicio <= '#{fecha.iso8601}' and fecha_de_finalizacion is null)
+                                                                      OR ('#{fecha_actual.iso8601}' <= fecha_de_inicio and fecha_de_finalizacion is null)
+                                                                      )
+                                                                  AND  pppdss.prestacion_pdss_id = ppa.prestacion_pdss_id AND pppdss.prestacion_pdss_id = '#{prestacion_pdss_id}'
+
+        SQL
+      )
+      (qres.to_hash.first["count"].to_i < 1)
+    rescue
+      false
+    end
+  end
+
   def self.obtener_prestaciones(nombres, valores)
     prestaciones = []
     valores.each do |r|
