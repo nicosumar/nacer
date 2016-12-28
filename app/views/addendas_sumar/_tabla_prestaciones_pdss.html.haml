@@ -47,4 +47,4 @@
         - else 
           %td.centrado 
             = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
-            = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], false, id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
+            = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], (@prestaciones_autorizadas_alta_ids.present? && @prestaciones_autorizadas_alta_ids.include?(p["prestacion_pdss_id"])), id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))

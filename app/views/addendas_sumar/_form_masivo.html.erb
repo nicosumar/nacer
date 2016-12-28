@@ -41,7 +41,7 @@
               </div>
             <% end %>
         <% else %>
-          <%= render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => seccion[:prestaciones], efector: nil, formulario: f} %>
+          <%= render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => seccion[:prestaciones], efector: nil, prestaciones_pdss_alta_ids: @prestaciones_pdss_alta_ids, formulario: f} %>
         <% end %>
       </div>
     <% end %>
