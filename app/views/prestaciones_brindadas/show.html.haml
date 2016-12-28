@@ -115,7 +115,17 @@
         :"prestacion_brindada[fecha_de_la_prestacion(1i)]" => @prestacion_brindada.fecha_de_la_prestacion.year, |
         :"prestacion_brindada[historia_clinica]" => @prestacion_brindada.historia_clinica, |
         :commit => 'Continuar'}) |
-      si desea registrar otra prestación otorgada al beneficiario en la misma fecha
+      %p si desea registrar otra prestación otorgada al beneficiario en LA MISMA fecha.
+ 
+    - if @prestacion_brindada.clave_de_beneficiario && @prestacion_brindada.pendiente?
+      = link_to 'Haga clic aquí', new_prestacion_brindada_path({ |
+        :"prestacion_brindada[clave_de_beneficiario]" => @prestacion_brindada.clave_de_beneficiario, |
+        :"prestacion_brindada[efector_id]" => @prestacion_brindada.efector_id, |
+        :"prestacion_brindada[fecha_de_la_prestacion(3i)]" => @prestacion_brindada.fecha_de_la_prestacion.day, |
+        :"prestacion_brindada[fecha_de_la_prestacion(2i)]" => @prestacion_brindada.fecha_de_la_prestacion.month, |
+        :"prestacion_brindada[fecha_de_la_prestacion(1i)]" => @prestacion_brindada.fecha_de_la_prestacion.year, |
+        :"prestacion_brindada[historia_clinica]" => @prestacion_brindada.historia_clinica}) |
+      %p si desea registrar otra prestación otorgada al beneficiario en OTRA misma fecha.
 
   %h3 Datos sobre la prestación
   %div.field_content

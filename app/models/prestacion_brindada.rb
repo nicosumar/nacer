@@ -570,6 +570,7 @@ class PrestacionBrindada < ActiveRecord::Base
     return true unless prestacion_id.present? && fecha_de_la_prestacion.present?
     return true if !prestacion.comunitaria? && clave_de_beneficiario.nil?
     return true if prestacion.comunitaria? && efector_id.nil?
+    return true if CantidadDePrestacionesPorPeriodo.find_by_prestacion_id(prestacion_id).nil?
 
     tasa_de_uso = CantidadDePrestacionesPorPeriodo.find_by_prestacion_id(prestacion_id)
 
