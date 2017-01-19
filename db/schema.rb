@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161116131756) do
+ActiveRecord::Schema.define(:version => 20170112141947) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -197,6 +197,26 @@ ActiveRecord::Schema.define(:version => 20161116131756) do
   end
 
   add_index "asignaciones_de_precios", ["nomenclador_id", "prestacion_id", "area_de_prestacion_id", "dato_reportable_id"], :name => "index_unique_on_nomenclador_prestacion_area_ddrr", :unique => true
+
+  create_table "asistentes_talleres", :force => true do |t|
+    t.integer  "efector_id"
+    t.integer  "prestacion_brindada_id"
+    t.integer  "clase_de_documento_id"
+    t.integer  "tipo_de_documento_id"
+    t.integer  "numero_de_documento"
+    t.text     "nombre"
+    t.text     "apellido"
+    t.integer  "sexo_id"
+    t.date     "fecha_de_nacimiento"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "asistentes_talleres", ["clase_de_documento_id"], :name => "index_asistentes_talleres_on_clase_de_documento_id"
+  add_index "asistentes_talleres", ["efector_id"], :name => "index_asistentes_talleres_on_efector_id"
+  add_index "asistentes_talleres", ["prestacion_brindada_id"], :name => "index_asistentes_talleres_on_prestacion_brindada_id"
+  add_index "asistentes_talleres", ["sexo_id"], :name => "index_asistentes_talleres_on_sexo_id"
+  add_index "asistentes_talleres", ["tipo_de_documento_id"], :name => "index_asistentes_talleres_on_tipo_de_documento_id"
 
   create_table "beneficiarios_trazadora_11", :id => false, :force => true do |t|
     t.string "clave_de_beneficiario"

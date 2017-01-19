@@ -162,7 +162,7 @@
             - if dra.valor_integer.blank?
               %span.field_empty No se seleccionó una opción
             - else
-              %span.field_value= eval(dr.clase_para_enumeracion).find(dra.valor_integer).nombre
+              %span.field_value= eval(dr.clase_para_enumeracion).find(dra.valor_integer).nombre 
           - when dr.tipo_ruby == "date"
             - if dra.valor_date.blank?
               %span.field_empty No se ingresó la fecha
@@ -175,6 +175,19 @@
               %span.field_value= eval("dra.valor_" + dr.tipo_ruby)
         - if dra.advertencias && dra.advertencias.size > 0
           </div>
+
+  // Datos de los asistentes
+  - if @asistentes.size > 0
+    %h3 Datos sobre los asistentes
+    - @asistentes.each do |asist|
+      %p
+        %span.field_value= asist.apellido + ", " + asist.nombre 
+        %span.field_value= asist.tipo_de_documento.nombre + ": " + asist.numero_de_documento.to_s
+        - if asist.fecha_de_nacimiento
+          %span.field_value= asist.fecha_de_nacimiento.strftime("%d/%m/%Y")
+        - else
+          %span.field_value= nil
+        %span.field_value= asist.sexo.nombre
 
   %h3 Datos sobre el efector que brindó la prestación
   %div.field_content
