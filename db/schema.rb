@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160905133926) do
+ActiveRecord::Schema.define(:version => 20170130121505) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -1262,6 +1262,7 @@ ActiveRecord::Schema.define(:version => 20160905133926) do
     t.boolean  "es_catastrofica",                                            :default => false
     t.integer  "tipo_de_tratamiento_id"
     t.boolean  "modifica_lugar_de_atencion",                                 :default => false
+    t.boolean  "eliminada"
   end
 
   add_index "prestaciones", ["concepto_de_facturacion_id"], :name => "prestaciones_concepto_de_facturacion_id_idx"
