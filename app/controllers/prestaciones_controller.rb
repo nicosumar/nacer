@@ -9,7 +9,7 @@ class PrestacionesController < ApplicationController
   def index
     codigo = ObjetoDeLaPrestacion.find(params[:objeto_de_la_prestacion_id]).codigo_para_la_prestacion if params[:objeto_de_la_prestacion_id].present?
     codigo = params[:codigo] if params[:codigo].present?
-    @prestaciones = Prestacion.like_codigo(codigo)
+    @prestaciones = Prestacion.listado_permitido.like_codigo(codigo)
     @prestaciones = @prestaciones.by_seccion_pdss(params[:filter][:seccion_pdss_id]) if params[:filter].present? && params[:filter][:seccion_pdss_id].present?
     @prestaciones = @prestaciones.by_grupo_pdss(params[:filter][:grupo_pdss_id]) if params[:filter].present?
     respond_to do |format|

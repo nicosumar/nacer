@@ -56,9 +56,7 @@ class Prestacion < ActiveRecord::Base
   before_validation :asignar_attributes_a_prestacion
   before_save :asignar_attributes_a_prestaciones_pdss
 
-  # En forma predeterminada, sólo se devuelven los registros activos
-  #default_scope where(:activa => true)
-
+  scope :listado_permitido , -> { where('eliminada IS NULL OR eliminada = false') }
   scope :activas, -> { where(activa: true) }
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
   scope :ordenadas_por_prestaciones_pdss, -> { includes(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }

@@ -1314,6 +1314,7 @@ ActiveRecord::Schema.define(:version => 20170112141947) do
     t.boolean  "es_catastrofica",                                            :default => false
     t.integer  "tipo_de_tratamiento_id"
     t.boolean  "modifica_lugar_de_atencion",                                 :default => false
+    t.boolean  "eliminada"
   end
 
   add_index "prestaciones", ["concepto_de_facturacion_id"], :name => "prestaciones_concepto_de_facturacion_id_idx"
