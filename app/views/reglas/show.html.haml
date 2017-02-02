@@ -1,0 +1,35 @@
+- content_for :title do
+  Reglas de liquidacion - Ver
+
+#content-header
+  %h1 Reglas de Liquidacion
+  #action-links
+    - if can? :read, Regla
+      = link_to '<< Volver al listado', reglas_path
+    - if can? :update, Regla
+      = link_to 'Editar', edit_regla_path(@regla)
+
+= render :partial => "shared/info", :locals => { :registro => @regla }
+
+#content-body
+  %div.field_content
+    %span.field_name Nombre:
+    %span.field_value= @regla.nombre
+  %div.field_content
+    %span.field_name Efector vinculado:
+    %span.field_value= @regla.efector.nombre
+  %div.field_content
+    %span.field_name Nomenclador:
+    %span.field_value= @regla.nomenclador.nombre
+  %div.field_content
+    %span.field_name Prestación:
+    %span.field_value= @regla.prestacion.nombre
+  %div.field_content
+    %span.field_name Metodo de validación:
+    %span.field_value= @regla.metodo_de_validacion.nombre
+  %div.field_content
+    %span.field_name ¿Permitir?:
+    %span.field_value= (@regla.permitir) ? "Si": "No"
+  %div.field_content
+    %span.field_name Observaciones:
+    %span.field_value= @regla.observaciones

@@ -1,0 +1,28 @@
+- content_for :title do
+  Nomencladores
+#content-header
+  %h1 Nomencladores
+  #action-links
+    - if can? :create, Nomenclador
+      = link_to 'Nuevo Nomenclador', new_nomenclador_path
+
+#content-body
+  %table
+    %tr
+      %th Nomenclador
+      %th Fecha de inicio
+      %th Estado
+      %th{colspan: '2'} Acciones
+    - @nomencladores.each do |nomenclador|
+      %tr
+        %td= nomenclador.nombre
+        %td= nomenclador.fecha_de_inicio
+        %td= (nomenclador.activo ? "Activo" : "Inactivo")
+        %td= link_to 'Ver', nomenclador_path(nomenclador)
+        - if nomenclador.can_edit?
+          %td= link_to 'Asignar precios', new_asignar_precios_nomenclador_path(nomenclador)
+        - else
+          %td= 'Asignar precios'
+  = will_paginate @nomencladores, :inner_window => 2, :outer_window => 0
+
+

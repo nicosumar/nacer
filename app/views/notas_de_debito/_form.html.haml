@@ -1,0 +1,19 @@
+= javascript_include_tag 'notas_de_debito.js'
+= form_for(@nota_de_debito) do |f|
+  .field
+    = f.label "Efector"
+    = f.select :efector_id, @efectores,{}, {class: 'multi_select'}
+  .field
+    = f.label "Concepto de facturación"
+    = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion, {}, {class: 'multi_select'}
+  .field
+    = f.label "Tipo de Nota de debito"
+    = f.select :tipo_de_nota_debito_id, @tipos_de_notas, {}, {class: 'multi_select', style: "width: 250px"}
+  .field
+    = f.label "monto"
+    = f.text_field :monto 
+  .field
+    = f.label "Observaciones"
+    = f.text_area :observaciones, style: "width:100%", size: "70x8"
+  .actions
+    = f.submit

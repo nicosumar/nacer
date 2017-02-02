@@ -1,0 +1,34 @@
+= javascript_include_tag 'liquidaciones_sumar_anexos_administrativos'
+= javascript_include_tag 'jquery.chained.min'
+
+- content_for :title do
+  Anexo Administrativo - Liquidaciones Sumar  
+#content-header
+  %h1 Anexo Administrativo - Liquidaciones Sumar  
+  #action-links
+    - if can? :update, LiquidacionSumarAnexoAdministrativo
+      = link_to '<< Volver al listado', liquidaciones_informes_path
+      - if @liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "C"
+        = link_to 'Finalizar Anexo', finalizar_anexo_liquidacion_sumar_anexo_administrativo_path(@liquidacion_sumar_anexo_administrativo), method: :put, data: { confirm: "Luego de finalizar la revisión del anexo no será posible su posterior modifcación.\n¿Esta seguro que desea finalizar la revisión?" }
+
+= render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar_anexo_administrativo }
+#content-body
+  %h2= "#{@liquidacion_sumar_anexo_administrativo.liquidacion_informe.efector.nombre} - Expediente: #{@liquidacion_sumar_anexo_administrativo.liquidacion_informe.numero_de_expediente} - Cuasifactura N°: #{@liquidacion_sumar_anexo_administrativo.liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura}"
+  %div.field_content
+    %span.field_name Estado actual:
+    %span.field_value= @liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre
+
+  %div.field_content
+    %span.field_name Fecha de inicio:
+    %span.field_value= @liquidacion_sumar_anexo_administrativo.fecha_de_inicio
+
+  %div.field_content
+    %span.field_name Fecha de finalizacion:
+    %span.field_value= @liquidacion_sumar_anexo_administrativo.fecha_de_finalizacion.blank? ? "En curso" : @liquidacion_sumar_anexo_administrativo.fecha_de_finalizacion
+
+  %br
+  %br
+  %h2.first-header 
+    Detalle de prestaciones 
+    = image_tag "spinner.gif",size: "16x16", id: "spinner"
+  = render partial: 'grid'

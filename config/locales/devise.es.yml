@@ -1,0 +1,60 @@
+es:
+  devise:
+    confirmations:
+      confirmed: "Su cuenta se confirmó correctamente. Su sesión ya fue iniciada."
+      send_instructions: "Recibirá un correo electrónico con instrucciones para confirmar su cuenta en algunos minutos."
+      send_paranoid_instructions: "Si su dirección de correo electrónico está registrada en nuestra base de datos, recibirá un correo electrónico con instrucciones para confirmar su cuenta en algunos minutos."
+    failure:
+      already_authenticated: "Ya ha iniciado la sesión."
+      inactive: "Su cuenta no fue activada aún."
+      invalid: "La dirección de correo electrónico o la contraseña no son válidas."
+      invalid_token: "La cadena de autenticación no es válida."
+      locked: "Su cuenta está bloqueada."
+      not_found_in_database: "La dirección de correo electrónico o la contraseña no son válidas."
+      timeout: "Su sesión expiró, vuelva a iniciar la sesión para continuar."
+      unauthenticated: "Es necesario que inicie sesión o cree una cuenta antes de continuar."
+      unconfirmed: "Debe confirmar su cuenta antes de continuar."
+    mailer:
+      confirmation_instructions:
+        subject: "Instrucciones de confirmación"
+      reset_password_instructions:
+        subject: "Instrucciones para restablecer la contraseña"
+      unlock_instructions:
+        subject: "Instrucciones para desbloquear la cuenta"
+    omniauth_callbacks:
+      failure: "Su autenticación fue rechazada desde %{kind} porque \"%{reason}\"."
+      success: "Fue autenticado correctamente desde su cuenta de %{kind}."
+    passwords:
+      no_token: "No puede acceder a esta página si no es a través de un correo electrónico para restablecer la contraseña. Si lo hizo a través de un correo electrónico para restablecer la contraseña, asegúrese de utilizar la URL completa que se le proveyó."
+      send_instructions: "Recibirá un correo electrónico con instrucciones para restablecer la contraseña en algunos minutos."
+      send_paranoid_instructions: "Si su dirección de correo electrónico está registrada en nuestra base de datos, recibirá un correo electrónico con un enlace para recuperar su contraseña en algunos minutos."
+      updated: "Su contraseña fue cambiada correctamente. Su sesión ya fue iniciada."
+      updated_not_active: "Su contraseña fue cambiada correctamente."
+    registrations:
+      destroyed: "Su cuenta fue eliminada correctamente. Esperamos que pronto regrese."
+      signed_up: "Su sesión se inició correctamente."
+      signed_up_but_inactive: "La cuenta se creó correctamente. Sin embargo no se pudo iniciar su sesión ya que la cuenta aún no fue activada."
+      signed_up_but_locked: "La cuenta se creó correctamente. Sin embargo no se pudo iniciar su sesión ya que la cuenta se encuentra bloqueada."
+      signed_up_but_unconfirmed: "Se envió un mensaje a su dirección de correo electrónico con un enlace de confirmación. Abra el enlace para activar su cuenta."
+      update_needs_confirmation: "Se actualizó correctamente su cuenta, pero es necesario confirmar su nueva dirección de correo electrónico. Revise su cuenta de correo electrónico y haga clic en el enlace de confirmación que se le envió para terminar de confirmar su nueva dirección."
+      updated: "Su cuenta se actualizó correctamente."
+    user_sessions:
+      signed_in: "Su sesión se inició correctamente."
+      signed_out: "Su sesión se cerró correctamente."
+    unlocks:
+      send_instructions: "Recibirá un correo electrónico con instrucciones para desbloquear su cuenta en algunos minutos."
+      send_paranoid_instructions: "Si su cuenta existe, recibirá un correo electrónico con instrucciones para desbloquear su cuenta en algunos minutos."
+      unlocked: "Su cuenta se desbloqueó correctamente. Inicie la sesión para continuar."
+    users:
+      user:
+        signed_up_but_unconfirmed: "Se envió un mensaje a su dirección de correo electrónico con un enlace de confirmación. Abra el enlace para activar su cuenta."
+  errors:
+    messages:
+      already_confirmed: "ya fue confirmada, intente iniciar la sesión"
+      confirmation_period_expired: "tenía que confirmarse dentro de un periodo de %{period}, realice una nueva solicitud"
+      expired: "expiró, realice una nueva solicitud"
+      not_found: "no se encontró"
+      not_locked: "no estaba bloqueada"
+      not_saved:
+        one: "1 error impidió que esta %{resource} se guardara:"
+        other: "%{count} errores impidieron que esta %{resource} se guardara:"

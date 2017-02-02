@@ -1,0 +1,15 @@
+<div class="nested-fields">
+  <div class="medium-label"><%= f.collection_select :dato_reportable_id, DatoReportable.ordered.activos, :id, :codigo_y_nombre, {}, {class: "medium-input"} %></div>
+  <div class="medium-label"><%= f.text_field :fecha_de_inicio, {class: "medium-input", 'data-type': "date" } %></div>
+  <div class="medium-label"><%= f.text_field :fecha_de_finalizacion, {class: "medium-input", 'data-type': "date" } %></div>
+  <div class="xsmall-label"><%= f.number_field :minimo, {class: "xsmall-number-field"} %></div>
+  <div class="xsmall-label"><%= f.number_field :maximo, {class: "xsmall-number-field"} %></div>
+  <div class="xsmall-label"><%= link_to_remove_association "borrar", f %></div>
+  <br />
+  Necesario: <%= f.check_box :necesario %> 
+  Obligatorio: <%= f.check_box :obligatorio %> 
+  <hr>
+</div>
+<script type="text/javascript">
+  $( "input[data-type=date]" ).datepicker({ dateFormat: 'dd/mm/yy'}); 
+</script>

@@ -1,0 +1,10 @@
+- if @resource.sexo_id == 1
+  Bienvenida,
+- else
+  Bienvenido,
+
+= @resource.nombre
+
+%p Puede confirmar la dirección de correo electrónico asociada con su cuenta de usuario siguiendo el siguiente enlace:
+
+%p= link_to 'Confirmar mi dirección', confirmation_url(@resource, :confirmation_token => @resource.confirmation_token)

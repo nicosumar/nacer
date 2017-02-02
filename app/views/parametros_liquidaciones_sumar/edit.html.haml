@@ -1,0 +1,10 @@
+- content_for :title do
+  Editar parametros de liquidación sumar
+
+#content-header
+  %h1 Editar parametros de liquidación sumar
+  #action-links
+    = link_to 'Ver', @parametro_liquidacion_sumar
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @parametro_liquidacion_sumar }
+  = render 'form'

@@ -1,0 +1,19 @@
+- content_for :title do
+  Envío de instrucciones para desbloquear la cuenta
+
+#content-header
+  %h1 Envío de instrucciones para desbloquear la cuenta
+
+= render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
+
+#content-body
+  %h2.first-header Información para el envío
+
+  = form_for(resource, :as => resource_name, :url => unlock_path(resource_name), :html => { :method => :post }) do |f|
+
+    %div.field
+      = f.label :email
+      = f.email_field :email, {:size => 40, :placeholder => 'Ingrese el email con el que registró la cuenta'}
+
+    %div.actions
+      = f.submit "Enviar las instrucciones"

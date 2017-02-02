@@ -1,0 +1,17 @@
+= form_for(@informe_debito_prestacional) do |f|
+  .field
+    = f.label "Efector"
+    = f.select :efector_id, @efectores, {},{class:'multi_select', }
+  .field
+    = f.label "Concepto de facturación"
+    = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion
+  .field
+    = f.label "Tipo de debito Prestacional"
+    = f.select :tipo_de_debito_prestacional_id, @tipos_de_debitos, {class: 'select2'}
+  - if @informe_debito_prestacional.estado_del_proceso.codigo == 'C'
+    .field
+      = f.label "Tipo de debito Prestacional"
+      = f.select :tipo_de_debito_prestacional_id, @tipos_de_debitos
+  .actions
+    = f.submit
+

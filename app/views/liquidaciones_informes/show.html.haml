@@ -1,0 +1,32 @@
+- content_for :title do
+  Informes de Liquidacion Sumar
+
+#content-header
+  %h1 Informes de Liquidacion
+  #action-links
+    - if can? :read, LiquidacionInforme
+      = link_to 'Ir al anexo administrativo', @liquidacion_informe.liquidacion_sumar_anexo_administrativo
+    -# if can? :update, LiquidacionInforme
+      =# link_to 'Editar', edit_periodo_path(@periodo)
+
+= render :partial => "shared/info", :locals => { :registro => @liquidacion_informe }
+
+#content-body
+  %div.field_content
+    %span.field_name Expediente:
+    %span.field_value= @liquidacion_informe.expediente_sumar.numero
+  %div.field_content
+    %span.field_name Efector:
+    %span.field_value= @liquidacion_informe.efector.nombre
+  %div.field_content
+    %span.field_name Estado del proceso:
+    %span.field_value= @liquidacion_informe.estado_del_proceso.nombre
+  %div.field_content
+    %span.field_name Cuasifactura:
+    %span.field_value= @liquidacion_informe.liquidacion_sumar_cuasifactura.numero_cuasifactura
+  %div.field_content
+    %span.field_name observaciones:
+    %span.field_value= @liquidacion_informe.observaciones
+  - if @liquidacion_informe.requiere_numero_de_cuasi?
+    = image_tag @liquidacion_informe.liquidacion_sumar_cuasifactura.cuasifactura_escaneada.url(:medium)
+  

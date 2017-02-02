@@ -1,0 +1,154 @@
+= form_for(@efector) do |f|
+  %h3.first-header-with-note Datos de identificación
+  - if @efector.new_record? || Efector.find(@efector.id).cuie.blank?
+    %p.note Verifique la corrección del CUIE, ya que después de guardarlo no podrá modificarse
+    %div.field
+      = f.label :cuie, "CUIE"
+      = f.text_field :cuie, :style => "text-transform: uppercase;"
+  - else
+    %p.note El CUIE no puede modificarse
+    %div.field_content
+      %span.field_name CUIE
+      %span.field_value= @efector.cuie
+  %div.field
+    = f.label :nombre, "Nombre*"
+    = f.text_field :nombre
+
+  %h4 Códigos de identificación en otros sistemas
+  %div.field
+    = f.label :codigo_de_efector_sissa, "Código SISA"
+    = f.text_field :codigo_de_efector_sissa
+  %div.field
+    = f.label :codigo_de_efector_bio, "Código para bioestadística"
+    = f.number_field :codigo_de_efector_bio
+
+  %h3 Domicilio, correo electrónico y teléfonos
+  %div.field
+    = f.label :domicilio
+    = f.text_field :domicilio
+  %div.field
+    = f.label :provincia_id, "Provincia"
+    = f.select :provincia_id, @provincias,{}, {:class => 'select2'}
+  %div.field
+    = f.label :departamento_id
+    = f.select :departamento_id, @departamentos,{}, {:class => 'select2'}
+  #select_distritos.field
+    = f.label :distrito_id
+    = f.select :distrito_id, @distritos, {}, {:class => 'select2'}
+  %div.field
+    = f.label :codigo_postal
+    = f.text_field :codigo_postal, :style => "text-transform: uppercase;"
+  %div.field
+    = f.label :latitud
+    = f.text_field :latitud
+  %div.field
+    = f.label :longitud
+    = f.text_field :longitud
+  %div.field
+    = f.label :telefonos
+    = f.text_field :telefonos
+  %div.field
+    = f.label :email
+    = f.text_field :email
+
+  %h3 Categorización
+  %div.field
+    = f.label :grupo_de_efectores_id
+    = f.select :grupo_de_efectores_id, options_for_select(@grupos_de_efectores, @efector.grupo_de_efectores_id), |
+      {:include_blank => true} , {:class => 'select2'} |
+  %div.field
+    = f.label :area_de_prestacion_id
+    = f.select :area_de_prestacion_id, options_for_select(@areas_de_prestacion, @efector.area_de_prestacion_id), |
+      {:include_blank => true}, {:class => 'select2'} |
+  %div.field
+    = f.label :dependencia_administrativa_id
+    = f.select :dependencia_administrativa_id, |
+      options_for_select(@dependencias_administrativas, @efector.dependencia_administrativa_id), {:include_blank => true} , {:class => 'select2'} |
+  %div.field
+    = f.label :integrante
+    = f.check_box :integrante
+  %div.field
+    = f.label :alto_impacto
+    = f.check_box :alto_impacto
+
+  %h3 Alta complejidad perinatal
+  %div.field
+    = f.label :perinatal_de_alta_complejidad, "Habilitado"
+    = f.check_box :perinatal_de_alta_complejidad
+  #addenda_perinatal
+    %div.field
+      = f.label :addenda_perinatal, "Adenda perinatal"
+      = f.check_box :addenda_perinatal
+    #fecha_de_addenda_perinatal
+      %div.field
+        = f.label :fecha_de_addenda_perinatal, "Fecha de la adenda"
+        = f.date_select :fecha_de_addenda_perinatal, |
+          {:start_year => 2012, :end_year => Date.today.year + 1, |
+          :include_blank => true} |
+
+  %h3 Infraestructura
+  %div.field
+    = f.label :camas_de_internacion
+    = f.number_field :camas_de_internacion
+  %div.field
+    = f.label :ambientes
+    = f.number_field :ambientes
+
+  %h3 Datos de facturacion
+  %div.field
+    = f.label :cuit, "CUIT"
+    = f.text_field :cuit
+  %div.field
+    = f.label :condicion_iva, "Condicion ante el IVA"
+    = f.text_field :condicion_iva
+  %div.field
+    = f.label :fecha_inicio_de_actividades, "Fecha de Inicio de Actividades"
+    = f.date_select :fecha_inicio_de_actividades
+  %div.field
+    = f.label :condicion_iibb, "Condicion ante IIBB"
+    = f.text_field :condicion_iibb
+  %div.field
+    = f.label :datos_bancarios, "Datos Bancarios"
+    = f.text_field :datos_bancarios
+
+  %h3 Cuentas bancarias
+
+  %h4 Cuenta bancaria principal
+  %div.field
+    = f.label :banco_cuenta_principal, "Banco"
+    = f.text_field :banco_cuenta_principal
+  %div.field
+    = f.label :numero_de_cuenta_principal, "Número de cuenta"
+    = f.text_field :numero_de_cuenta_principal
+  %div.field
+    = f.label :denominacion_cuenta_principal, "Denominación de cuenta"
+    = f.text_field :denominacion_cuenta_principal
+  %div.field
+    = f.label :sucursal_cuenta_principal, "Sucursal"
+    = f.text_field :sucursal_cuenta_principal
+
+  %h4 Cuenta bancaria secundaria
+  %div.field
+    = f.label :banco_cuenta_secundaria, "Banco"
+    = f.text_field :banco_cuenta_secundaria
+  %div.field
+    = f.label :numero_de_cuenta_secundaria, "Número de cuenta"
+    = f.text_field :numero_de_cuenta_secundaria
+  %div.field
+    = f.label :denominacion_cuenta_secundaria, "Denominación de cuenta"
+    = f.text_field :denominacion_cuenta_secundaria
+  %div.field
+    = f.label :sucursal_cuenta_secundaria, "Sucursal"
+    = f.text_field :sucursal_cuenta_secundaria
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %div.actions
+    - if @efector.new_record?
+      = f.submit "Crear el efector"
+      = link_to "Cancelar", efectores_url
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @efector

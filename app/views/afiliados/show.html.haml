@@ -1,0 +1,353 @@
+- content_for :title do
+  Beneficiario:
+  = @afiliado.nombre.to_s + " " + @afiliado.apellido.to_s
+
+#content-header
+  %h1= @afiliado.nombre_completo
+  #action-links
+    - if can? :create, NovedadDelAfiliado
+      - if @afiliado.novedad_pendiente?
+        = link_to "Solicitud pendiente", novedad_del_afiliado_path(@afiliado.novedad_pendiente)
+      - else
+        = link_to("Solicitar modificación", |
+          new_modificacion_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id)) |
+        = link_to("Solicitar baja", new_baja_novedades_de_los_afiliados_path(:afiliado_id => @afiliado.id))
+    - if can? :create, PrestacionBrindada
+      = link_to("Registrar prestación", |
+        new_prestacion_brindada_path(:clave_de_beneficiario => @afiliado.clave_de_beneficiario)) |
+    - if can?(:read, VistaGlobalDePrestacionBrindada) && current_user.in_group?(:operaciones) && session[:codigo_uad_actual] == "006"
+      = link_to("Historial de prestaciones", prestaciones_brindadas_al_afiliado_path)
+    - elsif can?(:read, PrestacionBrindada) && current_user.in_group?(:facturacion_uad)
+      = link_to("Historial de prestaciones", |
+        prestaciones_brindadas_path(:clave_de_beneficiario => @afiliado.clave_de_beneficiario)) |
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Información registrada en el padrón
+
+  #estado
+    %h3 Estado de la inscripción
+    - if @afiliado.activo
+      - if @afiliado.cobertura_efectiva_basica
+        #info.infobox-ok.no-margin
+          %h2
+            - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
+              La beneficiaria se encuentra activa y posee cobertura efectiva básica
+            - else
+              El beneficiario se encuentra activo y posee cobertura efectiva básica
+      - else
+        #info.infobox-advertencia.no-margin
+          %h2
+            - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
+              La beneficiaria se encuentra activa, pero no posee cobertura efectiva básica
+            - else
+              El beneficiario se encuentra activo, pero no posee cobertura efectiva básica
+    - else
+      #info.infobox-error.no-margin
+        %h2
+          - if @afiliado.sexo && @afiliado.sexo.codigo == "F"
+            La beneficiaria se encuentra inactiva
+          - else
+            El beneficiario se encuentra inactivo
+        %ul
+          %li= @afiliado.mensaje_de_la_baja
+
+  #datos
+
+    %h3 Clave única de beneficiario
+    %div.field_content
+      - if @afiliado.clave_de_beneficiario
+        %span.field_value= @afiliado.clave_de_beneficiario
+      - else
+        %span.field_empty No se generó la clave de beneficiario.
+
+    %h3 Datos personales
+    %div.field_content
+      %span.field_name Apellido/s:
+      - if @afiliado.apellido
+        %span.field_value= @afiliado.apellido
+      - else
+        %span.field_empty No se ingresó el apellido.
+    %div.field_content
+      %span.field_name Nombre/s:
+      - if @afiliado.nombre
+        %span.field_value= @afiliado.nombre
+      - else
+        %span.field_empty No se ingresó el nombre.
+    %div.field_content
+      %span.field_name Clase de documento:
+      - if @afiliado.clase_de_documento
+        %span.field_value= @afiliado.clase_de_documento.nombre
+      - else
+        %span.field_empty No se indicó la clase de documento.
+    %div.field_content
+      %span.field_name Tipo de documento:
+      - if @afiliado.tipo_de_documento
+        %span.field_value= @afiliado.tipo_de_documento.nombre
+      - else
+        %span.field_empty No se indicó el tipo de documento.
+    %div.field_content
+      %span.field_name Número de documento:
+      - if @afiliado.numero_de_documento
+        %span.field_value= @afiliado.numero_de_documento
+      - else
+        %span.field_empty No se ingresó el número de documento.
+    - if @afiliado.numero_de_celular
+      %div.field_content
+        %span.field_name Número de celular:
+        %span.field_value= @afiliado.numero_de_celular
+    - if @afiliado.e_mail
+      %div.field_content
+        %span.field_name Dirección de correo electrónico:
+        %span.field_value= @afiliado.e_mail
+
+    %h3 Datos de nacimiento, sexo, origen y estudios
+    %div.field_content
+      %span.field_name Sexo:
+      - if @afiliado.sexo
+        %span.field_value= @afiliado.sexo.nombre
+      - else
+        %span.field_empty No se indicó el sexo.
+    %div.field_content
+      %span.field_name Fecha de nacimiento:
+      - if @afiliado.fecha_de_nacimiento
+        %span.field_value
+          = @afiliado.fecha_de_nacimiento.strftime("%d/%m/%Y")
+          (actualmente tiene
+          = (edad_entre(@afiliado.fecha_de_nacimiento) || "fecha de nacimiento en el futuro") + ")"
+      - else
+        %span.field_empty No se ingresó la fecha de nacimiento.
+    - if @afiliado.pais_de_nacimiento
+      %div.field_content
+        %span.field_name País de origen:
+        %span.field_value= @afiliado.pais_de_nacimiento.nombre
+    - if !@afiliado.se_declara_indigena.nil?
+      %div.field_content
+        %span.field_name Pertenece a un pueblo indígena:
+        %span.field_value
+          - if @afiliado.se_declara_indigena
+            Sí
+          - else
+            No
+    - if @afiliado.se_declara_indigena
+      - if @afiliado.lengua_originaria
+        %div.field_content
+          %span.field_name Idioma o lengua:
+          %span.field_value= @afiliado.lengua_originaria.nombre
+      - if @afiliado.tribu_originaria
+        %div.field_content
+          %span.field_name Pueblo indígena:
+          %span.field_value= @afiliado.tribu_originaria.nombre
+    %div.field_content
+      %span.field_name Estudios:
+      - if @afiliado.alfabetizacion_del_beneficiario
+        %span.field_value= @afiliado.alfabetizacion_del_beneficiario.nombre
+      - else
+        %span.field_empty No se indicó el nivel de estudios.
+    - if @afiliado.alfab_beneficiario_anios_ultimo_nivel
+      %div.field_content
+        %span.field_name Años cursados en el mayor nivel:
+        %span.field_value= @afiliado.alfab_beneficiario_anios_ultimo_nivel
+
+    %h3 Datos de domicilio
+    - if @afiliado.domicilio_calle
+      %div.field_content
+        %span.field_name Calle:
+        %span.field_value= @afiliado.domicilio_calle
+    - if @afiliado.domicilio_numero
+      %div.field_content
+        %span.field_name Nº de puerta:
+        %span.field_value= @afiliado.domicilio_numero
+    - if @afiliado.domicilio_piso
+      %div.field_content
+        %span.field_name Piso:
+        %span.field_value= @afiliado.domicilio_piso
+    - if @afiliado.domicilio_depto
+      %div.field_content
+        %span.field_name Nº de departamento:
+        %span.field_value= @afiliado.domicilio_depto
+    - if @afiliado.domicilio_manzana
+      %div.field_content
+        %span.field_name Manzana:
+        %span.field_value= @afiliado.domicilio_manzana
+    - if @afiliado.domicilio_entre_calle_1
+      %div.field_content
+        %span.field_name Entre calle:
+        %span.field_value= @afiliado.domicilio_entre_calle_1
+    - if @afiliado.domicilio_entre_calle_2
+      %div.field_content
+        %span.field_name Y calle:
+        %span.field_value= @afiliado.domicilio_entre_calle_2
+    - if @afiliado.telefono
+      %div.field_content
+        %span.field_name Teléfono:
+        %span.field_value= @afiliado.telefono
+    - if @afiliado.otro_telefono
+      %div.field_content
+        %span.field_name Otro teléfono:
+        %span.field_value= @afiliado.otro_telefono
+    %div.field_content
+      %span.field_name Departamento
+      - if @afiliado.domicilio_departamento
+        %span.field_value= @afiliado.domicilio_departamento.nombre
+      - else
+        %span.field_empty No se indicó el departamento.
+    %div.field_content
+      %span.field_name Distrito:
+      - if @afiliado.domicilio_distrito
+        %span.field_value= @afiliado.domicilio_distrito.nombre
+      - else
+        %span.field_empty No se indicó el distrito.
+    - if @afiliado.domicilio_barrio_o_paraje
+      %div.field_content
+        %span.field_name Barrio o paraje:
+        %span.field_value= @afiliado.domicilio_barrio_o_paraje
+    - if @afiliado.domicilio_codigo_postal
+      %div.field_content
+        %span.field_name Código postal:
+        %span.field_value= @afiliado.domicilio_codigo_postal
+
+    %h3 Lugar de atención habitual
+    %div.field_content
+      - if @afiliado.lugar_de_atencion_habitual
+        %span.field_value= @afiliado.lugar_de_atencion_habitual.nombre
+      - else
+        %span.field_empty No se indicó el lugar de atención habitual.
+
+    - if @afiliado.menor?(@afiliado.fecha_de_inscripcion)
+      %h3 Datos del adulto responsable
+      - if @afiliado.apellido_de_la_madre.present? || @afiliado.nombre_de_la_madre.present?
+        %h4 Madre
+        %div.field_content
+          %span.field_name Nombre y apellido:
+          %span.field_value= @afiliado.nombre_de_la_madre.to_s + " " + @afiliado.apellido_de_la_madre.to_s
+        - if @afiliado.numero_de_documento_de_la_madre
+          %div.field_content
+            %span.field_name Tipo y número de documento:
+            %span.field_value
+              - if @afiliado.tipo_de_documento_de_la_madre
+                = @afiliado.tipo_de_documento_de_la_madre.codigo
+              = @afiliado.numero_de_documento_de_la_madre
+        - if @afiliado.alfabetizacion_de_la_madre
+          %div.field_content
+            %span.field_name Nivel de estudios:
+            %span.field_value= @afiliado.alfabetizacion_de_la_madre.nombre
+        - if @afiliado.alfab_madre_anios_ultimo_nivel
+          %div.field_content
+            %span.field_name Años cursados en el mayor nivel:
+            %span.field_value= @afiliado.alfab_madre_anios_ultimo_nivel
+      - if @afiliado.apellido_del_padre.present? || @afiliado.nombre_del_padre.present?
+        %h4 Padre
+        %div.field_content
+          %span.field_name Nombre y apellido:
+          %span.field_value= @afiliado.nombre_del_padre.to_s + " " + @afiliado.apellido_del_padre.to_s
+        - if @afiliado.numero_de_documento_del_padre
+          %div.field_content
+            %span.field_name Tipo y número de documento:
+            %span.field_value
+              - if @afiliado.tipo_de_documento_del_padre
+                = @afiliado.tipo_de_documento_del_padre.codigo
+              = @afiliado.numero_de_documento_del_padre
+        - if @afiliado.alfabetizacion_del_padre
+          %div.field_content
+            %span.field_name Nivel de estudios:
+            %span.field_value= @afiliado.alfabetizacion_del_padre.nombre
+        - if @afiliado.alfab_padre_anios_ultimo_nivel
+          %div.field_content
+            %span.field_name Años cursados en el mayor nivel:
+            %span.field_value= @afiliado.alfab_padre_anios_ultimo_nivel
+      - if @afiliado.apellido_del_tutor.present? || @afiliado.nombre_del_tutor.present?
+        %h4 Tutor/a
+        %div.field_content
+          %span.field_name Nombre y apellido:
+          %span.field_value= @afiliado.nombre_del_tutor.to_s + " " + @afiliado.apellido_del_tutor.to_s
+        - if @afiliado.numero_de_documento_del_tutor
+          %div.field_content
+            %span.field_name Tipo y número de documento:
+            %span.field_value
+              - if @afiliado.tipo_de_documento_del_tutor
+                = @afiliado.tipo_de_documento_del_tutor.codigo
+              = @afiliado.numero_de_documento_del_tutor
+        - if @afiliado.alfabetizacion_del_tutor
+          %div.field_content
+            %span.field_name Nivel de estudios del tutor:
+            %span.field_value= @afiliado.alfabetizacion_del_tutor.nombre
+        - if @afiliado.alfab_tutor_anios_ultimo_nivel
+          %div.field_content
+            %span.field_name Años cursados en el mayor nivel:
+            %span.field_value= @afiliado.alfab_tutor_anios_ultimo_nivel
+
+    - fecha_de_calculo = @afiliado.fecha_de_la_ultima_novedad || @afiliado.fecha_de_diagnostico_del_embarazo |
+      || @afiliado.fecha_de_inscripcion |
+    - if @afiliado.embarazo_actual
+      %h3 Datos del embarazo
+      %div.field_content
+        %span.field_name Fecha de la última menstruación:
+        - if @afiliado.fecha_de_la_ultima_menstruacion
+          %span.field_value
+            = @afiliado.fecha_de_la_ultima_menstruacion
+            - if @afiliado.semanas_de_gestacion_segun_fum()
+              - if @afiliado.semanas_de_gestacion_segun_fum() > 40
+                = "(según FUM cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fum() - 40).to_s + " del puerperio)."
+              - else
+                = "(según FUM cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fum() + 1).to_s + " del embarazo)."
+        - else
+          %span.field_empty No se indicó la fecha de la última menstruación.
+      %div.field_content
+        %span.field_name Fecha de diagnóstico del embarazo:
+        - if @afiliado.fecha_de_diagnostico_del_embarazo
+          %span.field_value= @afiliado.fecha_de_diagnostico_del_embarazo.strftime("%d/%m/%Y")
+        - else
+          %span.field_empty No se indicó la fecha de diagnóstico.
+      %div.field_content
+        %span.field_name Semanas de curso del embarazo al diagnóstico:
+        - if @afiliado.semanas_de_embarazo
+          %span.field_value= @afiliado.semanas_de_embarazo
+        - else
+          %span.field_empty No se indicó la cantidad de semanas al momento del diagnóstico.
+      %div.field_content
+        %span.field_name Fecha probable de parto:
+        - if @afiliado.fecha_probable_de_parto
+          %span.field_value
+            = @afiliado.fecha_probable_de_parto.strftime("%d/%m/%Y")
+            - if @afiliado.semanas_de_gestacion_segun_fpp()
+              - if @afiliado.semanas_de_gestacion_segun_fpp() > 40
+                = "(según FPP cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fpp() - 40).to_s + " del puerperio)."
+              - else
+                = "(según FPP cursa la semana " + (@afiliado.semanas_de_gestacion_segun_fpp() + 1).to_s + " del embarazo)."
+        - else
+          %span.field_empty No se indicó la fecha probable de parto.
+
+    - if @afiliado.score_de_riesgo
+      %h3 Remediar+Redes
+      %div.field_content
+        %span.field_name Score de riesgo cardiovascular:
+        %span.field_value= @afiliado.score_de_riesgo
+
+    - if @afiliado.discapacidad
+      %h3 Discapacidad
+      %div.field_content
+        %span.field_value= @afiliado.discapacidad.nombre
+
+    %h3 Fecha y centro inscriptor
+    %div.field_content
+      %span.field_name Fecha de inscripción:
+      - if @afiliado.fecha_de_inscripcion
+        %span.field_value= @afiliado.fecha_de_inscripcion.strftime("%d/%m/%Y")
+      - else
+        %span.field_empty No se ingresó la fecha de inscripción.
+    %div.field_content
+      %span.field_name Centro de inscripción:
+      - if @afiliado.centro_de_inscripcion
+        %span.field_value= @afiliado.centro_de_inscripcion.nombre
+      - else
+        %span.field_empty No se indicó el centro de inscripción.
+
+    - if @afiliado.observaciones_generales
+      %h3 Observaciones generales
+      %div.field_content
+        %span.field_value
+          - @afiliado.observaciones_generales.split("\n").each do |linea|
+            = linea
+            %br/

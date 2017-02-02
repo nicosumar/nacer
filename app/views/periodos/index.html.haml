@@ -1,0 +1,31 @@
+- content_for :title do
+  Liquidaciones - Periodos 
+#content-header
+  %h1 Periodos
+  #action-links
+    - if can? :create, Periodo
+      = link_to 'Nuevo Periodo', new_periodo_path
+
+#content-body
+  %table
+    %tr
+      %th Periodo
+      %th Fecha de cierre
+      %th Fecha de recepción
+      %th Fecha limite de prestaciones
+      %th Tipo de Periodo
+      %th Concepto al que aplica
+      %th Vigencia de las prestaciones
+      %th{colspan: '3'} Acciones
+    - @periodos.each do |periodo|
+      %tr
+        %td= periodo.periodo
+        %td= periodo.fecha_cierre
+        %td= periodo.fecha_recepcion
+        %td= periodo.fecha_limite_prestaciones
+        %td= periodo.tipo_periodo.descripcion
+        %td= periodo.concepto_de_facturacion.concepto unless periodo.concepto_de_facturacion.blank?
+        %td= periodo.dias_de_prestacion
+        %td= link_to 'Ver', periodo
+        %td= link_to 'Editar', edit_periodo_path(periodo)
+        %td= link_to 'Borrar', periodo, method: :delete, data: { confirm: "¿Esta seguro que desea eliminar el periodo '#{periodo.periodo}'?" }

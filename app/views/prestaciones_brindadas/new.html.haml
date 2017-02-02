@@ -1,0 +1,35 @@
+- anio = @prestacion_brindada.fecha_de_la_prestacion.year
+- mes = @prestacion_brindada.fecha_de_la_prestacion.month - 1
+- dia = @prestacion_brindada.fecha_de_la_prestacion.day
+
+- content_for :title do
+  Nueva prestación brindada
+
+- content_for :other_includes do
+  %script{:type => "text/javascript"}
+    = "var dFechaPrestacion = new Date(#{anio}, #{mes}, #{dia});"
+    - if @prestacion_brindada.datos_reportables_asociados.any?
+      != "var dDatosReportablesAsociados = #{@prestacion_brindada.datos_reportables_asociados.to_json(:include => {:dato_reportable_requerido => {:include => :dato_reportable}}, :methods => :errors)};"
+    - else
+      = "var dDatosReportablesAsociados = {};"
+  -#= javascript_include_tag 'prestaciones_brindadas'
+  = javascript_include_tag 'prestaciones_ajax'
+
+#content-header
+  %h1 Nueva prestación brindada
+
+= render :partial => "shared/info", :locals => { :registro => @prestacion_brindada }
+
+#content-body2
+  #content-body-text
+    %h2.first-header-with-note Formulario de creación de una nueva prestación brindada
+    %p.note Los campos marcados con asterisco (*) son obligatorios
+
+    = render "form"
+
+  #content-body-info
+    %a{:href => "http://www.msal.gob.ar/sumar/", |
+      :onclick => "this.target='_blank'"} |
+      = ''
+      = image_tag "placas_info/" + rand(1..12).to_s + ".png"
+

@@ -1,0 +1,62 @@
+= form_for(@convenio_de_administracion) do |f|
+
+  %h3.first-header-with-note Datos de identificación
+  - if @convenio_de_administracion.new_record?
+    %p.note Verifique la corrección de estos datos, ya que después de guardarlos no podrán modificarse
+    %div.field
+      = f.label :numero, "Número*"
+      = f.text_field :numero, :style => "text-transform: uppercase;"
+    %div.field
+      = f.label :efector_id, "Efector administrado*"
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), {:include_blank => true}, |
+        {:class => "multi_select", :"data-placeholder" => "Seleccione el efector administrado", :style => "width: 500px;"} |
+    %div.field
+      = f.label :administrador_id, "Administrador*"
+      = f.select :administrador_id, options_for_select(@administradores, @administrador_id), {:include_blank => true}, |
+        {:class => "multi_select", :"data-placeholder" => "Seleccione el administrador", :style => "width: 500px;"} |
+  - else
+    %p.note Estos datos no pueden modificarse
+    %div.field_content
+      %span.field_name Número
+      %span.field_value= @convenio_de_administracion.numero
+    %div.field
+      %span.field_name Efector administrado
+      %span.field_value= @convenio_de_administracion.efector.nombre
+    %div.field
+      %span.field_name Administrador
+      %span.field_value= @convenio_de_administracion.administrador.nombre
+
+  %h3 Datos del firmante y fechas
+  %div.field
+    = f.label :firmante_id, "Referente del efector administrador que firma"
+    = f.select :firmante_id, options_for_select(@firmantes, @firmante_id), {:include_blank => true}, |
+      {:class => "multi_select", :"data-placeholder" => "Seleccione el referente que firma", :style => "width: 400px;"}
+  %div.field
+    = f.label :fecha_de_suscripcion
+    = f.date_select :fecha_de_suscripcion, |
+      {:start_year => 2013, :end_year => Date.today.year + 1, :include_blank => true} |
+  %div.field
+    = f.label :fecha_de_inicio, "Fecha de inicio*"
+    = f.date_select :fecha_de_inicio, |
+      {:start_year => 2013, :end_year => Date.today.year + 1, :include_blank => true} |
+  %div.field
+    = f.label :fecha_de_finalizacion, "Fecha de finalización*"
+    = f.date_select :fecha_de_finalizacion, |
+      {:start_year => 2013, :end_year => Date.today.year + 10, :include_blank => true} |
+
+  %h3.header-with-note Direcciones de correo electrónico para notificaciones fehacientes al administrador
+  %p.note Puede ingresar más de una dirección separándolas con comas (,)
+  %div.field
+    = f.text_field :email
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %div.actions
+    - if @convenio_de_administracion.new_record?
+      = f.submit "Crear el convenio de administración Sumar"
+      = link_to "Cancelar", convenios_de_administracion_sumar_path
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @convenio_de_administracion

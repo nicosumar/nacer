@@ -1,0 +1,60 @@
+- content_for :title do
+  Información detallada de la liquidación
+
+#content-header
+  %h1 Información detallada de la liquidación
+  #action-links
+    - if can? :update, Liquidacion
+      = link_to "Modificar la liquidación", edit_liquidacion_path(@liquidacion)
+    - if can? :create, CuasiFactura
+      = link_to "Agregar una cuasi-factura", new_cuasi_factura_url(:liquidacion_id => @liquidacion.id)
+    - if can?(:create, RegistroDePrestacion) && !@liquidacion.cuasi_facturas.any?
+      = link_to "Importar archivo 'P'", importar_archivo_p_url(:liquidacion_id => @liquidacion.id)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3.first-header Datos de identificación
+  %div.field_content
+    %span.field_name Administrador
+    %span.field_value= @liquidacion.efector.cuie.to_s + " - " + @liquidacion.efector.nombre
+    = link_to "Ver detalles del efector", @liquidacion.efector
+  %div.field_content
+    %span.field_name Periodo liquidado (mes y año)
+    %span.field_value= l(Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1), |
+      :format => :month_and_year) |
+
+  %h3 Información general
+  %div.field_content
+    %span.field_name Número de expediente
+    %span.field_value= @liquidacion.numero_de_expediente
+  %div.field_content
+    %span.field_name Fecha de recepción
+    %span.field_value= @liquidacion.fecha_de_recepcion.strftime("%d/%m/%Y")
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@liquidacion.observaciones.blank?
+      %span.field_value_multiline
+        - @liquidacion.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para la liquidación
+
+  %h3 Cuasi-facturas incluidas en la liquidación
+  - if @liquidacion.cuasi_facturas.any?
+    %table
+      %thead
+        %tr
+          %th Efector
+          %th Fecha de presentación
+          %th Número de liquidación
+      %tbody
+        - @liquidacion.cuasi_facturas.each do |c|
+          %tr.clickable{ :onclick => "location.href=\'#{cuasi_factura_path(c)}\'", :title => "Ver detalles de la cuasi-factura" }
+            %td= c.efector.nombre
+            %td= c.fecha_de_presentacion.strftime("%d/%m/%Y")
+            %td= c.numero_de_liquidacion
+  - else
+    %p Aún no se han incluido cuasi-facturas en esta liquidación.

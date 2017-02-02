@@ -1,0 +1,11 @@
+- content_for :title do
+  Editar grupo de efectores para liquidacion
+
+#content-header
+  %h1 Editar grupo de efectores para liquidacion
+  #action-links
+    = link_to '<< Volver al listado', grupos_de_efectores_liquidaciones_path
+    = link_to 'Ver', @grupo_de_efector_liquidacion
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @grupo_de_efector_liquidacion }
+  = render 'form'

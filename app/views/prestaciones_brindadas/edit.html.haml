@@ -1,0 +1,16 @@
+- content_for :title do
+  Modificación de una prestación brindada
+
+-# content_for :other_includes do
+  = javascript_include_tag 'prestaciones_brindadas'
+
+#content-header
+  %h1 Modificación de una prestación brindada
+
+= render :partial => "shared/info", :locals => { :registro => @prestacion_brindada }
+
+#content-body
+  %h2.first-header-with-note Formulario de modificación de una prestación brindada
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render "form"

@@ -1,0 +1,27 @@
+- content_for :title do
+  Contactos
+
+#content-header
+  %h1 Contactos
+  - if can? :create, Contacto
+    #action-links
+      = link_to "Agregar un contacto", new_contacto_url
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Listado de contactos
+
+  %table
+    %thead
+      %tr
+        %th Mostrado
+        %th E-mail
+        %th Teléfonos
+    %tbody
+      - @contactos.each do |c|
+        %tr.clickable{ :onclick => "location.href=\'#{contacto_path(c)}\'", :title => "Ver detalles del contacto" }
+          %td= c.mostrado
+          %td= c.email
+          %td= c.telefono.to_s + (c.telefono_movil ? ", " + c.telefono_movil : "")
+  = will_paginate @contactos, :inner_window => 2, :outer_window => 0

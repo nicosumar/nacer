@@ -1,0 +1,12 @@
+= stylesheet_link_tag"entradas.css"
+= javascript_include_tag "informes.js"
+
+- content_for :title do
+  Informes
+
+#content-header
+  %h1 Informes
+#content-body
+  %h2.first-header Editar informe
+= render :partial => "shared/info", :locals => { :registro => @informe }
+= render 'form'

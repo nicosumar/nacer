@@ -1,0 +1,55 @@
+- if defined?(registro) && registro.errors.any?
+  #info.infobox-error
+    %h2= pluralize(registro.errors.count, "error impide").to_s + " llevar a cabo la operación solicitada"
+    %ul
+      -# TODO: mejorar este hack horripilante para personalizar los mensajes de error
+        # registro.errors.full_messages.each do |msg|
+          %li= msg
+      - registro.errors.each do |attr, msg|
+        -# Si el mensaje de error comienza con mayúsculas entonces suponemos que ya incluye el nombre del atributo
+        - if msg.first.mb_chars.to_s.upcase == msg.first.mb_chars.to_s
+          %li= msg
+        - else
+          %li= "El valor del campo \"" + attr.to_s.humanize + "\" " + msg
+- elsif flash[:alert]
+  -# Alerta fijada por Devise
+  #info.infobox-error
+    %h2= flash[:alert]
+- elsif flash[:notice]
+  -# Notificación fijada por Devise
+  #info.infobox-ok
+    %h2= flash[:notice]
+- elsif flash[:tipo]
+  - case
+    - when flash[:tipo] == :error
+      #info.infobox-error
+        %h2= flash[:titulo]
+        - if flash[:mensaje]
+          - if flash[:mensaje].is_a? String
+            %p
+              - flash[:mensaje].split("\n").each do |l|
+                = l.to_s
+          - elsif flash[:mensaje].is_a? Array
+            %ul
+              - flash[:mensaje].each do |msj|
+                %li= msj
+    - when flash[:tipo] == :advertencia
+      #info.infobox-advertencia
+        %h2= flash[:titulo]
+        - if flash[:mensaje]
+          - if flash[:mensaje].is_a? String
+            %p= flash[:mensaje]
+          - elsif flash[:mensaje].is_a? Array
+            %ul
+              - flash[:mensaje].each do |msj|
+                %li= msj
+    - else
+      #info.infobox-ok
+        %h2= flash[:titulo]
+        - if flash[:mensaje]
+          - if flash[:mensaje].is_a? String
+            %p= flash[:mensaje]
+          - elsif flash[:mensaje].is_a? Array
+            %ul
+              - flash[:mensaje].each do |msj|
+                %li= msj

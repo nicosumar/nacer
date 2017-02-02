@@ -1,0 +1,12 @@
+- content_for :title do
+  = @cabecera_informe.titulo
+
+#content-header
+  %h1= @cabecera_informe.titulo
+
+#content-body
+  %h2.first-header= @cabecera_informe.titulo
+  - if  @resultado.present?
+    = render(:partial => "render_"+@cabecera_informe.nombre_partial, :locals => {resultado: @resultado, informe: @cabecera_informe})
+  - else
+    %h3 La busqueda no encontro resultados

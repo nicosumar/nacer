@@ -1,0 +1,83 @@
+<% content_for :title do %>
+  Prestaciones
+<% end %>
+
+<div id="content-header">
+  <h1>Prestaciones</h1>
+  <div id="action-links"><%= link_to('Nueva Prestación', new_prestacion_path) if can? :create, Prestacion %> </div>  
+</div>
+
+<div id="content-body">
+  <h1>Filtrar</h1>
+  <div class="nested-fields-label-container">
+    <div class="small-label">Código</div>
+    <div class="small-label">Sección PDSS</div>
+    <div class="small-label">Grupo PDSS</div>
+    <div class="small-label"></div>
+  </div>
+  <%= form_tag(prestaciones_path, :method => "get") do %>
+    <div class="nested-fields-label-container">
+      <div class="small-label"><%= text_field_tag(:codigo) %></div>
+      <div class="small-label">
+        <%= collection_select(:filter, :seccion_pdss_id, SeccionPdss.all, :id, :nombre, {include_blank: 'Seleccione una sección'}, {class: "small-input seccion-pdss-select" }) %>  
+      </div>
+      <div class="small-label">
+        <%= collection_select(:filter, :grupo_pdss_id, SeccionPdss.first.grupos_pdss, :id, :nombre, {include_blank: 'Seleccione un grupo'}, {class: "small-input grupo-pdss-select"}) %>
+      </div>
+      <div class="small-label"><%= submit_tag("Filtrar") %></div>
+    </div>
+  <% end %> 
+  <hr>
+  <table>
+    <tr>
+      <th>Seccion / Grupo</th>
+      <th>Línea de cuidado</th>
+      <th>Tipo</th>
+      <th>Nombre</th>
+      <th>Sexos</th>
+      <th>Código</th>
+      <th>Diagnósticos</th>
+      <th>Acciones</th>
+    </tr>
+    <%
+      @secciones_grupo_pdss.each do |seccion_grupo_pdss|
+        seccion_grupo_pdss_rowspan = true
+    %>
+      <% 
+        seccion_grupo_pdss[:lineas_de_cuidado].each do |linea_de_cuidado| 
+          linea_de_cuidado_rowspan = true
+      %>
+        <% linea_de_cuidado[:prestaciones].each do |prestacion| %>
+          <tr>
+            <% if seccion_grupo_pdss_rowspan 
+                seccion_grupo_pdss_rowspan = false
+            %>
+              <td rowspan="<%= seccion_grupo_pdss[:prestaciones_count] %>"><%=  seccion_grupo_pdss[:nombre] %></td>
+            <% end %>
+            <% if linea_de_cuidado_rowspan 
+              linea_de_cuidado_rowspan = false
+            %>
+              <td rowspan="<%= linea_de_cuidado[:prestaciones].count %>"><%= linea_de_cuidado[:nombre] %></td>
+            <% end %>
+            <td><%= prestacion.tipo_de_prestacion.present? ? prestacion.tipo_de_prestacion.nombre : "Sin especificar" %></td>
+            <td><%= prestacion.nombre_corto %></td>
+            <td><%= obtener_listado_de_nombres prestacion.sexos %></td>
+            <td><%= prestacion.codigo %></td>
+            <td>
+              <% if prestacion.diagnosticos.count > 0 %>
+                <% prestacion.diagnosticos.each do |diagnostico| %>
+                  <%= diagnostico.codigo + ", " %>
+                <% end %>
+              <% else %>
+                -------
+              <% end %>          
+            </td>
+            <td><%= link_to('Ver', prestacion_path(prestacion)) if can? :read, Prestacion %> <br/> <%= link_to('Editar', edit_prestacion_path(prestacion)) if can? :manage, Prestacion %> <br/> <%= link_to('Asignar precios', edit_para_asignacion_de_precios_prestacion_path(prestacion)) if can? :manage, Prestacion %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    <% end %>
+  </table>
+  <%= will_paginate @prestaciones, :inner_window => 2, :outer_window => 0 %>
+</div>
+<%= javascript_include_tag 'prestaciones/_index.js' %>

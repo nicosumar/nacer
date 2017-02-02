@@ -1,0 +1,25 @@
+- content_for :title do
+  Sistema de gestión del seguro provincial / Programa Sumar Mendoza
+
+#content-header
+  %h1 Inicio
+
+= render :partial => "shared/info"
+
+#content-body
+
+  %h2.first-header
+    - if current_user.sexo_id == 1
+      Bienvenida,
+    - else
+      Bienvenido,
+    = current_user.nombre.mb_chars.titleize.to_s
+
+  %p
+    Su último acceso se realizó desde la IP
+    = current_user.last_sign_in_ip
+    el día
+    = current_user.last_sign_in_at.strftime("%d/%m/%Y") + "."
+
+  %p
+    Puede comenzar a trabajar. Seleccione el módulo y operación deseados desde el menú superior.

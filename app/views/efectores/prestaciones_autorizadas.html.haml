@@ -1,0 +1,39 @@
+- content_for :title do
+  Plan de servicios de salud autorizado para el efector
+
+#content-header
+  %h1 Plan de servicios de salud autorizado para el efector
+  #action-links
+    - if can? :create, Addenda
+      - if @efector.convenio_de_gestion_sumar
+        = link_to "Agregar una adenda", new_addenda_sumar_path(:convenio_de_gestion_sumar_id => @efector.convenio_de_gestion_sumar.id)
+      - elsif @efector.convenio_de_gestion
+        = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @efector.convenio_de_gestion.id)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Efector
+  %div.field_content
+    - if !@efector.cuie.blank?
+      %span.field_value= @efector.cuie + " - " + @efector.nombre
+    - else
+      %span.field_value= @efector.nombre + " (el CUIE aún no se ha asignado)"
+    = link_to "Ver detalles del efector", @efector
+
+  - if @efector.prestaciones_autorizadas_al_dia(Date.today).any?
+    %h2
+      Plan de servicios de salud autorizado para el efector al día
+      = Date.today.strftime("%d/%m/%Y")
+    - PrestacionPdssAutorizada.efector_y_fecha(@efector.id, Date.today).each do |seccion|
+      %div.seccion_pdss{:id => seccion["nombre"]}
+        %h4= (seccion["codigo"].present? ? seccion["codigo"] + ") " : "") + seccion["nombre"]
+        - if seccion.has_key? :grupos
+          - seccion[:grupos].each do |grupo|
+            %div.grupo_pdss{:id => grupo["nombre"]}
+              %h4= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
+              = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones]}
+        - else
+          = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => seccion[:prestaciones]}
+  - else
+    No hay información sobre las prestaciones autorizadas para el convenio

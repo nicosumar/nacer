@@ -1,0 +1,49 @@
+- content_for :title do
+  Nueva prestación brindada - Búsqueda de beneficiarias y beneficiarios
+
+-# content_for :other_includes do
+  = javascript_include_tag 'new_busqueda'
+
+#content-header
+  %h1 Nueva prestación brindada - Búsqueda de beneficiarios y beneficiarias
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Búsqueda de la beneficiaria o beneficiario al que se otorgó la prestación
+
+  %h3.header-with-note Términos de búsqueda
+  %p.note Ingrese uno o más términos de búsqueda (apellidos, nombres, números de documento, etc.)
+
+  = form_tag('/prestaciones_brindadas/new', :method => 'get') do
+    %div.field
+      = text_field_tag :terminos, (@terminos.blank? ? "" : @terminos), :size => 40
+      = submit_tag "Buscar"
+
+  - if @registros_coincidentes && @registros_coincidentes > 0
+    %h2.header-with-note Resultados de la búsqueda
+    %p.note Haga clic sobre el beneficiario al que se le otorgó la prestación
+
+    La búsqueda devolvió
+    = @registros_coincidentes
+    - if @registros_coincidentes == 1
+      registro coincidente en
+    - else
+      registros coincidentes en
+    = ("%.2f" % @tiempo_de_busqueda).gsub('.', ',')
+    segundos
+
+    #resultados
+      - @resultados_de_la_busqueda.each do |r|
+        %p
+          - if r.modelo_type == "NovedadDelAfiliado"
+            %span.titulo= link_to r.titulo, |
+              new_prestacion_brindada_path(:clave_de_beneficiario => NovedadDelAfiliado.find(r.modelo_id).clave_de_beneficiario) |
+          - else
+            %span.titulo= link_to r.titulo, |
+              new_prestacion_brindada_path(:clave_de_beneficiario => Afiliado.find(r.modelo_id).clave_de_beneficiario) |
+          %br/
+          = sanitize r.texto
+      = will_paginate @resultados_de_la_busqueda, :inner_window => 2, :outer_window => 0
+  - else
+    No se encontraron resultados que coincidan con los criterios de búsqueda que ingresó.

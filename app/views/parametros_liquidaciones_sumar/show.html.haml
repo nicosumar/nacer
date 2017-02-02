@@ -1,0 +1,23 @@
+- content_for :title do
+  Parametros de Liquidación - Sumar
+
+#content-header
+  %h1 Parametros de Liquidación - Sumar
+  #action-links
+    - if can? :read, ParametroLiquidacionSumar
+      = link_to '<< Volver a liquidaciones', @parametro_liquidacion_sumar.liquidaciones_sumar.first
+    - if can? :update, ParametroLiquidacionSumar
+      = link_to 'Editar', edit_parametro_liquidacion_sumar_path(@parametro_liquidacion_sumar)
+
+= render :partial => "shared/info", :locals => { :registro => @parametro_liquidacion_sumar }
+
+#content-body
+  %div.field_content
+    %span.field_name Estado de prestaciones aceptadas:
+    %span.field_value= @parametro_liquidacion_sumar.prestacion_aceptada.nombre
+  %div.field_content
+    %span.field_name Estado de prestaciones rechazadas:
+    %span.field_value= @parametro_liquidacion_sumar.prestacion_rechazada.nombre
+  %div.field_content
+    %span.field_name Estado de prestaciones exceptuadas por regla:
+    %span.field_value= @parametro_liquidacion_sumar.prestacion_exceptuada.nombre

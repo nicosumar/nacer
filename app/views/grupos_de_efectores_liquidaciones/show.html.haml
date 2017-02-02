@@ -1,0 +1,27 @@
+- content_for :title do
+  Grupo de Efectores para Liquidacion
+
+#content-header
+  %h1 Grupo de Efectores para liquidacion
+  #action-links
+    - if can? :read, GrupoDeEfectoresLiquidacion
+      = link_to '<< Volver al listado', grupos_de_efectores_liquidaciones_path
+    - if can? :update, GrupoDeEfectoresLiquidacion
+      = link_to 'Editar', edit_grupo_de_efector_liquidacion_path(@grupo_de_efector_liquidacion)
+
+= render :partial => "shared/info", :locals => { :registro => @grupo_de_efector_liquidacion }
+
+#content-body
+  %div.field_content
+    %span.field_name Grupo:
+    %span.field_value= @grupo_de_efector_liquidacion.grupo
+  %div.field_content
+    %span.field_name Descripción:
+    %span.field_value= @grupo_de_efector_liquidacion.descripcion
+  %table
+    %tr
+      %th Efector
+    - @grupo_de_efector_liquidacion.efectores.each do |efector|
+      %tr
+        %td= efector.nombre
+        

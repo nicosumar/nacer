@@ -1,0 +1,17 @@
+- content_for :other_includes do
+  = javascript_include_tag 'jquery.chained.min'
+  = javascript_include_tag 'convenios_de_gestion_sumar.js'
+
+- content_for :title do
+  Creación de un nuevo convenio de gestión Sumar
+
+#content-header
+  %h1 Creación de un nuevo convenio de gestión Sumar
+
+= render :partial => "shared/info", :locals => { :registro => @convenio_de_gestion }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de un convenio de gestión Sumar
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render 'form'

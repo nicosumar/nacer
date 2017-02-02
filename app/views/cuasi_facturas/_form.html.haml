@@ -1,0 +1,50 @@
+= form_for(@cuasi_factura) do |f|
+  %div.hidden_field
+    %input{ :id => "cuasi_factura_liquidacion_id", :name => "cuasi_factura[liquidacion_id]", :type => "hidden", :value => @liquidacion.id }
+
+  %h3.first-header Datos de la liquidación
+  %div.field_content
+    %span.field_name Administrador
+    %span.field_value= @liquidacion.efector.nombre
+  %div.field_content
+    %span.field_name Periodo liquidado (mes y año)
+    %span.field_value= l(Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1), |
+      :format => :month_and_year) |
+
+  %h3.header-with-note Datos de identificación
+  - if @cuasi_factura.new_record?
+    %p.note Verifique la corrección de estos datos, ya que después de guardarlos no podrán modificarse
+    %div.field
+      = f.label :efector_id, "Efector*"
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true }
+    %div.field
+      = f.label :nomenclador_id, "Nomenclador*"
+      = f.select :nomenclador_id, options_for_select(@nomencladores, @nomenclador_id), { :include_blank => true }
+  - else
+    %p.note Estos datos no pueden modificarse
+    %div.field_content
+      %span.field_name Efector
+      %span.field_value= @cuasi_factura.efector.cuie.to_s + " - " + @cuasi_factura.efector.nombre
+    %div.field
+      %span.field_name Nomenclador
+      %span.field_value= @cuasi_factura.nomenclador.nombre
+
+  %h3 Información general
+  %div.field
+    = f.label :fecha_de_presentacion, "Fecha de presentación*"
+    = f.date_select :fecha_de_presentacion
+  %div.field
+    = f.label :numero, "Número de cuasi-factura*"
+    = f.text_field :numero
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %div.actions
+    - if @cuasi_factura.new_record?
+      = f.submit "Crear la cuasi-factura"
+      = link_to "Cancelar", @liquidacion
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @cuasi_factura

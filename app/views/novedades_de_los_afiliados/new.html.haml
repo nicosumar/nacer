@@ -1,0 +1,19 @@
+- content_for :title do
+  Creación de una nueva solicitud
+
+- content_for :other_includes do
+  = javascript_include_tag "novedades_de_los_afiliados"
+
+#content-header
+  %h1 Creación de una nueva solicitud
+
+= render :partial => "shared/info", :locals => { :registro => @novedad }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de una nueva solicitud
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  - if @novedad.tipo_de_novedad.codigo == "B"
+    = render "form_baja"
+  - else
+    = render "form"

@@ -1,0 +1,27 @@
+- content_for :title do
+  Cambio de contraseña
+
+#content-header
+  %h1 Cambio de contraseña
+
+= render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
+
+#content-body
+  %h2.first-header Ingreso de la nueva contraseña
+
+  = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put, :autocomplete => "off" }) do |f|
+
+    = f.hidden_field :reset_password_token
+
+    %div.field
+      = f.label :password, "Nueva contraseña"
+      = f.password_field :password, {:placeholder => 'Mínimo: 8 caracteres'}
+
+    %div.field
+      = f.label :password_confirmation, "Confirme la nueva contraseña"
+      = f.password_field :password_confirmation, {:placeholder => 'Reingrese la misma contraseña'}
+
+    %div.actions
+      = f.submit "Cambiar la contraseña"
+
+  = render "devise/shared/links"

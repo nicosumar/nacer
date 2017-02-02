@@ -1,0 +1,149 @@
+- if @prestacion_brindada.clave_de_beneficiario
+  %h3 Clave única de beneficiario asociada a la prestación
+  %div.field_content
+    %span.field_value= @prestacion_brindada.clave_de_beneficiario
+
+  %h3
+    Datos más recientes sobre
+    - if @beneficiario.sexo.codigo == 'F'
+      la beneficiaria,
+    - else
+      el beneficiario,
+    - if @beneficiario.is_a? NovedadDelAfiliado
+      = link_to "según una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + |
+        " pendiente", @beneficiario, { :title => "Ver detalles de la solicitud en otra pestaña", |
+        :onclick => "this.target='_blank'" } |
+    - else
+      = link_to "según el registro en el padrón de beneficiarios", @beneficiario, |
+        { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
+
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
+  %div.field_content
+    %span.field_name= "Documento" + (@beneficiario.clase_de_documento.present? ? " " + @beneficiario.clase_de_documento.nombre.downcase : "")
+    %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
+      @beneficiario.numero_de_documento.to_s |
+  %div.field_content
+    %span.field_name Fecha de nacimiento
+    %span.field_value
+      = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y") + " (a la fecha de la prestación tenía "
+      = (edad_entre(@beneficiario.fecha_de_nacimiento, @prestacion_brindada.fecha_de_la_prestacion) || |
+        "fecha de nacimiento en el futuro") + ")" |
+
+%h3 Efector y fecha en que se brindó la prestación
+%div.field_content
+  %span.field_name Efector*
+  %span.field_value= @prestacion_brindada.efector.nombre
+%div.field_content
+  %span.field_name Fecha de la prestación*
+  %span.field_value= @prestacion_brindada.fecha_de_la_prestacion.strftime("%d/%m/%Y")
+
+= form_for(@prestacion_brindada) do |f|
+  - if @prestacion_brindada.clave_de_beneficiario
+    = f.hidden_field :clave_de_beneficiario, :value => @prestacion_brindada.clave_de_beneficiario
+  - else
+    = hidden_field_tag :comunitaria, true
+  = f.hidden_field :efector_id, :value => @prestacion_brindada.efector_id
+  = f.hidden_field :fecha_de_la_prestacion, :value => @prestacion_brindada.fecha_de_la_prestacion
+
+  #prestacion.field
+    - if @prestacion_brindada.persisted?
+      = f.hidden_field :prestacion_id, :value => @prestacion_brindada.prestacion_id
+      %div.field_content
+        %span.field_name Prestación*
+        %span.field_value= @prestacion_brindada.prestacion.codigo + ' - ' + @prestacion_brindada.prestacion.nombre
+    - else
+      - if @prestacion_brindada.clave_de_beneficiario.present?
+        - parametro_adicional = "clave_de_beneficiario: '#{@prestacion_brindada.clave_de_beneficiario}', "
+      - else
+        - parametro_adicional = "comunitaria: 'true', "
+
+      = f.label :prestacion_id, "Prestación*"
+      = f.hidden_field :prestacion_id, class: 'select2 ajax', data: { source: prestaciones_autorizadas_path, coleccion: 'prestaciones', parametros_adicionales: " #{parametro_adicional} fecha_de_la_prestacion: '#{@prestacion_brindada.fecha_de_la_prestacion}', efector_id: '#{@prestacion_brindada.efector.id}'",funcion_de_formato_seleccionada: "maquetaPrestacionesSeleccionadas", funcion_de_formato: "maquetaPrestaciones", opciones: {closeOnSelect: true, dropdownAutoWidth: true, width: '60%', placeholder: 'Seleccione una prestación...' } }
+
+  - if @prestacion_brindada.persisted?
+    #diagnostico.field
+      - if @diagnosticos.size == 1
+        = f.hidden_field :diagnostico_id, :value => @diagnosticos.first[1]
+        %div.field_content
+          %span.field_name Diagnóstico*
+          %span.field_value= @diagnosticos.first[0]
+      - else
+        = f.label :diagnostico_id, "Diagnóstico*"
+        = f.select :diagnostico_id, options_for_select(@diagnosticos, @prestacion_brindada.diagnostico_id), |
+          {:include_blank => true}, {:class => "multi_select", :"data-placeholder" => "Seleccione un diagnóstico...", |
+          :style => "width: 600px;"} |
+  - else
+    #diagnostico.field  
+
+  - if @prestacion_brindada.persisted?
+    - if @prestacion_brindada.prestacion && !@prestacion_brindada.prestacion.comunitaria
+      #historia_clinica.field
+        = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+        = f.text_field :historia_clinica, {:size => 15}
+    - else
+      #historia_clinica.field{:style => "display: none;"}
+        = f.label :historia_clinica, "Historia clínica / Nº de informe / Nº de solicitud*"
+        = f.text_field :historia_clinica, {:size => 15}
+  - else
+    #historia_clinica.field
+
+  - if @prestacion_brindada.persisted? 
+    - if @prestacion_brindada.prestacion.unidades_maximas > 1
+      #cantidad_de_unidades.field
+        = f.label :cantidad_de_unidades, "Cantidad de unidades*"
+        = f.text_field :cantidad_de_unidades, {:size => 6}
+    - else
+      #cantidad_de_unidades.field{:style => "display: none;"}
+        = f.label :cantidad_de_unidades, (@prestacion_brindada.prestacion.unidad_de_medida.nombre + "*")
+        = f.text_field :cantidad_de_unidades, {:size => 6}
+  - else
+    #cantidad_de_unidades.field
+
+  #es_catastrofica.field{:style => "display: none;"}
+
+  #atributos_reportables
+    - if @prestacion_brindada.persisted? && @prestacion_brindada.datos_reportables_asociados.size > 0
+      %h3 Atributos Reportables
+      - @prestacion_brindada.datos_reportables_asociados.each_with_index do |dra, i|
+        - drr = dra.dato_reportable_requerido
+        - dr = drr.dato_reportable
+        = f.fields_for :datos_reportables_asociados_attributes, :index => i do |dra_f|
+          = dra_f.hidden_field :id, :value => dra.id
+          - if dr.integra_grupo && dr.orden_de_grupo == 1
+            %div{:id => "titulo_grupo_" + dr.codigo_de_grupo}
+              %h4= dr.nombre_de_grupo
+          = dra_f.hidden_field :dato_reportable_requerido_id, :value => dra.dato_reportable_requerido_id
+          %div.field{:id => "dato_reportable_requerido_" + dra.dato_reportable_requerido_id.to_s}
+            - if dra.errors.size > 0
+              %div.field_with_errors
+                = dra_f.label ("valor_" + dr.tipo_ruby).to_sym, dr.nombre
+            - else
+              = dra_f.label ("valor_" + dr.tipo_ruby).to_sym, dr.nombre
+            - if dra.errors.size > 0
+              <div class="field_with_errors">
+            - case
+              - when dr.enumerable
+                = dra_f.select :valor_integer, options_from_collection_for_select( |
+                  eval(dr.clase_para_enumeracion).find(:all, :order => :id), :id, :nombre, dra.valor_integer), |
+                  eval(dr.opciones_de_formateo || "{}").merge(:include_blank => true), |
+                  {:class => "multi_select", style: "width: 600px", data: {:placeholder => "Seleccione una opción..."} } |
+              - when dr.tipo_ruby == "date"
+                = dra_f.text_field ("valor_" + dr.tipo_ruby).to_sym, { :class => "jquery_fecha", value: dra.valor_date }
+              - else
+                = dra_f.text_field ("valor_" + dr.tipo_ruby).to_sym, eval(dr.opciones_de_formateo || "{}").merge( :value => eval("dra.valor_" + dr.tipo_ruby)) 
+            - if dra.errors.size > 0
+              </div>
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %div.actions
+    - if @prestacion_brindada.new_record?
+      = f.submit "Registrar la prestación brindada"
+      = link_to "Cancelar", root_url
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @prestacion_brindada

@@ -1,0 +1,13 @@
+- content_for :title do
+  Creación de un nuevo contacto
+
+#content-header
+  %h1 Creación de un nuevo contacto
+
+= render :partial => "shared/info", :locals => { :registro => @contacto }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de un contacto
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render 'form'

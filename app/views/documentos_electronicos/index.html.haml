@@ -1,0 +1,30 @@
+= javascript_include_tag 'jstree.min.js'
+= javascript_include_tag 'documentos_electronicos.js'
+= stylesheet_link_tag 'jstree/style.min.css'
+- content_for :title do
+  Documentos electronicos - Sumar
+#content-header
+  %h1 Informes de Liquidacion - Sumar
+
+#content-body
+
+  %h2.first-header Buscar documentos electronicos
+  - if @efectores.present?
+    = form_tag(documentos_electronicos_index_path, method:  :get) do 
+      .field
+        = label_tag "Efector:"
+        = select_tag 'efector_id', options_for_select(@efectores, @efector_id), {:class => 'multi_select'}
+      = submit_tag "Buscar"
+    %br
+    %br
+
+  - if @arbol_de_efectores.present?
+    .field
+      = text_field_tag 'arbol_q', nil, {placeholder: "Ingrese los terminos a buscar en el árbol", style: "border-radius:4px; border:1px solid silver;", size: 70}
+      ¿Expandir todo el árbol?
+      = check_box_tag "expandir", 1, false
+  %br
+
+  #arbol
+    - render_arbol(@arbol_de_efectores)
+

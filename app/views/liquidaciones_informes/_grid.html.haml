@@ -1,0 +1,30 @@
+= grid(@liquidaciones_informes) do |g|
+  -# Muestra si no se encontraron registros
+  - g.blank_slate content_tag(:div, "Nada para mostrar")
+   
+  -# Columnas del grid
+  - g.column name: "Efector" do |c|
+    - c.efector.nombre
+  - g.column name: "Periodo" do |c|
+    - c.liquidacion_sumar.periodo.periodo
+  - g.column name: "Numero de<br>Cuasifactura".html_safe  do |c|
+    - c.liquidacion_sumar_cuasifactura.numero_cuasifactura
+  - g.column name: "Expediente" do |c|
+    - c.expediente_sumar.numero
+  - g.column name: 'Informe'  do |c|
+    - c.estado_del_proceso.blank? ? 'No iniciado' : c.estado_del_proceso.nombre
+  - g.column name: "Anexo<br>Administrativo".html_safe do |c|
+    - if can? :read, LiquidacionSumarAnexoAdministrativo
+      - c.liquidacion_sumar_anexo_administrativo.blank?  ? 'No iniciado' : (link_to "#{c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.nombre}",c.liquidacion_sumar_anexo_administrativo)
+  - g.column name: "Anexo<br>Medico".html_safe do |c|
+    - if can? :read, LiquidacionSumarAnexoMedico
+      - c.liquidacion_sumar_anexo_medico.blank? ? 'No iniciado': ( link_to "#{c.liquidacion_sumar_anexo_medico.estado_del_proceso.nombre}", c.liquidacion_sumar_anexo_medico )
+  
+  - g.column name: 'Acciones' do |c|
+    - if c.estado_del_proceso.codigo == "B" #Finalizado y cerrado
+      - #TODO: muestra listado de pdfs a descargar
+    - elsif c.estado_del_proceso.codigo == "N" #Estado No iniciado
+      - link_to 'Aprobaciones', edit_liquidacion_informe_path(c) # muestra el proceso de aprobación 
+    - elsif c.estado_del_proceso.codigo == "C" && ( !c.liquidacion_sumar_anexo_administrativo.blank? && !c.liquidacion_sumar_anexo_medico.blank?)
+      - if c.liquidacion_sumar_anexo_administrativo.estado_del_proceso.codigo == "F" && c.liquidacion_sumar_anexo_medico.estado_del_proceso.codigo == "F" #Estado F = Finalizado
+        - button_to 'Cerrar Informe', cerrar_liquidacion_informe_path(c), method: :post # Cierra el informe

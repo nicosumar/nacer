@@ -1,0 +1,26 @@
+<% if datos_reportables_requeridos.present? %>
+  <table>
+    <tr>
+      <th>Datos reportable</th>
+      <th>Inicio</th> 
+      <th>Fin</th>
+      <th>Mín.</th>
+      <th>Máx.</th>
+      <th>Necesario</th>
+      <th>Obligatorio</th>
+    </tr>
+    <% datos_reportables_requeridos.each do |dato_reportable_requerido| %>
+      <tr>
+        <td><%= obtener_nombre dato_reportable_requerido.dato_reportable %></td>
+        <td><%= dato_reportable_requerido.fecha_de_inicio %></td>
+        <td><%= dato_reportable_requerido.fecha_de_finalizacion %></td>
+        <td><%= dato_reportable_requerido.minimo %></td>
+        <td><%= dato_reportable_requerido.maximo %></td> 
+        <td><%= dato_reportable_requerido.necesario? ? "SI" : "NO" %></td>
+        <td><%= dato_reportable_requerido.obligatorio? ? "SI" : "NO" %></td> 
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  (Sin prestaciones pdss asociadas)
+<% end %>

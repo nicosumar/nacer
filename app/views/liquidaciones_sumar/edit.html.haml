@@ -1,0 +1,13 @@
+= javascript_include_tag 'jquery.chained.min'
+= javascript_include_tag 'liquidacion_sumar'
+- content_for :title do
+  Liquidacion - Editar Liquidacion
+
+#content-header
+  %h1 Editar Liquidacion
+  #action-links
+    = link_to '<< Volver al listado', liquidaciones_sumar_path
+    = link_to 'Ver', @liquidacion_sumar
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar }
+  = render 'form'

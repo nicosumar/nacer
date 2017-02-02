@@ -1,0 +1,49 @@
+# -*- encoding : utf-8 -*-
+img = File.join(Rails.root, 'app', 'assets','images','cabecera.png')
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "#{@liquidacion_sumar.periodo.periodo}_#{@liquidacion_sumar.concepto_de_facturacion.codigo}") do |sheet|
+ 
+  sheet.add_image(:image_src => img, :noSelect => true, :noMove => true, :hyperlink=>"http://sumar.salud.mendoza.gov.ar") do |image|
+      image.hyperlink.tooltip = "Sitio web sumar"
+      image.start_at 0, 0
+      image.width  =960
+      image.height =159
+  end
+
+  # espacio para la imagen
+  9.times do 
+    sheet.add_row [""]
+  end
+
+  sheet.add_row ["Detalle de Prestaciones", "#{@liquidacion_sumar.concepto_de_facturacion.concepto}"], widths: [:auto, :auto]
+  sheet.add_row ["Periodo de liquidación", "#{@liquidacion_sumar.periodo.periodo}"], widths: [:auto, :auto]
+  sheet.add_row ["Efector", "#{@efector.nombre}"], widths: [:auto, :auto]
+  sheet.add_row [nil]
+  sheet.add_row ["Código Prestación","Prestación" ,"Fecha de prestación", "Valor de la prestación", "Documento", "Beneficiario", 
+                 "Incluido en cuasifactura N°", "Rechazos por sistema", "Informe de liquidación", "Evaluación administrativa", "Motivo de rechazo administrativo",
+                 "Evaluación médica", "Motivo de rechazo médico",
+                 "Estado de liquidación", "Observaciones del proceso de liquidación", "Estado actual" ], widths: [:auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto]
+
+  @liquidacion_sumar.prestaciones_liquidadas_de(@efector).each do |det|
+    row = sheet.add_row [ 
+      det.prestacion_codigo+det.codigo_de_diagnostico,
+      det.prestacion_nombre,
+      det.fecha_de_la_prestacion,
+      det.monto,
+      det.documento,
+      det.nombre_y_apellido,
+      det.numero_cuasifactura,
+      det.observaciones_liquidacion,
+      det.estado_informe_liquidacion,
+      det.estado_prestacion_aa,
+      det.motivo_rechazo_aa,
+      det.estado_prestacion_am,
+      det.motivo_rechazo_am,
+      det.estado,
+      det.observaciones_de_liquidacion,
+      det.estado_actual
+    ], widths: [:auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto, :auto]
+    #sheet.add_hyperlink :location => prestacion_brindada_url(det.prestacion_brindada_id), :ref => "A#{row.index + 1}"
+    #sheet.add_hyperlink :location => prestacion_brindada_url(det.prestacion_brindada_id), :ref => "B#{row.index + 1}"
+  end
+end

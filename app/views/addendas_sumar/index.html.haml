@@ -1,0 +1,31 @@
+- content_for :title do
+  Adendas Sumar
+
+#content-header
+  %h1 Adendas Sumar
+  #action-links
+    - if can? :create, AddendaSumar
+      = link_to 'Nueva adenda masiva', new_masivo_addendas_sumar_path
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Listado de adendas Sumar
+
+  %table
+    %thead
+      %tr
+        %th Número
+        %th Convenio
+        %th Efector
+        %th Inicio
+        %th Última modificación
+    %tbody
+      - @addendas.each do |a|
+        %tr.clickable{ :onclick => "location.href=\'#{addenda_sumar_path(a)}\'", :title => "Ver detalles de la adenda" }
+          %td= a.numero.blank? ? "-" : a.numero
+          %td= a.convenio_de_gestion_sumar.numero
+          %td= a.convenio_de_gestion_sumar.efector.nombre
+          %td= a.fecha_de_inicio.strftime("%d/%m/%Y")
+          %td= a.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+  = will_paginate @addendas, :inner_window => 2, :outer_window => 0

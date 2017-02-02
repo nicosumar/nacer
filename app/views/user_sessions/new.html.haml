@@ -1,0 +1,29 @@
+- content_for :title do
+  Inicio de sesión
+
+- content_for :other_includes do
+  = javascript_include_tag "users_sign_in"
+
+#content-header
+  %h1 Inicio de sesión
+
+= render :partial => 'shared/info', :locals => { :registro => resource, :resource => resource }
+
+#content-body
+  %h2.first-header Credenciales de acceso
+
+  = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:autocomplete => "off"} ) do |f|
+    = devise_error_messages!
+
+    %div.field
+      = f.label :email
+      = f.email_field :email
+
+    %div.field
+      = f.label :password
+      = f.password_field :password
+
+    %div.actions
+      = f.submit "Iniciar la sesión"
+
+  = render "devise/shared/links"

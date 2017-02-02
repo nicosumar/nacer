@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+%html
+  %head
+    %title
+      = yield :title
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "application"
+    = yield :other_includes
+    = csrf_meta_tags
+  %body
+    #wrapper
+      #wrapper-bgbtm
+        #header
+          #logo
+
+        - if user_signed_in?
+          #lupa
+            = image_tag "lupa.png", :alt => "Buscar"
+          #search
+            %form{:method => 'get', :action => '/busqueda/'}
+              %fieldset
+                %input{ :type => 'text', :name => 'terminos', :id => 'busqueda', :size => '22', :placeholder => 'Buscar', :value => ''} 
+                %input.hidden{:type => 'submit', :id => 'enviar', :value => 'buscar'}
+
+          -# NUEVO MENÚ
+          %ul{:id => "newmenu"}
+            - if can?(:read, NovedadDelAfiliado) && uad_actual.inscripcion
+              %li
+                %a.drop{:href => "#"} PADRONES
+                %div.dropdown_3columns
+                  %div.col_3
+                    %h2 Gestión de padrones
+                  %div.col_2
+                    %h3 PROGRAMA SUMAR
+                    %ul
+                      - if can? :create, NovedadDelAfiliado
+                        %li= link_to "Solicitar un alta de beneficiario", new_alta_novedades_de_los_afiliados_path
+                      - if can? :read, NovedadDelAfiliado
+                        %li= link_to "Ver las solicitudes registradas", novedades_de_los_afiliados_path
+                  %div.col_1
+                    %h3 P.U.C.O.
+                    %ul
+                      %li= link_to "Buscar afiliado", "#", {:title => "En preparación... Aún no está disponible."}
+
+            - if can?(:read, PrestacionBrindada) && uad_actual.facturacion
+              %li
+                %a.drop{:href => "#"} PRESTACIONES
+                %div.dropdown_2columns
+                  %div.col_2
+                    %h2 Gestión de prestaciones
+                  %div.col_2
+                    %h3 REGISTRO DE PRESTACIONES
+                    %ul
+                      - if can? :create, PrestacionBrindada
+                        %li= link_to "Registrar una prestación individual", new_prestacion_brindada_path
+                      - if can? :create, PrestacionBrindada
+                        %li= link_to "Registrar una prestación comunitaria", new_prestacion_brindada_path(:comunitaria => true)
+                      - if can? :read, PrestacionBrindada
+                        %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
+
+            - if can? :read, Efector
+              %li
+                %a.drop{:href => "#"} EFECTORES
+                %div.dropdown_2columns
+                  %div.col_2
+                    %h2 Gestión de efectores y convenios
+                  %div.col_1
+                    %h3 EFECTORES
+                    %ul
+                      %li= link_to "Efectores", efectores_path
+                      %li= link_to "Documentos electrónicos", documentos_electronicos_index_path
+                    - if can? :read, AddendaSumar
+                      %h3 ADENDAS
+                      %ul
+                        %li= link_to "Adendas", addendas_sumar_path
+                  %div.col_1
+                    - if can? :read, ConvenioDeGestionSumar
+                      %h3 CONVENIOS SUMAR
+                      %ul
+                        %li= link_to "Gestión", convenios_de_gestion_sumar_path
+                        %li= link_to "Administración", convenios_de_administracion_sumar_path
+
+            - if (can? :read, LiquidacionSumar or can? :read, LiquidacionInforme) and current_user.in_group? [:coordinacion, :facturacion, :capacitacion, :auditoria_medica, :auditoria_control]
+              %li
+                %a.drop{:href => "#"} LIQUIDACIONES
+                %div.dropdown_2columns
+                  %div.col_2
+                    %h2 Gestión de cuasifacturas y liquidaciones
+                  %div.col_1
+                    %h3 PROGRAMA SUMAR
+                    %ul
+                      %li= link_to "Liquidaciones", liquidaciones_sumar_path
+                      %li= link_to "Cuasifacturas", liquidaciones_sumar_cuasifacturas_path
+                  %div.col_1
+                    %h3 PARAMETRIZACIÓN
+                    %ul
+                      %li= link_to "Grupos de efectores", grupos_de_efectores_liquidaciones_path
+                      %li= link_to "Conceptos de facturacion", conceptos_de_facturacion_path
+                      %li= link_to "Periodos", periodos_path
+                      %li= link_to "Nomencladores", nomencladores_path
+                      %li= link_to "Listado de prestaciones", prestaciones_url if current_user.in_group? [:auditoria_medica]
+                  %div.col_2
+                    %h3 CONTROLES PRESTACIONALES
+                    %ul
+                      %li= link_to "Informes de Liquidación", liquidaciones_informes_path
+                      %li= link_to "Informes de Debitos prestacionales", informes_debitos_prestacionales_path
+
+
+            - if can? :read, Contacto
+              %li
+                %a.drop{:href => "#"} HERRAMIENTAS
+                %div.dropdown_2columns
+                  %div.col_2
+                    %h2 Herramientas y utilidades
+                  %div.col_2
+                    %h3 LIBRETA DE CONTACTOS
+                    %ul
+                      %li= link_to "Contactos", contactos_url
+
+            - if current_user.in_group? [:coordinacion, :facturacion, :capacitacion, :comunicacion, :planificacion, :convenios, :auditoria_medica, :auditoria_control]
+              %li
+                %a.drop{:href => "#"} INFORMES
+                %div.dropdown_2columns
+                  %div.col_2
+                    %h2 Informes y estadística
+                  - if current_user.in_group? [:coordinacion, :capacitacion, :comunicacion, :planificacion]
+                    %div.col_1
+                      %h3 BENEFICIARIOS
+                      %ul
+                        %li= link_to "Beneficiarios activos", informe_de_beneficiarios_activos_url
+                  - if current_user.in_group? [:coordinacion, :planificacion]
+                    %div.col_1
+                      %h3 PLANIFICACIÓN
+                      %ul
+                        %li= link_to "Tablero de comandos EAI", tablero_de_comandos_alto_impacto_path
+                  %div.col_2
+                    %h3 INFORMES PARAMETRIZADOS
+                    %ul
+                      %li= link_to "Informes parametrizados", informes_path
+
+            - if current_user.in_group?(:capacitacion) && !current_user.in_group?(:administradores)
+              %li
+                %a.drop{:href => "#"} ADMINISTRACIÓN
+                %div.dropdown_2columns
+                  %div.col_2
+                    %h2 Administración del sistema
+                  %div.col_1
+                    %h3 USUARIOS
+                    %ul
+                      %li= link_to "Ver los usuarios", users_url
+                    %h3 UADs
+                    %ul
+                      %li= link_to "Ver las UADs", unidades_de_alta_de_datos_url
+                    %h3 PRESTACIONES
+                    %ul
+                      %li= link_to "Listado de prestaciones", prestaciones_url
+
+            - if current_user.in_group? [:administradores, :usuarios_uads_verificacion]
+              %li
+                %a.drop{:href => "#"} ADMINISTRACION
+                %div.dropdown_2columns
+                  %div.col_2
+                    %h2 Administración del sistema
+                  %div.col_1
+                    %h3 USUARIOS Y GRUPOS
+                    %ul
+                      %li= link_to "Gestionar los usuarios", users_url if current_user.in_group? :usuarios_uads_verificacion
+                      %li= link_to "Gestionar los grupos", "#", { :title => "En preparación... Aún no disponible." } if current_user.in_group? :administradores
+                    %h3 UADs y CIs
+                    %ul
+                      %li= link_to "Gestionar las UADs", unidades_de_alta_de_datos_url if current_user.in_group? :usuarios_uads_verificacion
+                      %li= link_to "Gestionar los CIs", "#", { :title => "En preparación... Aún no disponible." } if current_user.in_group? :administradores
+                  %div.col_1
+                    - if current_user.in_group? :administradores
+                      %h3 TABLAS AUXILIARES
+                      %ul
+                        %li= link_to "Gestionar tablas auxiliares", paises_path, { :title => "En preparación... Aún no disponible." }
+                    - if current_user.in_group? :administradores
+                      %h3 PROCESOS
+                      %ul
+                        %li= link_to "Procesos relacionados con padrones", padrones_url if current_user.in_group? :administradores
+                      %h3 PRESTACIONES
+                      %ul
+                        %li= link_to "Listado de prestaciones", prestaciones_url if current_user.in_group? :administradores
+
+            %li.menu_right
+              %a.drop{:href => "#"} MI CUENTA
+              %div.dropdown_2columns
+                %div.col_2
+                  %h2= (current_user.nombre + " " + current_user.apellido).mb_chars.titleize.to_s
+                %div.col_2
+                  %h3 DATOS DE LA CUENTA
+                  %ul
+                    %li= link_to "Modificar los datos de mi cuenta", edit_user_registration_path
+                  %h3 CAPACITACION
+                  %ul
+                    %li= link_to "Ayuda", capacitaciones_index_path, { :title => "Documentos, tutoriales y talleres" }
+                  %h3 SESIÓN ACTUAL
+                  %ul
+                    %li= link_to "Cerrar la sesión", destroy_user_session_path, :method => :delete
+                    - if current_user.unidades_de_alta_de_datos.count > 1 or current_user.in_group?(:administradores)
+                      %li= link_to "Cambiar la UAD actual", seleccionar_uad_url
+
+        #page
+          = yield
+
+        #footer
+
+          #pie
+            = image_tag "footer.png"
+          %p.primero
+            Copyleft 2012-2016,
+            = mail_to '"Área de sistemas informáticos, Programa SUMAR Mendoza" <operacionesnacer-salud@mendoza.gov.ar>', |
+              "Área de sistemas informáticos, Programa SUMAR Mendoza", :title => "Enviar un mensaje al equipo de desarrollo" |
+            = " - Teléfono: (0261) 424-7020, int. 119"
+          %p
+            Código fuente disponible en
+            %a{ :href => "https://github.com/sbosio/nacer", :onclick => "this.target='_blank'" }
+              GitHub
+          %p.licencia
+            %a{:rel => "license", :href => "http://creativecommons.org/licenses/by-sa/3.0/deed.es", |
+              :onclick => "this.target='_blank'"} |
+              = ''
+              = image_tag "cc_by_sa.png", :alt => "Licencia Creative Commons BY-SA", |
+                :title => "Distribuido bajo una licencia Creative Commons Atribución-CompartirIgual 3.0 Unported" |

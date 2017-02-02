@@ -1,0 +1,46 @@
+= form_for(@liquidacion) do |f|
+
+  %h3.first-header-with-note Datos de identificación
+  - if @liquidacion.new_record?
+    %p.note Verifique la corrección de estos datos, ya que después de guardarlos no podrán modificarse
+    %div.field
+      = f.label :efector, "Efector*"
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), { :include_blank => true }
+    %div.field
+      = f.label :mes_de_prestaciones, "Mes de prestaciones*"
+      = f.select :mes_de_prestaciones, options_for_select(@meses_de_prestaciones, @mes_de_prestaciones), { :include_blank => false }
+    %div.field
+      = f.label :anio_de_prestaciones, "Año de prestaciones*"
+      = f.select :anio_de_prestaciones, options_for_select(@anios_de_prestaciones, @anio_de_prestaciones), { :include_blank => false }
+  - else
+    %p.note Estos datos no pueden modificarse
+    %div.field_content
+      %span.field_name Efector
+      %span.field_value= @liquidacion.efector.cuie + " - " + @liquidacion.efector.nombre
+    %div.field
+      %span.field_name Mes de prestaciones
+      %span.field_value= l(Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1), |
+        :format => :only_month).titleize |
+    %div.field
+      %span.field_name Año de prestaciones
+      %span.field_value= @liquidacion.anio_de_prestaciones
+
+  %h3 Información general
+  %div.field
+    = f.label :fecha_de_recepcion, "Fecha de recepción*"
+    = f.date_select :fecha_de_recepcion
+  %div.field
+    = f.label :numero_de_expediente, "Número de expediente*"
+    = f.text_field :numero_de_expediente
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %div.actions
+    - if @liquidacion.new_record?
+      = f.submit "Crear la liquidación"
+      = link_to "Cancelar", liquidaciones_path
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @liquidacion

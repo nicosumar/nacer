@@ -1,0 +1,30 @@
+- content_for :title do
+  Convenios de administración
+
+#content-header
+  %h1 Convenios de administración
+  - if can? :create, ConvenioDeAdministracion
+    #action-links
+      = link_to "Agregar un convenio", new_convenio_de_administracion_url
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Listado de convenios de administración
+
+  %table
+    %thead
+      %tr
+        %th Convenio
+        %th Efector
+        %th Administrador
+        %th Última modificación
+    %tbody
+      - @convenios_de_administracion.each do |c|
+        %tr.clickable{ |
+          :onclick => "location.href=\'#{convenio_de_administracion_path(c)}\'", :title => "Ver detalles del convenio" } |
+          %td= c.numero
+          %td= c.efector.nombre
+          %td= c.administrador.nombre
+          %td= c.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+  = will_paginate @convenios_de_administracion, :inner_window => 2, :outer_window => 0

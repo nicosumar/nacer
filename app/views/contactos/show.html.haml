@@ -1,0 +1,107 @@
+- content_for :title do
+  Información detallada del contacto
+
+#content-header
+  %h1 Información detallada del contacto
+  - if can? :update, Contacto
+    #action-links
+      = link_to "Modificar el contacto", edit_contacto_path(@contacto)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Datos personales
+  %div.field_content
+    %span.field_name Nombre mostrado
+    %span.field_value= @contacto.mostrado
+  %div.field_content
+    %span.field_name Sexo
+    - if @contacto.sexo_id
+      %span.field_value= @contacto.sexo.nombre
+    - else
+      %span.field_empty No se indicó el sexo
+  %div.field_content
+    %span.field_name Apellidos
+    - if !@contacto.apellidos.blank?
+      %span.field_value= @contacto.apellidos
+    - else
+      %span.field_empty No se ingresó el apellido
+  %div.field_content
+    %span.field_name Nombres
+    - if !@contacto.nombres.blank?
+      %span.field_value= @contacto.nombres
+    - else
+      %span.field_empty No se ingresó el nombre
+  %div.field_content
+    %span.field_name Tipo de documento
+    - if !@contacto.tipo_de_documento_id.blank?
+      %span.field_value= @contacto.tipo_de_documento.nombre
+    - else
+      %span.field_empty No se indicó el tipo de documento
+  %div.field_content
+    %span.field_name Número de documento
+    - if !@contacto.dni.blank?
+      %span.field_value= @contacto.dni
+    - else
+      %span.field_empty No se ingresó el número de documento
+  %div.field_content
+    %span.field_name Dirección de correo electrónico
+    - if !@contacto.email.blank?
+      %span.field_value= mail_to "\"#{@contacto.mostrado}\" <#{@contacto.email}>", @contacto.email
+    - else
+      %span.field_empty No se ingresó la dirección de correo electrónico
+  %div.field_content
+    %span.field_name Dirección de correo electrónico adicional
+    - if !@contacto.email_adicional.blank?
+      %span.field_value= mail_to "\"#{@contacto.mostrado}\" <#{@contacto.email_adicional}>", @contacto.email_adicional
+    - else
+      %span.field_empty No se ingresó una dirección de correo electrónico adicional
+
+  %h3 Firma
+  %div.field_content
+    - if !@contacto.firma_primera_linea.blank? && !@contacto.firma_segunda_linea.blank? && !@contacto.firma_tercera_linea.blank?
+      %div.field_value_multiline
+        %span{:style => "font-weight: bold;"}= @contacto.mostrado
+        %br/
+        - if @contacto.firma_primera_linea.present?
+          = @contacto.firma_primera_linea
+          %br/
+        - if @contacto.firma_segunda_linea.present?
+          = @contacto.firma_segunda_linea
+          %br/
+        - if @contacto.firma_tercera_linea.present?
+          = @contacto.firma_tercera_linea
+    - else
+      %span.field_empty No se ingresó la información para la firma
+
+  %h3 Domicilio
+  %div.field_content
+    %span.field_name Domicilio
+    - if !@contacto.domicilio.blank?
+      %span.field_value= @contacto.domicilio
+    - else
+      %span.field_empty No se ingresó el domicilio
+
+  %h3 Teléfonos
+  %div.field_content
+    %span.field_name Teléfono fijo
+    - if !@contacto.telefono.blank?
+      %span.field_value= @contacto.telefono
+    - else
+      %span.field_empty No se ingresó el número de teléfono fijo
+  %div.field_content
+    %span.field_name Teléfono celular
+    - if !@contacto.telefono_movil.blank?
+      %span.field_value= @contacto.telefono_movil
+    - else
+      %span.field_empty No se ingresó el número de teléfono celular
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@contacto.observaciones.blank?
+      %span.field_value_multiline
+        - @contacto.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se ingresaron observaciones para el contacto

@@ -1,0 +1,12 @@
+= form_for(@tipo_periodo) do |f|
+  .field
+    = f.label :tipo
+    %br/
+    = f.text_field :tipo
+  .field
+    = f.label :descripcion
+    %br/
+    = f.text_field :descripcion
+  .actions
+    = f.submit
+

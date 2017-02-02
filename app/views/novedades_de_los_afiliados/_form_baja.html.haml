@@ -1,0 +1,76 @@
+= form_for(@novedad, :url => @post_form_url) do |f|
+  %div.hidden_field
+    %input{ :id => "afiliado_id", :name => "afiliado_id", :type => "hidden", :value => @afiliado.afiliado_id }
+
+  %h3 Tipo de solicitud
+  %div.field_content
+    %span.field_value Solicitud de baja de beneficiario
+
+  %h3.header Clave única de beneficiario
+  %div.field_content
+    %span.field_value= @novedad.clave_de_beneficiario
+
+  %h3 Datos personales
+  %div.field_content
+    %span.field_name Apellido
+    - if !@novedad.apellido.blank?
+      %span.field_value= @novedad.apellido
+    - else
+      %span.field_empty No se ingresó el apellido
+  %div.field_content
+    %span.field_name Nombre
+    - if !@novedad.nombre.blank?
+      %span.field_value= @novedad.nombre
+    - else
+      %span.field_empty No se ingresó el nombre
+  %div.field_content
+    %span.field_name Clase de documento
+    - if @novedad.clase_de_documento_id
+      %span.field_value= @novedad.clase_de_documento.nombre
+    - else
+      %span.field_empty No se seleccionó la clase de documento
+  %div.field_content
+    %span.field_name Tipo de documento
+    - if @novedad.tipo_de_documento_id
+      %span.field_value= @novedad.tipo_de_documento.nombre
+    - else
+      %span.field_empty No se seleccionó el tipo de documento
+  %div.field_content
+    %span.field_name Número de documento
+    - if !@novedad.numero_de_documento.blank?
+      %span.field_value= @novedad.numero_de_documento
+    - else
+      %span.field_empty No se ingresó el número de documento
+
+  %h3 Fecha y centro inscriptor
+  %div.field_content
+    %span.field_name Fecha de solicitud de la baja
+    %span.field_value= @novedad.fecha_de_la_novedad.strftime("%d/%m/%Y")
+  - if @centros_de_inscripcion.size == 1
+    %div.hidden_field
+      %input{ :id => "novedad_del_afiliado_centro_de_inscripcion_id", :name => "novedad_del_afiliado[centro_de_inscripcion_id]", |
+        :type => "hidden", :value => @centros_de_inscripcion[0][1] } |
+    %div.field_content
+      %span.field_name Centro de inscripción
+      %span.field_value= @centros_de_inscripcion[0][0]
+  - else
+    %div.field
+      = f.label :centro_de_inscripcion_id, "Centro de inscripción*"
+      = f.select :centro_de_inscripcion_id, options_for_select(@centros_de_inscripcion, @novedad.centro_de_inscripcion_id), |
+        {:include_blank => true} |
+  %div.field
+    = f.label :nombre_del_agente_inscriptor
+    = f.text_field :nombre_del_agente_inscriptor, :style => "text-transform: uppercase;"
+
+  %h3.header-with-note Observaciones generales*
+  %p.note Indique en forma obligatoria con el mayor detalle y claridad posible por qué motivos se solicita la baja
+  %div.field
+    = f.text_area :observaciones_generales, :size => "80x8"
+
+  %div.actions
+    - if @novedad.new_record?
+      = f.submit "Crear la solicitud"
+      = link_to "Cancelar", @afiliado
+    - else
+      = f.submit "Modificar la solicitud"
+      = link_to "Cancelar", @novedad

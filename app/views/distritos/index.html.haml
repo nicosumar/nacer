@@ -1,0 +1,36 @@
+- content_for :title do
+  Distritos
+
+#content-header
+  %h1 Distritos
+  #action-links
+    = link_to "Nuevo distrito", :action => "new"
+
+-# Sidebar
+#content-header
+  #action-links
+    = link_to "Listar Paises", :controller => "paises", :action => "index"
+    = link_to "Listar Provincias", :controller => "provincias", :action => "index"
+    = link_to "Listar Departamentos", :controller => "departamentos", :action => "index"
+    = link_to "Listar Distritos", :controller => "distritos", :action => "index"
+
+#content-body
+  %table
+    %thead
+      %tr
+        %th Nombre
+        %th Codigo Postal
+        %th Id Bioestadistica
+        %th Id Inscripción 
+        %th Id Indec
+        %th Alias
+    %tbody
+      - @distritos.each do |d|
+        %tr
+          %td= d.nombre
+          %td= d.codigo_postal
+          %td= d.distrito_bio_id
+          %td= d.distrito_insc_id
+          %td= d.distrito_indec_id
+          %td= d.alias_id
+  = will_paginate @distritos, :inner_window => 2, :outer_window => 0

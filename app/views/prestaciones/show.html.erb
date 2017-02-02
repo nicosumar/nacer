@@ -1,0 +1,128 @@
+<% content_for :title do %>
+  Prestaciones
+<% end %>
+
+<div id="content-header">
+  <h1>Prestaciones</h1>
+  <div id="action-links">
+    <%= link_to('<<  Volver al listado', prestaciones_path) if can? :read, Prestacion %>  
+    <%= link_to 'Editar', edit_prestacion_path(@prestacion) if can? :manage, Prestacion %>
+    <%= link_to 'Asignar precios', edit_para_asignacion_de_precios_prestacion_path(@prestacion) if can? :manage, Prestacion%>
+  </div> 
+
+</div>
+
+<div id="content-body">
+  <h3>Datos de la prestación</h3>
+  <div class='field_content'>
+    <span class='field_name'>Código</span>
+    <span class='field_value'><%= @prestacion.codigo %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>Nombre</span>
+    <span class='field_value'><%= @prestacion.nombre %></span>
+  </div>
+    <div class='field_content'>
+    <span class='field_name'>Diagnosticos</span>
+    <span class='field_value'><%= obtener_listado_de_nombres_y_codigos @prestacion.diagnosticos %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>Unidad de medida</span>
+    <span class='field_value'><%= @prestacion.unidad_de_medida.nombre %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>Unidades máximas</span>
+    <span class='field_value'><%= @prestacion.unidades_maximas %></span>
+  </div> 
+  <div class='field_content'>
+    <span class='field_name'>¿Otorga cobertura?</span>
+    <span class='field_value'><%= traducir_booleano @prestacion.otorga_cobertura %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>¿Es comunitaria?</span>
+    <span class='field_value'><%= traducir_booleano @prestacion.comunitaria %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>¿Requiere historia clínica?</span>
+    <span class='field_value'><%= traducir_booleano @prestacion.requiere_historia_clinica %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>¿Es catastrófica?</span>
+    <span class='field_value'><%= traducir_booleano @prestacion.es_catastrofica %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>¿Modifica lugar de atención?</span>
+    <span class='field_value'><%= traducir_booleano @prestacion.modifica_lugar_de_atencion %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>¿Se encuentra activa?</span>
+    <span class='field_value'><%= traducir_booleano @prestacion.activa %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>Objeto de la prestación</span>
+    <span class='field_value'><%= obtener_nombre @prestacion.objeto_de_la_prestacion %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>Concepto de facturación</span>
+    <span class='field_value'><%= @prestacion.nombre_del_concepto_de_la_prestacion %></span>
+  </div>
+  <div class='field_content'>
+    <span class='field_name'>Tipo de tratamiento</span>
+    <span class='field_value'><%= obtener_nombre @prestacion.tipo_de_tratamiento %></span>
+  </div>
+
+  <hr>
+
+  <div class='field_content'>
+    <div>Sexos</div>
+    <span class='field_value'><%= obtener_listado_de_nombres @prestacion.sexos %></span>
+  </div>
+
+
+  <div class='field_content'>
+    <div>Grupos poblacionales</div>
+    <span class='field_value'><%= obtener_listado_de_nombres @prestacion.grupos_poblacionales %></span>
+  </div>
+
+  <div class='field_content'>
+    <div>Documentaciones respaldatorias</div>
+    <span class='field_value'><%= obtener_listado_de_nombres @prestacion.documentaciones_respaldatorias %></span>
+  </div>
+
+  <div class='field_content'>
+    <div>Métodos de validación</div>
+    <span class='field_value'><%= obtener_listado_de_nombres @prestacion.metodos_de_validacion %></span>
+  </div>
+
+  <div class='field_content'>
+    <div>Cantidad de prestaciones por periodo</div>
+    <span>
+      <% @prestacion.cantidades_de_prestaciones_por_periodo.decorate.each do |cantidad_de_prestaciones_por_periodo| %>
+        <div><span class='field_value'><%= cantidad_de_prestaciones_por_periodo.resumen %></span></div>
+      <% end %>
+    </span>
+  </div>
+
+  <hr>
+
+  <div class='field_content'>
+    <span class='field_name'><b>Prestaciones PDSS</b></span>
+    <%= render "prestaciones_pdss_en_tabla", prestaciones_pdss: @prestacion.prestaciones_pdss %>
+  </div>
+
+  <hr>
+
+  <div class='field_content'>
+    <span class='field_name'><b>Datos reportables requeridos</b></span>
+    <%= render "datos_reportables_requeridos_en_tabla", datos_reportables_requeridos: @prestacion.datos_reportables_requeridos.activos %>
+  </div>
+  
+  <hr>
+
+  <div class='field_content'>
+    <span class='field_name'><b>Asignaciones de precios</b></span>
+    <%= render "asignacion_de_precios_en_tabla", asignaciones_de_precios: @prestacion.asignaciones_de_precios %>
+  </div>
+
+<%= link_to 'Editar', edit_prestacion_path(@prestacion) if can? :manage, Prestacion %>
+</div>

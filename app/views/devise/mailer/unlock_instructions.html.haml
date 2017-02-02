@@ -1,0 +1,12 @@
+- if @resource.sexo_id == 1
+  Estimada
+- else
+  Estimado
+
+= @resource.nombre
+
+%p Su cuenta fue bloqueada debido a que se excedió la cantidad límite de intentos fallidos para iniciar una sesión.
+
+%p Haga clic en el siguiente enlace para desbloquear su cuenta:
+
+%p= link_to 'Desbloquear mi cuenta', unlock_url(@resource, :unlock_token => @resource.unlock_token)

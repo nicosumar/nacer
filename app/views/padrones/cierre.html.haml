@@ -1,0 +1,15 @@
+- content_for :title do
+  Resultados del proceso de cierre
+
+#content-header
+  %h1 Resultados del proceso de cierre
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Novedades procesadas
+
+  %p Se terminaron de procesar las novedades. El proceso generó los siguientes archivos:
+  %ul
+    - @archivos_generados.each do |a|
+      %li= a

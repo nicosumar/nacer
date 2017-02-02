@@ -1,0 +1,34 @@
+- content_for :title do
+  Liquidaciones - Ver - Periodos 
+
+#content-header
+  %h1 Tipos de Periodo
+  #action-links
+    - if can? :read, Periodo
+      = link_to '<< Volver al listado', periodos_path
+    - if can? :update, Periodo
+      = link_to 'Editar', edit_periodo_path(@periodo)
+
+= render :partial => "shared/info", :locals => { :registro => @periodo }
+#content-body
+  %div.field_content
+    %span.field_name Periodo:
+    %span.field_value= @periodo.periodo
+  %div.field_content
+    %span.field_name Fecha de Cierre:
+    %span.field_value= @periodo.fecha_cierre
+  %div.field_content
+    %span.field_name Fecha de recepción:
+    %span.field_value= @periodo.fecha_recepcion
+  %div.field_content
+    %span.field_name Fecha Limite de prestaciones:
+    %span.field_value= @periodo.fecha_limite_prestaciones
+  %div.field_content
+    %span.field_name Tipo de Periodo:
+    %span.field_value= @periodo.tipo_periodo.descripcion
+  %div.field_content
+    %span.field_name Concepto al que aplica:
+    %span.field_value= @periodo.concepto_de_facturacion.concepto
+  %div.field_content
+    %span.field_name Vigencia de las prestaciones (en dias):
+    %span.field_value= @periodo.dias_de_prestacion

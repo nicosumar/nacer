@@ -1,0 +1,15 @@
+- content_for :title do
+  Informes de Liquidacion - Sumar
+#content-header
+  %h1 Informes de Liquidacion - Sumar
+  #action-links
+    -# if can? :create, LiquidacionSumar
+      -#= link_to 'Nueva Liquidacion', new_liquidacion_sumar_path
+
+#content-body
+  %h2.first-header Busqueda de documentos
+  = form_tag(documentos_electronicos_index_path, method:  :get) do 
+    .field
+      = label_tag "Efector:"
+      = select_tag 'efector_id', options_for_select(@efectores, @efector_id), {:class => 'multi_select'}
+    = submit_tag "Buscar"

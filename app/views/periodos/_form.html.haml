@@ -1,0 +1,25 @@
+= form_for(@periodo) do |f|
+  .field
+    = f.label :periodo
+    = f.text_field :periodo
+  .field
+    = f.label :fecha_cierre, 'Fecha de cierre'
+    = f.text_field :fecha_cierre, { :class => "jquery_fecha"}
+  .field
+    = f.label :fecha_recepcion, 'Fecha de recepción'
+    = f.text_field :fecha_recepcion, { :class => "jquery_fecha"}
+  .field
+    = f.label :fecha_limite_prestaciones, "Fecha limite de prestacion"
+    = f.text_field :fecha_limite_prestaciones, { :class => "jquery_fecha"}
+  .field
+    = f.label :tipo_periodo, 'Tipo de periodo'
+    = f.select :tipo_periodo_id, @tipos_periodos
+  .field
+    = f.label :concepto_de_facturacion, "Concepto de facturacion al que aplica este período:"
+    = f.select :concepto_de_facturacion_id, @conceptos
+  .field
+    = f.label :dias_de_prestacion, "Vigencia de las prestaciones (en dias):"
+    = f.text_field :dias_de_prestacion, { :class => "solo_numeros"}
+
+  .actions
+    = f.submit

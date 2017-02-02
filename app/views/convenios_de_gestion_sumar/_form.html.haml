@@ -1,0 +1,76 @@
+= form_for(@convenio_de_gestion) do |f|
+
+  %h3.first-header-with-note Datos de identificación
+  - if @convenio_de_gestion.new_record?
+    %p.note Verifique la corrección de estos datos, ya que después de guardarlos no podrán modificarse
+    %div.field
+      = f.label :numero, "Número*"
+      = f.text_field :numero, :style => "text-transform: uppercase;"
+    %div.field
+      = f.label :efector, "Efector*"
+      = f.select :efector_id, options_for_select(@efectores, @efector_id), {:include_blank => true}, {:class => "multi_select"}
+  - else
+    %p.note Estos datos no pueden modificarse
+    %div.field_content
+      %span.field_name Número
+      %span.field_value= @convenio_de_gestion.numero
+    %div.field
+      %span.field_name Efector administrado
+      %span.field_value= @convenio_de_gestion.efector.nombre
+
+  %h3 Datos del firmante y fechas
+  %div.field
+    = f.label :firmante_id, "Referente del efector que firma"
+    = f.select :firmante_id, options_for_select(@firmantes, @firmante_id), {:include_blank => true}, |
+      {:class => "multi_select", :"data-placeholder" => "Seleccione el referente que firma", :style => "width: 400px;"}
+  %div.field
+    = f.label :fecha_de_suscripcion
+    = f.date_select :fecha_de_suscripcion, |
+      {:start_year => 2013, :end_year => Date.today.year + 1, :include_blank => true} |
+  %div.field
+    = f.label :fecha_de_inicio, "Fecha de inicio*"
+    = f.date_select :fecha_de_inicio, |
+      {:start_year => 2013, :end_year => Date.today.year + 1, :include_blank => true} |
+  %div.field
+    = f.label :fecha_de_finalizacion, "Fecha de finalización*"
+    = f.date_select :fecha_de_finalizacion, |
+      {:start_year => 2013, :end_year => Date.today.year + 10, :include_blank => true} |
+
+  %h3.header-with-note Direcciones de correo electrónico para notificaciones fehacientes
+  %p.note Puede ingresar más de una dirección separándolas con comas (,)
+  %div.field
+    = f.text_field :email
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %h3.header-with-note Prestaciones autorizadas por el convenio
+  - if (@convenio_de_gestion.new_record? || @convenio_de_gestion.prestaciones_autorizadas.size == 0)
+    %p.note Seleccione las prestaciones que el convenio autoriza
+  - else
+    %p.note
+      Las prestaciones autorizadas por el convenio no pueden modificarse,
+      si hay un error de carga, solicite asistencia al área de sistemas
+  %div.field
+    - if (@convenio_de_gestion.new_record? || @convenio_de_gestion.prestaciones_autorizadas.size == 0)
+      = f.select :prestacion_autorizada_ids, options_for_select(@prestaciones, @prestacion_autorizada_ids), {}, |
+        { :multiple => true, :size => 15, :class => "multi_select", |
+        :"data-placeholder" => "Seleccione todas las prestaciones autorizadas" } |
+    - else
+      = f.select :prestacion_autorizada_ids, options_for_select(@prestaciones, @prestacion_autorizada_ids), {}, |
+        { :disabled => "disabled", :multiple => true, :size => 15, :class => "multi_select", |
+        :"data-placeholder" => "Seleccione todas las prestaciones autorizadas" } |
+
+  - if (@convenio_de_gestion.new_record? || @convenio_de_gestion.prestaciones_autorizadas.size == 0)
+    %div.field
+      = check_box_tag :migrar_prestaciones
+      = label_tag :migrar_prestaciones, "O si prefiere, autorice las prestaciones actualmente habilitadas por el convenio Nacer, marcando esta casilla"
+
+  %div.actions
+    - if @convenio_de_gestion.new_record?
+      = f.submit "Crear el convenio de gestión Sumar"
+      = link_to "Cancelar", convenios_de_gestion_sumar_path
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @convenio_de_gestion

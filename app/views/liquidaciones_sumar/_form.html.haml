@@ -1,0 +1,18 @@
+= form_for(@liquidacion_sumar) do |f|
+  .field
+    = f.label :descripcion
+    = f.text_field :descripcion
+  .field
+    = f.label :concepto_de_facturacion, 'Concepto de Liquidacion'
+    = f.select :concepto_de_facturacion_id, @conceptos_de_facturacion
+  .field
+    = f.label :periodo, 'Periodo de Liquidacion'
+    = f.select :periodo_id, @periodos_liquidacion
+  .field
+    = f.label :grupo_de_efectores_liquidacion, 'Grupo de Efectores a liquidar'
+    = f.select :grupo_de_efectores_liquidacion_id, @grupo_de_efectores_liquidacion
+  .field
+    = f.label :plantilla_de_reglas_id, '¿Desea incluir una plantilla de reglas?'
+    = f.select :plantilla_de_reglas_id, @plantillas_de_reglas, {:include_blank => 'No'}
+  .actions
+    = f.submit

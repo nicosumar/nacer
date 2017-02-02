@@ -1,0 +1,28 @@
+- content_for :title do
+  Liquidaciones - Formulas
+
+#content-header
+  %h1 Formulas
+  #action-links
+    - if can? :create, Formula
+      = link_to 'Nueva Formula', new_formula_path
+
+#content-body
+  %table
+    %tr
+      %th Descripción
+      %th Formula
+      %th Observaciones
+      %th Activa
+      %th
+      %th
+      %th
+    - @formulas.each do |formula|
+      %tr
+        %td= formula.descripcion
+        %td= formula.formula
+        %td= formula.observaciones
+        %td= formula.activa
+        %td= link_to 'Ver', formula
+        %td= link_to 'Editar', edit_formula_path(formula)
+        %td= link_to 'Borrar', formula, method: :delete, data: { confirm: '¿Esta seguro?' }

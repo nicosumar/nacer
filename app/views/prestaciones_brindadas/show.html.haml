@@ -1,0 +1,248 @@
+- content_for :title do
+  Información detallada de la prestación brindada
+
+#content-header
+  %h1 Información detallada de la prestación brindada
+  - if can?(:update, @prestacion_brindada) && @prestacion_brindada.pendiente?
+    #action-links
+      = link_to "Modificar la prestación", edit_prestacion_brindada_path(@prestacion_brindada)
+      = link_to "Anular la prestación", @prestacion_brindada, :method => :delete, |
+        :confirm => "¿Está seguro que desea anular esta prestación?\nEsta acción no se podrá deshacer." |
+
+= render :partial => "shared/info"
+
+#content-body
+  #estado
+    %h3.first-header Estado de la prestación
+    - if ["R", "P", "L", "V"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+      #info.infobox-ok.no-margin
+        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %ul
+            %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+            - if @prestacion_brindada.observaciones_de_liquidacion.present?
+              %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
+    - elsif ["I", "F"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+      - if @prestacion_brindada.metodos_de_validacion_fallados.size > 0 && @prestacion_brindada.metodos_de_validacion.all?{|mv| !mv.visible}
+        -# Si ninguno de los métodos de validación fallados por la prestación deben mostrarse al usuario, se muestra el mensaje
+        -# como si no se hubieran generado advertencias
+        #info.infobox-ok.no-margin
+          %h2= EstadoDeLaPrestacion.find_by_codigo("R").nombre
+          - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+            %ul
+              %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+              - if @prestacion_brindada.observaciones_de_liquidacion.present?
+                %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
+      - else
+        #info.infobox-advertencia.no-margin
+          %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+          - if @prestacion_brindada.metodos_de_validacion_fallados.size > 0
+            %ul
+              - @prestacion_brindada.metodos_de_validacion.each do |mv|
+                %li= mv.mensaje
+          - @prestacion_brindada.datos_reportables_asociados.each do |dra|
+            - if dra.hay_advertencias?
+              - if dra.advertencias.size > 0
+                %ul
+                  - dra.advertencias.each do |attr, advs|
+                    - advs.each do |msj|
+                      %li= msj
+          - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+            %ul
+              %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+              - if @prestacion_brindada.observaciones_de_liquidacion.present?
+                %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
+    - elsif ["U", "S"].member?(@prestacion_brindada.estado_de_la_prestacion.codigo)
+      #info.infobox-advertencia.no-margin
+        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %ul
+            %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+            - if @prestacion_brindada.observaciones_de_liquidacion.present?
+              %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
+    - else
+      #info.infobox-error.no-margin
+        %h2= @prestacion_brindada.estado_de_la_prestacion.nombre
+        %ul
+          %li= @prestacion_brindada.mensaje_de_la_baja
+        - if @prestacion_brindada.estado_de_la_prestacion_liquidada.present?
+          %li= "Estado de la prestación liquidada: " + @prestacion_brindada.estado_de_la_prestacion_liquidada.nombre
+          - if @prestacion_brindada.observaciones_de_liquidacion.present?
+            %li= "Observaciones de liquidación: " + @prestacion_brindada.observaciones_de_liquidacion
+
+  - if @prestacion_brindada.clave_de_beneficiario
+    %h3 Clave única de beneficiario asociada a la prestación
+    %div.field_content
+      %span.field_value= @prestacion_brindada.clave_de_beneficiario
+
+    %h3
+      Datos más recientes sobre
+      - if @beneficiario.sexo.codigo == 'F'
+        la beneficiaria, según
+      - else
+        el beneficiario, según
+      - if @beneficiario.is_a? NovedadDelAfiliado
+        = link_to "una solicitud de " + (@beneficiario.tipo_de_novedad.codigo == "A" ? "alta" : "modificación") + " pendiente", @beneficiario, |
+          { :title => "Ver detalles de la solicitud en otra pestaña", :onclick => "this.target='_blank'" } |
+      - else
+        = link_to "el registro en el padrón de beneficiarios", @beneficiario, |
+          { :title => "Ver detalles del registro en otra pestaña", :onclick => "this.target='_blank'" } |
+
+    %div.field_content
+      %span.field_name Nombre
+      %span.field_value= @beneficiario.nombre.to_s + " " + @beneficiario.apellido.to_s
+    %div.field_content
+      %span.field_name= "Documento" + (@beneficiario.clase_de_documento.present? ? " " + @beneficiario.clase_de_documento.nombre.downcase : "")
+      %span.field_value= (@beneficiario.tipo_de_documento ? @beneficiario.tipo_de_documento.codigo  + " " : "") + |
+        @beneficiario.numero_de_documento.to_s |
+    %div.field_content
+      %span.field_name Fecha de nacimiento
+      - if @beneficiario.fecha_de_nacimiento
+        %span.field_value
+          = @beneficiario.fecha_de_nacimiento.strftime("%d/%m/%Y")
+          (a la fecha de la prestación tenía
+          = (edad_entre(@beneficiario.fecha_de_nacimiento, @prestacion_brindada.fecha_de_la_prestacion) || |
+            " la fecha de nacimiento en el futuro") + ")" |
+      - else
+        %span.field_empty No se ingresó la fecha de nacimiento
+
+    - if @prestacion_brindada.clave_de_beneficiario && @prestacion_brindada.pendiente?
+      = link_to 'Haga clic aquí', new_prestacion_brindada_path({ |
+        :"prestacion_brindada[clave_de_beneficiario]" => @prestacion_brindada.clave_de_beneficiario, |
+        :"prestacion_brindada[efector_id]" => @prestacion_brindada.efector_id, |
+        :"prestacion_brindada[fecha_de_la_prestacion(3i)]" => @prestacion_brindada.fecha_de_la_prestacion.day, |
+        :"prestacion_brindada[fecha_de_la_prestacion(2i)]" => @prestacion_brindada.fecha_de_la_prestacion.month, |
+        :"prestacion_brindada[fecha_de_la_prestacion(1i)]" => @prestacion_brindada.fecha_de_la_prestacion.year, |
+        :"prestacion_brindada[historia_clinica]" => @prestacion_brindada.historia_clinica, |
+        :commit => 'Continuar'}) |
+      %p si desea registrar otra prestación otorgada al beneficiario en LA MISMA fecha.
+ 
+    - if @prestacion_brindada.clave_de_beneficiario && @prestacion_brindada.pendiente?
+      = link_to 'Haga clic aquí', new_prestacion_brindada_path({ |
+        :"prestacion_brindada[clave_de_beneficiario]" => @prestacion_brindada.clave_de_beneficiario, |
+        :"prestacion_brindada[efector_id]" => @prestacion_brindada.efector_id, |
+        :"prestacion_brindada[fecha_de_la_prestacion(3i)]" => @prestacion_brindada.fecha_de_la_prestacion.day, |
+        :"prestacion_brindada[fecha_de_la_prestacion(2i)]" => @prestacion_brindada.fecha_de_la_prestacion.month, |
+        :"prestacion_brindada[fecha_de_la_prestacion(1i)]" => @prestacion_brindada.fecha_de_la_prestacion.year, |
+        :"prestacion_brindada[historia_clinica]" => @prestacion_brindada.historia_clinica}) |
+      %p si desea registrar otra prestación otorgada al beneficiario en OTRA fecha.
+
+  %h3 Datos sobre la prestación
+  %div.field_content
+    %span.field_name Fecha en que se brindó la prestación
+    %span.field_value= @prestacion_brindada.fecha_de_la_prestacion.strftime("%d/%m/%Y")
+  %div.field_content
+    %span.field_name Número de historia clínica, registro o informe
+    %span.field_value= @prestacion_brindada.historia_clinica
+  %div.field_content
+    %span.field_name Código de prestación
+    %span.field_value= @prestacion_brindada.prestacion.codigo + (@prestacion_brindada.diagnostico ? |
+      @prestacion_brindada.diagnostico.codigo : '') |
+  %div.field_content
+    %span.field_name Descripción de la prestación
+    %span.field_value= @prestacion_brindada.prestacion.nombre_corto
+  - if @prestacion_brindada.diagnostico
+    %div.field_content
+      %span.field_name Descripción del diagnóstico
+      %span.field_value= @prestacion_brindada.diagnostico.nombre_corto
+  - if @prestacion_brindada.prestacion.unidad_de_medida.codigo != "U"
+    %div.field_content
+      %span.field_name= "Cantidad de " + @prestacion_brindada.prestacion.unidad_de_medida.nombre.downcase
+      %span.field_value= (@prestacion_brindada.prestacion.unidad_de_medida.solo_enteros ? |
+        @prestacion_brindada.cantidad_de_unidades.to_i : @prestacion_brindada.cantidad_de_unidades) |
+
+  - if @prestacion_brindada.datos_reportables_asociados.any?
+    %h3 Atributos reportables
+    - @prestacion_brindada.datos_reportables_asociados.order(:id).each do |dra|
+      - drr = dra.dato_reportable_requerido
+      - dr = drr.dato_reportable
+      - if dr.integra_grupo && dr.orden_de_grupo == 1
+        %div{:id => "titulo_grupo_" + dr.codigo_de_grupo}
+          %h4= dr.nombre_de_grupo
+      %div.field_content
+        - if dra.advertencias && dra.advertencias.size > 0
+          %div.field_with_warnings
+            %span.field_name= dr.nombre
+        - else
+          %span.field_name= dr.nombre
+        - if dra.advertencias && dra.advertencias.size > 0
+          <div class="field_with_warnings">
+        - case
+          - when dr.enumerable
+            - if dra.valor_integer.blank?
+              %span.field_empty No se seleccionó una opción
+            - else
+              %span.field_value= eval(dr.clase_para_enumeracion).find(dra.valor_integer).nombre
+          - when dr.tipo_ruby == "date"
+            - if dra.valor_date.blank?
+              %span.field_empty No se ingresó la fecha
+            - else
+              %span.field_value= dra.valor_date.strftime("%d/%m/%Y")
+          - else
+            - if eval("dra.valor_" + dr.tipo_ruby + ".blank?")
+              %span.field_empty No se ingresó el valor
+            - else
+              %span.field_value= eval("dra.valor_" + dr.tipo_ruby)
+        - if dra.advertencias && dra.advertencias.size > 0
+          </div>
+
+  %h3 Datos sobre el efector que brindó la prestación
+  %div.field_content
+    %span.field_name CUIE
+    - if @prestacion_brindada.efector.cuie
+      %span.field_value= @prestacion_brindada.efector.cuie
+    - else
+      %span.field_empty Todavía no se asignó un CUIE al efector
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @prestacion_brindada.efector.nombre
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@prestacion_brindada.observaciones.blank?
+      %span.field_value_multiline
+        - @prestacion_brindada.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para la prestación brindada
+
+  %h3 Información sobre el registro
+
+  %div.field_content
+    %span.field_name Fecha y hora de creación del registro
+    - if @prestacion_brindada.created_at.present?
+      %span.field_value= @prestacion_brindada.created_at.strftime("%d/%m/%Y %H:%M:%S")
+    - else
+      %span.field_empty No se registró la fecha de creación
+  %div.field_content
+    %span.field_name Usuario que creó el registro
+    - if @prestacion_brindada.creator.present?
+      %span.field_value= @prestacion_brindada.creator.nombre_completo
+    - else
+      %span.field_empty No se registró el usuario que realizó la creación
+  - if @prestacion_brindada.updated_at.present? && @prestacion_brindada.created_at.present? && @prestacion_brindada.updated_at > @prestacion_brindada.created_at
+    %div.field_content
+      %span.field_name Fecha y hora de la última modificación del registro
+      %span.field_value= @prestacion_brindada.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+    %div.field_content
+      %span.field_name Último usuario que modificó esta solicitud
+      - if @prestacion_brindada.updater.present?
+        %span.field_value= @prestacion_brindada.updater.nombre_completo
+      - else
+        %span.field_empty No se registró el usuario que realizó la última modificación
+
+  - if @prestacion_brindada.prestaciones_liquidadas.size > 0
+    %h3 Resultado de los procesos de liquidación donde se incluyó esta prestación
+    %div.field_content
+      %ul.field_value
+        - @prestacion_brindada.prestaciones_liquidadas.each do |pl|
+          %li
+            = "Periodo '" + pl.periodo.periodo.to_s + "': " + pl.estado_de_la_prestacion_liquidada.nombre + "."
+            - if pl.rechazada?
+              - if pl.rechazo_administrativo?
+                %br/
+                = "Motivo de rechazo del área de administración: " + pl.motivo_de_rechazo_administrativo + "."
+              - if pl.rechazo_medico?
+                %br/
+                = "Motivo de rechazo del área médica: " + pl.motivo_de_rechazo_medico + "."

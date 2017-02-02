@@ -1,0 +1,168 @@
+<%= form_for @prestacion do |f| %>
+  <h4>Código y validación</h4>
+  <div class="field">
+    <%= f.collection_select :objeto_de_la_prestacion_id, ObjetoDeLaPrestacion.all, :id, :full_codigo_y_nombre %>  
+    <button type="button" id="validador-de-codigo">Validar</button>      
+  </div>
+
+  <h4>Diagnósticos</h4>
+  <%= f.collection_select :diagnostico_ids, Diagnostico.all, :id, :nombre_y_codigo, 
+                          {selected: f.object.diagnostico_ids}, 
+                          {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Información general</h4>
+  <div class="field">
+    <%= f.label "Nombre" %>
+    <%= f.text_field :nombre %>      
+  </div>
+  <div class="field">
+    <%= f.label "Unidad de medida" %>
+    <%= f.collection_select :unidad_de_medida_id, UnidadDeMedida.all, :id, :nombre %>      
+  </div>
+  <div class="field">
+    <%= f.label "Unidades máximas" %>
+    <%= f.number_field :unidades_maximas %>      
+  </div>
+  <div class="field">
+    <%= f.label "Otorga cobertura" %>
+    <%= f.check_box :otorga_cobertura %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Es comunitaria ?" %>
+    <%= f.check_box :comunitaria %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Requiere historia clínica ?" %>
+    <%= f.check_box :requiere_historia_clinica %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Es catastrófica ?" %>
+    <%= f.check_box :es_catastrofica %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Modifica lugar de atención ?" %>
+    <%= f.check_box :modifica_lugar_de_atencion %>      
+  </div>
+  <div class="field">
+    <%= f.label "¿ Se encuentra activa ?" %>
+    <%= f.check_box :activa %>      
+  </div>
+  <div class="field">
+    <%= f.label "Concepto de facturación" %>
+    <%= f.collection_select :concepto_de_facturacion_id, ConceptoDeFacturacion.all, :id, :concepto, {}, {class: :hola} %>      
+  </div>
+  <div class="field">
+    <%= f.label "Tipo de tratamiento" %>
+    <%= f.collection_select :tipo_de_tratamiento_id, TipoDeTratamiento.all, :id, :nombre %>      
+  </div>
+
+  <hr>
+
+  <h4>Sexos</h4>
+
+    <%= f.collection_select :sexo_ids, Sexo.all, :id, :nombre, 
+                            {selected: f.object.sexo_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Grupos poblacionales</h4>
+
+    <%= f.collection_select :grupo_poblacional_ids, GrupoPoblacional.all, :id, :nombre, 
+                            {selected: f.object.grupo_poblacional_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Documentación respaldatoria</h4>
+
+    <%= f.collection_select :documentacion_respaldatoria_ids, DocumentacionRespaldatoria.all, :id, :nombre, 
+                            {selected: f.object.documentacion_respaldatoria_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Datos reportables requeridos</h4>
+
+  <div class="nested-fields-label-container">
+    <div class="medium-label">Dato reportable</div>
+    <div class="medium-label">Inicio</div>
+    <div class="medium-label">Fin</div>
+    <div class="xsmall-label">Min.</div>
+    <div class="xsmall-label">Máx.</div>
+  </div>
+
+  <div id="datos_reportables_requeridos">
+    <%= f.fields_for :datos_reportables_requeridos, @prestacion.datos_reportables_requeridos.activos do |dato_reportable_requerido|  %>
+      <%= render 'dato_reportable_requerido_fields', f: dato_reportable_requerido  %>
+    <% end %>
+    <br>
+    <div class="links">
+      <%= link_to_add_association 'agregar', f, :datos_reportables_requeridos  %>
+    </div>
+  </div>
+
+  <h4>Métodos de validación</h4>
+
+    <%= f.collection_select :metodo_de_validacion_ids, MetodoDeValidacion.all, :id, :nombre, 
+                            {selected: f.object.metodo_de_validacion_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Cantidad de prestaciones por período</h4>
+
+  <div class="nested-fields-label-container">
+    <div class="small-label">Cantidad máxima</div>
+    <div class="small-label">Período</div>
+    <div class="small-label">Intervalo</div>
+  </div>
+
+  <div id="cantidades_de_prestaciones_por_periodo">
+    <%= f.fields_for :cantidades_de_prestaciones_por_periodo do |cantidad_de_prestaciones_por_periodo|  %>
+      <%= render 'cantidad_de_prestaciones_por_periodo_fields', f: cantidad_de_prestaciones_por_periodo  %>
+    <% end %>
+    <br>
+    <div class="links">
+      <%= link_to_add_association 'agregar', f, :cantidades_de_prestaciones_por_periodo  %>
+    </div>
+  </div>
+
+  <h4>Prestación P.D.S.S.</h4>
+
+  <div class="nested-fields-label-container">
+    <div class="small-label">Sección pdss</div>
+    <div class="small-label">Grupo pdss</div>
+    <div class="small-label">Línea de cuidado</div>
+    <div class="small-label">Módulo</div>
+  </div>
+
+  <div id="prestaciones_pdss">
+    <%= f.fields_for :prestaciones_pdss do |prestacion_pdss|  %>
+      <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
+    <% end %>
+
+    <br>
+
+    <div class="links">
+      <%= link_to_add_association 'agregar', f, :prestaciones_pdss  %>
+    </div>
+  </div>
+
+
+  <br>
+  <div class="actions">
+    <%= f.submit "Guardar" %>
+    <button class="btn btn-default" name="go_to" value="edit_para_asignacion_de_precios" type="submit" data-disable-with="Por favor, espere...">Guardar e ir asignar precios</button>    
+  </div>
+
+<% end %>
+
+<div id="popup-de-prestaciones-pdss" title="Ese código ya existe en (o forma parte de) otras prestaciones">
+  <br>
+  <div><b> Usted puede continuar con el formulario y utilizar el código ingresado, o quizá deseé editar una prestacion existente: <b></div>
+  <br>
+</div>
+<%= javascript_include_tag 'prestaciones/_form.js' %>

@@ -1,0 +1,43 @@
+- content_for :title do
+  Verificación preliminar de datos para la creación de una solicitud de alta de beneficiario
+
+- content_for :other_includes do
+  = javascript_include_tag 'verificacion'
+
+#content-header
+  %h1 Verificación preliminar de datos para la creación de una solicitud de alta de beneficiario
+
+= render :partial => "shared/info", :locals => { :registro => @novedad }
+
+#content-body
+  %h2.first-header-with-note Formulario de verificación preliminar de datos
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = form_for(@novedad, :url => create_alta_novedades_de_los_afiliados_url, :method => :get) do |f|
+    %h3 Información preliminar para la verificación
+    %div.field
+      = f.label :apellido, "Apellido*"
+      = f.text_field :apellido, :style => "text-transform: uppercase;"
+    %div.field
+      = f.label :nombre, "Nombre*"
+      = f.text_field :nombre, :style => "text-transform: uppercase;"
+    %div.field
+      = f.label :clase_de_documento_id, "Clase de documento*"
+      = f.select :clase_de_documento_id, options_for_select(@clases_de_documentos, @novedad.clase_de_documento_id)
+    %div.field
+      = f.label :tipo_de_documento_id, "Tipo de documento*"
+      = f.select :tipo_de_documento_id, options_for_select(@tipos_de_documentos, @novedad.tipo_de_documento_id)
+    %div.field
+      = f.label :numero_de_documento, "Número de documento*"
+      = f.text_field :numero_de_documento, :style => "text-transform: uppercase;"
+    %div.field
+      = f.label :fecha_de_nacimiento, "Fecha de nacimiento*"
+      = f.date_select :fecha_de_nacimiento, {:start_year => 1936, :end_year => Date.today.year, |
+        :include_blank => true} |
+    %div.field
+      = f.label :numero_de_documento_de_la_madre
+      = f.text_field :numero_de_documento_de_la_madre, :placeholder => "Solo si dispone del dato y es un menor"
+
+    %div.actions
+      = f.submit "Verificar"
+      = link_to "Cancelar", root_url

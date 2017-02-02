@@ -1,0 +1,51 @@
+- unless prestaciones.any?{|p| p["rural"] == "t"}
+  %p Solo pueden habilitarse a efectores urbanos
+
+%table.prestaciones_pdss
+  %thead
+    %tr
+      - if prestaciones.any?{|p| p["linea_de_cuidado"].present?}
+        %th Línea de cuidado
+      - if prestaciones.any?{|p| p["modulo"].present?}
+        %th Módulo
+      %th Tipo de prestación
+      %th Nombre de la prestación
+      %th Código
+      - if prestaciones.any?{|p| p["rural"] == "t"}
+        %th Área
+      %th Autorizada
+  %tbody
+    - prestaciones.each do |p|
+      %tr{:title => p["autorizada"] == "t" ? "Autorizada por: #{p["tipo_de_autorizador"]} #{p["numero_de_autorizador"]}, a partir del #{p["fecha_de_inicio"]}." : ""}
+        - if prestaciones.any?{|p| p["linea_de_cuidado"].present?}
+          %td
+            - if p["linea_de_cuidado"].nil?
+              = ""
+            - else
+              = p["linea_de_cuidado"]
+        - if prestaciones.any?{|p| p["modulo"].present?}
+          %td
+            - if p["modulo"].nil?
+              = ""
+            - else
+              = p["modulo"]
+        %td.centrado= p["tipo_de_prestacion"]
+        %td= p["nombre_de_prestacion"]
+        %td.centrado= p["codigo_de_prestacion"]
+        - if prestaciones.any?{|p| p["rural"] == "t"}
+          %td.centrado= (p["rural"] == "t" ? "Urbana/Rural" : "Urbana")
+        - @estado= true
+        / - if p["codigo_de_prestacion"] == "ITQ005" 
+        -# raise
+   
+        - if p["autorizada"] == "t"
+         
+          %td.centrado 
+            -#%input{ :type=>"checkbox", :checked=>true }
+            = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
+            = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], true, id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
+        - else 
+          %td.centrado 
+            = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
+            = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], (@prestaciones_autorizadas_alta_ids.present? && @prestaciones_autorizadas_alta_ids.include?(p["prestacion_pdss_id"])), id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
+

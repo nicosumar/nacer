@@ -1,0 +1,88 @@
+- content_for :title do
+  Información detallada del convenio de gestión Sumar
+
+#content-header
+  %h1 Información detallada del convenio de gestión Sumar
+  #action-links
+    - if can? :update, ConvenioDeGestionSumar
+      = link_to "Modificar", edit_convenio_de_gestion_sumar_path(@convenio_de_gestion)
+    - if can? :read, AddendaSumar
+      = link_to "Ver las adendas", addendas_del_convenio_de_gestion_sumar_path(@convenio_de_gestion)
+    - if can? :create, AddendaSumar
+      = link_to "Agregar una adenda", new_addenda_sumar_url(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)
+    - if can? :create, ConvenioDeGestionSumar
+      = link_to "Generar documento", convenio_de_gestion_sumar_path(@convenio_de_gestion, :format => :odt)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2 Datos de identificación
+  %div.field_content
+    %span.field_name Número
+    %span.field_value= @convenio_de_gestion.numero
+  %div.field
+    %span.field_name Efector
+    %span.field_value= @convenio_de_gestion.efector.nombre
+    = link_to "Ver detalles del efector", @convenio_de_gestion.efector
+
+  %h2 Datos del firmante y fechas
+  %div.field_content
+    %span.field_name Firmante por el efector
+    - if !@convenio_de_gestion.firmante_id.blank?
+      %span.field_value= @convenio_de_gestion.firmante.contacto.mostrado
+    - else
+      %span.field_empty No se seleccionó un referente como firmante
+  %div.field_content
+    %span.field_name Fecha de suscripción
+    - if @convenio_de_gestion.fecha_de_suscripcion
+      %span.field_value= @convenio_de_gestion.fecha_de_suscripcion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de suscripción
+  %div.field_content
+    %span.field_name Fecha de inicio
+    - if @convenio_de_gestion.fecha_de_inicio
+      %span.field_value= @convenio_de_gestion.fecha_de_inicio.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de inicio
+  %div.field_content
+    %span.field_name Fecha de finalización
+    - if @convenio_de_gestion.fecha_de_finalizacion
+      %span.field_value= @convenio_de_gestion.fecha_de_finalizacion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de finalización
+
+  %h2 Direcciones de correo electrónico para notificaciones fehacientes
+  %div.field_content
+    - if !@convenio_de_gestion.email.blank?
+      %span.field_value_multiline
+        - @convenio_de_gestion.email.split(',').each do |email|
+          = mail_to(email.strip, email.strip)
+          %br/
+    - else
+      %span.field_empty No se ingresó la dirección de correo electrónico
+
+  %h2 Observaciones
+  %div.field_content
+    - if !@convenio_de_gestion.observaciones.blank?
+      %span.field_value_multiline
+        - @convenio_de_gestion.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para el convenio de gestión
+
+  %h2 Prestaciones autorizadas en el convenio original SIN TENER EN CUENTA las adendas posteriores
+  - if @convenio_de_gestion.prestaciones_autorizadas.any?
+    - PrestacionPdssAutorizada.efector_y_fecha(@convenio_de_gestion.efector_id, @convenio_de_gestion.fecha_de_inicio).each do |seccion|
+      %div.seccion_pdss{:id => seccion["nombre"]}
+        %h4= (seccion["codigo"].present? ? seccion["codigo"] + ") " : "") + seccion["nombre"]
+        - if seccion.has_key? :grupos
+          - seccion[:grupos].each do |grupo|
+            %div.grupo_pdss{:id => grupo["nombre"]}
+              %h4= (grupo["codigo"].present? ? grupo["codigo"] + ") " : "") + grupo["nombre"]
+              = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => grupo[:prestaciones]}
+        - else
+          = render :partial => "tabla_prestaciones_pdss", :locals => {:prestaciones => seccion[:prestaciones]}
+  - else
+    %div.field_content
+      %span.field_empty Aún no se han definido prestaciones autorizadas para este convenio.

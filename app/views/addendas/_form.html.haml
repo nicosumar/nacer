@@ -1,0 +1,75 @@
+= form_for(@addenda) do |f|
+
+  %div.hidden_field
+    %input{ :id => "addenda_convenio_de_gestion_id", :name => "addenda[convenio_de_gestion_id]", |
+      :type => "hidden", :value => @convenio_de_gestion.id } |
+
+  %h3.first-header Datos del convenio de gestión
+  %div.field_content
+    %span.field_name Adenda al convenio de gestión
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.numero
+  %div.field_content
+    %span.field_name El convenio pertenece al efector
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.efector.nombre
+
+  %h3.header-with-note Datos de identificación
+  - if @addenda.new_record?
+    %p.note Verifique el número de adenda, ya que después de guardarlo no podrá modificarse
+    %div.field
+      = f.label :numero, "Número*"
+      = f.text_field :numero, :style => "text-transform: uppercase;"
+  - else
+    %p.note El número de adenda no puede modificarse
+    %div.field_content
+      %span.field_name Número
+      %span.field_value= @addenda.numero
+  
+  %h3.header-with-note Datos del firmante y fechas
+  - if @addenda.new_record?
+    %p.note Verifique la corrección de la fecha de inicio, ya que después de guardarla no podrá cambiarse
+  - else
+    %p.note La fecha de inicio no puede cambiarse
+  %div.field
+    = f.label :firmante
+    = f.text_field :firmante
+  %div.field
+    = f.label :fecha_de_suscripcion
+    = f.date_select :fecha_de_suscripcion
+  - if @addenda.new_record?
+    %div.field
+      = f.label :fecha_de_inicio, "Fecha de inicio*"
+      = f.date_select :fecha_de_inicio
+  - else
+    %div.field_content
+      %span.field_name Fecha de inicio
+      %span.field_value= @addenda.fecha_de_inicio.strftime("%d/%m/%Y")
+  
+  %h3 Prestaciones que se autorizan a través esta adenda
+  %div.field
+    = f.select :prestacion_autorizada_alta_ids, |
+      options_for_select(@prestaciones_alta, @prestacion_autorizada_alta_ids), {}, |
+      { |
+        :multiple => true, :size => 10, |
+        :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" |
+      } |
+
+  %h3 Prestaciones que se dan de baja a través de esta adenda
+  %div.field
+    = f.select :prestacion_autorizada_baja_ids, |
+      options_for_select(@prestaciones_baja, @prestacion_autorizada_baja_ids), {}, |
+      { |
+        :multiple => true, :size => 10, |
+        :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" |
+      } |
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+  %div.actions
+    - if @addenda.new_record?
+      = f.submit "Crear la adenda"
+      = link_to "Cancelar", @convenio_de_gestion
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar", @addenda

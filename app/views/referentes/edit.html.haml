@@ -1,0 +1,13 @@
+- content_for :title do
+  Modificación de datos del referente
+
+#content-header
+  %h1 Modificación de datos del referente
+
+= render :partial => "shared/info", :locals => {:registro => @referente}
+
+#content-body
+  %h2.first-header-with-note Formulario de modificación de datos del referente
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render 'form'

@@ -1,0 +1,8 @@
+#content-header
+  %h1 Nueva nota de debito
+  #action-links
+    = link_to '<< Volver al listado', notas_de_debito_path
+
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @nota_de_debito }
+  = render 'form'

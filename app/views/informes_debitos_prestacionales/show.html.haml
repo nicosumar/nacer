@@ -1,0 +1,74 @@
+#content-header
+  %h1 Informes de debitos prestacionales - Detalle
+  #action-links
+    - if can? :read, InformeDebitoPrestacional
+      = link_to '<< Volver al listado', informes_debitos_prestacionales_path
+    - if can? :update, InformeDebitoPrestacional and @informe_debito_prestacional.estado_del_proceso.codigo =='N'
+      = link_to 'Editar', edit_informe_debito_prestacional_path(@informe_debito_prestacional)
+    - if can? [:create, :update], DetalleDeDebitoPrestacional
+      - if @informe_debito_prestacional.estado_del_proceso.codigo =='N' #Si no se ha iniciado el proceso
+        = link_to 'Iniciar y cargar debitos', iniciar_informe_debito_prestacional_path(@informe_debito_prestacional), method: :put
+      - elsif @informe_debito_prestacional.estado_del_proceso.codigo =='C' # Si esta en curso, se puede finalizar
+        = link_to 'Cargar débitos', informe_debito_prestacional_detalles_de_debitos_prestacionales_path(@informe_debito_prestacional)
+        = link_to 'Finalizar el informe', finalizar_informe_debito_prestacional_path(@informe_debito_prestacional), method: :put
+      - elsif @informe_debito_prestacional.estado_del_proceso.codigo =='F' # Si esta finalizado se puede cerrar
+        = link_to 'Cerrar informe', cerrar_informe_debito_prestacional_path(@informe_debito_prestacional), method: :put
+    - if can? :delete, InformeDebitoPrestacional and @informe_debito_prestacional.estado_del_proceso.codigo =='N'
+      = link_to 'Eliminar informe', @informe_debito_prestacional, method: :delete, data: { confirm: '¿Está seguro que desea eliminar la prestación del informe de debito?' }
+
+= render :partial => "shared/info", :locals => { :registro => @informe_debito_prestacional }
+
+#content-body
+  %div.field_content 
+    %span.field_name Efector:
+    %span.field_value= @informe_debito_prestacional.efector.nombre
+
+  %div.field_content
+    %span.field_name Concepto de facturación:
+    %span.field_value= @informe_debito_prestacional.concepto_de_facturacion.concepto
+  
+  %div.field_content 
+    %span.field_name Tipo de débito prestacional:
+    %span.field_value= @informe_debito_prestacional.tipo_de_debito_prestacional.nombre
+  
+  %div.field_content 
+    %span.field_name Estado del proceso:
+    %span.field_value= @informe_debito_prestacional.estado_del_proceso.nombre
+
+  %div.field_content
+    %span.field_name Informado SIRGE:
+    %span.field_value=  @informe_debito_prestacional.informado_sirge ? 'Si' : 'No'
+
+  %div.field_content 
+    %span.field_name Procesado para débito:
+    %span.field_value= @informe_debito_prestacional.procesado_para_debito ? 'Si' : 'No'
+  %br/
+  
+  %h2 Debitos
+  %table
+    %tr
+      %th Motivo del Rechazo
+      %th Afiliado
+      %th Prestación
+      %th Observaciones
+      %th Monto
+    - @informe_debito_prestacional.detalles_de_debitos_prestacionales.each do |detalle|
+      %tr
+        %td= truncate(detalle.motivo_de_rechazo.nombre, lenght: 40, separator: ' ')
+        %td= detalle.afiliado.present? ? detalle.afiliado.tipo_de_documento.codigo + ":" + detalle.afiliado.numero_de_documento + " - " + detalle.afiliado.apellido + ", " + detalle.afiliado.nombre : "Comunitaria"
+        %td= truncate(detalle.prestacion_liquidada.prestacion_incluida.prestacion_codigo + "-" + detalle.prestacion_liquidada.prestacion_incluida.prestacion_nombre, :length => 30, :separator => ' ')
+        %td= detalle.observaciones
+        %td= detalle.prestacion_liquidada.monto
+  
+
+
+
+
+
+
+
+
+
+
+
+

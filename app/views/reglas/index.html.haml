@@ -1,0 +1,32 @@
+- content_for :title do
+  Reglas de liquidación
+#content-header
+  %h1 Reglas de liquidación
+  #action-links
+    - if can? :create, Regla
+      = link_to 'Nueva regla', new_regla_path
+
+#content-body
+  %table
+    %tr
+      %th Nombre
+      %th Efector
+      %th Nomenclador
+      %th Prestación
+      %th Método de Validación
+      %th Permitir
+      %th Observaciones
+      %th{colspan: 3} Acciones
+    - @reglas.each do |regla|
+      %tr
+        %td= regla.nombre
+        %td= regla.efector.nombre
+        %td= regla.nomenclador.nombre
+        %td= regla.prestacion.nombre
+        %td= regla.metodo_de_validacion.nombre
+        %td= (regla.permitir) ? "Si": "No"
+        %td= regla.observaciones
+        %td= link_to 'Ver', regla
+        %td= link_to 'Editar', edit_regla_path(regla)
+        %td= link_to 'Borrar', regla, method: :delete, data: { confirm: '¿Está seguro que desea borrar la regla?' }
+  = will_paginate @reglas, :inner_window => 2, :outer_window => 0

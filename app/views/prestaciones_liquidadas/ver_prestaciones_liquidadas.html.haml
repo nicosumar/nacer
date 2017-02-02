@@ -1,0 +1,11 @@
+
+- content_for :title do
+  Liquidaciones - Prestaciones Liquidadas 
+#content-header
+  %h1 Prestaciones liquidadas
+  #action-links
+    - if can? :read, LiquidacionSumar
+      = link_to '<<-Volver a la liquidacion', @prestaciones_liquidadas.first.liquidacion
+
+#content-body
+  = render partial: 'grid'

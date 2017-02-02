@@ -1,0 +1,446 @@
+%h3 Tipo de solicitud
+%div.field_content
+  %span.field_value Solicitud de alta de un beneficiario
+
+#estado
+  %h3 Estado de la solicitud
+  - if ["R", "P", "A"].member?(@novedad.estado_de_la_novedad.codigo)
+    #info.infobox-ok.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+  - elsif ["I", "U", "S"].member?(@novedad.estado_de_la_novedad.codigo)
+    #info.infobox-advertencia.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      - if @novedad.advertencias && @novedad.advertencias.size > 0
+        %ul
+          - @novedad.advertencias.each do |adv|
+            %li= adv
+  - elsif @novedad.estado_de_la_novedad.codigo == "N"
+    #info.infobox-advertencia.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      %ul
+        %li= @novedad.mensaje_de_la_baja
+  - else
+    #info.infobox-error.no-margin
+      %h2= @novedad.estado_de_la_novedad.nombre
+      %ul
+        %li= @novedad.mensaje_de_la_baja
+
+%h3 Clave única de beneficiario
+%div.field_content
+  %span.field_value= @novedad.clave_de_beneficiario
+
+%h3 Datos personales
+
+%div.field_content
+  %span.field_name Apellido
+  - if !@novedad.apellido.blank?
+    %span.field_value= @novedad.apellido
+  - else
+    %span.field_empty No se ingresó el apellido
+%div.field_content
+  %span.field_name Nombre
+  - if !@novedad.nombre.blank?
+    %span.field_value= @novedad.nombre
+  - else
+    %span.field_empty No se ingresó el nombre
+%div.field_content
+  %span.field_name Clase de documento
+  - if @novedad.clase_de_documento_id
+    %span.field_value= @novedad.clase_de_documento.nombre
+  - else
+    %span.field_empty No se seleccionó la clase de documento
+%div.field_content
+  %span.field_name Tipo de documento
+  - if @novedad.tipo_de_documento_id
+    %span.field_value= @novedad.tipo_de_documento.nombre
+  - else
+    %span.field_empty No se seleccionó el tipo de documento
+%div.field_content
+  %span.field_name Número de documento
+  - if !@novedad.numero_de_documento.blank?
+    %span.field_value= @novedad.numero_de_documento
+  - else
+    %span.field_empty No se ingresó el número de documento
+%div.field_content
+  %span.field_name Número de celular
+  - if !@novedad.numero_de_celular.blank?
+    %span.field_value= @novedad.numero_de_celular
+  - else
+    %span.field_empty No se ingresó el número de celular
+%div.field_content
+  %span.field_name Dirección de correo electrónico:
+  - if !@novedad.e_mail.blank?
+    %span.field_value= @novedad.e_mail
+  - else
+    %span.field_empty No se ingresó la dirección de correo electrónico
+
+%h3 Datos de nacimiento, sexo, origen y estudios
+
+%div.field_content
+  %span.field_name Sexo
+  - if @novedad.sexo_id
+    %span.field_value= @novedad.sexo.nombre
+  - else
+    %span.field_empty No se seleccionó el sexo
+%div.field_content
+  %span.field_name Fecha de nacimiento
+  - if @novedad.fecha_de_nacimiento
+    %span.field_value= @novedad.fecha_de_nacimiento.strftime("%d/%m/%Y")
+  - else
+    %span.field_empty No se ingresó la fecha de nacimiento
+%div.field_content
+  %span.field_name País de nacimiento
+  - if @novedad.pais_de_nacimiento_id
+    %span.field_value= @novedad.pais_de_nacimiento.nombre
+  - else
+    %span.field_empty No se ingresó el país de nacimiento
+%div.field_content
+  %span.field_name Se declara indígena
+  - if @novedad.se_declara_indigena
+    %span.field_value Sí
+  - else
+    %span.field_value No
+- if @novedad.se_declara_indigena
+  %div.field_content
+    %span.field_name Lengua originaria
+    - if @novedad.lengua_originaria_id
+      %span.field_value= @novedad.lengua_originaria.nombre
+    - else
+      %span.field_empty No se seleccionó la lengua originaria
+  %div.field_content
+    %span.field_name Tribu originaria
+    - if @novedad.tribu_originaria_id
+      %span.field_value= @novedad.tribu_originaria.nombre
+    - else
+      %span.field_empty No se seleccionó la tribu originaria
+%div.field_content
+  %span.field_name Estudios
+  - if @novedad.alfabetizacion_del_beneficiario_id
+    %span.field_value= @novedad.alfabetizacion_del_beneficiario.nombre
+  - else
+    %span.field_empty No se ingresó el nivel de estudios
+%div.field_content
+  %span.field_name Años cursados en el mayor nivel
+  - if !@novedad.alfab_beneficiario_anios_ultimo_nivel.blank?
+    %span.field_value= @novedad.alfab_beneficiario_anios_ultimo_nivel
+  - else
+    %span.field_empty No se ingresó la cantidad de años cursados
+
+%h3 Datos de domicilio
+
+%div.field_content
+  %span.field_name Calle
+  - if !@novedad.domicilio_calle.blank?
+    %span.field_value= @novedad.domicilio_calle
+  - else
+    %span.field_empty No se ingresó la calle
+%div.field_content
+  %span.field_name Número de puerta o casa
+  - if !@novedad.domicilio_numero.blank?
+    %span.field_value= @novedad.domicilio_numero
+  - else
+    %span.field_empty No se ingresó el número de puerta/casa
+%div.field_content
+  %span.field_name Piso
+  - if !@novedad.domicilio_piso.blank?
+    %span.field_value= @novedad.domicilio_piso
+  - else
+    %span.field_empty No se ingresó el piso
+%div.field_content
+  %span.field_name Departamento (del piso indicado)
+  - if !@novedad.domicilio_depto.blank?
+    %span.field_value= @novedad.domicilio_depto
+  - else
+    %span.field_empty No se ingresó el departamento
+%div.field_content
+  %span.field_name Manzana
+  - if !@novedad.domicilio_manzana.blank?
+    %span.field_value= @novedad.domicilio_manzana
+  - else
+    %span.field_empty No se ingresó la manzana
+%div.field_content
+  %span.field_name Entre calle
+  - if !@novedad.domicilio_entre_calle_1.blank?
+    %span.field_value= @novedad.domicilio_entre_calle_1
+  - else
+    %span.field_empty No se ingresó el nombre de calle
+%div.field_content
+  %span.field_name Y calle
+  - if !@novedad.domicilio_entre_calle_2.blank?
+    %span.field_value= @novedad.domicilio_entre_calle_2
+  - else
+    %span.field_empty No se ingresó el nombre de calle
+%div.field_content
+  %span.field_name Teléfono
+  - if !@novedad.telefono.blank?
+    %span.field_value= @novedad.telefono
+  - else
+    %span.field_empty No se ingresó el número de teléfono
+%div.field_content
+  %span.field_name Otro teléfono
+  - if !@novedad.otro_telefono.blank?
+    %span.field_value= @novedad.otro_telefono
+  - else
+    %span.field_empty No se ingresó el número de teléfono
+%div.field_content
+  %span.field_name Departamento
+  - if @novedad.domicilio_departamento_id
+    %span.field_value= @novedad.domicilio_departamento.nombre
+  - else
+    %span.field_empty No se seleccionó el departamento
+%div.field_content
+  %span.field_name Distrito
+  - if @novedad.domicilio_distrito_id
+    %span.field_value= @novedad.domicilio_distrito.nombre
+  - else
+    %span.field_empty No se seleccionó el distrito
+%div.field_content
+  %span.field_name Barrio o paraje
+  - if !@novedad.domicilio_barrio_o_paraje.blank?
+    %span.field_value= @novedad.domicilio_barrio_o_paraje
+  - else
+    %span.field_empty No se ingresó el barrio/paraje
+%div.field_content
+  %span.field_name Código postal
+  - if !@novedad.domicilio_codigo_postal.blank?
+    %span.field_value= @novedad.domicilio_codigo_postal
+  - else
+    %span.field_empty No se ingresó el código postal
+
+%h4 Observaciones
+%div.field_content
+  - if !@novedad.observaciones.blank?
+    %span.field_value_multiline
+      - @novedad.observaciones.split("\n").each do |linea|
+        = linea
+        %br/
+  - else
+    %span.field_empty No se han ingresado observaciones para el domicilio
+
+%h3 Lugar de atención habitual
+
+%div.field_content
+  - if @novedad.lugar_de_atencion_habitual_id
+    %span.field_value= @novedad.lugar_de_atencion_habitual.nombre
+  - else
+    %span.field_empty No se seleccionó el lugar de atención habitual
+
+- if @novedad.es_menor
+
+  %h3 Datos del adulto responsable
+
+  %h4 Madre
+
+  %div.field_content
+    %span.field_name Apellido
+    - if !@novedad.apellido_de_la_madre.blank?
+      %span.field_value= @novedad.apellido_de_la_madre
+    - else
+      %span.field_empty No se ingresó el apellido
+  %div.field_content
+    %span.field_name Nombre
+    - if !@novedad.nombre_de_la_madre.blank?
+      %span.field_value= @novedad.nombre_de_la_madre
+    - else
+      %span.field_empty No se ingresó el nombre
+  %div.field_content
+    %span.field_name Tipo de documento
+    - if @novedad.tipo_de_documento_de_la_madre_id
+      %span.field_value= @novedad.tipo_de_documento_de_la_madre.nombre
+    - else
+      %span.field_empty No se seleccionó el tipo de documento
+  %div.field_content
+    %span.field_name Número de documento
+    - if !@novedad.numero_de_documento_de_la_madre.blank?
+      %span.field_value= @novedad.numero_de_documento_de_la_madre
+    - else
+      %span.field_empty No se ingresó el número de documento
+  %div.field_content
+    %span.field_name Estudios
+    - if @novedad.alfabetizacion_de_la_madre_id
+      %span.field_value= @novedad.alfabetizacion_de_la_madre.nombre
+    - else
+      %span.field_empty No se ingresó el nivel de estudios
+  %div.field_content
+    %span.field_name Años cursados en el mayor nivel
+    - if !@novedad.alfab_madre_anios_ultimo_nivel.blank?
+      %span.field_value= @novedad.alfab_madre_anios_ultimo_nivel
+    - else
+      %span.field_empty No se ingresó la cantidad de años cursados
+
+  %h4 Padre
+
+  %div.field_content
+    %span.field_name Apellido
+    - if !@novedad.apellido_del_padre.blank?
+      %span.field_value= @novedad.apellido_del_padre
+    - else
+      %span.field_empty No se ingresó el apellido
+  %div.field_content
+    %span.field_name Nombre
+    - if !@novedad.nombre_del_padre.blank?
+      %span.field_value= @novedad.nombre_del_padre
+    - else
+      %span.field_empty No se ingresó el nombre
+  %div.field_content
+    %span.field_name Tipo de documento
+    - if @novedad.tipo_de_documento_del_padre_id
+      %span.field_value= @novedad.tipo_de_documento_del_padre.nombre
+    - else
+      %span.field_empty No se seleccionó el tipo de documento
+  %div.field_content
+    %span.field_name Número de documento
+    - if !@novedad.numero_de_documento_del_padre.blank?
+      %span.field_value= @novedad.numero_de_documento_del_padre
+    - else
+      %span.field_empty No se ingresó el número de documento
+  %div.field_content
+    %span.field_name Estudios
+    - if @novedad.alfabetizacion_del_padre_id
+      %span.field_value= @novedad.alfabetizacion_del_padre.nombre
+    - else
+      %span.field_empty No se ingresó el nivel de estudios
+  %div.field_content
+    %span.field_name Años cursados en el mayor nivel
+    - if !@novedad.alfab_padre_anios_ultimo_nivel.blank?
+      %span.field_value= @novedad.alfab_padre_anios_ultimo_nivel
+    - else
+      %span.field_empty No se ingresó la cantidad de años cursados
+
+  %h4 Tutor
+
+  %div.field_content
+    %span.field_name Apellido
+    - if !@novedad.apellido_del_tutor.blank?
+      %span.field_value= @novedad.apellido_del_tutor
+    - else
+      %span.field_empty No se ingresó el apellido
+  %div.field_content
+    %span.field_name Nombre
+    - if !@novedad.nombre_del_tutor.blank?
+      %span.field_value= @novedad.nombre_del_tutor
+    - else
+      %span.field_empty No se ingresó el nombre
+  %div.field_content
+    %span.field_name Tipo de documento
+    - if @novedad.tipo_de_documento_del_tutor_id
+      %span.field_value= @novedad.tipo_de_documento_del_tutor.nombre
+    - else
+      %span.field_empty No se seleccionó el tipo de documento
+  %div.field_content
+    %span.field_name Número de documento
+    - if !@novedad.numero_de_documento_del_tutor.blank?
+      %span.field_value= @novedad.numero_de_documento_del_tutor
+    - else
+      %span.field_empty No se ingresó el número de documento
+  %div.field_content
+    %span.field_name Estudios
+    - if @novedad.alfabetizacion_del_tutor_id
+      %span.field_value= @novedad.alfabetizacion_del_tutor.nombre
+    - else
+      %span.field_empty No se ingresó el nivel de estudios
+  %div.field_content
+    %span.field_name Años cursados en el mayor nivel
+    - if !@novedad.alfab_tutor_anios_ultimo_nivel.blank?
+      %span.field_value= @novedad.alfab_tutor_anios_ultimo_nivel
+    - else
+      %span.field_empty No se ingresó la cantidad de años cursados
+
+- if @novedad.esta_embarazada
+
+  %h3 Datos del embarazo
+
+  %div.field_content
+    %span.field_name Fecha de la última menstruación
+    - if @novedad.fecha_de_la_ultima_menstruacion
+      %span.field_value= @novedad.fecha_de_la_ultima_menstruacion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha de la última menstruación
+  %div.field_content
+    %span.field_name Fecha de diagnóstico del embarazo
+    - if @novedad.fecha_de_diagnostico_del_embarazo
+      %span.field_value= @novedad.fecha_de_diagnostico_del_embarazo.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha de diagnóstico
+  %div.field_content
+    %span.field_name Semanas de embarazo al diagnóstico
+    - if !@novedad.semanas_de_embarazo.blank?
+      %span.field_value= @novedad.semanas_de_embarazo
+    - else
+      %span.field_empty No se ingresó la cantidad de semanas de embarazo
+  %div.field_content
+    %span.field_name Fecha probable de parto
+    - if @novedad.fecha_probable_de_parto
+      %span.field_value= @novedad.fecha_probable_de_parto.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha probable de parto
+  %div.field_content
+    %span.field_name Fecha efectiva de parto
+    - if @novedad.fecha_efectiva_de_parto
+      %span.field_value= @novedad.fecha_efectiva_de_parto.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha efectiva de parto
+
+%h3 Remediar+Redes
+
+%div.field_content
+  %span.field_name Score de riesgo cardiovascular
+  - if !@novedad.score_de_riesgo.blank?
+    %span.field_value= @novedad.score_de_riesgo
+  - else
+    %span.field_empty No se ingresó el score de riesgo
+
+%h3 Discapacidad
+
+%div.field_content
+  - if @novedad.discapacidad_id
+    %span.field_value= @novedad.discapacidad.nombre
+  - else
+    %span.field_empty No se indicó una discapacidad
+
+%h3 Fecha y centro inscriptor
+
+%div.field_content
+  %span.field_name Fecha de inscripción o modificación
+  - if @novedad.fecha_de_la_novedad
+    %span.field_value= @novedad.fecha_de_la_novedad.strftime("%d/%m/%Y")
+  - else
+    %span.field_empty No se ingresó la fecha de inscripción/modificación
+%div.field_content
+  %span.field_name Centro de inscripción
+  - if @novedad.centro_de_inscripcion_id
+    %span.field_value= @novedad.centro_de_inscripcion.nombre
+  - else
+    %span.field_empty No se indicó el centro de inscripción
+%div.field_content
+  %span.field_name Nombre del agente inscriptor
+  - if !@novedad.nombre_del_agente_inscriptor.blank?
+    %span.field_value= @novedad.nombre_del_agente_inscriptor
+  - else
+    %span.field_empty No se indicó el nombre del agente inscriptor
+
+%h3 Observaciones generales
+
+%div.field_content
+  - if !@novedad.observaciones_generales.blank?
+    %span.field_value_multiline
+      - @novedad.observaciones_generales.split("\n").each do |linea|
+        = linea
+        %br/
+  - else
+    %span.field_empty No se han ingresado observaciones
+  
+%h3 Última modificación de los datos
+
+%div.field_content
+  %span.field_name Fecha de modificación de esta solicitud
+  - if @novedad.updated_at
+    %span.field_value= @novedad.updated_at.strftime("%d/%m/%Y")
+  - else
+    %span.field_empty No se registró la fecha de la última modificación
+%div.field_content
+  %span.field_name Último usuario que modificó esta solicitud
+  - if @novedad.updater_id
+    %span.field_value= @novedad.updater.nombre_completo
+  - else
+    %span.field_empty No se registró el usuario que realizó la última modificación

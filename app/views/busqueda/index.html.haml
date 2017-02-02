@@ -1,0 +1,27 @@
+- content_for :title do
+  Resultados de la búsqueda
+
+#content-header
+  %h1 Resultados de la búsqueda
+
+#content-body
+  %h2.first-header Registros coincidentes
+
+  - if @registros_coincidentes > 0
+    La búsqueda devolvió
+    = @registros_coincidentes
+    - if @registros_coincidentes == 1
+      registro coincidente en
+    - else
+      registros coincidentes en
+    = ("%.2f" % @tiempo_de_busqueda).gsub('.', ',')
+    segundos
+    #resultados
+      - @resultados_de_busqueda.each do |r|
+        %p
+          %span.titulo= link_to r.titulo, eval(r.modelo_type.underscore + "_path(" + r.modelo_id.to_s + ")")
+          %br/
+          = sanitize r.texto
+      = will_paginate @resultados_de_busqueda, :inner_window => 2, :outer_window => 0
+  - else
+    No se encontraron resultados que coincidan con los criterios de búsqueda que ingresó.

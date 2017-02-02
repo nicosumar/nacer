@@ -1,0 +1,46 @@
+- content_for :title do
+  Referentes del efector
+
+#content-header
+  %h1 Referentes del efector
+  #action-links
+    - if can? :create, Referente
+      = link_to "Agregar un referente", new_referente_path(:efector_id => @efector.id)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Efector
+  %div.field_content
+    - if !@efector.cuie.blank?
+      %span.field_value= @efector.cuie + " - " + @efector.nombre
+    - else
+      %span.field_value= @efector.nombre + " (el CUIE aún no se ha asignado)"
+    = link_to "Ver detalles del efector", @efector
+
+  - if @efector.referentes.any?
+    %h2 Referentes
+    %table
+      %thead
+        %tr
+          %th Nombre
+          %th Fecha de inicio
+          %th Fecha de finalización
+      %tbody
+        - @efector.referentes.sort_by{ |ref| ref.fecha_de_inicio }.each do |r|
+          - if can? :update, Referente
+            %tr.clickable{ :onclick => "location.href=\'#{edit_referente_path(r)}\'", :title => "Modificar el referente" }
+              %td= r.contacto.mostrado
+              %td= r.fecha_de_inicio.strftime("%d/%m/%Y")
+              - if r.fecha_de_finalizacion
+                %td= r.fecha_de_finalizacion.strftime("%d/%m/%Y")
+              - else
+                %td ACTUAL
+          - else
+            %tr
+              %td= r.contacto.mostrado
+              %td= r.fecha_de_inicio.strftime("%d/%m/%Y")
+              - if r.fecha_de_finalizacion
+                %td= r.fecha_de_finalizacion.strftime("%d/%m/%Y")
+              - else
+                %td ACTUAL

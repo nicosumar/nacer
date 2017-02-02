@@ -1,0 +1,73 @@
+- content_for :title do
+  Modificación de autorizaciones del usuario
+
+#content-header
+  %h1 Modificación de autorizaciones del usuario
+
+= render :partial => 'shared/info', :locals => { :registro => @user }
+
+#content-body
+  %h2.first-header Formulario de modificación de autorizaciones del usuario
+
+  %h3.header-with-note Información gestionada por el usuario
+  %p.note Esta información no puede ser modificada por los administradores
+  %div.field_content
+    %span.field_name Nombre
+    %span.field_value= @user.nombre + " " + @user.apellido
+
+  %div.field_content
+    %span.field_name Sexo
+    - if @user.sexo
+      %span.field_value= @user.sexo.nombre
+    - else
+      %span.field_empty No se indicó el sexo
+
+  %div.field_content
+    %span.field_name Fecha de nacimiento
+    - if @user.fecha_de_nacimiento
+      %span.field_value= @user.fecha_de_nacimiento.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha de nacimiento
+
+  %div.field_content
+    %span.field_name Dirección de correo electrónico
+    %span.field_value= @user.email
+
+  %div.field_content
+    %span.field_name Observaciones
+    %br/
+    - if @user.observaciones
+      %span.field_value
+        - @user.observaciones.split("\n").each do |linea|
+          = linea
+    - else
+      %span.field_empty No se han ingresado observaciones
+
+  %h3 Autorizaciones de la cuenta
+
+  = form_for(@user) do |f|
+    %h4 Inicio de sesión
+    %div.field
+      = f.label "Cuenta autorizada para iniciar sesión"
+      = f.check_box :authorized
+    %div.field
+      = f.label "Marcar cuenta como eliminada"
+      = f.check_box :cuenta_eliminada
+
+    %h4 Asignación de grupos
+    %div.field
+      = f.label "La cuenta está asociada a los siguientes grupos"
+      %br/
+      = f.select :user_group_ids, options_for_select(@user_groups, @user_group_ids), |
+        {}, { :multiple => true, :size => 5, :class => "multi_select", |
+        :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
+    %h4 Asignación de unidades de alta de datos
+    %div.field
+      = f.label "La cuenta está autorizada a operar con las siguientes unidades de alta de datos"
+      %br/
+      = f.select :unidad_de_alta_de_datos_ids, |
+        options_for_select(@unidades_de_alta_de_datos, @unidad_de_alta_de_datos_ids), {}, |
+        { :multiple => true, :size => 5,  :class => "multi_select", |
+        :title => "Mantenga presionado 'Ctrl' al hacer clic para seleccionar varias opciones" } |
+    %div.actions
+      = f.submit "Modificar las autorizaciones de la cuenta"

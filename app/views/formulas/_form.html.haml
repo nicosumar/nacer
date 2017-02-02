@@ -1,0 +1,15 @@
+= form_for(@formula) do |f|
+  .field
+    = f.label :descripcion
+    = f.text_field :descripcion
+  .field
+    = f.label :formula
+    = f.text_area :formula
+  .field
+    = f.label :observaciones
+    = f.text_area :observaciones
+  .field
+    = f.label :activa
+    = f.check_box :activa
+  .actions
+    = f.submit

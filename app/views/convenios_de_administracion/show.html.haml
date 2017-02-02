@@ -1,0 +1,60 @@
+- content_for :title do
+  Información detallada del convenio de administración
+
+#content-header
+  %h1 Información detallada del convenio de administración
+  - if can? :update, ConvenioDeAdministracion
+    #action-links
+      = link_to "Modificar el convenio", edit_convenio_de_administracion_path(@convenio_de_administracion)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Datos de identificación
+  %div.field_content
+    %span.field_name Número
+    %span.field_value= @convenio_de_administracion.numero
+  %div.field
+    %span.field_name Efector administrado
+    %span.field_value= @convenio_de_administracion.efector.nombre
+    = link_to "Ver detalles del efector", @convenio_de_administracion.efector
+  %div.field
+    %span.field_name Administrador
+    %span.field_value= @convenio_de_administracion.administrador.nombre
+    = link_to "Ver detalles del efector", @convenio_de_administracion.administrador
+
+  %h3 Datos del firmante y fechas
+  %div.field_content
+    %span.field_name Firmante por el efector
+    - if @convenio_de_administracion.firmante
+      %span.field_value= @convenio_de_administracion.firmante
+    - else
+      %span.field_empty No se ingresó el firmante
+  %div.field_content
+    %span.field_name Fecha de suscripción
+    - if @convenio_de_administracion.fecha_de_suscripcion
+      %span.field_value= @convenio_de_administracion.fecha_de_suscripcion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de suscripción
+  %div.field_content
+    %span.field_name Fecha de inicio
+    - if @convenio_de_administracion.fecha_de_inicio
+      %span.field_value= @convenio_de_administracion.fecha_de_inicio.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de inicio
+  %div.field_content
+    %span.field_name Fecha de finalización
+    - if @convenio_de_administracion.fecha_de_finalizacion
+      %span.field_value= @convenio_de_administracion.fecha_de_finalizacion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se indicó la fecha de finalización
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@convenio_de_administracion.observaciones.blank?
+      %span.field_value_multiline
+        - @convenio_de_administracion.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para el convenio de administración

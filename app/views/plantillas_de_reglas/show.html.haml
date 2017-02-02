@@ -1,0 +1,37 @@
+- content_for :title do
+  Prestación
+
+#content-header
+  %h1 Plantilla de Reglas
+  #action-links
+    - if can? :read, PlantillaDeReglas
+      = link_to '<< Volver al listado', plantillas_de_reglas_path
+    - if can? :update, PlantillaDeReglas
+      = link_to 'Editar', edit_plantilla_de_reglas_path(@plantilla_de_reglas)
+
+= render :partial => "shared/info", :locals => { :registro => @plantilla_de_reglas }
+
+#content-body
+  %div.field_content
+    %span.field_name Nombre:
+    %span.field_value= @plantilla_de_reglas.nombre
+  %div.field_content
+    %span.field_name Observaciones:
+    %span.field_value= @plantilla_de_reglas.observaciones
+  %br
+  %table
+    %tr
+      %th Nombre
+      %th Efector
+      %th Nomenclador
+      %th Prestación
+      %th Método de Validación
+      %th Permitir
+    - @plantilla_de_reglas.reglas.each do |regla|
+      %tr
+        %td= regla.nombre
+        %td= regla.efector.nombre
+        %td= regla.nomenclador.nombre
+        %td= regla.prestacion.nombre
+        %td= regla.metodo_de_validacion.nombre
+        %td= (regla.permitir) ? "Si": "No"

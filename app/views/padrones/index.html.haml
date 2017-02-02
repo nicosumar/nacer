@@ -1,0 +1,49 @@
+- content_for :title do
+  - if @procesado
+    Resultado del proceso
+  - else
+    Procesos relacionados con padrones
+
+#content-header
+  %h1
+    - if @procesado
+      Resultado del proceso
+    - else
+      Procesos relacionados con padrones
+
+= render :partial => "shared/info"
+
+#content-body
+
+  - if @procesado
+    - if @errores_presentes
+      #error_explanation
+        %h2= pluralize(@errores.count, "error presente").to_s
+        %ul
+          - @errores.each do |msg|
+            %li= msg
+    - else
+      El proceso se ejecutó sin errores
+  - else # @procesado == false
+    = form_tag('/padrones', :method => 'get') do
+      %p
+        Seleccione el tipo de proceso, complete los datos requeridos y
+        presione el botón procesar.
+      %div.field
+        = label_tag(:proceso_id, "Proceso:")
+        %br/
+        = select_tag :proceso_id, options_for_select(@procesos, @proceso_id), { :include_blank => false }
+      %div.field
+        = label_tag(:anio_y_mes, "Año y mes del padrón (AAAA-MM):")
+        %br/
+        = text_field_tag :anio_y_mes
+      %div.field
+        = label_tag(:multiparte, "Nº de parte (para proceso en multi-partes):")
+        %br/
+        = text_field_tag :multiparte
+      %div.field
+        = label_tag(:nomenclador_id, "Nomenclador:")
+        %br/
+        = select_tag :nomenclador_id, options_for_select(@nomencladores, @nomenclador_id), { :include_blank => true }
+      %div.actions
+        = submit_tag("Procesar")

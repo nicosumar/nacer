@@ -1,0 +1,88 @@
+- content_for :title do
+  Información detallada de la cuasi-factura
+
+#content-header
+  %h1 Información detallada de la cuasi-factura
+  #action-links
+    - if can? :update, CuasiFactura
+      = link_to "Modificar la cuasi-factura", edit_cuasi_factura_path(@cuasi_factura)
+    - if can?(:create, RenglonDeCuasiFactura) && !@cuasi_factura.renglones_de_cuasi_facturas.any?
+      = link_to "Importar detalle", importar_detalle_url(:cuasi_factura_id => @cuasi_factura.id)
+    - if can?(:create, RegistroDePrestacion) && @cuasi_factura.renglones_de_cuasi_facturas.any? && |
+      !@cuasi_factura.registros_de_prestaciones.any? |
+      = link_to "Importar digitalización de prestaciones", importar_registros_de_prestaciones_url(:cuasi_factura_id => @cuasi_factura.id)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3.first-header Datos de la liquidación
+  %div.field_content
+    %span.field_name Administrador
+    %span.field_value= @liquidacion.efector.nombre
+  %div.field_content
+    %span.field_name Periodo liquidado (mes y año)
+    %span.field_value= l(Date.new(@liquidacion.anio_de_prestaciones, @liquidacion.mes_de_prestaciones, 1), |
+      :format => :month_and_year) |
+  = link_to "Ver detalle de la liquidación", @liquidacion
+
+  %h3 Datos de identificación
+  %div.field_content
+    %span.field_name Efector
+    %span.field_value= @cuasi_factura.efector.cuie.to_s + " - " + @cuasi_factura.efector.nombre
+  %div.field
+    %span.field_name Nomenclador
+    %span.field_value= @cuasi_factura.nomenclador.nombre
+
+  %h3 Información general
+  %div.field_content
+    %span.field_name Número de cuasi-factura
+    %span.field_value= @cuasi_factura.numero
+  -#%div.field_content
+    %span.field_name Fecha de emisión
+    %span.field_value= @cuasi_factura.fecha_de_emision.strftime("%d/%m/%Y")
+  %div.field_content
+    %span.field_name Fecha de presentación a la UGSP
+    - if @cuasi_factura.fecha_de_presentacion
+      %span.field_value= @cuasi_factura.fecha_de_presentacion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty La cuasi-factura aún no fue presentada para su liquidación
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@cuasi_factura.observaciones.blank?
+      %span.field_value_multiline
+        - @cuasi_factura.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para la cuasi-factura
+
+  %h3 Detalle de la cuasi-factura presentada
+  %table
+    %thead
+      %tr.centrado
+        %th Código
+        %th Cantidad informada
+        - if @cuasi_factura.registros_de_prestaciones.any?
+          %th Cantidad digitalizada
+        %th Monto informado
+        %th Subtotal informado
+        - if @cuasi_factura.registros_de_prestaciones.any?
+          %th.destacado Resultado
+    %tbody
+      - @cuasi_factura.renglones_de_cuasi_facturas.each do |r|
+        %tr
+          %td.izquierda= r.codigo_de_prestacion_informado
+          %td.derecha= r.cantidad_informada
+          - if @cuasi_factura.registros_de_prestaciones.any?
+            %td.derecha= r.cantidad_digitalizada
+          %td.derecha= ("$ %.2f" % r.monto_informado).gsub(".", ",")
+          %td.derecha= (r.subtotal_informado ? ("$ %.2f" % r.subtotal_informado).gsub(".", ",") : nil)
+          - if @cuasi_factura.registros_de_prestaciones.any?
+            %td.izquierda.destacado
+              - resultado = resultado_verificacion(r.codigo_de_prestacion_informado, r.cantidad_informada, |
+                            r.cantidad_digitalizada, r.monto_informado, r.subtotal_informado) |
+              - if resultado[0]
+                %span.error= resultado[1]
+              - else
+                = resultado[1]

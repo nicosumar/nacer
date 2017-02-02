@@ -1,0 +1,61 @@
+=# javascript_include_tag 'liquidaciones_sumar_procesar.js'
+= stylesheet_link_tag"entradas.css"
+
+- content_for :title do
+  Liquidaciones Sumar - Ver
+
+-# bloquear_ui ["prueba"]
+
+#content-header
+  %h1 Liquidaciones Sumar - Ver
+  #action-links
+    - if can? :read, LiquidacionSumar
+      = link_to '<< Volver al listado', liquidaciones_sumar_path
+    - if can? :update, LiquidacionSumar
+      = link_to 'Editar', edit_liquidacion_sumar_path(@liquidacion_sumar)
+
+= render :partial => "shared/info", :locals => { :registro => @liquidacion_sumar }
+= render :partial => "shared/block_ui"
+
+#content-body
+  %table
+    %tr
+      %td
+        %b Liquidación:
+      %td{colspan: 3}
+        %span.field_value= @liquidacion_sumar.descripcion
+    %tr
+      %td
+        %b Concepto:
+      %td
+        %span.field_value= @liquidacion_sumar.concepto_de_facturacion.descripcion
+      %td 
+        %b Periodo:
+      %td
+        %span.field_value= @liquidacion_sumar.periodo.periodo
+    %tr
+      %td 
+        %b Plantilla de reglas:
+      %td{colspan:3}
+        - unless @liquidacion_sumar.plantilla_de_reglas.blank?
+          %span.field_value= @liquidacion_sumar.plantilla_de_reglas.nombre
+        - else
+          %span.field_value No
+    %tr
+      %td
+        %b Grupo de Efectores:
+      %td{colspan: 3}
+        %span.field_value= link_to "#{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}", @liquidacion_sumar.grupo_de_efectores_liquidacion, {method: "get"},{style: "color: #0000FF"}
+    %tr
+      %td{colspan: 4} &nbsp;
+  #action-links{style: "float:right; margin-right: 120px;"}
+    = link_to "Vaciar Liquidacion", vaciar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar, format: 'json'), method: :delete, remote: true
+    = link_to 'Modificar parametros', edit_parametro_liquidacion_sumar_path(@liquidacion_sumar.parametro_liquidacion_sumar),:method => "get"
+    = link_to "Procesar Liquidacion", procesar_liquidacion_liquidacion_sumar_path(@liquidacion_sumar, format: 'json'), method: :post, remote: true
+    = link_to "Generar cuasifacturas",  generar_cuasifacturas_liquidacion_sumar_path(@liquidacion_sumar.id, format: 'json'), method: :post, remote: true
+    = link_to 'Generar expedientes', generar_caratulas_expedientes_por_liquidacion_expediente_sumar_path(@liquidacion_sumar.id, format: 'pdf'), method: "get"
+  %br
+  %br
+  %br
+  %br
+

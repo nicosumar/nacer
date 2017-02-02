@@ -1,0 +1,162 @@
+# -*- encoding : utf-8 -*-
+reporte = DocumentoGenerable.reporte(@liquidacion_sumar_cuasifactura.liquidacion_sumar, LiquidacionSumarCuasifactura) 
+case reporte
+
+when 'cuasifactura_bas'
+  cabecera = @liquidacion_sumar_cuasifactura.get_cabecera
+  cq_detalle = @liquidacion_sumar_cuasifactura.get_detalles
+
+  report.use_layout File.join(Rails.root, 'app', 'reports',"#{reporte}.tlf") do |config|
+   # configuro la lista (:details)
+    config.list(:details) do
+      use_stores sub_total: 0, total: 0
+      # Al disparar el evento que inserta el footer
+      events.on :page_footer_insert do |e|
+        # Seteo subtotales
+        e.section.item(:sub_total).value(e.store.sub_total)
+        # que empiece en 0
+        e.store.sub_total = 0
+      end
+
+      # disparo la insercion del footer.
+      events.on :footer_insert do |e|
+        # seteo el nuevo total
+        e.section.item(:total).value(e.store.total)
+      end
+    end
+  end
+
+  report.start_new_page do |page|
+    page.values(
+           cuasifactura_numero: cabecera[:cuasifactura_numero],
+           cuasifactura_fecha: cabecera[:cuasifactura_fecha] ,
+           efector_cuit: cabecera[:efector_cuit] ,
+           efector_iva: cabecera[:efector_iva] ,
+           efector_inicio_actividades: cabecera[:efector_inicio_actividades] ,
+           efector_iibb: cabecera[:efector_iibb] ,
+           efector_datos_bancarios: cabecera[:efector_datos_bancarios] ,
+           efector_codigo: cabecera[:efector_codigo] ,
+           efector_contrato: cabecera[:efector_contrato] ,
+           efector_encargado: cabecera[:sello_mostrado] ,
+           liquidacion_periodos: cabecera[:liquidacion_periodos] ,
+           concepto_facturacion: cabecera[:concepto_facturacion],
+           referente_mostrado: cabecera[:sello_mostrado],
+           referente_primera_linea: cabecera[:firma_primera_linea],
+           referente_segunda_linea: cabecera[:firma_segunda_linea] ,
+           referente_tercera_linea: cabecera[:firma_tercera_linea],
+           logo: (
+             File.exists?(File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png")) ?
+               File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png") : nil ),
+           logo_texto: (
+             !File.exists?(File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png")) ?
+               cabecera[:nombre] : nil )
+
+           )
+
+    cq_detalle.each do |det|
+      #agrego la fila a la lista de detalles
+      page.list(:details).add_row do |row|
+        row.values no: det.no,
+                   prestacion_nombre: det.prestacion_nombre,
+                   prestacion_codigo: det.prestacion_codigo,
+                   cant: det.cant,
+                   cantidad: det.cantidad
+
+        page.list(:details) do |list|
+          list.store.sub_total += det.cantidad.to_d
+          list.store.total += det.cantidad.to_d
+        end
+      end
+    end
+  end
+
+when 'cuasifactura_ppac'
+  cabecera = @liquidacion_sumar_cuasifactura.get_cabecera
+  cq_detalle = @liquidacion_sumar_cuasifactura.get_detalles
+
+  report.use_layout File.join(Rails.root, 'app', 'reports',"#{reporte}.tlf") do |config|
+   # configuro la lista (:details)
+    config.list(:details) do
+      use_stores sub_total: 0, total: 0
+      # Al disparar el evento que inserta el footer
+      events.on :page_footer_insert do |e|
+        # Seteo subtotales
+        e.section.item(:sub_total).value(e.store.sub_total)
+        # que empiece en 0
+        e.store.sub_total = 0
+      end
+
+      # disparo la insercion del footer.
+      events.on :footer_insert do |e|
+        # seteo el nuevo total
+        e.section.item(:total).value(e.store.total)
+      end
+    end
+  end
+
+  report.start_new_page do |page|
+    page.values(
+           cuasifactura_numero: cabecera[:cuasifactura_numero],
+           cuasifactura_fecha: cabecera[:cuasifactura_fecha] ,
+           efector_cuit: cabecera[:efector_cuit] ,
+           efector_iva: cabecera[:efector_iva] ,
+           efector_inicio_actividades: cabecera[:efector_inicio_actividades] ,
+           efector_iibb: cabecera[:efector_iibb] ,
+           efector_datos_bancarios: cabecera[:efector_datos_bancarios] ,
+           efector_codigo: cabecera[:efector_codigo] ,
+           efector_contrato: cabecera[:efector_contrato] ,
+           efector_encargado: cabecera[:sello_mostrado] ,
+           liquidacion_periodos: cabecera[:liquidacion_periodos] ,
+           concepto_facturacion: cabecera[:concepto_facturacion],
+           referente_mostrado: cabecera[:sello_mostrado],
+           referente_primera_linea: cabecera[:firma_primera_linea],
+           referente_segunda_linea: cabecera[:firma_segunda_linea] ,
+           referente_tercera_linea: cabecera[:firma_tercera_linea],
+           logo: (
+             File.exists?(File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png")) ?
+               File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png") : nil ),
+           logo_texto: (
+             !File.exists?(File.join(Rails.root, 'app', 'assets','images',"#{cabecera[:id]}.png")) ?
+               cabecera[:nombre] : nil )
+
+           )
+
+    cq_detalle.each do |det|
+      #agrego la fila a la lista de detalles
+      page.list(:details).add_row do |row|
+        row.values no: det.no,
+                   prestacion_nombre: det.prestacion_nombre,
+                   prestacion_codigo: det.prestacion_codigo,
+                   cant: det.cant,
+                   parcial: nil,
+                   cantidad: "$" + number_with_precision(det.cantidad, precision: 2, delimiter: "")
+
+        page.list(:details) do |list|
+          list.store.sub_total += det.cantidad.to_d
+          list.store.total += det.cantidad.to_d
+        end
+      end
+
+      prestacion_liquidada = PrestacionLiquidada.find det[:prestacion_liquidada_id]
+
+      if prestacion_liquidada.present?
+        prestacion_liquidada.prestaciones_liquidadas_datos.each do |pld|
+          prestacion_nombre = "       --> " + pld.nombre
+          #agrego el detalle de la liquidación
+          page.list(:details).add_row do |row|
+            row.values no: "",
+                       prestacion_nombre: prestacion_nombre,
+                       prestacion_codigo: "",
+                       cant: pld.cantidad,
+                       parcial: "$" + number_with_precision(pld.subtotal, precision: 2, delimiter: ""),
+                       cantidad: nil
+          end        
+        end
+      end
+    end
+  end
+when 'cuasifactura_img'
+  
+else 
+  raise "No se encontro el reporte especificado para el documento. Reporte: #{reporte}"
+end

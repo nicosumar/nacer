@@ -1,0 +1,11 @@
+- content_for :title do
+  Editar Formula
+
+#content-header
+  %h1 Editar Formula
+  #action-links
+    = link_to '<< Volver al listado', formulas_path
+    = link_to 'Ver', @formula
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @formula }
+  = render 'form'

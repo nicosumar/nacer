@@ -1,0 +1,18 @@
+- content_for :title do
+  Modificación de datos del efector
+
+- content_for :other_includes do
+  = javascript_include_tag "efectores"
+  = javascript_include_tag 'jquery.chained.min'
+  = javascript_include_tag "efectores_form"
+
+#content-header
+  %h1 Modificación de datos del efector
+
+= render :partial => "shared/info", :locals => { :registro => @efector }
+
+#content-body
+  %h2.first-header-with-note Formulario de modificación de datos del efector
+  %p.note Los campos marcados con asterisco (*) son obligatorios
+
+  = render "form"
