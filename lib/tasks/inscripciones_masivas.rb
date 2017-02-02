@@ -469,7 +469,6 @@ class InscripcionMasiva
           if !novedad.valid? || novedad.advertencias.size > 0
             novedad.persistido = false
             novedad.errores_y_advertencias = novedad.errors.full_messages.join(" - ") + (novedad.advertencias.size > 0 ? novedad.advertencias.join(" - ") : "")
- #         puts novedad.inspect
             novedad.estado_de_la_novedad_id = 1
             novedad.clave_de_beneficiario = "9999999999999999"
             novedad.save(:validate => false)
@@ -486,14 +485,12 @@ class InscripcionMasiva
             novedad.categoria_de_afiliado_id = novedad.categorizar
             novedad.estado_de_la_novedad_id = 2
             novedad.persistido = true
-  #        puts novedad.inspect
             novedad.save
           end
         end
       end
       archivo.close
     end
-#    archivo.close
   end
 
   def persistir_inscripciones

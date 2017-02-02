@@ -57,14 +57,14 @@ class Periodo < ActiveRecord::Base
       selects << <<-SQL
           SELECT
               pl.id "prestacion_liquidada_id",
-             #{drr1_id.present? ? drr1_id : "NULL"}::integer "id_dato_reportable1",
-             #{drr1_funcion.present? ? drr1_funcion + "(pl.id)" : "NULL"}::varchar(255) "dato_reportable1",
-             #{drr2_id.present? ? drr2_id : "NULL"}::integer "id_dato_reportable2",
-             #{drr2_funcion.present? ? drr2_funcion + "(pl.id)" : "NULL"}::varchar(255) "dato_reportable2",
-             #{drr3_id.present? ? drr3_id : "NULL"}::integer "id_dato_reportable3",
-             #{drr3_funcion.present? ? drr3_funcion + "(pl.id)" : "NULL"}::varchar(255) "dato_reportable3",
-             #{drr4_id.present? ? drr4_id : "NULL"}::integer "id_dato_reportable4",
-             #{drr4_funcion.present? ? drr4_funcion + "(pl.id)" : "NULL"}::varchar(255) "dato_reportable4"
+              #{drr1_id.present? ? drr1_id : "NULL"}::integer "id_dato_reportable1",
+              #{drr1_funcion.present? ? drr1_funcion + "(pl.id)" : "NULL"}::varchar(255) "dato_reportable1",
+              #{drr2_id.present? ? drr2_id : "NULL"}::integer "id_dato_reportable2",
+              #{drr2_funcion.present? ? drr2_funcion + "(pl.id)" : "NULL"}::varchar(255) "dato_reportable2",
+              #{drr3_id.present? ? drr3_id : "NULL"}::integer "id_dato_reportable3",
+              #{drr3_funcion.present? ? drr3_funcion + "(pl.id)" : "NULL"}::varchar(255) "dato_reportable3",
+              #{drr4_id.present? ? drr4_id : "NULL"}::integer "id_dato_reportable4",
+              #{drr4_funcion.present? ? drr4_funcion + "(pl.id)" : "NULL"}::varchar(255) "dato_reportable4"
             FROM
               prestaciones_liquidadas pl
               INNER JOIN prestaciones_incluidas pi ON (pi.id = pl.prestacion_incluida_id)

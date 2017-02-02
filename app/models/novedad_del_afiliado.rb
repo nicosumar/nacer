@@ -340,6 +340,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
      # @advertencias << "El beneficiario es menor de edad y no se completó la información de alguno de los adultos" +
       #  " responsables (apellido, nombre, tipo y número de documento)."
    # end
+
     if esta_embarazada && !fecha_probable_de_parto
       @advertencias << "La beneficiaria está embarazada y no se indicó la fecha probable de parto."
     end

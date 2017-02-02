@@ -136,6 +136,52 @@
             - if dra.errors.size > 0
               </div>
 
+  // Si la prestacion es comunitaria permite cargar los datos personales de los asistentes
+  - if params[:comunitaria]  || (@prestacion_brindada.prestacion_comunitaria? && @asistentes && @asistentes.size > 0)
+    #asistentes.field
+      - if !@asistentes 
+        %h3
+          Asistentes  
+          = image_tag("add-512.png", :alt => "imgAgregar", :size => "16x16", :class => "agregar", :title => "Agregar asistente")
+          = image_tag("cancel-512.png", :alt => "imgQuitar", :size => "16x16", :class => "quitarTodos", :title => "Quitar TODOS los asistentes")
+        #asistente.field{ :style => "border:1px solid darkgray; background: lightgray; width: 660px;" }
+          = label :apellido, "Apellido:"
+          = text_field :apellido, "", :size => 20, :required => true  
+          = label :nombre, "Nombre:"
+          = text_field :nombre, "", :size => 20, :required => true
+          = image_tag("cancel-512.png", :alt => "imgQuitar", :size => "16x16", :class => "quitar", :title => "Quitar asistente", :style => "float:right; clear:right;")
+          %p
+          = label :numero_de_documento, "Documento (Tipo/Número):"
+          //= select_tag "clase_de_documento_id[]", options_for_select(ClaseDeDocumento.all.collect {|c| [ c.codigo, c.id ] })
+          = select_tag "tipo_de_documento_id[]", options_for_select(TipoDeDocumento.all.collect {|c| [ c.codigo, c.id ] })
+          = text_field :numero_de_documento, "", :size => 10, :required => true 
+          = label :sexo, "Sexo:"
+          = select_tag "sexo_id[]", options_for_select(Sexo.all.collect {|c| [ c.codigo, c.id ] })
+          %p
+          = label :fecha_de_nacimiento, "Fecha de nacimiento:"
+          = text_field :fecha_de_nacimiento, "", :class => "datepicker", :required => true
+      - else  
+        %h3
+          Asistentes
+        - @asistentes.each do |asist|
+          #asistentee.field{ :style => "border:1px solid darkgray; background: lightgray; width: 660px;" }
+            = hidden_field :asistente_id, "", :value => asist.id
+            = label :apellido, "Apellido:"
+            = text_field :apellido, "", :size => 20, :required => true, :value => asist.apellido 
+            = label :nombre, "Nombre:"
+            = text_field :nombre, "", :size => 20, :required => true, :value => asist.nombre
+            %p
+            = label :numero_de_documento, "Documento (Tipo/Número):"
+            //= select_tag "clase_de_documento_id[]", options_for_select(ClaseDeDocumento.all.collect {|c| [ c.codigo, c.id ] }, asist.clase_de_documento.id)
+            = select_tag "tipo_de_documento_id[]", options_for_select(TipoDeDocumento.all.collect {|c| [ c.codigo, c.id ] }, asist.tipo_de_documento.id)
+            = text_field :numero_de_documento, "", :size => 10, :required => true, :value => asist.numero_de_documento
+            = label :sexo, "Sexo:"
+            = select_tag "sexo_id[]", options_for_select(Sexo.all.collect {|c| [ c.codigo, c.id ] }, asist.sexo_id)
+            %p
+            = label :fecha_de_nacimiento, "Fecha de nacimiento:"
+            = text_field :fecha_de_nacimiento, "", :class => "datepicker", :required => true, :value => asist.fecha_de_nacimiento
+            = hidden_field :eliminar, "", :size => 10, :required => true, :value => false
+
   %h3 Observaciones
   %div.field
     = f.text_area :observaciones, :size => "80x8"

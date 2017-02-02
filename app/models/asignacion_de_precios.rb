@@ -44,7 +44,7 @@ class AsignacionDePrecios < ActiveRecord::Base
     return true
   end
 
-  def debe_ser_unica
+  def debe_ser_unica    
     if AsignacionDePrecios.where("id != ?", self.id).where(nomenclador_id: nomenclador_id, prestacion_id: prestacion_id, area_de_prestacion_id: area_de_prestacion_id, dato_reportable_id: dato_reportable_id).present?
       errors.add(:base, 'Ya existe una asignación de precios con estas características para esta prestación')
       return false

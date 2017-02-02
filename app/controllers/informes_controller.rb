@@ -65,6 +65,7 @@ class InformesController < ApplicationController
     @hombres_de_20_a_64_activos = Afiliado.hombres_de_20_a_64_activos(@fecha_base)
     @embarazadas_adolescentes_activas = Afiliado.embarazadas_adolescentes_activas(@fecha_base)
     @embarazadas_de_20_a_64_activas = Afiliado.embarazadas_de_20_a_64_activas(@fecha_base)
+
   end
 
   def tablero_de_comandos_alto_impacto

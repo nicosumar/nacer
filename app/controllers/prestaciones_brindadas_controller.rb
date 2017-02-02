@@ -155,6 +155,11 @@ class PrestacionesBrindadasController < ApplicationController
         ).order("updated_at DESC").first
     end
 
+    # Obtener asistentes
+    @asistentes = AsistenteTaller.where(
+        :prestacion_brindada_id => @prestacion_brindada.id,
+        :efector_id => @prestacion_brindada.efector_id
+      )
   end
 
 
@@ -418,6 +423,11 @@ class PrestacionesBrindadasController < ApplicationController
     # Generar el listado de diagnósticos válidos para la prestación
     @diagnosticos = @prestacion_brindada.prestacion.diagnosticos.collect{|d| [d.nombre_y_codigo, d.id]}.sort
 
+    # Obtener asistentes
+    @asistentes = AsistenteTaller.where(
+        :prestacion_brindada_id => @prestacion_brindada.id,
+        :efector_id => @prestacion_brindada.efector_id
+      )
   end
 
   # POST /prestaciones_brindadas
@@ -503,6 +513,39 @@ class PrestacionesBrindadasController < ApplicationController
       @diagnosticos = []
     end
 
+    # Si la prestacion es comunitaria y se ingresaron datos de los asistentes
+    if params[:comunitaria]
+      nombre = params[:nombre]
+      apellido = params[:apellido]
+      #clase_de_documento_id = params[:clase_de_documento_id]
+      tipo_de_documento_id = params[:tipo_de_documento_id]
+      numero_de_documento = params[:numero_de_documento]
+      sexo_id = params[:sexo_id]
+      fecha_de_nacimiento = params[:fecha_de_nacimiento]
+      if !nombre.blank? && 
+          !apellido.blank? && 
+          !numero_de_documento.blank? &&
+          #!clase_de_documento_id.blank? &&
+          !tipo_de_documento_id.blank? &&
+          !sexo_id.blank? &&
+          !fecha_de_nacimiento.blank?
+        @asistentes = Array.new
+        for i in 0 ... nombre.size
+          @asistente = AsistenteTaller.new
+          @asistente.efector = @prestacion_brindada.efector
+          @asistente.prestacion_brindada = @prestacion_brindada
+          @asistente.nombre = nombre[i]
+          @asistente.apellido = apellido[i]
+          @asistente.clase_de_documento_id = 1 #clase_de_documento_id[i] TODOS LOS ASISTENTES DEBEN TENER DOCUMENTO PROPIO
+          @asistente.tipo_de_documento_id = tipo_de_documento_id[i]
+          @asistente.numero_de_documento = numero_de_documento[i]
+          @asistente.sexo_id = sexo_id[i]
+          @asistente.fecha_de_nacimiento = fecha_de_nacimiento[i]
+          @asistentes.push(@asistente)
+        end
+      end
+    end
+
     # Verificar la validez del objeto
     if !@prestacion_brindada.valid?
       render :action => "new"
@@ -538,6 +581,20 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Guardar la prestación y los datos reportables asociados
     @prestacion_brindada.save
+
+    # Guardar los datos de los asistentes en caso de ser prestacion comunitaria
+    #if params[:comunitaria] && @prestacion_brindada.datos_reportables_asociados
+    #  @prestacion_brindada.datos_reportables_asociados.each do |dra|
+    #    if dra.dato_reportable_requerido.dato_reportable.codigo == 'ASIST' && dra.valor_integer != 1
+    #      dra.delete
+    #    end
+    #  end
+    #end
+    if @asistentes
+      for i in 0 ... @asistentes.size
+        @asistentes[i].save
+      end
+    end
 
     # Verificar si la prestación guardada es una prestación que puede modificar el lugar de atención habitual del beneficiario
     # Las prestaciones que pueden modificar el lugar de atención no son comunitarias por lo cual debe existir el beneficiario
@@ -590,9 +647,15 @@ class PrestacionesBrindadasController < ApplicationController
           :mensaje => 'Intente corregir los problemas detectados para reducir los rechazos en la facturación.' }
       )
     else
-      redirect_to(@prestacion_brindada,
-        :flash => { :tipo => :ok, :titulo => 'La prestación brindada se registró correctamente' }
-      )
+      if params[:comunitaria]
+        redirect_to(@prestacion_brindada,
+          :flash => { :tipo => :ok, :titulo => "La prestación brindada se registró correctamente. \nRECUERDE: adjuntar la planilla firmada y dejar una copia en el efector." }
+        )
+      else
+        redirect_to(@prestacion_brindada,
+          :flash => { :tipo => :ok, :titulo => 'La prestación brindada se registró correctamente' }
+        )
+      end
     end
   end
 
@@ -680,6 +743,41 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Generar el listado de diagnósticos válidos para esta prestación
     @diagnosticos = @prestacion_brindada.prestacion.diagnosticos.collect{|d| [d.nombre_y_codigo, d.id]}.sort
+
+    # Si la prestacion es comunitaria y se ingresaron datos de los asistentes
+    if params[:comunitaria]
+      asistente_id = params[:asistente_id]
+      nombre = params[:nombre]
+      apellido = params[:apellido]
+      tipo_de_documento_id = params[:tipo_de_documento_id]
+      numero_de_documento = params[:numero_de_documento]
+      sexo_id = params[:sexo_id]
+      fecha_de_nacimiento = params[:fecha_de_nacimiento]
+      eliminar = params[:eliminar]
+      if !asistente_id.blank? &&
+          !nombre.blank? && 
+          !apellido.blank? && 
+          !numero_de_documento.blank? &&
+          !tipo_de_documento_id.blank? &&
+          !sexo_id.blank? &&
+          !fecha_de_nacimiento.blank? &&
+          !eliminar.blank?
+        for i in 0 ... asistente_id.size
+          @asistente = AsistenteTaller.find(asistente_id[i])
+          if eliminar[i] == 'true'
+            @asistente.destroy
+          else
+            @asistente.nombre = nombre[i]
+            @asistente.apellido = apellido[i]
+            @asistente.tipo_de_documento_id = tipo_de_documento_id[i]
+            @asistente.numero_de_documento = numero_de_documento[i]
+            @asistente.sexo_id = sexo_id[i]
+            @asistente.fecha_de_nacimiento = fecha_de_nacimiento[i]
+            @asistente.save
+          end
+        end
+      end
+    end
 
     # Verificar la validez del objeto
     if !@prestacion_brindada.valid?

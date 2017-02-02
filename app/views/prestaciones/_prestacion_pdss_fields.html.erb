@@ -14,7 +14,8 @@
                           {}, 
                           {class: "small-input grupo-pdss-select"} 
   %>  
-  <%= f.collection_select :linea_de_cuidado_id, LineaDeCuidado.ordenadas, :id, :nombre_y_codigo, {prompt: 'Sin línea de cuidado'}, {class: "small-input"} %> 
+
+  <%= f.collection_select :linea_de_cuidado_id, LineaDeCuidado.ordenadas, :id, :nombre_y_codigo, {prompt: 'Sin línea de cuidado'}, {class: "small-input"} %>     
   <%= f.collection_select :modulo_id, Modulo.all, :id, :nombre, {prompt: 'Sin módulo'}, {class: "small-input"} %>
   <%= link_to_remove_association "borrar", f %>
 

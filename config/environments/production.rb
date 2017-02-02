@@ -60,16 +60,16 @@ Nacer::Application.configure do
 
   # SMTP server configuration
   config.action_mailer.smtp_settings = {
-    :address => "smtp.mendoza.gov.ar",
-    :domain => "sumar.salud.mendoza.gov.ar",
-    :user_name => "operacionesnacer-salud",
-    :password => "Naceruser2012",
-    :authentication => "login",
+    :address => "su.servidor.smtp.aquí",
+    :domain => "el.dominio.de.su.servidor",
+    :user_name => "nombre_de_usuario_para_autenticación_smtp",
+    :password => "contaseña",
+    :authentication => "tipo_de_autenticación",
     :enable_starttls_auto => false
   }
 
   # Default URL for application links written into mails (needed for Devise)
-  config.action_mailer.default_url_options = { :host => "sumar.salud.mendoza.gov.ar" }
+  config.action_mailer.default_url_options = { :host => "localhost:3000" }
 
   # Enable threaded mode
   # config.threadsafe!

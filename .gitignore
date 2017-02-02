@@ -21,3 +21,4 @@ public/paperclip
 
 /public/system/*
 public/attachments/*
+config/environments/production.rb

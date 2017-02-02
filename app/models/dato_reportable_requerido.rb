@@ -11,7 +11,7 @@ class DatoReportableRequerido < ActiveRecord::Base
   validates_presence_of :prestacion, :dato_reportable, :fecha_de_inicio
 
   scope :activos, -> {where("fecha_de_finalizacion IS NULL")}
-  
+
   after_initialize :set_default_fecha_de_inicio
 
   def set_default_fecha_de_inicio

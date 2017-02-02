@@ -11,12 +11,14 @@
     %tr
       %th Nomenclador
       %th Fecha de inicio
+      %th Fecha de finalización
       %th Estado
       %th{colspan: '2'} Acciones
     - @nomencladores.each do |nomenclador|
       %tr
         %td= nomenclador.nombre
         %td= nomenclador.fecha_de_inicio
+        %td= nomenclador.fecha_de_finalizacion
         %td= (nomenclador.activo ? "Activo" : "Inactivo")
         %td= link_to 'Ver', nomenclador_path(nomenclador)
         - if nomenclador.can_edit?

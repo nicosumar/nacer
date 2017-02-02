@@ -890,6 +890,7 @@ class PadronesController < ApplicationController
         else
           estado = EstadoDeLaNovedad.id_del_codigo("Z")
         end
+
         ActiveRecord::Base.connection.execute "
           UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
             SET
