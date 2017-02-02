@@ -806,7 +806,7 @@
     - else
       %span.field_deleted Se eliminó el score de riesgo ingresado
     - if !@afiliado.score_de_riesgo.blank?
-      %span.field_old_value= "(era: '" + @afiliado.score_de_riesgo + "')"
+      %span.field_old_value= "(era: '" + @afiliado.score_de_riesgo.to_s + "')"
   - else
     - if !@novedad.score_de_riesgo.blank?
       %span.field_value= @novedad.score_de_riesgo

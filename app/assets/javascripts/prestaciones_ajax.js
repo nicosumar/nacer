@@ -95,7 +95,7 @@ $(document).ready(function() {
         html_campo += '  <label for="'+id_html+'">'+ datos_reportables[i].nombre +'</label>';
 
         if (datos_reportables[i].enumerable) {
-          html_campo += '<select id="'+ id_html+'" name="'+ nombre_html+'" class="multi_select" style="width: 600px;" data-placeholder="Seleccione una opción...">';
+          html_campo += '<select id="'+ id_html+'" name="'+ nombre_html+'" class="multi_select" style="width: 500px;" data-placeholder="Seleccione una opción...">';
           html_campo += '<option value="" selected></option>'
           for (var j = 0; j <= datos_reportables[i].valores.length - 1; j++) 
             html_campo += '<option value="'+datos_reportables[i].valores[j].id+'">'+datos_reportables[i].valores[j].nombre+'</option>';

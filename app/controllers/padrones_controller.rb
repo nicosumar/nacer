@@ -899,6 +899,7 @@ class PadronesController < ApplicationController
               mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja}
             WHERE id = '#{id_de_novedad}';
         "
+
       end
       origen.close
       ActiveRecord::Base.connection.schema_search_path = esquema_actual

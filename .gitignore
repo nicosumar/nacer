@@ -5,6 +5,7 @@ test/
 public/assets
 *.swp
 *~
+config/environments/production.rb
 db/schema.rb
 config/database.yml
 vendor/data
@@ -20,4 +21,4 @@ public/paperclip
 /.byebug_history
 
 /public/system/*
-public/attachments/*
+/public/attachments/*

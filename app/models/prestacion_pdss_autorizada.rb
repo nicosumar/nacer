@@ -214,3 +214,4 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
   end
 
 end
+

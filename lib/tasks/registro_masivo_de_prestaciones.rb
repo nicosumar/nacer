@@ -645,8 +645,8 @@ class RegistroMasivoDePrestaciones
         prestacion_brindada.estado_de_la_prestacion_id = 3
       end
 
-      prestacion_brindada.creator_id = 1
-      prestacion_brindada.updater_id = 1
+      prestacion_brindada.creator_id = 897
+      prestacion_brindada.updater_id = 897
       prestacion_brindada.save
     end
   end

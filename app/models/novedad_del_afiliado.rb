@@ -329,16 +329,18 @@ class NovedadDelAfiliado < ActiveRecord::Base
     if !lugar_de_atencion_habitual_id
       @advertencias << "No se seleccionó el lugar de atención habitual del beneficiario."
     end
-    if es_menor &&
-      (apellido_de_la_madre.blank? || nombre_de_la_madre.blank? ||
-      !tipo_de_documento_de_la_madre_id || numero_de_documento_de_la_madre.blank?) &&
-      (apellido_del_padre.blank? || nombre_del_padre.blank? ||
-      !tipo_de_documento_del_padre_id || numero_de_documento_del_padre.blank?) &&
-      (apellido_del_tutor.blank? || nombre_del_tutor.blank? ||
-      !tipo_de_documento_del_tutor_id || numero_de_documento_del_tutor.blank?)
-      @advertencias << "El beneficiario es menor de edad y no se completó la información de alguno de los adultos" +
-        " responsables (apellido, nombre, tipo y número de documento)."
-    end
+#COMENTADO PORQUE NO SE REQUIERE VALIDACION DE EDAD 
+    #if es_menor &&
+     # (apellido_de_la_madre.blank? || nombre_de_la_madre.blank? ||
+      #!tipo_de_documento_de_la_madre_id || numero_de_documento_de_la_madre.blank?) &&
+     # (apellido_del_padre.blank? || nombre_del_padre.blank? ||
+     # !tipo_de_documento_del_padre_id || numero_de_documento_del_padre.blank?) &&
+     # (apellido_del_tutor.blank? || nombre_del_tutor.blank? ||
+     # !tipo_de_documento_del_tutor_id || numero_de_documento_del_tutor.blank?)
+     # @advertencias << "El beneficiario es menor de edad y no se completó la información de alguno de los adultos" +
+      #  " responsables (apellido, nombre, tipo y número de documento)."
+   # end
+
     if esta_embarazada && !fecha_probable_de_parto
       @advertencias << "La beneficiaria está embarazada y no se indicó la fecha probable de parto."
     end

@@ -41,3 +41,4 @@ class AddendaSumar < ActiveRecord::Base
     return true
   end
 end
+

@@ -70,7 +70,7 @@ class Periodo < ActiveRecord::Base
               INNER JOIN prestaciones_incluidas pi ON (pi.id = pl.prestacion_incluida_id)
               INNER JOIN liquidaciones_sumar ls ON ls.id = pl.liquidacion_id
             WHERE
-              pl.estado_de_la_prestacion_liquidada_id IN (5, 12)
+              pl.estado_de_la_prestacion_liquidada_id IN (4,5,12)
               AND pi.prestacion_id = #{prestacion_id}
               AND ls.periodo_id = #{self.id}
         SQL
@@ -178,7 +178,7 @@ class Periodo < ActiveRecord::Base
                 INNER JOIN prestaciones_incluidas pi ON (pi.id = pl.prestacion_incluida_id)
                 INNER JOIN liquidaciones_sumar ls ON (ls.id = pl.liquidacion_id)
               WHERE
-                pl.estado_de_la_prestacion_liquidada_id IN (5, 12)
+                pl.estado_de_la_prestacion_liquidada_id IN (4,5,12)
                 AND ls.periodo_id = #{self.id}
               ORDER BY 1, 2, 3, 4, 5
           ) "sq"

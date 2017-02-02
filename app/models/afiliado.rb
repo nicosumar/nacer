@@ -945,8 +945,6 @@ class Afiliado < ActiveRecord::Base
       ").rows[0].collect{ |v| v.to_i }
   end
 
-
-
   # Normaliza un nombre (o apellido) a mayúsculas, eliminando caracteres extraños y acentos
   def self.transformar_nombre(nombre)
     return nil unless nombre

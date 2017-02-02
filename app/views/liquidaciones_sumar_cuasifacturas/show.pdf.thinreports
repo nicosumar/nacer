@@ -160,6 +160,3 @@ when 'cuasifactura_img'
 else 
   raise "No se encontro el reporte especificado para el documento. Reporte: #{reporte}"
 end
-
-
-  
