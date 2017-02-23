@@ -26,10 +26,6 @@
     <%= f.number_field :unidades_maximas %>      
   </div>
   <div class="field">
-    <%= f.label "Otorga cobertura" %>
-    <%= f.check_box :otorga_cobertura %>      
-  </div>
-  <div class="field">
     <%= f.label "¿ Es comunitaria ?" %>
     <%= f.check_box :comunitaria %>      
   </div>
@@ -125,9 +121,6 @@
       <%= render 'cantidad_de_prestaciones_por_periodo_fields', f: cantidad_de_prestaciones_por_periodo  %>
     <% end %>
     <br>
-    <div class="links">
-      <%= link_to_add_association 'agregar', f, :cantidades_de_prestaciones_por_periodo  %>
-    </div>
   </div>
 
   <h4>Prestación P.D.S.S.</h4>
@@ -145,10 +138,6 @@
     <% end %>
 
     <br>
-
-    <div class="links">
-      <%= link_to_add_association 'agregar', f, :prestaciones_pdss  %>
-    </div>
   </div>
 
 
