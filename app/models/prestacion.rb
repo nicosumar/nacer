@@ -59,7 +59,7 @@ class Prestacion < ActiveRecord::Base
   after_initialize :add_cantidades_de_prestaciones_por_periodo
   after_initialize :add_prestaciones_pdss
 
-  scope :listado_permitido , -> { where('eliminada IS NULL OR eliminada = false') }
+  scope :listado_permitido, ->(con_eliminadas=false) { where('eliminada IS NULL OR eliminada = false') unless con_eliminadas }
   scope :activas, -> { where(activa: true) }
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
   scope :ordenadas_por_prestaciones_pdss, -> { includes(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
