@@ -553,7 +553,6 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad.fecha_efectiva_de_parto = ""
     end
 
-byebug
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
@@ -746,7 +745,7 @@ byebug
       @novedad.fecha_probable_de_parto = ""
       @novedad.fecha_efectiva_de_parto = ""
     end
-byebug
+
 
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores

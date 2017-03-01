@@ -45,7 +45,7 @@ class Particionador
                       
         
                   puts '_2 File open write ' + file_num.to_s + '  lines ' + lineNum.to_s
-                  byebug
+                 
                   files[file_num] = "lib/tasks/datos/temp/#{file_num}.txt" 
                   File.open("lib/tasks/datos/temp/#{file_num}.txt", 'w') {|f| f.write data.join}
 
