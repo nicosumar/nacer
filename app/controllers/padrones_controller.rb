@@ -810,6 +810,7 @@ class PadronesController < ApplicationController
                     :fecha_efectiva_de_parto => afiliado.fecha_efectiva_de_parto,
                     :unidad_de_alta_de_datos_id => afiliado.unidad_de_alta_de_datos_id,
                     :centro_de_inscripcion_id => afiliado.centro_de_inscripcion_id
+                    byebug
                   })
                 end
               end

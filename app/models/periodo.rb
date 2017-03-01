@@ -309,7 +309,7 @@ class Periodo < ActiveRecord::Base
           NULL "Fecha_liquidacion",
           NULL "Numero_de_orden_de_pago",
           NULL "Fecha_de_debito_bancario",
-          NULL "Fecha_de_otificacion",
+          NULL "Fecha_de_notificacion",
           p.es_catastrofica "Es_catastrofica?",
           sq.pl_concepto_de_facturacion "Concepto_de_facturación",
           (
