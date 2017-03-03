@@ -304,12 +304,12 @@ class Periodo < ActiveRecord::Base
           to_char(lsc.created_at, 'YYYY-MM-DD') "Fecha_de_comprobante",
           sq.pl_numero_de_expediente "Numero_de_expediente",
           NULL "fecha_recepcion_expediente",
-          (sq.pl_monto::numeric(15, 2)*sq.pl_unidades::numeric(15, 2)) "Monto_facturado",
-          lscd.monto "Monto_liquidado",
+          (sq.pl_monto::numeric(15, 2) * sq.pl_unidades::numeric(15, 2)) "Monto_facturado",
+          sq.pl_monto "Monto_liquidado",
           NULL "Fecha_liquidacion",
           NULL "Numero_de_orden_de_pago",
           NULL "Fecha_de_debito_bancario",
-          NULL "Fecha_de_otificacion",
+          NULL "Fecha_de_notificacion",
           p.es_catastrofica "Es_catastrofica?",
           sq.pl_concepto_de_facturacion "Concepto_de_facturación",
           (
@@ -364,9 +364,9 @@ class Periodo < ActiveRecord::Base
 
               FROM
                 prestaciones_liquidadas pl
-                INNER JOIN prestaciones_incluidas pi ON (pi.id = pl.prestacion_incluida_id)
-                INNER JOIN liquidaciones_sumar ls ON (ls.id = pl.liquidacion_id)
-                LEFT JOIN expedientes_sumar ex ON (ls.id = ex.liquidacion_sumar_id)
+                LEFT JOIN prestaciones_incluidas pi ON (pi.id = pl.prestacion_incluida_id)
+                LEFT JOIN liquidaciones_sumar ls ON (ls.id = pl.liquidacion_id)
+                LEFT JOIN expedientes_sumar ex ON (ls.id = ex.liquidacion_sumar_id AND pl.efector_id = ex.efector_id)
                 LEFT JOIN conceptos_de_facturacion cf ON (cf.id = ls.concepto_de_facturacion_id)
               WHERE
                 pl.estado_de_la_prestacion_liquidada_id IN (5, 12)
