@@ -57,7 +57,7 @@ class ContactosController < ApplicationController
 
     # Crear los objetos necesarios para la vista
     @contacto = Contacto.new
-    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @tipo_de_documento_id = nil
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = nil
@@ -88,7 +88,7 @@ class ContactosController < ApplicationController
     end
 
     # Crear los objetos necesarios para la vista
-    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @tipo_de_documento_id = @contacto.tipo_de_documento_id
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = @contacto.sexo_id
@@ -120,7 +120,7 @@ class ContactosController < ApplicationController
     @contacto = Contacto.new(params[:contacto])
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
-    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @tipo_de_documento_id = @contacto.tipo_de_documento_id
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = @contacto.sexo_id
@@ -191,7 +191,7 @@ class ContactosController < ApplicationController
     @contacto.attributes = params[:contacto]
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
-    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @tipo_de_documento_id = @contacto.tipo_de_documento_id
     @sexos = Sexo.find(:all).collect{ |s| [s.nombre, s.id] }
     @sexo_id = @contacto.sexo_id

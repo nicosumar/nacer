@@ -72,8 +72,8 @@ class NomencladoresController < ApplicationController
       @secciones_pdss = SeccionPdss.all
       # Asigno los precios del nomenclador anterior al nuevo. 
       if @old_nomenclador.present? && @nomenclador.asignaciones_de_precios.count < 1
-        @old_nomenclador.asignaciones_de_precios.actuales.each do |asignacion_de_precio_actual|
-          nueva_asignacion_de_precio = asignacion_de_precio_actual.dup
+        @old_nomenclador.asignaciones_de_precios.each do |asignacion_de_precio_anterior|
+          nueva_asignacion_de_precio = asignacion_de_precio_anterior.dup
           @nomenclador.asignaciones_de_precios << nueva_asignacion_de_precio
         end
         @nomenclador.save!
