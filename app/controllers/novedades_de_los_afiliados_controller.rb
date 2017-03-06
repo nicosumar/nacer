@@ -543,8 +543,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     if tipo == :alta && @novedad.fecha_de_nacimiento.present? && @novedad.fecha_de_nacimiento >= (Date.today - 4.months)
       @novedad.fecha_de_la_novedad = @novedad.fecha_de_nacimiento
     end
-
-      # Asignarle si es una modificacion y se saco el embarazo limpio los datos de embarazo anterior
+    
+    # Asignarle si es una modificacion y se saco el embarazo limpio los datos de embarazo anterior
     if tipo == :modificacion && !@novedad.esta_embarazada
       @novedad.fecha_de_la_ultima_menstruacion = ""
       @novedad.fecha_de_diagnostico_del_embarazo = ""
@@ -552,7 +552,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       @novedad.fecha_probable_de_parto = ""
       @novedad.fecha_efectiva_de_parto = ""
     end
-
+    
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
@@ -736,17 +736,17 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
-
-      # Asignarle si es una modificacion y se saco el embarazo limpio los datos de embarazo anterior
+    
+    # Asignarle si es una modificacion y se saco el embarazo limpio los datos de embarazo anterior
     if !@novedad.esta_embarazada
-      @novedad.fecha_de_la_ultima_menstruacion = ""
-      @novedad.fecha_de_diagnostico_del_embarazo = ""
-      @novedad.semanas_de_embarazo = ""
-      @novedad.fecha_probable_de_parto = ""
-      @novedad.fecha_efectiva_de_parto = ""
+     @novedad.fecha_de_la_ultima_menstruacion = ""
+     @novedad.fecha_de_diagnostico_del_embarazo = ""
+     @novedad.semanas_de_embarazo = ""
+     @novedad.fecha_probable_de_parto = ""
+     @novedad.fecha_efectiva_de_parto = ""
     end
-
-
+    
+    
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "edit"

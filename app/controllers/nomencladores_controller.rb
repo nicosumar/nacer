@@ -109,5 +109,4 @@ class NomencladoresController < ApplicationController
 
 #  def destroy
 #  end
-
 end

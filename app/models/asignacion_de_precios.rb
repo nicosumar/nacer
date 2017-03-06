@@ -25,7 +25,8 @@ class AsignacionDePrecios < ActiveRecord::Base
   #validate :debe_ser_unica
 
   scope :actuales, -> {select("DISTINCT on (prestacion_id, area_de_prestacion_id, dato_reportable_id) *").order("prestacion_id ASC, area_de_prestacion_id ASC, dato_reportable_id ASC, created_at DESC")}
-
+  
+  
   # precio_mayor_que_cero
   # Verifica que el precio_por_unidad sea mayor que cero (si existe)
   def precio_mayor_que_cero
