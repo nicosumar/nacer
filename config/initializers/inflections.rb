@@ -571,7 +571,7 @@ ActiveSupport::Inflector.inflections do |inflect|
 
   # Plurales para solicitudes de addenda
   inflect.irregular("solicitud_addenda","solicitudes·_addendas·")
-  inflect.irregular("solicitud_addenda_prestacion_pdss","solicitudes·_addendas·_prestaciones·_pdss")
+  inflect.irregular("solicitud_addenda_prestacion_pdss","solicitudes·_addendas·_prestaciones·_pdss·")
           
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")
