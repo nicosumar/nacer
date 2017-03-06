@@ -31,9 +31,5 @@ class TipoDeDocumento < ActiveRecord::Base
     raise ActiveRecord::RecordNotFound if codigo_id.nil?
     return codigo_id
   end
-  
-  def activos
-    
-  end
 
 end
