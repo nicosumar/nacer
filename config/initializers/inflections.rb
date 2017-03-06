@@ -567,7 +567,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("años", "años")
   inflect.irregular("semana", "semanas")
   inflect.irregular("semanas", "semanas")
+  
 
+  # Plurales para solicitudes de addenda
+  inflect.irregular("solicitud_addenda","solicitudes·_addendas·")
+  inflect.irregular("solicitud_addenda_prestacion_pdss","solicitudes·_addendas·_prestaciones·_pdss")
+          
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")
   inflect.human("departamento_bio_id", "código identificador de departamento (Bioestadística)")

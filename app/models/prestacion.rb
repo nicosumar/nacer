@@ -43,6 +43,9 @@ class Prestacion < ActiveRecord::Base
   has_many :prestaciones_incluidas
   has_many :prestaciones_autorizadas
 
+  #has_many relaciones para la solicitud de Addenda
+  has_many :solicitud_addenda_prestacion_pdss
+  
   # Validaciones
   # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
   validates_presence_of :codigo, :nombre, :unidad_de_medida_id
