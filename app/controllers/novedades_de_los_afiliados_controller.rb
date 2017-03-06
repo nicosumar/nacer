@@ -111,7 +111,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
     # Crear objetos comunes para generar los formularios
     @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
 
     # Esta acción se ejecuta dos veces. Una verificación previa, y si pasa las verificaciones, la creación de la nueva solicitud de alta
     if !params[:novedad_del_afiliado]
@@ -213,7 +213,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
     # Crear objetos para rellenar las colecciones de las listas de selección
     @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
     @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados, :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
     @lenguas_originarias =
@@ -333,7 +333,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
     # Crear objetos para rellenar las colecciones de las listas de selección
     @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
     @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados,
       :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
@@ -520,7 +520,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
     @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados, :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
     @lenguas_originarias =
@@ -543,7 +543,16 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     if tipo == :alta && @novedad.fecha_de_nacimiento.present? && @novedad.fecha_de_nacimiento >= (Date.today - 4.months)
       @novedad.fecha_de_la_novedad = @novedad.fecha_de_nacimiento
     end
-
+    
+    # Asignarle si es una modificacion y se saco el embarazo limpio los datos de embarazo anterior
+    if tipo == :modificacion && !@novedad.esta_embarazada
+      @novedad.fecha_de_la_ultima_menstruacion = ""
+      @novedad.fecha_de_diagnostico_del_embarazo = ""
+      @novedad.semanas_de_embarazo = ""
+      @novedad.fecha_probable_de_parto = ""
+      @novedad.fecha_efectiva_de_parto = ""
+    end
+    
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
@@ -709,7 +718,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
 
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
-    @tipos_de_documentos = TipoDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
+    @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
     @sexos = Sexo.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @paises = Pais.ordenados_por_frecuencia(:novedades_de_los_afiliados, :pais_de_nacimiento_id).collect{ |i| [i.nombre, i.id]}
     @lenguas_originarias =
@@ -727,7 +736,17 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
-
+    
+    # Asignarle si es una modificacion y se saco el embarazo limpio los datos de embarazo anterior
+    if !@novedad.esta_embarazada
+     @novedad.fecha_de_la_ultima_menstruacion = ""
+     @novedad.fecha_de_diagnostico_del_embarazo = ""
+     @novedad.semanas_de_embarazo = ""
+     @novedad.fecha_probable_de_parto = ""
+     @novedad.fecha_efectiva_de_parto = ""
+    end
+    
+    
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "edit"

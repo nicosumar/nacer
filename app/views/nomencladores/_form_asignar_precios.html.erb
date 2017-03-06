@@ -26,7 +26,7 @@
         <tbody>
           <% 
             prestacion_pdss.prestaciones.each do |prestacion| 
-              asignaciones_de_precios = @nomenclador.asignaciones_de_precios.where(:prestacion_id => prestacion.id)
+          asignaciones_de_precios = @nomenclador.asignaciones_de_precios.actuales.where(:prestacion_id => prestacion.id)
               asignaciones_de_precios.each do |asignacion_de_precio| 
           %>
             <tr>
