@@ -33,7 +33,6 @@ class LiquidacionInforme < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       begin
         documento_generable.tipo_de_agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas |
-
           # Si el efector no liquido prestaciones
           next if pliquidadas.size == 0
 
@@ -75,7 +74,6 @@ class LiquidacionInforme < ActiveRecord::Base
           liquidacion.save
 
         end # end itera segun agrupacion
-
       rescue Exception => e
         raise "Ocurrio un problema: #{e.message}"
         return false
