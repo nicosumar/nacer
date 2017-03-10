@@ -21,8 +21,6 @@ class Prestacion < ActiveRecord::Base
   has_and_belongs_to_many :diagnosticos
   belongs_to :unidad_de_medida
   belongs_to :tipo_de_tratamiento
-  belongs_to :prestacion_principal
-
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, through: :datos_adicionales_por_prestacion
   has_many :cantidades_de_prestaciones_por_periodo
