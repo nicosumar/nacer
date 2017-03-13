@@ -1,18 +1,151 @@
-#~~ encoding: utf-8 ~~
-class RevertirCuasifactura
+namespace :revertir_cuasifactura do
+  desc "TODO"
+  task :actualizar_esquemas_nulos_prestaciones_liquidadas => :environment do
+    Efector.where("unidad_de_alta_de_datos_id IS NOT NULL").map do |efector| 
+      if efector.unidad_de_alta_de_datos.present?
+        esquema = "uad_" + efector.unidad_de_alta_de_datos.codigo
+        puts "Efector #{efector.id}"
+        puts "UAD #{esquema}"
 
-  # Revierte y regenera una cuasifactura des un efector.
-  # Para regenerar la cuasifactura utiliza la misma liquidación
-  # sin afectar a los otros efectores incluidos.
-  #
-  # @param arg_liquidacion: ID de liquidación 
-  # @param [] args_arr_efectores: Arrays con los IDs de efectores en la liquidacion indicada
-  # @return boolean
-  def self.desde_efectores(arg_liquidacion, args_arr_efectores)
+        if PrestacionLiquidada.where(efector_id: efector.id).where("esquema IS NULL").update_all(esquema: esquema)
+          puts "OK"
+        else
+          puts "ERROR"
+        end
+        puts "-------------------------------------------------"
+      end
+    end
+  end
+
+  task :por_liquidacion_sumar_y_efector, [:liquidacion_sumar_id, :efector_id] => :environment do |task, args|
+    por_liquidacion_y_efector args[:liquidacion_sumar_id], args[:efector_id]
+  end
+
+  task :por_liquidacion_sumar, [:liquidacion_sumar_id] => :environment do |task, args|
+    por_liquidacion_sumar args[:liquidacion_sumar_id]
+  end
+
+  task :eliminar_prestaciones_incluidas_por_liquidacion_sumar, [:liquidacion_sumar_id] => :environment do |task, args|
+    ActiveRecord::Base.transaction do
+      liquidacion_sumar = LiquidacionSumar.find(args[:liquidacion_sumar_id])
+      prestaciones_incluidas = PrestacionIncluida.where(liquidacion_id: liquidacion_sumar.id)
+      prestaciones_incluidas.each do |pi|
+        LiquidacionSumarCuasifacturaDetalle.where(prestacion_incluida_id: pi.id).destroy_all
+      end
+      PrestacionLiquidadaAdvertencia.where(liquidacion_id: liquidacion_sumar.id).destroy_all
+      PrestacionLiquidadaDato.where(liquidacion_id: liquidacion_sumar.id).destroy_all
+      PrestacionLiquidada.where(liquidacion_id: liquidacion_sumar.id).destroy_all
+      prestaciones_incluidas.destroy_all
+    end
+  end
+
+  task :crear_expedientes_por_liquidacion_sumar, [:liquidacion_sumar_id] => :environment do |task, args|
+    liquidacion_sumar = LiquidacionSumar.find(args[:liquidacion_sumar_id])
+    documento_generable = liquidacion_sumar.concepto_de_facturacion.documentos_generables_por_conceptos.where(documento_generable_id: 3).first
+    ActiveRecord::Base.transaction do
+      begin
+        documento_generable.tipo_de_agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas|
+
+          # Si el efector administrador no posee prestaciones para liquidar, lo omito
+          next if pliquidadas.sum(:monto) == 0
+
+          puts "LOG INFO - LIQUIDACION_SUMAR: Creando cuasifactura para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
+          
+          # 1) Creo la cabecera del expediente
+          exp = ExpedienteSumar.where({ tipo_de_expediente_id: liquidacion_sumar.concepto_de_facturacion.tipo_de_expediente,
+                                         liquidacion_sumar_id: liquidacion_sumar,
+                                         efector_id: e}).first
+          if exp.blank?
+            exp = ExpedienteSumar.create({ tipo_de_expediente: liquidacion_sumar.concepto_de_facturacion.tipo_de_expediente,
+                                           liquidacion_sumar: liquidacion_sumar,
+                                           efector: e})
+          end
+          exp.numero = documento_generable.obtener_numeracion(exp.id)
+          exp.save!(validate: false)
+        end # end itera segun agrupacion
+
+      rescue Exception => e
+        raise "Ocurrio un problema: #{e.message}"
+        return false
+      end #en begin/rescue
+    end #End active base transaction
+  end
+
+  task :crear_informes_por_liquidacion_sumar, [:liquidacion_sumar_id] => :environment do |task, args|
+    liquidacion_sumar = LiquidacionSumar.find(args[:liquidacion_sumar_id])
+    documento_generable = liquidacion_sumar.concepto_de_facturacion.documentos_generables_por_conceptos.where(documento_generable_id: 4).first
+    puts "Generación de informes para liquidación #{liquidacion_sumar.id}"
+    puts "#{documento_generable.present?}"
+    puts "#{liquidacion_sumar.present?}"
+    puts "#{LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: liquidacion_sumar.id).size}"
+    if documento_generable.present? and LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: liquidacion_sumar.id).size == 0
+      puts "IF"
+      ActiveRecord::Base.transaction do
+        begin
+          puts "Comienzo....."
+          documento_generable.tipo_de_agrupacion.iterar_efectores_y_prestaciones_de(liquidacion_sumar) do |e, pliquidadas |
+            puts "Efector #{e.id}"
+            # Si el efector no liquido prestaciones
+            next if pliquidadas.size == 0
+
+            puts "LOG INFO - LIQUIDACION_SUMAR: Creando informe para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
+            
+            
+            # Solo los efectores administradores o autoadministrados generan expediente
+            # por lo que en el informe debe asignarse expediente del administrador a los efectores administrados
+            if e.es_administrador? or e.es_autoadministrado?
+
+              # Si solo hay un expediente, generado, todos los informes llevan ese numero
+              if ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} "]).size == 1
+                expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} "]).first.id
+              else
+                expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.id} " +
+                                                              "AND id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
+              end
+            else
+              if ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} "]).size == 1
+                expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} "]).first.id
+              else
+                expediente_sumar_id = ExpedienteSumar.where([ "liquidacion_sumar_id = #{liquidacion_sumar.id} and efector_id = #{e.administrador_sumar.id} " +
+                                                              "AND id not in (SELECT expediente_sumar_id from liquidaciones_informes) "]).first.id
+              end
+            end
+
+            cuasifactura_id = LiquidacionSumarCuasifactura.joins(:liquidaciones_sumar_cuasifacturas_detalles).
+                                                           where(liquidaciones_sumar_cuasifacturas_detalles: {prestacion_liquidada_id: pliquidadas.first.id}).first.id
+
+            # 1) Creo la cabecera del informe de liquidacion
+            liquidacion = LiquidacionInforme.create!(
+              { 
+                efector_id: e.id,
+                liquidacion_sumar_id: liquidacion_sumar.id,
+                liquidacion_sumar_cuasifactura_id: cuasifactura_id, 
+                expediente_sumar_id: expediente_sumar_id,
+                estado_del_proceso_id: EstadoDelProceso.where(codigo: 'N').first.id #estado No iniciado
+            })
+            liquidacion.save
+
+          end # end itera segun agrupacion
+
+        rescue Exception => e
+          raise "Ocurrio un problema: #{e.message}"
+          return false
+        end #en begin/rescue
+      end #End active base transaction
+    end
+  end
+
+  task :generar_documentos, [:liquidacion_sumar_id] => :environment do |task, args|
+    liquidacion_sumar = LiquidacionSumar.find(args[:liquidacion_sumar_id])
+    generar_documentos liquidacion_sumar
+  end
+
+  def por_liquidacion_y_efector liquidacion_sumar_id, efector_id
+    puts "##################################################################"
     begin
-      puts "Ejecutando proceso de revertir factura"    
-      liquidacion_sumar = LiquidacionSumar.find(arg_liquidacion)
-      efector = Efector.find(args_arr_efectores[0])
+      puts "Ejecutando proceso de revertir factura por efector"    
+      liquidacion_sumar = LiquidacionSumar.find(liquidacion_sumar_id)
+      efector = Efector.find(efector_id)
       puts "LiquidacionSumarId #{liquidacion_sumar.id}"
       puts "Efector #{efector.id}"
 
@@ -36,7 +169,12 @@ class RevertirCuasifactura
                 "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
                 "and prestaciones_brindadas.id = p.prestacion_brindada_id"
         })
-      
+        
+        if cq
+          puts "Actualización de estado de prestaciones brindadas"
+        else
+          puts "No se actualizó el estado de prestaciones brindadas"
+        end
         # Volver hacia atrás las secuencias
         cuasi_facturas = LiquidacionSumarCuasifactura.where(liquidacion_sumar_id: liquidacion_sumar.id, efector_id: efector.id)
         cuasi_facturas.each do |cf|
@@ -131,16 +269,16 @@ class RevertirCuasifactura
                   "SET session_replication_role = DEFAULT;"
 
         # Genero la liquidación nuevamente
-        vigencia_perstaciones = liquidacion_sumar.periodo.dias_de_prestacion
+        vigencia_prestaciones = liquidacion_sumar.periodo.dias_de_prestacion
         fecha_de_recepcion = liquidacion_sumar.periodo.fecha_recepcion.to_s
         fecha_limite_prestaciones = liquidacion_sumar.periodo.fecha_limite_prestaciones.to_s
 
         ActiveRecord::Base.transaction do 
 
           # Busco y marco prestaciones vencidas al momento de liquidar
-          #PrestacionBrindada.marcar_prestaciones_vencidas liquidacion_sumar
-          #PrestacionBrindada.marcar_prestaciones_sin_periodo_de_actividad liquidacion_sumar
-          #PrestacionBrindada.marcar_prestaciones_sin_asignacion_de_precio liquidacion_sumar
+          # PrestacionBrindada.marcar_prestaciones_vencidas liquidacion_sumar
+          # PrestacionBrindada.marcar_prestaciones_sin_periodo_de_actividad liquidacion_sumar
+          # PrestacionBrindada.marcar_prestaciones_sin_asignacion_de_precio liquidacion_sumar
           
           # 0 ) Elimino los duplicados
           #PrestacionBrindada.anular_prestaciones_duplicadas
@@ -180,7 +318,7 @@ class RevertirCuasifactura
                     "               (vpb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
                     "               limit 1\n"+
                     "             )\n"+
-                    " AND vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd')\n"+
+                    " AND vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_prestaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd')\n"+
                     " AND ( CASE WHEN vpb.clave_de_beneficiario is not  null THEN \n"+
                     "                 (vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+
                     "                 OR\n"+
@@ -188,7 +326,7 @@ class RevertirCuasifactura
                     "            WHEN vpb.clave_de_beneficiario is null then TRUE\n"+
                     "       END\n"+
                     "     )\n"+
-                    " AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{liquidacion_sumar.id} )"
+                    " AND pr.id not in (select prestacion_id from prestaciones_incluidas where liquidacion_id = #{liquidacion_sumar.id} AND nomenclador_id=nom.id )"
           })
 
           # 2) Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas 
@@ -234,7 +372,7 @@ class RevertirCuasifactura
                   "                      (vpb.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
                   "               limit 1\n"+
                   "              )\n"+
-                  "  AND vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
+                  "  AND vpb.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_prestaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
                   "  AND ( CASE WHEN vpb.clave_de_beneficiario IS NOT NULL THEN \n"+
                   "                  (vpb.fecha_de_la_prestacion >= pa.fecha_de_inicio and pa.fecha_de_finalizacion is null )\n"+
                   "                    OR\n"+
@@ -292,7 +430,7 @@ class RevertirCuasifactura
                   "                        (pl.fecha_de_la_prestacion >= fecha_de_inicio and fecha_de_finalizacion is null) )\n"+
                   "                        limit 1\n"+
                   "                        )\n"+
-                  "AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
+                  "AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_prestaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') \n"+
                   "AND pi.nomenclador_id = nom.id "
 
           })
@@ -315,7 +453,7 @@ class RevertirCuasifactura
                   "                                            AND pl.liquidacion_id = #{liquidacion_sumar.id} )\n"+
                   "WHERE pl.estado_de_la_prestacion_id IN (2,3,7) \n "+
                   " AND pl.efector_id in ( #{efectores.join(", ")} )\n"+
-                  " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_perstaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
+                  " AND pl.fecha_de_la_prestacion BETWEEN (to_date('#{fecha_de_recepcion}','yyyy-mm-dd') - #{vigencia_prestaciones}) and to_date('#{fecha_limite_prestaciones}','yyyy-mm-dd') "
             })
           if cq
             puts "Tabla de prestaciones Liquidadas advertencias generada"
@@ -426,209 +564,35 @@ class RevertirCuasifactura
           else
             puts "Tabla de prestaciones Liquidadas NO Actualizada con EXCEPTUADAS"
           end
-        end # END transaction
-
-
-        ####################################################################################
-        #GENERO LAS CUASIFACTURAS PARA LOS EFECTORES INDICADOS
-        
-        pliquidadas = liquidacion_sumar.prestaciones_liquidadas.where(efector_id: efector.id)
-        # 1) Creo la cabecera de la cuasifactura
-        total_cuasifactura = pliquidadas.sum(:monto).to_f
-        
-        # Si el monto de la cuasi es cero, sigo con el prox efector
-        next if total_cuasifactura == 0
-        cuasifactura = LiquidacionSumarCuasifactura.create!( liquidacion_sumar: liquidacion_sumar, 
-                                                            efector: efector, 
-                                                            monto_total: total_cuasifactura, 
-                                                            concepto_de_facturacion: liquidacion_sumar.concepto_de_facturacion)
-        
-        # 2) Obtengo el numero de cuasifactura si corresponde para este tipo de documento
-        documento_generable = liquidacion_sumar.concepto_de_facturacion.documentos_generables_por_conceptos.where(documento_generable_id: 1).first
-
-        cuasifactura.numero_cuasifactura = documento_generable.obtener_numeracion(cuasifactura.id) + " - R"
-        cuasifactura.save!(validate: false)
-
-        # 3) Creo el detalle para esta cuasifactura
-        ActiveRecord::Base.connection.execute "--Creo el detalle para esta cuasifactura\n"+
-          "INSERT INTO public.liquidaciones_sumar_cuasifacturas_detalles  \n"+
-           "(liquidaciones_sumar_cuasifacturas_id, prestacion_incluida_id, estado_de_la_prestacion_id, monto, prestacion_liquidada_id, observaciones, created_at, updated_at)  \n"+
-           pliquidadas.select(["#{cuasifactura.id}", :prestacion_incluida_id, :estado_de_la_prestacion_liquidada_id, :monto, :id, :observaciones, "now() as created_at", "now() as updated_at"]).to_sql
-
-        # 3) Actualiza las prestaciones brindadas para que no sean modificadas
-
-        estado_aceptada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_aceptada.id
-        estado_rechazada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_rechazada.id
-        estado_exceptuada = liquidacion_sumar.parametro_liquidacion_sumar.prestacion_exceptuada.id
-        estados_aceptados = [estado_aceptada, estado_exceptuada].join(", ")
-
-        cq = CustomQuery.ejecutar ({
-          esquemas: esquemas,
-          sql:  "update prestaciones_brindadas \n "+
-                "   set estado_de_la_prestacion_id = #{estado_aceptada} \n "+
-                "from prestaciones_liquidadas p \n "+
-                "    join liquidaciones_sumar_cuasifacturas lsc on (lsc.liquidacion_sumar_id = p.liquidacion_id and lsc.efector_id = p.efector_id ) \n "+
-                "where p.liquidacion_id = #{liquidacion_sumar.id} \n "+
-                "and   p.estado_de_la_prestacion_liquidada_id in ( #{estados_aceptados} )\n "+
-                "and p.efector_id in (select ef.id \n "+
-                "                                      from efectores ef \n "+
-                "                                         join unidades_de_alta_de_datos u on ef.unidad_de_alta_de_datos_id = u.id \n "+
-                "                                      where 'uad_' ||  u.codigo = current_schema() )\n "+
-                "and prestaciones_brindadas.id = p.prestacion_brindada_id"
-          })
-        if cq
-          puts ("Tabla prestaciones brindadas actualizada")
-        else
-          puts ("Tabla prestaciones brindadas NO actualizada")
-          return false
-        end
-
-        # 4) Creo los informes de liquidacion
-        cq = CustomQuery.ejecutar(
-        {
-        sql:  "INSERT INTO \"public\".\"liquidaciones_informes\" \n"+
-              "( \"efector_id\", \"liquidacion_sumar_id\", \"liquidacion_sumar_cuasifactura_id\", \"estado_del_proceso_id\", \"created_at\", \"updated_at\") \n"+
-              "SELECT\n"+
-              " lc.efector_id, ls.id liquidacion_sumar_id, lc.id iquidacion_sumar_cuasifactura_id, ( SELECT ID FROM estados_de_los_procesos WHERE codigo = 'N'  ) estado_del_proceso_id,  now(),  now()\n"+
-              "FROM\n"+
-              " liquidaciones_sumar ls\n"+
-              "JOIN liquidaciones_sumar_cuasifacturas lc ON lc.liquidacion_sumar_id = ls.ID\n"+
-              "JOIN grupos_de_efectores_liquidaciones g ON g.id = ls.grupo_de_efectores_liquidacion_id\n"+
-              "JOIN efectores e ON e.grupo_de_efectores_liquidacion_id = g.id AND lc.efector_id = e.ID\n"+
-              "where ls.id = #{liquidacion_sumar.id}\n"+
-              "and lc.efector_id = #{efector.id}"
-        })
-
-        # 5 ) Genero los consolidados para quienes correspondan.
-
-          # Busco el administrador
-          if efector.es_administrado? 
-            administrador = efector.administrador_sumar
-          elsif efector.es_autoadministrado?
-            next
-          else 
-            administrador = efector
-          end
-
-          
-          # Verifico que no haya generado anteriormente el consolidado de este efector administrador
-          c = ConsolidadoSumar.where(efector_id: administrador.id, liquidacion_sumar_id: liquidacion_sumar.id)
-          
-          case c.size
-          
-          when 0 #No existe un consolidado para este efector administrador y esta liquidación
-            referente = administrador.referentes.where(["(fecha_de_inicio <= ? and fecha_de_finalizacion is null) or ? between fecha_de_inicio and fecha_de_finalizacion",
-                                                    liquidacion_sumar.periodo.fecha_cierre,
-                                                    liquidacion_sumar.periodo.fecha_cierre
-                                                    ]).first
-            
-            # TODO: ahora le pongo null pero no deberia poder guardar el convenio si no existe el firmante. 
-            firmante_id = referente.blank? ? nil : referente.contacto.id 
-
-            # Genero el detalle y cabecera si la suma de las cuasifacturas de los administrados es mayor a cero
-            total_consolidado = 0
-            
-            total_cuasifactura_administrador = 0
-            if administrador.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0
-              total_cuasifactura_administrador += administrador.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
-            end
-
-            total_cuasifactura_administrados = 0
-            administrador.efectores_administrados.each do |ea|
-              if ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0
-                total_cuasifactura_administrados += ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
-              end
-            end
-
-            total_consolidado = total_cuasifactura_administrador + total_cuasifactura_administrados
-           
-            # Si el administrador ha facturado pero ningun administrado lo ha hecho, solo creo la cabecera
-            if total_consolidado > 0
-              #Verifico que exista la secuencia para los consolidados. Sino que la cree
-              #self.generar_secuencia administrador
-              puts "self.generar_secuencia_administrador [NO SE EJECUTA] revisar."
-
-              consolidado = ConsolidadoSumar.create!({
-                fecha: Date.today,
-                efector_id: administrador.id,
-                firmante_id: firmante_id,
-                periodo_id: liquidacion_sumar.periodo.id,
-                liquidacion_sumar_id: liquidacion_sumar.id
-              })
-              consolidado.numero_de_consolidado = documento_generable.obtener_numeracion(consolidado.id)
-              consolidado.save
-                          
-              # Genero el detalle del consolidado
-              administrador.efectores_administrados.each do |ea|
-                
-                # Verifico si existe una cuasifactura para este efector
-                if ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0
-                  monto = ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
-                else
-                  monto = 0
-                end
-                
-                cq = CustomQuery.ejecutar({
-                  sql:  "INSERT INTO  public . consolidados_sumar_detalles  \n"+
-                        "( consolidado_sumar_id ,  efector_id ,  convenio_de_administracion_sumar_id ,  convenio_de_gestion_sumar_id ,  total ,  created_at ,  updated_at ) \n"+
-                        "VALUES \n"+
-                        "(#{consolidado.id}, #{ea.id}, #{ea.convenio_de_administracion_sumar.id}, #{ea.convenio_de_gestion_sumar.id}, #{monto}, now(), now());"
-                })
-                if cq
-                else
-                end
-              end
-            end
-
-          when 1 # Ya existe el consolidado. Regenera el detalle y el actualiza el firmante
-            referente = administrador.referentes.where(["(fecha_de_inicio <= ? and fecha_de_finalizacion is null) or ? between fecha_de_inicio and fecha_de_finalizacion",
-                                                    liquidacion_sumar.periodo.fecha_cierre,
-                                                    liquidacion_sumar.periodo.fecha_cierre
-                                                    ]).first
-
-            # TODO: ahora le pongo null pero no deberia poder guardar el convenio si no existe el firmante. 
-            firmante_id = referente.blank? ? nil : referente.contacto.id 
-
-            c_id = c.first.id
-            begin
-              ActiveRecord::Base.transaction do
-
-                c.first.update_attributes(firmante_id: firmante_id)
-                cq = CustomQuery.ejecutar({
-                  sql:  "DELETE \n"+
-                        "FROM consolidados_sumar_detalles\n"+
-                        "WHERE consolidado_sumar_id =  #{c_id};\n"
-                })
-
-                administrador.efectores_administrados.each do |ea|
-                  # Verifico si existe una cuasifactura para este efector
-                  if ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).size > 0
-                    monto = ea.cuasifacturas.where(liquidacion_sumar_id: liquidacion_sumar.id).first.monto_total
-                  else
-                    monto = 0
-                  end
-
-                  cq = CustomQuery.ejecutar({
-                    sql:  "INSERT INTO  public . consolidados_sumar_detalles  \n"+
-                          "( consolidado_sumar_id ,  efector_id ,  convenio_de_administracion_sumar_id ,  convenio_de_gestion_sumar_id ,  total ,  created_at ,  updated_at ) \n"+
-                          "VALUES \n"+
-                          "(#{c_id}, #{ea.id}, #{ea.convenio_de_administracion_sumar.id}, #{ea.convenio_de_gestion_sumar.id}, #{monto}, now(), now());\n"
-                  })
-                end #end each
-              end #end transaction
-            rescue Exception => e
-              return false
-            end #end try catch
-
-          else
-            next
-          end
+        end # END transaction        
 
       end
       puts "Ejecución exitosa"
     rescue
-      puts "Falló la ejecución para éste efector"
+      puts "Falló la ejecución para éste efector #{efector.id}"
     end
-  end #end function
-  
-end #end class
+    puts "##################################################################"
+  end
+
+  def por_liquidacion_sumar liquidacion_sumar_id
+    puts "##################################################################"
+    begin
+      puts "Ejecutando proceso de revertir factura por liquidación"    
+      liquidacion_sumar = LiquidacionSumar.find(liquidacion_sumar_id)
+      liquidacion_sumar.grupo_de_efectores_liquidacion.efectores.each do |efector|
+        por_liquidacion_y_efector liquidacion_sumar.id, efector.id
+      end
+      puts "GENERANDO DOCUMENTOS"
+      generar_documentos liquidacion_sumar
+      puts "DOCUMENTOS GENERADOS CORRECTAMENTE"
+    rescue
+      puts "Error generando liquidación #{liquidacion_sumar.id}"
+    end
+    puts "##################################################################"
+  end
+
+  def generar_documentos liquidacion_sumar
+    liquidacion_sumar.generar_documentos!
+  end  
+
+end

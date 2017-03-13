@@ -11,7 +11,7 @@ class Prestacion < ActiveRecord::Base
                   :dato_reportabl_ids, :modifica_lugar_de_atencion, :diagnostico_ids, :prestaciones_pdss_attributes,
                   :sexo_ids, :grupo_poblacional_ids, :documentacion_respaldatoria_ids, :dato_adicional_ids, 
                   :metodo_de_validacion_ids, :cantidades_de_prestaciones_por_periodo_attributes,
-                  :asignaciones_de_precios_attributes, :datos_reportables_requeridos_attributes
+                  :asignaciones_de_precios_attributes, :datos_reportables_requeridos_attributes, :datos_adicionales_attributes
 
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
@@ -21,6 +21,8 @@ class Prestacion < ActiveRecord::Base
   has_and_belongs_to_many :diagnosticos
   belongs_to :unidad_de_medida
   belongs_to :tipo_de_tratamiento
+  belongs_to :prestacion_principal
+
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, through: :datos_adicionales_por_prestacion
   has_many :cantidades_de_prestaciones_por_periodo
@@ -52,11 +54,15 @@ class Prestacion < ActiveRecord::Base
   accepts_nested_attributes_for :cantidades_de_prestaciones_por_periodo, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :asignaciones_de_precios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :datos_reportables_requeridos, reject_if: :all_blank, allow_destroy: false
+  accepts_nested_attributes_for :datos_adicionales, reject_if: :all_blank, allow_destroy: false
 
   before_validation :asignar_attributes_a_prestacion
   before_save :asignar_attributes_a_prestaciones_pdss
 
-  scope :listado_permitido , -> { where('eliminada IS NULL OR eliminada = false') }
+  after_initialize :add_cantidades_de_prestaciones_por_periodo
+  after_initialize :add_prestaciones_pdss
+
+  scope :listado_permitido, ->(con_eliminadas=false) { where('eliminada IS NULL OR eliminada = false') unless con_eliminadas }
   scope :activas, -> { where(activa: true) }
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
   scope :ordenadas_por_prestaciones_pdss, -> { includes(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
@@ -260,6 +266,14 @@ class Prestacion < ActiveRecord::Base
 
     def validate_unique_asignaciones_de_precios
       validate_uniqueness_of_in_memory(asignaciones_de_precios, [:nomenclador_id, :dato_reportable_id, :area_de_prestacion_id], 'Asignación de precio duplicada.')
+    end
+
+    def add_cantidades_de_prestaciones_por_periodo
+      self.cantidades_de_prestaciones_por_periodo << CantidadDePrestacionesPorPeriodo.new if self.cantidades_de_prestaciones_por_periodo.blank?
+    end
+
+    def add_prestaciones_pdss
+      self.prestaciones_pdss << PrestacionPdss.new if self.prestaciones_pdss.blank?
     end
 
 end
