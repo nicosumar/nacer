@@ -11,7 +11,7 @@ class Prestacion < ActiveRecord::Base
                   :dato_reportabl_ids, :modifica_lugar_de_atencion, :diagnostico_ids, :prestaciones_pdss_attributes,
                   :sexo_ids, :grupo_poblacional_ids, :documentacion_respaldatoria_ids, :dato_adicional_ids, 
                   :metodo_de_validacion_ids, :cantidades_de_prestaciones_por_periodo_attributes,
-                  :asignaciones_de_precios_attributes, :datos_reportables_requeridos_attributes
+                  :asignaciones_de_precios_attributes, :datos_reportables_requeridos_attributes, :datos_adicionales_attributes
 
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
@@ -55,6 +55,7 @@ class Prestacion < ActiveRecord::Base
   accepts_nested_attributes_for :cantidades_de_prestaciones_por_periodo, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :asignaciones_de_precios, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :datos_reportables_requeridos, reject_if: :all_blank, allow_destroy: false
+  accepts_nested_attributes_for :datos_adicionales, reject_if: :all_blank, allow_destroy: false
 
   before_validation :asignar_attributes_a_prestacion
   before_save :asignar_attributes_a_prestaciones_pdss

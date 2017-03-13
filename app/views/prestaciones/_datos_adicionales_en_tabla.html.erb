@@ -1,0 +1,22 @@
+<% if datos_adicionales.present? %>
+  <table>
+    <tr>
+      <th>Datos adicional</th>
+      <th>Tipo postgres</th> 
+      <th>Tipo Ruby</th>
+      <th>Enumerable</th>
+      <th>Clase para enumeración</th>
+    </tr>
+    <% datos_adicionales.each do |dato_adicional| %>
+      <tr>
+        <td><%= dato_adicional.nombre %></td>
+        <td><%= dato_adicional.tipo_postgres %></td>
+        <td><%= dato_adicional.tipo_ruby %></td>
+        <td><%= dato_adicional.enumerable %></td>
+        <td><%= dato_adicional.clase_para_enumeracion %></td> 
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  (Sin datos adicionales asociadas)
+<% end %>
