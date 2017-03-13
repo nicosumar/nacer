@@ -33,7 +33,7 @@ class AddendasSumarController < ApplicationController
       )
       return
     end
-
+    
     # Obtener la adenda solicitada
     begin
       @addenda =
@@ -51,7 +51,7 @@ class AddendasSumarController < ApplicationController
       )
     end
     @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
-
+    
     respond_to do |format|
       format.odt do
           report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de adenda prestacional.odt") do |r|
@@ -93,18 +93,18 @@ class AddendasSumarController < ApplicationController
             if !@convenio_de_gestion.efector.domicilio.blank?
               r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.to_s.strip.gsub(".", ",")
             end
-
+    
             @bajas_de_prestaciones =
               PrestacionPdss.joins(:prestaciones).
               where(prestaciones_prestaciones_pdss: {prestacion_id: @addenda.prestaciones_autorizadas_baja.map{|p| p.prestacion_id}.uniq}).
               order(:grupo_pdss_id).
               select("codigo_de_prestacion_con_diagnosticos(prestaciones_pdss.id) AS codigo, prestaciones_pdss.nombre AS nombre").
               map{|pa| {codigo: pa.codigo, nombre: pa.nombre} }
-
+    
             r.add_table("Bajas", @bajas_de_prestaciones, header: true) do |t|
               t.add_column(:prestacion_codigo, :codigo)
               t.add_column(:prestacion_nombre, :nombre)
-            end
+  end
 
             @altas_de_prestaciones =
               PrestacionPdss.joins(:prestaciones).

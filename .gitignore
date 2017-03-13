@@ -22,3 +22,4 @@ public/paperclip
 
 /public/system/*
 /public/attachments/*
+/nbproject/
