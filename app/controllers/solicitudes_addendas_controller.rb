@@ -72,8 +72,8 @@ class SolicitudesAddendasController < ApplicationController
         
         :include => [
           :estado_solicitud_addenda,
-          {:convenio_de_gestion_sumar => :efector},
-          {:solicitudes_adddendas_prestaciones_principales => :prestacion_principal}
+          {:convenio_de_gestion_sumar => :efector}
+        #  ,{:solicitudes_adddendas_prestaciones_principales => :prestacion_principal}
         ]
       )
       
@@ -87,10 +87,8 @@ class SolicitudesAddendasController < ApplicationController
     end
 
     # Crear los objetos necesarios para la vista
-    @efector = @solicitud_addenda.efector
-    
-    @convenio_de_gestion = @addenda.convenio_de_gestion
-    
+    @convenio_de_gestion = @solicitud_addenda.convenio_de_gestion_sumar
+    @efector = @convenio_de_gestion.efector
   end
   
   def show
