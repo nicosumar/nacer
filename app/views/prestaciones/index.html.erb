@@ -13,6 +13,8 @@
     <div class="small-label">Código</div>
     <div class="small-label">Sección PDSS</div>
     <div class="small-label">Grupo PDSS</div>
+    <div class="small-label">Concepto de fac.</div>
+    <div class="small-label">¿Con eliminadas?</div>
     <div class="small-label"></div>
   </div>
   <%= form_tag(prestaciones_path, :method => "get") do %>
@@ -24,13 +26,20 @@
       <div class="small-label">
         <%= collection_select(:filter, :grupo_pdss_id, SeccionPdss.first.grupos_pdss, :id, :nombre, {include_blank: 'Seleccione un grupo'}, {class: "small-input grupo-pdss-select"}) %>
       </div>
+      <div class="small-label">
+        <%= collection_select(:filter, :concepto_de_facturacion_id, ConceptoDeFacturacion.all, :id, :concepto, {include_blank: 'Seleccione un concepto de facturación'}, {class: "small-input seccion-pdss-select" }) %>  
+      </div>
+      <div class="small-label">
+        <%= select(:filter, :incluir_eliminadas, [["Sin eliminadas", false], ["Con eliminadas", true]], {}, {class: "small-input seccion-pdss-select" }) %>  
+      </div>
       <div class="small-label"><%= submit_tag("Filtrar") %></div>
     </div>
   <% end %> 
   <hr>
   <table>
     <tr>
-      <th>Seccion / Grupo</th>
+      <th>Seccion</th>
+      <th>Grupo</th>
       <th>Línea de cuidado</th>
       <th>Tipo</th>
       <th>Nombre</th>
@@ -40,7 +49,9 @@
       <th>Acciones</th>
     </tr>
     <%
-      @secciones_grupo_pdss.each do |seccion_grupo_pdss|
+      @secciones_pdss.each do |seccion_pdss|
+        seccion_pdss_rowspan = true
+      seccion_pdss[:secciones_grupo_pdss].each do |seccion_grupo_pdss|
         seccion_grupo_pdss_rowspan = true
     %>
       <% 
@@ -49,6 +60,11 @@
       %>
         <% linea_de_cuidado[:prestaciones].each do |prestacion| %>
           <tr>
+            <% if seccion_pdss_rowspan 
+                seccion_pdss_rowspan = false
+            %>
+              <td rowspan="<%= seccion_pdss[:prestaciones_count] %>"><%=  seccion_pdss[:nombre] %></td>
+            <% end %>
             <% if seccion_grupo_pdss_rowspan 
                 seccion_grupo_pdss_rowspan = false
             %>
@@ -75,6 +91,7 @@
             <td><%= link_to('Ver', prestacion_path(prestacion)) if can? :read, Prestacion %> <br/> <%= link_to('Editar', edit_prestacion_path(prestacion)) if can? :manage, Prestacion %> <br/> <%= link_to('Asignar precios', edit_para_asignacion_de_precios_prestacion_path(prestacion)) if can? :manage, Prestacion %></td>
           </tr>
         <% end %>
+      <% end %>
       <% end %>
     <% end %>
   </table>

@@ -59,7 +59,10 @@ class Prestacion < ActiveRecord::Base
   before_validation :asignar_attributes_a_prestacion
   before_save :asignar_attributes_a_prestaciones_pdss
 
-  scope :listado_permitido , -> { where('eliminada IS NULL OR eliminada = false') }
+  after_initialize :add_cantidades_de_prestaciones_por_periodo
+  after_initialize :add_prestaciones_pdss
+
+  scope :listado_permitido, ->(con_eliminadas=false) { where('eliminada IS NULL OR eliminada = false') unless con_eliminadas }
   scope :activas, -> { where(activa: true) }
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
   scope :ordenadas_por_prestaciones_pdss, -> { includes(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
@@ -263,6 +266,14 @@ class Prestacion < ActiveRecord::Base
 
     def validate_unique_asignaciones_de_precios
       validate_uniqueness_of_in_memory(asignaciones_de_precios, [:nomenclador_id, :dato_reportable_id, :area_de_prestacion_id], 'Asignación de precio duplicada.')
+    end
+
+    def add_cantidades_de_prestaciones_por_periodo
+      self.cantidades_de_prestaciones_por_periodo << CantidadDePrestacionesPorPeriodo.new if self.cantidades_de_prestaciones_por_periodo.blank?
+    end
+
+    def add_prestaciones_pdss
+      self.prestaciones_pdss << PrestacionPdss.new if self.prestaciones_pdss.blank?
     end
 
 end

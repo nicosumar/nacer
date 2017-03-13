@@ -16,7 +16,7 @@ class ConvenioDeGestionSumar < ActiveRecord::Base
   has_many :prestaciones_autorizadas, :as => :autorizante_al_alta
   has_many :prestaciones_pdss_autorizadas, :as => :autorizante_al_alta
   has_many :addendas_sumar
-
+  has_many :solicitudes_addendas
   # Validaciones
   validates_presence_of :numero, :efector_id, :fecha_de_inicio
   validates_uniqueness_of :efector_id

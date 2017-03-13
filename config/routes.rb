@@ -151,6 +151,9 @@ Nacer::Application.routes.draw do
     get :validar_codigo , on: :collection
     get :edit_para_asignacion_de_precios, on: :member
   end
+ 
+  resources :solicitudes_addendas, :except => :destroy
+  
 
   root :to => 'inicio#index'
 

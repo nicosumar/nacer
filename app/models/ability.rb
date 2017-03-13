@@ -172,5 +172,8 @@ class Ability
       can :read, UnidadDeAltaDeDatos
     end
 
+    if user.in_group? :gestion_addendas_uad
+      can :manage, SolicitudAddenda  
+    end
   end
 end

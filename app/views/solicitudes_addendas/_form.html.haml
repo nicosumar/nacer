@@ -1,0 +1,42 @@
+= form_for(@solicitud_addenda) do |f|
+
+  %div.hidden_field
+    %input{ :id => "solicitud_addenda_convenio_de_gestion_sumar_id", :name => "solicitud_addenda[convenio_de_gestion_sumar_id]", |
+      :type => "hidden", :value => @convenio_de_gestion.id } |
+
+  %h3.first-header Datos del convenio de gestión Sumar
+  %div.field_content
+    %span.field_name Adenda al convenio de gestión Sumar
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.numero
+  %div.field_content
+    %span.field_name El convenio pertenece al efector
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.efector.nombre
+
+  %h3.header-with-note Datos de identificación
+  - if @solicitud_addenda.new_record?
+    %p.note El número de adenda se genera automaticamente
+    %div.field_content
+      %span.field_name Número
+      %span.field_value= '-'
+  - else  
+    %div.field_content
+      %span.field_name Número
+      %span.field_value= @solicitud_addenda.numero
+  
+  %h3.header-with-note Datos del firmante
+  %div.field
+    = f.label :firmante
+    = f.text_field :firmante
+
+  %h3 Observaciones
+  %div.field
+    = f.text_area :observaciones, :size => "80x8"
+
+
+  %div.actions
+    - if @solicitud_addenda.new_record?
+      = f.submit "Crear la Solitud de addenda"
+      = link_to "Cancelar" ,@convenio_de_gestion
+    - else
+      = f.submit "Guardar las modificaciones"
+      = link_to "Cancelar" ,@solicitud_addenda

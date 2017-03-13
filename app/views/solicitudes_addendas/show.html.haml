@@ -1,0 +1,73 @@
+- content_for :title do
+  Información detallada de la solicitud de adenda Sumar
+
+#content-header
+  %h1 Información detallada de la solicitud de adenda Sumar
+  - if can? :update, @solicitud_addenda
+    #action-links
+      = link_to "Modificar la solicitud de adenda", edit_solicitud_addenda_path(@solicitud_addenda)
+      /= link_to "Generar documento", solicitud_addenda_path(@addenda, :format => :odt)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Datos del convenio de gestión Sumar
+  %div.field_content
+    %span.field_name Solicitud de adenda al convenio de gestión Sumar
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion_sumar.numero
+    = link_to "Ver detalles del convenio", @convenio_de_gestion_sumar
+  %div.field_content
+    %span.field_name El convenio pertenece al efector
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion_sumar.efector.nombre
+    = link_to "Ver detalles del efector", @convenio_de_gestion_sumar.efector
+
+  %h3 Datos de identificación
+  %div.field_content
+    %span.field_name Número
+    - if !@solicitud_addenda.numero.blank?
+      %span.field_value= @solicitud_addenda.numero
+    - else
+      %span.field_empty No se generó el número de solicitud
+
+  %h3 Datos del firmante y fechas
+  %div.field_content
+    %span.field_name Firmante
+    - if !@solicitud_addenda.firmante.blank?
+      %span.field_value= @solicitud_addenda.firmante
+    - else
+      %span.field_empty No se ingresó el firmante
+  %div.field_content
+    %span.field_name Fecha de solicitud
+    - if @solicitud_addenda.fecha_solicitud
+      %span.field_value= @solicitud_addenda.fecha_solicitud.strftime("%d/%m/%Y")
+
+  %div.field_content
+    %span.field_name Fecha de revisión técnica
+    - if @solicitud_addenda.fecha_revision_medica
+      %span.field_value= @solicitud_addenda.fecha_revision_medica.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se realizó la revision del area técnica
+
+  %div.field_content
+    %span.field_name Fecha de revisión Legal
+    - if @solicitud_addenda.fecha_revision_legal
+      %span.field_value= @solicitud_addenda.fecha_revision_legal.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se aprobó la solicitud por el area legal
+
+  
+  %h3 Observaciones
+  %div.field_content
+    - if !@solicitud_addenda.observaciones.blank?
+      %span.field_value_multiline
+        - @solicitud_addenda.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para la solicitud de addenda
+
+
+
+  
+  
+
