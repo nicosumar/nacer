@@ -62,11 +62,18 @@
     = f.label :nombre_del_agente_inscriptor
     = f.text_field :nombre_del_agente_inscriptor, :style => "text-transform: uppercase;"
 
+  %div.field
+    = f.label :motivo_baja_beneficiario_id, "Motivo de Baja de Beneficiario*"
+    = f.select :motivo_baja_beneficiario_id, options_for_select(@motivos_bajas_beneficiarios,@novedad.motivo_baja_beneficiario_id), |
+      {:include_blank => true} |
+
   %h3.header-with-note Observaciones generales*
   %p.note Indique en forma obligatoria con el mayor detalle y claridad posible por qué motivos se solicita la baja
+
   %div.field
     = f.text_area :observaciones_generales, :size => "80x8"
 
+        
   %div.actions
     - if @novedad.new_record?
       = f.submit "Crear la solicitud"
