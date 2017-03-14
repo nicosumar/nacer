@@ -138,6 +138,10 @@
     %span.field_name Código de prestación
     %span.field_value= @prestacion_brindada.prestacion.codigo + (@prestacion_brindada.diagnostico ? |
       @prestacion_brindada.diagnostico.codigo : '') |
+  - if @prestacion_brindada.cantidad_de_unidades >= 1
+    %div.field_content
+      %span.field_name Cantidad de unidades
+      %span.field_value= @prestacion_brindada.cantidad_de_unidades  
   %div.field_content
     %span.field_name Descripción de la prestación
     %span.field_value= @prestacion_brindada.prestacion.nombre_corto

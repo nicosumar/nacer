@@ -83,6 +83,14 @@
   - else
     %span.field_empty No se indicó el nombre del agente inscriptor
 
+%h3.header-with-note Motivo de la baja 
+%div.field_content
+  %span.field_name Motivo de baja de beneficiario
+  - if @novedad.motivo_baja_beneficiario_id
+    %span.field_value= @novedad.motivo_baja_beneficiario.nombre
+  - else
+    %span.field_empty No se indicó el centro de inscripción
+
 %h3.header-with-note Observaciones generales
 %p.note Motivos por los cuales se solicita la baja
 

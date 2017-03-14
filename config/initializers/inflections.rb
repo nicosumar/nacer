@@ -674,6 +674,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.human("score_de_riesgo", "score de riesgo cardiovascular")
   inflect.human("fecha_de_la_novedad", "fecha de inscripción/modificación")
   inflect.human("centro_de_inscripcion_id", "centro de inscripción")
+  inflect.irregular("motivo_baja_beneficiario","motivos·_bajas·_beneficiarios·")
 
   #Tablas de configuracion
   #Paises
