@@ -12,7 +12,7 @@
     %span.field_name El convenio pertenece al efector
     %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.efector.nombre
 
-  %h3.header-with-note Datos de identificación
+  %h3.header-with-note Datos de la solicitud
   - if @solicitud_addenda.new_record?
     %p.note El número de adenda se genera automaticamente
     %div.field_content
@@ -22,6 +22,10 @@
     %div.field_content
       %span.field_name Número
       %span.field_value= @solicitud_addenda.numero
+
+  %div.field
+  = f.label :estado_solicitud_addenda_id, "Estado"
+  = f.select :estado_solicitud_addenda_id, @estados_solicitudes_addendas,{}, {:class => 'select2'}
   
   %h3.header-with-note Datos del firmante
   %div.field
@@ -31,7 +35,9 @@
   %h3 Observaciones
   %div.field
     = f.text_area :observaciones, :size => "80x8"
+  
 
+  = render :partial => "tabla_prestaciones_principales", :locals => {:prestaciones_principales => PrestacionPrincipal.all}
 
   %div.actions
     - if @solicitud_addenda.new_record?

@@ -1,38 +1,25 @@
-- unless prestaciones_principales.any?{|p| p["rural"] == "t"}
-  %p Solo pueden habilitarse a efectores urbanos
-
-%table.prestaciones_pdss
+%table.prestaciones_principales
   
   %thead
   %tr
-
-      %th Nombre de la prestación principal
-      %th Código
-      %th Autorizada
-
-  %tbody
+    %th Nombre de la prestación
+    %th Código   
+    %th Autorizar check
+  %tbody 
 
 
     - prestaciones_principales.each do |p|
 
       %tr
         
-        %td= p["nombre_de_prestacion"]
+        %td= p["nombre"]
 
-        %td.centrado= p["codigo_de_prestacion"]
+        %td.centrado= p["codigo"]
 
-        - if prestaciones.any?{|p| p["rural"] == "t"}
-     
-        - if p["autorizada"] == "t"
-         
-          %td.centrado 
+        %td.centrado 
 
-            -#%input{ :type=>"checkbox", :checked=>true }
-            = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
-            = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], true, id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
-        - else 
+          = hidden_field_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", nil
+          = check_box_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", p["id"].to_s, true, id: dom_id(PrestacionPrincipal.find(p["id"].to_s))
+      
 
-          %td.centrado 
-            = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
-            = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], (@prestaciones_autorizadas_alta_ids.present? && @prestaciones_autorizadas_alta_ids.include?(p["prestacion_pdss_id"])), id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
-
+          
