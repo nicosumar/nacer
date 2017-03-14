@@ -144,7 +144,7 @@ class Ability
       can :read, Afiliado
       can :read, LiquidacionSumar
       can :read, NovedadDelAfiliado
-      #can :manage, PrestacionBrindada
+      can :manage, PrestacionBrindada
       can :manage, DatoReportableAsociado
     end
 
