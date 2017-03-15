@@ -39,7 +39,8 @@ class PrestacionesPrincipalesController < ApplicationController
     params[:prestacion_principal][:prestaciones_attributes] = params[:prestacion_principal][:prestaciones_attributes].each{|key, hash| hash["prestacion_principal_id"] = @prestacion_principal.id if @prestacion_principal.id.present? }
     params[:prestacion_principal][:prestaciones_attributes] = params[:prestacion_principal][:prestaciones_attributes].each{|key, hash| hash["prestacion_principal_id"] = nil if hash["_destroy"] == "1" }
     @prestacion_principal.prestacion_ids = prestacion_ids
-    if @prestacion_principal.update_attributes params[:prestacion_principal]
+    @prestacion_principal.attributes = params[:prestacion_principal]
+    if @prestacion_principal.save
       redirect_to @prestacion_principal
     else
       render :edit

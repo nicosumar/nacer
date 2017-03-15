@@ -297,7 +297,7 @@ class Prestacion < ActiveRecord::Base
   private
 
     def asignar_attributes_a_prestacion
-      self.codigo = self.objeto_de_la_prestacion.codigo_para_la_prestacion
+      self.codigo = self.objeto_de_la_prestacion.codigo_para_la_prestacion if self.codigo.blank? and self.objeto_de_la_prestacion.present?
       datos_reportables_requeridos.map { |drr|
         drr.prestacion = self
       }

@@ -6,7 +6,7 @@ class PrestacionPrincipal < ActiveRecord::Base
 
   scope :activas,->{}
 
-  before_save :populate_attributes
+  before_validation :populate_attributes
   after_save :validar_prestaciones
 
   accepts_nested_attributes_for :prestaciones, reject_if: :all_blank, allow_destroy: false
@@ -17,7 +17,34 @@ class PrestacionPrincipal < ActiveRecord::Base
 
   private
     def populate_attributes
-      
+      prestacion_modelo = nil
+      self.prestaciones.each do |prestacion|
+        if !prestacion.new_record? and prestacion_modelo.blank?
+          prestacion_modelo = prestacion
+          break
+        end
+      end
+      if prestacion_modelo.present?   
+        control = false     
+        self.prestaciones.map! do |prestacion|
+          if prestacion.new_record?
+            control = true
+            prestaciones_pdss = prestacion.prestaciones_pdss
+            prestaciones_pdss = prestaciones_pdss.each do |pdss|
+              pdss.nombre = prestacion.nombre
+            end
+            prestacion = prestacion_modelo.duplicar
+            prestacion.prestaciones_pdss = prestaciones_pdss
+            prestacion.prestacion_principal = self            
+          end
+          prestacion
+        end
+        if control
+          self.prestaciones.build
+          self.reload
+        end
+      end
+      self
     end
 
     def validar_prestaciones
