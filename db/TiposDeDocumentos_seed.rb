@@ -6,6 +6,7 @@ TipoDeDocumento.create(
       #:id => 1,
       :nombre => "Documento nacional de identidad",
       :codigo => "DNI"
+      :activo => true
     },
     {
       #:id => 2,
@@ -26,17 +27,20 @@ TipoDeDocumento.create(
       #:id => 5,
       :nombre => "Pasaporte argentino",
       :codigo => "PAS"
+
     },
     # Añadidos para la versión 4.7 del sistema de gestión
     {
       #:id => 6,
       :nombre => "Certificado migratorio",
       :codigo => "CM"
+      :activo => true
     },
     {
       #:id => 7,
       :nombre => "Documento extranjero",
       :codigo => "DEX"
+      :activo => true
     },
     {
       #:id => 8,
