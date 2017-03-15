@@ -6,6 +6,7 @@ Nacer::Application.routes.draw do
 
   resources :documentos_generables
   resources :notas_de_debito
+  resources :prestaciones_principales
 
   resources :informes_debitos_prestacionales do
     resources :detalles_de_debitos_prestacionales, only: [:index, :create, :destroy]

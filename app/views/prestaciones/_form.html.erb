@@ -115,7 +115,7 @@
   </div>
 
   <div id="datos_adicionales">
-    <%= f.fields_for :datos_adicionales, @prestacion.datos_adicionales do |dato_adicional|  %>
+    <%= f.fields_for :datos_adicionales do |dato_adicional|  %>
       <%= render 'dato_adicional_fields', f: dato_adicional  %>
     <% end %>
     <br>

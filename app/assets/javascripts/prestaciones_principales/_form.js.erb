@@ -1,0 +1,12 @@
+//  Función para llenar el popup con prestaciones según el código ingresado
+  $("#validador-de-codigo").click(function(){
+    var selectObjetoDeLaPrestacion = document.getElementById("validator_objeto_de_la_prestacion_id");
+    var prestacion_objeto_de_la_prestacion_id = selectObjetoDeLaPrestacion.options[selectObjetoDeLaPrestacion.selectedIndex].value;
+
+    //  Si el usuario no ha ingresado nungún código entonces muestra un mensaje sobre esto
+    if($("#prestacion_codigo").val() == "") {
+      alert("Por favor, ingresar un código a validar");
+    } else {
+      console.log(window.location.href + "?objeto_de_la_prestacion_id=" + prestacion_objeto_de_la_prestacion_id);
+    }
+  });
