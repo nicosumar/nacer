@@ -61,6 +61,12 @@ Nacer::Application.routes.draw do
   resources :secciones_pdss, only: [] do
     resources :grupos_pdss, only: :index
   end
+
+  resources :grupos_pdss, only: [] do
+    resources :grupos_poblacionales, only: :index
+    resources :sexos, only: :index
+  end
+
   resources :consolidados_sumar
   # rutas para la actualizacion asincronica
   resources :anexos_medicos_prestaciones, :only => [] do

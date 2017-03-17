@@ -14,10 +14,55 @@ $(document).ready(function(){
 
       // Agrega las opciones al grupo_pdss_select
       for (var i in data) {
-          $(grupo_pdss_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
+        if(i==0){
+          actualizarGuposPoblacionales(data[i].id);
+          actualizarSexos(data[i].id);
+        }
+        $(grupo_pdss_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
       }
 
     });
+  });
+
+  var actualizarGuposPoblacionales = function(grupo_pdss_id){
+    var grupos_poblacionales_select = $("#prestacion_grupo_poblacional_ids");
+
+    // Llamada AJAX para buscar en el servidor
+    $.get( "/grupos_pdss/" + grupo_pdss_id + "/grupos_poblacionales.json", function( data ) {
+      // resetea el grupos_poblacionales_select
+      grupos_poblacionales_select.empty();
+
+      // Agrega las opciones al grupos_poblacionales_select
+      for (var i in data) {
+        $(grupos_poblacionales_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
+      }
+
+      grupos_poblacionales_select.trigger("chosen:updated");
+
+    });
+  }
+
+  var actualizarSexos = function(grupo_pdss_id){
+    var sexos_select = $("#prestacion_sexo_ids");
+
+    // Llamada AJAX para buscar en el servidor
+    $.get( "/grupos_pdss/" + grupo_pdss_id + "/sexos.json", function( data ) {
+      // resetea el sexos_select
+      sexos_select.empty();
+
+      // Agrega las opciones al sexos_select
+      for (var i in data) {
+        $(sexos_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
+      }
+
+      sexos_select.trigger("chosen:updated");
+
+    });
+  }
+
+  $(document).on( "change", ".grupo-pdss-select", function() {
+    actualizarGuposPoblacionales(this.value);
+    actualizarSexos(this.value);
   });
 
   $(document).on( "change", "#prestacion_unidad_de_medida_id", function() {

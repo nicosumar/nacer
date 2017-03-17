@@ -10,5 +10,7 @@ class GrupoPdss < ActiveRecord::Base
   # Asociaciones
   belongs_to :seccion_pdss
   has_many :prestaciones_pdss
+  has_and_belongs_to_many :grupos_poblacionales, join_table: "grupos_permitidos"
+  has_and_belongs_to_many :sexos, join_table: "grupos_permitidos"
 
 end
