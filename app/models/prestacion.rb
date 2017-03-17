@@ -100,12 +100,12 @@ class Prestacion < ActiveRecord::Base
       nueva_prestacion.asignaciones_de_precios << nueva_adp
     end    
 
-    self.prestaciones_autorizadas.each do |pa|
-      nueva_ṕa = pa.dup
-      nueva_ṕa.prestacion_id = nil
-      nueva_ṕa.prestacion = nueva_prestacion
-      nueva_prestacion.prestaciones_autorizadas << nueva_ṕa
-    end
+    # self.prestaciones_autorizadas.each do |pa|
+    #   nueva_ṕa = pa.dup
+    #   nueva_ṕa.prestacion_id = nil
+    #   nueva_ṕa.prestacion = nueva_prestacion
+    #   nueva_prestacion.prestaciones_autorizadas << nueva_ṕa
+    # end
     
     nueva_prestacion.metodos_de_validacion << self.metodos_de_validacion
     nueva_prestacion.sexos << self.sexos
@@ -301,6 +301,7 @@ class Prestacion < ActiveRecord::Base
       datos_reportables_requeridos.map { |drr|
         drr.prestacion = self
       }
+      self.unidades_maximas = 1 if self.unidad_de_medida_id == 1
     end
     
     def asignar_attributes_a_prestaciones_pdss

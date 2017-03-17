@@ -20,6 +20,14 @@ $(document).ready(function(){
     });
   });
 
+  $(document).on( "change", "#prestacion_unidad_de_medida_id", function() {
+    var unidad_de_medida_id = this.value;
+    if(unidad_de_medida_id==1){
+      $("#prestacion_unidades_maximas").attr("disabled", true);
+    }else{
+      $("#prestacion_unidades_maximas").attr("disabled", false);
+    }
+  });
 
   // Inicialización del popup
   $( "#popup-de-prestaciones-pdss" ).dialog({ autoOpen: false, 

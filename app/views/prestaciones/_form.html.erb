@@ -27,7 +27,11 @@
   </div>
   <div class="field">
     <%= f.label "Unidades máximas" %>
-    <%= f.number_field :unidades_maximas %>      
+    <%= f.number_field :unidades_maximas, disabled: (@prestacion.unidad_de_medida_id == 1 || @prestacion.unidad_de_medida_id.blank?) %>      
+  </div>
+  <div class="field">
+    <%= f.label "Otorga cobertura" %>
+    <%= f.check_box :otorga_cobertura %>      
   </div>
   <div class="field">
     <%= f.label "¿ Es comunitaria ?" %>
@@ -59,19 +63,35 @@
   </div>
 
   <hr>
+  
+  <h4>Prestación P.D.S.S.</h4>
 
-  <h4>Sexos</h4>
+  <div class="nested-fields-label-container">
+    <div class="small-label">Sección pdss</div>
+    <div class="small-label">Grupo pdss</div>
+    <div class="small-label">Línea de cuidado</div>
+    <div class="small-label">Módulo</div>
+  </div>
 
-    <%= f.collection_select :sexo_ids, Sexo.all, :id, :nombre, 
-                            {selected: f.object.sexo_ids}, 
-                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
-  <br>
-  <br>
+  <div id="prestaciones_pdss">
+    <%= f.fields_for :prestaciones_pdss do |prestacion_pdss|  %>
+      <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
+    <% end %>
+    <br>
+  </div>
 
   <h4>Grupos poblacionales</h4>
 
     <%= f.collection_select :grupo_poblacional_ids, GrupoPoblacional.all, :id, :nombre, 
                             {selected: f.object.grupo_poblacional_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Sexos</h4>
+
+    <%= f.collection_select :sexo_ids, Sexo.all, :id, :nombre, 
+                            {selected: f.object.sexo_ids}, 
                             {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
   <br>
   <br>
@@ -147,21 +167,6 @@
     <br>
   </div>
 
-  <h4>Prestación P.D.S.S.</h4>
-
-  <div class="nested-fields-label-container">
-    <div class="small-label">Sección pdss</div>
-    <div class="small-label">Grupo pdss</div>
-    <div class="small-label">Línea de cuidado</div>
-    <div class="small-label">Módulo</div>
-  </div>
-
-  <div id="prestaciones_pdss">
-    <%= f.fields_for :prestaciones_pdss do |prestacion_pdss|  %>
-      <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
-    <% end %>
-    <br>
-  </div>
 
 
   <br>
