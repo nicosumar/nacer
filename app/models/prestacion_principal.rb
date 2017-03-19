@@ -5,6 +5,7 @@ class PrestacionPrincipal < ActiveRecord::Base
   has_many :prestaciones_pdss, through: :prestaciones  
 
   scope :activas,->{}
+  scope :like_codigo, ->(codigo) { where("prestaciones_principales.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
 
   before_validation :populate_attributes
   after_save :validar_prestaciones
