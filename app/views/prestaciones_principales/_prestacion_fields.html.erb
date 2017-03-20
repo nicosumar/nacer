@@ -1,0 +1,26 @@
+<div class="nested-fields">
+  <div class="row">
+    <div class="col-md-1">
+      <label>Nombre</label>
+    </div>
+    <div class="col-md-8">
+      <%= f.text_field :nombre, class: "large-input" %>      
+    </div>
+    <div class="col-md-1">
+      <%= link_to_remove_association "Quitar", f %>
+    </div>
+  </div>
+  <br>
+  <div class="nested-fields-label-container">
+    <div class="small-label">Sección pdss</div>
+    <div class="small-label">Grupo pdss</div>
+    <div class="small-label">Línea de cuidado</div>
+    <div class="small-label">Módulo</div>
+  </div>
+  <div id="prestaciones_pdss">
+    <%= f.fields_for :prestaciones_pdss do |prestacion_pdss|  %>
+      <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
+    <% end %>
+  </div>  
+  <hr>
+</div>

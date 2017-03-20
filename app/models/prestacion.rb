@@ -16,34 +16,34 @@ class Prestacion < ActiveRecord::Base
   #Atributos para asignacion masiva vinculados a Liquidaciones
   attr_accessible :conceptos_de_facturacion_id, :es_catastrofica
 
+  #Atributos para asignación desde el ABM PrestacionPrincipal
+  attr_accessible :grupo_pdss_id, :linea_de_cuidado_id, :modulo_id, :prestacion_principal_id, :prestacion_principal
+
   belongs_to :objeto_de_la_prestacion
-  has_one :tipo_de_prestacion, through: :objeto_de_la_prestacion
-  has_and_belongs_to_many :diagnosticos
   belongs_to :unidad_de_medida
   belongs_to :tipo_de_tratamiento
+  belongs_to :concepto_de_facturacion
   belongs_to :prestacion_principal
+
+  has_one :tipo_de_prestacion, through: :objeto_de_la_prestacion
 
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, through: :datos_adicionales_por_prestacion
   has_many :cantidades_de_prestaciones_por_periodo
-  has_and_belongs_to_many :metodos_de_validacion
-  has_and_belongs_to_many :sexos
-  has_and_belongs_to_many :grupos_poblacionales
-
   has_many :datos_reportables_requeridos
   has_many :datos_reportables, through: :datos_reportables_requeridos, source: :dato_reportable
-  
   has_many :documentaciones_respaldatorias_prestaciones
   has_many :documentaciones_respaldatorias, through: :documentaciones_respaldatorias_prestaciones
-  
-  has_and_belongs_to_many :prestaciones_pdss
-
-  # Relaciones para liquidacion
-  belongs_to :concepto_de_facturacion
   has_many :asignaciones_de_precios
   has_many :nomencladores, through: :asignaciones_de_precios
   has_many :prestaciones_incluidas
   has_many :prestaciones_autorizadas
+  
+  has_and_belongs_to_many :metodos_de_validacion
+  has_and_belongs_to_many :sexos
+  has_and_belongs_to_many :grupos_poblacionales
+  has_and_belongs_to_many :diagnosticos  
+  has_and_belongs_to_many :prestaciones_pdss
 
   # Validaciones
   # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
@@ -68,6 +68,55 @@ class Prestacion < ActiveRecord::Base
   scope :ordenadas_por_prestaciones_pdss, -> { includes(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
   scope :by_grupo_pdss, -> (grupo_pdss_id){ includes(prestaciones_pdss: [:grupo_pdss]).where("grupos_pdss.id = ?", grupo_pdss_id) if  grupo_pdss_id.present? }
   scope :by_seccion_pdss, -> (seccion_pdss_id){ includes(prestaciones_pdss: [{ grupo_pdss: [:seccion_pdss]}]).where("secciones_pdss.id = ?", seccion_pdss_id) if  seccion_pdss_id.present? }
+  scope :by_diagnostico, -> (diagnostico_id) { joins(:diagnosticos).where("diagnosticos_prestaciones.diagnostico_id=?", diagnostico_id).readonly(false) }
+
+  def duplicar include_prestaciones_pdss=false
+    nueva_prestacion = self.dup
+    nueva_prestacion.prestaciones_pdss = []
+    nueva_prestacion.save 
+    
+    nueva_prestacion.datos_adicionales << self.datos_adicionales
+
+    self.cantidades_de_prestaciones_por_periodo.each do |cdpp|
+      nueva_cdpp = cdpp.dup
+      nueva_cdpp.prestacion_id = nil
+      nueva_cdpp.prestacion = nueva_prestacion
+      nueva_prestacion.cantidades_de_prestaciones_por_periodo << nueva_cdpp
+    end
+    
+    self.datos_reportables_requeridos.each do |drr|
+      nuevo_drr = drr.dup
+      nuevo_drr.prestacion_id = nil
+      nuevo_drr.prestacion = nueva_prestacion
+      nueva_prestacion.datos_reportables_requeridos << nuevo_drr
+    end
+    
+    nueva_prestacion.documentaciones_respaldatorias << self.documentaciones_respaldatorias
+    
+    self.asignaciones_de_precios.each do |adp|
+      nueva_adp = adp.dup
+      nueva_adp.prestacion_id = nil
+      nueva_adp.prestacion = nueva_prestacion
+      nueva_prestacion.asignaciones_de_precios << nueva_adp
+    end    
+
+    # self.prestaciones_autorizadas.each do |pa|
+    #   nueva_ṕa = pa.dup
+    #   nueva_ṕa.prestacion_id = nil
+    #   nueva_ṕa.prestacion = nueva_prestacion
+    #   nueva_prestacion.prestaciones_autorizadas << nueva_ṕa
+    # end
+    
+    nueva_prestacion.metodos_de_validacion << self.metodos_de_validacion
+    nueva_prestacion.sexos << self.sexos
+    nueva_prestacion.grupos_poblacionales << self.grupos_poblacionales
+    nueva_prestacion.diagnosticos   << self.diagnosticos
+    
+    if include_prestaciones_pdss
+      nueva_prestacion.prestaciones_pdss << self.prestaciones_pdss
+    end
+    nueva_prestacion
+  end
 
   # Devuelve el valor del campo 'nombre', pero truncado a 100 caracteres.
   def nombre_corto
@@ -248,10 +297,11 @@ class Prestacion < ActiveRecord::Base
   private
 
     def asignar_attributes_a_prestacion
-      self.codigo = self.objeto_de_la_prestacion.codigo_para_la_prestacion
+      self.codigo = self.objeto_de_la_prestacion.codigo_para_la_prestacion if self.codigo.blank? and self.objeto_de_la_prestacion.present?
       datos_reportables_requeridos.map { |drr|
         drr.prestacion = self
       }
+      self.unidades_maximas = 1 if self.unidad_de_medida_id == 1
     end
     
     def asignar_attributes_a_prestaciones_pdss
@@ -273,7 +323,7 @@ class Prestacion < ActiveRecord::Base
     end
 
     def add_prestaciones_pdss
-      self.prestaciones_pdss << PrestacionPdss.new if self.prestaciones_pdss.blank?
+      self.association(:prestaciones_pdss).add_to_target(PrestacionPdss.new) if self.prestaciones_pdss.blank?
     end
 
 end

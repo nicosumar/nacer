@@ -4,6 +4,7 @@ class GrupoPoblacional < ActiveRecord::Base
 
   # Asociaciones
   has_and_belongs_to_many :prestaciones_autorizadas, :class_name => "Prestacion"
+  has_and_belongs_to_many :grupos_pdss, join_table: "grupos_permitidos"
 
   # Devuelve el id asociado con el código pasado
   def self.id_del_codigo(codigo)

@@ -13,6 +13,8 @@ class PrestacionPdss < ActiveRecord::Base
   has_and_belongs_to_many :prestaciones
   has_and_belongs_to_many :areas_de_prestacion
 
+  before_save :set_default_attributes
+
   def nombre_corto
     self.grupo_pdss.seccion_pdss.nombre + " / " + self.grupo_pdss.nombre
   end
@@ -26,4 +28,8 @@ class PrestacionPdss < ActiveRecord::Base
     return last_orden
   end
 
+  private
+    def set_default_attributes
+      self.orden = (PrestacionPdss.last_orden_by_grupo_pdss_id(self.grupo_pdss.id) + 1) if self.orden.blank?
+    end
 end
