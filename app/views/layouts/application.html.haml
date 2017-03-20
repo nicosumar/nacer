@@ -99,6 +99,7 @@
                       %li= link_to "Periodos", periodos_path
                       %li= link_to "Nomencladores", nomencladores_path
                       %li= link_to "Listado de prestaciones", prestaciones_url if current_user.in_group? [:auditoria_medica]
+                      %li= link_to "Listado de prestaciones principales", prestaciones_principales_url if current_user.in_group? [:auditoria_medica]
                   %div.col_2
                     %h3 CONTROLES PRESTACIONALES
                     %ul
@@ -153,6 +154,7 @@
                       %li= link_to "Ver las UADs", unidades_de_alta_de_datos_url
                     %h3 PRESTACIONES
                     %ul
+                      %li= link_to "Listado de prestaciones principales", prestaciones_principales_url
                       %li= link_to "Listado de prestaciones", prestaciones_url
 
             - if current_user.in_group? [:administradores, :usuarios_uads_verificacion]
