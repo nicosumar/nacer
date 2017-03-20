@@ -67,7 +67,22 @@
       %span.field_empty No se han ingresado observaciones para la solicitud de addenda
 
 
-
+  - if @solicitud_addenda.solicitudes_addendas_prestaciones_principales.any? then
+    %h3 Prestaciones incluidas en la solicitud de adenda
+    %table
+      %thead
+        %tr
+          %th Código
+          %th Nombre
+          %th Autorizacion solicitada
+          %th Autorización Técnica
+      %tbody
+        - @solicitud_addenda.solicitudes_addendas_prestaciones_principales.each do |a|
+          %tr
+            %td= a.prestacion_principal.codigo
+            %td= a.prestacion_principal.nombre
+            %td= a.es_autorizacion  ?  "Autorizada" : "No autorizada"
+            %td= a.aprobado_por_medica.nil? ? "-" : (a.aprobado_por_medica ? "Autorizada" : "No autorizada") 
   
   
 

@@ -36,8 +36,7 @@
   %div.field
     = f.text_area :observaciones, :size => "80x8"
   
-
-  = render :partial => "tabla_prestaciones_principales", :locals => {:prestaciones_principales => PrestacionPrincipal.all}
+  = render :partial => "tabla_prestaciones_principales", :locals => {:prestaciones_principales => @prestaciones_principales_autorizadas}
 
   %div.actions
     - if @solicitud_addenda.new_record?
