@@ -4,12 +4,17 @@ production:
   encoding: unicode
   database: nacer
   username: nacer_adm
+  password: sgsp_350-Mendoza
 
 development:
   adapter: postgresql
   encoding: unicode
-  database: nacer_dev
+  database: nacer
+  host: localhost
+  pool: 5
   username: nacer_adm
+  password: sgsp_350-Mendoza
+  port: 5433
 
 test:
   adapter: postgresql
