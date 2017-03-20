@@ -154,7 +154,6 @@
                       %li= link_to "Ver las UADs", unidades_de_alta_de_datos_url
                     %h3 PRESTACIONES
                     %ul
-                      %li= link_to "Listado de prestaciones principales", prestaciones_principales_url
                       %li= link_to "Listado de prestaciones", prestaciones_url
 
             - if current_user.in_group? [:administradores, :usuarios_uads_verificacion]
@@ -183,6 +182,7 @@
                         %li= link_to "Procesos relacionados con padrones", padrones_url if current_user.in_group? :administradores
                       %h3 PRESTACIONES
                       %ul
+                        %li= link_to "Listado de prestaciones principales", prestaciones_principales_url
                         %li= link_to "Listado de prestaciones", prestaciones_url if current_user.in_group? :administradores
 
             %li.menu_right
