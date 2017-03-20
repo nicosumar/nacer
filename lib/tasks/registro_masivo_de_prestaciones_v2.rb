@@ -23,6 +23,8 @@ class RegistroMasivoDePrestaciones2
   def initialize
     @archivo_completo = nil
     @archivo_a_procesar = nil
+    @directory_name = nil
+    @archivo_de_log_completo = nil
     @unidad_de_alta_de_datos = nil
     @centro_de_inscripcion = nil
     @efector = nil
@@ -54,6 +56,13 @@ class RegistroMasivoDePrestaciones2
     #self.archivo_a_procesar = archivo
     self.unidad_de_alta_de_datos = uad
     self.efector = efe
+    @directory_name = "#{archivo}".split(".")[0]
+      unless File.directory?('lib/tasks/datos/' + @directory_name) 
+        FileUtils.mkdir_p('lib/tasks/datos/' + @directory_name)
+      end
+
+    @archivo_de_log_completo = File.open('lib/tasks/datos/'+ @directory_name +'/RESTULTADOS.out', "w")
+
     archivos_a_particionar_part_names = particionar(archivo)
     
     archivos_a_particionar_part_names.each{ |filename|
@@ -67,8 +76,9 @@ class RegistroMasivoDePrestaciones2
       eliminar_tabla
 
       File.delete(filename)
-      puts 'Archivo: \n \n \n' + @nombre_de_archivo_a_procesar + '\n \n \n procesado con exito!'
+      puts "*****************************Archivo: \n \n \n" + @nombre_de_archivo_a_procesar + "\n \n \n procesado con exito!-**********************************"
     }
+    @archivo_de_log_completo.close
   end
 
       def particionar(archivo)
@@ -78,7 +88,7 @@ class RegistroMasivoDePrestaciones2
         lineNum = 0
         file_num = -1
         bytes    = 0
-        max_lines = 20
+        max_lines = 1000
         @archivo_a_procesar_part = archivo
 
         filename = 'lib/tasks/datos/' + @archivo_a_procesar_part.to_s
@@ -107,8 +117,8 @@ class RegistroMasivoDePrestaciones2
 
                   #puts '_2 File open write ' + file_num.to_s + '  lines ' + lineNum.to_s
 
-                  files[file_num] = "lib/tasks/datos/temp/#{file_num}.csv" 
-                  File.open("lib/tasks/datos/temp/#{file_num}.csv", 'w') {|f| f.write data.join}
+                  files[file_num] = 'lib/tasks/datos/'+ @directory_name + "/part_#{file_num}.csv" 
+                  File.open('lib/tasks/datos/'+ @directory_name + "/part_#{file_num}.csv", 'w') {|f| f.write data.join}
 
                  data.clear
                  lineNum = 0
@@ -121,8 +131,8 @@ class RegistroMasivoDePrestaciones2
         ## write leftovers
         file_num += 1
         puts '__3 File open write FINAL ' + file_num.to_s + '  lines ' + lineNum.to_s
-            files[file_num] = "lib/tasks/datos/temp/#{file_num}.csv"  
-            File.open("lib/tasks/datos/temp/#{file_num}.csv", 'w') {|f| f.write data.join}
+            files[file_num] = 'lib/tasks/datos/' + @directory_name + "/part_#{file_num}.csv"  
+            File.open('lib/tasks/datos/'+ @directory_name +"/part_#{file_num}.csv", 'w') {|f| f.write data.join}
 
     return files
 
@@ -139,16 +149,21 @@ class RegistroMasivoDePrestaciones2
 
   def escribir_resultados
 
+#GRABO EN EL PARCIAL LOS RESULTADOS
     archivo = File.open(@nombre_de_archivo_a_procesar + ".out", "w")
-
     archivo.puts ImportarPrestacionBrindada.column_names.join("\t")
-
     ImportarPrestacionBrindada.find(:all).each do |n|
       archivo.puts n.attributes.values.join("\t")
     end
     archivo.close
 
+#GRABO EN EL GLOBAL LOS RESULTADOS
+    @archivo_de_log_completo.puts ImportarPrestacionBrindada.column_names.join("\t")
+    ImportarPrestacionBrindada.find(:all).each do |n| 
+      @archivo_de_log_completo.puts n.attributes.values.join("\t")
+
   end
+end
 
   def crear_modelo_y_tabla
     ActiveRecord::Base.connection.schema_search_path = "uad_" + @unidad_de_alta_de_datos.codigo + ", public"
@@ -236,6 +251,7 @@ class RegistroMasivoDePrestaciones2
       archivo = File.open(@archivo_a_procesar, "r")
 
       archivo.each_with_index do |linea, i|
+
         if !tiene_etiquetas_de_columnas || i != 0
           prestacion_brindada = ImportarPrestacionBrindada.new(parsear_linea(linea).merge!({
             :id => i + 1,
@@ -404,14 +420,14 @@ class RegistroMasivoDePrestaciones2
 
           # Inicializamos la variable que va a contener las distintas soluciones posibles, junto con su puntuación en forma ordenada
           soluciones = []
-
+        
           # Construimos todas las soluciones combinando los beneficiarios y prestaciones posibles, y asignamos una puntuación
           # a cada solución
           if beneficiarios.size > 0 && prestaciones.size > 0 && prestacion_brindada.fecha_de_la_prestacion.present?
 
             # Iteramos todos los posibles registros de beneficiarios
             beneficiarios.each do |beneficiario|
-
+ 
               # Inicializamos la variable que nos da la puntuación para este beneficiario
               punt_benef = 0
 
@@ -434,7 +450,7 @@ class RegistroMasivoDePrestaciones2
                 pb_benef.agregar_error(
                   "No se puede evaluar la prestación porque al registro del beneficiario le faltan datos imprescindibles (sexo o fecha de nacimiento)"
                 )
-              else
+              else 
                 # Obtener el grupo poblacional al que pertenecía el beneficiario para la fecha de la prestación
                 grupo_poblacional = beneficiario.grupo_poblacional_al_dia(pb_benef.fecha_de_la_prestacion)
                 if !grupo_poblacional.present?
@@ -460,14 +476,14 @@ class RegistroMasivoDePrestaciones2
 
               # Añadir un punto si el beneficiario está activo
               punt_benef += 1 if beneficiario.activo?(pb_benef.fecha_de_la_prestacion)
-
+ 
 
               # Iteramos todos los posibles registros de prestaciones
               prestaciones.each do |prestacion|
 
                 # Inicializamos la variable que nos da la puntuación para esta combinación de beneficiario y prestación
                 punt_benef_prest = punt_benef
-
+ 
                 # Volvemos a duplicar el objeto para evaluar la combinación de este beneficiario con esta prestación
                 pb_benef_prest = pb_benef.dup
                 pb_benef_prest.attributes = {
@@ -477,6 +493,7 @@ class RegistroMasivoDePrestaciones2
 
                 # Verificar si la prestación está habilitada para el sexo del beneficiario
                 if beneficiario.sexo_id.present? && !(beneficiario.sexo.prestaciones_autorizadas.collect{|p| p.id}.member?(prestacion.id))
+                  
                   pb_benef_prest.agregar_error(
                     "La prestación no está habilitada para el sexo del beneficiario (#{beneficiario.sexo.nombre.downcase})"
                   )
@@ -655,11 +672,13 @@ class RegistroMasivoDePrestaciones2
           # Guardar la prestación y continuar con la próxima línea
           prestacion_brindada.save
         end
-
+      
       end
       
       # Cerrar el archivo de importación de prestaciones
+      
       archivo.close
+      
     end
   end
 
