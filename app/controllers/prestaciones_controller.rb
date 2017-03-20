@@ -29,6 +29,7 @@ class PrestacionesController < ApplicationController
 
   def new
     @prestacion = Prestacion.new
+    @prestacion.cantidades_de_prestaciones_por_periodo << CantidadDePrestacionesPorPeriodo.new if @prestacion.cantidades_de_prestaciones_por_periodo.blank?
     @prestacion.metodo_de_validacion_ids = [12,15]
   end
 
@@ -42,6 +43,7 @@ class PrestacionesController < ApplicationController
   end
 
   def edit
+    @prestacion.cantidades_de_prestaciones_por_periodo << CantidadDePrestacionesPorPeriodo.new if @prestacion.cantidades_de_prestaciones_por_periodo.blank?
   end
 
   def edit_para_asignacion_de_precios
