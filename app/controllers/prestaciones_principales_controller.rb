@@ -62,8 +62,10 @@ class PrestacionesPrincipalesController < ApplicationController
       @prestacion_principal = PrestacionPrincipal.new unless @prestacion_principal.present?
 
       if params[:validator].present?
-        codigo = ObjetoDeLaPrestacion.find(params[:validator][:objeto_de_la_prestacion_id]).codigo_para_la_prestacion if params[:validator][:objeto_de_la_prestacion_id].present?
-        prestaciones = Prestacion.like_codigo(codigo).by_diagnostico(params[:validator][:diagnostico_id]).where(prestacion_principal_id: nil)
+        @objeto_de_la_prestacion_id = params[:validator][:objeto_de_la_prestacion_id]
+        @diagnostico_id = params[:validator][:diagnostico_id]
+        @codigo = ObjetoDeLaPrestacion.find(@objeto_de_la_prestacion_id).codigo_para_la_prestacion if @objeto_de_la_prestacion_id.present?
+        prestaciones = Prestacion.like_codigo(@codigo).by_diagnostico(@diagnostico_id).where(prestacion_principal_id: nil)
         prestaciones.each do |prestacion|
           @prestacion_principal.association(:prestaciones).add_to_target(prestacion)
         end

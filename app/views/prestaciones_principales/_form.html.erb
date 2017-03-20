@@ -2,11 +2,11 @@
   <div class="row">
     <div class="col-md-3">
       <div>Código</div>
-      <%= collection_select :validator, :objeto_de_la_prestacion_id, ObjetoDeLaPrestacion.all, :id, :full_codigo_y_nombre, {}, {class: "medium-label"} %>
+      <%= collection_select :validator, :objeto_de_la_prestacion_id, ObjetoDeLaPrestacion.all, :id, :full_codigo_y_nombre, {selected: @objeto_de_la_prestacion_id.present? ? @objeto_de_la_prestacion_id : {} }, {class: "medium-label"} %>
     </div>
     <div class="col-md-3">
       <div>Diagnóstico</div>
-      <%= collection_select :validator, :diagnostico_id, Diagnostico.all, :id, :nombre_y_codigo, {}, {class: "medium-label"} %> 
+      <%= collection_select :validator, :diagnostico_id, Diagnostico.all, :id, :nombre_y_codigo, {selected: @diagnostico_id.present? ? @diagnostico_id : {} }, {class: "medium-label"} %> 
     </div>
     <div class="col-md-3">
       <div>Buscar prestaciones existentes</div>
@@ -23,11 +23,18 @@
   <div class="row">
     <div class="col-md-3">
       <h4>Código</h4>
-      <%= f.collection_select :codigo, ObjetoDeLaPrestacion.all, :codigo_para_la_prestacion, :full_codigo_y_nombre, {}, {class: "medium-label"} %>
+      <%= f.collection_select :codigo, ObjetoDeLaPrestacion.all, :codigo_para_la_prestacion, :full_codigo_y_nombre, {selected: (@codigo.present? and @prestacion_principal.codigo.blank?) ? @codigo : @prestacion_principal.codigo }, {class: "medium-label"} %>
     </div>
     <div class="col-md-8">
       <h4>Nombre</h4>
       <%= f.text_field :nombre, class: "large-input" %>      
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-md-3">
+      <%= f.label "¿Activa?" %>
+    <%= f.check_box :activa %>
     </div>
   </div>
 

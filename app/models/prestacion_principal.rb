@@ -7,6 +7,8 @@ class PrestacionPrincipal < ActiveRecord::Base
   scope :activas,->{}
   scope :like_codigo, ->(codigo) { where("prestaciones_principales.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
 
+  validates_presence_of :codigo, :nombre
+
   before_validation :populate_attributes
   after_save :validar_prestaciones
 
