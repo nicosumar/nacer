@@ -23,7 +23,11 @@ class PrestacionesPrincipalesController < ApplicationController
   def create
     @prestacion_principal = PrestacionPrincipal.new params[:prestacion_principal]    
     if @prestacion_principal.save
-      redirect_to @prestacion_principal
+      if duplicar_prestacion_y_redireccionar params[:duplicar_prestacion_id]
+        redirect_to edit_prestacion_principal_url(@prestacion_principal)
+      else
+        redirect_to @prestacion_principal
+      end
     else
       render :new
     end
@@ -33,7 +37,7 @@ class PrestacionesPrincipalesController < ApplicationController
     set_prestaciones_existentes
   end
 
-  def update    
+  def update 
     prestacion_ids = []
     params[:prestacion_principal][:prestaciones_attributes].each{|key, hash| prestacion_ids << hash["id"]}
     params[:prestacion_principal][:prestacion_ids] = prestacion_ids
@@ -42,7 +46,11 @@ class PrestacionesPrincipalesController < ApplicationController
     @prestacion_principal.prestacion_ids = prestacion_ids
     @prestacion_principal.attributes = params[:prestacion_principal]
     if @prestacion_principal.save
-      redirect_to @prestacion_principal
+      if duplicar_prestacion_y_redireccionar params[:duplicar_prestacion_id]
+        redirect_to edit_prestacion_principal_url(@prestacion_principal)
+      else
+        redirect_to @prestacion_principal
+      end
     else
       render :edit
     end
@@ -70,6 +78,19 @@ class PrestacionesPrincipalesController < ApplicationController
           @prestacion_principal.association(:prestaciones).add_to_target(prestacion)
         end
       end
+    end
+
+    def duplicar_prestacion_y_redireccionar prestacion_id
+      # Verifico si duplico y redirecciono al edit.
+      if prestacion_id.present?
+        prestacion_a_duplicar = Prestacion.find(prestacion_id)
+        if prestacion_a_duplicar.present?
+          nueva_prestacion = prestacion_a_duplicar.duplicar
+          nueva_prestacion.prestacion_principal = @prestacion_principal
+          return nueva_prestacion.save
+        end
+      end
+      return false
     end
 
 end

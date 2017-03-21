@@ -45,9 +45,6 @@
     <%= f.fields_for :prestaciones do |prestacion|  %>
       <%= render 'prestacion_fields', f: prestacion  %>
     <% end %>
-    <div class="links">
-      <%= link_to_add_association 'Agregar prestación', f, :prestaciones  %>
-    </div>
   </div>
   <br><br>
   <hr>

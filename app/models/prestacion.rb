@@ -71,6 +71,7 @@ class Prestacion < ActiveRecord::Base
 
   def duplicar include_prestaciones_pdss=false
     nueva_prestacion = self.dup
+    nueva_prestacion.nombre = "(Copia) " + nueva_prestacion.nombre
     nueva_prestacion.prestaciones_pdss = []
     nueva_prestacion.save 
     
@@ -304,6 +305,7 @@ class Prestacion < ActiveRecord::Base
     end
     
     def asignar_attributes_a_prestaciones_pdss
+      self.prestaciones_pdss = self.prestaciones_pdss.select { |prestacion_pdss| prestacion_pdss.grupo_pdss_id.present? }
       prestaciones_pdss.map { |ppdss| 
         ppdss.nombre = self.nombre 
         ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
