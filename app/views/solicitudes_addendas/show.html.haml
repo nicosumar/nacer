@@ -1,12 +1,13 @@
 - content_for :title do
-  Información detallada de la solicitud de adenda Sumar
+  Información detallada de la solicitud de adenda sumar
 
 #content-header
   %h1 Información detallada de la solicitud de adenda Sumar
   - if can? :update, @solicitud_addenda
-    #action-links
-      = link_to "Modificar la solicitud de adenda", edit_solicitud_addenda_path(@solicitud_addenda)
-      /= link_to "Generar documento", solicitud_addenda_path(@addenda, :format => :odt)
+    - if @solicitud_addenda.estado_solicitud_addenda_id < 5
+      #action-links
+        = link_to "Modificar la solicitud de adenda", edit_solicitud_addenda_path(@solicitud_addenda)
+        /= link_to "Generar documento", solicitud_addenda_path(@addenda, :format => :odt)
 
 = render :partial => "shared/info"
 
@@ -29,13 +30,11 @@
     - else
       %span.field_empty No se generó el número de solicitud
 
-  %h3 Datos del firmante y fechas
   %div.field_content
-    %span.field_name Firmante
-    - if !@solicitud_addenda.firmante.blank?
-      %span.field_value= @solicitud_addenda.firmante
-    - else
-      %span.field_empty No se ingresó el firmante
+    %span.field_name Estado de la solicitud
+    %span.field_value= @solicitud_addenda.estado_solicitud_addenda.nombre
+   
+
   %div.field_content
     %span.field_name Fecha de solicitud
     - if @solicitud_addenda.fecha_solicitud
@@ -54,8 +53,42 @@
       %span.field_value= @solicitud_addenda.fecha_revision_legal.strftime("%d/%m/%Y")
     - else
       %span.field_empty No se aprobó la solicitud por el area legal
+    
 
-  
+
+  %h3 Datos del firmante y fechas de la adenda
+  %div.field_content
+    %span.field_name Numero de adenda asociada
+    - if !@solicitud_addenda.numero_addenda.blank?
+      %span.field_value= @solicitud_addenda.numero_addenda
+    - else
+      %span.field_empty No se ingreso el número de adenda
+  %div.field_content
+    %span.field_name Firmante
+    - if !@solicitud_addenda.firmante.blank?
+      %span.field_value= @solicitud_addenda.firmante
+    - else
+      %span.field_empty No se ingresó el firmante
+
+  %div.field_content
+    %span.field_name Fecha de suscripción
+    - if @solicitud_addenda.fecha_de_suscripcion
+      %span.field_value= @solicitud_addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha de suscripción
+
+  %div.field_content
+    %span.field_name Fecha de inicio
+    - if @solicitud_addenda.fecha_de_suscripcion
+      %span.field_value= @solicitud_addenda.fecha_de_inicio.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha de inicio
+
+
+
+
+
+  %div.field_content
   %h3 Observaciones
   %div.field_content
     - if !@solicitud_addenda.observaciones.blank?

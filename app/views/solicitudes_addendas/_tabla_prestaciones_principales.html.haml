@@ -23,7 +23,7 @@
           %td.centrado 
             = hidden_field_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", nil
             = check_box_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", p["id"].to_s,(@solicitudes_prestaciones_principales.present? && @solicitudes_prestaciones_principales.include?([p["id"].to_s,p["id"].to_s])), id: dom_id(PrestacionPrincipal.find(p["id"].to_s))       
-
+        
         %td.centrado 
           = hidden_field_tag "solicitud_addenda[prestacion_principal_tecnica_id][" + p["id"].to_s+"]", nil
           = check_box_tag "solicitud_addenda[prestacion_principal_tecnica_id][" + p["id"].to_s+"]", p["id"].to_s,(@solicitudes_prestaciones_principales_aptecnica.present? && @solicitudes_prestaciones_principales_aptecnica.include?([p["id"].to_s,p["id"].to_s])), id: dom_id(PrestacionPrincipal.find(p["id"].to_s)),disabled:(@solicitud_addenda.estado_solicitud_addenda_id !=2)

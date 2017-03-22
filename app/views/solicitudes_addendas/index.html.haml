@@ -21,7 +21,7 @@
         %th Fecha de la solicitud
         %th Estado
         %th Última modificación
-        %th{colspan: '2'} Acciones
+
     %tbody
       - @solicitudes_addendas.each do |a|
         %tr.clickable{ :onclick => "location.href=\'#{solicitud_addenda_path(a)}\'", :title => "Ver detalles de la solicitud de adenda" }
@@ -31,7 +31,6 @@
           %td= a.fecha_solicitud.strftime("%d/%m/%Y")
           %td= a.estado_solicitud_addenda.nombre
           %td= a.updated_at.strftime("%d/%m/%Y %H:%M:%S")
-          %td= link_to 'Ver', solicitud_addenda_path(a)
-          %td= link_to 'Editar', edit_solicitud_addenda_path(a)
+   
           
   = will_paginate @solicitudes_addendas, :inner_window => 2, :outer_window => 0

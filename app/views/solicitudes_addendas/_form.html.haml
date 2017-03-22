@@ -6,7 +6,7 @@
 
   %h3.first-header Datos del convenio de gestión Sumar
   %div.field_content
-    %span.field_name Adenda al convenio de gestión Sumar
+    %span.field_name Solicitud de adenda al convenio de gestión Sumar
     %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.numero
   %div.field_content
     %span.field_name El convenio pertenece al efector
@@ -24,13 +24,29 @@
       %span.field_value= @solicitud_addenda.numero
 
   %div.field
+  %p.note{id:'nota_estado_solictud_addenda'}
   = f.label :estado_solicitud_addenda_id, "Estado"
   = f.select :estado_solicitud_addenda_id, @estados_solicitudes_addendas,{}, {:class => 'select2'}
+
   
-  %h3.header-with-note Datos del firmante
-  %div.field
-    = f.label :firmante
-    = f.text_field :firmante
+
+
+  - if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL
+    %h3.header-with-note Datos de la adenda
+    %p.note Verifique el número de adenda, una vez generada la adenda no podrá modificarse
+    %div.field
+      = f.label :numero_addenda, "Número*"
+      = f.text_field :numero_addenda, :style => "text-transform: uppercase;"  
+    %div.field 
+      = f.label :firmante
+      = f.text_field :firmante
+    %div.field
+      = f.label :fecha_de_suscripcion
+      = f.date_select :fecha_de_suscripcion
+    %div.field
+      = f.label :fecha_de_inicio, "Fecha de inicio*"
+      = f.date_select :fecha_de_inicio  
+   
 
   %h3 Observaciones
   %div.field
@@ -45,3 +61,4 @@
     - else
       = f.submit "Guardar las modificaciones"
       = link_to "Cancelar" ,@solicitud_addenda
+= javascript_include_tag "solicitudes_addendas/_form.js"
