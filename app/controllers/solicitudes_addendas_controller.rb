@@ -1,4 +1,5 @@
 class SolicitudesAddendasController < ApplicationController
+   include ActionView::Helpers::NumberHelper
   def index
     # Verificar los permisos del usuario
     if cannot? :read, SolicitudAddenda
@@ -86,71 +87,13 @@ class SolicitudesAddendasController < ApplicationController
       )
       return
     end
-
     # Crear los objetos necesarios para la vista
     @convenio_de_gestion = @solicitud_addenda.convenio_de_gestion_sumar
     @efector = @convenio_de_gestion.efector
-
-#    #Determino a que estado puede cambiarse la addenda.
-#    if @solicitud_addenda.new_record?
-#      @estados_solicitudes_addendas = EstadoSolicitudAddenda.all.select {|esa| esa.id = EstadosSolicitudAddenda::GENERADA}
-#    else 
-# 
-#      estados_ids = []
-#      #En teoria no se deberian superponer los permisos
-#      if current_user.in_group?:gestion_addendas_uad
-#        estados_ids = [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::ANULACION_EFECTOR]
-#      end
-#      if current_user.in_group?:auditoria_medica  
-#        estados_ids =estados_ids +  [EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::ANULACION_TECNICA]
-#      end
-#      #Seria como un admin?
-#      if current_user.in_group?:auditoria_control
-#        estados_ids = estados_ids + [EstadosSolicitudAddenda::EN_REVISION_LEGAL,EstadosSolicitudAddenda::APROBACION_LEGAL]
-#      end
-#    
-#      filtro = []
-#      #Ahora saco los estados segun el actual tipo maquina de estados
-#      case @solicitud_addenda.estado_solicitud_addenda_id 
-#      when 1 
-#        #En estado registrada solo puede quedarse registrada, anularse o pasar a revision tecnica
-#        then filtro = [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::ANULACION_EFECTOR]
-#      when  2
-#        #En estado revision tecnica solo puede quedarse en revision tecnica,anularse, o enviada a efector
-#        then  filtro = [EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::ANULACION_TECNICA]
-#      when 3
-#        #En estado enviada al efector solo puede quedarse en enviada al efector o en revision legal
-#        then filtro = [EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::EN_REVISION_LEGAL]
-#      when 4 
-#        #En estado revision legal solo puede quedarse en revision legal o pasar a aprobada
-#        then filtro =[EstadosSolicitudAddenda::EN_REVISION_LEGAL,EstadosSolicitudAddenda::APROBACION_LEGAL]
-#      when 5
-#        #En estado aprobada solo puede quedarse en aprobada
-#        then filtro =[EstadosSolicitudAddenda::APROBACION_LEGAL]
-#      else
-#      end
-#
-#      #Valido alguna situacion consistente 
-#      estados_ids = estados_ids & filtro
-#      @estados_solicitudes_addendas = EstadoSolicitudAddenda.where("id in #{estados_ids.to_s.gsub('[','(').gsub(']',')')}").collect {|p| [p.nombre, p.id]}
-#       
-#      if @estados_solicitudes_addendas.empty?
-#        redirect_to( root_url,
-#          :flash => { :tipo => :error, :titulo => "La petición no es válida",
-#            :mensaje => "Se informará al administrador del sistema sobre el incidente."
-#          }
-#        )
-#        return
-#      end
-#    end
-  
-
     @solicitudes_prestaciones_principales = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.es_autorizacion ? p.prestacion_principal_id.to_s : '' )] }
     @solicitudes_prestaciones_principales_aptecnica = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.aprobado_por_medica ? p.prestacion_principal_id.to_s : '' )] }
-    
     @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(30)
-    # 
-    
+
   end
   
 
@@ -170,7 +113,7 @@ class SolicitudesAddendasController < ApplicationController
 
       @solicitud_addenda =
         SolicitudAddenda.find( params[:id],
-        :include => [ {:convenio_de_gestion_sumar => :efector}]
+        :include => [ {:solicitudes_addendas_prestaciones_principales => :prestacion_principal} , {:convenio_de_gestion_sumar => :efector},:estado_solicitud_addenda]
       )
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
@@ -179,10 +122,102 @@ class SolicitudesAddendasController < ApplicationController
         }
       )
     end
+    @convenio_de_gestion =@solicitud_addenda.convenio_de_gestion_sumar
     
-   
+    respond_to do |format|
+      format.odt do
+          report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de solicitud adenda prestacional.odt") do |r|
+            r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
+            if @convenio_de_gestion.efector.grupo_de_efectores.tipo_de_efector == "PSB"
+              r.add_field :efector_articulo, "la"
+              r.add_field :o_a, "a"
+            else
+              r.add_field :efector_articulo, "el"
+              r.add_field :o_a, "o"
+            end
+            r.add_field :efector_nombre, @convenio_de_gestion.efector.nombre
+            referente = @convenio_de_gestion.efector.referente_al_dia(@solicitud_addenda.fecha_solicitud)
+            if referente.present?
+              if referente.contacto.sexo.present?
+                if referente.contacto.sexo.codigo == "F"
+                  r.add_field :articulo_contacto, "la"
+                else
+                  r.add_field :articulo_contacto, "el"
+                end
+              end
+              r.add_field :contacto_mostrado, referente.contacto.mostrado
+              if referente.contacto.tipo_de_documento.present?
+                r.add_field :tipo_de_documento_codigo, referente.contacto.tipo_de_documento.codigo
+              end
+              if !referente.contacto.dni.blank?
+                r.add_field :contacto_dni, number_with_delimiter(referente.contacto.dni, {:delimiter => "."})
+              end
+              if !referente.contacto.firma_primera_linea.blank?
+                r.add_field :contacto_firma_primera_linea, referente.contacto.firma_primera_linea.strip
+              end
+              if !referente.contacto.firma_segunda_linea.blank?
+                r.add_field :contacto_firma_segunda_linea, referente.contacto.firma_segunda_linea.strip
+              end
+              if !referente.contacto.firma_tercera_linea.blank?
+                r.add_field :contacto_firma_tercera_linea, referente.contacto.firma_tercera_linea.strip
+              end
+            end
+            if !@convenio_de_gestion.efector.domicilio.blank?
+              r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.to_s.strip.gsub(".", ",")
+            end
+    
+            @bajas_de_prestaciones =
+              
+              @solicitud_addenda.solicitudes_addendas_prestaciones_principales.
+              select{|sapp| sapp[:aprobado_por_medica]==false }.map{|pa| {codigo: pa.prestacion_principal.codigo, nombre: pa.prestacion_principal.nombre}  }
+    
+          
+            r.add_table("Bajas", @bajas_de_prestaciones, header: true) do |t|
+              t.add_column(:prestacion_codigo, :codigo)
+              t.add_column(:prestacion_nombre, :nombre)
+
+            end
+
+            @altas_de_prestaciones = 
+              @solicitud_addenda.solicitudes_addendas_prestaciones_principales.
+              select{|sapp| sapp[:aprobado_por_medica]==true }.map{|pa| {codigo: pa.prestacion_principal.codigo, nombre: pa.prestacion_principal.nombre} }
+    
+             
+          
+
+            r.add_table("Altas", @altas_de_prestaciones, header: true) do |t|
+              t.add_column(:prestacion_codigo, :codigo)
+              t.add_column(:prestacion_nombre, :nombre)
+            end
+
+            r.add_field :suscripcion_mes_y_anio, I18n.l(@solicitud_addenda.fecha_revision_medica, :format => :month_and_year)
+
+          end
+
+        archivo = report.generate("lib/tasks/datos/documentos/Adenda prestacional #{@solicitud_addenda.numero} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
+
+        File.chmod(0644, "lib/tasks/datos/documentos/Adenda prestacional #{@solicitud_addenda.numero} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
+
+        send_file(archivo)
+      end
+
+      format.html do
+      end
+    end
+    
+    
+    
+    @puede_editar =  [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::EN_REVISION_LEGAL].include?(@solicitud_addenda.estado_solicitud_addenda_id) 
+    
+    @puede_confirmar_efector = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA and current_user.in_group?:gestion_addendas_uad)
+    @puede_confirmar_tecnica = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA and current_user.in_group?:auditoria_medica)
+    @puede_confirmar_legal = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL and current_user.in_group?:auditoria_control)
+    @puede_anular =  (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA or @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA) and ( current_user.in_group?([:auditoria_medica,:gestion_addendas_uad]))
+    
     @convenio_de_gestion_sumar = @solicitud_addenda.convenio_de_gestion_sumar
    
+    
+    
 
   end
   
@@ -313,16 +348,19 @@ class SolicitudesAddendasController < ApplicationController
     @convenio_de_gestion = @solicitud_addenda.convenio_de_gestion_sumar
     
     # Actualizar los valores 
-    @solicitud_addenda.observaciones = params[:solicitud_addenda][:obsevaciones]
-    @solicitud_addenda.estado_solicitud_addenda_id= params[:solicitud_addenda][:estado_solicitud_addenda_id]
+    @solicitud_addenda.observaciones = params[:solicitud_addenda][:observaciones]
+
     
-    
-    
-    @solicitud_addenda.firmante = params[:solicitud_addenda][:firmante]
-    @solicitud_addenda.numero_addenda = params[:solicitud_addenda][:numero_addenda]
-    @solicitud_addenda.fecha_de_inicio =  parametro_fecha(params[:solicitud_addenda], :fecha_de_inicio)
-    @solicitud_addenda.fecha_de_suscripcion =  parametro_fecha(params[:solicitud_addenda], :fecha_de_suscripcion)
+    if @solicitud_addenda.estado_solicitud_addenda_id ==  EstadosSolicitudAddenda::EN_REVISION_LEGAL
+      
+      @solicitud_addenda.firmante = params[:solicitud_addenda][:firmante]
+      @solicitud_addenda.numero_addenda = params[:solicitud_addenda][:numero_addenda]
+      @solicitud_addenda.fecha_de_inicio =  parametro_fecha(params[:solicitud_addenda], :fecha_de_inicio)
+      @solicitud_addenda.fecha_de_suscripcion =  parametro_fecha(params[:solicitud_addenda], :fecha_de_suscripcion)
  
+      
+    end
+
   
     @solicitudes_prestaciones_principales = params[:solicitud_addenda][:prestacion_principal_id]
 
@@ -370,9 +408,6 @@ class SolicitudesAddendasController < ApplicationController
       end
     end
      
-     
-    
-
     #Actualizo los atributos de la es_autorizacion de la solicitud
     @solicitudes_prestaciones_principales.each do |pres|  
       existe = false
@@ -394,57 +429,17 @@ class SolicitudesAddendasController < ApplicationController
       end
     end
     
-    
-    
-    
-    
-    corresponde_generar_addenda = false
-    corresponde_notificar_efector = false
-    
-      #genero la adenda si es la primera vez que se guarda la solicitud en estado aprobada.
-      if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::APROBACION_LEGAL && @solicitud_addenda.fecha_revision_legal.nil?      
-        corresponde_generar_addenda = true
-      end
-    
-      #genero la adenda si es la primera vez que se guarda la solicitud en estado aprobada por medica/tecnica.
-      if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::APROBACION_TECNICA && @solicitud_addenda.fecha_revision_legal.nil?      
-        corresponde_notificar_efector = true 
-      end
-    
-    
-      #Actualizo las fechas 
-      actualiza_fechas_por_cambio_de_estado
-      
-      
-      if  @solicitud_addenda.save
-        
-      if corresponde_generar_addenda  
-        generar_addenda 
-      end
-        
-      if corresponde_notificar_efector  
-          notificar_efector 
-      end
-      
+   
+    if  @solicitud_addenda.save
       # Redirigir a la adenda modificada
-      
-        redirect_to(@solicitud_addenda,
-          :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
-        )
-      end
-    
-   
-   
-    
-    
-  
-    
-    
-    
+      redirect_to(@solicitud_addenda,
+        :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
+      )
+    end
+
   end
     
-  def confirmar_solicitud
-    
+  def aprobacion_tecnica
     # Verificar los permisos del usuario
     if cannot? :update, SolicitudAddenda
       redirect_to( root_url,
@@ -469,34 +464,207 @@ class SolicitudesAddendasController < ApplicationController
       return
     end
     
-    
+
     #valido el cambio de estado 
-    if @soliciutd_addenda.estado_solicitud_id == EstadosSolicitudAddenda::GENERADA
+    if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA
       
-       @soliciutd_addenda.estado_solicitud_id  = EstadosSolicitudAddenda::EN_REVISION_TECNICA
-       if  @solicitud_addenda.save
+      @solicitud_addenda.estado_solicitud_addenda_id  = EstadosSolicitudAddenda::EN_REVISION_LEGAL
       
-          redirect_to(@solicitud_addenda,
+      @solicitud_addenda.fecha_revision_medica = Time.now
+      
+      if  @solicitud_addenda.save
+        notificar_efector
+        redirect_to(@solicitud_addenda,
           :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
-       )
+        )
        
-       else
-           redirect_to(@solicitud_addenda,
+      else
+        redirect_to(@solicitud_addenda,
           :flash => { :tipo => :error, :titulo => 'Ocurrio un error al modificar la solicitud de adenda.' })
-       end
+      end
    
       
     else 
-     redirect_to( root_url,
-      :flash => { :tipo => :error, :titulo => "La solicitud de adenda es incorrecta",
-      :mensaje => "Se informará al administrador del sistema sobre este incidente."
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La solicitud de adenda es incorrecta",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
    
     end
   end
-  private
+  
+  def aprobacion_legal
+    # Verificar los permisos del usuario
+    if cannot? :update, SolicitudAddenda
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener la adenda solicitada
+    begin
+
+      @solicitud_addenda =
+        SolicitudAddenda.find( params[:id], :include => :estado_solicitud_addenda)
+    rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La solicitud de adenda solicitada no existe",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
     
+
+    #valido el cambio de estado 
+    if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL
+      
+      @solicitud_addenda.estado_solicitud_addenda_id  = EstadosSolicitudAddenda::APROBACION_LEGAL
+      @solicitud_addenda.fecha_revision_legal = Time.now
+      if  @solicitud_addenda.save
+        generar_adenda
+        redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
+        )
+       
+      else
+        redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :error, :titulo => 'Ocurrio un error al modificar la solicitud de adenda.' })
+      end
+   
+      
+    else 
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La solicitud de adenda es incorrecta",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+   
+    end
+  end
+  
+  def anular_solicitud
+    # Verificar los permisos del usuario
+    if cannot? :update, SolicitudAddenda
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener la adenda solicitada
+    begin
+
+      @solicitud_addenda =
+        SolicitudAddenda.find( params[:id], :include => :estado_solicitud_addenda)
+    rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La solicitud de adenda solicitada no existe",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+    
+
+    #valido el cambio de estado 
+    if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA or @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA
+      
+      @solicitud_addenda.estado_solicitud_addenda_id  = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA ? EstadosSolicitudAddenda::ANULACION_EFECTOR : EstadosSolicitudAddenda::ANULACION_TECNICA)
+      if  @solicitud_addenda.save
+      
+        redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
+        )
+       
+      else
+        redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :error, :titulo => 'Ocurrio un error al modificar la solicitud de adenda.' })
+      end
+   
+      
+    else 
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La solicitud de adenda es incorrecta",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+   
+    end
+  end
+  
+  def confirmar_solicitud
+    # Verificar los permisos del usuario
+    if cannot? :update, SolicitudAddenda
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener la adenda solicitada
+    begin
+
+      @solicitud_addenda =
+        SolicitudAddenda.find( params[:id], :include => [ :solicitudes_addendas_prestaciones_principales , :estado_solicitud_addenda])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La solicitud de adenda solicitada no existe",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+    
+
+    #valido el cambio de estado 
+    if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA
+      
+      @solicitud_addenda.estado_solicitud_addenda_id  = EstadosSolicitudAddenda::EN_REVISION_TECNICA
+      
+      #Por defecto medica le da el ok a todo despues lo edita si quiere 
+      @solicitud_addenda.solicitudes_addendas_prestaciones_principales.each do |sapp|
+        sapp.aprobado_por_medica = sapp.es_autorizacion    
+      end
+      
+      if  @solicitud_addenda.save
+      
+        redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
+        )
+       
+      else
+        redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :error, :titulo => 'Ocurrio un error al modificar la solicitud de adenda.' })
+      end
+   
+      
+    else 
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La solicitud de adenda es incorrecta",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+   
+    end
+  end
+  
+  
+  
+  private
+  
+  
+  
+  
+  
   def actualiza_fechas_por_cambio_de_estado 
     fecha_actual = Time.now
     if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA && @solicitud_addenda.fecha_solicitud.nil? 

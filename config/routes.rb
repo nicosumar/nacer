@@ -44,6 +44,9 @@ Nacer::Application.routes.draw do
   resources :solicitudes_addendas do
     member do
          post   'confirmar_solicitud', as: :confirmar_solicitud, action: :confirmar_solicitud
+         post   'aprobacion_tecnica' , as: :aprobacion_tecnica, action: :aprobacion_tecnica
+         post   'aprobacion_legal'   , as: :aprobacion_legal, action: :aprobacion_legal
+         post   'anular_solicitud'   , as: :anular_solicitud, action: :anular_solicitud
     end
   end
   

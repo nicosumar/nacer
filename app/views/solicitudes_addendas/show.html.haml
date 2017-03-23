@@ -4,10 +4,18 @@
 #content-header
   %h1 Información detallada de la solicitud de adenda Sumar
   - if can? :update, @solicitud_addenda
-    #action-links
-      = link_to "Modificar la solicitud de adenda", edit_solicitud_addenda_path(@solicitud_addenda)
-      = button_to "Confirmar solicitud addenda",  :controller => "solicitudes_addendas", :action => "confirmar_solicitud" , :id => @solicitud_addenda.id , method: :post
-      /= link_to "Generar documento", solicitud_addenda_path(@addenda, :format => :odt)
+    #action-links 
+      - if @puede_editar
+        = link_to "Modificar", edit_solicitud_addenda_path(@solicitud_addenda)
+      - if @puede_confirmar_efector == true 
+        = link_to "Confirmar solicitud", confirmar_solicitud_solicitud_addenda_path(@solicitud_addenda), method: :post 
+      - if @puede_confirmar_tecnica == true 
+        = link_to "Aprobación técnica", aprobacion_tecnica_solicitud_addenda_path(@solicitud_addenda), method: :post
+      - if @puede_confirmar_legal == true 
+        = link_to "Aprobación legal", aprobacion_legal_solicitud_addenda_path(@solicitud_addenda), method: :post
+      - if @puede_anular == true 
+        = link_to "Anular", anular_solicitud_solicitud_addenda_path(@solicitud_addenda), method: :post  
+      = link_to "Generar documento", solicitud_addenda_path(@solicitud_addenda, :format => :odt)
 
 = render :partial => "shared/info"
 
