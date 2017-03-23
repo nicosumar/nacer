@@ -23,13 +23,6 @@
       %span.field_name Número
       %span.field_value= @solicitud_addenda.numero
 
-  %div.field
-  %p.note{id:'nota_estado_solictud_addenda'}
-  = f.label :estado_solicitud_addenda_id, "Estado"
-  = f.select :estado_solicitud_addenda_id, @estados_solicitudes_addendas,{}, {:class => 'select2'}
-
-  
-
 
   - if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL
     %h3.header-with-note Datos de la adenda
