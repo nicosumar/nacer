@@ -40,6 +40,14 @@ Nacer::Application.routes.draw do
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
     end
   end
+  
+  resources :solicitudes_addendas do
+    member do
+         post   'confirmar_solicitud', as: :confirmar_solicitud, action: :confirmar_solicitud
+    end
+  end
+  
+  
   resources :reglas
   resources :liquidaciones_sumar_anexos_administrativos do
     put :finalizar_anexo, on: :member

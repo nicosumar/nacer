@@ -33,9 +33,6 @@ class SolicitudesAddendasController < ApplicationController
     
     @convenio_de_gestion = ConvenioDeGestionSumar.find(13)
     
-    @estados_solicitudes_addendas = EstadoSolicitudAddenda.where(id:EstadosSolicitudAddenda::GENERADA   ).collect {|p| [p.nombre, p.id]}
-    
-    
     
     # Obtener el convenio de gestión asociado (ahora lo hardcodeo)
     #    begin
@@ -94,58 +91,58 @@ class SolicitudesAddendasController < ApplicationController
     @convenio_de_gestion = @solicitud_addenda.convenio_de_gestion_sumar
     @efector = @convenio_de_gestion.efector
 
-    #Determino a que estado puede cambiarse la addenda.
-    if @solicitud_addenda.new_record?
-      @estados_solicitudes_addendas = EstadoSolicitudAddenda.all.select {|esa| esa.id = EstadosSolicitudAddenda::GENERADA}
-    else 
- 
-      estados_ids = []
-      #En teoria no se deberian superponer los permisos
-      if current_user.in_group?:gestion_addendas_uad
-        estados_ids = [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::ANULACION_EFECTOR]
-      end
-      if current_user.in_group?:auditoria_medica  
-        estados_ids =estados_ids +  [EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::ANULACION_TECNICA]
-      end
-      #Seria como un admin?
-      if current_user.in_group?:auditoria_control
-        estados_ids = estados_ids + [EstadosSolicitudAddenda::EN_REVISION_LEGAL,EstadosSolicitudAddenda::APROBACION_LEGAL]
-      end
-    
-      filtro = []
-      #Ahora saco los estados segun el actual tipo maquina de estados
-      case @solicitud_addenda.estado_solicitud_addenda_id 
-      when 1 
-        #En estado registrada solo puede quedarse registrada, anularse o pasar a revision tecnica
-        then filtro = [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::ANULACION_EFECTOR]
-      when  2
-        #En estado revision tecnica solo puede quedarse en revision tecnica,anularse, o enviada a efector
-        then  filtro = [EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::ANULACION_TECNICA]
-      when 3
-        #En estado enviada al efector solo puede quedarse en enviada al efector o en revision legal
-        then filtro = [EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::EN_REVISION_LEGAL]
-      when 4 
-        #En estado revision legal solo puede quedarse en revision legal o pasar a aprobada
-        then filtro =[EstadosSolicitudAddenda::EN_REVISION_LEGAL,EstadosSolicitudAddenda::APROBACION_LEGAL]
-      when 5
-        #En estado aprobada solo puede quedarse en aprobada
-        then filtro =[EstadosSolicitudAddenda::APROBACION_LEGAL]
-      else
-      end
-
-      #Valido alguna situacion consistente 
-      estados_ids = estados_ids & filtro
-      @estados_solicitudes_addendas = EstadoSolicitudAddenda.where("id in #{estados_ids.to_s.gsub('[','(').gsub(']',')')}").collect {|p| [p.nombre, p.id]}
-       
-      if @estados_solicitudes_addendas.empty?
-        redirect_to( root_url,
-          :flash => { :tipo => :error, :titulo => "La petición no es válida",
-            :mensaje => "Se informará al administrador del sistema sobre el incidente."
-          }
-        )
-        return
-      end
-    end
+#    #Determino a que estado puede cambiarse la addenda.
+#    if @solicitud_addenda.new_record?
+#      @estados_solicitudes_addendas = EstadoSolicitudAddenda.all.select {|esa| esa.id = EstadosSolicitudAddenda::GENERADA}
+#    else 
+# 
+#      estados_ids = []
+#      #En teoria no se deberian superponer los permisos
+#      if current_user.in_group?:gestion_addendas_uad
+#        estados_ids = [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::ANULACION_EFECTOR]
+#      end
+#      if current_user.in_group?:auditoria_medica  
+#        estados_ids =estados_ids +  [EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::ANULACION_TECNICA]
+#      end
+#      #Seria como un admin?
+#      if current_user.in_group?:auditoria_control
+#        estados_ids = estados_ids + [EstadosSolicitudAddenda::EN_REVISION_LEGAL,EstadosSolicitudAddenda::APROBACION_LEGAL]
+#      end
+#    
+#      filtro = []
+#      #Ahora saco los estados segun el actual tipo maquina de estados
+#      case @solicitud_addenda.estado_solicitud_addenda_id 
+#      when 1 
+#        #En estado registrada solo puede quedarse registrada, anularse o pasar a revision tecnica
+#        then filtro = [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::ANULACION_EFECTOR]
+#      when  2
+#        #En estado revision tecnica solo puede quedarse en revision tecnica,anularse, o enviada a efector
+#        then  filtro = [EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::ANULACION_TECNICA]
+#      when 3
+#        #En estado enviada al efector solo puede quedarse en enviada al efector o en revision legal
+#        then filtro = [EstadosSolicitudAddenda::APROBACION_TECNICA,EstadosSolicitudAddenda::EN_REVISION_LEGAL]
+#      when 4 
+#        #En estado revision legal solo puede quedarse en revision legal o pasar a aprobada
+#        then filtro =[EstadosSolicitudAddenda::EN_REVISION_LEGAL,EstadosSolicitudAddenda::APROBACION_LEGAL]
+#      when 5
+#        #En estado aprobada solo puede quedarse en aprobada
+#        then filtro =[EstadosSolicitudAddenda::APROBACION_LEGAL]
+#      else
+#      end
+#
+#      #Valido alguna situacion consistente 
+#      estados_ids = estados_ids & filtro
+#      @estados_solicitudes_addendas = EstadoSolicitudAddenda.where("id in #{estados_ids.to_s.gsub('[','(').gsub(']',')')}").collect {|p| [p.nombre, p.id]}
+#       
+#      if @estados_solicitudes_addendas.empty?
+#        redirect_to( root_url,
+#          :flash => { :tipo => :error, :titulo => "La petición no es válida",
+#            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+#          }
+#        )
+#        return
+#      end
+#    end
   
 
     @solicitudes_prestaciones_principales = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.es_autorizacion ? p.prestacion_principal_id.to_s : '' )] }
@@ -446,7 +443,58 @@ class SolicitudesAddendasController < ApplicationController
     
   end
     
-  
+  def confirmar_solicitud
+    
+    # Verificar los permisos del usuario
+    if cannot? :update, SolicitudAddenda
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    # Obtener la adenda solicitada
+    begin
+
+      @solicitud_addenda =
+        SolicitudAddenda.find( params[:id], :include => :estado_solicitud_addenda)
+    rescue ActiveRecord::RecordNotFound
+      redirect_to( root_url,
+        :flash => { :tipo => :error, :titulo => "La solicitud de adenda solicitada no existe",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+    
+    
+    #valido el cambio de estado 
+    if @soliciutd_addenda.estado_solicitud_id == EstadosSolicitudAddenda::GENERADA
+      
+       @soliciutd_addenda.estado_solicitud_id  = EstadosSolicitudAddenda::EN_REVISION_TECNICA
+       if  @solicitud_addenda.save
+      
+          redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
+       )
+       
+       else
+           redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :error, :titulo => 'Ocurrio un error al modificar la solicitud de adenda.' })
+       end
+   
+      
+    else 
+     redirect_to( root_url,
+      :flash => { :tipo => :error, :titulo => "La solicitud de adenda es incorrecta",
+      :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+   
+    end
+  end
   private
     
   def actualiza_fechas_por_cambio_de_estado 
