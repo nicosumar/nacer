@@ -15,7 +15,8 @@
         = link_to "Aprobación legal", aprobacion_legal_solicitud_addenda_path(@solicitud_addenda), method: :post
       - if @puede_anular == true 
         = link_to "Anular", anular_solicitud_solicitud_addenda_path(@solicitud_addenda), method: :post  
-      = link_to "Generar documento", solicitud_addenda_path(@solicitud_addenda, :format => :odt)
+      - if @puede_generar_documento== true 
+        = link_to "Generar documento", solicitud_addenda_path(@solicitud_addenda, :format => :odt)
 
 = render :partial => "shared/info"
 

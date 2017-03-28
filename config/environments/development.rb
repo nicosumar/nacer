@@ -17,14 +17,19 @@ Nacer::Application.configure do
   config.action_mailer.raise_delivery_errors = true
  
   config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.default :charset => "utf-8"
+  
   # SMTP server configuration
   config.action_mailer.smtp_settings = {
-   :address => "smtp.mendoza.gov.ar",
-    :domain => "sumar.salud.mendoza.gov.ar",
-    :user_name => "operacionesnacer-salud",
-    :password => "Naceruser2012",
-    :authentication => "login",
-    :enable_starttls_auto => false
+   :address => "smtp.gmail.com",
+    :domain => "gmail.com",
+    :user_name => "desarrollosumar@gmail.com",
+    :password => "Sumar2017",
+    :authentication => "plain",
+    :enable_starttls_auto => true,
+    :port => 587
   }
 
   # Default URL for application links written into mails (needed for Devise)

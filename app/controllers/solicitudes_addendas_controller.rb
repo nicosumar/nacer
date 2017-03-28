@@ -1,5 +1,5 @@
 class SolicitudesAddendasController < ApplicationController
-   include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::NumberHelper
   def index
     # Verificar los permisos del usuario
     if cannot? :read, SolicitudAddenda
@@ -10,7 +10,7 @@ class SolicitudesAddendasController < ApplicationController
       )
       return
     end
-
+ 
     # Obtener el listado de addendas
     @solicitudes_addendas =
       SolicitudAddenda.paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
@@ -126,73 +126,73 @@ class SolicitudesAddendasController < ApplicationController
     
     respond_to do |format|
       format.odt do
-          report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de solicitud adenda prestacional.odt") do |r|
-            r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
-            if @convenio_de_gestion.efector.grupo_de_efectores.tipo_de_efector == "PSB"
-              r.add_field :efector_articulo, "la"
-              r.add_field :o_a, "a"
-            else
-              r.add_field :efector_articulo, "el"
-              r.add_field :o_a, "o"
-            end
-            r.add_field :efector_nombre, @convenio_de_gestion.efector.nombre
-            referente = @convenio_de_gestion.efector.referente_al_dia(@solicitud_addenda.fecha_solicitud)
-            if referente.present?
-              if referente.contacto.sexo.present?
-                if referente.contacto.sexo.codigo == "F"
-                  r.add_field :articulo_contacto, "la"
-                else
-                  r.add_field :articulo_contacto, "el"
-                end
-              end
-              r.add_field :contacto_mostrado, referente.contacto.mostrado
-              if referente.contacto.tipo_de_documento.present?
-                r.add_field :tipo_de_documento_codigo, referente.contacto.tipo_de_documento.codigo
-              end
-              if !referente.contacto.dni.blank?
-                r.add_field :contacto_dni, number_with_delimiter(referente.contacto.dni, {:delimiter => "."})
-              end
-              if !referente.contacto.firma_primera_linea.blank?
-                r.add_field :contacto_firma_primera_linea, referente.contacto.firma_primera_linea.strip
-              end
-              if !referente.contacto.firma_segunda_linea.blank?
-                r.add_field :contacto_firma_segunda_linea, referente.contacto.firma_segunda_linea.strip
-              end
-              if !referente.contacto.firma_tercera_linea.blank?
-                r.add_field :contacto_firma_tercera_linea, referente.contacto.firma_tercera_linea.strip
+        report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de solicitud adenda prestacional.odt") do |r|
+          r.add_field :cgs_sumar_numero, @convenio_de_gestion.numero
+          if @convenio_de_gestion.efector.grupo_de_efectores.tipo_de_efector == "PSB"
+            r.add_field :efector_articulo, "la"
+            r.add_field :o_a, "a"
+          else
+            r.add_field :efector_articulo, "el"
+            r.add_field :o_a, "o"
+          end
+          r.add_field :efector_nombre, @convenio_de_gestion.efector.nombre
+          referente = @convenio_de_gestion.efector.referente_al_dia(@solicitud_addenda.fecha_solicitud)
+          if referente.present?
+            if referente.contacto.sexo.present?
+              if referente.contacto.sexo.codigo == "F"
+                r.add_field :articulo_contacto, "la"
+              else
+                r.add_field :articulo_contacto, "el"
               end
             end
-            if !@convenio_de_gestion.efector.domicilio.blank?
-              r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.to_s.strip.gsub(".", ",")
+            r.add_field :contacto_mostrado, referente.contacto.mostrado
+            if referente.contacto.tipo_de_documento.present?
+              r.add_field :tipo_de_documento_codigo, referente.contacto.tipo_de_documento.codigo
             end
+            if !referente.contacto.dni.blank?
+              r.add_field :contacto_dni, number_with_delimiter(referente.contacto.dni, {:delimiter => "."})
+            end
+            if !referente.contacto.firma_primera_linea.blank?
+              r.add_field :contacto_firma_primera_linea, referente.contacto.firma_primera_linea.strip
+            end
+            if !referente.contacto.firma_segunda_linea.blank?
+              r.add_field :contacto_firma_segunda_linea, referente.contacto.firma_segunda_linea.strip
+            end
+            if !referente.contacto.firma_tercera_linea.blank?
+              r.add_field :contacto_firma_tercera_linea, referente.contacto.firma_tercera_linea.strip
+            end
+          end
+          if !@convenio_de_gestion.efector.domicilio.blank?
+            r.add_field :efector_domicilio, @convenio_de_gestion.efector.domicilio.to_s.strip.gsub(".", ",")
+          end
     
-            @bajas_de_prestaciones =
+          @bajas_de_prestaciones =
               
-              @solicitud_addenda.solicitudes_addendas_prestaciones_principales.
-              select{|sapp| sapp[:aprobado_por_medica]==false }.map{|pa| {codigo: pa.prestacion_principal.codigo, nombre: pa.prestacion_principal.nombre}  }
+            @solicitud_addenda.solicitudes_addendas_prestaciones_principales.
+            select{|sapp| sapp[:aprobado_por_medica]==false }.map{|pa| {codigo: pa.prestacion_principal.codigo, nombre: pa.prestacion_principal.nombre}  }
     
           
-            r.add_table("Bajas", @bajas_de_prestaciones, header: true) do |t|
-              t.add_column(:prestacion_codigo, :codigo)
-              t.add_column(:prestacion_nombre, :nombre)
+          r.add_table("Bajas", @bajas_de_prestaciones, header: true) do |t|
+            t.add_column(:prestacion_codigo, :codigo)
+            t.add_column(:prestacion_nombre, :nombre)
 
-            end
+          end
 
-            @altas_de_prestaciones = 
-              @solicitud_addenda.solicitudes_addendas_prestaciones_principales.
-              select{|sapp| sapp[:aprobado_por_medica]==true }.map{|pa| {codigo: pa.prestacion_principal.codigo, nombre: pa.prestacion_principal.nombre} }
+          @altas_de_prestaciones = 
+            @solicitud_addenda.solicitudes_addendas_prestaciones_principales.
+            select{|sapp| sapp[:aprobado_por_medica]==true }.map{|pa| {codigo: pa.prestacion_principal.codigo, nombre: pa.prestacion_principal.nombre} }
     
              
           
 
-            r.add_table("Altas", @altas_de_prestaciones, header: true) do |t|
-              t.add_column(:prestacion_codigo, :codigo)
-              t.add_column(:prestacion_nombre, :nombre)
-            end
-
-            r.add_field :suscripcion_mes_y_anio, I18n.l(@solicitud_addenda.fecha_revision_medica, :format => :month_and_year)
-
+          r.add_table("Altas", @altas_de_prestaciones, header: true) do |t|
+            t.add_column(:prestacion_codigo, :codigo)
+            t.add_column(:prestacion_nombre, :nombre)
           end
+
+          r.add_field :suscripcion_mes_y_anio, I18n.l(@solicitud_addenda.fecha_revision_medica, :format => :month_and_year)
+
+        end
 
         archivo = report.generate("lib/tasks/datos/documentos/Adenda prestacional #{@solicitud_addenda.numero} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
 
@@ -208,12 +208,12 @@ class SolicitudesAddendasController < ApplicationController
     
     
     @puede_editar =  [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::EN_REVISION_LEGAL].include?(@solicitud_addenda.estado_solicitud_addenda_id) 
-    
+#    
     @puede_confirmar_efector = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA and current_user.in_group?:gestion_addendas_uad)
     @puede_confirmar_tecnica = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA and current_user.in_group?:auditoria_medica)
     @puede_confirmar_legal = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL and current_user.in_group?:auditoria_control)
     @puede_anular =  (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA or @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA) and ( current_user.in_group?([:auditoria_medica,:gestion_addendas_uad]))
-    
+    @puede_generar_documento = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL)
     @convenio_de_gestion_sumar = @solicitud_addenda.convenio_de_gestion_sumar
    
     
@@ -265,15 +265,25 @@ class SolicitudesAddendasController < ApplicationController
     @solicitud_addenda.fecha_solicitud = fecha_actual
     @solicitud_addenda.observaciones = params[:solicitud_addenda][:observaciones]
     @solicitud_addenda.estado_solicitud_addenda = EstadoSolicitudAddenda.find(1); #Estado Registrada
+    @solicitud_addenda.user_creator_id = current_user.id
    
     numero =
       ActiveRecord::Base.connection.exec_query(
     
       " SELECT 
   
-      COALESCE(max(id + 1),1) 
+     COALESCE (
+
+	     max( 
+		cast(
+			replace ( sa.numero,'#{@convenio_de_gestion.numero}' || '-SA-','') as int 
+		) + 1
+	     ) , 1 
+     )
      
-     from solicitudes_addendas"
+     from solicitudes_addendas sa
+     
+     where sa.numero like '%#{@convenio_de_gestion.numero}%'"
     ).rows[0].collect{ |v| v.to_i}
     
     
@@ -381,11 +391,11 @@ class SolicitudesAddendasController < ApplicationController
     end
     
     
-    #byebug
+    #
     # solo manejo los estados de la aprobacion tecnica si la solicitud en revision tecnica o enviada al efector
-    if (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA   ||@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::APROBACION_TECNICA  )
+    if (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA   ||@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL  )
       @solicitudes_prestaciones_principales_aptecnica = params[:solicitud_addenda][:prestacion_principal_tecnica_id]
-      #byebug
+      #
       #Actualizo los atributos de la aprobacion medica
       @solicitudes_prestaciones_principales_aptecnica.each do |presat|  
         #me fijo si no existe el detalle sino lo creo. 
@@ -471,7 +481,7 @@ class SolicitudesAddendasController < ApplicationController
       @solicitud_addenda.estado_solicitud_addenda_id  = EstadosSolicitudAddenda::EN_REVISION_LEGAL
       
       @solicitud_addenda.fecha_revision_medica = Time.now
-      
+            @solicitud_addenda.user_tecnica_id = current_user.id
       if  @solicitud_addenda.save
         notificar_efector
         redirect_to(@solicitud_addenda,
@@ -525,17 +535,35 @@ class SolicitudesAddendasController < ApplicationController
       
       @solicitud_addenda.estado_solicitud_addenda_id  = EstadosSolicitudAddenda::APROBACION_LEGAL
       @solicitud_addenda.fecha_revision_legal = Time.now
-      if  @solicitud_addenda.save
-        generar_adenda
-        redirect_to(@solicitud_addenda,
-          :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
-        )
+      @solicitud_addenda.user_legal_id = current_user.id
+      #valido los datos obligatorios de la futura addenda.
+      if !(@solicitud_addenda.fecha_de_inicio.nil? or @solicitud_addenda.numero_addenda.nil?)
+        
+        if  @solicitud_addenda.save
+          generar_adenda
+          redirect_to(@solicitud_addenda,
+            :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
+          )
        
-      else
-        redirect_to(@solicitud_addenda,
-          :flash => { :tipo => :error, :titulo => 'Ocurrio un error al modificar la solicitud de adenda.' })
-      end
+        else
+          redirect_to(@solicitud_addenda,
+            :flash => { :tipo => :error, :titulo => 'Ocurrio un error al modificar la solicitud de adenda.' })
+        end
    
+         
+      
+      
+      else
+      redirect_to(@solicitud_addenda,
+            :flash => { :tipo => :error, :titulo => 'Antes de aprobar la solicitud, complete los datos necesarios para la adenda.' })
+      
+      
+      end
+      
+      
+      
+      
+
       
     else 
       redirect_to( root_url,
@@ -684,7 +712,7 @@ class SolicitudesAddendasController < ApplicationController
     
     fecha_actual = Time.now
     @addenda = AddendaSumar.new
-    @addenda.creator_id = current_user.id
+    @addenda.user_creator_id = current_user.id
     @addenda.updater_id = current_user.id
     @addenda.convenio_de_gestion_sumar_id = @solicitud_addenda.convenio_de_gestion_sumar_id
    
@@ -780,7 +808,17 @@ class SolicitudesAddendasController < ApplicationController
   end
     
   def notificar_efector
-      
+       
+#         begin
+#      UserMailer.welcome_email(@user).deliver
+#      flash[:success] = "#{@user.name} created"
+#      rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+#        flash[:success] = "Utente #{@user.name} creato. Problems sending mail"
+#      end
+    SolicitudesAddendasMailer.notificar_solicitud_addenda(@solicitud_addenda).deliver
+    
+    
+    
   end
     
 end
