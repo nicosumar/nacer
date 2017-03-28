@@ -27,9 +27,9 @@
   - if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL
     %h3.header-with-note Datos de la adenda
     %p.note Verifique el número de adenda, una vez generada la adenda no podrá modificarse
-    %div.field
-      = f.label :numero_addenda, "Número*"
-      = f.text_field :numero_addenda, :style => "text-transform: uppercase;"  
+    %div.field_content
+      %span.field_name Número de addenda
+      %span.field_value= @solicitud_addenda.numero_addenda
     %div.field 
       = f.label :firmante
       = f.text_field :firmante

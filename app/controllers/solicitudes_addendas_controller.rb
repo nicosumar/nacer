@@ -11,9 +11,38 @@ class SolicitudesAddendasController < ApplicationController
       return
     end
  
+      if !params[:convenio_de_gestion_sumar_id]
+       redirect_to( convenios_de_gestion_sumar_url,
+         :flash => { :tipo => :advertencia, :titulo => "No se ha seleccionado un convenio de gestión",
+          :mensaje => [ "Para poder realizar altas de solicitudes de adendas, debe hacerlo accediendo antes a la página " +
+             "del convenio de gestión que va a modificarse.",
+            "Seleccione el convenio de gestión del listado, o realice una búsqueda para encontrarlo."
+          ]
+        }
+     )
+       return
+     end
+  
+     # Obtener el convenio de gestión asociado
+     begin
+       @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:convenio_de_gestion_sumar_id])
+     rescue ActiveRecord::RecordNotFound
+       redirect_to(
+         root_url,
+         :flash => {:tipo => :error, :titulo => "La petición no es válida",
+           :mensaje => "Se informará al administrador del sistema sobre el incidente."
+         }
+       )
+       return
+     end
+    
+    
+    
+    
+    
     # Obtener el listado de addendas
     @solicitudes_addendas =
-      SolicitudAddenda.paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
+      SolicitudAddenda.where(convenio_de_gestion_sumar_id:@convenio_de_gestion.id).paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
       :order => "updated_at DESC"
     )
   end
@@ -30,23 +59,32 @@ class SolicitudesAddendasController < ApplicationController
       return
     end
     
+    # Para crear addendas, debe accederse desde la página del convenio que se modificará
+    if !params[:convenio_de_gestion_sumar_id]
+      redirect_to( convenios_de_gestion_sumar_url,
+        :flash => { :tipo => :advertencia, :titulo => "No se ha seleccionado un convenio de gestión",
+          :mensaje => [ "Para poder realizar altas de solicitudes de adendas, debe hacerlo accediendo antes a la página " +
+            "del convenio de gestión que va a modificarse.",
+            "Seleccione el convenio de gestión del listado, o realice una búsqueda para encontrarlo."
+          ]
+        }
+      )
+      return
+    end
+
+    # Obtener el convenio de gestión asociado
+    begin
+      @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:convenio_de_gestion_sumar_id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to(
+        root_url,
+        :flash => {:tipo => :error, :titulo => "La petición no es válida",
+          :mensaje => "Se informará al administrador del sistema sobre el incidente."
+        }
+      )
+      return
+    end
     
-    
-    @convenio_de_gestion = ConvenioDeGestionSumar.find(13)
-    
-    
-    # Obtener el convenio de gestión asociado (ahora lo hardcodeo)
-    #    begin
-    #      @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:convenio_de_gestion_sumar_id])
-    #    rescue ActiveRecord::RecordNotFound
-    #      redirect_to(
-    #        root_url,
-    #        :flash => {:tipo => :error, :titulo => "La petición no es válida",
-    #          :mensaje => "Se informará al administrador del sistema sobre el incidente."
-    #        }
-    #      )
-    #      return
-    #    end
     
     # Crear los objetos necesarios para la vista
     @solicitud_addenda = SolicitudAddenda.new   
@@ -92,7 +130,7 @@ class SolicitudesAddendasController < ApplicationController
     @efector = @convenio_de_gestion.efector
     @solicitudes_prestaciones_principales = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.es_autorizacion ? p.prestacion_principal_id.to_s : '' )] }
     @solicitudes_prestaciones_principales_aptecnica = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.aprobado_por_medica ? p.prestacion_principal_id.to_s : '' )] }
-    @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(30)
+    @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(@convenio_de_gestion.efector_id)
 
   end
   
@@ -190,7 +228,7 @@ class SolicitudesAddendasController < ApplicationController
             t.add_column(:prestacion_nombre, :nombre)
           end
 
-          r.add_field :suscripcion_mes_y_anio, I18n.l(@solicitud_addenda.fecha_revision_medica, :format => :month_and_year)
+#          r.add_field :suscripcion_mes_y_anio, I18n.l(@solicitud_addenda.fecha_revision_medica, :format => :month_and_year)
 
         end
 
@@ -262,9 +300,11 @@ class SolicitudesAddendasController < ApplicationController
    
     @solicitud_addenda = SolicitudAddenda.new()
     @solicitud_addenda.convenio_de_gestion_sumar = @convenio_de_gestion
+    @solicitud_addenda.numero_addenda = @convenio_de_gestion.generar_numero_addenda_sumar_solicitud_addenda
+    @solicitud_addenda.firmante = @convenio_de_gestion.obtener_nombre_firmante
     @solicitud_addenda.fecha_solicitud = fecha_actual
     @solicitud_addenda.observaciones = params[:solicitud_addenda][:observaciones]
-    @solicitud_addenda.estado_solicitud_addenda = EstadoSolicitudAddenda.find(1); #Estado Registrada
+    @solicitud_addenda.estado_solicitud_addenda = EstadoSolicitudAddenda.find(EstadosSolicitudAddenda::GENERADA); #Estado Registrada
     @solicitud_addenda.user_creator_id = current_user.id
    
     numero =
@@ -288,8 +328,8 @@ class SolicitudesAddendasController < ApplicationController
     
     
     
-    @solicitud_addenda.numero =  @convenio_de_gestion.numero+ '-SA-' +  numero[0].to_s
-    
+   @solicitud_addenda.numero =  @convenio_de_gestion.numero+ '-SA-' +  numero[0].to_s
+ #  @solicitud_addenda.numero = @solicitud_addenda.numero_addenda
     
     
     
@@ -364,7 +404,7 @@ class SolicitudesAddendasController < ApplicationController
     if @solicitud_addenda.estado_solicitud_addenda_id ==  EstadosSolicitudAddenda::EN_REVISION_LEGAL
       
       @solicitud_addenda.firmante = params[:solicitud_addenda][:firmante]
-      @solicitud_addenda.numero_addenda = params[:solicitud_addenda][:numero_addenda]
+#      @solicitud_addenda.numero_addenda = params[:solicitud_addenda][:numero_addenda]
       @solicitud_addenda.fecha_de_inicio =  parametro_fecha(params[:solicitud_addenda], :fecha_de_inicio)
       @solicitud_addenda.fecha_de_suscripcion =  parametro_fecha(params[:solicitud_addenda], :fecha_de_suscripcion)
  
@@ -720,7 +760,8 @@ class SolicitudesAddendasController < ApplicationController
     @addenda.firmante = @solicitud_addenda.firmante
     @addenda.fecha_de_suscripcion = @solicitud_addenda.fecha_de_suscripcion
     @addenda.fecha_de_inicio = @solicitud_addenda.fecha_de_inicio
-    @addenda.observaciones = @solicitud_addenda.observaciones 
+    @addenda.observaciones = @solicitud_addenda.observaciones  
+    @addenda.observaciones += "\n" + "Addenda Creada a partir de la solicitud de addenda: #{@solicitud_addenda.numero}"
     @addenda.numero = @solicitud_addenda.numero_addenda
    
     if @addenda.save
