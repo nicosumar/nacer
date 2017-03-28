@@ -18,7 +18,7 @@ class PrestacionPrincipalAutorizada < ActiveRecord::Base
           ppa.prestacion_pdss_id = pp.id
           and  ppa.efector_id =  #{efector_id}
           AND  ppa.fecha_de_inicio <= '#{fecha.iso8601}'
-          AND (ppa.fecha_de_finalizacion IS NULL OR ppa.fecha_de_finalizacion > '#{fecha.iso8601}')
+          AND (ppa.fecha_de_finalizacion IS NULL OR ppa.fecha_de_finalizacion >= '#{fecha.iso8601}')
           and ppa.autorizante_al_alta_type IS NOT NULL	    
         )        
 	    JOIN prestaciones_prestaciones_pdss ppp ON pp.id = ppp.prestacion_pdss_id

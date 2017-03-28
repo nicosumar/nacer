@@ -15,7 +15,7 @@
         %td.centrado= p["codigo"]
         %td= p["nombre"]
 
-        - if p["Autorizada"] == "t"
+        - if p[:prestaciones_principales][0]["Autorizada"] == "t"
           %td.centrado 
             = hidden_field_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", nil
             = check_box_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", p["id"].to_s,true, id: dom_id(PrestacionPrincipal.find(p["id"].to_s))

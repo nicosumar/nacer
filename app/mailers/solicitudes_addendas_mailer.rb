@@ -14,7 +14,7 @@ class SolicitudesAddendasMailer < ActionMailer::Base
       if email.blank?
         mail(to: @User.email, subject: 'Solicitud Aprobada por el área técnica')
       else
-        mail(to: @User.email, cc: email , subject: 'Solicitud Aprobada por el área técnica')
+        mail(to: email, cc: @User.email , subject: 'Solicitud Aprobada por el área técnica')
       end
     end
 

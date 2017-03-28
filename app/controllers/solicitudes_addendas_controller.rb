@@ -11,40 +11,70 @@ class SolicitudesAddendasController < ApplicationController
       return
     end
  
-      if !params[:convenio_de_gestion_sumar_id]
-       redirect_to( convenios_de_gestion_sumar_url,
-         :flash => { :tipo => :advertencia, :titulo => "No se ha seleccionado un convenio de gestión",
-          :mensaje => [ "Para poder realizar altas de solicitudes de adendas, debe hacerlo accediendo antes a la página " +
-             "del convenio de gestión que va a modificarse.",
-            "Seleccione el convenio de gestión del listado, o realice una búsqueda para encontrarlo."
-          ]
-        }
-     )
-       return
-     end
+    #Determino si el que accede es efector
+   
+    if !params[:convenio_de_gestion_sumar_id]
+      #Determino si el que accede es efector
+      if current_user.in_group?:gestion_addendas_uad and !(current_user.in_group?([:auditoria_medica,:auditoria_control]))
+        redirect_to( convenios_de_gestion_sumar_url,
+          :flash => { :tipo => :advertencia, :titulo => "No se ha seleccionado un convenio de gestión",
+            :mensaje => [ "Para poder realizar altas de solicitudes de adendas, debe hacerlo accediendo antes a la página " +
+                "del convenio de gestión que va a modificarse.",
+              "Seleccione el convenio de gestión del listado, o realice una búsqueda para encontrarlo."
+            ]
+          }
+        )
+        return
+      end
+      # Obtener el convenio de gestión asociado
+
+      # El que accede no es un efector necesariamente. Veo que adendas peude ver.
+      # Obtener el listado de addendas
+      estados_ids = []
+      #En teoria no se deberian superponer los permisos
+      if current_user.in_group?:gestion_addendas_uad
+        estados_ids = [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::ANULACION_EFECTOR]
+      end
+      if current_user.in_group?:auditoria_medica  
+        estados_ids =estados_ids +  [EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::ANULACION_TECNICA]
+      end
   
-     # Obtener el convenio de gestión asociado
-     begin
-       @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:convenio_de_gestion_sumar_id])
-     rescue ActiveRecord::RecordNotFound
-       redirect_to(
-         root_url,
-         :flash => {:tipo => :error, :titulo => "La petición no es válida",
-           :mensaje => "Se informará al administrador del sistema sobre el incidente."
-         }
-       )
-       return
-     end
+      if current_user.in_group?:auditoria_control
+        estados_ids = estados_ids + [EstadosSolicitudAddenda::EN_REVISION_LEGAL,EstadosSolicitudAddenda::APROBACION_LEGAL]
+      end
+      
+      @solicitudes_addendas =
+        SolicitudAddenda.where("estado_solicitud_addenda_id in #{estados_ids.to_s.gsub('[','(').gsub(']',')')}").paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
+        :order => "updated_at DESC"
+      )
+      
+      
+      
+      
+      
+    else
+      
+    begin
+        @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:convenio_de_gestion_sumar_id])
+      rescue ActiveRecord::RecordNotFound
+        redirect_to(
+          root_url,
+          :flash => {:tipo => :error, :titulo => "La petición no es válida",
+            :mensaje => "Se informará al administrador del sistema sobre el incidente."
+          }
+        )
+        return
+      end
+
+      # Obtener el listado de addendas
+      @solicitudes_addendas =
+        SolicitudAddenda.where(convenio_de_gestion_sumar_id:@convenio_de_gestion.id).paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
+        :order => "updated_at DESC"
+      )
+    end
+  
+   
     
-    
-    
-    
-    
-    # Obtener el listado de addendas
-    @solicitudes_addendas =
-      SolicitudAddenda.where(convenio_de_gestion_sumar_id:@convenio_de_gestion.id).paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
-      :order => "updated_at DESC"
-    )
   end
 
   def new
@@ -64,7 +94,7 @@ class SolicitudesAddendasController < ApplicationController
       redirect_to( convenios_de_gestion_sumar_url,
         :flash => { :tipo => :advertencia, :titulo => "No se ha seleccionado un convenio de gestión",
           :mensaje => [ "Para poder realizar altas de solicitudes de adendas, debe hacerlo accediendo antes a la página " +
-            "del convenio de gestión que va a modificarse.",
+              "del convenio de gestión que va a modificarse.",
             "Seleccione el convenio de gestión del listado, o realice una búsqueda para encontrarlo."
           ]
         }
@@ -90,8 +120,9 @@ class SolicitudesAddendasController < ApplicationController
     @solicitud_addenda = SolicitudAddenda.new   
     @solicitudes_prestaciones_principales = []
     @solicitudes_prestaciones_principales_aptecnica = []
-    @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(30)
-
+    @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(@convenio_de_gestion.efector_id)
+#    @solicitudes_prestaciones_principales = @prestaciones_principales_autorizadas.collect{|p| [p.prestacion_principal_id.to_s,( p.es_autorizacion ? p.prestacion_principal_id.to_s : '' )] }
+    @solicitud_addenda.estado_solicitud_addenda = EstadoSolicitudAddenda.find(EstadosSolicitudAddenda::GENERADA);
 
   end
   
@@ -228,7 +259,7 @@ class SolicitudesAddendasController < ApplicationController
             t.add_column(:prestacion_nombre, :nombre)
           end
 
-#          r.add_field :suscripcion_mes_y_anio, I18n.l(@solicitud_addenda.fecha_revision_medica, :format => :month_and_year)
+          #          r.add_field :suscripcion_mes_y_anio, I18n.l(@solicitud_addenda.fecha_revision_medica, :format => :month_and_year)
 
         end
 
@@ -246,7 +277,7 @@ class SolicitudesAddendasController < ApplicationController
     
     
     @puede_editar =  [EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::EN_REVISION_TECNICA,EstadosSolicitudAddenda::EN_REVISION_LEGAL].include?(@solicitud_addenda.estado_solicitud_addenda_id) 
-#    
+    #    
     @puede_confirmar_efector = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA and current_user.in_group?:gestion_addendas_uad)
     @puede_confirmar_tecnica = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA and current_user.in_group?:auditoria_medica)
     @puede_confirmar_legal = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL and current_user.in_group?:auditoria_control)
@@ -328,8 +359,8 @@ class SolicitudesAddendasController < ApplicationController
     
     
     
-   @solicitud_addenda.numero =  @convenio_de_gestion.numero+ '-SA-' +  numero[0].to_s
- #  @solicitud_addenda.numero = @solicitud_addenda.numero_addenda
+    @solicitud_addenda.numero =  @convenio_de_gestion.numero+ '-SA-' +  numero[0].to_s
+    #  @solicitud_addenda.numero = @solicitud_addenda.numero_addenda
     
     
     
@@ -404,7 +435,7 @@ class SolicitudesAddendasController < ApplicationController
     if @solicitud_addenda.estado_solicitud_addenda_id ==  EstadosSolicitudAddenda::EN_REVISION_LEGAL
       
       @solicitud_addenda.firmante = params[:solicitud_addenda][:firmante]
-#      @solicitud_addenda.numero_addenda = params[:solicitud_addenda][:numero_addenda]
+      #@solicitud_addenda.numero_addenda = params[:solicitud_addenda][:numero_addenda]
       @solicitud_addenda.fecha_de_inicio =  parametro_fecha(params[:solicitud_addenda], :fecha_de_inicio)
       @solicitud_addenda.fecha_de_suscripcion =  parametro_fecha(params[:solicitud_addenda], :fecha_de_suscripcion)
  
@@ -413,27 +444,9 @@ class SolicitudesAddendasController < ApplicationController
 
   
     @solicitudes_prestaciones_principales = params[:solicitud_addenda][:prestacion_principal_id]
-
-    #Casos de la anulación de la solicitud
-    if @solicitud_addenda.estado_solicitud_addenda_id > 5
- 
-      #Anulada por efector
-      if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::ANULACION_EFECTOR
-        @solicitud_addenda.destroy
-        redirect_to solicitudes_addendas_url,:flash => { :tipo => :ok, :titulo => 'Las solicitud de adenda se anuló correctamente.' }
-      end
-      #Anulada por Sumar
-      if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::ANULACION_TECNICA
-        @solicitud_addenda.save
-        redirect_to solicitudes_addendas_url,:flash => { :tipo => :ok, :titulo => 'Las solicitud de adenda se anuló correctamente.' }
-      end
-      return
-    end
-    
-    
-    #
+   
     # solo manejo los estados de la aprobacion tecnica si la solicitud en revision tecnica o enviada al efector
-    if (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA   ||@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL  )
+    if (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA    )
       @solicitudes_prestaciones_principales_aptecnica = params[:solicitud_addenda][:prestacion_principal_tecnica_id]
       #
       #Actualizo los atributos de la aprobacion medica
@@ -458,6 +471,8 @@ class SolicitudesAddendasController < ApplicationController
       end
     end
      
+    
+    if (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA    )
     #Actualizo los atributos de la es_autorizacion de la solicitud
     @solicitudes_prestaciones_principales.each do |pres|  
       existe = false
@@ -478,7 +493,7 @@ class SolicitudesAddendasController < ApplicationController
         end
       end
     end
-    
+    end
    
     if  @solicitud_addenda.save
       # Redirigir a la adenda modificada
@@ -521,7 +536,7 @@ class SolicitudesAddendasController < ApplicationController
       @solicitud_addenda.estado_solicitud_addenda_id  = EstadosSolicitudAddenda::EN_REVISION_LEGAL
       
       @solicitud_addenda.fecha_revision_medica = Time.now
-            @solicitud_addenda.user_tecnica_id = current_user.id
+      @solicitud_addenda.user_tecnica_id = current_user.id
       if  @solicitud_addenda.save
         notificar_efector
         redirect_to(@solicitud_addenda,
@@ -594,8 +609,8 @@ class SolicitudesAddendasController < ApplicationController
       
       
       else
-      redirect_to(@solicitud_addenda,
-            :flash => { :tipo => :error, :titulo => 'Antes de aprobar la solicitud, complete los datos necesarios para la adenda.' })
+        redirect_to(@solicitud_addenda,
+          :flash => { :tipo => :advertencia, :titulo => 'Antes de aprobar la solicitud, complete los datos necesarios para la adenda.' })
       
       
       end
@@ -752,7 +767,7 @@ class SolicitudesAddendasController < ApplicationController
     
     fecha_actual = Time.now
     @addenda = AddendaSumar.new
-    @addenda.user_creator_id = current_user.id
+    @addenda.creator_id = current_user.id
     @addenda.updater_id = current_user.id
     @addenda.convenio_de_gestion_sumar_id = @solicitud_addenda.convenio_de_gestion_sumar_id
    
@@ -796,8 +811,7 @@ class SolicitudesAddendasController < ApplicationController
           if not actual.first
             #no se encontro la prestacion por lo que el efector no la tiene autorizada
             #hacemos un insert de la prestacion nueva siempre que se encuentre seleccionada
-          
-          
+            
             if  sapp.aprobado_por_medica?
               CustomQuery.ejecutar(
                 {
@@ -811,10 +825,11 @@ class SolicitudesAddendasController < ApplicationController
             end
             
           else   
-             
+               
             #si esta y esta deseleccionada es que la da de baja
             if not sapp.aprobado_por_medica?
               #la doy de baja
+               
               CustomQuery.ejecutar(
                 {
                   sql: "
@@ -832,7 +847,7 @@ class SolicitudesAddendasController < ApplicationController
             
             end
             #si esta y esta seleccionada no hacemos nada
-        
+            
         
         
           end
@@ -850,13 +865,13 @@ class SolicitudesAddendasController < ApplicationController
     
   def notificar_efector
        
-#         begin
-#      UserMailer.welcome_email(@user).deliver
-#      flash[:success] = "#{@user.name} created"
-#      rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
-#        flash[:success] = "Utente #{@user.name} creato. Problems sending mail"
-#      end
-    SolicitudesAddendasMailer.notificar_solicitud_addenda(@solicitud_addenda).deliver
+    #         begin
+    #      UserMailer.welcome_email(@user).deliver
+    #      flash[:success] = "#{@user.name} created"
+    #      rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+    #        flash[:success] = "Utente #{@user.name} creato. Problems sending mail"
+    #      end
+    #   SolicitudesAddendasMailer.notificar_solicitud_addenda(@solicitud_addenda).deliver_later
     
     
     

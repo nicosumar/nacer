@@ -5,7 +5,8 @@
   %h1 Solicitudes de Adendas Sumar
   #action-links
     - if can? :create, SolicitudAddenda
-      = link_to 'Nueva solicitud', new_solicitud_addenda_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)
+      - if @convenio_de_gestion
+        = link_to 'Nueva solicitud', new_solicitud_addenda_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)
 
 = render :partial => "shared/info"
 

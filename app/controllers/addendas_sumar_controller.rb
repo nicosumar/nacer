@@ -231,6 +231,13 @@ class AddendasSumarController < ApplicationController
     # Crear los objetos necesarios para la vista
     @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
 
+    if @addenda.validar_existencia_de_addenda_posterior
+      redirect_to(@addenda,
+         :flash => { :tipo => :advertencia, :titulo => 'Solo es posible editar la última adenda del convenio de gestión.' }
+       )
+      return
+      
+    end
 #    @prestaciones_alta =
 #      Prestacion.no_autorizadas_sumar_antes_del_dia(@convenio_de_gestion.efector.id, @addenda.fecha_de_inicio).map {|grup| [grup.grupo_id, grup.grupo]}.uniq.collect { |g|
 #        [ g[0] + " - " + g[1],
