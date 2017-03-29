@@ -54,7 +54,7 @@ class SolicitudesAddendasController < ApplicationController
       
     else
       
-    begin
+      begin
         @convenio_de_gestion = ConvenioDeGestionSumar.find(params[:convenio_de_gestion_sumar_id])
       rescue ActiveRecord::RecordNotFound
         redirect_to(
@@ -121,7 +121,7 @@ class SolicitudesAddendasController < ApplicationController
     @solicitudes_prestaciones_principales = []
     @solicitudes_prestaciones_principales_aptecnica = []
     @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(@convenio_de_gestion.efector_id)
-#    @solicitudes_prestaciones_principales = @prestaciones_principales_autorizadas.collect{|p| [p.prestacion_principal_id.to_s,( p.es_autorizacion ? p.prestacion_principal_id.to_s : '' )] }
+    #    @solicitudes_prestaciones_principales = @prestaciones_principales_autorizadas.collect{|p| [p.prestacion_principal_id.to_s,( p.es_autorizacion ? p.prestacion_principal_id.to_s : '' )] }
     @solicitud_addenda.estado_solicitud_addenda = EstadoSolicitudAddenda.find(EstadosSolicitudAddenda::GENERADA);
 
   end
@@ -363,6 +363,7 @@ class SolicitudesAddendasController < ApplicationController
     #  @solicitud_addenda.numero = @solicitud_addenda.numero_addenda
     
     
+    @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(@convenio_de_gestion.efector_id)
     
     #if  @solicitud_addenda.save     
     @solicitudes_prestaciones_principales.each do |pres|  
@@ -370,25 +371,52 @@ class SolicitudesAddendasController < ApplicationController
       #pres[1] es el value
       #tambien podria ocupar |key,value|
         
-      @solicitud_addenda_prestacion_principal =  SolicitudAddendaPrestacionPrincipal.new do |sapp|
+      
+      if( @prestaciones_principales_autorizadas.any?{|p| p["id"].to_s == pres[0] and 
+            ( 
+              (p[:prestaciones_principales][0]["Autorizada"] == 't' and !pres[1].blank?) or
+              (p[:prestaciones_principales][0]["Autorizada"] == 'f' and pres[1].blank?)
+            )   
           
-        sapp.es_autorizacion = pres[1].length  > 0 
-        sapp.prestacion_principal_id =  pres[0].to_i
-        # sapp.solicitud_addenda = @solicitud_addenda
-        @solicitud_addenda.solicitudes_addendas_prestaciones_principales << sapp
-        # sapp.save
+        })
+          #Ya esta autorizada y ademas el check realizado es igual a la condicion actual....No hago nada
+          
+      else
+         
+        @solicitud_addenda_prestacion_principal =  SolicitudAddendaPrestacionPrincipal.new do |sapp|
+          sapp.es_autorizacion = pres[1].length  > 0 
+          sapp.prestacion_principal_id =  pres[0].to_i
+          # sapp.solicitud_addenda = @solicitud_addenda
+          @solicitud_addenda.solicitudes_addendas_prestaciones_principales << sapp
+          # sapp.save
+        end
+      
+        
       end
+        
+     
+      
     end
+    
+    #Valido que al menos se realize una modificacion para que la solicitud de adenda tenga sentido.
+    if @solicitud_addenda.solicitudes_addendas_prestaciones_principales.empty?
+      #No hay modificaciones 
+     
+         redirect_to(solicitudes_addendas_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id),
+      :flash => { :tipo => :advertencia, :titulo => "La solicitud de adenda debe incluir al menos una alta/baja de prestación." }
+         
+      )
+      return
+    end
+    
     @solicitud_addenda.save
     
     redirect_to(@solicitud_addenda,
-        
-      :flash => { :tipo => :ok, :titulo => "La solicitud de adenda #{@solicitud_addenda.numero} se creó correctamente." }
+              :flash => { :tipo => :ok, :titulo => "La solicitud de adenda #{@solicitud_addenda.numero} se creó correctamente." }
+    
          
     )
-    return
-   
-    #end
+  
 
   end
   
@@ -473,26 +501,26 @@ class SolicitudesAddendasController < ApplicationController
      
     
     if (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA    )
-    #Actualizo los atributos de la es_autorizacion de la solicitud
-    @solicitudes_prestaciones_principales.each do |pres|  
-      existe = false
-      @solicitud_addenda.solicitudes_addendas_prestaciones_principales.each  do |sapp| 
-        if sapp.prestacion_principal_id.to_s == pres[0]
-          existe = true
-          sapp.es_autorizacion = pres[1].length  > 0        
-          break
+      #Actualizo los atributos de la es_autorizacion de la solicitud
+      @solicitudes_prestaciones_principales.each do |pres|  
+        existe = false
+        @solicitud_addenda.solicitudes_addendas_prestaciones_principales.each  do |sapp| 
+          if sapp.prestacion_principal_id.to_s == pres[0]
+            existe = true
+            sapp.es_autorizacion = pres[1].length  > 0        
+            break
+          end
         end
-      end
         
-      unless existe
-        @solicitud_addenda_prestacion_principal =  SolicitudAddendaPrestacionPrincipal.new do |sapp|
-          sapp.es_autorizacion = pres[1].length  > 0 
-          sapp.prestacion_principal_id =  pres[0].to_i
-          @solicitud_addenda.solicitudes_addendas_prestaciones_principales << sapp
+        unless existe
+          @solicitud_addenda_prestacion_principal =  SolicitudAddendaPrestacionPrincipal.new do |sapp|
+            sapp.es_autorizacion = pres[1].length  > 0 
+            sapp.prestacion_principal_id =  pres[0].to_i
+            @solicitud_addenda.solicitudes_addendas_prestaciones_principales << sapp
               
+          end
         end
       end
-    end
     end
    
     if  @solicitud_addenda.save
