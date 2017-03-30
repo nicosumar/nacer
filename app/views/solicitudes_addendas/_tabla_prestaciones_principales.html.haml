@@ -4,6 +4,7 @@
   %tr
     %th Código   
     %th Nombre de la prestación
+  
     %th Solicitud de Autorización
     %th Autorización Técnica
   %tbody 
@@ -15,14 +16,10 @@
         %td.centrado= p["codigo"]
         %td= p["nombre"]
 
-        - if p[:prestaciones_principales][0]["Autorizada"] == "t"
-          %td.centrado 
-            = hidden_field_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", nil
-            = check_box_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", p["id"].to_s,true, id: dom_id(PrestacionPrincipal.find(p["id"].to_s))
-        - else 
-          %td.centrado 
-            = hidden_field_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", nil
-            = check_box_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", p["id"].to_s,(@solicitudes_prestaciones_principales.present? && @solicitudes_prestaciones_principales.include?([p["id"].to_s,p["id"].to_s])), id: dom_id(PrestacionPrincipal.find(p["id"].to_s)),disabled:(@solicitud_addenda.estado_solicitud_addenda_id !=EstadosSolicitudAddenda::GENERADA)       
+ 
+        %td.centrado 
+          = hidden_field_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", nil
+          = check_box_tag "solicitud_addenda[prestacion_principal_id][" + p["id"].to_s+"]", p["id"].to_s,(@solicitudes_prestaciones_principales.present? && @solicitudes_prestaciones_principales.include?([p["id"].to_s,p["id"].to_s])), id: dom_id(PrestacionPrincipal.find(p["id"].to_s)),disabled:(@solicitud_addenda.estado_solicitud_addenda_id !=EstadosSolicitudAddenda::GENERADA)       
         
         %td.centrado 
           = hidden_field_tag "solicitud_addenda[prestacion_principal_tecnica_id][" + p["id"].to_s+"]", nil

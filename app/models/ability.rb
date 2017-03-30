@@ -76,6 +76,7 @@ class Ability
       can :read, LiquidacionSumarAnexoAdministrativo
       can :read, AnexoAdministrativoPrestacion
       can :manage, Prestacion
+      can :manage,  SolicitudAddenda
     end
 
     if user.in_group? :convenios
@@ -90,6 +91,7 @@ class Ability
       can :read, Efector
       can :update, Efector
       can :read, PrestacionAutorizada
+        can :manage,  SolicitudAddenda
     end
 
     if user.in_group? :auditoria_control
@@ -103,6 +105,7 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+     
     end
 
     if user.in_group? :coordinacion

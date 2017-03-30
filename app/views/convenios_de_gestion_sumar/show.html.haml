@@ -12,6 +12,8 @@
       = link_to "Agregar una adenda", new_addenda_sumar_url(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)
     - if can? :create, ConvenioDeGestionSumar
       = link_to "Generar documento", convenio_de_gestion_sumar_path(@convenio_de_gestion, :format => :odt)
+    - if can? :read, SolicitudAddenda
+      = link_to "Solicitudes de adendas", solicitudes_addendas_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)  
 
 = render :partial => "shared/info"
 
