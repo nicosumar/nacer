@@ -13,6 +13,12 @@
 #content-body
   %h2.first-header Listado de solicitudes de adendas Sumar
 
+  = form_tag(solicitudes_addendas_path, method:  :get) do 
+    .field
+      = label_tag "Estado Solicitud:"
+      = select_tag 'estado_id', options_for_select(@estados_solicitudes,@filtro_estado ), {:class => 'multi_select'} 
+      = submit_tag "Buscar"
+
   %table
     %thead
       %tr

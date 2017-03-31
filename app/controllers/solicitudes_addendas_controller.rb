@@ -43,14 +43,23 @@ class SolicitudesAddendasController < ApplicationController
         estados_ids = estados_ids + [EstadosSolicitudAddenda::EN_REVISION_LEGAL,EstadosSolicitudAddenda::APROBACION_LEGAL]
       end
       
-      @solicitudes_addendas =
-        SolicitudAddenda.where("estado_solicitud_addenda_id in #{estados_ids.to_s.gsub('[','(').gsub(']',')')}").paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
-        :order => "updated_at DESC"
-      )
+      if !params[:estado_id].nil?
+        @filtro_estado = params[:estado_id]
+        @solicitudes_addendas =
+          SolicitudAddenda.accessible_by(current_ability).where( estado_solicitud_addenda_id: params[:estado_id].to_i).paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
+          :order => "updated_at DESC")
+          
+      else
+        
+        #Viene sin filtro
+        @solicitudes_addendas =
+          SolicitudAddenda.accessible_by(current_ability).where("estado_solicitud_addenda_id in #{estados_ids.to_s.gsub('[','(').gsub(']',')')}").paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
+          :order => "updated_at DESC"
+        )
+         
+      end
       
-      
-      
-      
+      @estados_solicitudes = EstadoSolicitudAddenda.all.collect{|p|[p.nombre, p.id]}
       
     else
       
@@ -65,12 +74,24 @@ class SolicitudesAddendasController < ApplicationController
         )
         return
       end
-
-      # Obtener el listado de addendas
-      @solicitudes_addendas =
-        SolicitudAddenda.where(convenio_de_gestion_sumar_id:@convenio_de_gestion.id).paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
-        :order => "updated_at DESC"
-      )
+        
+      
+      if !params[:estado_id].nil?
+        @filtro_estado = params[:estado_id]
+        # Obtener el listado de addendas
+        @solicitudes_addendas =
+          SolicitudAddenda.where("convenio_de_gestion_sumar_id == #{@convenio_de_gestion.id} and estado_solicitud_addenda_id == #{@filtro_estado}" ).paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
+          :order => "updated_at DESC"
+        )
+      else
+        # Obtener el listado de addendas
+        @solicitudes_addendas =
+          SolicitudAddenda.where(convenio_de_gestion_sumar_id:@convenio_de_gestion.id).paginate(:page => params[:page], :per_page => 20, :include =>[:estado_solicitud_addenda,{:convenio_de_gestion_sumar => :efector}],
+          :order => "updated_at DESC"
+        )
+      end
+        
+       
     end
   
    
@@ -167,11 +188,11 @@ class SolicitudesAddendasController < ApplicationController
     
     
     
-#    @solicitudes_prestaciones_principales = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.es_autorizacion ? p.prestacion_principal_id.to_s : '' )] }
-#   
-#    
-#    @solicitudes_prestaciones_principales_aptecnica = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.aprobado_por_medica ? p.prestacion_principal_id.to_s : '' )] }
-#  
+    #    @solicitudes_prestaciones_principales = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.es_autorizacion ? p.prestacion_principal_id.to_s : '' )] }
+    #   
+    #    
+    #    @solicitudes_prestaciones_principales_aptecnica = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.collect{|p| [p.prestacion_principal_id.to_s,( p.aprobado_por_medica ? p.prestacion_principal_id.to_s : '' )] }
+    #  
 
   end
   
@@ -287,14 +308,14 @@ class SolicitudesAddendasController < ApplicationController
     
     
     @puede_editar = 
-    (
-    (EstadosSolicitudAddenda::GENERADA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:gestion_addendas_uad) or
-    (EstadosSolicitudAddenda::EN_REVISION_TECNICA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:auditoria_medica) or
-    (EstadosSolicitudAddenda::EN_REVISION_LEGAL == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:convenios)
+      (
+      (EstadosSolicitudAddenda::GENERADA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:gestion_addendas_uad) or
+        (EstadosSolicitudAddenda::EN_REVISION_TECNICA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:auditoria_medica) or
+        (EstadosSolicitudAddenda::EN_REVISION_LEGAL == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:convenios)
     )
-     @puede_anular =  (
-    (EstadosSolicitudAddenda::GENERADA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:gestion_addendas_uad) or
-    (EstadosSolicitudAddenda::EN_REVISION_TECNICA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:auditoria_medica) 
+    @puede_anular =  (
+      (EstadosSolicitudAddenda::GENERADA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:gestion_addendas_uad) or
+        (EstadosSolicitudAddenda::EN_REVISION_TECNICA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:auditoria_medica) 
     )
      
     @puede_confirmar_efector = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA and current_user.in_group?:gestion_addendas_uad)
@@ -355,7 +376,7 @@ class SolicitudesAddendasController < ApplicationController
     @solicitud_addenda = SolicitudAddenda.new()
         
     unless @solicitud_addenda.validar_existencia_de_solicitud_addenda_previa (@convenio_de_gestion.id)
-      redirect_to( new_solicitud_addenda_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id),
+      redirect_to(solicitudes_addendas_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id),
         :flash => { :tipo => :advertencia, :titulo => "No es posible registrar la solicitud de adenda",
           :mensaje => [ "Para poder realizar altas de solicitudes de adendas, debe hacerlo sin tener otras solicitudes " +
               "en curso."
@@ -437,8 +458,13 @@ class SolicitudesAddendasController < ApplicationController
     if @solicitud_addenda.solicitudes_addendas_prestaciones_principales.empty?
       #No hay modificaciones 
      
-      redirect_to(solicitudes_addendas_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id),
-        :flash => { :tipo => :advertencia, :titulo => "La solicitud de adenda debe incluir al menos una alta/baja de prestación." }
+      redirect_to(new_solicitud_addenda_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id),
+        :flash => { :tipo => :advertencia, :titulo => "La solicitud de adenda debe incluir al menos una alta/baja de prestación." ,
+          :mensaje => [ "Para poder realizar solicitudes de adendas, debe hacerlo tildando o destildando al menos una prestacion respecto de la condicion actual " +
+              "de prestaciones autorizadas del plan de salud"
+          ]
+          
+        }
          
       )
       return
@@ -479,7 +505,11 @@ class SolicitudesAddendasController < ApplicationController
 
     # Obtener la solicitud que se actualizará y su convenio de gestión
     begin
-      @solicitud_addenda = SolicitudAddenda.find(params[:id], :include => [{:convenio_de_gestion_sumar => :efector}])
+      @solicitud_addenda = 
+        SolicitudAddenda.find(params[:id], :include => [
+          :solicitudes_addendas_prestaciones_principales,
+          {:convenio_de_gestion_sumar => :efector}
+        ])
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
@@ -498,7 +528,6 @@ class SolicitudesAddendasController < ApplicationController
     if @solicitud_addenda.estado_solicitud_addenda_id ==  EstadosSolicitudAddenda::EN_REVISION_LEGAL
       
       @solicitud_addenda.firmante = params[:solicitud_addenda][:firmante]
-      #@solicitud_addenda.numero_addenda = params[:solicitud_addenda][:numero_addenda]
       @solicitud_addenda.fecha_de_inicio =  parametro_fecha(params[:solicitud_addenda], :fecha_de_inicio)
       @solicitud_addenda.fecha_de_suscripcion =  parametro_fecha(params[:solicitud_addenda], :fecha_de_suscripcion)
  
@@ -508,7 +537,7 @@ class SolicitudesAddendasController < ApplicationController
   
     
     @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(@convenio_de_gestion.efector_id)
-    
+    @detalles_prestaciones_principales_eliminados = []
     
     # solo manejo los estados de la aprobacion tecnica si la solicitud en revision tecnica o enviada al efector
     if (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA    )
@@ -530,7 +559,8 @@ class SolicitudesAddendasController < ApplicationController
           @detail = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.select{|p| p.prestacion_principal_id.to_s == presat[0]}
         
           unless @detail.empty?
-            @detail[0].destroy
+            @solicitud_addenda.solicitudes_addendas_prestaciones_principales.delete_if{|p| p.prestacion_principal_id.to_s == pres[0]}
+            @detalles_prestaciones_principales_eliminados << @detail[0]
           end
         else
           existe = false
@@ -579,8 +609,8 @@ class SolicitudesAddendasController < ApplicationController
           @detail = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.select{|p| p.prestacion_principal_id.to_s == pres[0]}
         
           unless @detail.empty?
-        
-            @detail[0].destroy
+            @solicitud_addenda.solicitudes_addendas_prestaciones_principales.delete_if{|p| p.prestacion_principal_id.to_s == pres[0]}
+            @detalles_prestaciones_principales_eliminados << @detail[0]
           end
             
           
@@ -607,18 +637,28 @@ class SolicitudesAddendasController < ApplicationController
         end
       end
     end
- 
+    
     #Valido que al menos se realize una modificacion para que la solicitud de adenda tenga sentido.
     if @solicitud_addenda.solicitudes_addendas_prestaciones_principales.empty?
+
       #No hay modificaciones 
      
-      render :action => "edit"
-  
+      redirect_to(edit_solicitud_addenda_path(@solicitud_addenda),
+        :flash => { :tipo => :advertencia, :titulo => "La solicitud de adenda debe incluir al menos una alta/baja de prestación." ,
+          :mensaje => [ "Para poder realizar solicitudes de adendas, debe hacerlo tildando o destildando al menos una prestacion respecto de la condicion actual " +
+              "de prestaciones autorizadas del plan de salud"
+          ]
+          
+        }
+         
+      )
+      return
     end
     #  
     
     if  @solicitud_addenda.save
       # Redirigir a la adenda modificada
+      @detalles_prestaciones_principales_eliminados.each{|p| p.destroy}
       redirect_to(@solicitud_addenda,
         :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
       )
@@ -628,7 +668,7 @@ class SolicitudesAddendasController < ApplicationController
     
   def aprobacion_tecnica
     # Verificar los permisos del usuario
-   # byebug
+    # 
     if cannot? :update, SolicitudAddenda
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
@@ -856,7 +896,7 @@ class SolicitudesAddendasController < ApplicationController
     else 
   
       
-            redirect_to( root_url,
+      redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "La solicitud de adenda es incorrecta",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
@@ -908,6 +948,7 @@ class SolicitudesAddendasController < ApplicationController
     @addenda.numero = @solicitud_addenda.numero_addenda
    
     if @addenda.save
+       
       #Por cada 
       @solicitud_addenda.solicitudes_addendas_prestaciones_principales.each  do |sapp| 
      
@@ -932,11 +973,12 @@ class SolicitudesAddendasController < ApplicationController
       
       
         @prestacion_principal.prestaciones_pdss.each do |p|
-          actual = PrestacionPdssAutorizada.pres_autorizadas(@solicitud_addenda.convenio_de_gestion_sumar.efector_id, fecha_actual, p.id.to_s)
+          actual = PrestacionPdssAutorizada.pres_autorizadas_para_solicitud(@solicitud_addenda.convenio_de_gestion_sumar.efector_id, fecha_actual, p.id.to_s)
               
     
        
           if not actual.first
+          
             #no se encontro la prestacion por lo que el efector no la tiene autorizada
             #hacemos un insert de la prestacion nueva siempre que se encuentre seleccionada
             
@@ -955,7 +997,7 @@ class SolicitudesAddendasController < ApplicationController
           else   
             
             #si esta y esta deseleccionada es que la da de baja
-            if  !sapp.aprobado_por_medica? and actual.rows[0][4].nil? # autorizante a la baja type
+            if  !sapp.aprobado_por_medica?  # autorizante a la baja type
               #la doy de baja solo si esta pero no esta dada de baja
               
               CustomQuery.ejecutar(
@@ -964,7 +1006,7 @@ class SolicitudesAddendasController < ApplicationController
                         UPDATE  prestaciones_pdss_autorizadas SET fecha_de_finalizacion = '#{ @addenda.fecha_de_inicio.strftime('%Y-%m-%d')}',
                                                                             autorizante_de_la_baja_type= 'AddendaSumar' 
                                                                             , autorizante_de_la_baja_id=  #{ @addenda.id}
-                                                                            , updated_at = #{ fecha_actual.strftime('%Y-%m-%d') }  
+                                                                            , updated_at = '#{ fecha_actual.strftime('%Y-%m-%d') }'  
                                                                         WHERE efector_id = #{@solicitud_addenda.convenio_de_gestion_sumar.efector_id} AND
                                                                               prestacion_pdss_id = #{actual.first["prestacion_pdss_id"]}",
                                  
@@ -973,22 +1015,8 @@ class SolicitudesAddendasController < ApplicationController
               
               
             end
-           
-            if sapp.aprobado_por_medica? and !actual.rows[0][4].nil?
-              #Ya existe al dia de hoy y esta aprobada.
-                CustomQuery.ejecutar(
-                {
-                  sql: " 
-                                          INSERT INTO prestaciones_pdss_autorizadas
-                                          (efector_id, prestacion_pdss_id, fecha_de_inicio, autorizante_al_alta_type, autorizante_al_alta_id,created_at,updated_at)
-                                          VALUES
-                                          (#{@solicitud_addenda.convenio_de_gestion_sumar.efector_id}, #{p.id.to_s}, '#{ @addenda.fecha_de_inicio.strftime('%Y-%m-%d')}', 'AddendaSumar', #{ @addenda.id } ,'#{ fecha_actual.strftime('%Y-%m-%d') }' ,'#{ fecha_actual.strftime('%Y-%m-%d') }' )" ,
-
-                }) 
-              
-              
-              
-            end
+          
+       
             
             
             

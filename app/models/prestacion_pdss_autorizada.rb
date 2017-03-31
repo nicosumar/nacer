@@ -126,6 +126,29 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
     )
     return qres
   end
+  
+  #Es similar al metodo anterior pero hay cosas que no contempla asi que lo edito
+  def self.pres_autorizadas_para_solicitud(efector_id, fecha = Date.today, prestacion_id)
+  Date.today.strftime("%d/%m/%Y")
+  fecha = Date.today
+    qres = ActiveRecord::Base.connection.exec_query( <<-SQL
+                                                             SELECt
+                                                                ppa.*
+                                                                FROM
+                                                                prestaciones_pdss_autorizadas as ppa,
+                                                                prestaciones_prestaciones_pdss as pppdss
+                                                                WHERE
+                                                                ppa.efector_id = #{efector_id}
+                                                                AND ('#{fecha.iso8601}' between fecha_de_inicio and fecha_de_finalizacion OR (fecha_de_inicio <= '#{fecha.iso8601}' and fecha_de_finalizacion is null))
+                                                                AND  pppdss.prestacion_pdss_id = ppa.prestacion_pdss_id AND    pppdss.prestacion_pdss_id = '#{prestacion_id}'
+                                                                and ppa.autorizante_al_alta_type IS NOT NULL	  
+                                                                and ppa.autorizante_de_la_baja_type is null
+      SQL
+    )
+    return qres
+  end  
+
+
 #-----------------------------------------------------------------------------------------
   def self.se_puede_addendar?(efector_id, fecha = Date.today, prestacion_pdss_id)
     begin

@@ -9,8 +9,8 @@
         = link_to "Agregar una adenda", new_addenda_sumar_path(:convenio_de_gestion_sumar_id => @efector.convenio_de_gestion_sumar.id)
       - elsif @efector.convenio_de_gestion
         = link_to "Agregar una adenda", new_addenda_path(:convenio_de_gestion_id => @efector.convenio_de_gestion.id)
-    - if can? :read, SolicitudAddenda
-      = link_to "Solicitudes de adendas", solicitudes_addendas_path(:convenio_de_gestion_sumar_id => @efector.convenio_de_gestion_sumar.id)
+    - if current_user.in_group?(:gestion_addendas_uad)
+      = link_to "Solicitudes de adendas", solicitudes_addendas_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id) 
 
 = render :partial => "shared/info"
 
