@@ -654,7 +654,7 @@ class SolicitudesAddendasController < ApplicationController
      
 
     #valido el cambio de estado 
-    if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA or @solicitud_addenda.estado_solicitud_addenda_id  == EstadosSolicitudAddenda::EN_REVISION_LEGAL
+    if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA or @solicitud_addenda.estado_solicitud_addenda_id  == EstadosSolicitudAddenda::EN_REVISION_LEGAL #Este ultimo lo dejo por el doble post de Firefox
       
       @solicitud_addenda.estado_solicitud_addenda_id  = EstadosSolicitudAddenda::EN_REVISION_LEGAL
       
@@ -709,7 +709,7 @@ class SolicitudesAddendasController < ApplicationController
     
 
     #valido el cambio de estado 
-    if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL or @solicitud_addenda.estado_solicitud_addenda_id  == EstadosSolicitudAddenda::APROBACION_LEGAL
+    if (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL or @solicitud_addenda.estado_solicitud_addenda_id  == EstadosSolicitudAddenda::APROBACION_LEGAL) #Este ultimo lo dejo por el doble post de Firefox
       
       @solicitud_addenda.estado_solicitud_addenda_id  = EstadosSolicitudAddenda::APROBACION_LEGAL
       @solicitud_addenda.fecha_revision_legal = Time.now
@@ -780,7 +780,7 @@ class SolicitudesAddendasController < ApplicationController
     
 
     #valido el cambio de estado 
-    if @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA or @solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA
+    if  [EstadosSolicitudAddenda::EN_REVISION_TECNICA, EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::ANULACION_EFECTOR ,EstadosSolicitudAddenda::ANULACION_TECNICA].include?(@solicitud_addenda.estado_solicitud_addenda_id)
       
       @solicitud_addenda.estado_solicitud_addenda_id  = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA ? EstadosSolicitudAddenda::ANULACION_EFECTOR : EstadosSolicitudAddenda::ANULACION_TECNICA)
       if  @solicitud_addenda.save
