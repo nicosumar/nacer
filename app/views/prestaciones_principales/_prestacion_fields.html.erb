@@ -4,12 +4,13 @@
       <label>Nombre <%= link_to "(Ver)", prestacion_path(f.object.id), target: "_blank" unless f.object.new_record? %></label>
     </div>
     <div class="col-md-7">
-      <%= f.text_field :nombre, class: "large-input" %>    
+      <%= f.text_field :nombre, class: "large-input", disabled: (f.object.activa == false) %>    
     </div>
     <div class="col-md-2">
-      <% unless f.object.new_record? %>
+      <% unless f.object.new_record? or f.object.prestaciones_pdss.count > 1 or f.object.activa == false %>
         <button name="duplicar_prestacion_id" value="<%= f.object.id %>" type="submit">Duplicar</button>        
       <% end %>
+      <%= "(Inactiva) " if f.object.activa == false %>
       <%= link_to_remove_association "Quitar", f %>
     </div>
   </div>
@@ -22,7 +23,7 @@
   </div>
   <div id="prestaciones_pdss">
     <%= f.fields_for :prestaciones_pdss do |prestacion_pdss|  %>
-      <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
+      <%= render 'prestacion_pdss_fields', f: prestacion_pdss, disabled: (f.object.activa == false) %>
     <% end %>
   </div>  
   <hr>

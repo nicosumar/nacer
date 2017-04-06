@@ -55,13 +55,12 @@ class PrestacionPrincipal < ActiveRecord::Base
         if prestacion.prestaciones_pdss.count > 1
           first_record = true
           prestacion.prestaciones_pdss.each do |prestacion_pdss|
-            if !first_record
-              nueva_prestacion = prestacion.duplicar
-              prestacion_pdss.prestaciones = [nueva_prestacion]
-              prestacion_pdss.save
-            end
-            first_record = false
+            nueva_prestacion = prestacion.duplicar
+            prestacion_pdss.prestaciones = [nueva_prestacion]
+            prestacion_pdss.save
           end
+          prestacion.activa = false
+          prestacion.save
         end
       end
     end
