@@ -47,6 +47,7 @@ class PrestacionesLiquidadasController < ApplicationController
         }
       end
     end
+
   end
 
 end

@@ -39,7 +39,7 @@ class PrestacionLiquidada < ActiveRecord::Base
       .where("prestaciones.concepto_de_facturacion_id = ? \n"+
              "and prestaciones_liquidadas.efector_id = ? \n"+
              "and afiliados.clave_de_beneficiario = ? \n"+
-             "and estado_de_la_prestacion_liquidada_id = 12 ", concepto, efector, afiliado.clave_de_beneficiario)
+             "and estado_de_la_prestacion_liquidada_id < 102 ", concepto, efector, afiliado.clave_de_beneficiario)
 
     }
   scope :pagadas_por_efector_y_concepto_comunitarias,

@@ -81,7 +81,7 @@ class Periodo < ActiveRecord::Base
     ActiveRecord::Base.connection.execute(
      "DROP TABLE IF EXISTS datos_reportables_del_periodo; CREATE TEMPORARY TABLE datos_reportables_del_periodo AS (" + selects.join(" UNION ") + ");"
     )
-
+byebug
     # Finalmente, ejecutar la consulta que devuelve los campos formateados de acuerdo con el
     # documento del diccionario de datos del SIRGe (e implementación de datos reportables
     # según DOIU 20).
