@@ -108,5 +108,27 @@ $(document).ready(function(){
     }
   });
 
+
+  $(document).on( "change", ".magicselect", function() {
+        var dato_reportable_id = $(this).val();
+        var full_id = $(this).attr('id');
+        url = '/datos_reportables/' + dato_reportable_id;
+        $.get(url , function(data){ 
+                if (data != undefined && data != null && data.dato_reportable_sirge_id !=null) {
+                  $( 'label[for=' + full_id.replace("dato_reportable_id","labelRS")+']').show();
+                  $( '#' + full_id.replace("dato_reportable_id","es_requerido_sirge")).show();  
+                }else{
+                  $( 'label[for=' + full_id.replace("dato_reportable_id","labelRS")+']').hide();
+                  $( '#' + full_id.replace("dato_reportable_id","es_requerido_sirge")).hide();  
+                }
+            }
+        );
+      }
+  );
+
+
+
+
+
 });
 

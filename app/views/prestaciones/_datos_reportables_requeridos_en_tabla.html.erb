@@ -8,6 +8,7 @@
       <th>Máx.</th>
       <th>Necesario</th>
       <th>Obligatorio</th>
+      <th>¿Es requerido Sirge?</th>
     </tr>
     <% datos_reportables_requeridos.each do |dato_reportable_requerido| %>
       <tr>
@@ -18,6 +19,7 @@
         <td><%= dato_reportable_requerido.maximo %></td> 
         <td><%= dato_reportable_requerido.necesario? ? "SI" : "NO" %></td>
         <td><%= dato_reportable_requerido.obligatorio? ? "SI" : "NO" %></td> 
+        <td><%= dato_reportable_requerido.dato_reportable.dato_reportable_sirge_id.nil? ? "Sin sirge asociado": dato_reportable_requerido.es_requerido_sirge? ? "SI" : "NO" %></td> 
       </tr>
     <% end %>
   </table>

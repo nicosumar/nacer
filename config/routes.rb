@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  get "datos_reportables/show"
+
   get "prestaciones/autorizadas"
   get "diagnosticos/por_prestacion"
 
@@ -78,6 +80,7 @@ Nacer::Application.routes.draw do
     put :update_motivo_rechazo, on: :member
   end
 
+  resources :datos_reportables , :only => :show
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users", :passwords => "passwords" }
   devise_scope :user do
