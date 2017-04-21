@@ -43,11 +43,22 @@
   <h4>Prestaciones del plan de salud</h4>
   <div id="prestaciones">
     <%= f.fields_for :prestaciones do |prestacion|  %>
-      <%= render 'prestacion_fields', f: prestacion  %>
+      <%= render 'prestacion_fields', f: prestacion, activa: true  %>
     <% end %>
   </div>
   <br><br>
   <hr>
+
+  <% if @prestacion_principal.prestaciones.where(activa: false).present? %>
+    <h4>Prestaciones del plan de salud anterior (inactivas)</h4>
+    <div id="prestaciones">
+      <%= f.fields_for :prestaciones do |prestacion|  %>
+        <%= render 'prestacion_fields', f: prestacion, activa: false  %>
+      <% end %>
+    </div>
+    <br><br>
+    <hr>
+  <% end %>
   <%= f.submit "Guardar" %>
 <% end %>
 <%= javascript_include_tag 'prestaciones_principales/_form.js' %>

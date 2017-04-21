@@ -26,6 +26,8 @@ class Prestacion < ActiveRecord::Base
   belongs_to :prestacion_principal
 
   has_one :tipo_de_prestacion, through: :objeto_de_la_prestacion
+  has_one :historico_prestacion_anterior, foreign_key: :prestacion_id, class_name: "HistoricoPrestacion"
+  has_one :prestacion_anterior, through: :historico_prestacion_anterior, source: :prestacion_anterior
 
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, through: :datos_adicionales_por_prestacion
@@ -38,6 +40,8 @@ class Prestacion < ActiveRecord::Base
   has_many :nomencladores, through: :asignaciones_de_precios
   has_many :prestaciones_incluidas
   has_many :prestaciones_autorizadas
+  has_many :historicos_prestaciones, foreign_key: :prestacion_anterior_id, class_name: "HistoricoPrestacion"
+  has_many :prestaciones_siguientes, through: :historicos_prestaciones, source: :prestacion
   
   has_and_belongs_to_many :metodos_de_validacion
   has_and_belongs_to_many :sexos

@@ -1,4 +1,4 @@
-class AddTableGruposPermitidos < ActiveRecord::Migration
+class CreateGruposPermitidos < ActiveRecord::Migration
   def change
     create_table :grupos_permitidos do |t|
       t.references :grupo_poblacional

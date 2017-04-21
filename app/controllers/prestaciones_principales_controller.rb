@@ -21,7 +21,7 @@ class PrestacionesPrincipalesController < ApplicationController
   end
 
   def create
-    @prestacion_principal = PrestacionPrincipal.new params[:prestacion_principal]    
+    @prestacion_principal = PrestacionPrincipal.new params[:prestacion_principal]   
     if @prestacion_principal.save
       if duplicar_prestacion_y_redireccionar params[:duplicar_prestacion_id]
         redirect_to edit_prestacion_principal_url(@prestacion_principal)

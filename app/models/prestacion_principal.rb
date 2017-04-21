@@ -20,33 +20,6 @@ class PrestacionPrincipal < ActiveRecord::Base
 
   private
     def populate_attributes
-      prestacion_modelo = nil
-      self.prestaciones.each do |prestacion|
-        if !prestacion.new_record? and prestacion_modelo.blank?
-          prestacion_modelo = prestacion
-          break
-        end
-      end
-      if prestacion_modelo.present?   
-        control = false     
-        self.prestaciones.map! do |prestacion|
-          if prestacion.new_record?
-            control = true
-            prestaciones_pdss = prestacion.prestaciones_pdss
-            prestaciones_pdss = prestaciones_pdss.each do |pdss|
-              pdss.nombre = prestacion.nombre
-            end
-            prestacion = prestacion_modelo.duplicar
-            prestacion.prestaciones_pdss = prestaciones_pdss
-            prestacion.prestacion_principal = self            
-          end
-          prestacion
-        end
-        if control
-          self.prestaciones.build
-          self.reload
-        end
-      end
       self
     end
 
@@ -55,13 +28,15 @@ class PrestacionPrincipal < ActiveRecord::Base
         if prestacion.prestaciones_pdss.count > 1
           first_record = true
           prestacion.prestaciones_pdss.each do |prestacion_pdss|
-            if !first_record
-              nueva_prestacion = prestacion.duplicar
-              prestacion_pdss.prestaciones = [nueva_prestacion]
-              prestacion_pdss.save
+            nueva_prestacion = prestacion.duplicar
+            prestacion_pdss.prestaciones = [nueva_prestacion]
+            if prestacion_pdss.save
+              # Genero el histórico de la prestación.
+              HistoricoPrestacion.create(prestacion: nueva_prestacion, prestacion_anterior: prestacion)
             end
-            first_record = false
           end
+          prestacion.activa = false
+          prestacion.save
         end
       end
     end
