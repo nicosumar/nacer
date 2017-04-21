@@ -28,11 +28,11 @@ class EfectoresController < ApplicationController
     # Obtener el efector
     begin
       @efector =
-        Efector.find(params[:id],
-          :include => [:departamento, :distrito, :convenio_de_gestion, :convenio_de_administracion,
-            :convenio_de_gestion_sumar, :convenio_de_administracion_sumar
-          ]
-        )
+        Efector.find(params[:id])
+         # :include => [:departamento, :distrito, :convenio_de_gestion, :convenio_de_administracion,
+          #  :convenio_de_gestion_sumar, :convenio_de_administracion_sumar
+      #    ]
+       # )
     rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",
@@ -305,7 +305,8 @@ class EfectoresController < ApplicationController
     # Obtener el efector
     begin
       @efector =
-        Efector.find(params[:id], :include => { :prestaciones_autorizadas => [:autorizante_al_alta, :prestacion] })
+        Efector.find(params[:id])
+       # Efector.find(params[:id], :include => { :prestaciones_autorizadas => [:autorizante_al_alta, :prestacion] })
     rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,
         :flash => { :tipo => :error, :titulo => "La petición no es válida",

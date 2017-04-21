@@ -186,7 +186,6 @@ class UnidadesDeAltaDeDatosController < ApplicationController
         "'<persona responsable>', '<teléfono>');"
 
       # Guardar la nueva unidad de alta de datos
-
       @unidad_de_alta_de_datos.save
 
       # Asociar los centros de inscripción seleccionados si la UAD tiene habilitada la inscripción

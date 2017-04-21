@@ -1,9 +1,10 @@
 class PrestacionPrincipal < ActiveRecord::Base
-  attr_accessible :activa, :codigo, :deleted_at, :nombre, :prestaciones, :prestaciones_attributes, :prestacion_ids
+  attr_accessible :activa, :codigo, :deleted_at, :nombre
   
   has_many :prestaciones
   has_many :prestaciones_pdss, through: :prestaciones  
-
+  has_many :solicitudes_adddendas_prestaciones_principales
+  
   scope :activas,->{}
   scope :like_codigo, ->(codigo) { where("prestaciones_principales.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
 
@@ -13,7 +14,7 @@ class PrestacionPrincipal < ActiveRecord::Base
   after_save :validar_prestaciones
 
   accepts_nested_attributes_for :prestaciones, reject_if: :all_blank, allow_destroy: false
-
+  
   def full_codigo_y_nombre
     "#{self.codigo} - #{nombre}"
   end

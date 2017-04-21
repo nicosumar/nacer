@@ -14,17 +14,22 @@ Nacer::Application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send
+  config.action_mailer.raise_delivery_errors = true
+ 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = false
-
+  config.action_mailer.default :charset => "utf-8"
+  
   # SMTP server configuration
   config.action_mailer.smtp_settings = {
-    :address => "your.smtp.server",
-    :domain => "your.domain",
-    # Uncomment and configure user authentication if required by SMTP server
-    #:user_name => "your.smtp-authorized.user",
-    #:password => "your.smtp-user.password",
-    #:authentication => "your-authentication-method",
-    #:enable_starttls_auto => false
+   :address => "smtp.gmail.com",
+    :domain => "gmail.com",
+    :user_name => "desarrollosumar@gmail.com",
+    :password => "Sumar2017",
+    :authentication => "plain",
+    :enable_starttls_auto => true,
+    :port => 587
   }
 
   # Default URL for application links written into mails (needed for Devise)

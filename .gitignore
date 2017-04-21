@@ -22,6 +22,5 @@ public/paperclip
 
 /public/system/*
 /public/attachments/*
-/nbproject/private/
-/nbproject/*
 /nbproject/
+/.idea/

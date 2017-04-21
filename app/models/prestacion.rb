@@ -20,6 +20,8 @@ class Prestacion < ActiveRecord::Base
   attr_accessible :grupo_pdss_id, :linea_de_cuidado_id, :modulo_id, :prestacion_principal_id, :prestacion_principal
 
   belongs_to :objeto_de_la_prestacion
+  has_one :tipo_de_prestacion, through: :objeto_de_la_prestacion
+  has_and_belongs_to_many :diagnosticos
   belongs_to :unidad_de_medida
   belongs_to :tipo_de_tratamiento
   belongs_to :concepto_de_facturacion
@@ -32,10 +34,20 @@ class Prestacion < ActiveRecord::Base
   has_many :datos_adicionales_por_prestacion
   has_many :datos_adicionales, through: :datos_adicionales_por_prestacion
   has_many :cantidades_de_prestaciones_por_periodo
+  has_and_belongs_to_many :metodos_de_validacion
+  has_and_belongs_to_many :sexos
+  has_and_belongs_to_many :grupos_poblacionales
+
   has_many :datos_reportables_requeridos
   has_many :datos_reportables, through: :datos_reportables_requeridos, source: :dato_reportable
+  
   has_many :documentaciones_respaldatorias_prestaciones
   has_many :documentaciones_respaldatorias, through: :documentaciones_respaldatorias_prestaciones
+  
+  has_and_belongs_to_many :prestaciones_pdss
+
+  # Relaciones para liquidacion
+  belongs_to :concepto_de_facturacion
   has_many :asignaciones_de_precios
   has_many :nomencladores, through: :asignaciones_de_precios
   has_many :prestaciones_incluidas
@@ -49,6 +61,9 @@ class Prestacion < ActiveRecord::Base
   has_and_belongs_to_many :diagnosticos  
   has_and_belongs_to_many :prestaciones_pdss
 
+  #has_many relaciones para la solicitud de Addenda
+  has_many :solicitud_addenda_prestacion_pdss
+  
   # Validaciones
   # validates_presence_of :area_de_prestacion_id, :grupo_de_prestaciones_id  # OBSOLETO
   validates_presence_of :codigo, :nombre, :unidad_de_medida_id
@@ -63,6 +78,7 @@ class Prestacion < ActiveRecord::Base
   before_validation :asignar_attributes_a_prestacion
   before_save :asignar_attributes_a_prestaciones_pdss
 
+  after_initialize :add_cantidades_de_prestaciones_por_periodo
   after_initialize :add_prestaciones_pdss
 
   scope :listado_permitido, ->(con_eliminadas=false) { where('eliminada IS NULL OR eliminada = false') unless con_eliminadas }
@@ -321,6 +337,10 @@ class Prestacion < ActiveRecord::Base
 
     def validate_unique_asignaciones_de_precios
       validate_uniqueness_of_in_memory(asignaciones_de_precios, [:nomenclador_id, :dato_reportable_id, :area_de_prestacion_id], 'Asignación de precio duplicada.')
+    end
+
+    def add_cantidades_de_prestaciones_por_periodo
+      self.cantidades_de_prestaciones_por_periodo << CantidadDePrestacionesPorPeriodo.new if self.cantidades_de_prestaciones_por_periodo.blank?
     end
 
     def add_prestaciones_pdss

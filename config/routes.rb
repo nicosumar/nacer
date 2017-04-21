@@ -41,6 +41,17 @@ Nacer::Application.routes.draw do
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
     end
   end
+  
+  resources :solicitudes_addendas do
+    member do
+         post   'confirmar_solicitud', as: :confirmar_solicitud, action: :confirmar_solicitud
+         post   'aprobacion_tecnica' , as: :aprobacion_tecnica, action: :aprobacion_tecnica
+         post   'aprobacion_legal'   , as: :aprobacion_legal, action: :aprobacion_legal
+         post   'anular_solicitud'   , as: :anular_solicitud, action: :anular_solicitud
+    end
+  end
+  
+  
   resources :reglas
   resources :liquidaciones_sumar_anexos_administrativos do
     put :finalizar_anexo, on: :member
@@ -158,6 +169,9 @@ Nacer::Application.routes.draw do
     get :validar_codigo , on: :collection
     get :edit_para_asignacion_de_precios, on: :member
   end
+ 
+  resources :solicitudes_addendas, :except => :destroy
+  
 
   root :to => 'inicio#index'
 
