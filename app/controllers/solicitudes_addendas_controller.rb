@@ -10,9 +10,10 @@ class SolicitudesAddendasController < ApplicationController
       )
       return
     end
- 
+    
+    @estados_solicitudes = EstadoSolicitudAddenda.all.collect{|p|[p.nombre, p.id]}
+
     #Determino si el que accede es efector
-   
     if !params[:convenio_de_gestion_sumar_id]
       #Determino si el que accede es efector
       if current_user.in_group?:gestion_addendas_uad and !(current_user.in_group?([:auditoria_medica,:convenios]))
@@ -59,8 +60,6 @@ class SolicitudesAddendasController < ApplicationController
          
       end
       
-      @estados_solicitudes = EstadoSolicitudAddenda.all.collect{|p|[p.nombre, p.id]}
-      
     else
       
       begin
@@ -74,7 +73,6 @@ class SolicitudesAddendasController < ApplicationController
         )
         return
       end
-        
       
       if !params[:estado_id].nil?
         @filtro_estado = params[:estado_id]
@@ -90,11 +88,8 @@ class SolicitudesAddendasController < ApplicationController
           :order => "updated_at DESC"
         )
       end
-        
        
     end
-  
-   
     
   end
 

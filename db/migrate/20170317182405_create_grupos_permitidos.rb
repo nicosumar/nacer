@@ -10,5 +10,7 @@ class CreateGruposPermitidos < ActiveRecord::Migration
     add_index :grupos_permitidos, :grupo_poblacional_id
     add_index :grupos_permitidos, :grupo_pdss_id
     add_index :grupos_permitidos, :sexo_id
+
+    load 'db/GruposPermitidos_seed.rb'
   end
 end

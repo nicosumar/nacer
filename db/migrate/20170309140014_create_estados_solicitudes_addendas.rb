@@ -7,5 +7,7 @@ class CreateEstadosSolicitudesAddendas < ActiveRecord::Migration
       t.boolean :indexable
       t.timestamps
     end
+
+    load 'db/EstadosSolicitudesAddendas_seed.rb'
   end
 end
