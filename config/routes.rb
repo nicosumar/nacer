@@ -1,11 +1,14 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  get "datos_reportables/show"
+
   get "prestaciones/autorizadas"
   get "diagnosticos/por_prestacion"
 
   resources :documentos_generables
   resources :notas_de_debito
+  resources :prestaciones_principales
 
   resources :informes_debitos_prestacionales do
     resources :detalles_de_debitos_prestacionales, only: [:index, :create, :destroy]
@@ -40,6 +43,17 @@ Nacer::Application.routes.draw do
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion
     end
   end
+  
+  resources :solicitudes_addendas do
+    member do
+         post   'confirmar_solicitud', as: :confirmar_solicitud, action: :confirmar_solicitud
+         post   'aprobacion_tecnica' , as: :aprobacion_tecnica, action: :aprobacion_tecnica
+         post   'aprobacion_legal'   , as: :aprobacion_legal, action: :aprobacion_legal
+         post   'anular_solicitud'   , as: :anular_solicitud, action: :anular_solicitud
+    end
+  end
+  
+  
   resources :reglas
   resources :liquidaciones_sumar_anexos_administrativos do
     put :finalizar_anexo, on: :member
@@ -60,6 +74,12 @@ Nacer::Application.routes.draw do
   resources :secciones_pdss, only: [] do
     resources :grupos_pdss, only: :index
   end
+
+  resources :grupos_pdss, only: [] do
+    resources :grupos_poblacionales, only: :index
+    resources :sexos, only: :index
+  end
+
   resources :consolidados_sumar
   # rutas para la actualizacion asincronica
   resources :anexos_medicos_prestaciones, :only => [] do
@@ -71,6 +91,7 @@ Nacer::Application.routes.draw do
     put :update_motivo_rechazo, on: :member
   end
 
+  resources :datos_reportables , :only => :show
 
   devise_for :users, :controllers => { :sessions => "user_sessions", :registrations => "users", :passwords => "passwords" }
   devise_scope :user do
@@ -151,6 +172,9 @@ Nacer::Application.routes.draw do
     get :validar_codigo , on: :collection
     get :edit_para_asignacion_de_precios, on: :member
   end
+ 
+  resources :solicitudes_addendas, :except => :destroy
+  
 
   root :to => 'inicio#index'
 

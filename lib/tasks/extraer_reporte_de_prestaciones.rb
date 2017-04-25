@@ -10,7 +10,7 @@ class ExtraerReporteDePrestaciones
 
     def procesar_archivo_sirge
 		periodo = Periodo.find(@periodo_id)
-		filename = "Paquete_Basico_Periodo_SIRGE_" + periodo.periodo + ".txt"
+		filename = 'lib/tasks/datos/'+"Paquete_Basico_Periodo_SIRGE_" + periodo.periodo + ".txt"
     destino = File.open(filename, "w")
 		prestaciones = periodo.padron_de_prestaciones_sirge
 	  separador = ";"
@@ -29,7 +29,7 @@ class ExtraerReporteDePrestaciones
 
     def procesar_archivo_ace
 		periodo = Periodo.find(@periodo_id)
-		filename = "Paquete_Basico_Periodo_ACE_" + periodo.periodo + ".txt"
+		filename = 'lib/tasks/datos/'+"Paquete_Basico_Periodo_ACE_" + periodo.periodo + ".txt"
     destino = File.open(filename, "w")
 		prestaciones = periodo.padron_de_prestaciones_ace
 	  separador = ";"

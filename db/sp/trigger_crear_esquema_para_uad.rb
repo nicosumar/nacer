@@ -143,7 +143,8 @@ $BODY$
               creator_id integer,
               updater_id integer,
               mes_y_anio_de_proceso date,
-              mensaje_de_la_baja text
+              mensaje_de_la_baja text,
+              motivo_baja_beneficiario_id integer
             );
 
             -- Crear la secuencia que genera los identificadores de la tabla de novedades
@@ -226,7 +227,11 @@ $BODY$
               FOREIGN KEY (tipo_de_documento_del_padre_id) REFERENCES tipos_de_documentos(id);
             ALTER TABLE ONLY uad_' || NEW.codigo || '.novedades_de_los_afiliados
             ADD CONSTRAINT fk_uad_' || NEW.codigo || '_novedades_tt_dd_tutor
-              FOREIGN KEY (tipo_de_documento_del_tutor_id) REFERENCES tipos_de_documentos(id);';
+              FOREIGN KEY (tipo_de_documento_del_tutor_id) REFERENCES tipos_de_documentos(id);
+            
+            ALTER TABLE ONLY uad_' || NEW.codigo || '.novedades_de_los_afiliados
+            ADD CONSTRAINT fk_novedades_de_los_afiliados_motivo_baja_beneficiario_uad_' || NEW.codigo || 
+              ' FOREIGN KEY (tipo_de_documento_del_tutor_id) REFERENCES tipos_de_documentos(id);';
         END IF;
 
         IF NEW.facturacion AND NOT existe_prestaciones THEN
@@ -366,3 +371,5 @@ ALTER FUNCTION crear_esquema_para_uad()
   OWNER TO nacer_adm;
 
 SQL
+
+

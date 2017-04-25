@@ -424,7 +424,7 @@ class LiquidacionSumar < ActiveRecord::Base
 
   def generar_documentos!
     begin
-      transaction do 
+      transaction do
         self.concepto_de_facturacion.generar_documentos!(self)
         PrestacionBrindada.marcar_prestaciones_facturadas!(self)
       end

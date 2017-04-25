@@ -120,6 +120,13 @@
   <hr>
 
   <div class='field_content'>
+    <span class='field_name'><b>Datos adicionales</b></span>
+    <%= render "datos_adicionales_en_tabla", datos_adicionales: @prestacion.datos_adicionales %>
+  </div>
+  
+  <hr>
+
+  <div class='field_content'>
     <span class='field_name'><b>Asignaciones de precios</b></span>
     <%= render "asignacion_de_precios_en_tabla", asignaciones_de_precios: @prestacion.asignaciones_de_precios %>
   </div>

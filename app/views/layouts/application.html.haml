@@ -73,12 +73,15 @@
                       %h3 ADENDAS
                       %ul
                         %li= link_to "Adendas", addendas_sumar_path
+                        - if (current_user.in_group? [:auditoria_medica, :convenios])  && (can?(:read, SolicitudAddenda))
+                          %li= link_to "Solicitudes de adendas", solicitudes_addendas_path
                   %div.col_1
                     - if can? :read, ConvenioDeGestionSumar
                       %h3 CONVENIOS SUMAR
                       %ul
                         %li= link_to "Gestión", convenios_de_gestion_sumar_path
                         %li= link_to "Administración", convenios_de_administracion_sumar_path
+                      
 
             - if (can? :read, LiquidacionSumar or can? :read, LiquidacionInforme) and current_user.in_group? [:coordinacion, :facturacion, :capacitacion, :auditoria_medica, :auditoria_control]
               %li
@@ -99,6 +102,7 @@
                       %li= link_to "Periodos", periodos_path
                       %li= link_to "Nomencladores", nomencladores_path
                       %li= link_to "Listado de prestaciones", prestaciones_url if current_user.in_group? [:auditoria_medica]
+                      %li= link_to "Listado de prestaciones principales", prestaciones_principales_url if current_user.in_group? [:auditoria_medica]
                   %div.col_2
                     %h3 CONTROLES PRESTACIONALES
                     %ul
@@ -181,6 +185,7 @@
                         %li= link_to "Procesos relacionados con padrones", padrones_url if current_user.in_group? :administradores
                       %h3 PRESTACIONES
                       %ul
+                        %li= link_to "Listado de prestaciones principales", prestaciones_principales_url
                         %li= link_to "Listado de prestaciones", prestaciones_url if current_user.in_group? :administradores
 
             %li.menu_right

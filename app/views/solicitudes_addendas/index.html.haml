@@ -1,0 +1,43 @@
+- content_for :title do
+  Solicitudes de Adendas Sumar
+
+#content-header
+  %h1 Solicitudes de Adendas Sumar
+  #action-links
+    - if can? :create, SolicitudAddenda
+      - if @convenio_de_gestion
+        = link_to 'Nueva solicitud', new_solicitud_addenda_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Listado de solicitudes de adendas Sumar
+
+  = form_tag(solicitudes_addendas_path, method:  :get) do 
+    .field
+      = label_tag "Estado Solicitud:"
+      = select_tag 'estado_id', options_for_select(@estados_solicitudes,@filtro_estado ), {:class => 'multi_select'} 
+      = submit_tag "Buscar"
+
+  %table
+    %thead
+      %tr
+        %th Número
+        %th Convenio de Gestión
+        %th Efector
+        %th Fecha de la solicitud
+        %th Estado
+        %th Última modificación
+
+    %tbody
+      - @solicitudes_addendas.each do |a|
+        %tr.clickable{ :onclick => "location.href=\'#{solicitud_addenda_path(a)}\'", :title => "Ver detalles de la solicitud de adenda" }
+          %td= a.numero.blank? ? "-" : a.numero    
+          %td= a.convenio_de_gestion_sumar.nombre
+          %td= a.convenio_de_gestion_sumar.efector.nombre
+          %td= a.fecha_solicitud.strftime("%d/%m/%Y")
+          %td= a.estado_solicitud_addenda.nombre
+          %td= a.updated_at.strftime("%d/%m/%Y %H:%M:%S")
+   
+          
+  = will_paginate @solicitudes_addendas, :inner_window => 2, :outer_window => 0

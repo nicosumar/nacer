@@ -289,6 +289,8 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Crear objetos requeridos para la vista
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+    @motivos_bajas_beneficiarios = 
+      MotivoBajaBeneficiario.all.collect{ |i| [i.nombre, i.id]}.sort
     @post_form_url = create_baja_novedades_de_los_afiliados_url
 
     render :action => "new"

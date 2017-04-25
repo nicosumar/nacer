@@ -14,6 +14,10 @@
 
   <h4>Información general</h4>
   <div class="field">
+    <%= f.label "Prestación Principal" %>
+    <%= f.collection_select :prestacion_principal_id, PrestacionPrincipal.activas, :id, :full_codigo_y_nombre %>    
+  </div>
+  <div class="field">
     <%= f.label "Nombre" %>
     <%= f.text_field :nombre %>      
   </div>
@@ -23,7 +27,7 @@
   </div>
   <div class="field">
     <%= f.label "Unidades máximas" %>
-    <%= f.number_field :unidades_maximas %>      
+    <%= f.number_field :unidades_maximas, disabled: (@prestacion.unidad_de_medida_id == 1 || @prestacion.unidad_de_medida_id.blank?) %>      
   </div>
   <div class="field">
     <%= f.label "Otorga cobertura" %>
@@ -59,19 +63,35 @@
   </div>
 
   <hr>
+  
+  <h4>Prestación P.D.S.S.</h4>
 
-  <h4>Sexos</h4>
+  <div class="nested-fields-label-container">
+    <div class="small-label">Sección pdss</div>
+    <div class="small-label">Grupo pdss</div>
+    <div class="small-label">Línea de cuidado</div>
+    <div class="small-label">Módulo</div>
+  </div>
 
-    <%= f.collection_select :sexo_ids, Sexo.all, :id, :nombre, 
-                            {selected: f.object.sexo_ids}, 
-                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
-  <br>
-  <br>
+  <div id="prestaciones_pdss">
+    <%= f.fields_for :prestaciones_pdss do |prestacion_pdss|  %>
+      <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
+    <% end %>
+    <br>
+  </div>
 
   <h4>Grupos poblacionales</h4>
 
     <%= f.collection_select :grupo_poblacional_ids, GrupoPoblacional.all, :id, :nombre, 
                             {selected: f.object.grupo_poblacional_ids}, 
+                            {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
+  <br>
+  <br>
+
+  <h4>Sexos</h4>
+
+    <%= f.collection_select :sexo_ids, Sexo.all, :id, :nombre, 
+                            {selected: f.object.sexo_ids}, 
                             {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
   <br>
   <br>
@@ -104,6 +124,26 @@
     </div>
   </div>
 
+  <h4>Datos adicionales</h4>
+
+  <div class="nested-fields-label-container">
+    <div class="xsmall-label">Nombre</div>
+    <div class="xsmall-label">Tipo postgres</div>
+    <div class="xsmall-label">Tipo Ruby</div>
+    <div class="xsmall-label">Enumerable</div>
+    <div class="xsmall-label">Clase para enum.</div>
+  </div>
+
+  <div id="datos_adicionales">
+    <%= f.fields_for :datos_adicionales do |dato_adicional|  %>
+      <%= render 'dato_adicional_fields', f: dato_adicional  %>
+    <% end %>
+    <br>
+    <div class="links">
+      <%= link_to_add_association 'agregar', f, :datos_adicionales  %>
+    </div>
+  </div>
+
   <h4>Métodos de validación</h4>
 
     <%= f.collection_select :metodo_de_validacion_ids, MetodoDeValidacion.all, :id, :nombre, 
@@ -125,31 +165,8 @@
       <%= render 'cantidad_de_prestaciones_por_periodo_fields', f: cantidad_de_prestaciones_por_periodo  %>
     <% end %>
     <br>
-    <div class="links">
-      <%= link_to_add_association 'agregar', f, :cantidades_de_prestaciones_por_periodo  %>
-    </div>
   </div>
 
-  <h4>Prestación P.D.S.S.</h4>
-
-  <div class="nested-fields-label-container">
-    <div class="small-label">Sección pdss</div>
-    <div class="small-label">Grupo pdss</div>
-    <div class="small-label">Línea de cuidado</div>
-    <div class="small-label">Módulo</div>
-  </div>
-
-  <div id="prestaciones_pdss">
-    <%= f.fields_for :prestaciones_pdss do |prestacion_pdss|  %>
-      <%= render 'prestacion_pdss_fields', f: prestacion_pdss  %>
-    <% end %>
-
-    <br>
-
-    <div class="links">
-      <%= link_to_add_association 'agregar', f, :prestaciones_pdss  %>
-    </div>
-  </div>
 
 
   <br>

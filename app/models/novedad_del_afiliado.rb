@@ -27,12 +27,13 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_accessible :esta_embarazada, :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo
   attr_accessible :semanas_de_embarazo, :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo
   attr_accessible :discapacidad_id, :fecha_de_la_novedad, :centro_de_inscripcion_id, :nombre_del_agente_inscriptor
-  attr_accessible :observaciones_generales, :mes_y_anio_de_proceso, :mensaje_de_la_baja
+  attr_accessible :observaciones_generales, :mes_y_anio_de_proceso, :mensaje_de_la_baja, :motivo_baja_beneficiario_id
 
   # La clave de beneficiario sólo puede registrarse al grabar la novedad
   attr_readonly :clave_de_beneficiario
 
   # Asociaciones
+  belongs_to :motivo_baja_beneficiario
   belongs_to :tipo_de_novedad
   belongs_to :estado_de_la_novedad
   belongs_to :clase_de_documento

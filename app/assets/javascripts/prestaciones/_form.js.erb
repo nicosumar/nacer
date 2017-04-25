@@ -14,12 +14,65 @@ $(document).ready(function(){
 
       // Agrega las opciones al grupo_pdss_select
       for (var i in data) {
-          $(grupo_pdss_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
+        if(i==0){
+          actualizarGuposPoblacionales(data[i].id);
+          actualizarSexos(data[i].id);
+        }
+        $(grupo_pdss_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
       }
 
     });
   });
 
+  var actualizarGuposPoblacionales = function(grupo_pdss_id){
+    var grupos_poblacionales_select = $("#prestacion_grupo_poblacional_ids");
+
+    // Llamada AJAX para buscar en el servidor
+    $.get( "/grupos_pdss/" + grupo_pdss_id + "/grupos_poblacionales.json", function( data ) {
+      // resetea el grupos_poblacionales_select
+      grupos_poblacionales_select.empty();
+
+      // Agrega las opciones al grupos_poblacionales_select
+      for (var i in data) {
+        $(grupos_poblacionales_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
+      }
+
+      grupos_poblacionales_select.trigger("chosen:updated");
+
+    });
+  }
+
+  var actualizarSexos = function(grupo_pdss_id){
+    var sexos_select = $("#prestacion_sexo_ids");
+
+    // Llamada AJAX para buscar en el servidor
+    $.get( "/grupos_pdss/" + grupo_pdss_id + "/sexos.json", function( data ) {
+      // resetea el sexos_select
+      sexos_select.empty();
+
+      // Agrega las opciones al sexos_select
+      for (var i in data) {
+        $(sexos_select).append('<option value=' + data[i].id + '>' + data[i].nombre + '</option>');
+      }
+
+      sexos_select.trigger("chosen:updated");
+
+    });
+  }
+
+  $(document).on( "change", ".grupo-pdss-select", function() {
+    actualizarGuposPoblacionales(this.value);
+    actualizarSexos(this.value);
+  });
+
+  $(document).on( "change", "#prestacion_unidad_de_medida_id", function() {
+    var unidad_de_medida_id = this.value;
+    if(unidad_de_medida_id==1){
+      $("#prestacion_unidades_maximas").attr("disabled", true);
+    }else{
+      $("#prestacion_unidades_maximas").attr("disabled", false);
+    }
+  });
 
   // Inicialización del popup
   $( "#popup-de-prestaciones-pdss" ).dialog({ autoOpen: false, 
@@ -54,6 +107,28 @@ $(document).ready(function(){
       });
     }
   });
+
+
+  $(document).on( "change", ".magicselect", function() {
+        var dato_reportable_id = $(this).val();
+        var full_id = $(this).attr('id');
+        url = '/datos_reportables/' + dato_reportable_id;
+        $.get(url , function(data){ 
+                if (data != undefined && data != null && data.dato_reportable_sirge_id !=null) {
+                  $( 'label[for=' + full_id.replace("dato_reportable_id","labelRS")+']').show();
+                  $( '#' + full_id.replace("dato_reportable_id","es_requerido_sirge")).show();  
+                }else{
+                  $( 'label[for=' + full_id.replace("dato_reportable_id","labelRS")+']').hide();
+                  $( '#' + full_id.replace("dato_reportable_id","es_requerido_sirge")).hide();  
+                }
+            }
+        );
+      }
+  );
+
+
+
+
 
 });
 

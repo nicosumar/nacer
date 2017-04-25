@@ -1,0 +1,64 @@
+<%= form_for :validator, method: :get, url: @prestacion_principal.id.present? ? edit_prestacion_principal_path(@prestacion_principal) : new_prestacion_principal_path do |f| %>
+  <div class="row">
+    <div class="col-md-3">
+      <div>Código</div>
+      <%= collection_select :validator, :objeto_de_la_prestacion_id, ObjetoDeLaPrestacion.all, :id, :full_codigo_y_nombre, {selected: @objeto_de_la_prestacion_id.present? ? @objeto_de_la_prestacion_id : {} }, {class: "medium-label"} %>
+    </div>
+    <div class="col-md-3">
+      <div>Diagnóstico</div>
+      <%= collection_select :validator, :diagnostico_id, Diagnostico.all, :id, :nombre_y_codigo, {selected: @diagnostico_id.present? ? @diagnostico_id : {} }, {class: "medium-label"} %> 
+    </div>
+    <div class="col-md-3">
+      <div>Buscar prestaciones existentes</div>
+      <%= f.submit "Sin prestación principal", class: "medium-label" %>
+    </div>
+  </div>
+<% end %>
+  <hr>
+
+<%= form_for @prestacion_principal do |f| %>
+
+  <h3>Información de la prestación principal</h3>
+
+  <div class="row">
+    <div class="col-md-3">
+      <h4>Código</h4>
+      <%= f.collection_select :codigo, ObjetoDeLaPrestacion.all, :codigo_para_la_prestacion, :full_codigo_y_nombre, {selected: (@codigo.present? and @prestacion_principal.codigo.blank?) ? @codigo : @prestacion_principal.codigo }, {class: "medium-label"} %>
+    </div>
+    <div class="col-md-8">
+      <h4>Nombre</h4>
+      <%= f.text_field :nombre, class: "large-input" %>      
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-md-3">
+      <%= f.label "¿Activa?" %>
+    <%= f.check_box :activa %>
+    </div>
+  </div>
+
+  <br>
+
+  <h4>Prestaciones del plan de salud</h4>
+  <div id="prestaciones">
+    <%= f.fields_for :prestaciones do |prestacion|  %>
+      <%= render 'prestacion_fields', f: prestacion, activa: true  %>
+    <% end %>
+  </div>
+  <br><br>
+  <hr>
+
+  <% if @prestacion_principal.prestaciones.where(activa: false).present? %>
+    <h4>Prestaciones del plan de salud anterior (inactivas)</h4>
+    <div id="prestaciones">
+      <%= f.fields_for :prestaciones do |prestacion|  %>
+        <%= render 'prestacion_fields', f: prestacion, activa: false  %>
+      <% end %>
+    </div>
+    <br><br>
+    <hr>
+  <% end %>
+  <%= f.submit "Guardar" %>
+<% end %>
+<%= javascript_include_tag 'prestaciones_principales/_form.js' %>

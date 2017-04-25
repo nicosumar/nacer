@@ -28,13 +28,17 @@ class ExpedienteSumar < ActiveRecord::Base
           logger.warn "LOG INFO - LIQUIDACION_SUMAR: Creando cuasifactura para efector #{e.nombre} - Liquidacion #{liquidacion_sumar.id} "
           
           # 1) Creo la cabecera del expediente
-          exp = ExpedienteSumar.create!({ tipo_de_expediente: liquidacion_sumar.concepto_de_facturacion.tipo_de_expediente,
-                                         liquidacion_sumar: liquidacion_sumar,
-                                         efector: e})
+          exp = ExpedienteSumar.where({ tipo_de_expediente_id: liquidacion_sumar.concepto_de_facturacion.tipo_de_expediente,
+                                         liquidacion_sumar_id: liquidacion_sumar,
+                                         efector_id: e}).first
+          if exp.blank?
+            exp = ExpedienteSumar.create({ tipo_de_expediente: liquidacion_sumar.concepto_de_facturacion.tipo_de_expediente,
+                                           liquidacion_sumar: liquidacion_sumar,
+                                           efector: e})
+          end
           exp.numero = documento_generable.obtener_numeracion(exp.id)
           exp.save!(validate: false)
         end # end itera segun agrupacion
-
       rescue Exception => e
         raise "Ocurrio un problema: #{e.message}"
         return false
