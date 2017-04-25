@@ -985,19 +985,18 @@ class NovedadDelAfiliado < ActiveRecord::Base
         begin
           archivo_a.puts novedad.join("\t")
         rescue
-          byebug
-          novedad.DomicilioCalle =   novedad.DomicilioCalle.encode('CP1252', :invalid => :replace, :undef => :replace)
-            
-          #intento de recuperacion
-          begin
-            
-          rescue
-              
-            
-          end
+         
+                      #intento de recuperacion
+              begin
+                novedad.DomicilioCalle =   novedad.DomicilioCalle.encode('CP1252', :invalid => :replace, :undef => :replace)       
+                archivo_a.puts novedad.join("\t")
+              rescue
+                
+                archivo_a.puts "D\t9999999999999999\tNo se puede grabar el registro\tHay un error desconocido"
+              end
           
           
-          archivo_a.puts "D\t9999999999999999\tNo se puede grabar el registro\tHay caracteres UNICODE que no pueden convertirse"
+              archivo_a.puts "D\t9999999999999999\tNo se puede grabar el registro\tHay caracteres UNICODE que no pueden convertirse"
         end
       end
 
