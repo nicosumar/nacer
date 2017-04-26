@@ -78,7 +78,6 @@ class Prestacion < ActiveRecord::Base
   before_validation :asignar_attributes_a_prestacion
   before_save :asignar_attributes_a_prestaciones_pdss
 
-  after_initialize :add_cantidades_de_prestaciones_por_periodo
   after_initialize :add_prestaciones_pdss
 
   scope :listado_permitido, ->(con_eliminadas=false) { where('eliminada IS NULL OR eliminada = false') unless con_eliminadas }
@@ -120,12 +119,12 @@ class Prestacion < ActiveRecord::Base
       nueva_prestacion.asignaciones_de_precios << nueva_adp
     end    
 
-    # self.prestaciones_autorizadas.each do |pa|
-    #   nueva_ṕa = pa.dup
-    #   nueva_ṕa.prestacion_id = nil
-    #   nueva_ṕa.prestacion = nueva_prestacion
-    #   nueva_prestacion.prestaciones_autorizadas << nueva_ṕa
-    # end
+    self.prestaciones_autorizadas.each do |pa|
+      nueva_pa = pa.dup
+      nueva_pa.prestacion_id = nil
+      nueva_pa.prestacion = nueva_prestacion
+      nueva_prestacion.prestaciones_autorizadas << nueva_pa
+    end
     
     nueva_prestacion.metodos_de_validacion << self.metodos_de_validacion
     nueva_prestacion.sexos << self.sexos
@@ -326,21 +325,20 @@ class Prestacion < ActiveRecord::Base
     
     def asignar_attributes_a_prestaciones_pdss
       self.prestaciones_pdss = self.prestaciones_pdss.select { |prestacion_pdss| prestacion_pdss.grupo_pdss_id.present? }
-      prestaciones_pdss.map { |ppdss| 
+      self.prestaciones_pdss.map { |ppdss| 
         ppdss.nombre = self.nombre 
         ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
       }
       if new_record? 
-        prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.last_orden_by_grupo_pdss_id(ppdss.grupo_pdss_id) + (i + 1) }
+        self.prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.last_orden_by_grupo_pdss_id(ppdss.grupo_pdss_id) + (i + 1) }
+      end
+      self.prestaciones_pdss.each do |pdss|
+        pdss.save
       end
     end
 
     def validate_unique_asignaciones_de_precios
       validate_uniqueness_of_in_memory(asignaciones_de_precios, [:nomenclador_id, :dato_reportable_id, :area_de_prestacion_id], 'Asignación de precio duplicada.')
-    end
-
-    def add_cantidades_de_prestaciones_por_periodo
-      self.cantidades_de_prestaciones_por_periodo << CantidadDePrestacionesPorPeriodo.new if self.cantidades_de_prestaciones_por_periodo.blank?
     end
 
     def add_prestaciones_pdss

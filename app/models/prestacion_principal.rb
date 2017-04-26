@@ -1,5 +1,5 @@
 class PrestacionPrincipal < ActiveRecord::Base
-  attr_accessible :activa, :codigo, :deleted_at, :nombre
+  attr_accessible :activa, :codigo, :deleted_at, :nombre, :prestaciones, :prestaciones_attributes, :prestacion_ids
   
   has_many :prestaciones
   has_many :prestaciones_pdss, through: :prestaciones  

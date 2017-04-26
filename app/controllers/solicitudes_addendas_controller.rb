@@ -818,6 +818,7 @@ class SolicitudesAddendasController < ApplicationController
     if  [EstadosSolicitudAddenda::EN_REVISION_TECNICA, EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::ANULACION_EFECTOR ,EstadosSolicitudAddenda::ANULACION_TECNICA].include?(@solicitud_addenda.estado_solicitud_addenda_id)
       
       @solicitud_addenda.estado_solicitud_addenda_id  = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA ? EstadosSolicitudAddenda::ANULACION_EFECTOR : EstadosSolicitudAddenda::ANULACION_TECNICA)
+      @solicitud_addenda.fecha_revision_medica = Time.now
       if  @solicitud_addenda.save
       
         redirect_to(@solicitud_addenda,
