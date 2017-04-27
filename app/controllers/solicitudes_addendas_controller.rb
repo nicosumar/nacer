@@ -10,9 +10,10 @@ class SolicitudesAddendasController < ApplicationController
       )
       return
     end
- 
+    
+    @estados_solicitudes = EstadoSolicitudAddenda.all.collect{|p|[p.nombre, p.id]}
+
     #Determino si el que accede es efector
-   
     if !params[:convenio_de_gestion_sumar_id]
       #Determino si el que accede es efector
       if current_user.in_group?:gestion_addendas_uad and !(current_user.in_group?([:auditoria_medica,:convenios]))
@@ -59,8 +60,6 @@ class SolicitudesAddendasController < ApplicationController
          
       end
       
-      @estados_solicitudes = EstadoSolicitudAddenda.all.collect{|p|[p.nombre, p.id]}
-      
     else
       
       begin
@@ -74,7 +73,6 @@ class SolicitudesAddendasController < ApplicationController
         )
         return
       end
-        
       
       if !params[:estado_id].nil?
         @filtro_estado = params[:estado_id]
@@ -90,11 +88,8 @@ class SolicitudesAddendasController < ApplicationController
           :order => "updated_at DESC"
         )
       end
-        
        
     end
-  
-   
     
   end
 
@@ -559,7 +554,7 @@ class SolicitudesAddendasController < ApplicationController
           @detail = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.select{|p| p.prestacion_principal_id.to_s == presat[0]}
         
           unless @detail.empty?
-            @solicitud_addenda.solicitudes_addendas_prestaciones_principales.delete_if{|p| p.prestacion_principal_id.to_s == pres[0]}
+            @solicitud_addenda.solicitudes_addendas_prestaciones_principales.delete_if{|p| p.prestacion_principal_id.to_s == presat[0]}
             @detalles_prestaciones_principales_eliminados << @detail[0]
           end
         else
@@ -823,6 +818,7 @@ class SolicitudesAddendasController < ApplicationController
     if  [EstadosSolicitudAddenda::EN_REVISION_TECNICA, EstadosSolicitudAddenda::GENERADA,EstadosSolicitudAddenda::ANULACION_EFECTOR ,EstadosSolicitudAddenda::ANULACION_TECNICA].include?(@solicitud_addenda.estado_solicitud_addenda_id)
       
       @solicitud_addenda.estado_solicitud_addenda_id  = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA ? EstadosSolicitudAddenda::ANULACION_EFECTOR : EstadosSolicitudAddenda::ANULACION_TECNICA)
+      @solicitud_addenda.fecha_revision_medica = Time.now
       if  @solicitud_addenda.save
       
         redirect_to(@solicitud_addenda,
