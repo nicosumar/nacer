@@ -1,4 +1,4 @@
-namespace :addUserGroup_201704260914 do
+namespace :add_UserGroup_201704260914 do
   desc "TODO"
   task :execute => :environment do
 
