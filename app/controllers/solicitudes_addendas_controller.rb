@@ -554,7 +554,7 @@ class SolicitudesAddendasController < ApplicationController
           @detail = @solicitud_addenda.solicitudes_addendas_prestaciones_principales.select{|p| p.prestacion_principal_id.to_s == presat[0]}
         
           unless @detail.empty?
-            @solicitud_addenda.solicitudes_addendas_prestaciones_principales.delete_if{|p| p.prestacion_principal_id.to_s == pres[0]}
+            @solicitud_addenda.solicitudes_addendas_prestaciones_principales.delete_if{|p| p.prestacion_principal_id.to_s == presat[0]}
             @detalles_prestaciones_principales_eliminados << @detail[0]
           end
         else
