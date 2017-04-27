@@ -1,0 +1,40 @@
+- content_for :title do
+  Solicitud de adenda sumar
+
+#content-header
+  %h1 Solicitud de adenda sumar
+
+#content-body
+  %h2.first-header Información para de la solicitud de adenda
+
+%p La solicitud de adenda fue aprobada por el área técnica
+
+%h3 Datos de identificación
+
+%div.field_content
+  %span.field_name Efector: 
+  %span.field_value= @solicitud_addenda.convenio_de_gestion_sumar.efector.nombre
+
+%div.field_content
+  %span.field_name Número: 
+  - if !@solicitud_addenda.numero.blank?
+    %span.field_value= @solicitud_addenda.numero
+  - else
+    %span.field_empty No se generó el número de solicitud
+
+%div.field_content
+
+  %span.field_name Estado de la solicitud: 
+  %span.field_value= @solicitud_addenda.estado_solicitud_addenda.nombre
+
+%div.field_content
+  %span.field_name Fecha de solicitud: 
+  - if @solicitud_addenda.fecha_solicitud
+    %span.field_value= @solicitud_addenda.fecha_solicitud.strftime("%d/%m/%Y")
+
+%div.field_content
+  %span.field_name Fecha de revisión técnica:  
+  - if @solicitud_addenda.fecha_revision_medica
+    %span.field_value= @solicitud_addenda.fecha_revision_medica.strftime("%d/%m/%Y")
+  - else
+    %span.field_empty No se realizó la revision del area técnica

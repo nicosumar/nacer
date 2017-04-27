@@ -882,7 +882,7 @@ class SolicitudesAddendasController < ApplicationController
       end
       
       if  @solicitud_addenda.save
-      
+        notificar_medica
         redirect_to(@solicitud_addenda,
           :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
         )
@@ -1042,16 +1042,17 @@ class SolicitudesAddendasController < ApplicationController
     
   def notificar_efector
        
-    #         begin
-    #      UserMailer.welcome_email(@user).deliver
-    #      flash[:success] = "#{@user.name} created"
-    #      rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
-    #        flash[:success] = "Utente #{@user.name} creato. Problems sending mail"
-    #      end
-    #   SolicitudesAddendasMailer.notificar_solicitud_addenda(@solicitud_addenda).deliver_later
-    
-    
-    
+        begin
+        SolicitudesAddendasMailer.notificar_solicitud_addenda(@solicitud_addenda).deliver_later
+        rescue 
+        end
+  end
+
+  def notificar_medica
+        begin
+        SolicitudesAddendasMailer.notificar_solicitud_addenda(@solicitud_addenda).deliver_later
+        rescue 
+        end
   end
     
 end

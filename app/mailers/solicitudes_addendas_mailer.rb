@@ -14,9 +14,18 @@ class SolicitudesAddendasMailer < ActionMailer::Base
       if email.blank?
         mail(to: @User.email, subject: 'Solicitud Aprobada por el área técnica')
       else
-        mail(to: email, cc: @User.email , subject: 'Solicitud Aprobada por el área técnica')
+        mail(to: email, subject: 'Solicitud Aprobada por el área técnica')
       end
     end
-
   end
+
+  def notificar_solicitud_addenda_medica(solicitud_addenda)
+    @solicitud_addenda = solicitud_addenda
+    @User = User.find(@solicitud_addenda.user_creator_id)
+    mail(to: 'tecnicanacer-salud@mendoza.gov.ar', subject: 'Solicitud de adenda pendiente convenio: '+ @solicitud_addenda.convenio_de_gestion_sumar.numero)
+
+    
+  end
+
+
 end
