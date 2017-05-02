@@ -942,6 +942,7 @@ class PadronesController < ApplicationController
     uads_a_procesar = UnidadDeAltaDeDatos.where(:codigo => params[:uads_a_procesar].keys)
 
     @directorio = "vendor/data/cierre_padron_#{DateTime.now.strftime('%Y%m%d%H%M%S')}"
+   
     Dir.mkdir(@directorio)
     @archivos_generados = []
     

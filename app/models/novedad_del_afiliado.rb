@@ -1030,53 +1030,53 @@ class NovedadDelAfiliado < ActiveRecord::Base
     
     
     codigo_provincia = ('%02d' % Parametro.valor_del_parametro(:id_de_esta_provincia))
+    codigo_cix = '60316'
+    codigo_uadx = '006'
     
     # Ejecutar todo dentro de una transacción para así poder cancelar las modificaciones en la BD en caso de fallas
     archivo_a = nil
     
     # Verificar si existe la secuencia antes de solicitar la generación del archivo A y crearla
-    if ActiveRecord::Base::connection.exec_query("
-    SELECT *
-        FROM information_schema.sequences
-        WHERE sequence_schema = 'public' AND sequence_name = 'archivo_a_seq';
-        ").rows.size == 0
-      ActiveRecord::Base::connection.execute("
-        CREATE SEQUENCE public.archivo_a_seq;
-        ")
+      if ActiveRecord::Base::connection.exec_query("
+          SELECT *
+            FROM information_schema.sequences
+            WHERE sequence_schema = 'uad_#{codigo_uadx}' AND sequence_name = 'ci_#{codigo_cix}_archivo_a_seq';
+          ").rows.size == 0
+        ActiveRecord::Base::connection.execute("
+            CREATE SEQUENCE uad_#{codigo_uadx}.ci_#{codigo_cix}_archivo_a_seq;
+          ")
     end
     
-    # Obtener el siguiente número en la secuencia de generación de archivos A para este CI en esta UAD
-    numero_secuencia =
-      ActiveRecord::Base.connection.exec_query("
-          SELECT
-            (CASE
-              WHEN is_called THEN last_value + 1
-              ELSE last_value
-              END) AS numero_secuencia FROM public.archivo_a_seq;
-      ").rows[0][0].to_i
     
     
-    
-    
-    
-  
-        
-    
+   
+     # Obtener el siguiente número en la secuencia de generación de archivos A para este CI en esta UAD
+      numero_secuencia =
+        ActiveRecord::Base.connection.exec_query("
+            SELECT
+              (CASE
+                WHEN is_called THEN last_value + 1
+                ELSE last_value
+              END) AS numero_secuencia FROM uad_#{codigo_uadx}.ci_#{codigo_cix}_archivo_a_seq;
+        ").rows[0][0].to_i
     
     begin
       
       # Crear el archivo de texto de salida
-      archivo_a = File.new("#{directorio_de_destino}/A#{codigo_provincia.to_s + ('%05d' % numero_secuencia)}.txt", "w")
+      archivo_a = File.new("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uadx + codigo_cix + ('%05d' % numero_secuencia)}.txt", "w")
       archivo_a.set_encoding("CP1252", :crlf_newline => true)
     
       size = 0;
       
-        # Escribir el encabezado
+      
+      # Escribir el encabezado
       archivo_a.puts(
         "H\t" +
           Date.today.strftime("%Y-%m-%d") + "\t" +
           "admin\t" +
           codigo_provincia + "\t" +
+          codigo_uadx + "\t" +
+          codigo_cix + "\t" +
           ('%05d' % numero_secuencia) + "\t" +
           Parametro.valor_del_parametro(:version_del_sistema_de_gestion)
       )
@@ -1276,11 +1276,11 @@ class NovedadDelAfiliado < ActiveRecord::Base
       end
     
       # Cerrar el archivo
-      # Incrementar el número de secuencia si todo fue bien  
+      # Incrementar el número de secuencia si todo fue bien
       ActiveRecord::Base.connection.exec_query("
-          SELECT nextval('public.archivo_a_seq'::regclass);
-        ")  
-      
+          SELECT nextval('uad_#{codigo_uadx}.ci_#{codigo_cix}_archivo_a_seq'::regclass);
+        ")
+      #      end
       # Escribir el pie
  
       archivo_a.puts "T\t#{('%06d' % size)}"  
