@@ -133,7 +133,17 @@ class SolicitudesAddendasController < ApplicationController
    
     
     # Crear los objetos necesarios para la vista
-    @solicitud_addenda = SolicitudAddenda.new   
+    @solicitud_addenda = SolicitudAddenda.new 
+    unless @solicitud_addenda.validar_existencia_de_solicitud_addenda_previa (@convenio_de_gestion.id)
+    redirect_to(solicitudes_addendas_path(:convenio_de_gestion_sumar_id => @convenio_de_gestion.id),
+    :flash => { :tipo => :advertencia, :titulo => "No es posible registrar la solicitud de adenda",
+    :mensaje => [ "Para poder realizar altas de solicitudes de adendas, debe hacerlo sin tener otras solicitudes " +
+    "en curso."
+    ]
+    }
+    )
+    return
+    end  
     @prestaciones_principales_autorizadas = PrestacionPrincipalAutorizada.efector_y_fecha(@convenio_de_gestion.efector_id)
     @solicitudes_prestaciones_principales = @prestaciones_principales_autorizadas.collect{ |p|  [  p['id'].to_s  , (p[:prestaciones_principales][0]["Autorizada"] == 't') ? p['id'].to_s : '' ] }
     @solicitudes_prestaciones_principales_aptecnica = []

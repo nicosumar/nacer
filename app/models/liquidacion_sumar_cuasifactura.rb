@@ -118,7 +118,6 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
                   "select  \n"+
                   "       p.prestacion_nombre prestacion_nombre,\n"+
                   "       p.prestacion_codigo prestacion_codigo,\n"+
-                  "       dc.prestacion_liquidada_id prestacion_liquidada_id,\n"+
                   "       sum(dc.monto) cantidad, \n"+
                   "       count(p.prestacion_nombre) cant \n "+
                   "from liquidaciones_sumar_cuasifacturas c\n"+
@@ -127,7 +126,7 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
                   "        join prestaciones pp on pp.id = p.prestacion_id\n"+
                   "        join objetos_de_las_prestaciones op on op.id = pp.objeto_de_la_prestacion_id \n"+
                   " where c.id = ? \n "+
-                  " group by p.prestacion_nombre,p.prestacion_codigo, dc.prestacion_liquidada_id\n "+
+                  " group by p.prestacion_nombre,p.prestacion_codigo\n "+
                   " order by 2,1,3 \n " +
                   " ) as det "
 
