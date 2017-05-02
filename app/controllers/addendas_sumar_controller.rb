@@ -231,7 +231,7 @@ class AddendasSumarController < ApplicationController
     # Crear los objetos necesarios para la vista
     @convenio_de_gestion = @addenda.convenio_de_gestion_sumar
 
-    if @addenda.validar_existencia_de_addenda_posterior
+    if !@addenda.validar_existencia_de_addenda_posterior
       redirect_to(@addenda,
          :flash => { :tipo => :advertencia, :titulo => 'Solo es posible editar la última adenda del convenio de gestión.' }
        )
