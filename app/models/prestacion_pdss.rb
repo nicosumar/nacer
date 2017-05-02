@@ -31,5 +31,5 @@ class PrestacionPdss < ActiveRecord::Base
   private
     def set_default_attributes
       self.orden = (PrestacionPdss.last_orden_by_grupo_pdss_id(self.grupo_pdss.id) + 1) if self.orden.blank? and self.grupo_pdss.present?
-end
+    end
 end

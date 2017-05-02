@@ -325,15 +325,17 @@ class Prestacion < ActiveRecord::Base
     
     def asignar_attributes_a_prestaciones_pdss
       self.prestaciones_pdss = self.prestaciones_pdss.select { |prestacion_pdss| prestacion_pdss.grupo_pdss_id.present? }
-      self.prestaciones_pdss.map { |ppdss| 
+      self.prestaciones_pdss = self.prestaciones_pdss.each { |ppdss| 
         ppdss.nombre = self.nombre 
         ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
       }
       if new_record? 
         self.prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.last_orden_by_grupo_pdss_id(ppdss.grupo_pdss_id) + (i + 1) }
-      end
-      self.prestaciones_pdss.each do |pdss|
-        pdss.save
+      else
+        self.prestaciones_pdss.each do |pdss|
+          pdss.prestaciones = [self]
+          pdss.save
+        end
       end
     end
 
