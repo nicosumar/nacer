@@ -299,9 +299,9 @@ class SolicitudesAddendasController < ApplicationController
 
         end
 
-        archivo = report.generate("lib/tasks/datos/documentos/Adenda prestacional #{@solicitud_addenda.numero} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
+        archivo = report.generate("lib/tasks/datos/documentos/Adenda prestacional #{@solicitud_addenda.numero_addenda} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
 
-        File.chmod(0644, "lib/tasks/datos/documentos/Adenda prestacional #{@solicitud_addenda.numero} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
+        File.chmod(0644, "lib/tasks/datos/documentos/Adenda prestacional #{@solicitud_addenda.numero_addenda} - #{@convenio_de_gestion.efector.nombre.gsub("/", "_")}.odt")
 
         send_file(archivo)
       end
@@ -322,7 +322,7 @@ class SolicitudesAddendasController < ApplicationController
       (EstadosSolicitudAddenda::GENERADA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:gestion_addendas_uad) or
         (EstadosSolicitudAddenda::EN_REVISION_TECNICA == @solicitud_addenda.estado_solicitud_addenda_id and current_user.in_group?:auditoria_medica) 
     )
-     
+    @VolverLegalOMedica =  (current_user.in_group?:auditoria_medica or current_user.in_group?:convenios) 
     @puede_confirmar_efector = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::GENERADA and current_user.in_group?:gestion_addendas_uad)
     @puede_confirmar_tecnica = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_TECNICA and current_user.in_group?:auditoria_medica)
     @puede_confirmar_legal = (@solicitud_addenda.estado_solicitud_addenda_id == EstadosSolicitudAddenda::EN_REVISION_LEGAL and current_user.in_group?:convenios)
