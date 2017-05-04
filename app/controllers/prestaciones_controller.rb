@@ -61,6 +61,16 @@ class PrestacionesController < ApplicationController
     @prestacion = @prestacion.decorate
   end
 
+  def destroy
+    if @prestacion.can_remove?
+      @prestacion.asignaciones_de_precios.destroy_all
+      @prestacion.cantidades_de_prestaciones_por_periodo.destroy_all
+      @prestacion.prestaciones_autorizadas.destroy_all
+      @prestacion.destroy
+    end
+    redirect_to prestaciones_url
+  end
+
   def autorizadas
 
     begin

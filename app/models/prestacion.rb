@@ -88,6 +88,10 @@ class Prestacion < ActiveRecord::Base
   scope :by_seccion_pdss, -> (seccion_pdss_id){ includes(prestaciones_pdss: [{ grupo_pdss: [:seccion_pdss]}]).where("secciones_pdss.id = ?", seccion_pdss_id) if  seccion_pdss_id.present? }
   scope :by_diagnostico, -> (diagnostico_id) { joins(:diagnosticos).where("diagnosticos_prestaciones.diagnostico_id=?", diagnostico_id).readonly(false) }
 
+  def can_remove?
+    !self.prestaciones_incluidas.exists?
+  end
+
   def duplicar include_prestaciones_pdss=false
     nueva_prestacion = self.dup
     nueva_prestacion.nombre = "(Copia) " + nueva_prestacion.nombre

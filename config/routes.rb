@@ -168,7 +168,7 @@ Nacer::Application.routes.draw do
     end
   end
 
-  resources :prestaciones, except: :destroy do
+  resources :prestaciones do
     get :validar_codigo , on: :collection
     get :edit_para_asignacion_de_precios, on: :member
   end

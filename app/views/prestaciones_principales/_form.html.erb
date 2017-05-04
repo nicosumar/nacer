@@ -51,11 +51,20 @@
 
   <% if @prestacion_principal.prestaciones.where(activa: false).present? %>
     <h4>Prestaciones del plan de salud anterior (inactivas)</h4>
-    <div id="prestaciones">
-      <%= f.fields_for :prestaciones do |prestacion|  %>
-        <%= render 'prestacion_fields', f: prestacion, activa: false  %>
+    <table>
+      <% @prestacion_principal.prestaciones.where(activa: false).each do |prestacion|  %>
+        <tr style="border-top-width: 5px;"><td colspan="5"><%= link_to "(Ver) ", prestacion_path(prestacion.id), target: "_blank" unless prestacion.new_record? %><strong><%= prestacion.nombre %></strong></td></tr>
+        <% prestacion.prestaciones_pdss.each do |prestacion_pdss| %>
+          <tr>
+            <td><%= prestacion_pdss.decorate.nombre_de_la_seccion %></td>
+            <td><%= obtener_nombre prestacion_pdss.grupo_pdss %></td>
+            <td><%= obtener_nombre prestacion_pdss.linea_de_cuidado %></td>
+            <td><%= obtener_nombre prestacion_pdss.tipo_de_prestacion %></td>
+            <td><%= obtener_nombre prestacion_pdss.modulo %></td>
+          </tr>
+        <% end %>
       <% end %>
-    </div>
+    </table>
     <br><br>
     <hr>
   <% end %>
