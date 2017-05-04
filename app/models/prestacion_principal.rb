@@ -26,7 +26,7 @@ class PrestacionPrincipal < ActiveRecord::Base
 
     def validar_prestaciones
       self.prestaciones.each do |prestacion|
-        if prestacion.prestaciones_pdss.count > 1
+        if prestacion.prestaciones_pdss.count > 1 and (prestacion.activa == true or prestacion.activa == nil)
           first_record = true
           prestacion.prestaciones_pdss.each do |prestacion_pdss|
             nueva_prestacion = prestacion.duplicar
