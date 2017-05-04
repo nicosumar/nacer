@@ -92,6 +92,25 @@ class Prestacion < ActiveRecord::Base
     !self.prestaciones_incluidas.exists?
   end
 
+  def safe_remove
+    if self.can_remove?
+      self.datos_adicionales.destroy_all
+      self.cantidades_de_prestaciones_por_periodo.destroy_all
+      self.datos_reportables_requeridos.destroy_all
+      self.documentaciones_respaldatorias.destroy_all
+      self.asignaciones_de_precios.destroy_all
+      self.prestaciones_autorizadas.destroy_all
+      self.metodos_de_validacion.destroy_all
+      self.sexos.destroy_all
+      self.grupos_poblacionales.destroy_all
+      self.diagnosticos.destroy_all
+      self.historicos_prestaciones.destroy_all
+      self.prestaciones_pdss.destroy_all
+      
+      self.destroy
+    end
+  end
+
   def duplicar include_prestaciones_pdss=false
     nueva_prestacion = self.dup
     nueva_prestacion.nombre = "(Copia) " + nueva_prestacion.nombre
