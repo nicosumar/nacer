@@ -5,6 +5,11 @@
   %h1 Información detallada de la solicitud de adenda Sumar
   - if can? :update, @solicitud_addenda
     #action-links 
+      - if @VolverLegalOMedica
+        = link_to "Volver al listado", solicitudes_addendas_path
+      - else
+        = link_to "Volver al listado", solicitudes_addendas_path(:convenio_de_gestion_sumar_id =>@solicitud_addenda.convenio_de_gestion_sumar_id) 
+
       - if @puede_editar
         = link_to "Modificar", edit_solicitud_addenda_path(@solicitud_addenda)
       - if @puede_confirmar_efector == true 
@@ -116,16 +121,20 @@
         %tr
           %th Código
           %th Nombre
-          %th Autorizacion solicitada
+          %th Solicitud de Adenda
           %th Autorización Técnica
       %tbody
         - @solicitud_addenda.solicitudes_addendas_prestaciones_principales.each do |a|
           %tr
             %td= a.prestacion_principal.codigo
             %td= a.prestacion_principal.nombre
-            %td= a.es_autorizacion  ?  "Autorizada" : "No autorizada"
-            %td= a.aprobado_por_medica.nil? ? "-" : (a.aprobado_por_medica ? "Autorizada" : "No autorizada") 
+            %td= a.es_autorizacion  ?  "Incorporar" : "Eliminar"
+            %td= a.aprobado_por_medica.nil? ? "-" : (a.aprobado_por_medica ? "Incorporar" : "Eliminar") 
   
   
   %div.actions
-    = link_to "Ir al listado" ,solicitudes_addendas_path
+  #action-links 
+    - if @VolverLegalOMedica
+      = link_to "Volver al listado", solicitudes_addendas_path
+    - else
+      = link_to "Volver al listado", solicitudes_addendas_path(:convenio_de_gestion_sumar_id =>@solicitud_addenda.convenio_de_gestion_sumar_id) 
