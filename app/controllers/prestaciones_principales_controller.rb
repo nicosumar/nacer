@@ -7,7 +7,7 @@ class PrestacionesPrincipalesController < ApplicationController
   before_filter :set_prestacion_principal, only: [:update, :edit, :show, :destroy]
 
   def index
-    @prestaciones_principales = PrestacionPrincipal.like_codigo(params[:codigo])
+    @prestaciones_principales = PrestacionPrincipal.like_codigo(params[:codigo]).order("codigo ASC")
     @prestaciones_principales = @prestaciones_principales.paginate(page: params[:page], per_page: params[:per])
     respond_to do |format|
       format.html
