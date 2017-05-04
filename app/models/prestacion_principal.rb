@@ -2,7 +2,10 @@ class PrestacionPrincipal < ActiveRecord::Base
   attr_accessible :activa, :codigo, :deleted_at, :nombre, :prestaciones, :prestaciones_attributes, :prestacion_ids
   
   has_many :prestaciones
-  has_many :prestaciones_pdss, through: :prestaciones  
+  has_many :prestaciones_pdss ,:through => :prestaciones 
+  has_many :prestaciones_pdss_activas, :through => :prestaciones ,:class_name =>  "PrestacionPdss", :source =>:prestaciones_pdss, :conditions => {"prestaciones.activa" => true}
+  has_many :prestaciones_pdss_inactivas, :through => :prestaciones ,:class_name =>  "PrestacionPdss", :source =>:prestaciones_pdss, :conditions => {"prestaciones.activa" => false}
+
   has_many :solicitudes_adddendas_prestaciones_principales
   
   scope :activas,->{}
