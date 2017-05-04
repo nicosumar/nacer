@@ -762,8 +762,10 @@ class SolicitudesAddendasController < ApplicationController
       #valido los datos obligatorios de la futura addenda.
       if !(@solicitud_addenda.fecha_de_inicio.nil? or @solicitud_addenda.numero_addenda.nil?)
         
-        if  @solicitud_addenda.save
-          generar_adenda
+        if  generar_adenda  
+       
+          @solicitud_addenda.save
+
           redirect_to(@solicitud_addenda,
             :flash => { :tipo => :ok, :titulo => 'Las modificaciones a la solicitud de adenda se guardaron correctamente.' }
           )
@@ -1040,7 +1042,9 @@ class SolicitudesAddendasController < ApplicationController
     
     
       end
-      
+    return true
+    else
+    return false  
     end
     
    
@@ -1056,7 +1060,7 @@ class SolicitudesAddendasController < ApplicationController
 
   def notificar_medica
         begin
-        SolicitudesAddendasMailer.notificar_solicitud_addenda(@solicitud_addenda).deliver_later
+        SolicitudesAddendasMailer.notificar_solicitud_addenda_medica(@solicitud_addenda).deliver_later
         rescue 
         end
   end

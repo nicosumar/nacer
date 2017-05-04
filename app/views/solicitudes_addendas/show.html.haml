@@ -5,11 +5,6 @@
   %h1 Información detallada de la solicitud de adenda Sumar
   - if can? :update, @solicitud_addenda
     #action-links 
-      - if @VolverLegalOMedica
-        = link_to "Volver al listado", solicitudes_addendas_path
-      - else
-        = link_to "Volver al listado", solicitudes_addendas_path(:convenio_de_gestion_sumar_id =>@solicitud_addenda.convenio_de_gestion_sumar_id) 
-
       - if @puede_editar
         = link_to "Modificar", edit_solicitud_addenda_path(@solicitud_addenda)
       - if @puede_confirmar_efector == true 
