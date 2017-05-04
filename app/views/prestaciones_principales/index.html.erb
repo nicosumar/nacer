@@ -2,15 +2,12 @@
   Prestaciones Principales
 <% end %>
 <div >
-<% if can? :read, PrestacionPrincipal %>
-
-  <div id="content-header">
-    <h1>Prestaciones principales</h1>
-    <div id="action-links"><%= link_to('Nueva Prestación principal', new_prestacion_principal_path) if can? :create, PrestacionPrincipal %> </div>  
-  </div>
-
-  <div id="content-body">
-    <h1>Filtrar</h1>
+<div id="content-header">
+  <h1>Prestaciones principales</h1>
+  <div id="action-links"><%= link_to('Nueva Prestación principal', new_prestacion_principal_path) if can? :create, PrestacionPrincipal %> </div>  
+</div>
+<div id="content-body">
+  <% if can? :read, PrestacionPrincipal %>
     <div class="nested-fields-label-container">
       <div class="small-label">Código</div>
       <div class="small-label"></div>
@@ -26,12 +23,14 @@
       <tr>
         <th>Código</th>
         <th>Nombre</th>
+        <th>Estado</th>
         <th>Acciones</th>
       </tr>
       <% @prestaciones_principales.each do |prestacion_principal| %>
         <tr>
           <td><%= prestacion_principal.codigo %></td>
           <td><%= prestacion_principal.nombre %></td>
+          <td><%= prestacion_principal.activa ? 'Activa' : 'Inactiva' %></td>
           <td>
             <%= link_to "Ver", prestacion_principal_path(prestacion_principal) %>
             <%= link_to "Editar", edit_prestacion_principal_path(prestacion_principal) %>
@@ -39,12 +38,10 @@
         </tr>
       <% end %>
     </table>
+    </div> 
+      <%= will_paginate @prestaciones_principales, :inner_window => 2, :outer_window => 0 %>
+    </div>
+  <% else %>
+    <h2>No esta autorizado para realizar dichas acciones</h2>
   <% end %>
-
-<% else %>
-
-<h2>No esta autorizado para realizar dichas acciones</h2>
-
-</div> 
-  <%= will_paginate @prestaciones_principales, :inner_window => 2, :outer_window => 0 %>
 </div>
