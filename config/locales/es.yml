@@ -254,3 +254,12 @@ es:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"
     page_gap: "&hellip;"
+
+delayed/web:
+  views:
+    id: ID
+    status: Estado
+    created_at: Created At
+    run_at: Run At
+    attempts: Intentos
+    last_error: Last Error

@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
+  mount Delayed::Web::Engine, at: '/jobs'
+
   get "datos_reportables/show"
 
   get "prestaciones/autorizadas"

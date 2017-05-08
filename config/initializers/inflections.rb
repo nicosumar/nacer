@@ -463,6 +463,11 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("DetalleDeDebitoPrestacional", "Detalles·De·Debitos·Prestacionales·")
   inflect.irregular("Detalle·De·Debito·Prestacional·", "DetallesDeDebitosPrestacionales")
 
+  #  modulo de Delayed_job
+  inflect.irregular("tipo_proceso_de_sistema", "tipos·_procesos·_de·_sistemas·")
+  inflect.irregular("estado_proceso_de_sistema", "estados·_procesos·_de·_sistemas·")
+  inflect.irregular("proceso_de_sistema", "procesos·_de·_sistemas·")
+
   #Tipo de debito prestacional
   inflect.irregular("tipo_de_debito_prestacional", "tipos·_de·_debitos·_prestacionales·")
   inflect.irregular("tipo·_de·_debito·_prestacional·", "tipos_de_debitos_prestacionales")
@@ -572,6 +577,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("solicitud_addenda","solicitudes·_addendas·")
   inflect.irregular("estado_solicitud_addenda","estados·_solicitudes·_addendas·")
   inflect.irregular("solicitud_addenda_prestacion_principal","solicitudes·_addendas·_prestaciones·_principales·")
+
+
+
+
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")
   inflect.human("departamento_bio_id", "código identificador de departamento (Bioestadística)")

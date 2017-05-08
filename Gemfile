@@ -52,3 +52,8 @@ gem 'test-unit', '~> 3.0'
 gem "select2-rails"
 gem 'strong_parameters'
 gem 'draper'
+
+#delayed-job gem
+gem 'delayed_job_active_record'
+gem 'delayed-web'
+gem "daemons"

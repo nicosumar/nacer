@@ -135,13 +135,14 @@ class LiquidacionesSumarController < ApplicationController
       respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." }
       status = :method_not_allowed
     else
-      if @liquidacion_sumar.generar_snapshoot_de_liquidacion
-        logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
-        respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
-      else
-        respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
-        status = :internal_server_error
-      end
+      
+      # if @liquidacion_sumar.generar_snapshoot_de_liquidacion
+      #   logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
+      #   respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
+      # else
+      #   respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
+      #   status = :internal_server_error
+      # end
     end
 
     respond_to do |format|
