@@ -72,7 +72,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   validates_presence_of :semanas_de_embarazo, :if => :embarazada?
   validates_numericality_of :semanas_de_embarazo, :only_integer => true, :allow_blank => true, :greater_than => 3, :less_than => 43
 
-  validates_presence_of :motivo_baja_beneficiario_id
+  # validates_presence_of :motivo_baja_beneficiario_id
 
   # Objeto para guardar las advertencias
   @advertencias = []
