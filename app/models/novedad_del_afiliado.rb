@@ -27,7 +27,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
   attr_accessible :esta_embarazada, :fecha_de_la_ultima_menstruacion, :fecha_de_diagnostico_del_embarazo
   attr_accessible :semanas_de_embarazo, :fecha_probable_de_parto, :fecha_efectiva_de_parto, :score_de_riesgo
   attr_accessible :discapacidad_id, :fecha_de_la_novedad, :centro_de_inscripcion_id, :nombre_del_agente_inscriptor
-  attr_accessible :observaciones_generales, :mes_y_anio_de_proceso, :mensaje_de_la_baja, :motivo_baja_beneficiario_id
+  attr_accessible :observaciones_generales, :mes_y_anio_de_proceso
+  attr_accessible :mensaje_de_la_baja, :motivo_baja_beneficiario_id
 
   # La clave de beneficiario sólo puede registrarse al grabar la novedad
   attr_readonly :clave_de_beneficiario
@@ -64,6 +65,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   validate :documentos_correctos, :unless => :es_una_baja?
   validate :datos_de_embarazo, :unless => :es_una_baja?
   validate :sin_duplicados
+  validates_presence_of :motivo_baja_beneficiario_id, :if => :es_una_baja?
 
   validates_presence_of :tipo_de_novedad_id
   validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
@@ -71,8 +73,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   validates_presence_of :fecha_de_diagnostico_del_embarazo, :if => :embarazada?
   validates_presence_of :semanas_de_embarazo, :if => :embarazada?
   validates_numericality_of :semanas_de_embarazo, :only_integer => true, :allow_blank => true, :greater_than => 3, :less_than => 43
-
-  # validates_presence_of :motivo_baja_beneficiario_id
+  
 
   # Objeto para guardar las advertencias
   @advertencias = []

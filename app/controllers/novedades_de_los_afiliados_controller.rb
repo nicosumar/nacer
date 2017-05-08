@@ -232,7 +232,6 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
     @post_form_url = create_modificacion_novedades_de_los_afiliados_url
-
     render :action => "new"
   end
 
@@ -289,8 +288,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Crear objetos requeridos para la vista
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
-    @motivos_bajas_beneficiarios = 
-      MotivoBajaBeneficiario.all.collect{ |i| [i.nombre, i.id]}.sort
+    @motivos_bajas_beneficiarios = MotivoBajaBeneficiario.all.collect{ |i| [i.nombre, i.id]}.sort
     @post_form_url = create_baja_novedades_de_los_afiliados_url
 
     render :action => "new"
@@ -400,9 +398,11 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Crear los objetos necesarios para regenerar la vista si hay algún error
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
+      @motivos_bajas_beneficiarios = MotivoBajaBeneficiario.all.collect{ |i| [i.nombre, i.id]}.sort
     @post_form_url = create_baja_novedades_de_los_afiliados_url
 
     if @novedad.invalid?
+      
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
       return
@@ -412,13 +412,14 @@ class NovedadesDeLosAfiliadosController < ApplicationController
       # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén pendientes, en cuyo caso
       # no se permite dar la baja
       if PrestacionBrindada.where(:clave_de_beneficiario => @novedad.clave_de_beneficiario).any? { |pb| pb.pendiente? }
-        redirect_to( @afiliado,
-          :flash => { :tipo => :error, :titulo => "No se puede solicitar la baja",
-            :mensaje => "No es posible solicitar la baja porque " +
-              (@novedad.sexo.codigo == "F" ? "la beneficiaria" : "el beneficiario") +
-              " tiene alguna prestación brindada pendiente de resolución."
-          }
-        )
+        
+        # redirect_to( @afiliado,
+        #   :flash => { :tipo => :error, :titulo => "No se puede solicitar la baja",
+        #     :mensaje => "No es posible solicitar la baja porque " +
+        #       (@novedad.sexo.codigo == "F" ? "la beneficiaria" : "el beneficiario") +
+        #       " tiene alguna prestación brindada pendiente de resolución."
+        #   }
+        # )
         return
       end
     end
