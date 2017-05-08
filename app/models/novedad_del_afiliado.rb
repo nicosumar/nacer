@@ -64,12 +64,15 @@ class NovedadDelAfiliado < ActiveRecord::Base
   validate :documentos_correctos, :unless => :es_una_baja?
   validate :datos_de_embarazo, :unless => :es_una_baja?
   validate :sin_duplicados
+
   validates_presence_of :tipo_de_novedad_id
   validates_presence_of :fecha_de_la_novedad, :centro_de_inscripcion_id
   validates_presence_of :observaciones_generales, :if => :es_una_baja?
   validates_presence_of :fecha_de_diagnostico_del_embarazo, :if => :embarazada?
   validates_presence_of :semanas_de_embarazo, :if => :embarazada?
   validates_numericality_of :semanas_de_embarazo, :only_integer => true, :allow_blank => true, :greater_than => 3, :less_than => 43
+
+  validates_presence_of :motivo_baja_beneficiario_id
 
   # Objeto para guardar las advertencias
   @advertencias = []
