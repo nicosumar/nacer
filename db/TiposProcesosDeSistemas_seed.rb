@@ -1,4 +1,4 @@
 TipoProcesoDeSistema.create([
         { #:id => 1,
-          :nombre => "Liquidaciones" }
+          :nombre => "PROCESAR LIQUIDACION SUMAR" }
 ])

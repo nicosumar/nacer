@@ -1,10 +1,10 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
 
-  mount Delayed::Web::Engine, at: '/jobs'
+
+
 
   get "datos_reportables/show"
-
   get "prestaciones/autorizadas"
   get "diagnosticos/por_prestacion"
 
@@ -179,6 +179,9 @@ Nacer::Application.routes.draw do
   
 
   root :to => 'inicio#index'
+
+  mount Delayed::Web::Engine => '/jobs'
+ 
 
 end
 

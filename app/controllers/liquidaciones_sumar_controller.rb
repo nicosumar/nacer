@@ -145,9 +145,12 @@ class LiquidacionesSumarController < ApplicationController
       # end
 
       proceso_de_sistema = ProcesoDeSistema.new 
-      proceso_de_sistema.tipo_procesos_de_sistema_id = PROCESAR_LIQUIDACION_SUMAR::PROCESAR_LIQUIDACION_SUMAR
+
+      proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR
+   
       if proceso_de_sistema.save 
-         Delayed::Job.enqueue NacerJobs::LiquidacionJob.new(proceso_de_sistema.id)    
+         byebug
+         Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
       end
 
     end
