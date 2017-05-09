@@ -143,6 +143,13 @@ class LiquidacionesSumarController < ApplicationController
       #   respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
       #   status = :internal_server_error
       # end
+
+      proceso_de_sistema = ProcesoDeSistema.new 
+      proceso_de_sistema.tipo_procesos_de_sistema_id = PROCESAR_LIQUIDACION_SUMAR::PROCESAR_LIQUIDACION_SUMAR
+      if proceso_de_sistema.save 
+         Delayed::Job.enqueue NacerJobs::LiquidacionJob.new(proceso_de_sistema.id)    
+      end
+
     end
 
     respond_to do |format|
@@ -260,7 +267,7 @@ class LiquidacionesSumarController < ApplicationController
   def crear_tabla_parametros(argLiquidacion)
 
     pl = ParametroLiquidacionSumar.new
-
+   
     return pl
   end
 
