@@ -145,11 +145,8 @@ class LiquidacionesSumarController < ApplicationController
       # end
 
       proceso_de_sistema = ProcesoDeSistema.new 
-
-      proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR
-   
       if proceso_de_sistema.save 
-         byebug
+
          Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
       end
 
@@ -166,22 +163,32 @@ class LiquidacionesSumarController < ApplicationController
     tiempo_proceso = Time.now
 
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+
+
+    
+
+
+
     respuesta = {}
     status = :ok
 
-    if @liquidacion_sumar.prestaciones_liquidadas.count == 0
-      respuesta = { tipo: :error, titulo: "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
-      status =  :method_not_allowed
-    elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
-      respuesta = { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
-      status =  :method_not_allowed
-    end
+    # if @liquidacion_sumar.prestaciones_liquidadas.count == 0
+    #   respuesta = { tipo: :error, titulo: "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
+    #   status =  :method_not_allowed
+    # elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
+    #   respuesta = { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
+    #   status =  :method_not_allowed
+    # end
       
     begin
       unless respuesta.present?
-        @liquidacion_sumar.generar_documentos!
-        logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
-        respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
+          proceso_de_sistema = ProcesoDeSistema.new 
+         if proceso_de_sistema.save 
+         Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
+         end
+       # @liquidacion_sumar.generar_documentos!
+      #  logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
+       # respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
       end
     rescue Exception => e
       logger.warn e.inspect

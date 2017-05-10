@@ -1,5 +1,13 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
+  
+
+
+
+  scope '/(:locale)', defaults: { locale: 'es' }, constraints: { locale: /es|en/ } do
+    mount Delayed::Web::Engine => '/jobs'
+  end
+  
 
 
 
@@ -180,7 +188,7 @@ Nacer::Application.routes.draw do
 
   root :to => 'inicio#index'
 
-  mount Delayed::Web::Engine => '/jobs'
+
  
 
 end

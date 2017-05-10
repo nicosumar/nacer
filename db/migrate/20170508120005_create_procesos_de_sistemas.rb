@@ -3,9 +3,11 @@ class CreateProcesosDeSistemas < ActiveRecord::Migration
     create_table :procesos_de_sistemas do |t|
       t.string :descripcion
       t.text :descripcion_ultimo_error
+      t.text :parametros_dinamicos
       t.string :fecha_completado
       t.references :tipo_proceso_de_sistema
       t.references :estado_proceso_de_sistema
+      t.references :user
       t.integer :entidad_relacionada_id
       t.timestamps
     end

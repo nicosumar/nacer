@@ -103,6 +103,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("Asignaciones·De·Precios·", "AsignacionesDePrecios")
 
 
+
   inflect.irregular("asignacion_de_nomenclador", "asignaciones·_de·_nomenclador·")
   inflect.irregular("asignacion·_de·_nomenclador·", "asignaciones_de_nomenclador")
   inflect.irregular("AsignacionDeNomenclador", "Asignaciones·De·Nomenclador·")
@@ -397,6 +398,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("CantidadesDePrestacionesPorPeriodo", "Cantidades·De·Prestaciones·Por·Periodo")
   inflect.irregular("Cantidades·De·Prestaciones·Por·Periodo", "CantidadesDePrestacionesPorPeriodo")
 
+  
   # Expedientes Sumar
   inflect.irregular("expediente_sumar", "expedientes·_sumar·")
   inflect.irregular("expediente·_sumar·", "expedientes_sumar")
@@ -467,6 +469,7 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("tipo_proceso_de_sistema", "tipos·_procesos·_de·_sistemas·")
   inflect.irregular("estado_proceso_de_sistema", "estados·_procesos·_de·_sistemas·")
   inflect.irregular("proceso_de_sistema", "procesos·_de·_sistemas·")
+  inflect.irregular("job","jobs")
 
   #Tipo de debito prestacional
   inflect.irregular("tipo_de_debito_prestacional", "tipos·_de·_debitos·_prestacionales·")

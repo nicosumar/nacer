@@ -254,12 +254,36 @@ es:
     previous_label: "&#8592; Anterior"
     next_label: "Siguiente &#8594;"
     page_gap: "&hellip;"
+  delayed/web:
+    views:
+      id: ID
+      status: Estado
+      created_at: Creado  
+      run_at: Ejecutado
+      attempts: Intentos
+      last_error: Ultimo Error
+      jobs: Trabajos
+      server_time: Hora del servidor
+      actions: Acciones
+      statuses:
+        queued: Encolado
+        executing: En ejecución
+      errors:
+        empty: Ninguno
+      buttons:
+        run_next: Ejec. Siguiente
+        delete: Eliminar
+      queue:
+        empty: Vacia    
+      confirm:
+        delete: ¿Esta seguro que desea eliminar el trabajo?
+      job: Trabajo
+      handler: Manejador  
+    flashes:
+        jobs: 
+          queued:
+            notice: El trabajo ha sido encolado con éxito
+          destroyed: 
+            notice: El trabajo ha sido eliminado
 
-delayed/web:
-  views:
-    id: ID
-    status: Estado
-    created_at: Created At
-    run_at: Run At
-    attempts: Intentos
-    last_error: Last Error
+       

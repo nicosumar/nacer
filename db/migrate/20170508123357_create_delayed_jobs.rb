@@ -11,13 +11,13 @@ class CreateDelayedJobs < ActiveRecord::Migration
       table.string :locked_by                          # Who is working on this object (if locked)
       table.string :queue                              # The name of the queue this job is in
       table.timestamps null: true
-      table.integer :user_id
+  
       table.integer :proceso_de_sistema_id
     end
 
     add_index :delayed_jobs, [:priority, :run_at], name: "delayed_jobs_priority"
     add_index :delayed_jobs, [:proceso_de_sistema_id],   :name => 'proceso_de_sistema_id'
-    add_index :delayed_jobs, [:user_id],   :name => 'user_id'
+
   end
 
   def self.down
