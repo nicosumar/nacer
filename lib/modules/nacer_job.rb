@@ -98,7 +98,7 @@ module NacerJob
          rmp2 = RegistroMasivoDePrestacionesV2.new
      
          if @parametros['archivo'] and @parametros['uad'] and @parametros['efe']
-          rmp2.procesar(@parametros['archivo'],UnidadDeAltaDeDatos.find(@parametros['uad']),Efector.find(@parametros['efe'])
+          rmp2.procesar( @parametros['archivo'] , UnidadDeAltaDeDatos.find( @parametros['uad'] ), Efector.find( @parametros['efe']) )
          else
           raise 'Parametros Faltantes: '+ 'RegistroMasivoDePrestacionesV2.procesar(archivo, uad, efe)'
          end
