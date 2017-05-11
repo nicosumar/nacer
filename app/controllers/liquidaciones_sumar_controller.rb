@@ -136,19 +136,19 @@ class LiquidacionesSumarController < ApplicationController
       status = :method_not_allowed
     else
       
-      # if @liquidacion_sumar.generar_snapshoot_de_liquidacion
-      #   logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
-      #   respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
-      # else
-      #   respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
-      #   status = :internal_server_error
-      # end
+       if @liquidacion_sumar.generar_snapshoot_de_liquidacion
+         logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
+         respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
+       else
+         respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
+         status = :internal_server_error
+       end
 
-      proceso_de_sistema = ProcesoDeSistema.new 
-      if proceso_de_sistema.save 
-
-         Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
-      end
+#      proceso_de_sistema = ProcesoDeSistema.new 
+#      if proceso_de_sistema.save 
+#
+#         Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
+#      end
 
     end
 
@@ -172,23 +172,23 @@ class LiquidacionesSumarController < ApplicationController
     respuesta = {}
     status = :ok
 
-    # if @liquidacion_sumar.prestaciones_liquidadas.count == 0
-    #   respuesta = { tipo: :error, titulo: "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
-    #   status =  :method_not_allowed
-    # elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
-    #   respuesta = { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
-    #   status =  :method_not_allowed
-    # end
+     if @liquidacion_sumar.prestaciones_liquidadas.count == 0
+       respuesta = { tipo: :error, titulo: "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
+       status =  :method_not_allowed
+     elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
+       respuesta = { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
+       status =  :method_not_allowed
+     end
       
     begin
       unless respuesta.present?
-          proceso_de_sistema = ProcesoDeSistema.new 
-         if proceso_de_sistema.save 
-         Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
-         end
-       # @liquidacion_sumar.generar_documentos!
-      #  logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
-       # respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
+#          proceso_de_sistema = ProcesoDeSistema.new 
+#         if proceso_de_sistema.save 
+#         Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
+#         end
+        @liquidacion_sumar.generar_documentos!
+        logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
+        respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
       end
     rescue Exception => e
       logger.warn e.inspect

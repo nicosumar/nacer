@@ -2,7 +2,7 @@
 Rails.application.config.to_prepare do
   Delayed::Web::Job.backend = 'active_record'
   Delayed::Worker.default_queue_name = 'default' 
-  Delayed::Worker.sleep_delay = 90
+  Delayed::Worker.sleep_delay = 60
   Delayed::Worker.destroy_failed_jobs = false
   Delayed::Job.attr_accessible :user_id, :proceso_de_sistema_id,:last_error
   class Delayed::Job < ActiveRecord::Base

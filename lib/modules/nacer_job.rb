@@ -59,7 +59,7 @@ module NacerJob
       @proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR
     end
     def tareasDeProcesamiento
-      sleep 2.minutes
+     # sleep 2.minutes
       # @ls = LiquidacionSumar.find(@proceso_de_sistema.entidad_relacionada_id)
       # @ls.generar_snapshoot_de_liquidacion
     end  
@@ -72,8 +72,8 @@ module NacerJob
        @proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR
       end
       def tareasDeProcesamiento
-      sleep 1.minutes
-      raise "fuck error"
+     # sleep 10.seconds
+     # raise "fuck error"
       # @ls = LiquidacionSumar.find(@proceso_de_sistema.entidad_relacionada_id)
       # @ls.@liquidacion_sumar.generar_documentos!
       end  
@@ -101,6 +101,10 @@ module NacerJob
           raise 'Parametros Faltantes: '+ 'RegistroMasivoDePrestaciones2.procesar(archivo, uad, efe)'
          end
       end 
+      
+       def max_attempts
+         1
+       end
   end
 
 
