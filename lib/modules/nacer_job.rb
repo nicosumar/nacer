@@ -94,11 +94,13 @@ module NacerJob
       end
 
       def tareasDeProcesamiento
-         rmp2 = RegistroMasivoDePrestaciones2.new
+         #load 'lib/tasks/registro_masivo_de_prestaciones_v2.rb'
+         rmp2 = RegistroMasivoDePrestacionesV2.new
+     
          if @parametros['archivo'] and @parametros['uad'] and @parametros['efe']
-          rmp2.procesar(@parametros['archivo'],@parametros['uad'],@parametros['efe'])
+          rmp2.procesar(@parametros['archivo'],UnidadDeAltaDeDatos.find(@parametros['uad']),Efector.find(@parametros['efe'])
          else
-          raise 'Parametros Faltantes: '+ 'RegistroMasivoDePrestaciones2.procesar(archivo, uad, efe)'
+          raise 'Parametros Faltantes: '+ 'RegistroMasivoDePrestacionesV2.procesar(archivo, uad, efe)'
          end
       end 
       

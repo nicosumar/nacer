@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-class RegistroMasivoDePrestaciones2
+class RegistroMasivoDePrestacionesV2
 
   attr_accessor :archivo_completo
   attr_accessor :archivo_a_procesar
