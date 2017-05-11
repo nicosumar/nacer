@@ -49,7 +49,7 @@
   <br><br>
   <hr>
 
-  <% if @prestacion_principal.prestaciones.where(activa: false).present? %>
+  <% if @prestacion_principal.persisted? && @prestacion_principal.prestaciones.where(activa: false).present? %>
     <h4>Prestaciones del plan de salud anterior (inactivas)</h4>
     <table>
       <% @prestacion_principal.prestaciones.where(activa: false).each do |prestacion|  %>
