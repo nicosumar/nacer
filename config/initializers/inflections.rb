@@ -467,13 +467,13 @@ ActiveSupport::Inflector.inflections do |inflect|
 
   #  modulo de Delayed_job
   inflect.irregular("tipo_proceso_de_sistema", "tipos·_procesos·_de·_sistemas·")
-  inflect.irregular("tipo·_proceso·_de·_sistema·", "tipos_procesos_de_sistemas")
+  inflect.irregular("tipos·_procesos·_des·_sistemas·", "tipos_procesos_de_sistemas")
 
   inflect.irregular("estado_proceso_de_sistema", "estados·_procesos·_de·_sistemas·")
-  inflect.irregular("estado·_proceso·_de·_sistema·", "estados_procesos_de_sistemas")
+  inflect.irregular("estados·_procesos·_de·_sistemas·", "estados_procesos_de_sistemas")
 
   inflect.irregular("proceso_de_sistema", "procesos·_de·_sistemas·")
-  inflect.irregular("proceso·_de·_sistema·", "procesos_de_sistemas")
+  inflect.irregular("procesos·_de·_sistemas·", "procesos_de_sistemas")
   inflect.irregular("job","jobs")
 
   #Tipo de debito prestacional
