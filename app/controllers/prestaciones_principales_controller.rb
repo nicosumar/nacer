@@ -21,6 +21,8 @@ class PrestacionesPrincipalesController < ApplicationController
   end
 
   def create
+    # Remuevo las prestaciones que se quitaron en el formulario
+    params[:prestacion_principal][:prestaciones_attributes] = params[:prestacion_principal][:prestaciones_attributes].select{|key, hash| hash["_destroy"] != "1" }
     @prestacion_principal = PrestacionPrincipal.new params[:prestacion_principal]   
     if @prestacion_principal.save
       if duplicar_prestacion_y_redireccionar params[:duplicar_prestacion_id]

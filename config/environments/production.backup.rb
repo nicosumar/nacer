@@ -53,7 +53,7 @@ Nacer::Application.configure do
     liquidaciones_informes.js liquidaciones_sumar_anexos_administrativos.js liquidaciones_sumar_anexos_medicos.js informes.js notas_de_debito.js
     detalles_de_debitos_prestacionales.js block_ui_sumar.js documentos_electronicos.js documentos_generables_por_conceptos.js jquery.blockUI.min.js
     jstree.min.js jstree/style.min.css efectores_form.js prestaciones/_form.js prestaciones/_index.js addendas_sumar/_form_masivo.js prestaciones_principales/_form.js
-    asistentes_taller.js
+    asistentes_taller.js delayed/web/application.css
   )
 
   # Enable delivery errors
