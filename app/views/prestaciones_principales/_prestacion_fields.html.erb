@@ -8,7 +8,7 @@
         <%= f.text_field :nombre, class: "large-input", disabled: (f.object.activa == false) %>    
       </div>
       <div class="col-md-2">
-        <% unless f.object.new_record? or f.object.prestaciones_pdss.count > 1 or f.object.activa == false %>
+        <% if @prestacion_principal.persisted? && f.object.persisted? && f.object.prestaciones_pdss.count < 2 && f.object.activa == true %>
           <button name="duplicar_prestacion_id" value="<%= f.object.id %>" type="submit">Duplicar</button>        
         <% end %>
         <%= "(Inactiva) " if f.object.activa == false %>
