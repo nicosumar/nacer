@@ -1000,7 +1000,7 @@ end
          Delayed::Job.enqueue NacerJob::RegistroMasivoPrestacionesJob.new(proceso_de_sistema.id)    
       end
   end
-
+  
 
 
 
