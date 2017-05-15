@@ -76,6 +76,7 @@ class Ability
       can :read, LiquidacionSumarAnexoAdministrativo
       can :read, AnexoAdministrativoPrestacion
       can :manage, Prestacion
+      can :manage, PrestacionPrincipal
       can :manage,  SolicitudAddenda
     end
 
