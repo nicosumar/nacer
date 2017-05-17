@@ -9,6 +9,7 @@ class LiquidacionSumar < ActiveRecord::Base
   has_many   :liquidaciones_sumar_cuasifacturas
   has_many   :consolidados_sumar
   has_many   :expedientes_sumar
+  has_many   :procesos_de_sistemas
 
   attr_accessible :descripcion, :grupo_de_efectores_liquidacion_id, :concepto_de_facturacion_id, :periodo_id, :plantilla_de_reglas_id, :parametro_liquidacion_sumar_id
 

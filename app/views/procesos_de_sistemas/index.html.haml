@@ -1,0 +1,28 @@
+- content_for :title do
+  Trabajos de Sistemas
+
+#content-header
+  %h1 Trabajos de Sistemas
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Listado de los Trabajos de Sistemas
+
+  %table
+    %thead
+      %tr
+        %th Id
+        %th Descripción de ultimo Error
+        %th Tipo de Proceso
+        %th Estado del Proceso 
+        %th 
+    %tbody
+      - @procesos_de_sistemas.each do |e|
+        %tr.clickable{ :onclick => "location.href=\'#{proceso_de_sistema_path(e)}\'", :title => "Ver detalles del Trabajo" }
+          %td= e.id
+          %td= e.descripcion_ultimo_error
+          %td= e.tipo_proceso_de_sistema.nombre
+          %td= e.estado_proceso_de_sistema.nombre
+          %td= link_to 'Borrar', e, method: :delete, data: { confirm: '¿Esta Seguro?' }
+  = will_paginate @procesos_de_sistemas, :inner_window => 2, :outer_window => 0

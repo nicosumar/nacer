@@ -1,14 +1,13 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
   
-
-
-
   scope '/(:locale)', defaults: { locale: 'es' }, constraints: { locale: /es|en/ } do
-    mount Delayed::Web::Engine => '/jobs'
+    authenticated :user, -> user { user.in_group? [:administradores,:facturacion]} do
+      mount Delayed::Web::Engine => '/jobs'
+    end
   end
   
-
+  resources :procesos_de_sistemas , :only => [:index,:destroy,:show] 
 
 
 
@@ -45,9 +44,11 @@ Nacer::Application.routes.draw do
   resources :tipos_periodos
   resources :formulas
   resources :grupos_de_efectores_liquidaciones
+
   resources :liquidaciones_sumar do
     get '/efectores/:id', to: 'liquidaciones_sumar#detalle_de_prestaciones_liquidadas_por_efector', as: 'detalle_de_prestaciones_liquidadas_por_efector'
     member do
+      post   'procesar_liquidaciones',  as: :procesar_liquidaciones, action: :procesar_liquidaciones
       post   'procesar_liquidacion', as: :procesar_liquidacion, action: :procesar_liquidacion
       post   'generar_cuasifacturas', as: :generar_cuasifacturas, action: :generar_cuasifacturas
       delete 'vaciar_liquidacion', :as => :vaciar_liquidacion, :action => :vaciar_liquidacion

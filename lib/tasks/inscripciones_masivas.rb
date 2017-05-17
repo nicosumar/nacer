@@ -638,4 +638,17 @@ class InscripcionMasiva
 
   end
 
+  def encolar_registro_masivo_beneficiarios(archivo, part, uad, ci, efe)
+      proceso_de_sistema = ProcesoDeSistema.new 
+      params = Hash.new
+      params['archivo'] = archivo
+      params['part'] = part
+      params['uad'] = uad
+      params['ci'] = ci
+      params['efe'] = efe
+      proceso_de_sistema.parametros_dinamicos = params.to_json
+      if proceso_de_sistema.save 
+        Delayed::Job.enqueue NacerJob::RegistroMasivoBeneficiariosJob.new(proceso_de_sistema.id)    
+      end
+  end
 end

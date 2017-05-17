@@ -33,6 +33,17 @@
         %b Periodo:
       %td
         %span.field_value= @liquidacion_sumar.periodo.periodo
+    / %tr
+    /   %td
+    /     %b Procesamiento de la liquidacion
+    /   %td
+    /     %span.field_value=  @procesos_relacionado_cerrarl.nil? ? ' - ' : @procesos_relacionado_cerrarl.estado_proceso_de_sistema.nombre
+    / %tr    
+    /   %td
+    /     %b Generacion Cuasifacturas
+    /   %td
+    /     %span.field_value=  @procesos_relacionado_cuasif.nil? ? ' - ' : @procesos_relacionado_cuasif.estado_proceso_de_sistema.nombre
+
     %tr
       %td 
         %b Plantilla de reglas:

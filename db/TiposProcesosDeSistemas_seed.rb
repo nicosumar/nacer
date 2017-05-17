@@ -1,8 +1,11 @@
 TipoProcesoDeSistema.create([
-        { #:id => 1,
+        { :id => 1,
           :nombre => "PROCESAR LIQUIDACION SUMAR" },
-          { #:id => 2,
+          { :id => 2,
           :nombre => "GENERAR CUASIFACTURAS LIQUIDACION SUMAR" },
-          { #:id => 3,
-          :nombre => "REGISTO MASIVO DE PRESTACIONES" }
+          { :id => 3,
+          :nombre => "REGISTO MASIVO DE PRESTACIONES" },
+          { :id => 4,
+          :nombre => "REGISTO MASIVO DE BENEFICIARIOS" }
+        
 ])
