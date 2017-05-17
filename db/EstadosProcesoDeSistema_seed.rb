@@ -1,14 +1,12 @@
 EstadoProcesoDeSistema.create([
-        { #:id => 1,
+        { :id => 1,
         	:nombre => "EN COLA PARA PROCESAR" },
-        { #:id => 1,
+        { :id => 2,
           :nombre => "PROCESANDO" },
-        { #:id => 1,
+        { :id => 3,
           :nombre => "CANCELADO" },
-		{ #:id => 1,
+		    { :id => 4,
           :nombre => "ERROR DURANTE EL PROCESAMIENTO" },
-        
-        { #:id => 1,
+        { :id => 5,
          :nombre => "COMPLETADO" }
-
 ])

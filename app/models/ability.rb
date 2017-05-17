@@ -30,6 +30,7 @@ class Ability
       can :read, LiquidacionSumarAnexoMedico
       can :read, AnexoMedicoPrestacion
       can :manage, LiquidacionInforme
+      can :read, ProcesoDeSistema
     end
 
     if user.in_group? :liquidacion_ugsp
