@@ -5,8 +5,8 @@
   #action-links
     - if can? :create, LiquidacionSumar
       = link_to 'Nueva Liquidacion', new_liquidacion_sumar_path
-    - if can? :update, LiquidacionSumar
-      = link_to 'Procesar Liquidaciones' , procesar_liquidaciones_liquidacion_sumar_path(1), method: :post
+    / - if can? :update, LiquidacionSumar
+    /   = link_to 'Procesar Liquidaciones' , procesar_liquidaciones_liquidacion_sumar_path(1), method: :post
 = render :partial => "shared/info"
 #content-body
   %table
