@@ -32,10 +32,10 @@ module NacerJob
     end
 
     def perform
-
-      tareasDeProcesamiento
       @proceso_de_sistema.estado_proceso_de_sistema_id = EstadosProcesoDeSistema::PROCESANDO
       @proceso_de_sistema.save
+      tareasDeProcesamiento
+     
     end
 
 
@@ -87,8 +87,6 @@ module NacerJob
 
   #Trabajo para el registro masivo de prestaciones
   class RegistroMasivoPrestacionesJob < GenericJob 
-
-    
       def tareasDeEncolado
        @proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::REGISTO_MASIVO_DE_PRESTACIONES
       end
@@ -107,9 +105,39 @@ module NacerJob
        def max_attempts
          1
        end
+       
+       def max_run_time
+         3000.minutes
+       end
   end
 
 
 
+  #Masivo de Beneficiarios
+#class RegistroMasivoBeneficiariosJob < GenericJob 
+#  def tareasDeEncolado
+#   @proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::REGISTO_MASIVO_DE_BENEFICIARIOS
+#  end
+#
+#  def tareasDeProcesamiento 
+#     rmp2 = RegistroMasivoDePrestacionesV2.new
+#
+#     if @parametros['archivo'] and @parametros['uad'] and @parametros['efe']
+#      rmp2.procesar( @parametros['archivo'] , UnidadDeAltaDeDatos.find( @parametros['uad'] ), Efector.find( @parametros['efe']) )
+#     else
+#      raise 'Parametros Faltantes: '+ 'RegistroMasivoDePrestacionesV2.procesar(archivo, uad, efe)'
+#     end
+#  end 
+#
+#   def max_attempts
+#     1
+#   end
+#end
+
+
+
+
+
+  
 
 end

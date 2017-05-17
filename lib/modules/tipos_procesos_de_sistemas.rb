@@ -6,6 +6,6 @@ module TiposProcesosDeSistemas
 
   REGISTO_MASIVO_DE_PRESTACIONES = 3 
 
-
+  REGISTO_MASIVO_DE_BENEFICIARIOS = 4
   
 end
