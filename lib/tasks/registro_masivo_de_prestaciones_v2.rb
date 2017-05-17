@@ -57,29 +57,59 @@ class RegistroMasivoDePrestacionesV2
     self.unidad_de_alta_de_datos = uad
     self.efector = efe
     @directory_name = "#{archivo}".split(".")[0]
-      unless File.directory?( @directory_name) 
-        FileUtils.mkdir_p( @directory_name)
+#PREPARO LOS ARCHIVOS PARA PROCESAR-ELIMINANDO LOS YA PROCESADOS
+
+    if !File.directory?(@directory_name)
+      FileUtils.mkdir_p(@directory_name)
+      @archivo_de_log_completo = File.open( @directory_name +'/RESTULTADOS.out', "w")
+      archivos_a_particionar_part_names = particionar(archivo)
+
+    else
+
+      @archivo_de_log_completo = File.open(@directory_name +'/RESTULTADOS.out', "a+")
+      archivos_a_particionar_part_names = Dir.glob(@directory_name.to_s + "/part_*"+".csv")
+      archivos_a_particionar_part_names = eliminar_procesados(archivos_a_particionar_part_names)
+      @archivo_de_log_completo.puts '************* REPROCESO DE PARTES ****************'+"\n"+archivos_a_particionar_part_names.to_s
+    end
+
+#PROCESO LAS PARTES
+
+  if !archivos_a_particionar_part_names.empty?
+
+      archivos_a_particionar_part_names.each{ |filename|
+        #SI LA PARTE NO FUE PROCESADA LA PROCESO
+          
+          @archivo_a_procesar = File.open(filename,"r")
+          @nombre_de_archivo_a_procesar = filename
+          
+          crear_modelo_y_tabla
+          procesar_archivo
+          persistir_prestaciones
+          escribir_resultados
+          eliminar_tabla 
+          
+          puts "*****************************Archivo: \n \n \n" + @nombre_de_archivo_a_procesar + "\n \n \n procesado con exito!-**********************************"
+      }
+  end
+  else puts "\n \n"+'No hay más partes para procesar'
+
+  @archivo_de_log_completo.close
+
+  end
+
+      def eliminar_procesados(archivos)
+        archivos_resultados = archivos.clone
+
+        for a in archivos_resultados
+          
+          if !Dir.glob(a+".out").empty?
+              archivos.delete(a)
+          end
+        end
+        return archivos
       end
 
-    @archivo_de_log_completo = File.open( @directory_name +'/RESTULTADOS.out', "w")
 
-    archivos_a_particionar_part_names = particionar(archivo)
-    
-    archivos_a_particionar_part_names.each{ |filename|
-
-      @archivo_a_procesar = File.open(filename,"r")
-      @nombre_de_archivo_a_procesar = filename
-      crear_modelo_y_tabla
-      procesar_archivo
-      persistir_prestaciones
-      escribir_resultados
-      eliminar_tabla
-
-      
-      puts "*****************************Archivo: \n \n \n" + @nombre_de_archivo_a_procesar + "\n \n \n procesado con exito!-**********************************"
-    }
-    @archivo_de_log_completo.close
-  end
 
       def particionar(archivo)
 
@@ -88,7 +118,7 @@ class RegistroMasivoDePrestacionesV2
         lineNum = 0
         file_num = -1
         bytes    = 0
-        max_lines = 1000
+        max_lines = 5
         @archivo_a_procesar_part = archivo
 
         filename =  @archivo_a_procesar_part.to_s
