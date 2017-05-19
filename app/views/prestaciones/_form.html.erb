@@ -15,7 +15,7 @@
   <h4>Información general</h4>
   <div class="field">
     <%= f.label "Prestación Principal" %>
-    <%= f.collection_select :prestacion_principal_id, PrestacionPrincipal.activas, :id, :full_codigo_y_nombre %>    
+    <%= f.collection_select :prestacion_principal_id, PrestacionPrincipal.activas, :id, :full_codigo_y_nombre, include_blank: "Seleccione una prestación principal" %>    
   </div>
   <div class="field">
     <%= f.label "Nombre" %>
