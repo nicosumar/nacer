@@ -975,7 +975,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
           UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
             SET
               estado_de_la_novedad_id = '#{estado}',
-              mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}'
+              mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}' ,
+              updated_at = datetime('now')
             WHERE
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
               AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
@@ -1244,7 +1245,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
           UPDATE uad_#{uad.codigo}.novedades_de_los_afiliados
             SET
               estado_de_la_novedad_id = '#{estado}',     
-              mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}'
+              mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}' ,
+              updated_at = datetime('now')
             WHERE
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
               AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
