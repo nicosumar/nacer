@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-
+#require 'logger'
 class RegistroMasivoDePrestacionesV2
 
   attr_accessor :archivo_completo
@@ -42,12 +42,27 @@ class RegistroMasivoDePrestacionesV2
     Sexo.find(:all).each do |i|
       @hash_sexos.merge! i.codigo => i.id
     end
-  end
+   
+    @log_del_proceso = Logger.new("log/RegistroMasivoPrestaciones")
+    @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
+    date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+      if severity == "INFO" or severity == "WARN"
+          "[#{date_format}] #{severity}: #{msg}\n"
+      else        
+          "[#{date_format}] #{severity}: #{msg}\n"
+      end
+    end
+
+
+   end
 
   def establecer_esquema(esquema = "public")
   end
 
   def procesar(archivo, uad, efe)
+    
+    @log_del_proceso.info("Iniciando procesamiento de archivo Masivo")
+
     raise ArgumentError if archivo.blank?
     raise ArgumentError unless uad.is_a? UnidadDeAltaDeDatos
     raise ArgumentError unless efe.is_a? Efector
@@ -73,28 +88,50 @@ class RegistroMasivoDePrestacionesV2
     end
 
 #PROCESO LAS PARTES
+   @log_del_proceso.info ("Iniciando procesamiento de archivo Masivo")
 
   if !archivos_a_particionar_part_names.empty?
 
       archivos_a_particionar_part_names.each{ |filename|
         #SI LA PARTE NO FUE PROCESADA LA PROCESO
-          
+          @log_del_proceso.info ("Iniciado Parte " + filename.to_s )
+
+          @log_del_proceso.debug ("Iniciando Apertura de archivo")
           @archivo_a_procesar = File.open(filename,"r")
+          @log_del_proceso.debug ("Apertura de archivo completa")
+
+
           @nombre_de_archivo_a_procesar = filename
-          
+
+          @log_del_proceso.debug ("Iniciando la creacion de modelo y tabla")
           crear_modelo_y_tabla
+          @log_del_proceso.debug ("Fin de la creacion de modelo y tabla")
+
+
+          @log_del_proceso.debug ("Iniciando procesar_archivo")
           procesar_archivo
+          @log_del_proceso.debug ("Fin procesar_archivo")
+
+          @log_del_proceso.debug ("Iniciando persistir_prestaciones")
           persistir_prestaciones
+          @log_del_proceso.debug ("Fin persistir_prestaciones")
+
+          @log_del_proceso.debug ("Iniciando escribir_resultados")
           escribir_resultados
+          @log_del_proceso.debug ("Fin escribir_resultados")
+
           eliminar_tabla 
-          
+          @log_del_proceso.info ("fIN Parte " + filename.to_s )
+
           puts "*****************************Archivo: \n \n \n" + @nombre_de_archivo_a_procesar + "\n \n \n procesado con exito!-**********************************"
       }
   end
+
   else puts "\n \n"+'No hay más partes para procesar'
-
+  @log_del_proceso.info ("Cerrando archivo de log completo")
   @archivo_de_log_completo.close
-
+  @log_del_proceso.info ("Cerrado archivo de log completo" )
+  @log_del_proceso.info ("Fin procesamiento de archivo Masivo")
   end
 
       def eliminar_procesados(archivos)
@@ -118,7 +155,7 @@ class RegistroMasivoDePrestacionesV2
         lineNum = 0
         file_num = -1
         bytes    = 0
-        max_lines = 5
+        max_lines = 100
         @archivo_a_procesar_part = archivo
 
         filename =  @archivo_a_procesar_part.to_s
@@ -775,9 +812,9 @@ end
 
       
       # Cerrar el archivo de importación de prestaciones
-      
+      @log_del_proceso.debug ("Iniciando procesar_archivo(cerrado de archivo)")
       archivo.close
-      
+     @log_del_proceso.debug ("fin procesar_archivo(cerrado de archivo)")
     end
   end
 
