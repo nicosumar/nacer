@@ -70,6 +70,7 @@ class RegistroMasivoDePrestacionesV2
       archivos_a_particionar_part_names = Dir.glob(@directory_name.to_s + "/part_*"+".csv")
       archivos_a_particionar_part_names = eliminar_procesados(archivos_a_particionar_part_names)
       @archivo_de_log_completo.puts '************* REPROCESO DE PARTES ****************'+"\n"+archivos_a_particionar_part_names.to_s
+
     end
 
 #PROCESO LAS PARTES
@@ -81,6 +82,7 @@ class RegistroMasivoDePrestacionesV2
           
           @archivo_a_procesar = File.open(filename,"r")
           @nombre_de_archivo_a_procesar = filename
+byebug          
           
           crear_modelo_y_tabla
           procesar_archivo
@@ -102,7 +104,7 @@ class RegistroMasivoDePrestacionesV2
 
         for a in archivos_resultados
           
-          if !Dir.glob(a+".out").empty?
+          if !Dir.glob(a+'.out').empty?
               archivos.delete(a)
           end
         end
@@ -180,7 +182,8 @@ class RegistroMasivoDePrestacionesV2
   def escribir_resultados
 
 #GRABO EN EL PARCIAL LOS RESULTADOS
-    archivo = File.open(@nombre_de_archivo_a_procesar + ".out", "w")
+byebug
+    archivo = File.open(@nombre_de_archivo_a_procesar + '.out', "w")
     archivo.puts ImportarPrestacionBrindada.column_names.join("\t")
     ImportarPrestacionBrindada.find(:all).each do |n|
       archivo.puts n.attributes.values.join("\t")
