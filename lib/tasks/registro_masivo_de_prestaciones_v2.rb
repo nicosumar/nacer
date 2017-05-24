@@ -82,8 +82,7 @@ class RegistroMasivoDePrestacionesV2
           
           @archivo_a_procesar = File.open(filename,"r")
           @nombre_de_archivo_a_procesar = filename
-byebug          
-          
+
           crear_modelo_y_tabla
           procesar_archivo
           persistir_prestaciones
