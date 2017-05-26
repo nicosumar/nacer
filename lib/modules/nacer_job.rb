@@ -114,7 +114,7 @@ module NacerJob
     end
        
     def max_run_time
-      3000.minutes
+      20000.minutes
     end
   end
 

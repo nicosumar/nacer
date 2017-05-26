@@ -896,7 +896,8 @@ class PadronesController < ApplicationController
             SET
               estado_de_la_novedad_id = #{estado},
               mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
-              mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja}
+              mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja} ,
+              updated_at = datetime('now')
             WHERE id = '#{id_de_novedad}';
         "
 

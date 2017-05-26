@@ -85,6 +85,7 @@ class RegistroMasivoDePrestacionesV2
       archivos_a_particionar_part_names = Dir.glob(@directory_name.to_s + "/part_*"+".csv")
       archivos_a_particionar_part_names = eliminar_procesados(archivos_a_particionar_part_names)
       @archivo_de_log_completo.puts '************* REPROCESO DE PARTES ****************'+"\n"+archivos_a_particionar_part_names.to_s
+
     end
 
 #PROCESO LAS PARTES
@@ -95,7 +96,7 @@ class RegistroMasivoDePrestacionesV2
       archivos_a_particionar_part_names.each{ |filename|
         #SI LA PARTE NO FUE PROCESADA LA PROCESO
           @log_del_proceso.info ("Iniciado Parte " + filename.to_s )
-
+          tiempo_proceso = Time.now
           @log_del_proceso.debug ("Iniciando Apertura de archivo")
           @archivo_a_procesar = File.open(filename,"r")
           @log_del_proceso.debug ("Apertura de archivo completa")
@@ -121,7 +122,7 @@ class RegistroMasivoDePrestacionesV2
           @log_del_proceso.debug ("Fin escribir_resultados")
 
           eliminar_tabla 
-          @log_del_proceso.info ("fIN Parte " + filename.to_s )
+          @log_del_proceso.info("fIN Parte " + filename.to_s + ", tiempo: ( #{ Time.now - tiempo_proceso} segundos )")
 
           puts "*****************************Archivo: \n \n \n" + @nombre_de_archivo_a_procesar + "\n \n \n procesado con exito!-**********************************"
       }
@@ -139,7 +140,7 @@ class RegistroMasivoDePrestacionesV2
 
         for a in archivos_resultados
           
-          if !Dir.glob(a+".out").empty?
+          if !Dir.glob(a+'.out').empty?
               archivos.delete(a)
           end
         end
@@ -217,7 +218,8 @@ class RegistroMasivoDePrestacionesV2
   def escribir_resultados
 
 #GRABO EN EL PARCIAL LOS RESULTADOS
-    archivo = File.open(@nombre_de_archivo_a_procesar + ".out", "w")
+
+    archivo = File.open(@nombre_de_archivo_a_procesar + '.out', "w")
     archivo.puts ImportarPrestacionBrindada.column_names.join("\t")
     ImportarPrestacionBrindada.find(:all).each do |n|
       archivo.puts n.attributes.values.join("\t")
@@ -316,9 +318,13 @@ end
 
     ActiveRecord::Base.logger.silence do
       archivo = File.open(@archivo_a_procesar, "r")
+      #Variables basura para medir el rendimiento
+      tiempo_maximo_linea = 0
+      tiempo_maximo_linea_sin_save = 0 
+      #fin de variables basura
 
       archivo.each_with_index do |linea, i|
-
+        tiempo = Time.now 
         clase_de_documento_valido = true
         tipo_de_documento_valido = true
         fecha_de_la_prestacion_valida =true
@@ -803,9 +809,15 @@ end
               # La prestación que quedó seleccionada tiene errores por los que no se puede persistir
               prestacion_brindada.persistido = false
             end
+          tiempo_sin_save = Time.now - tiempo
+          tiempo_maximo_linea_sin_save = (tiempo_maximo_linea_sin_save > tiempo_sin_save) ? tiempo_maximo_linea_sin_save : tiempo_sin_save
+
             # Guardar la prestación y continuar con la próxima línea
-            prestacion_brindada.save
-            
+          prestacion_brindada.save
+
+          tiempo_con_save = Time.now - tiempo
+          tiempo_maximo_linea = (tiempo_maximo_linea > tiempo_con_save) ? tiempo_maximo_linea : tiempo_con_save
+
         end
     
       end
@@ -814,7 +826,9 @@ end
       # Cerrar el archivo de importación de prestaciones
       @log_del_proceso.debug ("Iniciando procesar_archivo(cerrado de archivo)")
       archivo.close
-     @log_del_proceso.debug ("fin procesar_archivo(cerrado de archivo)")
+      @log_del_proceso.debug("fin procesar_archivo(cerrado de archivo)")
+      @log_del_proceso.debug("Tiempo Mayor Antes de guardar= #{tiempo_maximo_linea_sin_save} segundos" )
+      @log_del_proceso.debug("Tiempo Mayor Antes de guardar= #{tiempo_maximo_linea} segundos")
     end
   end
 
@@ -880,7 +894,7 @@ end
       
       prestacion_brindada.creator_id = 897
       prestacion_brindada.updater_id = 897
-
+  
       prestacion_brindada.save
 
     end
@@ -1064,7 +1078,7 @@ end
       params['efe'] = efe
       proceso_de_sistema.parametros_dinamicos = params.to_json
       if proceso_de_sistema.save 
-         Delayed::Job.enqueue NacerJob::RegistroMasivoPrestacionesJob.new(proceso_de_sistema.id)    
+         Delayed::Job.enqueue NacerJob::RegistroMasivoPrestacionesJob.new(proceso_de_sistema.id) , priority: -10  
       end
   end
   

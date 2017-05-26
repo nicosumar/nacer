@@ -4,7 +4,7 @@ Rails.application.config.to_prepare do
   Delayed::Worker.default_queue_name = 'default' 
   Delayed::Worker.sleep_delay = 60.seconds
   Delayed::Worker.destroy_failed_jobs = false
-  Delayed::Worker.max_run_time = 720.minutes
+  Delayed::Worker.max_run_time = 20000.minutes
   Delayed::Job.attr_accessible :user_id, :proceso_de_sistema_id,:last_error
   Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
   Delayed::Worker.max_run_time = 3000.minutes
