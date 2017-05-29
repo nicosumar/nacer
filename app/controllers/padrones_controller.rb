@@ -843,71 +843,27 @@ class PadronesController < ApplicationController
       anio, mes = params[:anio_y_mes].split("-")
       primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
       origen = File.new("vendor/data/ActEstadoNovedades_#{params[:anio_y_mes]}.txt", "r")
+     # primero_del_mes
+     # origen
     rescue
       @errores_presentes = true
       @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
       return
     end
-
-    # Hacemos la actualización dentro de una transacción
-    ActiveRecord::Base.transaction do
-
-      # Procesamiento de la actualización del estado de las novedades
-      esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
-      ultima_uad = ''
-      i=0
-      origen.each do |linea|
-        # Obtener la siguiente línea del archivo
-        linea.gsub!(/[\r\n]+/, '')
-        # Separar los campos
-        campos = linea.split("\t")
-        if i==0
-          codigo_uad = valor(campos[0], :texto).gsub!(/[^0-9A-Za-z]/, '')
-        else
-          codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
-        end
-        i += 1
-        puts i
-        # codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
-        id_de_novedad = valor(campos[1], :entero)
-        aceptado = valor(campos[2], :texto).upcase
-        activo = valor(campos[3], :texto).upcase
-        mensaje_baja = valor(campos[5], :texto_sql)
-
-        if codigo_uad != ultima_uad
-          # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
-          ActiveRecord::Base.connection.schema_search_path = "uad_#{codigo_uad},public"
-          ActiveRecord::Base.connection.execute("SET search_path TO #{ActiveRecord::Base.connection.schema_search_path};")
-          ultima_uad = codigo_uad
-        end
-
-        if aceptado == 'S'
-          if activo == 'S'
-            estado = EstadoDeLaNovedad.id_del_codigo("A")
-          else
-            estado = EstadoDeLaNovedad.id_del_codigo("N")
-          end
-        else
-          estado = EstadoDeLaNovedad.id_del_codigo("Z")
-        end
-
-        ActiveRecord::Base.connection.execute "
-          UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
-            SET
-              estado_de_la_novedad_id = #{estado},
-              mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
-              mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja} ,
-              updated_at = datetime('now')
-            WHERE id = '#{id_de_novedad}';
-        "
-
-      end
-      origen.close
-      ActiveRecord::Base.connection.schema_search_path = esquema_actual
-      ActiveRecord::Base.connection.exec_query("SET search_path TO #{esquema_actual};")
-    end
-  end
-
+    
+     proceso_de_sistema = ProcesoDeSistema.new 
+     params = Hash.new
+     params['anio_y_mes'] =params[:anio_y_mes]  
+     proceso_de_sistema.parametros_dinamicos = params.to_json
+      
+     if proceso_de_sistema.save 
+        Delayed::Job.enqueue NacerJob::ActualizacionDeNovedadesJob.new(proceso_de_sistema.id)   
+     end
+     rescue
+          @errores = "Ocurrio un error en la actualización de las novedades"
+     return
+     end
+     
   def resumen_para_el_cierre
     # Proceso de cierre del padrón y generación de archivos "A"
     begin
@@ -939,32 +895,32 @@ class PadronesController < ApplicationController
 
     # TODO: ¡¡¡Añadir verificaciones!!!
     anio, mes, dia = params[:primero_del_mes_siguiente].split("-")
-    primero_del_mes_siguiente = Date.new(anio.to_i, mes.to_i, dia.to_i)
-    uads_a_procesar = UnidadDeAltaDeDatos.where(:codigo => params[:uads_a_procesar].keys)
-
     @directorio = "vendor/data/cierre_padron_#{DateTime.now.strftime('%Y%m%d%H%M%S')}"
-   
-    Dir.mkdir(@directorio)
-    @archivos_generados = []
-    
-    if true
-      
-      archivo_generado = NovedadDelAfiliado.generar_archivo_a_unico(uads_a_procesar, primero_del_mes_siguiente, @directorio);
-    
-      @archivos_generados << "#{ archivo_generado ? archivo_generado : 'ERROR'}"
-    else
-    
-
-      uads_a_procesar.each do |uad|
-        uad.codigos_de_CIs_con_novedades(primero_del_mes_siguiente).each do |codigo_ci|
-          archivo_generado = NovedadDelAfiliado.generar_archivo_a( uad.codigo, codigo_ci, primero_del_mes_siguiente, @directorio )
-          @archivos_generados <<
-            "UAD: #{uad.nombre} (#{uad.codigo}) - Centro de inscripción: #{CentroDeInscripcion.find_by_codigo(codigo_ci).nombre} " +
-            "(#{codigo_ci}) => #{archivo_generado ? archivo_generado : 'ERROR'}"
-        end
+    @errores = ""
+ 
+    #Le clavo la redireccion a la nueva forma de cierre de padron
+    begin
+    proceso_de_sistema = ProcesoDeSistema.new 
+    byebug
+    params = Hash.new
+    params['anio'] = anio   
+    params['mes'] = mes   
+    params['dia'] = dia   
+    params['uads_a_procesar_keys'] = params[:uads_a_procesar].keys 
+      byebug
+    params['directorio'] = @directorio
+     byebug
+    proceso_de_sistema.parametros_dinamicos = params.to_json
+     
+      if proceso_de_sistema.save 
+         Dir.mkdir(@directorio)  
+         Delayed::Job.enqueue NacerJob::CierreDePadronJob.new(proceso_de_sistema.id)   
       end
+    rescue
+      @errores = "Ocurrio un error en la generacion de archivo A. No se crearan archivos"
+      
     end
 
   end
-
+  
 end

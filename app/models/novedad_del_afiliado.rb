@@ -1251,7 +1251,8 @@ class NovedadDelAfiliado < ActiveRecord::Base
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
               AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
               AND tipo_de_novedad_id != (SELECT id FROM tipos_de_novedades WHERE codigo = 'B')
-              AND fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
+              AND fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}'
+              and id = -9;
           "
 
           # Exportar los registros al archivo
@@ -1307,7 +1308,79 @@ class NovedadDelAfiliado < ActiveRecord::Base
 
   end
 
-  
+  def self.actualizacion_de_novedades (anio_y_mes) 
+    begin
+      
+      anio, mes = params[anio_y_mes].split("-")
+      primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
+      origen = File.new("vendor/data/ActEstadoNovedades_#{params[:anio_y_mes]}.txt", "r")
+      
+      # Hacemos la actualización dentro de una transacción
+      ActiveRecord::Base.transaction do
+
+      # Procesamiento de la actualización del estado de las novedades
+      esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
+      ultima_uad = ''
+      i=0
+      origen.each do |linea|
+        # Obtener la siguiente línea del archivo
+        linea.gsub!(/[\r\n]+/, '')
+        # Separar los campos
+        campos = linea.split("\t")
+        if i==0
+          codigo_uad = valor(campos[0], :texto).gsub!(/[^0-9A-Za-z]/, '')
+        else
+          codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
+        end
+        i += 1
+        puts i
+        # codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
+        id_de_novedad = valor(campos[1], :entero)
+        aceptado = valor(campos[2], :texto).upcase
+        activo = valor(campos[3], :texto).upcase
+        mensaje_baja = valor(campos[5], :texto_sql)
+
+        if codigo_uad != ultima_uad
+          # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
+          ActiveRecord::Base.connection.schema_search_path = "uad_#{codigo_uad},public"
+          ActiveRecord::Base.connection.execute("SET search_path TO #{ActiveRecord::Base.connection.schema_search_path};")
+          ultima_uad = codigo_uad
+        end
+
+        if aceptado == 'S'
+          if activo == 'S'
+            estado = EstadoDeLaNovedad.id_del_codigo("A")
+          else
+            estado = EstadoDeLaNovedad.id_del_codigo("N")
+          end
+        else
+          estado = EstadoDeLaNovedad.id_del_codigo("Z")
+        end
+
+        ActiveRecord::Base.connection.execute "
+          UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
+            SET
+              estado_de_la_novedad_id = #{estado},
+              mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
+              mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja} ,
+              updated_at = datetime('now')
+            WHERE id = '#{id_de_novedad}';
+        "
+
+      end
+      origen.close
+      ActiveRecord::Base.connection.schema_search_path = esquema_actual
+      ActiveRecord::Base.connection.exec_query("SET search_path TO #{esquema_actual};")
+    end
+      
+    rescue
+      
+      raise "Se produjerón errores al procesar las novedades. \n La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
+      
+    end
+
+
+  end
   
   #
   # self.con_estado

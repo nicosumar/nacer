@@ -154,13 +154,37 @@ module NacerJob
     end
 
     def tareasDeProcesamiento 
-#      ins = InscripcionMasiva.new
-#      procesar(archivo, part, uad, ci, efe)
-#      if @parametros['archivo'] and @parametros['part'] and @parametros['uad'] and @parametros['ci'] and @parametros['efe']
-#        ins.procesar( @parametros['archivo'] ,@parametros['part'] , UnidadDeAltaDeDatos.find( @parametros['uad'] ),  CentroDeInscripcion.find(@parametros['ci']), Efector.find( @parametros['efe']) )
-#      else
-#        raise 'Parametros Faltantes o inconsistentes: '+ 'InscripcionMasiva.procesar(archivo, part, uad, ci, efe)'
-#      end
+      if @parametros['anio'] and @parametros['mes'] and @parametros['dia'] and @parametros['uads_a_procesar_keys'] and @parametros['directorio']
+          @directorio = "vendor/data/cierre_padron_#{DateTime.now.strftime('%Y%m%d%H%M%S')}"
+          Dir.mkdir(@directorio)
+          anio  = @parametros['anio']   
+          mes =   @parametros['mes']   
+          dia =  @parametros['dia']    
+          primero_del_mes_siguiente = Date.new(anio.to_i, mes.to_i, dia.to_i)
+          uads_a_procesar_keys = @parametros['uads_a_procesar_keys'] 
+          uads_a_procesar = UnidadDeAltaDeDatos.where(:codigo => uads_a_procesar_keys)
+          archivo_generado = NovedadDelAfiliado.generar_archivo_a_unico(uads_a_procesar, primero_del_mes_siguiente, @directorio);
+      else
+        raise 'Parametros Faltantes o inconsistentes: '+ 'PadronesController.cierre - (dia,mes,anio,uads_a_procesar_keys,directorio)'
+      end
+    end 
+
+  end
+  
+  
+  #Actualizacion de las novedades
+  class ActualizacionDeNovedadesJob < GenericJob
+
+    def tareasDeEncolado
+      @proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::ACTUALIZACION_DE_LAS_NOVEDADES
+    end
+
+    def tareasDeProcesamiento 
+      if @parametros['anio_y_mes']
+          NovedadDelAfiliado.actualizacion_de_novedades(@parametros['anio_y_mes']);
+      else
+        raise 'Parametros Faltantes o inconsistentes: '+ 'PadronesController.actualizacion_de_novedades - (anio_y_mes)'
+      end
     end 
 
   end
