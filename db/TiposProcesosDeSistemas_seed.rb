@@ -6,6 +6,9 @@ TipoProcesoDeSistema.create([
           { :id => 3,
           :nombre => "REGISTO MASIVO DE PRESTACIONES" },
           { :id => 4,
-          :nombre => "REGISTO MASIVO DE BENEFICIARIOS" }
-        
+          :nombre => "REGISTO MASIVO DE BENEFICIARIOS" },
+        { :id => 5,
+          :nombre => "CIERRE DE PADRON" },
+        { :id => 6,
+          :nombre => "ACTUALIZACION DE LAS NOVEDADES" }   
 ])

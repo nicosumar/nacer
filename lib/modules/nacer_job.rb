@@ -145,4 +145,23 @@ module NacerJob
     end
   end
 
+
+  #Cierre de padron
+  class CierreDePadronJob < GenericJob
+
+    def tareasDeEncolado
+      @proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::CIERRE_DE_PADRON
+    end
+
+    def tareasDeProcesamiento 
+#      ins = InscripcionMasiva.new
+#      procesar(archivo, part, uad, ci, efe)
+#      if @parametros['archivo'] and @parametros['part'] and @parametros['uad'] and @parametros['ci'] and @parametros['efe']
+#        ins.procesar( @parametros['archivo'] ,@parametros['part'] , UnidadDeAltaDeDatos.find( @parametros['uad'] ),  CentroDeInscripcion.find(@parametros['ci']), Efector.find( @parametros['efe']) )
+#      else
+#        raise 'Parametros Faltantes o inconsistentes: '+ 'InscripcionMasiva.procesar(archivo, part, uad, ci, efe)'
+#      end
+    end 
+
+  end
 end

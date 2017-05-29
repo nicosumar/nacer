@@ -8,4 +8,7 @@ module TiposProcesosDeSistemas
 
   REGISTO_MASIVO_DE_BENEFICIARIOS = 4
   
+  CIERRE_DE_PADRON = 5
+  
+  ACTUALIZACION_DE_LAS_NOVEDADES = 6
 end
