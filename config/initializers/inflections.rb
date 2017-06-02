@@ -586,8 +586,9 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("estado_solicitud_addenda","estados·_solicitudes·_addendas·")
   inflect.irregular("solicitud_addenda_prestacion_principal","solicitudes·_addendas·_prestaciones·_principales·")
 
-
-
+  # Plurales para los codigos de gastos
+  inflect.irregular("codigo_de_gasto", "codigos·_de·_gastos·")
+  inflect.irregular("codigos·_de·_gastos·", "codigos_de_gastos")
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")

@@ -1,6 +1,14 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
   
+  get "casas/index"
+
+  get "casas/new"
+
+  get "casas/show"
+
+  get "casas/edit"
+
   scope '/(:locale)', defaults: { locale: 'es' }, constraints: { locale: /es|en/ } do
     authenticated :user, -> user { user.in_group? [:administradores,:facturacion]} do
       mount Delayed::Web::Engine => '/jobs'
