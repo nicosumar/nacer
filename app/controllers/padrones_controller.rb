@@ -851,18 +851,21 @@ class PadronesController < ApplicationController
       return
     end
     
-     proceso_de_sistema = ProcesoDeSistema.new 
-     params = Hash.new
-     params['anio_y_mes'] =params[:anio_y_mes]  
-     proceso_de_sistema.parametros_dinamicos = params.to_json
+
+    
+    proceso_de_sistema = ProcesoDeSistema.new 
+    parametros = Hash.new
+    parametros['anio_y_mes'] =params[:anio_y_mes]  
+    proceso_de_sistema.parametros_dinamicos = parametros.to_json
       
-     if proceso_de_sistema.save 
+    if proceso_de_sistema.save 
         Delayed::Job.enqueue NacerJob::ActualizacionDeNovedadesJob.new(proceso_de_sistema.id)   
-     end
-     rescue
+    else
           @errores = "Ocurrio un error en la actualización de las novedades"
-     return
-     end
+      return
+    end
+
+   end
      
   def resumen_para_el_cierre
     # Proceso de cierre del padrón y generación de archivos "A"
@@ -901,19 +904,16 @@ class PadronesController < ApplicationController
     #Le clavo la redireccion a la nueva forma de cierre de padron
     begin
     proceso_de_sistema = ProcesoDeSistema.new 
-    byebug
-    params = Hash.new
-    params['anio'] = anio   
-    params['mes'] = mes   
-    params['dia'] = dia   
-    params['uads_a_procesar_keys'] = params[:uads_a_procesar].keys 
-      byebug
-    params['directorio'] = @directorio
-     byebug
-    proceso_de_sistema.parametros_dinamicos = params.to_json
+    parametros = Hash.new
+    parametros['anio'] = anio   
+    parametros['mes'] = mes   
+    parametros['dia'] = dia   
+    parametros['uads_a_procesar_keys'] = params[:uads_a_procesar].keys 
+    parametros['directorio'] = @directorio
+    proceso_de_sistema.parametros_dinamicos = parametros.to_json
      
       if proceso_de_sistema.save 
-         Dir.mkdir(@directorio)  
+         Dir.mkdir(@directorio)       
          Delayed::Job.enqueue NacerJob::CierreDePadronJob.new(proceso_de_sistema.id)   
       end
     rescue
@@ -921,6 +921,119 @@ class PadronesController < ApplicationController
       
     end
 
+  end
+
+
+  def actualizacion_de_novedades_X (anio_y_mes) 
+   
+#byebug
+
+    begin
+   
+
+          @log_del_proceso = Logger.new("log/ActualizacionNovedades",10, 1024000)
+          @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
+          date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+            if severity == "INFO" or severity == "WARN"
+              "[#{date_format}] #{severity}: #{msg}\n"
+              else        
+              "[#{date_format}] #{severity}: #{msg}\n"
+            end
+          end
+          @log_del_proceso.info("*****************************************************")
+          @log_del_proceso.info("####***Iniciando procesamiento de Actualizacion de novedades***###")
+          @log_del_proceso.info("******************************************************")
+
+         
+
+
+#byebug
+            anio, mes = anio_y_mes.split("-")
+            primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
+            origen = File.new("vendor/data/ActEstadoNovedades_#{anio_y_mes}.txt", "r")
+            @log_del_proceso.info("Lectura del archivo completada")
+            #byebug
+
+    rescue
+               @log_del_proceso.info("Se produjerón errores al procesar las novedades. \n La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor.")
+              raise "Se produjerón errores al procesar las novedades. \n La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
+              return
+    end
+
+            # Hacemos la actualización dentro de una transacción
+            ActiveRecord::Base.transaction do
+              #byebug
+              # Procesamiento de la actualización del estado de las novedades
+              esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
+              ultima_uad = ''
+              i=0
+                  #byebug
+              @log_del_proceso.info("Iniciando Procesamiento de lineas")
+
+              contador = 1
+       
+              origen.each do |linea|
+
+               
+                contador = contador + 1 
+
+                if ( (contador % 1000) == 0 )
+                   @log_del_proceso.debug("Linea Actual #{ contador }")            
+                end
+
+                #byebug
+                # Obtener la siguiente línea del archivo
+                linea.gsub!(/[\r\n]+/, '')
+                # Separar los campos
+                campos = linea.split("\t")
+                if i==0
+                  codigo_uad = valor(campos[0], :texto).gsub!(/[^0-9A-Za-z]/, '')
+                else
+                  codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
+                end
+                i += 1
+                puts i
+                # codigo_uad = valor(campos[0], :texto)#.gsub!(/[^0-9A-Za-z]/, '')
+                id_de_novedad = valor(campos[1], :entero)
+                aceptado = valor(campos[2], :texto).upcase
+                activo = valor(campos[3], :texto).upcase
+                mensaje_baja = valor(campos[5], :texto_sql)
+#byebug
+                    if codigo_uad != ultima_uad
+                      # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
+                      ActiveRecord::Base.connection.schema_search_path = "uad_#{codigo_uad},public"
+                      ActiveRecord::Base.connection.execute("SET search_path TO #{ActiveRecord::Base.connection.schema_search_path};")
+                      ultima_uad = codigo_uad
+                    end
+
+#byebug
+                    if aceptado == 'S'
+                      if activo == 'S'
+                        estado = EstadoDeLaNovedad.id_del_codigo("A")
+                      else
+                        estado = EstadoDeLaNovedad.id_del_codigo("N")
+                      end
+                    else
+                      estado = EstadoDeLaNovedad.id_del_codigo("Z")
+                    end
+#byebug
+                ActiveRecord::Base.connection.execute "
+                  UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
+                    SET
+                      estado_de_la_novedad_id = #{estado},
+                      mes_y_anio_de_proceso = '#{primero_del_mes.strftime('%Y-%m-%d')}',
+                      mensaje_de_la_baja = #{mensaje_baja.blank? ? 'NULL' : mensaje_baja} ,
+                      updated_at = date('now')
+                    WHERE id = '#{id_de_novedad}';
+                "
+#byebug
+              end
+#byebug
+            origen.close
+            @log_del_proceso.info("Procesamiento de lineas completado")
+            ActiveRecord::Base.connection.schema_search_path = esquema_actual
+            ActiveRecord::Base.connection.exec_query("SET search_path TO #{esquema_actual};")
+          end
   end
   
 end

@@ -19,7 +19,7 @@
         %th 
     %tbody
       - @procesos_de_sistemas.each do |e|
-        %tr.clickable{ :onclick => "location.href=\'#{proceso_de_sistema_path(e)}\'", :title => "Ver detalles del Trabajo" }
+        %tr
           %td= e.id
           %td= e.descripcion_ultimo_error
           %td= e.tipo_proceso_de_sistema.nombre

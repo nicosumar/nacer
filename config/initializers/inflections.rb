@@ -476,6 +476,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("procesos·_de·_sistemas·", "procesos_de_sistemas")
   inflect.irregular("job","jobs")
 
+
+  #Codigos de gastos
+  inflect.irregular("subcodigo_de_gasto", "subcodigos·_de·_gastos·")
+  inflect.irregular("subcodigos·_de·_gastos·", "subcodigos_de_gastos")
   #Tipo de debito prestacional
   inflect.irregular("tipo_de_debito_prestacional", "tipos·_de·_debitos·_prestacionales·")
   inflect.irregular("tipo·_de·_debito·_prestacional·", "tipos_de_debitos_prestacionales")

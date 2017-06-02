@@ -155,15 +155,14 @@ module NacerJob
 
     def tareasDeProcesamiento 
       if @parametros['anio'] and @parametros['mes'] and @parametros['dia'] and @parametros['uads_a_procesar_keys'] and @parametros['directorio']
-          @directorio = "vendor/data/cierre_padron_#{DateTime.now.strftime('%Y%m%d%H%M%S')}"
-          Dir.mkdir(@directorio)
+          directorio = @parametros['directorio']
           anio  = @parametros['anio']   
           mes =   @parametros['mes']   
           dia =  @parametros['dia']    
           primero_del_mes_siguiente = Date.new(anio.to_i, mes.to_i, dia.to_i)
           uads_a_procesar_keys = @parametros['uads_a_procesar_keys'] 
           uads_a_procesar = UnidadDeAltaDeDatos.where(:codigo => uads_a_procesar_keys)
-          archivo_generado = NovedadDelAfiliado.generar_archivo_a_unico(uads_a_procesar, primero_del_mes_siguiente, @directorio);
+          archivo_generado = NovedadDelAfiliado.generar_archivo_a_unico(uads_a_procesar, primero_del_mes_siguiente, directorio);
       else
         raise 'Parametros Faltantes o inconsistentes: '+ 'PadronesController.cierre - (dia,mes,anio,uads_a_procesar_keys,directorio)'
       end
@@ -181,7 +180,8 @@ module NacerJob
 
     def tareasDeProcesamiento 
       if @parametros['anio_y_mes']
-          NovedadDelAfiliado.actualizacion_de_novedades(@parametros['anio_y_mes']);
+         p = PadronesController.new
+         p.actualizacion_de_novedades_X(@parametros['anio_y_mes']);
       else
         raise 'Parametros Faltantes o inconsistentes: '+ 'PadronesController.actualizacion_de_novedades - (anio_y_mes)'
       end
