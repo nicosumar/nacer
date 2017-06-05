@@ -75,7 +75,6 @@ module NacerJob
       @proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR
     end
     def tareasDeProcesamiento
-      sleep 30.seconds  
       @liquidacion_sumar = LiquidacionSumar.find(@proceso_de_sistema.entidad_relacionada_id)
       if @liquidacion_sumar.prestaciones_liquidadas.count == 0
         raise  "¡La liquidacion " + @liquidacion_sumar.descripcion + "esta vacia. Procese  y verifique la liquidacion previamente."
@@ -87,7 +86,7 @@ module NacerJob
 
     #Maxima cantidad de intentos sobrescrita
     def max_attempts
-      3
+      5
     end
   end
   

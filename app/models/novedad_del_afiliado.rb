@@ -1031,7 +1031,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
   def self.generar_archivo_a_unico(uads, fecha_limite,directorio_de_destino)
     # TODO: agregar validaciones
 
-    @log_del_proceso = Logger.new("log/CierrePadron",10, 1024000)
+    @log_del_proceso = Logger.new("log/CierrePadron.log",10, 1024000)
     @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
              date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
                     if severity == "INFO" or severity == "WARN"

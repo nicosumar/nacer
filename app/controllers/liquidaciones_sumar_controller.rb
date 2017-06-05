@@ -141,25 +141,25 @@ class LiquidacionesSumarController < ApplicationController
       status = :method_not_allowed
     else
       
-      if @liquidacion_sumar.generar_snapshoot_de_liquidacion
-        logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
-        respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
-      else
-        respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
-        status = :internal_server_error
-      end
-
-      # begin
-      # proceso_de_sistema = ProcesoDeSistema.new 
-      # proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
-      # if proceso_de_sistema.save 
-      #    Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
-      #    respuesta = { :tipo => :ok, :titulo => "El procesamiento de la liquidación se encoló correctamente" }
-      # end
-      # rescue
+      # if @liquidacion_sumar.generar_snapshoot_de_liquidacion
+      #   logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
+      #   respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
+      # else
       #   respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
       #   status = :internal_server_error
       # end
+
+      begin
+      proceso_de_sistema = ProcesoDeSistema.new 
+      proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
+      if proceso_de_sistema.save 
+         Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
+         respuesta = { :tipo => :ok, :titulo => "El procesamiento de la liquidación se encoló correctamente" }
+      end
+      rescue
+        respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
+        status = :internal_server_error
+      end
 
     end
 
@@ -187,15 +187,15 @@ class LiquidacionesSumarController < ApplicationController
     begin
       unless respuesta.present?
 
-        # proceso_de_sistema = ProcesoDeSistema.new 
-        # if proceso_de_sistema.save 
-        # Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
-        # end
+        proceso_de_sistema = ProcesoDeSistema.new 
+        if proceso_de_sistema.save 
+        Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
+        end
 
-        @liquidacion_sumar.generar_documentos!
+        #@liquidacion_sumar.generar_documentos!
         logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
-        respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
-        # respuesta = { :tipo => :ok, :titulo => "El procesamiento de la generación de las cuasifacturas se encoló correctamente" }
+        #respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
+         respuesta = { :tipo => :ok, :titulo => "El procesamiento de la generación de las cuasifacturas se encoló correctamente" }
       end
     rescue Exception => e
       logger.warn e.inspect
@@ -208,7 +208,7 @@ class LiquidacionesSumarController < ApplicationController
       format.json { render json: respuesta.to_json, status: status }
     end
   end
-
+  ##Este metodo aun no lo ocupamos hasta definir si vale la pena o no
   def procesar_liquidaciones
     
     tiempo_proceso = Time.now
