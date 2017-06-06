@@ -46,8 +46,7 @@ class ExtraerBajas
                 SET estado_de_la_novedad_id = '3'
                 WHERE
                   tipo_de_novedad_id = '2'
-                  AND estado_de_la_novedad_id = '2'
-                  and id = -99;
+                  AND estado_de_la_novedad_id = '2';
             "
           end
         end
