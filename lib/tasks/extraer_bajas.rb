@@ -22,8 +22,8 @@ class ExtraerBajas
 
               coalesce (mbb.nombre , REGEXP_REPLACE(COALESCE(n1.observaciones_generales, ''), E'\\r\\n', '~', 'g') ) AS \"MotivoDeBaja\",
            
-              '1'::text AS \"DarDeBaja\"
-              coalesce (mbb.id,0) as \"motivo_baja_beneficiario_id\" ,
+              '1'::text AS \"DarDeBaja\",
+              coalesce (mbb.id,0) as \"motivo_baja_beneficiario_id\" 
             FROM
               uad_#{u.codigo}.novedades_de_los_afiliados n1
               LEFT JOIN tipos_de_documentos t1 ON (n1.tipo_de_documento_id = t1.id)
