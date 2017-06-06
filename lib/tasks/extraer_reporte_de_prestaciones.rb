@@ -10,8 +10,8 @@ class ExtraerReporteDePrestaciones
 
     def procesar_archivo_sirge
 		periodo = Periodo.find(@periodo_id)
-		#filename = '/home/samba/operaciones/2017/REPORTES/PRESTACIONES/SIRGE'+"Paquete_Basico_Periodo_SIRGE_" + periodo.periodo + ".txt"
-		filename = '/home/gonzalo/Documentos/PRUEBA/SIRGE'+"Paquete_Basico_Periodo_SIRGE_" + periodo.periodo + ".txt"
+		filename = '/home/samba/operaciones/2017/REPORTES/PRESTACIONES/SIRGE'+"Paquete_Basico_Periodo_SIRGE_" + periodo.periodo + ".txt"
+		#filename = '/home/gonzalo/Documentos/PRUEBA/SIRGE'+"Paquete_Basico_Periodo_SIRGE_" + periodo.periodo + ".txt"
     destino = File.open(filename, "w")
 		prestaciones = periodo.padron_de_prestaciones_sirge
 	  separador = ";"
@@ -30,8 +30,8 @@ class ExtraerReporteDePrestaciones
 
     def procesar_archivo_ace
 		periodo = Periodo.find(@periodo_id-1)
-		#filename = '/home/samba/operaciones/2017/REPORTES/PRESTACIONES/ACE'+"Paquete_Basico_Periodo_ACE_" + periodo.periodo + ".txt"
-		filename = '//home/gonzalo/Documentos/PRUEBA/ACE'+"Paquete_Basico_Periodo_ACE_" + periodo.periodo + ".txt"
+		filename = '/home/samba/operaciones/2017/REPORTES/PRESTACIONES/ACE'+"Paquete_Basico_Periodo_ACE_" + periodo.periodo + ".txt"
+		#filename = '//home/gonzalo/Documentos/PRUEBA/ACE'+"Paquete_Basico_Periodo_ACE_" + periodo.periodo + ".txt"
     destino = File.open(filename, "w")
 		prestaciones = periodo.padron_de_prestaciones_ace
 	  separador = ";"
