@@ -112,7 +112,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Crear objetos comunes para generar los formularios
     @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
-
+byebug
     # Esta acción se ejecuta dos veces. Una verificación previa, y si pasa las verificaciones, la creación de la nueva solicitud de alta
     if !params[:novedad_del_afiliado]
       # Crear objeto vacío para generar el formulario
