@@ -15,6 +15,7 @@ class ExtraerReporteDePrestaciones
 		filename = 'vendor/data/'+"Paquete_Basico_Periodo_SIRGE_" + periodo.periodo + ".txt"
 		destino = File.open(filename,"w")
 		puts "Archivo_generado: "+ filename
+
 		prestaciones = periodo.padron_de_prestaciones_sirge
 	  	separador = ";"
 		columnas = prestaciones.columns
@@ -27,7 +28,7 @@ class ExtraerReporteDePrestaciones
       		destino.puts row
     	end
     	puts "Cerrando archivo.."+ filename
-    destino.close
+    	destino.close
         puts "Archivo"+ filename + " cerrado correctamente."
   end
 
@@ -37,16 +38,17 @@ class ExtraerReporteDePrestaciones
 		filename = 'vendor/data/'+"Paquete_Basico_Periodo_ACE_" + periodo.periodo + ".txt"
     	destino = File.open(filename, "w")
     	puts "Archivo_generado: "+ filename
+
 		prestaciones = periodo.padron_de_prestaciones_ace
-	  separador = ";"
+	  	separador = ";"
 		columnas = prestaciones.columns
-    prestaciones.each do |prestacion|
+    	prestaciones.each do |prestacion|
 			campos = []
 			columnas.each do |campo|
 				campos << prestacion[campo]
 			end
 			row = campos.join(separador)
-      destino.puts row
+      	destino.puts row
     end
     	puts "Cerrando archivo.."+ filename
     destino.close
