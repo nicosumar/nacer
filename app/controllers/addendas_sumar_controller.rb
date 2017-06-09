@@ -267,6 +267,7 @@ class AddendasSumarController < ApplicationController
 
   # POST /addendas_sumar
   def create
+
     # Verificar los permisos del usuario
     if cannot? :create, AddendaSumar
       redirect_to( root_url,

@@ -586,9 +586,23 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("estado_solicitud_addenda","estados·_solicitudes·_addendas·")
   inflect.irregular("solicitud_addenda_prestacion_principal","solicitudes·_addendas·_prestaciones·_principales·")
 
-  # Plurales para los codigos de gastos
-  inflect.irregular("codigo_de_gasto", "codigos·_de·_gastos·")
-  inflect.irregular("codigos·_de·_gastos·", "codigos_de_gastos")
+  # Plurales para los informes de rendicion y gastos
+  inflect.irregular("informe_de_rendicion", "informes·_de·_rendicion·")
+  inflect.irregular("informes·_de·_rendicion·", "informes_de_rendicion")
+  inflect.irregular("InformeDeRendicion", "Informes·De·Rendicion·")
+  inflect.irregular("Informes·De·Rendicion·", "InformesDeRendicion")
+  
+  inflect.irregular("detalle_informe_de_rendicion", "detalles·_informe·_de·_rendicion·")
+  inflect.irregular("detalles·_informe·_de·_rendicion·", "detalles_informe_de_rendicion")
+  inflect.irregular("DetalleInformeDeRendicion", "Detalles·Informe·De·Rendicion·")
+  inflect.irregular("Detalles·Informe·De·Rendicion·", "DetallesInformeDeRendicion")
+
+  inflect.irregular("tipo_de_importe", "tipos·_de·_importe·")
+  inflect.irregular("tipos·_de·_importe·", "tipos_de_importe")
+  inflect.irregular("TipoDeImporte", "Tipos·De·Importe·")
+  inflect.irregular("Tipos·De·Importe·", "TiposDeImporte")
+  #inflect.irregular("codigo_de_gasto", "codigos·_de·_gastos·")
+  #inflect.irregular("codigos·_de·_gastos·", "codigos_de_gastos")
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")

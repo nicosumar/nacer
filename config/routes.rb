@@ -1,13 +1,5 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
-  
-  get "casas/index"
-
-  get "casas/new"
-
-  get "casas/show"
-
-  get "casas/edit"
 
   scope '/(:locale)', defaults: { locale: 'es' }, constraints: { locale: /es|en/ } do
     authenticated :user, -> user { user.in_group? [:administradores,:facturacion]} do
@@ -17,11 +9,13 @@ Nacer::Application.routes.draw do
   
   resources :procesos_de_sistemas , :only => [:index,:destroy,:show] 
 
-
-
   get "datos_reportables/show"
   get "prestaciones/autorizadas"
   get "diagnosticos/por_prestacion"
+
+  # Informes de rendicion
+  resources :informes_de_rendicion
+  #match 'users/:user_id/informes_de_rendicion/create' => 'informes_de_rendicion#create', :via => :post
 
   resources :documentos_generables
   resources :notas_de_debito

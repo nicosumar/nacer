@@ -1,0 +1,135 @@
+= javascript_include_tag "informes_de_rendicion.js"
+= form_for(@informe_de_rendicion) do |f|
+
+  /* Muestro los datos del efector 
+
+  %h3.first-header Datos del Efector
+  %div.hidden_field{:id => "id_efector", :value => @uad_actual.efector.id}
+
+  %div.field_content
+    %span.field_name Efector
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @uad_actual.efector.nombre
+
+  %div.field_content
+    %span.field_name Director/Coordinador
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @uad_actual.efector.referente_al_dia.contacto.nombres + " " + @uad_actual.efector.referente_al_dia.contacto.apellidos
+
+  %div.field_content
+    %span.field_name Departamento
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @uad_actual.efector.departamento.nombre
+
+  /* Muestro los datos bancarios del efector 
+
+  %h3.first-header Datos Bancarios
+  %div.field_content
+    %span.field_name Banco
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @uad_actual.efector.banco_cuenta_principal + " | Suc. " + @uad_actual.efector.sucursal_cuenta_principal
+
+  %div.field_content
+    %span.field_name Número de Cuenta
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @uad_actual.efector.numero_de_cuenta_principal
+
+  %div.field_content
+    %span.field_name Denominación
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @uad_actual.efector.denominacion_cuenta_principal
+
+  %div.field_content
+    %span.field_name CUIT
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @uad_actual.efector.cuit
+  
+  /* El usuario debe indicar el mes y el año del gasto. En el informe debe aparecer el ultimo día de ese mes como fecha de informe y el mes como mes en el que se realizó el gasto que se detalla
+
+  %h3.first-header Fecha del Informe
+  %div.field
+    = f.label :fecha_informe
+    = select_month(Date.today, use_month_names: %w(Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre), :id => 'mes_informe')
+    = select_year(Date.today, :id => 'anio_informe')
+
+  /* El usuario deberia ir agregando detalle por detalle con todos los campos que corresponden. En el caso de que no complete ningún campo debe decir con mayuscula en el detalle 'SIN MOVIMIENTOS'
+
+  %h3.first-header Detalle del Informe
+  %table#tabla_detalles{:border => "0", :width => "100%"}  
+    %thead#seccion_header
+      %tr
+        %th{:rowspan => 2}#
+        %th{:rowspan => 2}N° de Expediente/Formulario 
+        %th{:colspan => 2}Factura
+        %th{:rowspan => 2, width: "30%"}Detalle
+        %th{:rowspan => 2}Cantidad
+        %th{:rowspan => 2}N° de Cheque
+        %th{:colspan => 4}Importe
+        %th{:rowspan => 2}Eliminar
+      %tr
+        - 1.times do
+          %th Fecha
+          %th Número
+        - 1.times do
+          %th Servicios
+          %th Obras
+          %th Bienes Ctes
+          %th Bienes De Capital
+      %tr#seccion_body
+        %td{align: "center"} 1
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"} SIN MOVIMIENTOS
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"} 
+        %td{align: "center"} 
+        %td{align: "center"} 
+          = button_tag 'ELIMINAR', :onclick => "deleteRow(this);", :type => 'button', :class => "subBtn"
+
+  %div.actions
+
+    %h3.first-header Agregar Nuevo Detalle
+
+    = fields_for DetalleInformeDeRendicion.new do |df|
+
+      %div
+        %span N° de Formulario/Expediente
+        = df.number_field :numero, :id => 'form-1'
+    
+      %div.field_content  
+        %span.field_name Fecha
+        = df.date_select :fecha_factura, html_options: { id: 'form-2' }
+
+      %div.field_content
+        %span.field_name Número
+        = df.number_field :numero_factura, :id => 'form-3'
+
+      %div.field_content
+        %span.field_name Detalle
+        = df.text_field :detalle, :id => 'form-4'
+
+      %div.field_content
+        %span.field_name Cantidad
+        = df.number_field :cantidad, :id => 'form-5'
+
+      %div.field_content
+        %span.field_name N° de Cheque
+        = df.number_field :numero_cheque, :id => 'form-6'
+
+      %div.field_content
+        %span.field_name Tipo
+        = select_tag :tipo_importe_id, options_for_select([['Servicios', 'A'], ['Obras', 'B'], ['Bienes Corrientes', 'C'], ['Bienes de Capital', 'D']], params[:tipo_importe_id]), :id => 'form-7'
+
+      %div.field_content
+        %span.field_name Importe
+        = df.text_field :importe, :id => 'form-8'
+        
+      %div.field_content
+        = button_tag 'Agregar Detalle', :onclick => "insertRow();", :type => 'button', :class => "subBtn"
+        
+
+    %h3.first-header Confirmar Nuevo Informe
+    %div.field_content
+      - if @informe_de_rendicion.new_record?
+        = button_tag 'GUARDAR', :onclick => "saveNewInforme();", :type => 'button', :class => "subBtn"
+        = link_to "Cancelar", @informe_de_rendicion
+      - else
+        = f.submit "Guardar las modificaciones"
+        = link_to "Cancelar", @informe_de_rendicion

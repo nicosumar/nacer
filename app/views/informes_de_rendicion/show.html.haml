@@ -1,0 +1,83 @@
+- content_for :title do
+  Información detallada de la adenda Sumar
+
+#content-header
+  %h1 Información detallada de la adenda Sumar
+  - if can? :update, @addenda
+    #action-links
+      = link_to "Modificar la adenda", edit_addenda_sumar_path(@addenda)
+      = link_to "Generar documento", addenda_sumar_path(@addenda, :format => :odt)
+
+= render :partial => "shared/info"
+
+#content-body
+  %h3 Datos del convenio de gestión Sumar
+  %div.field_content
+    %span.field_name Adenda al convenio de gestión Sumar
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.numero
+    = link_to "Ver detalles del convenio", @convenio_de_gestion
+  %div.field_content
+    %span.field_name El convenio pertenece al efector
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @convenio_de_gestion.efector.nombre
+    = link_to "Ver detalles del efector", @convenio_de_gestion.efector
+
+  %h3 Datos de identificación
+  %div.field_content
+    %span.field_name Número
+    - if !@addenda.numero.blank?
+      %span.field_value= @addenda.numero
+    - else
+      %span.field_empty No se ingresó el número
+
+  %h3 Datos del firmante y fechas
+  %div.field_content
+    %span.field_name Firmante
+    - if !@addenda.firmante.blank?
+      %span.field_value= @addenda.firmante
+    - else
+      %span.field_empty No se ingresó el firmante
+  %div.field_content
+    %span.field_name Fecha de suscripción
+    - if @addenda.fecha_de_suscripcion
+      %span.field_value= @addenda.fecha_de_suscripcion.strftime("%d/%m/%Y")
+    - else
+      %span.field_empty No se ingresó la fecha de suscripción
+  %div.field_content
+    %span.field_name Fecha de inicio
+    %span.field_value= @addenda.fecha_de_inicio.strftime("%d/%m/%Y")
+
+  - if @addenda.prestaciones_autorizadas_alta.any? then
+    %h3 Prestaciones dadas de alta por la adenda
+    %table
+      %thead
+        %tr
+          %th Código
+          %th Nombre
+      %tbody
+        - PrestacionPdss.joins(:prestaciones).where(prestaciones_prestaciones_pdss: {prestacion_id: @addenda.prestaciones_autorizadas_alta.map{|p| p.prestacion_id}.uniq}).order(:grupo_pdss_id).select("codigo_de_prestacion_con_diagnosticos(prestaciones_pdss.id) AS codigo, prestaciones_pdss.nombre AS nombre").each do |a|
+          %tr
+            %td= a.codigo
+            %td= a.nombre
+
+  - if @addenda.prestaciones_autorizadas_baja.any? then
+    %h3 Prestaciones dadas de baja por la adenda
+    %table
+      %thead
+        %tr
+          %th Código
+          %th Nombre
+      %tbody
+        - PrestacionPdss.joins(:prestaciones).where(prestaciones_prestaciones_pdss: {prestacion_id: @addenda.prestaciones_autorizadas_baja.map{|p| p.prestacion_id}.uniq}).order(:grupo_pdss_id).select("codigo_de_prestacion_con_diagnosticos(prestaciones_pdss.id) AS codigo, prestaciones_pdss.nombre AS nombre").each do |b|
+          %tr
+            %td= b.codigo
+            %td= b.nombre
+
+  %h3 Observaciones
+  %div.field_content
+    - if !@addenda.observaciones.blank?
+      %span.field_value_multiline
+        - @addenda.observaciones.split("\n").each do |linea|
+          = linea
+          %br/
+    - else
+      %span.field_empty No se han ingresado observaciones para la addenda

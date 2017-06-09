@@ -33,6 +33,10 @@ class Efector < ActiveRecord::Base
   has_many :prestaciones_pdss_autorizadas
   has_many :asignaciones_de_nomenclador # Deprecated
   has_many :referentes
+
+  # Asociacion con los informes de rendicion
+  has_many :informes_de_rendicion
+  
   # Asociaciones referentes a la liquidacion
   belongs_to :unidad_de_alta_de_datos
   belongs_to :grupo_de_efectores_liquidacion
