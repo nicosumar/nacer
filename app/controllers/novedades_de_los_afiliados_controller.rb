@@ -112,7 +112,7 @@ class NovedadesDeLosAfiliadosController < ApplicationController
     # Crear objetos comunes para generar los formularios
     @clases_de_documentos = ClaseDeDocumento.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @tipos_de_documentos = TipoDeDocumento.where(:activo => true).collect{ |i| [i.nombre, i.id]}
-byebug
+
     # Esta acción se ejecuta dos veces. Una verificación previa, y si pasa las verificaciones, la creación de la nueva solicitud de alta
     if !params[:novedad_del_afiliado]
       # Crear objeto vacío para generar el formulario
@@ -402,7 +402,7 @@ byebug
     @post_form_url = create_baja_novedades_de_los_afiliados_url
 
     if @novedad.invalid?
-      
+
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
       return
@@ -412,7 +412,7 @@ byebug
       # Verificar si existen prestaciones cargadas para la misma clave de beneficiario, que estén pendientes, en cuyo caso
       # no se permite dar la baja
       if PrestacionBrindada.where(:clave_de_beneficiario => @novedad.clave_de_beneficiario).any? { |pb| pb.pendiente? }
-        
+
         # redirect_to( @afiliado,
         #   :flash => { :tipo => :error, :titulo => "No se puede solicitar la baja",
         #     :mensaje => "No es posible solicitar la baja porque " +
@@ -546,7 +546,7 @@ byebug
     if tipo == :alta && @novedad.fecha_de_nacimiento.present? && @novedad.fecha_de_nacimiento >= (Date.today - 4.months)
       @novedad.fecha_de_la_novedad = @novedad.fecha_de_nacimiento
     end
-    
+
     # Asignarle si es una modificacion y se saco el embarazo limpio los datos de embarazo anterior
     if tipo == :modificacion && !@novedad.esta_embarazada
       @novedad.fecha_de_la_ultima_menstruacion = ""
@@ -555,7 +555,7 @@ byebug
       @novedad.fecha_probable_de_parto = ""
       @novedad.fecha_efectiva_de_parto = ""
     end
-    
+
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "new"
@@ -739,7 +739,7 @@ byebug
     @discapacidades = Discapacidad.find(:all, :order => :id).collect{ |i| [i.nombre, i.id]}
     @centros_de_inscripcion =
       UnidadDeAltaDeDatos.find_by_codigo(session[:codigo_uad_actual]).centros_de_inscripcion.collect{ |i| [i.nombre, i.id]}.sort
-    
+
     # Asignarle si es una modificacion y se saco el embarazo limpio los datos de embarazo anterior
     if !@novedad.esta_embarazada
      @novedad.fecha_de_la_ultima_menstruacion = ""
@@ -748,8 +748,8 @@ byebug
      @novedad.fecha_probable_de_parto = ""
      @novedad.fecha_efectiva_de_parto = ""
     end
-    
-    
+
+
     if @novedad.invalid?
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "edit"
