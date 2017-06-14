@@ -4,6 +4,7 @@ class CreateInformesDeRendicion < ActiveRecord::Migration
       t.date :fecha_informe
       t.float :total
       t.references :efector
+      t.references :estado_del_proceso
 
       t.timestamps
     end

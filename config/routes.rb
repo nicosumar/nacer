@@ -15,7 +15,9 @@ Nacer::Application.routes.draw do
 
   # Informes de rendicion
   resources :informes_de_rendicion
-  #match 'users/:user_id/informes_de_rendicion/create' => 'informes_de_rendicion#create', :via => :post
+  put 'informes_de_rendicion/:id/edit', to: "informes_de_rendicion#update"
+  post 'informes_de_rendicion/new', to: "informes_de_rendicion#create"
+  get 'informes_de_rendicion/index'
 
   resources :documentos_generables
   resources :notas_de_debito

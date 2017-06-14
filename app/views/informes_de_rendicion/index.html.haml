@@ -1,26 +1,48 @@
+= javascript_include_tag "informes_de_rendicion.js"
 - content_for :title do
   Informes de Rendición y Compras
+
+%div.hidden_field{:id => "info", :value => -1}
+%div.hidden_field{:id => "info-permiso", :value => @permiso.to_s}
 
 #content-header
   %h1 Informes de Rendición y Compras
   #action-links
     - if can? :create, InformeDeRendicion
-      = link_to 'Nuevo informe', 'informes_de_rendicion/new'
+      = link_to 'Nuevo informe', informes_de_rendicion_path + '/new'
 
 = render :partial => "shared/info"
 
 #content-body
   %h2.first-header Listado de Informes de Rendición y Compras
 
-  %table
-    %thead
-      %tr
-        %th Inicio
-        %th Última modificación
-        %th Número
-    %tbody
-      - @informes_de_rendicion.each do |a|
-        %tr.clickable{ :onclick => "location.href=\'#{informes_de_rendicion_path(a)}\'", :title => "Ver detalles de informe" }
-          %td= a.fecha_informe.strftime("%d/%m/%Y")
-          %td= a.total.blank? ? "-" : a.total
-  = will_paginate @informes_de_rendicion, :inner_window => 2, :outer_window => 0
+  - if @informes_de_rendicion.size > 0
+    %table{:width => "100%"} 
+      %thead
+        %tr
+          %th #
+          %th Fecha
+          %th Total
+          %th Estado
+          %th{:colspan => 4} Acciones
+      %tbody
+        - @informes_de_rendicion.each do |a|
+          %tr
+            %td= a.id.to_i
+            %td= a.fecha_informe.strftime("%d/%m/%Y")
+            %td
+              $
+              = a.total.blank? ? "-" : a.total
+            %td= a.estado_del_proceso.nombre
+            %td{width: "10%"} 
+              = button_to 'VER', informes_de_rendicion_path + "/" + a.id.to_s, :method => :get
+            - if a.estado_del_proceso.id < 4
+              %td{width: "10%"}
+                = button_to 'EDITAR', informes_de_rendicion_path + "/" + a.id.to_s + "/edit/", :method => :get
+              %td{width: "10%"}
+                = button_to 'ELIMINAR', informes_de_rendicion_path + "/" + a.id.to_s + "?operacion=delete", :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro? Una vez eliminado no podrá recuperarlo, deberá crearlo nuevamente desde cero."
+              %td{width: "10%", class: "confirmar_button"}
+                = button_to 'CONFIRMAR',  informes_de_rendicion_path + "/" + a.id.to_s + "?operacion=confirm", :method => :put, :style => 'color:#006e00;', :confirm => "¿Está seguro? Una vez confirmado no podrá volver a editarse."
+    = will_paginate @informes_de_rendicion, :inner_window => 2, :outer_window => 0
+  - else
+    No hay ningún informe de rendición cargado en el sistema. Seleccione la opción "Nuevo Informe" para crear uno nuevo.

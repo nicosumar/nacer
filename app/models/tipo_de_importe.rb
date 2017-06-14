@@ -1,3 +1,7 @@
 class TipoDeImporte < ActiveRecord::Base
-  attr_accessible :nombre
+
+	has_many :detalles_informe_de_rendicion
+
+  	attr_accessible :nombre
+
 end

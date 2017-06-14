@@ -1,7 +1,11 @@
 = javascript_include_tag "informes_de_rendicion.js"
 = form_for(@informe_de_rendicion) do |f|
 
-  /* Muestro los datos del efector 
+  /* Muestro los datos del efector
+
+  %div.hidden_field{:id => "info", :value => @operacion}
+  %div.hidden_field{:id => "informe_de_rendicion", :value => @informe_de_rendicion.to_json}
+  %div.hidden_field{:id => "detalles_informe_de_rendicion", :value => @informe_de_rendicion.detalles_informe_de_rendicion.to_json}
 
   %h3.first-header Datos del Efector
   %div.hidden_field{:id => "id_efector", :value => @uad_actual.efector.id}
@@ -58,7 +62,11 @@
         %th{:rowspan => 2}Cantidad
         %th{:rowspan => 2}N° de Cheque
         %th{:colspan => 4}Importe
-        %th{:rowspan => 2}Eliminar
+        %th{:rowspan => 2}
+          - if @informe_de_rendicion.new_record?
+            Eliminar
+          - else
+            Editar/Eliminar
       %tr
         - 1.times do
           %th Fecha
@@ -81,55 +89,115 @@
         %td{align: "center"} 
         %td{align: "center"} 
         %td{align: "center"} 
-          = button_tag 'ELIMINAR', :onclick => "deleteRow(this);", :type => 'button', :class => "subBtn"
+          - if @informe_de_rendicion.new_record?
+            = button_tag 'ELIMINAR', :onclick => "deleteRow(this);", :type => 'button', :class => "subBtn"
+          - else
+            = button_tag 'EDITAR', :onclick => "editRow(this);", :type => 'button', :class => "subBtn"
+            = button_tag 'ELIMINAR', :onclick => "deleteRow(this);", :type => 'button', :class => "subBtn"
 
-  %div.actions
+  %br
 
-    %h3.first-header Agregar Nuevo Detalle
+  %table#tabla_totales{:border => "0", :width => "50%", :align => "right"}  
+    %thead#seccion_header
+      %tr
+        %th{:rowspan => 2} Total Servicios
+        %th{:rowspan => 2} Total Obras
+        %th{:rowspan => 2} Total Bienes Ctes
+        %th{:rowspan => 2} Total Bienes de Capital
+        %th{:rowspan => 2} Total
+    %tbody
+      %tr
+        %td 0
+        %td 0
+        %td 0
+        %td 0
+        %td 0
+
+  %div.actions{:id => "detalle_form", :style => "display: block;"}
+
+    %h3.first-header
+      - if @informe_de_rendicion.new_record?
+        Agregar Nuevo Detalle
+      - else 
+        Editar Datos del Detalle
+    %p.note Todos los campos son obligatorios. En el caso de que no se hayan realizado movimientos, simplemente confirme sin agregar ningún detalle.
 
     = fields_for DetalleInformeDeRendicion.new do |df|
 
       %div
         %span N° de Formulario/Expediente
-        = df.number_field :numero, :id => 'form-1'
+        %br
+        = df.number_field :numero, :id => 'form-1', :min => '0', :step => '1', :onblur => "showMessage(this, 1, 'int');"
+        %span{:id => 'advertencia-1', :style=>'color:#FF0000;'} 
     
       %div.field_content  
-        %span.field_name Fecha
+        %span.field_name Fecha de la Factura
+        %br
         = df.date_select :fecha_factura, html_options: { id: 'form-2' }
+        %span{:id => 'advertencia-2', :style=>'color:#FF0000;'} 
 
       %div.field_content
-        %span.field_name Número
-        = df.number_field :numero_factura, :id => 'form-3'
+        %span.field_name Número de la Factura
+        %br
+        = df.number_field :numero_factura, :id => 'form-3', :min => '0', :onchange => "showMessage(this, 3, 'int');"
+        %span{:id => 'advertencia-3', :style=>'color:#FF0000;'} 
 
       %div.field_content
         %span.field_name Detalle
-        = df.text_field :detalle, :id => 'form-4'
+        %br
+        = df.text_field :detalle, :id => 'form-4', :onchange => "showMessage(this, 4, 'text');"
+        %span{:id => 'advertencia-4', :style=>'color:#FF0000;'} 
 
       %div.field_content
         %span.field_name Cantidad
-        = df.number_field :cantidad, :id => 'form-5'
+        %br
+        = df.number_field :cantidad, :id => 'form-5', :min => '0', :onchange => "showMessage(this, 5, 'int');"
+        %span{:id => 'advertencia-5', :style=>'color:#FF0000;'} 
 
       %div.field_content
         %span.field_name N° de Cheque
-        = df.number_field :numero_cheque, :id => 'form-6'
+        %br
+        = df.number_field :numero_cheque, :id => 'form-6', :min => '0', :onchange => "showMessage(this, 6, 'int');"
+        %span{:id => 'advertencia-6', :style=>'color:#FF0000;'} 
 
       %div.field_content
-        %span.field_name Tipo
+        %span.field_name Tipo de Importe
+        %br
         = select_tag :tipo_importe_id, options_for_select([['Servicios', 'A'], ['Obras', 'B'], ['Bienes Corrientes', 'C'], ['Bienes de Capital', 'D']], params[:tipo_importe_id]), :id => 'form-7'
+        %span{:id => 'advertencia-7', :style=>'color:#FF0000;'} 
 
       %div.field_content
-        %span.field_name Importe
-        = df.text_field :importe, :id => 'form-8'
-        
-      %div.field_content
-        = button_tag 'Agregar Detalle', :onclick => "insertRow();", :type => 'button', :class => "subBtn"
-        
+        %span.field_name Valor del Importe ($0,0)
+        %br
+        = df.number_field :importe, :id => 'form-8', :min => '0', :step => 'any', :onchange => "showMessage(this, 8, 'float');"
+        %span{:id => 'advertencia-8', :style=>'color:#FF0000;'} 
+      
+    %br
 
-    %h3.first-header Confirmar Nuevo Informe
+      %div.field_content
+        - if @informe_de_rendicion.new_record?
+          = button_tag 'Agregar Detalle', :onclick => "insertRow();", :type => 'button', :class => "subBtn"
+        - else
+          = button_tag 'Actualizar Detalle', :onclick => "updateRow();", :type => 'button', :class => "subBtn"
+      
+    %hr
+    %br
+
+  %div.actions#end_form
+
+    %h2.first-header 
+      - if @informe_de_rendicion.new_record?
+        Guardar nuevo informe
+      - else
+        Guardar cambios realizados
+    %h4  Por favor, antes de confirmar aseguresé que los datos previsualizados son correctos.
+
+    %br
+
     %div.field_content
       - if @informe_de_rendicion.new_record?
-        = button_tag 'GUARDAR', :onclick => "saveNewInforme();", :type => 'button', :class => "subBtn"
+        = button_tag 'GUARDAR', :onclick => "saveInforme(true);", :type => 'button', :class => "subBtn", :confirm => "¿Está seguro?"
         = link_to "Cancelar", @informe_de_rendicion
       - else
-        = f.submit "Guardar las modificaciones"
+        = button_tag 'GUARDAR', :onclick => "saveInforme(false);", :type => 'button', :class => "subBtn", :confirm => "¿Está seguro?"
         = link_to "Cancelar", @informe_de_rendicion

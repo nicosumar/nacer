@@ -4,6 +4,57 @@ var total_bienes_ctes;
 var total_obras;
 var total_bienes_capital;
 
+$(document).ready(function() {
+
+    //info = -1 es index
+    //info = 0 es new
+    //info = 1 es show
+    //info = 2 es edit
+
+    //alert($('#info').attr('value'));
+
+    if($('#info').attr('value') != "-1")
+    {
+        if($('#info').attr('value') != "0")
+        {
+
+            //alert("Estoy en edit o show");
+
+            toggleDisplay(document.getElementById('detalle_form'), false);
+            showInformes();
+
+        }
+        else {
+
+            //alert("Estoy en new");
+
+        }
+    }
+    else {
+
+        if($('#info-permiso').attr('value') != 'puede_confirmar')
+        {
+
+            quitarConfirmar();
+
+        }
+
+        //alert ("Estoy en el index!");
+
+    }
+
+});
+
+function toggleDisplay(element, show) {
+
+    if (show) {
+        element.style.display = 'block';
+    } else {
+        element.style.display = 'none';
+    }
+
+} 
+
 function deleteRow(row)
 {
 
@@ -29,18 +80,27 @@ function deleteRow(row)
     }
     else {
 
-	    var i=row.parentNode.parentNode.rowIndex;
+	    var i = row.parentNode.parentNode.rowIndex;
 	    document.getElementById('tabla_detalles').deleteRow(i);
 
 	    updateRowIndex();
-        updateTotales();
 
     }
-}
 
+    updateTotales();
+    
+}
 
 function insertRow()
 {
+
+    if(hasWarnings()){
+
+        alert("Por favor, controla que todos los campos estén completos y los datos ingresados sean correctos.")
+        return;
+
+    }
+
     var x = document.getElementById('tabla_detalles');
 
     var indices = [
@@ -185,10 +245,10 @@ function updateTotales(){
 
     for(i = 0; i < length_detalles; i++){
 
-        total_servicios +=       (x.rows[i + 2].cells[7].innerHTML == '') ? 0 : parseInt(x.rows[i + 2].cells[7].innerHTML);
-        total_obras +=           (x.rows[i + 2].cells[8].innerHTML == '') ? 0 : parseInt(x.rows[i + 2].cells[8].innerHTML);
-        total_bienes_ctes +=     (x.rows[i + 2].cells[9].innerHTML == '') ? 0 : parseInt(x.rows[i + 2].cells[9].innerHTML);
-        total_bienes_capital +=  (x.rows[i + 2].cells[10].innerHTML == '') ? 0 : parseInt(x.rows[i + 2].cells[10].innerHTML);
+        total_servicios +=       (x.rows[i + 2].cells[7].innerHTML == '') ? 0 : parseFloat(x.rows[i + 2].cells[7].innerHTML);
+        total_obras +=           (x.rows[i + 2].cells[8].innerHTML == '') ? 0 : parseFloat(x.rows[i + 2].cells[8].innerHTML);
+        total_bienes_ctes +=     (x.rows[i + 2].cells[9].innerHTML == '') ? 0 : parseFloat(x.rows[i + 2].cells[9].innerHTML);
+        total_bienes_capital +=  (x.rows[i + 2].cells[10].innerHTML == '') ? 0 : parseFloat(x.rows[i + 2].cells[10].innerHTML);
 
     }
 
@@ -198,9 +258,17 @@ function updateTotales(){
 
     //alert("Total: " + total);
 
+    var y = document.getElementById('tabla_totales');
+
+    y.rows[1].cells[0].innerHTML = total_servicios;
+    y.rows[1].cells[1].innerHTML = total_obras;
+    y.rows[1].cells[2].innerHTML = total_bienes_ctes;
+    y.rows[1].cells[3].innerHTML = total_bienes_capital;
+    y.rows[1].cells[4].innerHTML = total;
+
 }
 
-function saveNewInforme(){
+function saveInforme(is_new){
 
     //en esta funcion tengo que crear un nuevo informe_de_rendicion (creo que en realidad uso el que cree en el new del controlador)
     //y luego crear uno por uno los detalles usando los valores correspondientes de las tablas, posteriormente asociandolos al informe_de_rendicion
@@ -292,7 +360,7 @@ function saveNewInforme(){
     }
 
 
-var length_detalles = x.rows.length - 2; //esto me da la cantidad de filas que tienen datos que tengo que guardar
+    var length_detalles = x.rows.length - 2; //esto me da la cantidad de filas que tienen datos que tengo que guardar
 
     //INFORME DE RENDICION
 
@@ -307,21 +375,42 @@ var length_detalles = x.rows.length - 2; //esto me da la cantidad de filas que t
 
     //DETALLES
 
-    var informe_params = { "cantidad_detalles": length_detalles, "efector_id": efector_id, "mes_informe": mes_informe,
+    var informe_params = {"cantidad_detalles": length_detalles, "efector_id": efector_id, "mes_informe": mes_informe,
     "anio_informe": anio_informe, "dia_informe": dia_informe, "total_informe": total_informe, "numeros": numeros,
     "fechas_factura": fechas_factura, "numeros_factura": numeros_factura, "detalles": detalles, "cantidades": cantidades, 
     "numeros_cheque": numeros_cheque, "tipos_de_importe": tipos_de_importe, "importes": importes }
 
     //alert(JSON.stringify(informe_params));
 
-    var url = '/informes_de_rendicion';
+    if(is_new)
+    {
 
-    $.ajax({
-      type: "POST",
-      url: url,
-      data: informe_params,
-      async: false
-    });
+        //CREO UN NUEVO REGISTRO
+
+        var url = '/informes_de_rendicion';
+
+        $.ajax({
+          type: "POST",
+          url: url,
+          data: informe_params,
+          async: false
+        });
+
+    }
+    else {
+
+        //EDITO UN REGISTRO EXISTENTE
+
+        var url = window.location.href + "?operacion=edit";
+
+        $.ajax({
+          type: "PUT",
+          url: url,
+          data: informe_params,
+          async: false
+        });
+
+    }
 
 }
 
@@ -329,3 +418,386 @@ function daysInMonth(iMonth, iYear)
 {
     return 32 - new Date(iYear, iMonth - 1, 32).getDate();
 }
+
+function showMessage(content, advertencia_number, type){
+
+    var is_valid = true;
+
+    if(content.value != "")
+    {
+
+        if(!$.isNumeric(content.value)) //No es un número
+        {
+
+            if(type == "int" || type == "float")
+            {
+
+                is_valid = false;
+                document.getElementById("advertencia-" + advertencia_number).innerHTML = "Este campo acepta sólo números mayores que cero."
+
+            }
+
+        }
+        else //Es un número
+        {
+
+            if(type == "int")
+            {
+
+                if(!isInt(content.value))
+                {
+
+                    is_valid = false;
+                    document.getElementById("advertencia-" + advertencia_number).innerHTML = "Este campo debe contener sólo números ENTEROS mayores que cero."
+
+                }
+
+            }
+            else if(type == "text") 
+            {
+
+                is_valid = false;
+                document.getElementById("advertencia-" + advertencia_number).innerHTML = "Este campo debe contener letras."
+
+            }
+
+        }
+
+    }
+    else {
+
+        is_valid = false;
+        document.getElementById("advertencia-" + advertencia_number).innerHTML = "Este campo " 
+        + ((type == "text") ? "debe contener letras." : ("debe contener sólo números" + ((type == "int") ? " ENTEROS mayores que cero" : " mayores que cero")));
+
+    }
+
+    if(is_valid){
+
+        document.getElementById("advertencia-" + advertencia_number).innerHTML = ""
+
+    }
+
+}
+
+function hasWarnings(){
+
+    var has_warnings = false;
+
+    for(i = 1; i < 9; i++){
+
+        if(document.getElementById("form-" + i) && document.getElementById("form-" + i).value == ""){
+
+            has_warnings = true;
+            break;
+
+        }
+
+    }
+
+    if(has_warnings){
+
+        return has_warnings;
+
+    }
+        
+    for(i = 1; i < 9; i++){
+
+        if(document.getElementById("advertencia-" + i).innerHTML != ""){
+
+            has_warnings = true;
+            break;
+
+        }
+
+    }
+
+    return has_warnings;
+
+}
+
+function isNumber(content) {
+    
+
+    var reg = new RegExp("^[-]?[0-9]+[\.]?[0-9]+$");
+    return reg.test(content);
+
+ }
+
+function isInt(n) {
+
+   return n % 1 === 0;
+
+}
+
+function checkSpecialChars(content){
+
+    var iChars = "~`!#$%^&*+=-[]\\\';,/{}|\":<>?";
+
+    for (var i = 0; i < content.length; i++)
+    {
+      if (iChars.indexOf(content.charAt(i)) != -1)
+      {
+         return false;
+      }
+    }
+
+    return true;
+
+}
+
+function deleteInforme(id_informe){
+
+    alert("Todavía no está implementado este método. Pero.. está seguro que quiere eliminarlo? Pienselo.");
+    
+}
+
+function showInformes(){
+
+    var informe_json = JSON.parse($('#informe_de_rendicion').attr('value'));
+
+    var fecha_partes = informe_json.fecha_informe.split('/');
+
+    $('#anio_informe').value = fecha_partes[0];
+    $('#mes_informe').value = fecha_partes[1];
+
+    var detalles_informe_json = JSON.parse($('#detalles_informe_de_rendicion').attr('value'));
+
+    var x = document.getElementById('tabla_detalles');
+
+    var last_index = x.rows.length - 1;
+    var new_row = x.rows[last_index];
+
+    for(i = 0; i < detalles_informe_json.length; i++){
+
+        if(i > 0)
+        {
+
+            new_row = x.rows[last_index].cloneNode(true)
+            new_row.cells[0].innerHTML = last_index;
+            last_index++; 
+
+            new_row.cells[7].innerHTML = '';
+            new_row.cells[8].innerHTML = '';
+            new_row.cells[9].innerHTML = '';
+            new_row.cells[10].innerHTML = '';
+
+        }
+
+        new_row.cells[1].innerHTML = detalles_informe_json[i].numero;
+
+        var fecha = detalles_informe_json[i].fecha_factura.split("-");
+
+        new_row.cells[2].innerHTML = fecha[2] + "-" + fecha[1] + "-" + fecha[0];
+        new_row.cells[3].innerHTML = detalles_informe_json[i].numero_factura;
+        new_row.cells[4].innerHTML = detalles_informe_json[i].detalle;
+        new_row.cells[5].innerHTML = detalles_informe_json[i].cantidad;
+        new_row.cells[6].innerHTML = detalles_informe_json[i].numero_cheque;
+
+        new_row.cells[6 + detalles_informe_json[i].tipo_de_importe_id].innerHTML 
+            = detalles_informe_json[i].importe;
+            
+        //Finalmente la agrego a la tabla
+        x.appendChild( new_row );
+
+    }
+    
+    updateTotales();
+
+}
+
+var selected_row;
+
+function updateRow()
+{
+
+    if(hasWarnings()){
+
+        alert("Por favor, controla que todos los campos estén completos y los datos ingresados sean correctos.")
+        return;
+
+    }
+
+    var indices = [
+        {tableId: "1", elementId: "form-1", tipo: "basico"},
+        {tableId: "2", elementId: "detalle_informe_de_rendicion_fecha_factura_", tipo: "fecha"},
+        {tableId: "3", elementId: "form-3", tipo: "basico"},
+        {tableId: "4", elementId: "form-4", tipo: "basico"},
+        {tableId: "5", elementId: "form-5", tipo: "basico"},
+        {tableId: "6", elementId: "form-6", tipo: "basico"},
+        {tableId: "7", elementId: "form-7", tipo: "selector_importe"},
+        {tableId: "8", elementId: "form-8", tipo: "valor_importe"},
+    ]
+    
+    for(i = 0; i < indices.length; i++){
+        
+        var indice = indices[i];
+
+        switch(indice.tipo){
+
+
+            case 'basico':
+            
+                selected_row.cells[indice.tableId].innerHTML = document.getElementById(indice.elementId).value;
+                document.getElementById(indice.elementId).value = '';
+
+            break;
+
+            case 'fecha':
+
+                var fecha_value = '';
+
+                for(j = 3; j > 0; j--){
+
+                    fecha_value += document.getElementById(indice.elementId + j + "i").value
+                    fecha_value += (j == 1) ? '' : '-';
+
+                }
+
+                selected_row.cells[indice.tableId].innerHTML = fecha_value;
+
+            break;
+
+            case 'valor_importe':
+
+                selected_row.cells[7].innerHTML = '';
+                selected_row.cells[8].innerHTML = '';
+                selected_row.cells[9].innerHTML = '';
+                selected_row.cells[10].innerHTML = '';
+
+                switch(document.getElementById(indices[i-1].elementId).value){
+
+                    case 'A':
+                        selected_row.cells[7].innerHTML = document.getElementById(indice.elementId).value;
+
+                    break;
+                    case 'B':
+
+                        selected_row.cells[8].innerHTML = document.getElementById(indice.elementId).value;
+
+                    break;
+                    case 'C':
+
+                        selected_row.cells[9].innerHTML = document.getElementById(indice.elementId).value;
+
+                    break;
+                    case 'D':
+
+                        selected_row.cells[10].innerHTML = document.getElementById(indice.elementId).value;
+
+                    break;
+
+                }
+
+                document.getElementById(indice.elementId).value = 'A';
+                document.getElementById(indice.elementId).value = '';
+
+            break;
+
+        }
+
+    }
+
+    toggleDisplay(document.getElementById('detalle_form'), false);
+    updateTotales();
+
+}
+
+function editRow(row_to_edit)
+{
+
+    var indices = [
+        {tableId: "1", elementId: "form-1", tipo: "basico"},
+        {tableId: "2", elementId: "detalle_informe_de_rendicion_fecha_factura_", tipo: "fecha"},
+        {tableId: "3", elementId: "form-3", tipo: "basico"},
+        {tableId: "4", elementId: "form-4", tipo: "basico"},
+        {tableId: "5", elementId: "form-5", tipo: "basico"},
+        {tableId: "6", elementId: "form-6", tipo: "basico"},
+        {tableId: "7", elementId: "form-7", tipo: "selector_importe"},
+        {tableId: "8", elementId: "form-8", tipo: "valor_importe"},
+    ]
+
+    var i = row_to_edit.parentNode.parentNode.rowIndex;
+    selected_row = document.getElementById('tabla_detalles').rows[i];
+    
+    for(i = 0; i < indices.length; i++){
+        
+        var indice = indices[i];
+
+        switch(indice.tipo){
+
+
+            case 'basico':
+            
+                document.getElementById(indice.elementId).value = selected_row.cells[indice.tableId].innerHTML;
+
+            break;
+
+            case 'fecha':
+
+                var fecha_value = selected_row.cells[indice.tableId].innerHTML.split('-');
+
+                document.getElementById(indice.elementId + "1i").value = parseInt(fecha_value[2]);
+                document.getElementById(indice.elementId + "2i").value = parseInt(fecha_value[1]);
+                document.getElementById(indice.elementId + "3i").value = parseInt(fecha_value[0]);
+
+            break;
+
+            case 'valor_importe':
+
+                if(selected_row.cells[7].innerHTML != '')
+                {
+
+                    //A
+                    document.getElementById(indices[i-1].elementId).value = "A";
+                    document.getElementById(indice.elementId).value = selected_row.cells[7].innerHTML;
+
+
+                }
+                else if (selected_row.cells[8].innerHTML != '')
+                {
+
+                    //B
+                    document.getElementById(indices[i-1].elementId).value = "B";
+                    document.getElementById(indice.elementId).value = selected_row.cells[8].innerHTML;
+
+                }
+                else if (selected_row.cells[9].innerHTML != '')
+                {
+
+                    //C
+                    document.getElementById(indices[i-1].elementId).value = "C";
+                    document.getElementById(indice.elementId).value = selected_row.cells[9].innerHTML;
+
+                }
+                else {
+
+                    //D
+                    document.getElementById(indices[i-1].elementId).value = "D";
+                    document.getElementById(indice.elementId).value = selected_row.cells[10].innerHTML;
+                }
+
+            break;
+
+        }
+
+    }
+
+    toggleDisplay(document.getElementById('detalle_form'), true);
+
+}
+
+function quitarConfirmar(){
+
+    var child = document.getElementsByClassName("confirmar_button");
+    
+    var length = child.length;
+
+    for (i = 0; i < length; i++) {
+        
+        child[i].parentNode.removeChild(child[i]);
+
+    } 
+
+}
+
