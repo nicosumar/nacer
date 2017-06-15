@@ -129,6 +129,23 @@ class LiquidacionSumar < ActiveRecord::Base
     fecha_limite_prestaciones = self.periodo.fecha_limite_prestaciones.to_s
     esquemas = UnidadDeAltaDeDatos.where(facturacion: true)
 
+    #Agrego El Log
+    @log_del_proceso = Logger.new("log/GenerarSnapshootLiquidacion.log",10, 1024000)
+    @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
+             date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+                    if severity == "INFO" or severity == "WARN"
+                      "[#{date_format}] #{severity}: #{msg}\n"
+                    else        
+                      "[#{date_format}] #{severity}: #{msg}\n"
+                    end
+    end
+    @log_del_proceso.info("*****************************************************")
+    @log_del_proceso.info("####***Iniciando procesamiento de Cierre de la liquidación***###")
+    @log_del_proceso.info("******************************************************")
+    @log_del_proceso.info("Iniciando el proceso de la liquidación'#{self.id }")
+
+
+
     ActiveRecord::Base.transaction do 
 
       # Busco y marco prestaciones vencidas al momento de liquidar
@@ -136,10 +153,14 @@ class LiquidacionSumar < ActiveRecord::Base
       PrestacionBrindada.marcar_prestaciones_sin_periodo_de_actividad self
       PrestacionBrindada.marcar_prestaciones_sin_asignacion_de_precio self
       
+
       # 0 ) Elimino los duplicados
+      @log_del_proceso.info("Elimino los duplicados")
       PrestacionBrindada.anular_prestaciones_duplicadas
 
+      
       # 1) Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas
+       @log_del_proceso.info("Identifico los TIPOS de prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas")
       cq = CustomQuery.ejecutar (
         {
           sql:  "INSERT INTO public.prestaciones_incluidas\n"+
@@ -186,6 +207,7 @@ class LiquidacionSumar < ActiveRecord::Base
       })
 
       # 2) Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas 
+      @log_del_proceso.info(" Identifico las prestaciones que se brindaron en esta liquidacion y genero el snapshoot de las mismas")
       cq = CustomQuery.ejecutar ({
         sql:  "INSERT INTO public.prestaciones_liquidadas \n "+
               "       (liquidacion_id, esquema, unidad_de_alta_de_datos_id, efector_id, \n "+
@@ -241,13 +263,15 @@ class LiquidacionSumar < ActiveRecord::Base
 
       if cq
         logger.warn ("Tabla de prestaciones liquidadas generada")
+       
       else
         logger.warn ("Tabla de prestaciones liquidadas NO generada")
+        @log_del_proceso.info("Tabla de prestaciones liquidadas NO generada")
       end
 
       # 3)  Identifico los datos vinculados a las prestaciones brindadas
       #    que se incluyeron en esta liquidacion y genero el snapshoot de las mismas
-      
+      @log_del_proceso.info("Identifico los datos vinculados a las prestaciones brindadas que se incluyeron en esta liquidacion y genero el snapshoot de las mismas")
       cq = CustomQuery.ejecutar ({
         sql:  "INSERT INTO prestaciones_liquidadas_datos \n "+
               " (liquidacion_id, prestacion_liquidada_id, \n "+
@@ -294,10 +318,12 @@ class LiquidacionSumar < ActiveRecord::Base
         logger.warn ("Tabla de prestaciones Liquidadas datos generada")
       else
         logger.warn ("Tabla de prestaciones Liquidadas datos NO generada")
+        @log_del_proceso.info("Tabla de prestaciones Liquidadas datos NO generada")
       end
 
       # 4)  Identifico las advertencias que poseen las prestaciones brindadas que se
       #    que se incluyeron en esta liquidacion y genero el snapshoot de las mismas
+      @log_del_proceso.info("Identifico las advertencias que poseen las prestaciones brindadas que se que se incluyeron en esta liquidacion y genero el snapshoot de las mismas")
       cq = CustomQuery.ejecutar ({
         sql:  "INSERT INTO prestaciones_liquidadas_advertencias \n" +
               " (liquidacion_id, prestacion_liquidada_id, metodo_de_validacion_id, comprobacion, mensaje, created_at, updated_at)  \n"+
@@ -314,13 +340,14 @@ class LiquidacionSumar < ActiveRecord::Base
       if cq
         logger.warn ("Tabla de prestaciones Liquidadas advertencias generada")
       else
+          @log_del_proceso.info("Tabla de prestaciones Liquidadas advertencias NO generada")
         logger.warn ("Tabla de prestaciones Liquidadas advertencias NO generada")
       end
 
       # 5) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
       #    de prestaciones liquidadas
       #    - Aca con las prestaciones aceptadas
-
+      @log_del_proceso.info("Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla de prestaciones liquidadas - Aca con las prestaciones aceptadas")
       formula = "Formula_#{self.concepto_de_facturacion.formula.id}"
       plantilla_de_reglas = (self.plantilla_de_reglas_id.blank?) ? -1 : self.plantilla_de_reglas_id
       estado_aceptada = self.parametro_liquidacion_sumar.prestacion_aceptada.id
@@ -342,12 +369,15 @@ class LiquidacionSumar < ActiveRecord::Base
       if cq
         logger.warn ("Tabla de prestaciones Liquidadas Actualizada con ACEPTADAS")
       else
+          @log_del_proceso.info("Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla de prestaciones liquidadas - Aca con las prestaciones aceptadas")
         logger.warn ("Tabla de prestaciones Liquidadas NO Actualizada con ACEPTADAS")
       end
 
       # 6) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
       #    de prestaciones liquidadas
       #    - Aca con las prestaciones rechazadas, con su observacion
+
+      @log_del_proceso.info("Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla de prestaciones liquidadas- Aca con las prestaciones rechazadas, con su observacion")
       cq = CustomQuery.ejecutar ({
         sql:    "UPDATE public.prestaciones_liquidadas \n"+
                 "            SET monto = #{formula}(pl.id), \n"+
@@ -377,12 +407,14 @@ class LiquidacionSumar < ActiveRecord::Base
       if cq
         logger.warn ("Tabla de prestaciones Liquidadas Actualizada con RECHAZADAS")
       else
+        @log_del_proceso.info("Tabla de prestaciones Liquidadas NO Actualizada con RECHAZADAS")
         logger.warn ("Tabla de prestaciones Liquidadas NO Actualizada con RECHAZADAS")
       end
 
       # 7) Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla
       #    de prestaciones liquidadas
       #    - Aca con las prestaciones exceptuadas por regla
+       @log_del_proceso.info("Con todos los datos, calculo el valor de cada prestacion y lo actualizo en la tabla de prestaciones liquidadas")
       cq = CustomQuery.ejecutar ({
         sql:  "UPDATE public.prestaciones_liquidadas \n"+
               "SET monto = #{formula}(pl.id), \n"+
@@ -418,19 +450,41 @@ class LiquidacionSumar < ActiveRecord::Base
       if cq
         logger.warn ("Tabla de prestaciones Liquidadas Actualizada con EXCEPTUADAS")
       else
+        @log_del_proceso.info("Tabla de prestaciones Liquidadas NO Actualizada con EXCEPTUADAS")
         logger.warn ("Tabla de prestaciones Liquidadas NO Actualizada con EXCEPTUADAS")
       end
     end # END transaction
+      @log_del_proceso.info("Finalizó el proceso de la liquidación #{self.id }")
   end  # END Method
 
   def generar_documentos!
     begin
+
+    #Agrego El Log
+    @log_del_proceso = Logger.new("log/GenerarCuasifacturasLiquidacion.log",10, 1024000)
+    @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
+             date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+                    if severity == "INFO" or severity == "WARN"
+                      "[#{date_format}] #{severity}: #{msg}\n"
+                    else        
+                      "[#{date_format}] #{severity}: #{msg}\n"
+                    end
+    end
+    @log_del_proceso.info("*****************************************************")
+    @log_del_proceso.info("####***Iniciando procesamiento de Generado de cuasifacturas***###")
+    @log_del_proceso.info("******************************************************")
+    @log_del_proceso.info("Iniciando el proceso de Generado de cuasifacturas - Liq #{self.id }")
+
+
       transaction do
         self.concepto_de_facturacion.generar_documentos!(self)
         PrestacionBrindada.marcar_prestaciones_facturadas!(self)
       end
+
+      @log_del_proceso.info("Finalizó el proceso de Generado de cuasifacturas - Liq #{self.id }")
     rescue Exception => e
-      logger.warn "Ocurrio un error: " + e.message
+       logger.warn "Ocurrio un error: " + e.message
+      @log_del_proceso.error("Ocurrio un error: " + e.message)
       raise "Ocurrio un error: " + e.message
     end
   end

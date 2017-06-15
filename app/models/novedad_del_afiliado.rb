@@ -976,7 +976,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
             SET
               estado_de_la_novedad_id = '#{estado}',
               mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}' ,
-              updated_at = datetime('now')
+              updated_at = date('now')
             WHERE
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
               AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
@@ -1031,6 +1031,23 @@ class NovedadDelAfiliado < ActiveRecord::Base
   def self.generar_archivo_a_unico(uads, fecha_limite,directorio_de_destino)
     # TODO: agregar validaciones
 
+    @log_del_proceso = Logger.new("log/CierrePadron.log",10, 1024000)
+    @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
+             date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+                    if severity == "INFO" or severity == "WARN"
+                      "[#{date_format}] #{severity}: #{msg}\n"
+                    else        
+                      "[#{date_format}] #{severity}: #{msg}\n"
+                    end
+    end
+    @log_del_proceso.info("*****************************************************")
+    @log_del_proceso.info("####***Iniciando procesamiento de Cierre de Padron***###")
+    @log_del_proceso.info("******************************************************")
+
+         
+
+
+
     return nil unless uads && fecha_limite && directorio_de_destino
     
     
@@ -1040,7 +1057,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     
     # Ejecutar todo dentro de una transacción para así poder cancelar las modificaciones en la BD en caso de fallas
     archivo_a = nil
-    
+    @log_del_proceso.info("Verificando secuencia para numero de archivo")
     # Verificar si existe la secuencia antes de solicitar la generación del archivo A y crearla
       if ActiveRecord::Base::connection.exec_query("
           SELECT *
@@ -1054,7 +1071,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
     
     
     
-   
+    @log_del_proceso.info("obteniendo secuencia para numero de archivo")
      # Obtener el siguiente número en la secuencia de generación de archivos A para este CI en esta UAD
       numero_secuencia =
         ActiveRecord::Base.connection.exec_query("
@@ -1064,13 +1081,16 @@ class NovedadDelAfiliado < ActiveRecord::Base
                 ELSE last_value
               END) AS numero_secuencia FROM uad_#{codigo_uadx}.ci_#{codigo_cix}_archivo_a_seq;
         ").rows[0][0].to_i
-    
+    byebug
     begin
       
       # Crear el archivo de texto de salida
+   byebug
+     @log_del_proceso.info("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uadx + codigo_cix + ('%05d' % numero_secuencia)}.txt")
       archivo_a = File.new("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uadx + codigo_cix + ('%05d' % numero_secuencia)}.txt", "w")
       archivo_a.set_encoding("CP1252", :crlf_newline => true)
-    
+      byebug
+     @log_del_proceso.info("Creado archvio A destino")
       size = 0;
       
       
@@ -1085,11 +1105,12 @@ class NovedadDelAfiliado < ActiveRecord::Base
           ('%05d' % numero_secuencia) + "\t" +
           Parametro.valor_del_parametro(:version_del_sistema_de_gestion)
       )
-      
+      @log_del_proceso.info("Obteniendo las novedades de las uads")
+
       uads.each do |uad|
      
         uad.codigos_de_CIs_con_novedades(fecha_limite).each do |codigo_ci|
-               
+          @log_del_proceso.info("Obteniendo las novedades del ci: #{codigo_ci}")
           # Obtener los registros de novedades
           novedades =
             ActiveRecord::Base.connection.exec_query "
@@ -1238,22 +1259,28 @@ class NovedadDelAfiliado < ActiveRecord::Base
                 AND tn.codigo != 'B'
                 AND n1.fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
           "
-
+         @log_del_proceso.info("Actualizo el estado del ci: #{codigo_ci}")
           # Actualizar el estado de los registros exportados
           estado = EstadoDeLaNovedad.id_del_codigo("P")
-          ActiveRecord::Base.connection.exec_query "
-          UPDATE uad_#{uad.codigo}.novedades_de_los_afiliados
+
+          @log_del_proceso.info("paso linea del estado de la novedad")
+          @log_del_proceso.info("#{estado}")
+          @log_del_proceso.info("#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}")
+          @log_del_proceso.info("#{fecha_limite.strftime('%Y-%m-%d')}")
+          @log_del_proceso.info("#{uad.codigo}")
+          ActiveRecord::Base.connection.exec_query "UPDATE uad_#{uad.codigo}.novedades_de_los_afiliados
             SET
               estado_de_la_novedad_id = '#{estado}',     
               mes_y_anio_de_proceso = '#{(fecha_limite - 1.month).strftime('%Y-%m-%d')}' ,
-              updated_at = datetime('now')
+              updated_at = date('now')
             WHERE
               estado_de_la_novedad_id = (SELECT id FROM estados_de_las_novedades WHERE codigo = 'R')
               AND centro_de_inscripcion_id = (SELECT id FROM centros_de_inscripcion WHERE codigo = '#{codigo_ci}')
               AND tipo_de_novedad_id != (SELECT id FROM tipos_de_novedades WHERE codigo = 'B')
               AND fecha_de_la_novedad < '#{fecha_limite.strftime('%Y-%m-%d')}';
           "
-
+         
+         @log_del_proceso.info("Exportar los registros al archivo del ci: #{codigo_ci}")
           # Exportar los registros al archivo
           novedades.rows.each do |novedad|
             # Agrego un bloque begin porque parece que algunos caracteres Unicode no pueden grabarse en CP1252 y falla el puts
@@ -1280,7 +1307,7 @@ class NovedadDelAfiliado < ActiveRecord::Base
         end 
          
       end
-    
+      @log_del_proceso.info("Incremetar el numero de secuencia en la BD")
       # Cerrar el archivo
       # Incrementar el número de secuencia si todo fue bien
       ActiveRecord::Base.connection.exec_query("
@@ -1294,20 +1321,22 @@ class NovedadDelAfiliado < ActiveRecord::Base
  
     
       archivo_a.close
-    
+      @log_del_proceso.info("Finalizando la generacion de archivo A")
       return archivo_a ? archivo_a.path : nil
       
+       
+    rescue 
+
+      @log_del_proceso.error("Ocurrio un error en la generacion del archivo A")
+      raise "Ocurrio un error en la generacion del archivo A"
       
-    rescue
-     
-      return nil
     end
         
     
 
   end
 
-  
+
   
   #
   # self.con_estado

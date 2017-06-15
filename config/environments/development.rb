@@ -32,6 +32,10 @@ Nacer::Application.configure do
     :port => 587
   }
 
+  #nivel del log
+  config.log_level = :warn 
+
+  
   # Default URL for application links written into mails (needed for Devise)
   config.action_mailer.default_url_options = { :host => "localhost:3000" }
 

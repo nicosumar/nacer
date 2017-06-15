@@ -43,7 +43,7 @@ class RegistroMasivoDePrestacionesV2
       @hash_sexos.merge! i.codigo => i.id
     end
    
-    @log_del_proceso = Logger.new("log/RegistroMasivoPrestaciones")
+    @log_del_proceso = Logger.new("log/RegistroMasivoPrestaciones",10, 1024000)
     @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
     date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
       if severity == "INFO" or severity == "WARN"
@@ -54,6 +54,7 @@ class RegistroMasivoDePrestacionesV2
     end
 
 
+
    end
 
   def establecer_esquema(esquema = "public")
@@ -61,7 +62,10 @@ class RegistroMasivoDePrestacionesV2
 
   def procesar(archivo, uad, efe)
     
-    @log_del_proceso.info("Iniciando procesamiento de archivo Masivo")
+    @log_del_proceso.info("*****************************************************")
+    @log_del_proceso.info("####***Iniciando procesamiento de archivo Masivo***###")
+    @log_del_proceso.info("******************************************************")
+   
 
     raise ArgumentError if archivo.blank?
     raise ArgumentError unless uad.is_a? UnidadDeAltaDeDatos
@@ -156,7 +160,7 @@ class RegistroMasivoDePrestacionesV2
         lineNum = 0
         file_num = -1
         bytes    = 0
-        max_lines = 100
+        max_lines = 1000
         @archivo_a_procesar_part = archivo
 
         filename =  @archivo_a_procesar_part.to_s

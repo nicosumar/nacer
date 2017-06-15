@@ -7,9 +7,9 @@
 = render :partial => "shared/info"
 
 #content-body
-  %h2.first-header Novedades procesadas
-
-  %p Se terminaron de procesar las novedades. El proceso generó los siguientes archivos:
-  %ul
-    - @archivos_generados.each do |a|
-      %li= a
+  %h2.first-header Procesamiento de novedades
+  - if @errores != ""
+    = @errores
+  - else
+    %p Se encoló el procesamiento de las novedades. Los archivos se guardaran en el siguiente directorio:
+    = @directorio
