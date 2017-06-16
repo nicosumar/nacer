@@ -26,6 +26,8 @@ $(document).ready(function() {
         }
         else {
 
+
+            toggleDisplay(document.getElementById('new_detalle_button'), false);
             //alert("Estoy en new");
 
         }
@@ -45,14 +47,26 @@ $(document).ready(function() {
 
 });
 
+function addNewRow(){
+
+    selected_row = -1;
+
+    toggleDisplay(document.getElementById('new_detalle_button'), false);
+    toggleDisplay(document.getElementById('detalle_form'), true);
+
+}
+
 function toggleDisplay(element, show) {
 
-    if (show) {
-        element.style.display = 'block';
-    } else {
-        element.style.display = 'none';
-    }
+    if(element){
 
+        if (show) {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+
+    }
 } 
 
 function deleteRow(row)
@@ -389,12 +403,17 @@ function saveInforme(is_new){
 
         var url = '/informes_de_rendicion';
 
-        $.ajax({
-          type: "POST",
-          url: url,
-          data: informe_params,
-          async: false
-        });
+        $.post(url, informe_params, function(params) {
+
+          window.location.replace(params.redirect_to + "?result=ok")
+
+        })
+          .fail(function(params) {
+
+            alert( "La operación ha fallado. Por favor, revise los datos e intente nuevamente, o contactesé con el administrador." );
+          
+          });
+
 
     }
     else {
@@ -404,10 +423,15 @@ function saveInforme(is_new){
         var url = window.location.href + "?operacion=edit";
 
         $.ajax({
-          type: "PUT",
-          url: url,
-          data: informe_params,
-          async: false
+           url: url,
+           type: 'PUT',
+           data: informe_params,
+           success: function(params) {
+             window.location.replace(params.redirect_to + "?result=ok")
+           },
+           fail: function(params){
+            alert( "La operación ha fallado. Por favor, revise los datos e intente nuevamente, o contactesé con el administrador." );
+           }
         });
 
     }
@@ -546,12 +570,6 @@ function checkSpecialChars(content){
 
 }
 
-function deleteInforme(id_informe){
-
-    alert("Todavía no está implementado este método. Pero.. está seguro que quiere eliminarlo? Pienselo.");
-    
-}
-
 function showInformes(){
 
     var informe_json = JSON.parse($('#informe_de_rendicion').attr('value'));
@@ -586,9 +604,19 @@ function showInformes(){
 
         new_row.cells[1].innerHTML = detalles_informe_json[i].numero;
 
-        var fecha = detalles_informe_json[i].fecha_factura.split("-");
+        if(detalles_informe_json[i].fecha_factura == null)
+        {
 
-        new_row.cells[2].innerHTML = fecha[2] + "-" + fecha[1] + "-" + fecha[0];
+            new_row.cells[2].innerHTML = '';
+
+        }
+        else {
+
+            var fecha = detalles_informe_json[i].fecha_factura.split("-");
+            new_row.cells[2].innerHTML = fecha[2] + "-" + fecha[1] + "-" + fecha[0];
+
+        }
+
         new_row.cells[3].innerHTML = detalles_informe_json[i].numero_factura;
         new_row.cells[4].innerHTML = detalles_informe_json[i].detalle;
         new_row.cells[5].innerHTML = detalles_informe_json[i].cantidad;
@@ -610,6 +638,15 @@ var selected_row;
 
 function updateRow()
 {
+
+    if(selected_row == -1) //en el edit, agrego una nueva row
+    {
+
+        insertRow();
+        return;
+
+    }
+
 
     if(hasWarnings()){
 
@@ -698,7 +735,9 @@ function updateRow()
 
     }
 
+    toggleDisplay(document.getElementById('new_detalle_button'), true);
     toggleDisplay(document.getElementById('detalle_form'), false);
+
     updateTotales();
 
 }
@@ -783,6 +822,7 @@ function editRow(row_to_edit)
 
     }
 
+    toggleDisplay(document.getElementById('new_detalle_button'), false);
     toggleDisplay(document.getElementById('detalle_form'), true);
 
 }
@@ -794,8 +834,9 @@ function quitarConfirmar(){
     var length = child.length;
 
     for (i = 0; i < length; i++) {
-        
-        child[i].parentNode.removeChild(child[i]);
+
+        child[i].innerHTML = "NO CERRADO";
+        //child[i].parentNode.removeChild(child[i]);
 
     } 
 

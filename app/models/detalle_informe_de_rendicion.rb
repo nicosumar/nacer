@@ -5,11 +5,30 @@ class DetalleInformeDeRendicion < ActiveRecord::Base
 
   attr_accessible :cantidad, :detalle, :fecha_factura, :numero, :numero_cheque, :numero_factura, :importe, :informe_de_rendicion_id, :tipo_de_importe_id
 
-  #validates_numericality_of :cantidad, presence: true, greater_than_or_equal_to: 0
   validates :detalle, presence: true 
-  #validates_numericality_of :numero, presence: true, greater_than_or_equal_to: 0 
-  #validates_numericality_of :numero_cheque, presence: true, greater_than_or_equal_to: 0 
-  #validates_numericality_of :numero_factura, presence: true, greater_than_or_equal_to: 0 
-  #validates_numericality_of :importe, presence: true, greater_than_or_equal_to: 0 
   
+	def importe_servicios
+
+	 	return (tipo_de_importe_id == 1) ? importe : 0
+
+	end
+
+	def importe_obras
+
+	 	return (tipo_de_importe_id == 2) ? importe : 0
+
+	end
+
+	def importe_ctes
+
+	 	return (tipo_de_importe_id == 3) ? importe : 0
+
+	end
+
+	def importe_capital
+
+	 	return (tipo_de_importe_id == 4) ? importe : 0
+
+	end
+
 end

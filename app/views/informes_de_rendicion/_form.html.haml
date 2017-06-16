@@ -113,13 +113,16 @@
         %td 0
         %td 0
 
+  %div.actions
+
+    = button_tag 'AGREGAR NUEVO DETALLE', :onclick => "addNewRow();", :id => 'new_detalle_button', :type => 'button', :class => "subBtn"
+
+  %br
+
   %div.actions{:id => "detalle_form", :style => "display: block;"}
 
     %h3.first-header
-      - if @informe_de_rendicion.new_record?
-        Agregar Nuevo Detalle
-      - else 
-        Editar Datos del Detalle
+      Datos del Detalle
     %p.note Todos los campos son obligatorios. En el caso de que no se hayan realizado movimientos, simplemente confirme sin agregar ningún detalle.
 
     = fields_for DetalleInformeDeRendicion.new do |df|
@@ -178,7 +181,7 @@
         - if @informe_de_rendicion.new_record?
           = button_tag 'Agregar Detalle', :onclick => "insertRow();", :type => 'button', :class => "subBtn"
         - else
-          = button_tag 'Actualizar Detalle', :onclick => "updateRow();", :type => 'button', :class => "subBtn"
+          = button_tag 'Agregar/Actualizar Detalle', :onclick => "updateRow();", :type => 'button', :class => "subBtn"
       
     %hr
     %br
@@ -197,7 +200,12 @@
     %div.field_content
       - if @informe_de_rendicion.new_record?
         = button_tag 'GUARDAR', :onclick => "saveInforme(true);", :type => 'button', :class => "subBtn", :confirm => "¿Está seguro?"
-        = link_to "Cancelar", @informe_de_rendicion
       - else
         = button_tag 'GUARDAR', :onclick => "saveInforme(false);", :type => 'button', :class => "subBtn", :confirm => "¿Está seguro?"
-        = link_to "Cancelar", @informe_de_rendicion
+
+  %div.actions
+  %div.field_content#action-links
+    - if @informe_de_rendicion.new_record?
+      = link_to 'CANCELAR', informes_de_rendicion_path
+    - else
+      = link_to 'CANCELAR', informe_de_rendicion_path(@informe_de_rendicion)
