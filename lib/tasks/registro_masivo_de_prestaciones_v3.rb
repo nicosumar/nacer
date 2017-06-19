@@ -1060,7 +1060,7 @@ $table = "importar_prestaciones_brindadas_#{@nombre_corto_archivo}"
 
       end
 
-byebug
+
       #PROCESO LAS PARTES
       @log_del_proceso.info ("Iniciando procesamiento de archivo Masivo")
 
