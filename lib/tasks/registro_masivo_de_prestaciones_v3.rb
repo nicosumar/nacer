@@ -113,7 +113,7 @@ class RegistroMasivoDePrestacionesV3
         @log_del_proceso.debug ("Fin persistir_prestaciones")
 
       #  @log_del_proceso.debug ("Iniciando escribir_resultados")
-      #  escribir_resultados
+        escribir_resultados
       #  @log_del_proceso.debug ("Fin escribir_resultados")
 
         eliminar_tabla
@@ -207,7 +207,7 @@ class RegistroMasivoDePrestacionesV3
 
 #GRABO EN EL GLOBAL LOS RESULTADOS
   #  @archivo_de_log_completo.puts ImportarPrestacionBrindada.column_names.join("\t")
-    ImportarPrestacionBrindada.find(:all).each do |n|
+  #  ImportarPrestacionBrindada.find(:all).each do |n|
     #  @archivo_de_log_completo.puts n.attributes.values.join("\t")
 
   end
