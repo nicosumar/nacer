@@ -25,28 +25,33 @@
           %th Total
           %th Estado
           %th{:colspan => 2} Acciones
-          %th Administración
+          %th{:colspan => 2} Administración
       %tbody
         - @informes_de_rendicion.each do |a|
           %tr
-            %td= a.id.to_i
-            %td= a.fecha_informe.strftime("%d/%m/%Y")
-            %td
+            %td{align: "center"}= a.codigo
+            %td{align: "center"}= l(a.fecha_informe, format: "%B/%Y").upcase
+            %td{align: "center"} 
               $
               = a.total.blank? ? "-" : a.total
-            %td= a.estado_del_proceso.nombre
-            %td{width: "10%"} 
+            %td{align: "center"}= a.estado_del_proceso.nombre
+            %td{align: "center", width: "10%"} 
               = button_to 'VER', informes_de_rendicion_path + "/" + a.id.to_s, :method => :get
-            - if a.estado_del_proceso.id < 3
-              %td{width: "10%"}
+            - if a.estado_del_proceso.id == 2
+              %td{align: "center", width: "10%"}
                 = button_to 'ELIMINAR', informes_de_rendicion_path + "/" + a.id.to_s + "?operacion=delete", :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro? Una vez eliminado no podrá recuperarlo, deberá crearlo nuevamente desde cero."
             - else 
-              %td{width: "10%"} No se puede eliminar
-            - if a.estado_del_proceso.id < 4
-              %td{width: "10%", class: "confirmar_button"}
+              %td{align: "center", width: "10%"} No se puede eliminar
+            - if a.estado_del_proceso.id == 3 
+              %td{align: "center", width: "10%", class: "confirmar_button"}
                 = button_to 'CERRAR',  informes_de_rendicion_path + "/" + a.id.to_s + "?operacion=confirm", :method => :put, :style => 'color:#006e00;', :confirm => "¿Está seguro? Una vez cerrado no podrá volver a editarse."
+              %td{align: "center", width: "10%", class: "rechazar_button"}
+                = button_to 'RECHAZAR',  informes_de_rendicion_path + "/" + a.id.to_s + "?operacion=reject", :method => :put, :style => 'color:#6e0000;', :confirm => "Al realizar esta acción, el usuario podrá editar nuevamente el informe. ¿Está seguro?"
             - else
-              %td{width: "10%", style: "color:#006e00;"} CERRADO
+              - if a.estado_del_proceso.id == 4 
+                %td{align: "center", width: "10%", style: "color:#006e00;"} CERRADO
+              - else
+                %td{align: "center", width: "10%", style: "color:#006e00;"} Debe finalizarse primero para poder ser cerrado
     = will_paginate @informes_de_rendicion, :inner_window => 2, :outer_window => 0
   - else
     No hay ningún informe de rendición cargado en el sistema. Seleccione la opción "Nuevo Informe" para crear uno nuevo.

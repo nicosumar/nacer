@@ -1,12 +1,12 @@
 class CreateDetallesInformeDeRendicion < ActiveRecord::Migration
   def change
     create_table :detalles_informe_de_rendicion do |t|
-      t.integer :numero
+      t.string :numero
       t.date :fecha_factura
-      t.integer :numero_factura
+      t.string :numero_factura
       t.string :detalle
       t.integer :cantidad
-      t.integer :numero_cheque
+      t.string :numero_cheque
       t.references :informe_de_rendicion
       t.references :tipo_de_importe
 

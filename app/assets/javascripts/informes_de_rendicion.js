@@ -15,28 +15,33 @@ $(document).ready(function() {
 
     if($('#info').attr('value') != "-1")
     {
+
+        //Si no es el index, en todos los casos oculto el form del detalle. Solo lo muestro cuando apreto el boton para agregar uno
+        toggleDisplay(document.getElementById('detalle_form'), false);
+
         if($('#info').attr('value') != "0")
         {
 
-            //alert("Estoy en edit o show");
-
-            toggleDisplay(document.getElementById('detalle_form'), false);
+            //SI ESTOY EN EL SHOW O EN EL EDIT TENGO QUE MOSTRAR LOS INFORMES ANTERIORES
             showInformes();
 
+            if($('#info').attr('value') == "1")
+            {
+
+                //Si estoy en el SHOW tengo que ocultar el boton para agregar nuevo detalle
+                toggleDisplay(document.getElementById('new_detalle_button'), false);
+
+            }
+
         }
-        else {
 
-
-            toggleDisplay(document.getElementById('new_detalle_button'), false);
-            //alert("Estoy en new");
-
-        }
     }
     else {
 
         if($('#info-permiso').attr('value') != 'puede_confirmar')
         {
 
+            quitarRechazar();
             quitarConfirmar();
 
         }
@@ -84,6 +89,7 @@ function deleteRow(row)
 
 	    	if(i == 4){
     			new_row.cells[i].innerHTML = 'SIN MOVIMIENTOS';
+                disableButtons();
 	    	}
 	    	else {
     			new_row.cells[i].innerHTML = '';
@@ -140,6 +146,7 @@ function insertRow()
 	if(last_row.cells[4].innerHTML == 'SIN MOVIMIENTOS')
 	{
 
+        enableButtons();
 		new_row = last_row;
 
 	}
@@ -227,6 +234,10 @@ function insertRow()
 
     //Finalmente la agrego a la tabla
     x.appendChild( new_row );
+    
+    toggleDisplay(document.getElementById('new_detalle_button'), true);
+    toggleDisplay(document.getElementById('detalle_form'), false);
+
     updateTotales();
 
 }
@@ -403,16 +414,25 @@ function saveInforme(is_new){
 
         var url = '/informes_de_rendicion';
 
-        $.post(url, informe_params, function(params) {
+        $.ajax({
+           url: url,
+           type: 'POST',
+           data: informe_params,
+           success: function(params){
 
-          window.location.replace(params.redirect_to + "?result=ok")
+                alert(params.titulo);
 
-        })
-          .fail(function(params) {
+                if(params.url != ""){
 
+                    window.location.replace(params.url);
+
+                }
+
+           },
+           fail: function(params){
             alert( "La operación ha fallado. Por favor, revise los datos e intente nuevamente, o contactesé con el administrador." );
-          
-          });
+           }
+        });
 
 
     }
@@ -427,7 +447,15 @@ function saveInforme(is_new){
            type: 'PUT',
            data: informe_params,
            success: function(params) {
-             window.location.replace(params.redirect_to + "?result=ok")
+
+                alert(params.titulo);
+
+                if(params.url != ""){
+
+                    window.location.replace(params.url);
+
+                }
+
            },
            fail: function(params){
             alert( "La operación ha fallado. Por favor, revise los datos e intente nuevamente, o contactesé con el administrador." );
@@ -574,10 +602,14 @@ function showInformes(){
 
     var informe_json = JSON.parse($('#informe_de_rendicion').attr('value'));
 
-    var fecha_partes = informe_json.fecha_informe.split('/');
+    if(informe_json.fecha_informe != null){
 
-    $('#anio_informe').value = fecha_partes[0];
-    $('#mes_informe').value = fecha_partes[1];
+        var fecha_partes = informe_json.fecha_informe.split('/');
+
+        $('#anio_informe').value = fecha_partes[0];
+        $('#mes_informe').value = fecha_partes[1];
+
+    }
 
     var detalles_informe_json = JSON.parse($('#detalles_informe_de_rendicion').attr('value'));
 
@@ -629,7 +661,7 @@ function showInformes(){
         x.appendChild( new_row );
 
     }
-    
+
     updateTotales();
 
 }
@@ -842,3 +874,44 @@ function quitarConfirmar(){
 
 }
 
+function quitarRechazar(){
+
+    var child = document.getElementsByClassName("rechazar_button");
+    
+    var length = child.length;
+
+    for (i = 0; i < length; i++) {
+
+        child[i].parentNode.removeChild(child[i]);
+
+    } 
+
+}
+
+function enableButtons(){
+
+    var child = document.getElementsByClassName("action_button");
+    
+    var length = child.length;
+
+    for (i = 0; i < length; i++) {
+
+        child[i].disabled = false;
+
+    } 
+
+}
+
+function disableButtons(){
+
+    var child = document.getElementsByClassName("action_button");
+    
+    var length = child.length;
+
+    for (i = 0; i < length; i++) {
+
+        child[i].disabled = true;
+
+    } 
+
+}

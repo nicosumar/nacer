@@ -42,7 +42,8 @@
     %span.field_value{:style => "background-color: #e0e0e0;"}= @uad_actual.efector.cuit
   
   /* El usuario debe indicar el mes y el año del gasto. En el informe debe aparecer el ultimo día de ese mes como fecha de informe y el mes como mes en el que se realizó el gasto que se detalla
-
+  %hr
+  %br
   %h3.first-header Fecha del Informe
   %div.field
     = f.label :fecha_informe
@@ -50,7 +51,9 @@
     = select_year(Date.today, :id => 'anio_informe')
 
   /* El usuario deberia ir agregando detalle por detalle con todos los campos que corresponden. En el caso de que no complete ningún campo debe decir con mayuscula en el detalle 'SIN MOVIMIENTOS'
-
+  %br
+  %hr
+  %br
   %h3.first-header Detalle del Informe
   %table#tabla_detalles{:border => "0", :width => "100%"}  
     %thead#seccion_header
@@ -88,12 +91,9 @@
         %td{align: "center"}
         %td{align: "center"} 
         %td{align: "center"} 
-        %td{align: "center"} 
-          - if @informe_de_rendicion.new_record?
-            = button_tag 'ELIMINAR', :onclick => "deleteRow(this);", :type => 'button', :class => "subBtn"
-          - else
-            = button_tag 'EDITAR', :onclick => "editRow(this);", :type => 'button', :class => "subBtn"
-            = button_tag 'ELIMINAR', :onclick => "deleteRow(this);", :type => 'button', :class => "subBtn"
+        %td{align: "center"}
+          = button_tag 'EDITAR', :onclick => "editRow(this);", :type => 'button', :class => "subBtn action_button", :disabled => "true"
+          = button_tag 'ELIMINAR', :onclick => "deleteRow(this);", :type => 'button', :class => "subBtn action_button", :disabled => "true"
 
   %br
 
@@ -178,17 +178,13 @@
     %br
 
       %div.field_content
-        - if @informe_de_rendicion.new_record?
-          = button_tag 'Agregar Detalle', :onclick => "insertRow();", :type => 'button', :class => "subBtn"
-        - else
-          = button_tag 'Agregar/Actualizar Detalle', :onclick => "updateRow();", :type => 'button', :class => "subBtn"
+        = button_tag 'Agregar/Actualizar Detalle', :onclick => "updateRow();", :type => 'button', :class => "subBtn"
       
-    %hr
-    %br
+  %hr
 
   %div.actions#end_form
 
-    %h2.first-header 
+    %h3.first-header 
       - if @informe_de_rendicion.new_record?
         Guardar nuevo informe
       - else
@@ -202,6 +198,9 @@
         = button_tag 'GUARDAR', :onclick => "saveInforme(true);", :type => 'button', :class => "subBtn", :confirm => "¿Está seguro?"
       - else
         = button_tag 'GUARDAR', :onclick => "saveInforme(false);", :type => 'button', :class => "subBtn", :confirm => "¿Está seguro?"
+
+  %hr
+  %br
 
   %div.actions
   %div.field_content#action-links

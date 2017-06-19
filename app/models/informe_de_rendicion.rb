@@ -5,7 +5,7 @@ class InformeDeRendicion < ActiveRecord::Base
 
 	has_many :detalles_informe_de_rendicion, :autosave => true, :dependent => :destroy
   	
-	attr_accessible :fecha_informe, :total, :efector_id, :estado_del_proceso_id
+	attr_accessible :fecha_informe, :total, :efector_id, :estado_del_proceso_id, :codigo
 	
 	accepts_nested_attributes_for :detalles_informe_de_rendicion, :reject_if => :all_blank, :allow_destroy => true
 

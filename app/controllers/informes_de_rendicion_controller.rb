@@ -6,14 +6,14 @@ class InformesDeRendicionController < ApplicationController
   def index
 
     # Verificar los permisos del usuario
-    # if cannot? :read, InformeDeRendicion
-    #   redirect_to( root_url,
-    #     :flash => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
-    #       :mensaje => "Se informará al administrador del sistema sobre este incidente."
-    #     }
-    #   )
-    #   return
-    # end
+    if cannot? :read, InformeDeRendicion
+      redirect_to( root_url,
+        :flash => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
 
     resultado = params[:result]
 
@@ -51,6 +51,16 @@ class InformesDeRendicionController < ApplicationController
 
   # GET /informe_de_rendicion/new
   def new
+
+    if cannot? :manage, InformeDeRendicion
+      redirect_to( root_url,
+        :flash => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
     # Verificar los permisos del usuario
     if cannot? :create, InformeDeRendicion
       redirect_to( root_url,
@@ -94,6 +104,15 @@ class InformesDeRendicionController < ApplicationController
 
   # GET /addendas_sumar/:id
   def show
+
+    if cannot? :read, InformeDeRendicion
+      redirect_to( root_url,
+        :flash => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
 
     resultado = params[:result]
 
@@ -145,7 +164,7 @@ class InformesDeRendicionController < ApplicationController
           
           report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de informe de rendicion y compra.odt") do |r|
             
-            r.add_field :id_informe, @informe_de_rendicion.id
+            r.add_field :codigo_informe, @informe_de_rendicion.codigo
             r.add_field :efector_nombre, @informe_de_rendicion.efector.nombre
             r.add_field :referente_al_dia, @informe_de_rendicion.efector.referente_al_dia.contacto.nombres + " " + @informe_de_rendicion.efector.referente_al_dia.contacto.apellidos
             r.add_field :banco_cuenta_principal, @informe_de_rendicion.efector.banco_cuenta_principal
@@ -200,9 +219,9 @@ class InformesDeRendicionController < ApplicationController
 
   def edit
     # Verificar los permisos del usuario
-    if cannot? :create, InformeDeRendicion
+    if cannot? :manage, InformeDeRendicion
       redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+        :flash => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
           :mensaje => "Se informará al administrador del sistema sobre este incidente."
         }
       )
@@ -215,6 +234,19 @@ class InformesDeRendicionController < ApplicationController
   end
 
   def update
+
+    if cannot? :manage, InformeDeRendicion
+      redirect_to( root_url,
+        :flash => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
+    url_destino = ""
+    respuesta = {}
+    status = :ok
 
     # Cuando se crea el informe lo pone en estado 2
     # luego cuando se cierra por parte del efector queda en estado 3
@@ -305,6 +337,38 @@ class InformesDeRendicionController < ApplicationController
           return
         end
 
+    elsif tipo_de_operacion == "reject"
+
+      #Por acá también debería controlar que se encuentra con las credenciales adecuadas
+
+        if not current_user.in_group? [:administradores]
+          redirect_to( root_url,
+            :flash => { :tipo => :error, :titulo => "No está autorizado para realizar esa acción",
+              :mensaje => "Se informará al administrador del sistema sobre este incidente."
+            }
+          )
+          return
+        end
+
+        @informe_de_rendicion = InformeDeRendicion.find(params[:id])
+        @informe_de_rendicion.estado_del_proceso_id = 2
+
+        if @informe_de_rendicion.save!
+          redirect_to( informes_de_rendicion_path,
+            :flash => { :tipo => :ok, :titulo => "EXITO",
+              :mensaje => "El informe se ha rechazado correctamente, ahora el usuario podrá editarlo nuevamente."
+            }
+          )
+          return
+        else
+          redirect_to( informes_de_rendicion_path,
+            :flash => { :tipo => :error, :titulo => "ERROR",
+              :mensaje => "No se ha podido rechazar este informe. Por favor, vuelva a intentarlo nuevamente."
+            }
+          )
+          return
+        end
+
     else #EDITAR INFORME
 
       #PARAMETROS QUE USO PARA OTRA COSILLA
@@ -322,6 +386,8 @@ class InformesDeRendicionController < ApplicationController
       informe_de_rendicion.detalles_informe_de_rendicion.destroy_all; #ELIMINO TODOS LOS DETALLES y luego los agrego editados
 
       con_movimientos = true
+
+      todo_ok = true;
 
       if informe_de_rendicion.save!
 
@@ -365,107 +431,181 @@ class InformesDeRendicionController < ApplicationController
           if detalle_informe_de_rendicion.save!
             puts("SE ACTUALIZO EL DETALLE N° #$i CORRECTAMENTE")
           else 
-            puts("FALLÓ AL ACTUALIZAR EL DETALLE N° #$i")
+            
+            todo_ok = false;
+
           end
 
           $i +=1;
 
         end until $i > cantidad_detalles.to_i - 1
 
-        respond_to do |format|
-          format.json {
-            render json: {redirect_to: informe_de_rendicion_path(informe_de_rendicion)}, status: :ok
-          }
-        end #end response
+        if(todo_ok)
+
+          url_destino = informe_de_rendicion_path(informe_de_rendicion) + "?result=ok"
+          respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Se completó la operación correctamente." }
+          status = :ok
+
+        else
+
+          url_destino = ""
+          respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Falló al actualizar el informe.\nPor favor, controle los datos modificados e intentelo nuevamente más tarde." }
+          status = :ok
+
+        end
 
       else
-         puts('FALLÓ AL ACTUALIZAR EL INFORME')
+
+        url_destino = ""
+        respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Falló al actualizar el informe.\nPor favor, controle los datos modificados e intentelo nuevamente más tarde." }
+        status = :ok
+
       end
 
     end
+
+    respond_to do |format|
+      format.json { render json: respuesta.to_json, status: status }
+    end
+
+    return
 
   end
 
   def create
 
+    if cannot? :manage, InformeDeRendicion
+      redirect_to( root_url,
+        :flash => {:tipo => :error, :titulo => "No está autorizado para acceder a esta página",
+          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        }
+      )
+      return
+    end
+
     #params[:nombre]
     #params[:array][index]
+
+    url_destino = ""
+    respuesta = {}
+    status = :ok
 
     #PARAMETROS QUE USO PARA OTRA COSILLA
 
     cantidad_detalles = params[:cantidad_detalles]
 
     #PARAMETROS PARA CREAR UN NUEVO INFORME DE RENDICION
-
     informe_de_rendicion = InformeDeRendicion.new
-    informe_de_rendicion.efector_id = params[:efector_id]
+
+    this_efector = Efector.find(params[:efector_id])
+    informe_de_rendicion.codigo =  this_efector.cuie.to_s + "-" +  params[:anio_informe] + "-" + params[:mes_informe]
+    informe_de_rendicion.efector_id = this_efector.id
+    
     informe_de_rendicion.fecha_informe = DateTime.strptime(params[:dia_informe] +"/"+ params[:mes_informe] +"/" + params[:anio_informe],"%d/%m/%Y")
-    informe_de_rendicion.total = params[:total_informe]
-    informe_de_rendicion.estado_del_proceso_id = 2 #EN CURSO
+    
+    informes_con_esta_fecha = InformeDeRendicion.where(:efector_id => informe_de_rendicion.efector.id, :fecha_informe => informe_de_rendicion.fecha_informe)
 
-    con_movimientos = true
+    if informes_con_esta_fecha.count > 0
 
-    if informe_de_rendicion.save!
+      #Ya existe un informe con esta fecha! No puede ser, debe haber solo uno por mes
+      url_destino = ""
+      respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Ya existe un informe de este mes en el año seleccionado.\nPor favor, controle que todos los datos ingresados sean correctos." }
+      status = :ok
 
-      puts('SE CREÓ CORRECTAMENTE EL INFORME, AHORA SE VAN A ASOCIAR LOS DETALLES')
+    else #Si la fecha es única, entonces sigo con el resto de la creacion, sino la termino ahí nomás
 
-      if cantidad_detalles == "1"
+      informe_de_rendicion.total = params[:total_informe]
+      informe_de_rendicion.estado_del_proceso_id = 2 #EN CURSO
 
-        if params[:detalles][0] == 'SIN MOVIMIENTOS'
+      con_movimientos = true
 
-          #Existe un único caso en el que los valores puedan ser nulos y es cuando
-          #no hay ningún detalle "nuevo" sino que hay uno solo que dice SIN MOVIMIENTOS
-          con_movimientos = false
+      if informe_de_rendicion.save!
+
+        todo_ok = true
+
+        if cantidad_detalles == "1"
+
+          if params[:detalles][0] == 'SIN MOVIMIENTOS'
+
+            #Existe un único caso en el que los valores puedan ser nulos y es cuando
+            #no hay ningún detalle "nuevo" sino que hay uno solo que dice SIN MOVIMIENTOS
+            con_movimientos = false
+
+          end
+
+        end 
+
+        $i = 0
+
+        begin
+
+          detalle_informe_de_rendicion = DetalleInformeDeRendicion.new
+          
+          #PARAMETROS PARA CREAR LOS DETALLES ASOCIADOS AL NUEVO INFORME DE RENDICION  
+
+          detalle_informe_de_rendicion.informe_de_rendicion_id = informe_de_rendicion.id
+          detalle_informe_de_rendicion.detalle = params[:detalles][$i]
+
+          if con_movimientos
+
+            detalle_informe_de_rendicion.numero = params[:numeros][$i]
+            detalle_informe_de_rendicion.fecha_factura = params[:fechas_factura][$i]
+            detalle_informe_de_rendicion.numero_factura = params[:numeros_factura][$i]
+            detalle_informe_de_rendicion.cantidad = params[:cantidades][$i]
+            detalle_informe_de_rendicion.numero_cheque = params[:numeros_cheque][$i]
+            detalle_informe_de_rendicion.tipo_de_importe_id = params[:tipos_de_importe][$i]
+            detalle_informe_de_rendicion.importe = params[:importes][$i].to_f
+
+          end
+
+          if detalle_informe_de_rendicion.save!
+            
+            #TODO OKU, ENTONCES SIGO!
+
+          else 
+
+            todo_ok = false
+            
+            url_destino = ""
+            respuesta = { :url => url_destino, :tipo => :ok, :titulo => "No se pudo crear el nuevo informe. Por favor, inténtelo nuevamente más tarde." }
+            status = :ok
+
+            break
+
+          end
+
+          $i +=1;
+
+        end until $i > cantidad_detalles.to_i - 1
+
+        if(todo_ok)
+
+          url_destino = informe_de_rendicion_path(informe_de_rendicion) + "?result=ok"
+          respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Se completó la operación correctamente." }
+          status = :ok
+
+        else
+
+          #borro el informe creado porque algo salió mal!
+          informe_de_rendicion.destroy
 
         end
 
-      end 
+      else
 
-      $i = 0
+        url_destino = ""
+        respuesta = { :url => url_destino, :tipo => :ok, :titulo => "No se pudo crear el nuevo informe. Por favor, inténtelo nuevamente más tarde." }
+        status = :ok
 
-      begin
+      end
 
-        detalle_informe_de_rendicion = DetalleInformeDeRendicion.new
-        
-        #PARAMETROS PARA CREAR LOS DETALLES ASOCIADOS AL NUEVO INFORME DE RENDICION  
-
-        detalle_informe_de_rendicion.informe_de_rendicion_id = informe_de_rendicion.id
-        detalle_informe_de_rendicion.detalle = params[:detalles][$i]
-
-        if con_movimientos
-
-          detalle_informe_de_rendicion.numero = params[:numeros][$i]
-          detalle_informe_de_rendicion.fecha_factura = params[:fechas_factura][$i]
-          detalle_informe_de_rendicion.numero_factura = params[:numeros_factura][$i]
-          detalle_informe_de_rendicion.cantidad = params[:cantidades][$i]
-          detalle_informe_de_rendicion.numero_cheque = params[:numeros_cheque][$i]
-          detalle_informe_de_rendicion.tipo_de_importe_id = params[:tipos_de_importe][$i]
-          detalle_informe_de_rendicion.importe = params[:importes][$i].to_f
-
-        end
-
-        if detalle_informe_de_rendicion.save!
-          puts("SE CREÓ EL DETALLE N° #$i CORRECTAMENTE")
-        else 
-          puts("FALLÓ AL CREAR EL DETALLE N° #$i")
-        end
-
-        $i +=1;
-
-      end until $i > cantidad_detalles.to_i - 1
-
-      respond_to do |format|
-            format.json {
-              render json: {redirect_to: informe_de_rendicion_path(informe_de_rendicion)}, status: :ok
-            }
-      end #end response
-
-    else
-       puts('FALLÓ AL CREAR EL INFORME')
     end
 
-    #redirect_to informes_de_rendicion_path
-    #return
+    respond_to do |format|
+      format.json { render json: respuesta.to_json, status: status }
+    end
+
+    return
 
   end
 
