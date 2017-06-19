@@ -99,7 +99,7 @@ module NacerJob
 
     def tareasDeProcesamiento
       #load 'lib/tasks/registro_masivo_de_prestaciones_v2.rb'
-      rmp2 = RegistroMasivoDePrestacionesV2.new
+      rmp2 = RegistroMasivoDePrestacionesV3.new
      
       if @parametros['archivo'] and @parametros['uad'] and @parametros['efe']
         rmp2.procesar( @parametros['archivo'] , UnidadDeAltaDeDatos.find( @parametros['uad'] ), Efector.find( @parametros['efe']) )
