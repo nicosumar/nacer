@@ -210,7 +210,7 @@ class RegistroMasivoDePrestacionesV3
   #  ImportarPrestacionBrindada.find(:all).each do |n|
     #  @archivo_de_log_completo.puts n.attributes.values.join("\t")
 
-  end
+  # end
 end
 
   def crear_modelo_y_tabla
