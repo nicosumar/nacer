@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 #require 'logger'
-class RegistroMasivoDePrestacionesV2
+class RegistroMasivoDePrestacionesV3
 
   attr_accessor :archivo_completo
   attr_accessor :archivo_a_procesar
