@@ -134,7 +134,8 @@ class LiquidacionesSumarController < ApplicationController
     respuesta = {}
     status = :ok
 
-    @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    @liquidacion_sumar = LiquidacionSumar.find(params[:id],:include => :grupo_de_efectores_liquidacion)
+
 
     if @liquidacion_sumar.prestaciones_liquidadas.count > 1
       respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." }
@@ -153,6 +154,9 @@ class LiquidacionesSumarController < ApplicationController
         begin
         proceso_de_sistema = ProcesoDeSistema.new 
         proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
+
+        proceso_de_sistema.descripcion = "Liquidacion Id: #{@liquidacion_sumar.id} - #{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}"
+       
         if proceso_de_sistema.save 
            Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
            respuesta = { :tipo => :ok, :titulo => "El procesamiento de la liquidación se encoló correctamente" }
@@ -181,7 +185,7 @@ class LiquidacionesSumarController < ApplicationController
 
   def generar_cuasifacturas
     tiempo_proceso = Time.now
-    @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    @liquidacion_sumar = LiquidacionSumar.find(params[:id],:include => :grupo_de_efectores_liquidacion)
     respuesta = {}
     status = :ok
 
@@ -198,6 +202,8 @@ class LiquidacionesSumarController < ApplicationController
 
         if ProcesoDeSistema.where("entidad_relacionada_id = ? and tipo_proceso_de_sistema_id = ?", @liquidacion_sumar.id, GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR)
             proceso_de_sistema = ProcesoDeSistema.new 
+            proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
+            proceso_de_sistema.descripcion = "Liquidacion Id: #{@liquidacion_sumar.id} - #{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}"
             if proceso_de_sistema.save 
             Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
             end

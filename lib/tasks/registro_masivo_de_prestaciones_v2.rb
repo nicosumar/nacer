@@ -1074,17 +1074,17 @@ end
   end
 
 
-  def encolar_registro_masivo_prestaciones(archivo, uad, efe)
-      proceso_de_sistema = ProcesoDeSistema.new 
-      params = Hash.new
-      params['archivo'] = archivo
-      params['uad'] = uad
-      params['efe'] = efe
-      proceso_de_sistema.parametros_dinamicos = params.to_json
-      if proceso_de_sistema.save 
-         Delayed::Job.enqueue NacerJob::RegistroMasivoPrestacionesJob.new(proceso_de_sistema.id) , priority: -10  
-      end
-  end
+  # def encolar_registro_masivo_prestaciones(archivo, uad, efe)
+  #     proceso_de_sistema = ProcesoDeSistema.new 
+  #     params = Hash.new
+  #     params['archivo'] = archivo
+  #     params['uad'] = uad
+  #     params['efe'] = efe
+  #     proceso_de_sistema.parametros_dinamicos = params.to_json
+  #     if proceso_de_sistema.save 
+  #        Delayed::Job.enqueue NacerJob::RegistroMasivoPrestacionesJob.new(proceso_de_sistema.id) , priority: -10  
+  #     end
+  # end
   
 
 

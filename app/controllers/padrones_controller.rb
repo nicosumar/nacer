@@ -854,6 +854,7 @@ class PadronesController < ApplicationController
 
     
     proceso_de_sistema = ProcesoDeSistema.new 
+    proceso_de_sistema.descripcion = params[:anio_y_mes] 
     parametros = Hash.new
     parametros['anio_y_mes'] =params[:anio_y_mes]  
     proceso_de_sistema.parametros_dinamicos = parametros.to_json
@@ -904,6 +905,7 @@ class PadronesController < ApplicationController
     #Le clavo la redireccion a la nueva forma de cierre de padron
     begin
     proceso_de_sistema = ProcesoDeSistema.new 
+    proceso_de_sistema.descripcion = "#{anio}-#{mes}"
     parametros = Hash.new
     parametros['anio'] = anio   
     parametros['mes'] = mes   

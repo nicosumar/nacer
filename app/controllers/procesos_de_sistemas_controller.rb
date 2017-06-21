@@ -35,20 +35,32 @@ class ProcesosDeSistemasController < ApplicationController
 
     begin
 	    @proceso_de_sistema = ProcesoDeSistema.find(params[:id])
-	    
-	    if @proceso_de_sistema.destroy
-	    	     redirect_to(procesos_de_sistemas_path,
-		        :flash => { :tipo => :ok, :titulo => "El proceso de sistema ha sido eliminado con éxito"
-		     
-		        }
-	    		 )
-	    else
-	    	  redirect_to(procesos_de_sistemas_path,
-		        :flash => { :tipo => :advertencia, :titulo => "No se ha podido eliminar el proceso de sistema",
-		          :mensaje => "Verifique que no este asociado a un Job."
-		        }
-		        )
-	    end
+	    @jobs = Delayed::Job.where("proceso_de_sistema_id = ?",@proceso_de_sistema.id )
+     
+      if   @jobs.empty?
+                if @proceso_de_sistema.destroy
+                   redirect_to(procesos_de_sistemas_path,
+                  :flash => { :tipo => :ok, :titulo => "El proceso de sistema ha sido eliminado con éxito"
+               
+                  }
+                 )
+            else
+                redirect_to(procesos_de_sistemas_path,
+                  :flash => { :tipo => :advertencia, :titulo => "No se ha podido eliminar el proceso de sistema",
+                    :mensaje => "Verifique que no este asociado a un Job."
+                  }
+                  )
+            end
+      else
+          redirect_to(procesos_de_sistemas_path,
+                  :flash => { :tipo => :advertencia, :titulo => "No se ha podido eliminar el proceso de sistema",
+                    :mensaje => "Verifique que no este asociado a un Job."
+                  }
+                  )
+            
+      end
+
+	  
 
     rescue ActiveRecord::RecordNotFound
       redirect_to(root_url,

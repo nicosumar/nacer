@@ -640,6 +640,7 @@ class InscripcionMasiva
 
   def encolar_registro_masivo_beneficiarios(archivo, part, uad, ci, efe)
       proceso_de_sistema = ProcesoDeSistema.new 
+      proceso_de_sistema.descripcion = "archivo: #{archivo} - uad:#{uad} - ci:#{ci} - efector: #{efe}"
       params = Hash.new
       params['archivo'] = archivo
       params['part'] = part

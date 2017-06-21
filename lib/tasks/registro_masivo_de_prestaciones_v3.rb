@@ -1068,6 +1068,7 @@ $table = "importar_prestaciones_brindadas_#{@nombre_corto_archivo}"
 
             archivos_a_particionar_part_names.each{ |filename|
             proceso_de_sistema = ProcesoDeSistema.new
+            proceso_de_sistma.descripcion = "#{filename} - uad: #{uad} - efector: #{efector}"
             params = Hash.new
             params['archivo'] = filename
             params['uad'] = uad

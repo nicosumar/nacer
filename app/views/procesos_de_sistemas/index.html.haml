@@ -3,6 +3,9 @@
 
 #content-header
   %h1 Trabajos de Sistemas
+  - if current_user.in_group? :administradores
+    #action-links
+      = link_to "Ir al Panel de Jobs", '/jobs'
 
 = render :partial => "shared/info"
 
@@ -13,7 +16,8 @@
     %thead
       %tr
         %th Id
-        %th Descripción de ultimo Error
+        %th Descripcion
+        %th Ultimo Error
         %th Tipo de Proceso
         %th Estado del Proceso 
         %th 
@@ -21,8 +25,10 @@
       - @procesos_de_sistemas.each do |e|
         %tr
           %td= e.id
+          %td= e.descripcion
           %td= e.descripcion_ultimo_error
           %td= e.tipo_proceso_de_sistema.nombre
           %td= e.estado_proceso_de_sistema.nombre
-          %td= link_to 'Borrar', e, method: :delete, data: { confirm: '¿Esta Seguro?' }
+          - if current_user.in_group? :administradores
+            %td= link_to 'Borrar', e, method: :delete, data: { confirm: '¿Esta Seguro?' }
   = will_paginate @procesos_de_sistemas, :inner_window => 2, :outer_window => 0
