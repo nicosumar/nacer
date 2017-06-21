@@ -12,11 +12,19 @@
 #content-body
   %h2.first-header Listado de los Trabajos de Sistemas
 
+  = form_tag(procesos_de_sistemas_path, method:  :get) do 
+    .field
+      = label_tag "Tipo de Proceso:"
+      = select_tag 'tipo_proceso_de_sistema_id', options_for_select(@tipos_proceso_de_sistema,@filtro_tipo), {:class => 'multi_select'} 
+      = label_tag "Estado del Proceso:"
+      = select_tag 'estado_proceso_de_sistema_id', options_for_select(@estados_proceso_de_sistema,@filtro_estado), {:class => 'multi_select'} 
+      = submit_tag "Buscar"
+
   %table
     %thead
       %tr
         %th Id
-        %th Descripcion
+        %th Descripción
         %th Ultimo Error
         %th Tipo de Proceso
         %th Estado del Proceso 

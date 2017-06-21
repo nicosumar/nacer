@@ -191,6 +191,7 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
   end
 
   def self.list_to_authorize
+    #Voy a cambiar los principales left join por join asi solo trae lo consistente
     qres = ActiveRecord::Base.connection.exec_query( <<-SQL
         SELECT DISTINCT ON (sp.orden, gp.orden, pp.orden)
             sp.id "seccion_pdss_id",
@@ -210,13 +211,14 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
             END "rural"
           FROM
             prestaciones_pdss pp
-            LEFT JOIN prestaciones_prestaciones_pdss ppp ON pp.id = ppp.prestacion_pdss_id
-            LEFT JOIN prestaciones p ON p.id = ppp.prestacion_id
+            JOIN prestaciones_prestaciones_pdss ppp ON pp.id = ppp.prestacion_pdss_id
+            JOIN prestaciones p ON p.id = ppp.prestacion_id
             LEFT JOIN grupos_pdss gp ON gp.id = pp.grupo_pdss_id
             LEFT JOIN secciones_pdss sp ON sp.id = gp.seccion_pdss_id
             LEFT JOIN lineas_de_cuidado lc ON lc.id = pp.linea_de_cuidado_id
             LEFT JOIN modulos mp ON mp.id = pp.modulo_id
             LEFT JOIN tipos_de_prestaciones tdp ON tdp.id = pp.tipo_de_prestacion_id
+          Where p.activa = true  
           ORDER BY sp.orden, gp.orden, pp.orden;
       SQL
     )

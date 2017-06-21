@@ -13,8 +13,16 @@ class ProcesosDeSistemasController < ApplicationController
       return
     end
 
+    @tipos_proceso_de_sistema = TipoProcesoDeSistema.all.collect{ |p| [ p.nombre,p.id]}
+    @tipos_proceso_de_sistema << [ "TODOS",0]
+    @filtro_tipo = params[:tipo_proceso_de_sistema_id] ?  params[:tipo_proceso_de_sistema_id] : 0
 
-  	@procesos_de_sistemas = ProcesoDeSistema.accessible_by(current_ability).paginate(:page => params[:page], :per_page => 20,
+    @estados_proceso_de_sistema = EstadoProcesoDeSistema.all.collect{ |p| [ p.nombre,p.id]}
+    @estados_proceso_de_sistema << [ "TODOS",0]
+    @filtro_estado = params[:estado_proceso_de_sistema_id] ?  params[:estado_proceso_de_sistema_id] : 0
+
+
+  	@procesos_de_sistemas = ProcesoDeSistema.accessible_by(current_ability).where(" ( 0 = ? or estado_proceso_de_sistema_id = ?) and (0 = ? or tipo_proceso_de_sistema_id = ?) " ,@filtro_estado,@filtro_estado,@filtro_tipo,@filtro_tipo ).paginate(:page => params[:page], :per_page => 20,
         :include => [:estado_proceso_de_sistema, :tipo_proceso_de_sistema, :delayed_job]
     ).order( 'procesos_de_sistemas.id DESC' )
 
