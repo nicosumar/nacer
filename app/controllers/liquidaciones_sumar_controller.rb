@@ -200,7 +200,7 @@ class LiquidacionesSumarController < ApplicationController
     begin
       unless respuesta.present?
 
-        if ProcesoDeSistema.where("entidad_relacionada_id = ? and tipo_proceso_de_sistema_id = ?", @liquidacion_sumar.id, GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR)
+        if ProcesoDeSistema.where("entidad_relacionada_id = ? and tipo_proceso_de_sistema_id = ?", @liquidacion_sumar.id, TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR)
             proceso_de_sistema = ProcesoDeSistema.new 
             proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
             proceso_de_sistema.descripcion = "Liquidacion Id: #{@liquidacion_sumar.id} - #{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}"
