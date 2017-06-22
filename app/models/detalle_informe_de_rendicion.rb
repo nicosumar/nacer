@@ -2,8 +2,9 @@ class DetalleInformeDeRendicion < ActiveRecord::Base
   
   belongs_to :informe_de_rendicion
   belongs_to :tipo_de_importe
+  belongs_to :tipo_de_gasto
 
-  attr_accessible :cantidad, :detalle, :fecha_factura, :numero, :numero_cheque, :numero_factura, :importe, :informe_de_rendicion_id, :tipo_de_importe_id
+  attr_accessible :cantidad, :detalle, :fecha_factura, :numero, :numero_cheque, :numero_factura, :importe, :informe_de_rendicion_id, :tipo_de_importe_id, :tipo_de_gasto_id
 
   validates :detalle, presence: true 
   

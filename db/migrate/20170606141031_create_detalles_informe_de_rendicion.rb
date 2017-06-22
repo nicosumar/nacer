@@ -9,10 +9,12 @@ class CreateDetallesInformeDeRendicion < ActiveRecord::Migration
       t.string :numero_cheque
       t.references :informe_de_rendicion
       t.references :tipo_de_importe
+      t.references :tipo_de_gasto
 
       t.timestamps
     end
     add_index :detalles_informe_de_rendicion, :informe_de_rendicion_id
     add_index :detalles_informe_de_rendicion, :tipo_de_importe_id
+    add_index :detalles_informe_de_rendicion, :tipo_de_gasto_id
   end
 end

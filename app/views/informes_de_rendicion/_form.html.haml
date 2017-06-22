@@ -3,9 +3,12 @@
 
   /* Muestro los datos del efector
 
-  %div.hidden_field{:id => "info", :value => @operacion}
+  %div.hidden_field{:id => "info_op", :value => @operacion}
   %div.hidden_field{:id => "informe_de_rendicion", :value => @informe_de_rendicion.to_json}
   %div.hidden_field{:id => "detalles_informe_de_rendicion", :value => @informe_de_rendicion.detalles_informe_de_rendicion.to_json}
+  %div.hidden_field{:id => "tipos_de_gasto_por_detalle", :value => @tipos_de_gasto_por_detalle.to_json}
+  %div.hidden_field{:id => "clases_de_gasto", :value => @clases_de_gasto.to_json}
+  %div.hidden_field{:id => "tipos_de_gasto", :value => @tipos_de_gasto.to_json}
 
   %h3.first-header Datos del Efector
   %div.hidden_field{:id => "id_efector", :value => @uad_actual.efector.id}
@@ -65,11 +68,7 @@
         %th{:rowspan => 2}Cantidad
         %th{:rowspan => 2}N° de Cheque
         %th{:colspan => 4}Importe
-        %th{:rowspan => 2}
-          - if @informe_de_rendicion.new_record?
-            Eliminar
-          - else
-            Editar/Eliminar
+        %th{:rowspan => 2}Acciones
       %tr
         - 1.times do
           %th Fecha
@@ -174,8 +173,13 @@
         %br
         = df.number_field :importe, :id => 'form-8', :min => '0', :step => 'any', :onchange => "showMessage(this, 8, 'float');"
         %span{:id => 'advertencia-8', :style=>'color:#FF0000;'} 
-      
-    %br
+
+      %div.field_content
+        %span.field_name Clasificación del gasto
+        %br
+        %select{:onchange => 'updateClaseSelected();', :id => 'clase_de_gasto_select'}
+        %select{:onchange => 'updateTipoSelected();', :id => 'tipo_de_gasto_select'}
+        %p.note{:id => 'descripcion_gasto'} Descripción del tipo de gasto
 
       %div.field_content
         = button_tag 'Agregar/Actualizar Detalle', :onclick => "updateRow();", :type => 'button', :class => "subBtn"
@@ -189,7 +193,8 @@
         Guardar nuevo informe
       - else
         Guardar cambios realizados
-    %h4  Por favor, antes de confirmar aseguresé que los datos previsualizados son correctos.
+    %h4 Por favor, antes de confirmar aseguresé que los datos previsualizados son correctos.
+    %h4{:style => "color:#6e0000;"} Recuerde que los datos consignados en este informe tienen carácter de declaración jurada.
 
     %br
 

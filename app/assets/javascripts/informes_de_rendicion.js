@@ -13,25 +13,31 @@ $(document).ready(function() {
 
     //alert($('#info').attr('value'));
 
-    if($('#info').attr('value') != "-1")
+    if($('#info_op').attr('value') != -1)
     {
 
         //Si no es el index, en todos los casos oculto el form del detalle. Solo lo muestro cuando apreto el boton para agregar uno
         toggleDisplay(document.getElementById('detalle_form'), false);
 
-        if($('#info').attr('value') != "0")
+        //si estoy en el show no quiero actualizar los campos editables del tipo de gasto
+        if($('#info_op').attr('value') != 1)
+        {
+
+            updateClaseDeGasto();
+
+        }
+        else {
+
+            //Si estoy en el SHOW tengo que ocultar el boton para agregar nuevo detalle
+            toggleDisplay(document.getElementById('new_detalle_button'), false);
+
+        }
+
+        if($('#info_op').attr('value') != 0)
         {
 
             //SI ESTOY EN EL SHOW O EN EL EDIT TENGO QUE MOSTRAR LOS INFORMES ANTERIORES
             showInformes();
-
-            if($('#info').attr('value') == "1")
-            {
-
-                //Si estoy en el SHOW tengo que ocultar el boton para agregar nuevo detalle
-                toggleDisplay(document.getElementById('new_detalle_button'), false);
-
-            }
 
         }
 
@@ -74,8 +80,62 @@ function toggleDisplay(element, show) {
     }
 } 
 
+function cleanForm(){
+
+    var indices = [
+        {tableId: "1", elementId: "form-1", tipo: "basico"},
+        {tableId: "2", elementId: "detalle_informe_de_rendicion_fecha_factura_", tipo: "fecha"},
+        {tableId: "3", elementId: "form-3", tipo: "basico"},
+        {tableId: "4", elementId: "form-4", tipo: "basico"},
+        {tableId: "5", elementId: "form-5", tipo: "basico"},
+        {tableId: "6", elementId: "form-6", tipo: "basico"},
+        {tableId: "7", elementId: "form-7", tipo: "selector_importe"},
+        {tableId: "8", elementId: "form-8", tipo: "valor_importe"},
+        {tableId: "9", elementId: "", tipo: "tipo_de_gasto"}
+    ]
+
+    for(i = 0; i < indices.length; i++){
+        
+        var indice = indices[i];
+
+        switch(indice.tipo){
+
+
+            case 'basico':
+            
+                document.getElementById(indice.elementId).value = '';
+
+            break;
+
+            case 'fecha':
+
+            break;
+
+            case 'valor_importe':
+
+                document.getElementById(indice.elementId).value = 'A';
+                document.getElementById(indice.elementId).value = '';
+
+            break;
+
+        }
+
+    }
+
+    selected_row = -1;
+    toggleDisplay(document.getElementById('new_detalle_button'), true);
+    toggleDisplay(document.getElementById('detalle_form'), false);
+
+}
+
 function deleteRow(row)
 {
+
+    if(selected_row != -1){
+
+        cleanForm();
+
+    }
 
 	var x=document.getElementById('tabla_detalles');
     var last_index = x.rows.length - 1;
@@ -132,6 +192,7 @@ function insertRow()
     	{tableId: "6", elementId: "form-6", tipo: "basico"},
     	{tableId: "7", elementId: "form-7", tipo: "selector_importe"},
     	{tableId: "8", elementId: "form-8", tipo: "valor_importe"},
+        {tableId: "9", elementId: "", tipo: "tipo_de_gasto"}
     ]
 
     //Primero necesito controlar si la primera fila que hay es la de SIN MOVIMIENTOS. En ese
@@ -202,22 +263,26 @@ function insertRow()
     			switch(document.getElementById(indices[i-1].elementId).value){
 
 	    			case 'A':
-			    		new_row.cells[7].innerHTML = document.getElementById(indice.elementId).value;
+			    		new_row.cells[7].innerHTML = document.getElementById(indice.elementId).value 
+                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
 	    			break;
 	    			case 'B':
 
-	    				new_row.cells[8].innerHTML = document.getElementById(indice.elementId).value;
+	    				new_row.cells[8].innerHTML = document.getElementById(indice.elementId).value 
+                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
 	    			break;
 	    			case 'C':
 
-	    				new_row.cells[9].innerHTML = document.getElementById(indice.elementId).value;
+	    				new_row.cells[9].innerHTML = document.getElementById(indice.elementId).value 
+                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
 	    			break;
 	    			case 'D':
 
-	    				new_row.cells[10].innerHTML = document.getElementById(indice.elementId).value;
+	    				new_row.cells[10].innerHTML = document.getElementById(indice.elementId).value 
+                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
 	    			break;
 
@@ -333,6 +398,8 @@ function saveInforme(is_new){
     var numeros_cheque = []; 
     var tipos_de_importe = [];
     var importes = [];
+    var clases_de_gasto = [];
+    var tipos_de_gasto = [];
 
     for(i = 0; i < length_detalles; i++){
 
@@ -349,12 +416,22 @@ function saveInforme(is_new){
             tipos_de_importe[i] =    "1";
             importes[i] =            x.rows[i + 2].cells[7].innerHTML;
 
+            clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
+            tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+
+            importes[i] = importes[i].split("(")[0];
+
         }
         else if (x.rows[i + 2].cells[8].innerHTML != '') //OBRAS
         {
 
             tipos_de_importe[i] =    "2";
             importes[i] =            x.rows[i + 2].cells[8].innerHTML;
+
+            clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
+            tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+
+            importes[i] = importes[i].split("(")[0];
 
         }
         else if (x.rows[i + 2].cells[9].innerHTML != '') //BIENES CORRIENTES
@@ -363,12 +440,22 @@ function saveInforme(is_new){
             tipos_de_importe[i] =    "3";
             importes[i] =            x.rows[i + 2].cells[9].innerHTML;
 
+            clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
+            tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+
+            importes[i] = importes[i].split("(")[0];
+
         }
         else if (x.rows[i + 2].cells[10].innerHTML != '') //BIENES DE CAPITAL
         {
 
             tipos_de_importe[i] =    "4";
             importes[i] =            x.rows[i + 2].cells[10].innerHTML;
+
+            clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
+            tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+
+            importes[i] = importes[i].split("(")[0];
 
         }
 
@@ -403,7 +490,8 @@ function saveInforme(is_new){
     var informe_params = {"cantidad_detalles": length_detalles, "efector_id": efector_id, "mes_informe": mes_informe,
     "anio_informe": anio_informe, "dia_informe": dia_informe, "total_informe": total_informe, "numeros": numeros,
     "fechas_factura": fechas_factura, "numeros_factura": numeros_factura, "detalles": detalles, "cantidades": cantidades, 
-    "numeros_cheque": numeros_cheque, "tipos_de_importe": tipos_de_importe, "importes": importes }
+    "numeros_cheque": numeros_cheque, "tipos_de_importe": tipos_de_importe, "importes": importes, "clases_de_gasto": clases_de_gasto, 
+    "tipos_de_gasto": tipos_de_gasto}
 
     //alert(JSON.stringify(informe_params));
 
@@ -602,16 +690,19 @@ function showInformes(){
 
     var informe_json = JSON.parse($('#informe_de_rendicion').attr('value'));
 
-    if(informe_json.fecha_informe != null){
+    if($('#info_op').attr('value') == 2 && informe_json.fecha_informe != null){
 
-        var fecha_partes = informe_json.fecha_informe.split('/');
+        //SOLO SI ESTOY EN EL EDIT HAGO ESTO, EN EL SHOW NO MUESTRO EL SELECTOR DE LA FECHA
 
-        $('#anio_informe').value = fecha_partes[0];
-        $('#mes_informe').value = fecha_partes[1];
+        var fecha_partes = informe_json.fecha_informe.split('-');
+
+        document.getElementById('date_year').value = fecha_partes[0];
+        document.getElementById('date_month').value = fecha_partes[1];
 
     }
 
     var detalles_informe_json = JSON.parse($('#detalles_informe_de_rendicion').attr('value'));
+    var tipos_de_gasto_por_detalle = JSON.parse($('#tipos_de_gasto_por_detalle').attr('value'));
 
     var x = document.getElementById('tabla_detalles');
 
@@ -654,13 +745,21 @@ function showInformes(){
         new_row.cells[5].innerHTML = detalles_informe_json[i].cantidad;
         new_row.cells[6].innerHTML = detalles_informe_json[i].numero_cheque;
 
-        new_row.cells[6 + detalles_informe_json[i].tipo_de_importe_id].innerHTML 
-            = detalles_informe_json[i].importe;
+        var tipo_de_gasto = tipos_de_gasto_por_detalle[i].tipo;
+
+        if(tipo_de_gasto != ""){
+
+            new_row.cells[6 + detalles_informe_json[i].tipo_de_importe_id].innerHTML 
+                = detalles_informe_json[i].importe + " (" + tipo_de_gasto + ")";
+
+        }
             
         //Finalmente la agrego a la tabla
         x.appendChild( new_row );
 
     }
+
+    enableButtons();
 
     updateTotales();
 
@@ -696,6 +795,7 @@ function updateRow()
         {tableId: "6", elementId: "form-6", tipo: "basico"},
         {tableId: "7", elementId: "form-7", tipo: "selector_importe"},
         {tableId: "8", elementId: "form-8", tipo: "valor_importe"},
+        {tableId: "9", elementId: "", tipo: "clasificacion_gasto"}
     ]
     
     for(i = 0; i < indices.length; i++){
@@ -737,22 +837,26 @@ function updateRow()
                 switch(document.getElementById(indices[i-1].elementId).value){
 
                     case 'A':
-                        selected_row.cells[7].innerHTML = document.getElementById(indice.elementId).value;
+                        selected_row.cells[7].innerHTML = document.getElementById(indice.elementId).value 
+                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
                     break;
                     case 'B':
 
-                        selected_row.cells[8].innerHTML = document.getElementById(indice.elementId).value;
+                        selected_row.cells[8].innerHTML = document.getElementById(indice.elementId).value 
+                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
                     break;
                     case 'C':
 
-                        selected_row.cells[9].innerHTML = document.getElementById(indice.elementId).value;
+                        selected_row.cells[9].innerHTML = document.getElementById(indice.elementId).value 
+                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
                     break;
                     case 'D':
 
-                        selected_row.cells[10].innerHTML = document.getElementById(indice.elementId).value;
+                        selected_row.cells[10].innerHTML = document.getElementById(indice.elementId).value 
+                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
                     break;
 
@@ -786,10 +890,11 @@ function editRow(row_to_edit)
         {tableId: "6", elementId: "form-6", tipo: "basico"},
         {tableId: "7", elementId: "form-7", tipo: "selector_importe"},
         {tableId: "8", elementId: "form-8", tipo: "valor_importe"},
+        {tableId: "9", elementId: "", tipo: "clasificacion_gasto"}
     ]
 
-    var i = row_to_edit.parentNode.parentNode.rowIndex;
-    selected_row = document.getElementById('tabla_detalles').rows[i];
+    var index = row_to_edit.parentNode.parentNode.rowIndex;
+    selected_row = document.getElementById('tabla_detalles').rows[index];
     
     for(i = 0; i < indices.length; i++){
         
@@ -821,8 +926,9 @@ function editRow(row_to_edit)
 
                     //A
                     document.getElementById(indices[i-1].elementId).value = "A";
-                    document.getElementById(indice.elementId).value = selected_row.cells[7].innerHTML;
+                    document.getElementById(indice.elementId).value = parseInt(selected_row.cells[7].innerHTML.split('(')[0]);
 
+                    show_tipo_in_form(selected_row.cells[7].innerHTML);
 
                 }
                 else if (selected_row.cells[8].innerHTML != '')
@@ -830,7 +936,9 @@ function editRow(row_to_edit)
 
                     //B
                     document.getElementById(indices[i-1].elementId).value = "B";
-                    document.getElementById(indice.elementId).value = selected_row.cells[8].innerHTML;
+                    document.getElementById(indice.elementId).value = parseInt(selected_row.cells[8].innerHTML.split('(')[0]);
+
+                    show_tipo_in_form(selected_row.cells[8].innerHTML);
 
                 }
                 else if (selected_row.cells[9].innerHTML != '')
@@ -838,14 +946,18 @@ function editRow(row_to_edit)
 
                     //C
                     document.getElementById(indices[i-1].elementId).value = "C";
-                    document.getElementById(indice.elementId).value = selected_row.cells[9].innerHTML;
+                    document.getElementById(indice.elementId).value = parseInt(selected_row.cells[9].innerHTML.split('(')[0]);
+
+                    show_tipo_in_form(selected_row.cells[9].innerHTML);
 
                 }
                 else {
 
                     //D
                     document.getElementById(indices[i-1].elementId).value = "D";
-                    document.getElementById(indice.elementId).value = selected_row.cells[10].innerHTML;
+                    document.getElementById(indice.elementId).value = parseInt(selected_row.cells[10].innerHTML.split('(')[0]);
+
+                    show_tipo_in_form(selected_row.cells[10].innerHTML);
                 }
 
             break;
@@ -856,6 +968,44 @@ function editRow(row_to_edit)
 
     toggleDisplay(document.getElementById('new_detalle_button'), false);
     toggleDisplay(document.getElementById('detalle_form'), true);
+
+}
+
+function get_clase_de_gasto(value){
+
+    var temp = value.split('('); //numero(a.b) => [numero, a.b)]
+    temp = temp[1].split(')'); //a.b) => [a.b]
+    temp = temp[0].split('.'); //a.b => [a,b]
+    
+    return parseInt(temp[0]);
+
+}
+
+function get_tipo_de_gasto(value){
+
+    var temp = value.split('('); //numero(a.b) => [numero, a.b)]
+    temp = temp[1].split(')'); //a.b) => [a.b]
+    temp = temp[0].split('.'); //a.b => [a,b]
+
+    return parseInt(temp[1]);
+
+}
+
+function show_tipo_in_form(value){
+
+    var temp = value.split('('); //numero(a.b) => [numero, a.b)]
+    temp = temp[1].split(')'); //a.b) => [a.b]
+    temp = temp[0].split('.'); //a.b => [a,b]
+
+    var select_base = $("#clase_de_gasto_select")[0];
+    select_base.selectedIndex = parseInt(temp[0]) - 1;
+
+    updateClaseDeGasto();
+
+    var select = $("#tipo_de_gasto_select")[0];
+    select.selectedIndex = parseInt(temp[1]) - 1;
+
+    updateTipoSelected();
 
 }
 
@@ -913,5 +1063,82 @@ function disableButtons(){
         child[i].disabled = true;
 
     } 
+
+}
+
+var clase_de_gasto_selected;
+var tipo_de_gasto_selected;
+var base_index;
+
+function updateClaseDeGasto(){
+
+    var clases_de_gasto_json = JSON.parse($('#clases_de_gasto').attr('value'));
+
+    var select_base = $("#clase_de_gasto_select")[0];
+
+    for(i = 0; i < clases_de_gasto_json.length; i++){
+
+        select_base.add(new Option(clases_de_gasto_json[i].numero + " | " + clases_de_gasto_json[i].nombre, parseInt(clases_de_gasto_json[i].numero)));
+
+    }
+
+    clase_de_gasto_selected = select_base.selectedIndex + 1;
+
+    updateTipoDeGasto();
+
+}
+
+function updateClaseSelected(){
+
+    var select_base = $("#clase_de_gasto_select")[0];
+
+    clase_de_gasto_selected = select_base.selectedIndex + 1;
+
+    updateTipoDeGasto();
+}
+
+function updateTipoDeGasto(){
+
+    var tipos_de_gasto_json = JSON.parse($('#tipos_de_gasto').attr('value'));
+
+    var select = $("#tipo_de_gasto_select")[0];
+
+    $('#tipo_de_gasto_select')
+      .find('option')
+      .remove()
+      .end();
+
+    for(i = 0; i < tipos_de_gasto_json.length; i++){
+
+        if(parseInt(tipos_de_gasto_json[i].clase_de_gasto_id) == clase_de_gasto_selected){
+
+            if(parseInt(tipos_de_gasto_json[i].numero) == 1){
+
+                base_index = i;
+
+            }
+
+            select.add(new Option(
+                clase_de_gasto_selected + "." + tipos_de_gasto_json[i].numero + " | " + 
+                tipos_de_gasto_json[i].nombre,
+                 parseInt(tipos_de_gasto_json[i].numero)));
+
+        }
+
+    }
+
+    updateTipoSelected();
+
+}
+
+function updateTipoSelected(){
+
+    var tipos_de_gasto_json = JSON.parse($('#tipos_de_gasto').attr('value'));
+
+    tipo_de_gasto_selected = $('#tipo_de_gasto_select')[0].selectedIndex + 1;
+
+    var index_to_use = base_index + $('#tipo_de_gasto_select')[0].selectedIndex;
+
+    document.getElementById('descripcion_gasto').innerHTML = tipos_de_gasto_json[index_to_use].descripcion;
 
 }

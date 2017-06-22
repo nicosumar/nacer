@@ -601,8 +601,16 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("tipos·_de·_importe·", "tipos_de_importe")
   inflect.irregular("TipoDeImporte", "Tipos·De·Importe·")
   inflect.irregular("Tipos·De·Importe·", "TiposDeImporte")
-  #inflect.irregular("codigo_de_gasto", "codigos·_de·_gastos·")
-  #inflect.irregular("codigos·_de·_gastos·", "codigos_de_gastos")
+
+  inflect.irregular("clase_de_gasto", "clases·_de·_gasto·")
+  inflect.irregular("clases·_de·_gasto·", "clases_de_gasto")
+  inflect.irregular("ClaseDeGasto", "Clases·De·Gasto·")
+  inflect.irregular("Clases·De·Gasto·", "ClasesDeGasto")
+
+  inflect.irregular("tipo_de_gasto", "tipos·_de·_gasto·")
+  inflect.irregular("tipos·_de·_gasto·", "tipos_de_gasto")
+  inflect.irregular("TipoDeGasto", "Tipos·De·Gasto·")
+  inflect.irregular("Tipos·De·Gasto·", "TiposDeGasto")
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")

@@ -10,6 +10,7 @@
       = link_to 'Finalizar Informe', informes_de_rendicion_path + "/" + @informe_de_rendicion.id.to_s + "?operacion=close", :method => :put, :confirm => "¿Está seguro? Recuerde: Una vez finalizado, no podrá editar este informe."
     - if @informe_de_rendicion.estado_del_proceso_id == 3
       = link_to 'Generar Documento', informe_de_rendicion_path(@informe_de_rendicion, :format => :odt), :method => :get
+    = link_to 'Generar Documento TEST', informe_de_rendicion_path(@informe_de_rendicion, :format => :ods), :method => :get
 
 = render :partial => "shared/info", :locals => { :registro => @informe_de_rendicion }
 
@@ -18,10 +19,11 @@
 
   /* Muestro los datos del efector
 
-  %div.hidden_field{:id => "info", :value => @operacion}
+  %div.hidden_field{:id => "info_op", :value => @operacion}
   %div.hidden_field{:id => "informe_de_rendicion", :value => @informe_de_rendicion.to_json}
   %div.hidden_field{:id => "detalles_informe_de_rendicion", :value => @informe_de_rendicion.detalles_informe_de_rendicion.to_json}
-
+  %div.hidden_field{:id => "tipos_de_gasto_por_detalle", :value => @tipos_de_gasto_por_detalle.to_json}
+  
   %h3.first-header Datos del Efector
   %div.hidden_field{:id => "id_efector", :value => @informe_de_rendicion.efector.id}
 

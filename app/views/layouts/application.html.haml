@@ -81,6 +81,10 @@
                       %ul
                         %li= link_to "Gestión", convenios_de_gestion_sumar_path
                         %li= link_to "Administración", convenios_de_administracion_sumar_path
+                    - if can? :read, InformeDeRendicion
+                      %h3 RENDICIÓN
+                      %ul
+                        %li= link_to "Informes de Rendición y Compras", informes_de_rendicion_path
                       
 
             - if (can? :read, LiquidacionSumar or can? :read, LiquidacionInforme) and current_user.in_group? [:coordinacion, :facturacion, :capacitacion, :auditoria_medica, :auditoria_control]

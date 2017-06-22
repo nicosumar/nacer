@@ -156,7 +156,7 @@ class Ability
       can :read, NovedadDelAfiliado
       can :manage, PrestacionBrindada
       can :manage, DatoReportableAsociado
-      can :read, InformeDeRendicion
+      can :manage, InformeDeRendicion
     end
 
     if user.in_group? :capacitacion

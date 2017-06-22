@@ -35,6 +35,8 @@ class InformesDeRendicionController < ApplicationController
 
     end
 
+    @operacion = -1
+
     # Obtener el listado de informes de rendicion
 
     if current_user.in_group? [:administradores]
@@ -61,11 +63,10 @@ class InformesDeRendicionController < ApplicationController
       return
     end
 
-    # Verificar los permisos del usuario
-    if cannot? :create, InformeDeRendicion
+    if @uad_actual.facturacion == false
       redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+        :flash => {:tipo => :error, :titulo => "Unidad de Alta de Datos no habilitada para esta operación",
+          :mensaje => "La UAD actual no puede realizar esta operación."
         }
       )
       return
@@ -84,6 +85,8 @@ class InformesDeRendicionController < ApplicationController
     # Crear los objetos necesarios para la vista
     @operacion = 0
     @informe_de_rendicion = InformeDeRendicion.new
+    @clases_de_gasto = ClaseDeGasto.all
+    @tipos_de_gasto = TipoDeGasto.all
   end
 
   # def show
@@ -150,6 +153,8 @@ class InformesDeRendicionController < ApplicationController
       @operacion = 1
       @informe_de_rendicion = InformeDeRendicion.find(params[:id], :include => [:detalles_informe_de_rendicion, :estado_del_proceso, :efector])
 
+      @tipos_de_gasto_por_detalle = get_tipos_de_gasto_por_detalle
+
     rescue ActiveRecord::RecordNotFound
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "El informe de rendición y compras solicitado no existe",
@@ -210,8 +215,24 @@ class InformesDeRendicionController < ApplicationController
 
       end
 
-        format.html do
-        end
+      # format.ods do
+          
+      #     report = ODSReport::Report.new("lib/tasks/datos/plantillas/Modelo aplicación de fondos.ods") do |r|
+            
+      #       r.add_field :nombre_area, @informe_de_rendicion.codigo
+            
+      #     end
+
+      #   archivo = report.generate("lib/tasks/datos/documentos/Aplicación de Fondos #{@informe_de_rendicion.id} - #{@informe_de_rendicion.efector.nombre.gsub("/", "_")}.ods")
+
+      #   File.chmod(0644, "lib/tasks/datos/documentos/Aplicación de Fondos #{@informe_de_rendicion.id} - #{@informe_de_rendicion.efector.nombre.gsub("/", "_")}.ods")
+
+      #   send_file(archivo)
+
+      # end
+
+      format.html do
+      end
 
     end
 
@@ -230,7 +251,12 @@ class InformesDeRendicionController < ApplicationController
 
     # Crear los objetos necesarios para la vista
     @operacion = 2
-    @informe_de_rendicion = InformeDeRendicion.find(params[:id], :include => [:detalles_informe_de_rendicion])
+    @informe_de_rendicion = InformeDeRendicion.find(params[:id], :include => [:detalles_informe_de_rendicion => [ :tipo_de_gasto => [:clase_de_gasto] ] ] )
+
+    @tipos_de_gasto_por_detalle = get_tipos_de_gasto_por_detalle
+
+    @clases_de_gasto = ClaseDeGasto.all
+    @tipos_de_gasto = TipoDeGasto.all
   end
 
   def update
@@ -381,70 +407,96 @@ class InformesDeRendicionController < ApplicationController
 
       informe_de_rendicion.fecha_informe = DateTime.strptime(params[:dia_informe] +"/"+ params[:mes_informe] +"/"+ params[:anio_informe],"%d/%m/%Y")
       
-      informe_de_rendicion.total = params[:total_informe]
+      informes_con_esta_fecha = InformeDeRendicion.where(:efector_id => informe_de_rendicion.efector.id, :fecha_informe => informe_de_rendicion.fecha_informe)
 
-      informe_de_rendicion.detalles_informe_de_rendicion.destroy_all; #ELIMINO TODOS LOS DETALLES y luego los agrego editados
+      if informes_con_esta_fecha.count > 0 && informes_con_esta_fecha[0].id != informe_de_rendicion.id
 
-      con_movimientos = true
+        #Ya existe un informe con esta fecha! No puede ser, debe haber solo uno por mes
+        url_destino = ""
+        respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Ya existe un informe de este mes en el año seleccionado.\nPor favor, controle que todos los datos ingresados sean correctos." }
+        status = :ok
 
-      todo_ok = true;
+      else #Si la fecha es única, entonces sigo con el resto de la creacion, sino la termino ahí nomás
 
-      if informe_de_rendicion.save!
+        informe_de_rendicion.codigo = informe_de_rendicion.efector.cuie.to_s + "-" +  params[:anio_informe] + "-" + params[:mes_informe]
 
-        puts('SE ACTUALIZÓ CORRECTAMENTE EL INFORME, AHORA SE VAN A ASOCIAR LOS DETALLES')
+        informe_de_rendicion.total = params[:total_informe]
 
-        if cantidad_detalles == "1"
+        informe_de_rendicion.detalles_informe_de_rendicion.destroy_all; #ELIMINO TODOS LOS DETALLES y luego los agrego editados
 
-          if params[:detalles][0] == 'SIN MOVIMIENTOS'
+        con_movimientos = true
 
-            #Existe un único caso en el que los valores puedan ser nulos y es cuando
-            #no hay ningún detalle "nuevo" sino que hay uno solo que dice SIN MOVIMIENTOS
-            con_movimientos = false
+        todo_ok = true;
 
-          end
+        if informe_de_rendicion.save!
 
-        end 
+          puts('SE ACTUALIZÓ CORRECTAMENTE EL INFORME, AHORA SE VAN A ASOCIAR LOS DETALLES')
 
-        $i = 0
+          if cantidad_detalles == "1"
 
-        begin
+            if params[:detalles][0] == 'SIN MOVIMIENTOS'
 
-          detalle_informe_de_rendicion = DetalleInformeDeRendicion.new
-          
-          #PARAMETROS PARA CREAR LOS DETALLES ASOCIADOS AL NUEVO INFORME DE RENDICION  
+              #Existe un único caso en el que los valores puedan ser nulos y es cuando
+              #no hay ningún detalle "nuevo" sino que hay uno solo que dice SIN MOVIMIENTOS
+              con_movimientos = false
 
-          detalle_informe_de_rendicion.informe_de_rendicion_id = informe_de_rendicion.id
-          detalle_informe_de_rendicion.detalle = params[:detalles][$i]
+            end
 
-          if con_movimientos
+          end 
 
-            detalle_informe_de_rendicion.numero = params[:numeros][$i]
-            detalle_informe_de_rendicion.fecha_factura = params[:fechas_factura][$i]
-            detalle_informe_de_rendicion.numero_factura = params[:numeros_factura][$i]
-            detalle_informe_de_rendicion.cantidad = params[:cantidades][$i]
-            detalle_informe_de_rendicion.numero_cheque = params[:numeros_cheque][$i]
-            detalle_informe_de_rendicion.tipo_de_importe_id = params[:tipos_de_importe][$i]
-            detalle_informe_de_rendicion.importe = params[:importes][$i].to_f
+          $i = 0
 
-          end
+          begin
 
-          if detalle_informe_de_rendicion.save!
-            puts("SE ACTUALIZO EL DETALLE N° #$i CORRECTAMENTE")
-          else 
+            detalle_informe_de_rendicion = DetalleInformeDeRendicion.new
             
-            todo_ok = false;
+            #PARAMETROS PARA CREAR LOS DETALLES ASOCIADOS AL NUEVO INFORME DE RENDICION  
+
+            detalle_informe_de_rendicion.informe_de_rendicion_id = informe_de_rendicion.id
+            detalle_informe_de_rendicion.detalle = params[:detalles][$i]
+
+            if con_movimientos
+
+              detalle_informe_de_rendicion.numero = params[:numeros][$i]
+              detalle_informe_de_rendicion.fecha_factura = params[:fechas_factura][$i]
+              detalle_informe_de_rendicion.numero_factura = params[:numeros_factura][$i]
+              detalle_informe_de_rendicion.cantidad = params[:cantidades][$i]
+              detalle_informe_de_rendicion.numero_cheque = params[:numeros_cheque][$i]
+              detalle_informe_de_rendicion.tipo_de_importe_id = params[:tipos_de_importe][$i]
+              detalle_informe_de_rendicion.importe = params[:importes][$i].to_f
+
+              clase_de_gasto = ClaseDeGasto.where(:numero => params[:clases_de_gasto][$i]).first
+              tipo_de_gasto = TipoDeGasto.where(:numero => params[:tipos_de_gasto][$i], :clase_de_gasto_id => clase_de_gasto.id).first
+
+              detalle_informe_de_rendicion.tipo_de_gasto_id = tipo_de_gasto.id
+
+            end
+
+            if detalle_informe_de_rendicion.save!
+              puts("SE ACTUALIZO EL DETALLE N° #$i CORRECTAMENTE")
+            else 
+              
+              todo_ok = false;
+
+            end
+
+            $i +=1;
+
+          end until $i > cantidad_detalles.to_i - 1
+
+          if(todo_ok)
+
+            url_destino = informe_de_rendicion_path(informe_de_rendicion) + "?result=ok"
+            respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Se completó la operación correctamente." }
+            status = :ok
+
+          else
+
+            url_destino = ""
+            respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Falló al actualizar el informe.\nPor favor, controle los datos modificados e intentelo nuevamente más tarde." }
+            status = :ok
 
           end
-
-          $i +=1;
-
-        end until $i > cantidad_detalles.to_i - 1
-
-        if(todo_ok)
-
-          url_destino = informe_de_rendicion_path(informe_de_rendicion) + "?result=ok"
-          respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Se completó la operación correctamente." }
-          status = :ok
 
         else
 
@@ -453,12 +505,6 @@ class InformesDeRendicionController < ApplicationController
           status = :ok
 
         end
-
-      else
-
-        url_destino = ""
-        respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Falló al actualizar el informe.\nPor favor, controle los datos modificados e intentelo nuevamente más tarde." }
-        status = :ok
 
       end
 
@@ -556,6 +602,11 @@ class InformesDeRendicionController < ApplicationController
             detalle_informe_de_rendicion.tipo_de_importe_id = params[:tipos_de_importe][$i]
             detalle_informe_de_rendicion.importe = params[:importes][$i].to_f
 
+            clase_de_gasto = ClaseDeGasto.where(:numero => params[:clases_de_gasto][$i]).first
+            tipo_de_gasto = TipoDeGasto.where(:numero => params[:tipos_de_gasto][$i], :clase_de_gasto_id => clase_de_gasto.id).first
+
+            detalle_informe_de_rendicion.tipo_de_gasto_id = tipo_de_gasto.id
+
           end
 
           if detalle_informe_de_rendicion.save!
@@ -606,6 +657,20 @@ class InformesDeRendicionController < ApplicationController
     end
 
     return
+
+  end
+
+  private
+
+  def get_tipos_de_gasto_por_detalle
+    
+    result = @informe_de_rendicion.detalles_informe_de_rendicion.map do |d|
+      
+      { :tipo => (d.tipo_de_gasto != nil) ? d.tipo_de_gasto.clase_de_gasto.numero + '.' + d.tipo_de_gasto.numero : ""}
+    
+    end
+    
+    return result
 
   end
 
