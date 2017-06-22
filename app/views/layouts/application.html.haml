@@ -183,7 +183,7 @@
                       %h3 PROCESOS
                       %ul
                         %li= link_to "Procesos relacionados con padrones", padrones_url if current_user.in_group? :administradores
-                        %li= link_to "Procesos del Sistema", procesos_de_sistemas_path if current_user.in_group? :administradores
+                        %li= link_to "Procesos del Sistema", procesos_de_sistemas_path if current_user.in_group? [:administradores,:facturacion]
                       %h3 PRESTACIONES
                       %ul
                         %li= link_to "Listado de prestaciones principales", prestaciones_principales_url

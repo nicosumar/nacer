@@ -31,6 +31,7 @@ class Ability
       can :read, AnexoMedicoPrestacion
       can :manage, LiquidacionInforme
       can :read, ProcesoDeSistema
+      can :read, Prestacion
     end
 
     if user.in_group? :liquidacion_ugsp
@@ -135,6 +136,7 @@ class Ability
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
       can :read, LiquidacionSumar
+      can :manage, Prestacion
     end
 
     if user.in_group? :inscripcion_uad
@@ -151,6 +153,7 @@ class Ability
       can :read, NovedadDelAfiliado
       can :manage, PrestacionBrindada
       can :manage, DatoReportableAsociado
+
     end
 
     if user.in_group? :capacitacion
