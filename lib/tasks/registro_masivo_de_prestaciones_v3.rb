@@ -43,6 +43,7 @@ class RegistroMasivoDePrestacionesV3
       @hash_sexos.merge! i.codigo => i.id
     end
 
+ 
     @log_del_proceso = Logger.new("log/RegistroMasivoPrestaciones",10, 1024000)
     @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
     date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
@@ -61,10 +62,28 @@ class RegistroMasivoDePrestacionesV3
   end
 
   def procesar(archivo, uad, efe)
+
+    @archivo_particula = (archivo.split('/').last).split('.')[0]
+    @log_del_proceso = Logger.new("log/RegistroMasivoPrestaciones",10, 1024000)
+    @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
+    date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+      if severity == "INFO" or severity == "WARN"
+          "[#{date_format}] [#{@archivo_particula}] #{severity}: #{msg}\n"
+      else
+          "[#{date_format}] [#{@archivo_particula}] #{severity}: #{msg}\n"
+      end
+    end
+    
+
+
+
+     @directory_name = "#{archivo}".split("part_")[0]
+     @archivo_de_log_completo = File.open( @directory_name +'/RESTULTADOS.out', "a")
      procesar_parte(archivo, uad, efe)
   end
 
       def eliminar_procesados(archivos)
+ 
         archivos_resultados = archivos.clone
 
         for a in archivos_resultados
@@ -135,7 +154,7 @@ class RegistroMasivoDePrestacionesV3
         lineNum = 0
         file_num = -1
         bytes    = 0
-        max_lines = 1000
+        max_lines = 200
         @archivo_a_procesar_part = archivo
 
         filename =  @archivo_a_procesar_part.to_s
@@ -206,11 +225,11 @@ class RegistroMasivoDePrestacionesV3
     archivo.close
 
 #GRABO EN EL GLOBAL LOS RESULTADOS
-  #  @archivo_de_log_completo.puts ImportarPrestacionBrindada.column_names.join("\t")
-  #  ImportarPrestacionBrindada.find(:all).each do |n|
-    #  @archivo_de_log_completo.puts n.attributes.values.join("\t")
+    @archivo_de_log_completo.puts ImportarPrestacionBrindada.column_names.join("\t")
+    ImportarPrestacionBrindada.find(:all).each do |n|
+      @archivo_de_log_completo.puts n.attributes.values.join("\t")
 
-  # end
+   end
 end
 
   def crear_modelo_y_tabla
@@ -1051,13 +1070,13 @@ $table = "importar_prestaciones_brindadas_#{@nombre_corto_archivo}"
       #PREPARO LOS ARCHIVOS PARA PROCESAR-ELIMINANDO LOS YA PROCESADOS
       if !File.directory?(@directory_name)
         FileUtils.mkdir_p(@directory_name)
-
-      archivos_a_particionar_part_names = particionar(archivo)
+       
+         archivos_a_particionar_part_names = particionar(archivo)
       else
 
       @archivos_a_particionar_part_names = Dir.glob(@directory_name.to_s + "/part_*"+".csv")
-      @archivos_a_particionar_part_names = eliminar_procesados(archivos_a_particionar_part_names)
-
+      @archivos_a_particionar_part_names = eliminar_procesados(@archivos_a_particionar_part_names)
+      #archivo_de_log_completo.puts '************* REPROCESO DE PARTES ****************'+"\n"+archivos_a_particionar_part_names.to_s
       end
 
 
@@ -1068,7 +1087,7 @@ $table = "importar_prestaciones_brindadas_#{@nombre_corto_archivo}"
 
             archivos_a_particionar_part_names.each{ |filename|
             proceso_de_sistema = ProcesoDeSistema.new
-            proceso_de_sistma.descripcion = "#{filename} - uad: #{uad} - efector: #{efector}"
+            proceso_de_sistema.descripcion = "#{filename} - uad: #{uad} - efector: #{efector}"
             params = Hash.new
             params['archivo'] = filename
             params['uad'] = uad
