@@ -23,7 +23,11 @@ class PrestacionPrincipalAutorizada < ActiveRecord::Base
           and ppa.autorizante_de_la_baja_type is null
         )        
 	    JOIN prestaciones_prestaciones_pdss ppp ON pp.id = ppp.prestacion_pdss_id
-      JOIN prestaciones p ON p.id = ppp.prestacion_id
+      JOIN prestaciones p ON 
+      (p.id = ppp.prestacion_id
+       and p.activa = true  
+       and coalesce(p.eliminada,false)=false
+      )
 	   )
       Select distinct 
         pp.id,

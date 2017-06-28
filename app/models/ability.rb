@@ -94,7 +94,7 @@ class Ability
       can :read, Efector
       can :update, Efector
       can :read, PrestacionAutorizada
-        can :manage,  SolicitudAddenda
+      can :manage,  SolicitudAddenda
     end
 
     if user.in_group? :auditoria_control
