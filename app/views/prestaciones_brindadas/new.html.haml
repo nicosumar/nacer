@@ -12,9 +12,9 @@
       != "var dDatosReportablesAsociados = #{@prestacion_brindada.datos_reportables_asociados.to_json(:include => {:dato_reportable_requerido => {:include => :dato_reportable}}, :methods => :errors)};"
     - else
       = "var dDatosReportablesAsociados = {};"
-  -#= javascript_include_tag 'prestaciones_brindadas'
+  = javascript_include_tag 'prestaciones_brindadas'
   = javascript_include_tag 'prestaciones_ajax'
-  -#= javascript_include_tag 'asistentes_taller'
+  = javascript_include_tag 'asistentes_taller'
 
 #content-header
   %h1 Nueva prestación brindada

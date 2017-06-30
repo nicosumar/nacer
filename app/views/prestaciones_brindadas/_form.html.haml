@@ -137,7 +137,7 @@
               </div>
 
   // Si la prestacion es comunitaria permite cargar los datos personales de los asistentes
-  - if (false && params[:comunitaria] ) || (@prestacion_brindada.prestacion_comunitaria? && @asistentes && @asistentes.size > 0 )
+  - if ( params[:comunitaria] ) || (@prestacion_brindada.prestacion_comunitaria? && @asistentes && @asistentes.size > 0 )
     #asistentes.field
       - if !@asistentes 
         %h3
