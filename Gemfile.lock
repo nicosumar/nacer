@@ -219,8 +219,8 @@ GEM
     test-unit (3.0.8)
       power_assert
     text (1.2.1)
-    therubyracer (0.11.4)
-      libv8 (~> 3.11.8.12)
+    therubyracer (0.12.3)
+      libv8 (~> 3.11.8.13)
       ref
     thinreports (0.7.6)
       prawn (>= 0.12.0, <= 0.12.0)
