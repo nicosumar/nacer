@@ -42,7 +42,7 @@ class ReferentesController < ApplicationController
     @referente = Referente.new
     @contactos =
       Contacto.find(:all, :order => "apellidos, nombres, mostrado").collect{ |c|
-        [c.apellidos  ? c.apellidos + ", " + c.nombres : c.mostrado, c.id]
+        [!(c.apellidos.nil? or c.nombres.nil?) ? c.apellidos + ", " + c.nombres : c.mostrado, c.id]
       }
   end
 

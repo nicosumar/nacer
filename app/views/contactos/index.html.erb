@@ -1,0 +1,55 @@
+<% content_for :title do %>
+  Contactos
+<% end %>
+<div>
+<div id="content-header">
+  <h1>Contactos</h1>
+  <div id="action-links" ><%= link_to('Nuevo Contacto', new_contacto_path) if can? :create, Contacto %> </div>  
+</div>
+
+<%= render :partial => "shared/info" %>
+
+<div id="content-body" >
+  <% if can? :read, Contacto %>
+    <div class="nested-fields-label-container">
+      <div class="meddium-label">Ingrese nombre, apellido o dni para buscar</div>
+      <div class="small-label"></div>
+    </div>
+    <%= form_tag(contactos_path, :method => "get") do %>
+      <div class="nested-fields-label-container">
+        <div class="small-label"><%= text_field_tag(:nombres) %></div>
+        <div class="small-label"><%= submit_tag("Buscar") %></div>
+      </div>
+    <% end %> 
+    <hr>
+
+    <table>
+      <tr>
+        <th>Número de documento</th>
+        <th>Apellidos</th>
+        <th>Nombres</th>
+        <th>Dirección de correo electrónico</th>
+        <th>Acciones</th>
+      </tr>
+      <% @contactos.each do |contacto| %>
+        <tr>
+
+          <td><%= contacto.dni %></td>
+          <td><%= contacto.apellidos %></td>
+          <td><%= contacto.nombres %></td>
+          <td><%= contacto.email %></td>
+          <td>
+            <%= link_to "Ver", contacto_path(contacto) %>
+            <%= link_to "Editar", edit_contacto_path(contacto) %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    
+    </div> 
+      <%= will_paginate @contactos, :inner_window => 2, :outer_window => 0 %>
+    </div>
+  <% else %>
+    <h2>No esta autorizado para realizar dichas acciones</h2>
+  <% end %>
+</div>
