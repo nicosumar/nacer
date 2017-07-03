@@ -93,7 +93,7 @@
                     %h3 PROGRAMA SUMAR
                     %ul
                       %li= link_to "Liquidaciones", liquidaciones_sumar_path
-                      %li= link_to "Cuasifacturas", liquidaciones_sumar_cuasifacturas_path
+                      %li= link_to "Pagos", pagos_sumar_path if can? :read, PagoSumar
                   %div.col_1
                     %h3 PARAMETRIZACIÓN
                     %ul
@@ -107,8 +107,11 @@
                     %h3 CONTROLES PRESTACIONALES
                     %ul
                       %li= link_to "Informes de Liquidación", liquidaciones_informes_path
+                  %div.col_3
+                    %h3 DEBITOS
+                    %ul
+                      %li= link_to "Notas de Debito", notas_de_debito_path if can? :read, NotaDeDebito
                       %li= link_to "Informes de Debitos prestacionales", informes_debitos_prestacionales_path
-
 
             - if can? :read, Contacto
               %li

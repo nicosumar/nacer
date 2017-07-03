@@ -1,0 +1,31 @@
+#content-header
+  %h1 Organismos Gubernamentales
+  #action-links
+    - if can? :create, OrganismoGubernamental
+      = link_to 'Nuevo Organismo Gubernamental', new_organismo_gubernamental_path
+
+= render :partial => "shared/info"
+
+#content-body
+  %h1 Listado
+  %table
+    %tr
+      %th Nombre
+      %th Domicilio
+      %th Provincia
+      %th Departamento
+      %th Distrito
+      %th Código postal
+      %th Teléfonos
+      %th Dirección de correo electrónico
+    - @organismos_gubernamentales.each do |organismo_gubernamental|
+      %tr.clickable{ :onclick => "location.href=\'#{organismo_gubernamental_path(organismo_gubernamental)}\'", :title => "Ver detalles del organismo" }
+        %td= organismo_gubernamental.nombre
+        %td= organismo_gubernamental.domicilio or "N/D"
+        %td= organismo_gubernamental.provincia.present? ? organismo_gubernamental.provincia.nombre : "N/D"
+        %td= organismo_gubernamental.departamento.present? ? organismo_gubernamental.departamento.nombre : "N/D"
+        %td= organismo_gubernamental.distrito.present? ? organismo_gubernamental.distrito.nombre : "N/D"
+        %td= organismo_gubernamental.codigo_postal or "N/D"
+        %td= organismo_gubernamental.telefonos or "N/D"
+        %td= organismo_gubernamental.email or "N/D"
+  %br

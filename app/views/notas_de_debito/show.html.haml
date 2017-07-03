@@ -38,6 +38,23 @@
   %div.field_content
     %span.field_name Reservado:
     %span.field_value= @nota_de_debito.reservado
-  
+%br
+  %table
+    %tr
+      %th Proceso de Pago Nº
+      %th Fecha de inicio del proceso
+      %th Fecha de aplicación
+      %th Monto
+      %th Estado de la aplicación
+    - if @aplicaciones_de_notas_de_debito.size > 0 
+      - @aplicaciones_de_notas_de_debito.each do |aplicacion_de_nota_de_debito|
+        %tr
+          %td{align: 'center'}= link_to aplicacion_de_nota_de_debito.pago_sumar.numero_de_proceso, aplicacion_de_nota_de_debito.pago_sumar
+          %td{align: 'center'}= aplicacion_de_nota_de_debito.pago_sumar.fecha_de_proceso.strftime("%d/%m/%Y")
+          %td= aplicacion_de_nota_de_debito.fecha_de_aplicacion
+          %td= aplicacion_de_nota_de_debito.monto
+          %td= aplicacion_de_nota_de_debito.estado_de_aplicacion_de_debito.nombre
+    - else 
+      %td{colspan: 3} 
+        %h4 No existen aplicaciones de este debito
 
-  %br

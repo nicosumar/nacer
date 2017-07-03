@@ -1,5 +1,9 @@
 # -*- encoding : utf-8 -*-
 class ConceptosDeFacturacionController < ApplicationController
+
+  before_filter :authenticate_user!
+  before_filter :verificar_permisos
+
   # GET /conceptos_de_facturacion
   def index
     @conceptos_de_facturacion = ConceptoDeFacturacion.includes(:formula, :tipo_de_expediente).all
@@ -69,6 +73,14 @@ class ConceptosDeFacturacionController < ApplicationController
     @concepto_de_facturacion.destroy
 
     redirect_to conceptos_de_facturacion_url
+  end
+
+  private
+
+  def verificar_permisos
+    if cannot? :manage, ConceptoDeFacturacion
+      redirect_to( root_url, :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página", :mensaje => "Se informará al administrador del sistema sobre este incidente."})
+    end
   end
 
 end

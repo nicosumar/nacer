@@ -31,6 +31,8 @@ class Ability
       can :read, AnexoMedicoPrestacion
       can :manage, LiquidacionInforme
       can :read, ProcesoDeSistema
+      can :read, Banco
+      can :read, SucursalBancaria
     end
 
     if user.in_group? :liquidacion_ugsp
@@ -38,6 +40,8 @@ class Ability
       can :manage, LiquidacionSumarAnexoAdministrativo
       can :manage, Periodo
       can :manage, ParametroLiquidacionSumar
+      can :read, Banco
+      can :read, SucursalBancaria
     end
 
     if user.in_group? :operaciones
@@ -93,7 +97,9 @@ class Ability
       can :read, Efector
       can :update, Efector
       can :read, PrestacionAutorizada
-        can :manage,  SolicitudAddenda
+      can :manage,  SolicitudAddenda
+      can :manage, Banco
+      can :manage, SucursalBancaria
     end
 
     if user.in_group? :auditoria_control
@@ -121,6 +127,8 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :read, Banco
+      can :read, SucursalBancaria
     end
 
     if user.in_group? :planificacion
@@ -135,6 +143,8 @@ class Ability
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
       can :read, LiquidacionSumar
+      can :read, Banco
+      can :read, SucursalBancaria
     end
 
     if user.in_group? :inscripcion_uad
@@ -170,6 +180,8 @@ class Ability
       can :read, User
       can :read, LiquidacionSumar
       can :read, Prestacion
+      can :read, Banco
+      can :read, SucursalBancaria
     end
 
     if user.in_group? :usuarios_uads_verificacion

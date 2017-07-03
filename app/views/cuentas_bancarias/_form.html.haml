@@ -1,0 +1,31 @@
+= form_for(@cuenta_bancaria) do |f|
+  .field
+    = label_tag 'Tipo de Entidad'
+    = select_tag :tipo_entidad, options_for_select(@tipos_de_entidades, @tipo_de_entidad_id), {class: 'select2'}
+  .fied
+    = f.label :entidad, "Entidad "
+    = f.select :entidad_id, @entidades, {}, {class: 'select2'}
+  %br
+  .field
+    = f.label :denominacion, "Denominación de la cuenta "
+    = f.text_field :denominacion
+  .field
+    = f.label :tipo_de_cuenta_bancaria
+    = f.select :tipo_de_cuenta_bancaria_id, @tipos_de_cuentas, {}, {class: 'select2', style: "width: 150px"}
+  .field
+    = f.label :banco
+    = f.select :banco_id, @bancos, {}, {class: 'select2', style: "width: 250px"}
+  .field
+    = f.label :sucursal_bancaria
+    = f.select :sucursal_bancaria_id, @sucursales_bancarias, {}, {class: 'select2', style: "width: 150px"}
+  .field
+    = f.label :numero
+    = f.text_field :numero
+  .field
+    = f.label :cbu, "CBU"
+    = f.text_field :cbu
+  .field
+    = f.label :cuenta_contable
+    = f.text_field :cuenta_contable
+  .actions
+    = f.submit

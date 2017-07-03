@@ -1,0 +1,16 @@
+- content_for :title do
+  Edición de una nueva sucursal bancaria
+
+- content_for :other_includes do
+  = javascript_include_tag 'jquery.chained'
+  = javascript_include_tag "sucursales_bancarias"
+#content-header
+  %h1 Edición de una nueva sucursal bancaria
+  #action-links
+    = link_to '<< Volver al listado', sucursales_bancarias_path
+
+= render :partial => "shared/info", :locals => { :registro => @sucursal_bancaria }
+
+#content-body
+  %h2.first-header-with-note Formulario de edición de una sucursal bancaria
+  = render 'form'

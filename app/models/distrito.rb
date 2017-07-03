@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Distrito < ActiveRecord::Base
   belongs_to :departamento
+  has_many :sucursales_bancarias
 
   validates_presence_of :nombre, :departamento_id, :alias_id
 

@@ -13,4 +13,6 @@
  *= require jquery.ui.tooltip
  *= require chosen
  *= require wice_grid
+ *= require steps/main.css
+ *= require steps/jquery.steps.css
 */

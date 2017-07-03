@@ -3,7 +3,7 @@ class DocumentosGenerablesPorConceptosController < ApplicationController
   before_filter :get_concepto_de_facturacion
   before_filter :authenticate_user!
   before_filter :verificar_lectura
-  before_filter :verificar_creacion, only: [:create, :new]
+  before_filter :verificar_creacion, only: [:create]
 
   # GET /documentos_generables_por_conceptos
   def index

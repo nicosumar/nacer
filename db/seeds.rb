@@ -80,3 +80,4 @@ load 'db/PrestacionesNacerSumar_seed.rb'
 
 # Datos para documentacion respaldatoria 
 load 'db/DocumentacionesRespaldatorias_seed.rb'
+load 'db/entidades_seed.rb'

@@ -1,0 +1,31 @@
+#content-header
+  %h1 Sucursales Bancarias
+  #action-links
+    - if can? :create, SucursalBancaria
+      = link_to 'Nueva Sucursal Bancaria', new_sucursal_bancaria_path
+
+= render :partial => "shared/info"
+
+#content-body
+  %h1 Listado
+  %table
+    %tr
+      %th Banco
+      %th Número
+      %th Nombre
+      %th Pais
+      %th Provincia
+      %th Departamento
+      %th Distrito
+      %th Observaciones
+    - @sucursales_bancarias.each do |sucursal_bancaria|
+      %tr.clickable{ :onclick => "location.href=\'#{sucursal_bancaria_path(sucursal_bancaria)}\'", :title => "Ver detalles de la sucursal bancaria" }
+        %td= sucursal_bancaria.banco.nombre
+        %td= sucursal_bancaria.numero
+        %td= sucursal_bancaria.nombre
+        %td= sucursal_bancaria.pais.present? ? sucursal_bancaria.pais.nombre : 'Desconocido'
+        %td= sucursal_bancaria.provincia.present? ? sucursal_bancaria.provincia.nombre : 'Desconocido'
+        %td= sucursal_bancaria.departamento.present? ? sucursal_bancaria.departamento.nombre : 'Desconocido'
+        %td= sucursal_bancaria.distrito.present? ? sucursal_bancaria.distrito.nombre : 'Desconocido'
+        %td= sucursal_bancaria.observaciones.first(60) + "..."
+  %br
