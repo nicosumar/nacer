@@ -16,7 +16,7 @@ class PagoSumar < ActiveRecord::Base
   attr_accessible :cuenta_bancaria_origen_id, :cuenta_bancaria_destino_id, :efector_id, :concepto_de_facturacion_id
   
   @nota_de_debito_ids = []
-  attr_accessor notas_de_debito
+  attr_accessor :notas_de_debito
   attr_accessible :nota_de_debito_ids, :expediente_sumar_ids
   
   # Atributos solo actualizable luego de ser creado
@@ -33,9 +33,7 @@ class PagoSumar < ActiveRecord::Base
 
   # before_validation :validar_nd_y_expedientes
   #validate :nota_de_debito_ids, :nota_de_debitosYExpedientes
-  validate :notas_de_debito_pertenecen_a_efectores_en_los_expedientes, if: expediente_sumar_ids.present?
-
-  before_save :
+  validate :notas_de_debito_pertenecen_a_efectores_en_los_expedientes, if: "expediente_sumar_ids.present?"
 
   # 
   # Metodo llamado por validate.
@@ -143,12 +141,12 @@ class PagoSumar < ActiveRecord::Base
           efectores = []
           efectores << pago_sumar.efector
           efectores << pago_sumar.efector.efectores_administrados.map { |e| e }
-          efectores.
-        NotaDeDebito.find(value_ids).each do |nd|
-          
+          NotaDeDebito.find(value_ids).each do |nd|
+            
+          end
         end
 
-      rescue Exception => e
+      rescue
         
       end
     end
@@ -255,4 +253,5 @@ class PagoSumar < ActiveRecord::Base
   def numero_de_proceso
     "%07d" % self.id    
   end
+
 end

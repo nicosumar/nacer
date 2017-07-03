@@ -93,7 +93,7 @@
                     %h3 PROGRAMA SUMAR
                     %ul
                       %li= link_to "Liquidaciones", liquidaciones_sumar_path
-                      %li= link_to "Pagos", pagos_sumar_path if can? :read, PagoSumar
+                      %li= link_to "Pagos", pagos_sumar_path if can?(:read, PagoSumar)
                   %div.col_1
                     %h3 PARAMETRIZACIÓN
                     %ul
