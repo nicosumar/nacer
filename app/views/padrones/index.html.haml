@@ -23,7 +23,10 @@
           - @errores.each do |msg|
             %li= msg
     - else
-      El proceso se ejecutó sin errores
+      - if @Exito
+        =@Exito
+      - else   
+        El proceso se ejecutó sin errores
   - else # @procesado == false
     = form_tag('/padrones', :method => 'get') do
       %p

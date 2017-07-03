@@ -861,6 +861,7 @@ class PadronesController < ApplicationController
       
     if proceso_de_sistema.save 
         Delayed::Job.enqueue NacerJob::ActualizacionDeNovedadesJob.new(proceso_de_sistema.id)   
+        @Exito = "El procesamiento de las novedades se encoló correctamente con id del proceso #{proceso_de_sistema.id}"
     else
           @errores = "Ocurrio un error en la actualización de las novedades"
       return

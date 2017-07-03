@@ -8,7 +8,7 @@
     <%= link_to('<<  Volver al listado', prestaciones_path) if can? :read, Prestacion %>  
     <%= link_to 'Editar', edit_prestacion_path(@prestacion) if can? :manage, Prestacion %>
     <%= link_to 'Asignar precios', edit_para_asignacion_de_precios_prestacion_path(@prestacion) if can? :manage, Prestacion%>
-    <%= link_to 'Eliminar', @prestacion, method: :delete, data: { confirm: 'Está seguro que desea eliminar la prestación?' } if can? :manage, Prestacion and @prestacion.can_remove? %>
+    <%= link_to 'Eliminar', @prestacion, method: :delete, data: { confirm: 'Está seguro que desea eliminar la prestación?' } if can? :manage, Prestacion %>
   </div> 
 
 </div>

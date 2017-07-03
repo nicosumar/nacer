@@ -89,10 +89,11 @@ class Prestacion < ActiveRecord::Base
   scope :by_diagnostico, -> (diagnostico_id) { joins(:diagnosticos).where("diagnosticos_prestaciones.diagnostico_id=?", diagnostico_id).readonly(false) }
 
   def can_remove?
-    !self.prestaciones_incluidas.exists?
+    !(self.prestaciones_incluidas.exists? or VistaGlobalDePrestacionBrindada.where("prestacion_id = ?",self.id).any?) 
   end
 
   def safe_remove
+    byebug
     if self.can_remove?
       self.datos_adicionales.destroy_all
       self.cantidades_de_prestaciones_por_periodo.destroy_all
@@ -106,7 +107,7 @@ class Prestacion < ActiveRecord::Base
       self.diagnosticos.destroy_all
       self.historicos_prestaciones.destroy_all
       self.prestaciones_pdss.destroy_all
-      
+      self.prestaciones_nacer_sumar.destroy_all
       self.destroy
     end
   end

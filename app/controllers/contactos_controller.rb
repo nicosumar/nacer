@@ -5,6 +5,7 @@ class ContactosController < ApplicationController
   # GET /contactos
   def index
     # Verificar los permisos del usuario
+
     if cannot? :read, Contacto
       redirect_to( root_url,
         :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
@@ -14,8 +15,12 @@ class ContactosController < ApplicationController
       return
     end
 
-    # Obtener el listado de contactos
-    @contactos = Contacto.paginate(:page => params[:page], :per_page => 20, :order => [:apellidos, :nombres])
+
+    
+    @filtro  = (params[:nombres].nil?) ? '' : params[:nombres]
+
+        # Obtener el listado de contactos
+    @contactos = Contacto.where(" '' = ? or UPPER(nombres) LIKE '%' || ? ||'%' or UPPER(apellidos) LIKE '%' || ? ||'%' OR  dni LIKE '%' || ? ||'%' OR  UPPER(email) LIKE '%' || ? ||'%'" , @filtro, @filtro.upcase, @filtro.upcase, @filtro.upcase, @filtro.upcase).paginate(:page => params[:page], :per_page => 20, :order => [:apellidos, :nombres])
   end
 
   # GET /contactos/:id

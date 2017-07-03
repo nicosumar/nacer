@@ -14,5 +14,5 @@ class Contacto < ActiveRecord::Base
   has_many   :consolidados_sumar
 
   # Validaciones
-  validates_presence_of :mostrado
+  validates_presence_of :mostrado, :nombres, :apellidos, :sexo_id,:dni,:email,:tipo_de_documento_id, :firma_primera_linea,:firma_segunda_linea, :firma_tercera_linea
 end

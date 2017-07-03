@@ -218,7 +218,7 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
             LEFT JOIN lineas_de_cuidado lc ON lc.id = pp.linea_de_cuidado_id
             LEFT JOIN modulos mp ON mp.id = pp.modulo_id
             LEFT JOIN tipos_de_prestaciones tdp ON tdp.id = pp.tipo_de_prestacion_id
-          Where p.activa = true  
+          Where p.activa = true  and coalesce(p.eliminada,false)=false
           ORDER BY sp.orden, gp.orden, pp.orden;
       SQL
     )
