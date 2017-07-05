@@ -1325,10 +1325,11 @@ class NovedadDelAfiliado < ActiveRecord::Base
       return archivo_a ? archivo_a.path : nil
       
        
-    rescue 
+    rescue => e
 
       @log_del_proceso.error("Ocurrio un error en la generacion del archivo A")
-      raise "Ocurrio un error en la generacion del archivo A"
+      #raise "Ocurrio un error en la generacion del archivo A + e.to_s"
+       raise e
       
     end
         
