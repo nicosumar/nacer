@@ -929,7 +929,7 @@ class PadronesController < ApplicationController
 
   def actualizacion_de_novedades_X (anio_y_mes) 
    
-#byebug
+
 
     begin
    
@@ -950,12 +950,12 @@ class PadronesController < ApplicationController
          
 
 
-#byebug
+
             anio, mes = anio_y_mes.split("-")
             primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
             origen = File.new("vendor/data/ActEstadoNovedades_#{anio_y_mes}.txt", "r")
             @log_del_proceso.info("Lectura del archivo completada")
-            #byebug
+            
 
     rescue
                @log_del_proceso.info("Se produjerón errores al procesar las novedades. \n La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor.")
@@ -965,12 +965,12 @@ class PadronesController < ApplicationController
 
             # Hacemos la actualización dentro de una transacción
             ActiveRecord::Base.transaction do
-              #byebug
+              
               # Procesamiento de la actualización del estado de las novedades
               esquema_actual = ActiveRecord::Base.connection.exec_query("SHOW search_path;").rows[0][0]
               ultima_uad = ''
               i=0
-                  #byebug
+                  
               @log_del_proceso.info("Iniciando Procesamiento de lineas")
 
               contador = 1
@@ -984,7 +984,7 @@ class PadronesController < ApplicationController
                    @log_del_proceso.debug("Linea Actual #{ contador }")            
                 end
 
-                #byebug
+                
                 # Obtener la siguiente línea del archivo
                 linea.gsub!(/[\r\n]+/, '')
                 # Separar los campos
@@ -1001,7 +1001,7 @@ class PadronesController < ApplicationController
                 aceptado = valor(campos[2], :texto).upcase
                 activo = valor(campos[3], :texto).upcase
                 mensaje_baja = valor(campos[5], :texto_sql)
-#byebug
+
                     if codigo_uad != ultima_uad
                       # La línea pertenece a una UAD distinta de la que veníamos procesando, cambiar la ruta de búsqueda de esquemas
                       ActiveRecord::Base.connection.schema_search_path = "uad_#{codigo_uad},public"
@@ -1009,7 +1009,7 @@ class PadronesController < ApplicationController
                       ultima_uad = codigo_uad
                     end
 
-#byebug
+
                     if aceptado == 'S'
                       if activo == 'S'
                         estado = EstadoDeLaNovedad.id_del_codigo("A")
@@ -1019,7 +1019,7 @@ class PadronesController < ApplicationController
                     else
                       estado = EstadoDeLaNovedad.id_del_codigo("Z")
                     end
-#byebug
+
                 ActiveRecord::Base.connection.execute "
                   UPDATE uad_#{codigo_uad}.novedades_de_los_afiliados
                     SET
@@ -1029,9 +1029,9 @@ class PadronesController < ApplicationController
                       updated_at = date('now')
                     WHERE id = '#{id_de_novedad}';
                 "
-#byebug
+
               end
-#byebug
+
             origen.close
             @log_del_proceso.info("Procesamiento de lineas completado")
             ActiveRecord::Base.connection.schema_search_path = esquema_actual
