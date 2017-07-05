@@ -6,6 +6,12 @@
   - if can? :update, Contacto
     #action-links
       = link_to "Modificar el contacto", edit_contacto_path(@contacto)
+  - if can? :view, Contacto
+    #action-links
+      = link_to "Volver al listado", contactos_path
+  - if can? :update, Contacto
+    #action-links
+      = link_to 'Eliminar', @contacto, method: :delete, data: { confirm: 'Está seguro que desea eliminar la prestación?' } if ((can? :manage, Contacto) && !@contacto.referentes.present?)
 
 = render :partial => "shared/info"
 

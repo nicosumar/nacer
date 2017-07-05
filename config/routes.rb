@@ -149,7 +149,7 @@ Nacer::Application.routes.draw do
     post 'cierre', :on => :collection, :as => :cierre_de
   end
   resources :referentes, :except => [:index, :show, :destroy]
-  resources :contactos, :except => :destroy
+  resources :contactos#, :except => :destroy
   resources :liquidaciones, :except => :destroy
   resources :cuasi_facturas, :except => :destroy
   match "importar_detalle" => "cuasi_facturas#importar_detalle"

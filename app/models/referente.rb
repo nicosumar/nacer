@@ -76,4 +76,6 @@ class Referente < ActiveRecord::Base
   def self.actual_del_efector(efector)
     Referente.where("efector_id = '?' AND fecha_de_finalizacion IS NULL", efector).first
   end
+
+  
 end

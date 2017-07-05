@@ -14,13 +14,12 @@ class ContactosController < ApplicationController
       )
       return
     end
-
-
     
     @filtro  = (params[:nombres].nil?) ? '' : params[:nombres]
-
         # Obtener el listado de contactos
-    @contactos = Contacto.where(" '' = ? or UPPER(nombres) LIKE '%' || ? ||'%' or UPPER(apellidos) LIKE '%' || ? ||'%' OR  dni LIKE '%' || ? ||'%' OR  UPPER(email) LIKE '%' || ? ||'%'" , @filtro, @filtro.upcase, @filtro.upcase, @filtro.upcase, @filtro.upcase).paginate(:page => params[:page], :per_page => 20, :order => [:apellidos, :nombres])
+    @contactos = Contacto.activo.where(" '' = ? or UPPER(nombres) LIKE '%' || ? ||'%' or UPPER(apellidos) LIKE '%' || ? ||'%' OR  dni LIKE '%' || ? ||'%' OR  UPPER(email) LIKE '%' || ? ||'%'" , @filtro, @filtro.upcase, @filtro.upcase, @filtro.upcase, @filtro.upcase).paginate(:page => params[:page], :per_page => 20, :order => [:apellidos, :nombres])
+    @contacto =  Contacto.activo.where(id: params[:id]).first if params[:id].present?
+
   end
 
   # GET /contactos/:id
@@ -225,6 +224,31 @@ class ContactosController < ApplicationController
     else
       # Si no pasa las validaciones, volver a mostrar el formulario con los errores
       render :action => "edit"
+    end
+  end
+
+
+  def destroy
+
+  @contacto =  Contacto.where(id: params[:id]).first if params[:id].present?
+
+    if (@contacto.present? && !@contacto.referentes.present?)
+            
+            @contacto.eliminado = true         
+            @contacto.save(validate: false)
+
+            redirect_to(contactos_url,
+             :flash => {:tipo => :succed,:titulo => "El contacto: " + @contacto.apellidos + " , " + @contacto.nombres + " fue eliminado correctamente",
+                :mensaje => "Se realizó la eliminación física del contacto y sus datos asociados."
+              }
+            )
+
+    else
+            redirect_to(contactos_url,
+             :flash => {:tipo => :error,:titulo => "El contacto no se pudo eliminar",
+                :mensaje => "No se elimino el contacto ya que esta esta como referente del efector " || @referente.efector.nombre
+              }
+            )
     end
   end
 

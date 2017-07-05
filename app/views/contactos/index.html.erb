@@ -29,6 +29,7 @@
         <th>Apellidos</th>
         <th>Nombres</th>
         <th>Dirección de correo electrónico</th>
+        <th>Efectores referenciados</th>
         <th>Acciones</th>
       </tr>
       <% @contactos.each do |contacto| %>
@@ -39,9 +40,19 @@
           <td><%= contacto.nombres %></td>
           <td><%= contacto.email %></td>
           <td>
+          <p>
+          <% contacto.referentes.each do |referente| %>
+          <%= "->" + referente.efector.nombre + "\n" %>
+          <br>
+          <%end%>
+          </p>
+          </td>
+          <td>
             <%= link_to "Ver", contacto_path(contacto) %>
             <%= link_to "Editar", edit_contacto_path(contacto) %>
           </td>
+
+
         </tr>
       <% end %>
     </table>
