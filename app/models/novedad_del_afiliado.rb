@@ -1081,15 +1081,15 @@ class NovedadDelAfiliado < ActiveRecord::Base
                 ELSE last_value
               END) AS numero_secuencia FROM uad_#{codigo_uadx}.ci_#{codigo_cix}_archivo_a_seq;
         ").rows[0][0].to_i
-    byebug
+    
     begin
       
       # Crear el archivo de texto de salida
-   byebug
+   
      @log_del_proceso.info("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uadx + codigo_cix + ('%05d' % numero_secuencia)}.txt")
       archivo_a = File.new("#{directorio_de_destino}/A#{codigo_provincia.to_s + codigo_uadx + codigo_cix + ('%05d' % numero_secuencia)}.txt", "w")
       archivo_a.set_encoding("CP1252", :crlf_newline => true)
-      byebug
+      
      @log_del_proceso.info("Creado archvio A destino")
       size = 0;
       
