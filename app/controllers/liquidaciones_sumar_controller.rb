@@ -134,7 +134,8 @@ class LiquidacionesSumarController < ApplicationController
     respuesta = {}
     status = :ok
 
-    @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    @liquidacion_sumar = LiquidacionSumar.find(params[:id],:include => :grupo_de_efectores_liquidacion)
+
 
     if @liquidacion_sumar.prestaciones_liquidadas.count > 1
       respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." }
@@ -148,6 +149,30 @@ class LiquidacionesSumarController < ApplicationController
       #   respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
       #   status = :internal_server_error
       # end
+      if ProcesoDeSistema.where("entidad_relacionada_id = ? and tipo_proceso_de_sistema_id = ?", @liquidacion_sumar.id, TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR).empty?
+
+        begin
+        proceso_de_sistema = ProcesoDeSistema.new 
+        proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
+
+        proceso_de_sistema.descripcion = "Liquidacion Id: #{@liquidacion_sumar.id} - #{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}"
+       
+        if proceso_de_sistema.save 
+           Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
+           respuesta = { :tipo => :ok, :titulo => "El procesamiento de la liquidación se encoló correctamente" }
+        end
+        rescue
+          respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
+          status = :internal_server_error
+        end
+      else
+            respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido encolada para ser procesada!." }
+            status = :method_not_allowed
+
+
+      end  
+
+
 
       begin
       proceso_de_sistema = ProcesoDeSistema.new 
@@ -172,7 +197,7 @@ class LiquidacionesSumarController < ApplicationController
 
   def generar_cuasifacturas
     tiempo_proceso = Time.now
-    @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+    @liquidacion_sumar = LiquidacionSumar.find(params[:id],:include => :grupo_de_efectores_liquidacion)
     respuesta = {}
     status = :ok
 
@@ -186,16 +211,22 @@ class LiquidacionesSumarController < ApplicationController
       
     begin
       unless respuesta.present?
+        if ProcesoDeSistema.where("entidad_relacionada_id = ? and tipo_proceso_de_sistema_id = ?", @liquidacion_sumar.id, TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR)
+            proceso_de_sistema = ProcesoDeSistema.new 
+            proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
+            proceso_de_sistema.descripcion = "Liquidacion Id: #{@liquidacion_sumar.id} - #{@liquidacion_sumar.grupo_de_efectores_liquidacion.grupo}"
+            if proceso_de_sistema.save 
+            Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
+            end
 
-        proceso_de_sistema = ProcesoDeSistema.new 
-        if proceso_de_sistema.save 
-        Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
+            #@liquidacion_sumar.generar_documentos!
+            logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
+            #respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
+            respuesta = { :tipo => :ok, :titulo => "El procesamiento de la generación de las cuasifacturas se encoló correctamente" }
+        else
+            respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido encolada para generar las cuasifacturas!." }
+            status = :method_not_allowed
         end
-
-        #@liquidacion_sumar.generar_documentos!
-        logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
-        #respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
-         respuesta = { :tipo => :ok, :titulo => "El procesamiento de la generación de las cuasifacturas se encoló correctamente" }
       end
     rescue Exception => e
       logger.warn e.inspect

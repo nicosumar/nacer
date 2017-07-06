@@ -854,12 +854,14 @@ class PadronesController < ApplicationController
 
     
     proceso_de_sistema = ProcesoDeSistema.new 
+    proceso_de_sistema.descripcion = params[:anio_y_mes]
     parametros = Hash.new
     parametros['anio_y_mes'] =params[:anio_y_mes]  
     proceso_de_sistema.parametros_dinamicos = parametros.to_json
       
     if proceso_de_sistema.save 
-        Delayed::Job.enqueue NacerJob::ActualizacionDeNovedadesJob.new(proceso_de_sistema.id)   
+        Delayed::Job.enqueue NacerJob::ActualizacionDeNovedadesJob.new(proceso_de_sistema.id)
+        @Exito = "El procesamiento de las novedades se encoló correctamente con id del proceso #{proceso_de_sistema.id}"
     else
           @errores = "Ocurrio un error en la actualización de las novedades"
       return
@@ -904,6 +906,7 @@ class PadronesController < ApplicationController
     #Le clavo la redireccion a la nueva forma de cierre de padron
     begin
     proceso_de_sistema = ProcesoDeSistema.new 
+    proceso_de_sistema.descripcion = "#{anio}-#{mes}"
     parametros = Hash.new
     parametros['anio'] = anio   
     parametros['mes'] = mes   

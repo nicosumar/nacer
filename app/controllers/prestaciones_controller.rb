@@ -62,13 +62,54 @@ class PrestacionesController < ApplicationController
   end
 
   def destroy
-    if @prestacion.can_remove?
-      @prestacion.asignaciones_de_precios.destroy_all
-      @prestacion.cantidades_de_prestaciones_por_periodo.destroy_all
-      @prestacion.prestaciones_autorizadas.destroy_all
-      @prestacion.destroy
-    end
-    redirect_to prestaciones_url
+     # Visto que las prestaciones son el extremo de N relaciones como 
+     # Pdss Autorizada
+     # Prestaciones Pdss
+     # Datos reportables y datos reportables sirge
+     # Cantidad en tasa de uso
+     # Diagnosticos , etc
+     # Voy a dejar solo la eliminacion logica.
+   
+     if @prestacion.can_remove?
+
+          @prestacion.asignaciones_de_precios.destroy_all
+          @prestacion.cantidades_de_prestaciones_por_periodo.destroy_all
+          @prestacion.prestaciones_autorizadas.destroy_all
+          @prestacion.destroy
+
+          redirect_to(prestaciones_url,
+           :flash => {:tipo => :error,:titulo => "La prestación fue eliminada correctamente",
+              :mensaje => "Se realizó la eliminación física de la prestación y sus datos asociados."
+            }
+          )
+      
+     else
+
+         @prestacion.eliminada = true
+         if @prestacion.save
+          @prestacion.asignaciones_de_precios.destroy_all
+          @prestacion.cantidades_de_prestaciones_por_periodo.destroy_all
+          @prestacion.prestaciones_autorizadas.destroy_all
+          redirect_to(prestaciones_url,
+            :flash => {:tipo => :advertencia, :titulo => "La prestación fue eliminada correctamente",
+              :mensaje => "Se realizó la eliminación lógica de la prestación."
+            }
+          )
+        else
+        
+          redirect_to(prestaciones_url,
+            :flash => {:tipo => :error, :titulo => "Ocurrio un error al intentar eliminar la prestación"
+           
+            }
+          )
+
+
+        end
+         
+     end
+   
+
+
   end
 
   def autorizadas

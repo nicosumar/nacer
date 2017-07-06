@@ -34,7 +34,7 @@ class AddendasController < ApplicationController
     end
 
     # Obtener la adenda solicitada
-    begin
+    begin 
       @addenda =
         Addenda.find( params[:id],
           :include => [ {:convenio_de_gestion => :efector},
