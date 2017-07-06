@@ -4,6 +4,8 @@ var total_bienes_ctes;
 var total_obras;
 var total_bienes_capital;
 
+var dont_show_clasificacion = false;
+
 $(document).ready(function() {
 
     //info = -1 es index
@@ -23,10 +25,25 @@ $(document).ready(function() {
         if($('#info_op').attr('value') != 1)
         {
 
+            if($('#permiso').attr('value') == "no_puede_clasificar"){
+
+                dont_show_clasificacion = true;
+                clase_de_gasto_selected = 1;
+                tipo_de_gasto_selected = 1;
+                toggleDisplay(document.getElementById('clasificacion_gasto'), false);
+
+            }
+
             updateClaseDeGasto();
 
         }
         else {
+
+            if($('#permiso').attr('value') == "no_puede_clasificar"){
+
+                dont_show_clasificacion = true;
+
+            }
 
             //Si estoy en el SHOW tengo que ocultar el boton para agregar nuevo detalle
             toggleDisplay(document.getElementById('new_detalle_button'), false);
@@ -91,7 +108,8 @@ function cleanForm(){
         {tableId: "6", elementId: "form-6", tipo: "basico"},
         {tableId: "7", elementId: "form-7", tipo: "selector_importe"},
         {tableId: "8", elementId: "form-8", tipo: "valor_importe"},
-        {tableId: "9", elementId: "", tipo: "tipo_de_gasto"}
+        {tableId: "9", elementId: "", tipo: "tipo_de_gasto"},
+        {tableId: "10", elementId: "form-9", tipo: "selector_cuenta"}
     ]
 
     for(i = 0; i < indices.length; i++){
@@ -115,6 +133,12 @@ function cleanForm(){
 
                 document.getElementById(indice.elementId).value = 'A';
                 document.getElementById(indice.elementId).value = '';
+
+            break;
+
+            case 'selector_cuenta':
+
+                document.getElementById(indice.elementId).value = '1';
 
             break;
 
@@ -192,7 +216,8 @@ function insertRow()
     	{tableId: "6", elementId: "form-6", tipo: "basico"},
     	{tableId: "7", elementId: "form-7", tipo: "selector_importe"},
     	{tableId: "8", elementId: "form-8", tipo: "valor_importe"},
-        {tableId: "9", elementId: "", tipo: "tipo_de_gasto"}
+        {tableId: "9", elementId: "", tipo: "tipo_de_gasto"},
+        {tableId: "10", elementId: "form-9", tipo: "selector_cuenta"}
     ]
 
     //Primero necesito controlar si la primera fila que hay es la de SIN MOVIMIENTOS. En ese
@@ -245,7 +270,7 @@ function insertRow()
     			for(j = 3; j > 0; j--){
 
     				fecha_value += document.getElementById(indice.elementId + j + "i").value
-    				fecha_value += (j == 1) ? '' : '/';
+    				fecha_value += (j == 1) ? '' : '-';
 
     			}
 
@@ -263,26 +288,26 @@ function insertRow()
     			switch(document.getElementById(indices[i-1].elementId).value){
 
 	    			case 'A':
-			    		new_row.cells[7].innerHTML = document.getElementById(indice.elementId).value 
-                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
+			    		new_row.cells[7].innerHTML = document.getElementById(indice.elementId).value;
+                        new_row.cells[7].innerHTML += (dont_show_clasificacion) ? "" : " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
 	    			break;
 	    			case 'B':
 
-	    				new_row.cells[8].innerHTML = document.getElementById(indice.elementId).value 
-                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
+	    				new_row.cells[8].innerHTML = document.getElementById(indice.elementId).value;
+                        new_row.cells[8].innerHTML += (dont_show_clasificacion) ? "" : " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
 	    			break;
 	    			case 'C':
 
-	    				new_row.cells[9].innerHTML = document.getElementById(indice.elementId).value 
-                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
+	    				new_row.cells[9].innerHTML = document.getElementById(indice.elementId).value;
+                        new_row.cells[9].innerHTML += (dont_show_clasificacion) ? "" : " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
 	    			break;
 	    			case 'D':
 
-	    				new_row.cells[10].innerHTML = document.getElementById(indice.elementId).value 
-                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
+	    				new_row.cells[10].innerHTML = document.getElementById(indice.elementId).value;
+                        new_row.cells[10].innerHTML += (dont_show_clasificacion) ? "" : " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
 	    			break;
 
@@ -292,6 +317,12 @@ function insertRow()
     			document.getElementById(indice.elementId).value = '';
 
     		break;
+
+            case 'selector_cuenta':
+
+                new_row.cells[11].innerHTML = (document.getElementById(indices[i].elementId) != null) ? document.getElementById(indices[i].elementId).value : '1';
+
+            break;
 
     	}
 
@@ -400,6 +431,7 @@ function saveInforme(is_new){
     var importes = [];
     var clases_de_gasto = [];
     var tipos_de_gasto = [];
+    var cuentas = [];
 
     for(i = 0; i < length_detalles; i++){
 
@@ -409,6 +441,14 @@ function saveInforme(is_new){
         detalles[i] =            x.rows[i + 2].cells[4].innerHTML;
         cantidades[i] =           x.rows[i + 2].cells[5].innerHTML;
         numeros_cheque[i] =      x.rows[i + 2].cells[6].innerHTML;
+        cuentas[i] = x.rows[i + 2].cells[11].innerHTML;
+
+        if(dont_show_clasificacion){
+
+            clases_de_gasto[i] = 1;
+            tipos_de_gasto[i] = 1;
+
+        }
 
         if(x.rows[i + 2].cells[7].innerHTML != '') //SERVICIOS
         {
@@ -416,10 +456,14 @@ function saveInforme(is_new){
             tipos_de_importe[i] =    "1";
             importes[i] =            x.rows[i + 2].cells[7].innerHTML;
 
-            clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
-            tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+            if(!dont_show_clasificacion){
 
-            importes[i] = importes[i].split("(")[0];
+                clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
+                tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+
+                importes[i] = importes[i].split("(")[0];
+
+            }
 
         }
         else if (x.rows[i + 2].cells[8].innerHTML != '') //OBRAS
@@ -428,10 +472,14 @@ function saveInforme(is_new){
             tipos_de_importe[i] =    "2";
             importes[i] =            x.rows[i + 2].cells[8].innerHTML;
 
-            clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
-            tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+            if(!dont_show_clasificacion){
 
-            importes[i] = importes[i].split("(")[0];
+                clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
+                tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+
+                importes[i] = importes[i].split("(")[0];
+
+            }
 
         }
         else if (x.rows[i + 2].cells[9].innerHTML != '') //BIENES CORRIENTES
@@ -440,10 +488,14 @@ function saveInforme(is_new){
             tipos_de_importe[i] =    "3";
             importes[i] =            x.rows[i + 2].cells[9].innerHTML;
 
-            clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
-            tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+            if(!dont_show_clasificacion){
 
-            importes[i] = importes[i].split("(")[0];
+                clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
+                tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+
+                importes[i] = importes[i].split("(")[0];
+
+            }
 
         }
         else if (x.rows[i + 2].cells[10].innerHTML != '') //BIENES DE CAPITAL
@@ -452,10 +504,14 @@ function saveInforme(is_new){
             tipos_de_importe[i] =    "4";
             importes[i] =            x.rows[i + 2].cells[10].innerHTML;
 
-            clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
-            tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+            if(!dont_show_clasificacion){
 
-            importes[i] = importes[i].split("(")[0];
+                clases_de_gasto[i] = get_clase_de_gasto(importes[i]);
+                tipos_de_gasto[i] = get_tipo_de_gasto(importes[i]);
+
+                importes[i] = importes[i].split("(")[0];
+
+            }
 
         }
 
@@ -491,7 +547,7 @@ function saveInforme(is_new){
     "anio_informe": anio_informe, "dia_informe": dia_informe, "total_informe": total_informe, "numeros": numeros,
     "fechas_factura": fechas_factura, "numeros_factura": numeros_factura, "detalles": detalles, "cantidades": cantidades, 
     "numeros_cheque": numeros_cheque, "tipos_de_importe": tipos_de_importe, "importes": importes, "clases_de_gasto": clases_de_gasto, 
-    "tipos_de_gasto": tipos_de_gasto}
+    "tipos_de_gasto": tipos_de_gasto, "cuentas": cuentas}
 
     //alert(JSON.stringify(informe_params));
 
@@ -696,8 +752,8 @@ function showInformes(){
 
         var fecha_partes = informe_json.fecha_informe.split('-');
 
-        document.getElementById('date_year').value = fecha_partes[0];
-        document.getElementById('date_month').value = fecha_partes[1];
+        document.getElementById('date_year').value = parseInt(fecha_partes[0]);
+        document.getElementById('date_month').value = parseInt(fecha_partes[1]);
 
     }
 
@@ -744,16 +800,26 @@ function showInformes(){
         new_row.cells[4].innerHTML = detalles_informe_json[i].detalle;
         new_row.cells[5].innerHTML = detalles_informe_json[i].cantidad;
         new_row.cells[6].innerHTML = detalles_informe_json[i].numero_cheque;
+        new_row.cells[11].innerHTML = detalles_informe_json[i].cuenta;
 
-        var tipo_de_gasto = tipos_de_gasto_por_detalle[i].tipo;
+        if(!dont_show_clasificacion){
 
-        if(tipo_de_gasto != ""){
+            var tipo_de_gasto = tipos_de_gasto_por_detalle[i].tipo;
 
-            new_row.cells[6 + detalles_informe_json[i].tipo_de_importe_id].innerHTML 
-                = detalles_informe_json[i].importe + " (" + tipo_de_gasto + ")";
+            if(tipo_de_gasto != ""){
+
+                new_row.cells[6 + detalles_informe_json[i].tipo_de_importe_id].innerHTML 
+                    = detalles_informe_json[i].importe + " (" + tipo_de_gasto + ")";
+
+            }
+
+        }   
+        else{
+
+            new_row.cells[6 + detalles_informe_json[i].tipo_de_importe_id].innerHTML = detalles_informe_json[i].importe;
 
         }
-            
+
         //Finalmente la agrego a la tabla
         x.appendChild( new_row );
 
@@ -795,7 +861,8 @@ function updateRow()
         {tableId: "6", elementId: "form-6", tipo: "basico"},
         {tableId: "7", elementId: "form-7", tipo: "selector_importe"},
         {tableId: "8", elementId: "form-8", tipo: "valor_importe"},
-        {tableId: "9", elementId: "", tipo: "clasificacion_gasto"}
+        {tableId: "9", elementId: "", tipo: "clasificacion_gasto"},
+        {tableId: "10", elementId: "form-9", tipo: "selector_cuenta"}
     ]
     
     for(i = 0; i < indices.length; i++){
@@ -837,26 +904,26 @@ function updateRow()
                 switch(document.getElementById(indices[i-1].elementId).value){
 
                     case 'A':
-                        selected_row.cells[7].innerHTML = document.getElementById(indice.elementId).value 
-                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
+                        selected_row.cells[7].innerHTML = document.getElementById(indice.elementId).value;
+                        selected_row.cells[7].innerHTML += (dont_show_clasificacion) ? "" : " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
                     break;
                     case 'B':
 
-                        selected_row.cells[8].innerHTML = document.getElementById(indice.elementId).value 
-                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
+                        selected_row.cells[8].innerHTML = document.getElementById(indice.elementId).value;
+                        selected_row.cells[8].innerHTML += (dont_show_clasificacion) ? "" : " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
                     break;
                     case 'C':
 
-                        selected_row.cells[9].innerHTML = document.getElementById(indice.elementId).value 
-                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
+                        selected_row.cells[9].innerHTML = document.getElementById(indice.elementId).value;
+                        selected_row.cells[9].innerHTML += (dont_show_clasificacion) ? "" : " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
                     break;
                     case 'D':
 
-                        selected_row.cells[10].innerHTML = document.getElementById(indice.elementId).value 
-                        + " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
+                        selected_row.cells[10].innerHTML = document.getElementById(indice.elementId).value;
+                        selected_row.cells[10].innerHTML += (dont_show_clasificacion) ? "" : " (" + clase_de_gasto_selected + "." + tipo_de_gasto_selected + ")";
 
                     break;
 
@@ -866,6 +933,13 @@ function updateRow()
                 document.getElementById(indice.elementId).value = '';
 
             break;
+
+            case 'selector_cuenta':
+
+                selected_row.cells[11].innerHTML = (document.getElementById(indices[i].elementId) != null) ? document.getElementById(indices[i].elementId).value : '1';
+
+            break;
+
 
         }
 
@@ -890,7 +964,8 @@ function editRow(row_to_edit)
         {tableId: "6", elementId: "form-6", tipo: "basico"},
         {tableId: "7", elementId: "form-7", tipo: "selector_importe"},
         {tableId: "8", elementId: "form-8", tipo: "valor_importe"},
-        {tableId: "9", elementId: "", tipo: "clasificacion_gasto"}
+        {tableId: "9", elementId: "", tipo: "clasificacion_gasto"},
+        {tableId: "10", elementId: "form-9", tipo: "selector_cuenta"}
     ]
 
     var index = row_to_edit.parentNode.parentNode.rowIndex;
@@ -926,7 +1001,9 @@ function editRow(row_to_edit)
 
                     //A
                     document.getElementById(indices[i-1].elementId).value = "A";
-                    document.getElementById(indice.elementId).value = parseInt(selected_row.cells[7].innerHTML.split('(')[0]);
+                    document.getElementById(indice.elementId).value = 
+                        (dont_show_clasificacion) ? parseInt(selected_row.cells[7].innerHTML) 
+                                                    : parseInt(selected_row.cells[7].innerHTML.split('(')[0]);
 
                     show_tipo_in_form(selected_row.cells[7].innerHTML);
 
@@ -936,7 +1013,9 @@ function editRow(row_to_edit)
 
                     //B
                     document.getElementById(indices[i-1].elementId).value = "B";
-                    document.getElementById(indice.elementId).value = parseInt(selected_row.cells[8].innerHTML.split('(')[0]);
+                    document.getElementById(indice.elementId).value = 
+                        (dont_show_clasificacion) ? parseInt(selected_row.cells[8].innerHTML) 
+                                                    : parseInt(selected_row.cells[8].innerHTML.split('(')[0]);
 
                     show_tipo_in_form(selected_row.cells[8].innerHTML);
 
@@ -946,7 +1025,9 @@ function editRow(row_to_edit)
 
                     //C
                     document.getElementById(indices[i-1].elementId).value = "C";
-                    document.getElementById(indice.elementId).value = parseInt(selected_row.cells[9].innerHTML.split('(')[0]);
+                    document.getElementById(indice.elementId).value = 
+                        (dont_show_clasificacion) ? parseInt(selected_row.cells[9].innerHTML) 
+                                                    : parseInt(selected_row.cells[9].innerHTML.split('(')[0]);
 
                     show_tipo_in_form(selected_row.cells[9].innerHTML);
 
@@ -955,10 +1036,18 @@ function editRow(row_to_edit)
 
                     //D
                     document.getElementById(indices[i-1].elementId).value = "D";
-                    document.getElementById(indice.elementId).value = parseInt(selected_row.cells[10].innerHTML.split('(')[0]);
+                    document.getElementById(indice.elementId).value = 
+                        (dont_show_clasificacion) ? parseInt(selected_row.cells[10].innerHTML) 
+                                                    : parseInt(selected_row.cells[10].innerHTML.split('(')[0]);
 
                     show_tipo_in_form(selected_row.cells[10].innerHTML);
                 }
+
+            break;
+
+            case 'selector_cuenta':
+
+                document.getElementById(indices[i].elementId).value = selected_row.cells[11].innerHTML;
 
             break;
 
@@ -992,6 +1081,12 @@ function get_tipo_de_gasto(value){
 }
 
 function show_tipo_in_form(value){
+
+    if(dont_show_clasificacion){
+
+        return;
+
+    }
 
     var temp = value.split('('); //numero(a.b) => [numero, a.b)]
     temp = temp[1].split(')'); //a.b) => [a.b]
@@ -1072,9 +1167,20 @@ var base_index;
 
 function updateClaseDeGasto(){
 
+    if(dont_show_clasificacion){
+
+        return;
+
+    }
+
     var clases_de_gasto_json = JSON.parse($('#clases_de_gasto').attr('value'));
 
     var select_base = $("#clase_de_gasto_select")[0];
+
+    $('#clase_de_gasto_select')
+      .find('option')
+      .remove()
+      .end();
 
     for(i = 0; i < clases_de_gasto_json.length; i++){
 

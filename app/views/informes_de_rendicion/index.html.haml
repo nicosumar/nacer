@@ -9,49 +9,107 @@
   %h1 Informes de Rendición y Compras
   #action-links
     - if can? :create, InformeDeRendicion
-      = link_to 'Nuevo informe', informes_de_rendicion_path + '/new'
+      - if @convenios_administracion.empty?
+        = link_to 'Nuevo informe', informes_de_rendicion_path + '/new'
 
 = render :partial => "shared/info"
 
 #content-body
   %h2.first-header Listado de Informes de Rendición y Compras
 
-  - if @informes_de_rendicion.size > 0
-    %table{:width => "100%"} 
-      %thead
-        %tr
-          %th #
-          %th Fecha
-          %th Total
-          %th Estado
-          %th{:colspan => 2} Acciones
-          %th{:colspan => 2} Administración
-      %tbody
-        - @informes_de_rendicion.each do |a|
-          %tr
-            %td{align: "center"}= a.codigo
-            %td{align: "center"}= l(a.fecha_informe, format: "%B/%Y").upcase
-            %td{align: "center"} 
-              $
-              = a.total.blank? ? "-" : a.total
-            %td{align: "center"}= a.estado_del_proceso.nombre
-            %td{align: "center", width: "10%"} 
-              = button_to 'VER', informes_de_rendicion_path + "/" + a.id.to_s, :method => :get
-            - if a.estado_del_proceso.id == 2
-              %td{align: "center", width: "10%"}
-                = button_to 'ELIMINAR', informes_de_rendicion_path + "/" + a.id.to_s + "?operacion=delete", :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro? Una vez eliminado no podrá recuperarlo, deberá crearlo nuevamente desde cero."
-            - else 
-              %td{align: "center", width: "10%"} No se puede eliminar
-            - if a.estado_del_proceso.id == 3 
-              %td{align: "center", width: "10%", class: "confirmar_button"}
-                = button_to 'CERRAR',  informes_de_rendicion_path + "/" + a.id.to_s + "?operacion=confirm", :method => :put, :style => 'color:#006e00;', :confirm => "¿Está seguro? Una vez cerrado no podrá volver a editarse."
-              %td{align: "center", width: "10%", class: "rechazar_button"}
-                = button_to 'RECHAZAR',  informes_de_rendicion_path + "/" + a.id.to_s + "?operacion=reject", :method => :put, :style => 'color:#6e0000;', :confirm => "Al realizar esta acción, el usuario podrá editar nuevamente el informe. ¿Está seguro?"
-            - else
-              - if a.estado_del_proceso.id == 4 
-                %td{align: "center", width: "10%", style: "color:#006e00;"} CERRADO
-              - else
-                %td{align: "center", width: "10%", style: "color:#006e00;"} Debe finalizarse primero para poder ser cerrado
-    = will_paginate @informes_de_rendicion, :inner_window => 2, :outer_window => 0
+  %hr
+
+  - if @convenios_administracion.any?
+
+    %div.field
+      %h2.first-header Generar Informe General de Rendición y Gastos
+      %h3.first-header-with-note Puedes usar esta función para generar un documento con todos los gastos realizados por estos efectores en el mes y año especificados.
+      %p.note Recuerda que solo se mostrarán los informes del mes y año especificados que se hayan finalizado o cerrado por el administrador.
+      = form_tag(informes_de_rendicion_path(:format => :odt), :method => :get) do 
+        .field
+          = label_tag "Mes: "
+          = select_month(Date.today, use_month_names: %w(Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre))
+          = label_tag "Año: "
+          = select_year(Date.today)
+          %br
+          %br
+          = button_tag "Generar Documento"
+
+    %hr
+    %br
+
+    %div.field
+      %h2.first-header Generar Reporte General de Uso de Fondos
+      %h3.first-header-with-note Puedes usar esta función para generar un documento con todos los gastos realizados por estos efectores en el mes y año especificados, clasificados según clase y tipo de gasto.
+      %p.note Recuerda que solo se mostrarán los informes del mes y año especificados que se hayan finalizado o cerrado por el administrador.
+      = form_tag(informes_de_rendicion_path(:format => :odt2), :method => :get) do 
+        .field
+          = label_tag "Mes: "
+          = select_month(Date.today, use_month_names: %w(Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre))
+          = label_tag "Año: "
+          = select_year(Date.today)
+          %br
+          %br
+          = button_tag "Generar Documento"
+
+    %hr
+    %br
+
+    - @efectores_administrados.each do |efector|
+
+      %div.field_content
+        %span.field_name Efector
+        %span.field_value{:style => "background-color: #e0e0e0;"}= efector.nombre
+
+      %div.field_content
+        %span.field_name CUIE
+        %span.field_value{:style => "background-color: #e0e0e0;"}= efector.cuie
+
+      #action-links
+        - if can? :create, InformeDeRendicion
+          = link_to 'Nuevo informe', informes_de_rendicion_path + '/new?efector=' + efector.id.to_s
+
+      %br
+      %br
+      %br
+
+      - if efector.informes_de_rendicion.any?
+
+        %table{:width => "100%"} 
+          %thead
+            %tr
+              %th #
+              %th Fecha
+              %th Total
+              %th Estado
+              %th{:colspan => 2} Acciones
+              %th{:colspan => 2} Administración
+
+          = render :partial => "indextable", :locals => {:informes => efector.informes_de_rendicion }
+
+      - else
+        No hay ningún informe asociado a este efector. Por favor, ingrese en "Nuevo Informe" para crear uno.
+
+      %br
+      %hr
+      %br
+
   - else
-    No hay ningún informe de rendición cargado en el sistema. Seleccione la opción "Nuevo Informe" para crear uno nuevo.
+
+    - if @informes_de_rendicion.any?
+
+      %table{:width => "100%"} 
+        %thead
+          %tr
+            %th #
+            %th Fecha
+            %th Total
+            %th Estado
+            %th{:colspan => 2} Acciones
+            %th{:colspan => 2} Administración
+
+        = render :partial => "indextable", :locals => {:informes => @informes_de_rendicion }
+
+    - else 
+      No hay ningún informe asociado a este efector. Por favor, ingrese en "Nuevo Informe" para crear uno.
+    

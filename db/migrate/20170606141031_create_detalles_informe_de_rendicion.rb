@@ -5,6 +5,7 @@ class CreateDetallesInformeDeRendicion < ActiveRecord::Migration
       t.date :fecha_factura
       t.string :numero_factura
       t.string :detalle
+      t.string :cuenta
       t.integer :cantidad
       t.string :numero_cheque
       t.references :informe_de_rendicion

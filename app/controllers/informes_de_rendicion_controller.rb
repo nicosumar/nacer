@@ -15,6 +15,26 @@ class InformesDeRendicionController < ApplicationController
       return
     end
 
+    @efector_local = @uad_actual.efector
+
+    if @efector_local.unidad_de_alta_de_datos == nil
+      redirect_to( root_url,
+        :flash => {:tipo => :error, :titulo => "Unidad de Alta de Datos no habilitada para esta operación",
+          :mensaje => "La UAD actual no puede realizar esta operación."
+        }
+      )
+      return
+    end
+
+    if @efector_local.unidad_de_alta_de_datos.facturacion == false
+      redirect_to( root_url,
+        :flash => {:tipo => :error, :titulo => "Unidad de Alta de Datos no habilitada para esta operación",
+          :mensaje => "La UAD actual no puede realizar esta operación."
+        }
+      )
+      return
+    end
+
     resultado = params[:result]
 
     if resultado == 'ok'
@@ -45,9 +65,210 @@ class InformesDeRendicionController < ApplicationController
       @permiso = "no_puede_confirmar"
     end
 
-    @informes_de_rendicion =
-      InformeDeRendicion.where(:efector_id => @uad_actual.efector.id, :estado_del_proceso_id => [2,3,4]).paginate(:page => params[:page], :per_page => 12, 
-        :include => [:estado_del_proceso, :efector], :order => "updated_at DESC")
+    @convenios_administracion = ConvenioDeAdministracionSumar.where(:administrador_id => @uad_actual.efector.id)
+
+    if @convenios_administracion.count > 0
+
+      #en este caso seria un area o un municipio
+      ids_administrados = @convenios_administracion.map{|convenio| convenio.efector_id}
+
+      @efectores_administrados = Efector.where(:id => ids_administrados)
+
+    else
+      
+      #en este caso sería un hospital o un centro de salud
+
+      @informes_de_rendicion =
+        InformeDeRendicion.where(:efector_id => @uad_actual.efector.id, :estado_del_proceso_id => [2,3,4]).paginate(:page => params[:page], :per_page => 12, 
+          :include => [:estado_del_proceso, :efector], :order => "fecha_informe ASC")
+    
+    end
+
+    if params[:date] == nil
+      return;
+    end
+
+    @convenios_administracion = ConvenioDeAdministracionSumar.where(:administrador_id => @uad_actual.efector.id)
+
+    @administrador = @uad_actual.efector
+
+    ids_administrados = @convenios_administracion.map{|convenio| convenio.efector_id}
+
+    @efectores_administrados = Efector.where(:id => ids_administrados)
+
+    @informes_de_rendicion_compuesto = InformeDeRendicion.where("date_part('year',fecha_informe) = ? 
+      and date_part('month',fecha_informe) = ? 
+      and efector_id in (?) 
+      and estado_del_proceso_id >= 3", params[:date][:year].to_s, params[:date][:month].to_s, ids_administrados)
+
+    fecha = params[:date][:month].to_s + " - " + params[:date][:year].to_s
+
+    total_servicios = 0
+    total_obras = 0
+    total_ctes = 0
+    total_capital = 0
+    total_final = 0
+
+    @informes_de_rendicion_compuesto.each do |informe|
+
+      total_servicios += informe.get_total_servicios
+      total_obras += informe.get_total_obras
+      total_ctes += informe.get_total_ctes
+      total_capital += informe.get_total_capital
+
+    end
+
+    total_final = total_servicios + total_obras + total_ctes + total_capital
+
+    respond_to do |format|
+      
+      format.odt do
+
+        report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de informe de rendicion y compra compuesto.odt") do |r|
+            
+          r.add_field :codigo_informe, @administrador.cuie + "-" + params[:date][:year] + "-" + params[:date][:month]
+          r.add_field :efector_nombre, @administrador.nombre
+          r.add_field :referente_al_dia, @administrador.referente_al_dia.contacto.nombres + " " + @administrador.referente_al_dia.contacto.apellidos
+          r.add_field :banco_cuenta_principal, @administrador.banco_cuenta_principal
+          r.add_field :banco_denominacion, @administrador.denominacion_cuenta_principal
+
+          r.add_field :fecha_informe, params[:date][:month].to_s + "/" + params[:date][:year].to_s
+          
+          r.add_field :departamento, @administrador.departamento.nombre
+          r.add_field :banco_numero_cuenta, @administrador.numero_de_cuenta_principal
+          r.add_field :banco_numero_cuit, @administrador.cuit
+          
+          r.add_field :mes_informe, params[:date][:month].to_s
+          r.add_field :anio_informe, params[:date][:year].to_s
+
+          r.add_field :total_final, total_final.to_f
+          r.add_field :servicios, total_servicios.to_f
+          r.add_field :obras, total_obras.to_f
+          r.add_field :corrientes, total_ctes.to_f
+          r.add_field :capital, total_capital.to_f
+
+          if @informes_de_rendicion_compuesto == []
+            r.add_field :data, "Ninguno de los efectores administrados posee un informe de rendición y compras cargado y finalizado en el sistema."
+          else
+            r.add_field :data, ""
+          end
+
+          r.add_section("Cuerpo", @informes_de_rendicion_compuesto, header: false) do |s|
+
+            s.add_field :nombre, :get_nombre_efector
+            s.add_field (:codigo) {|informe| informe.get_cuie_efector + "-" + params[:date][:year].to_s + "-" + params[:date][:month].to_s}
+
+            s.add_table("Detalles", :detalles_informe_de_rendicion, header: false) do |t|
+
+              t.add_column(:numero, :numero)
+              t.add_column(:fecha_factura, :fecha_factura.to_s)
+              t.add_column(:numero_factura, :numero_factura)
+              t.add_column(:detalle, :detalle)
+              t.add_column(:cantidad, :cantidad)
+              t.add_column(:numero_cheque, :numero_cheque)
+              
+              t.add_column(:importe_servicios, :importe_servicios)
+              t.add_column(:importe_obras, :importe_obras)
+              t.add_column(:importe_ctes, :importe_ctes)
+              t.add_column(:importe_capital, :importe_capital)
+
+              t.add_column(:cuenta, :cuenta)
+
+            end
+
+            s.add_field :total, :get_total
+            s.add_field :total_servicios, :get_total_servicios
+            s.add_field :total_obras, :get_total_obras
+            s.add_field :total_ctes, :get_total_ctes
+            s.add_field :total_capital, :get_total_capital
+
+          end 
+          
+        end
+
+        archivo = report.generate("lib/tasks/datos/documentos/Informe de Rendicion y Compra #{fecha} - #{@administrador.nombre.gsub("/", "_")}.odt")
+
+        File.chmod(0644, "lib/tasks/datos/documentos/Informe de Rendicion y Compra #{fecha} - #{@administrador.nombre.gsub("/", "_")}.odt")
+
+        send_file(archivo)
+
+        return
+
+      end
+
+      format.odt2 do
+
+        report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de aplicacion de fondos compuesto.odt") do |r|
+
+          r.add_field :nombre_efector, @administrador.nombre
+          r.add_field :cuie, @administrador.cuie
+          r.add_field :mes, params[:date][:month].to_s
+          r.add_field :anio, params[:date][:year].to_s
+
+          OJO! --> ACA FALTA LO DEL ADMINISTRADOR (que es como un valor global de cada informe especifico) y tambien
+          me falta poner los nombres de los efectores y cuies en los particulares
+
+          r.add_table("EfectorAdministrado", @informes_de_rendicion_compuesto, header: false) do |t|
+
+            t.add_field :global, :get_total
+
+            t.add_field :total1, :get_total_1
+            
+            t.add_field :val11, :get_total_11
+            t.add_field :val12, :get_total_12
+            t.add_field :val13, :get_total_13
+
+            t.add_field :total2, :get_total_2
+
+            t.add_field :val21, :get_total_21
+            t.add_field :val22, :get_total_22
+            t.add_field :val23, :get_total_23
+
+            t.add_field :total3, :get_total_3
+
+            t.add_field :val31, :get_total_31
+            t.add_field :val32, :get_total_32
+
+            t.add_field :total4, :get_total_4
+
+            t.add_field :val41, :get_total_41
+            t.add_field :val42, :get_total_42
+            t.add_field :val43, :get_total_43
+
+            t.add_field :total5, :get_total_5
+
+            t.add_field :val51, :get_total_51
+            t.add_field :val52, :get_total_52
+            t.add_field :val53, :get_total_53
+
+            t.add_field :total6, :get_total_6
+
+            t.add_field :val61, :get_total_61
+            t.add_field :val62, :get_total_62
+            t.add_field :val63, :get_total_63
+
+            t.add_field :total7, :get_total_7
+
+            t.add_field :val71, :get_total_71
+
+          end
+          
+        end
+
+        archivo = report.generate("lib/tasks/datos/documentos/Reporte de Uso de Fondos #{fecha} - #{@administrador.nombre.gsub("/", "_")}.odt")
+
+        File.chmod(0644, "lib/tasks/datos/documentos/Reporte de Uso de Fondos #{fecha} - #{@administrador.nombre.gsub("/", "_")}.odt")
+
+        send_file(archivo)
+
+        return
+
+      end
+
+      format.html do
+      end
+
+    end
 
   end
 
@@ -63,7 +284,19 @@ class InformesDeRendicionController < ApplicationController
       return
     end
 
-    if @uad_actual.facturacion == false
+    id_efector = params[:efector]
+
+    if id_efector != nil
+
+      @efector_local = Efector.find(id_efector, :include => [:unidad_de_alta_de_datos])
+
+    else 
+
+      @efector_local = @uad_actual.efector
+
+    end
+
+    if @efector_local.unidad_de_alta_de_datos == nil
       redirect_to( root_url,
         :flash => {:tipo => :error, :titulo => "Unidad de Alta de Datos no habilitada para esta operación",
           :mensaje => "La UAD actual no puede realizar esta operación."
@@ -72,7 +305,16 @@ class InformesDeRendicionController < ApplicationController
       return
     end
 
-    if @uad_actual.efector.referente_al_dia.nil? 
+    if @efector_local.unidad_de_alta_de_datos.facturacion == false
+      redirect_to( root_url,
+        :flash => {:tipo => :error, :titulo => "Unidad de Alta de Datos no habilitada para esta operación",
+          :mensaje => "La UAD actual no puede realizar esta operación."
+        }
+      )
+      return
+    end
+
+    if @efector_local.referente_al_dia.nil? 
       redirect_to( informes_de_rendicion_path,
         :flash => { :tipo => :advertencia, :titulo => "No hay un referente activo en esta unidad de alta de datos",
           :mensaje => "Para continuar usted deberá actualizar los datos de su referente. 
@@ -81,6 +323,12 @@ class InformesDeRendicionController < ApplicationController
       )
       return
   	end
+
+    if current_user.in_group? [:administradores]
+      @permiso = "puede_clasificar"
+    else 
+      @permiso = "no_puede_clasificar"
+    end
 
     # Crear los objetos necesarios para la vista
     @operacion = 0
@@ -117,6 +365,12 @@ class InformesDeRendicionController < ApplicationController
       return
     end
 
+    if current_user.in_group? [:administradores]
+      @permiso = "puede_clasificar"
+    else 
+      @permiso = "no_puede_clasificar"
+    end
+
     resultado = params[:result]
 
     if resultado == 'ok'
@@ -137,22 +391,11 @@ class InformesDeRendicionController < ApplicationController
 
     end
 
-    # # Verificar los permisos del usuario
-    # if cannot? :read, AddendaSumar
-    #   redirect_to( root_url,
-    #     :flash => { :tipo => :error, :titulo => "No está autorizado para acceder a esta página",
-    #       :mensaje => "Se informará al administrador del sistema sobre este incidente."
-    #     }
-    #   )
-    #   return
-    # end
-
-    # Obtener la adenda solicitada
     begin
 
       @operacion = 1
-      @informe_de_rendicion = InformeDeRendicion.find(params[:id], :include => [:detalles_informe_de_rendicion, :estado_del_proceso, :efector])
 
+      @informe_de_rendicion = InformeDeRendicion.find(params[:id], :include => [:detalles_informe_de_rendicion, :estado_del_proceso, :efector])
       @tipos_de_gasto_por_detalle = get_tipos_de_gasto_por_detalle
 
     rescue ActiveRecord::RecordNotFound
@@ -197,6 +440,8 @@ class InformesDeRendicionController < ApplicationController
               t.add_column(:importe_ctes, :importe_ctes)
               t.add_column(:importe_capital, :importe_capital)
 
+              t.add_column(:cuenta, :cuenta)
+
             end
             
             r.add_field :total, @informe_de_rendicion.get_total
@@ -210,6 +455,66 @@ class InformesDeRendicionController < ApplicationController
         archivo = report.generate("lib/tasks/datos/documentos/Informe de Rendicion y Compra #{@informe_de_rendicion.id} - #{@informe_de_rendicion.efector.nombre.gsub("/", "_")}.odt")
 
         File.chmod(0644, "lib/tasks/datos/documentos/Informe de Rendicion y Compra #{@informe_de_rendicion.id} - #{@informe_de_rendicion.efector.nombre.gsub("/", "_")}.odt")
+
+        send_file(archivo)
+
+      end
+
+      format.odt2 do
+          
+          report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de aplicacion de fondos.odt") do |r|
+            
+            r.add_field :nombre_efector, @informe_de_rendicion.efector.nombre
+            r.add_field :cuie, @informe_de_rendicion.efector.cuie
+            r.add_field :mes, @informe_de_rendicion.fecha_informe.month.to_s
+            r.add_field :anio, @informe_de_rendicion.fecha_informe.year.to_s
+
+            r.add_field :global, @informe_de_rendicion.get_total
+
+            r.add_field :total1, @informe_de_rendicion.get_total_1
+            
+            r.add_field :val11, @informe_de_rendicion.get_total_11
+            r.add_field :val12, @informe_de_rendicion.get_total_12
+            r.add_field :val13, @informe_de_rendicion.get_total_13
+
+            r.add_field :total2, @informe_de_rendicion.get_total_2
+
+            r.add_field :val21, @informe_de_rendicion.get_total_21
+            r.add_field :val22, @informe_de_rendicion.get_total_22
+            r.add_field :val23, @informe_de_rendicion.get_total_23
+
+            r.add_field :total3, @informe_de_rendicion.get_total_3
+
+            r.add_field :val31, @informe_de_rendicion.get_total_31
+            r.add_field :val32, @informe_de_rendicion.get_total_32
+
+            r.add_field :total4, @informe_de_rendicion.get_total_4
+
+            r.add_field :val41, @informe_de_rendicion.get_total_41
+            r.add_field :val42, @informe_de_rendicion.get_total_42
+            r.add_field :val43, @informe_de_rendicion.get_total_43
+
+            r.add_field :total5, @informe_de_rendicion.get_total_5
+
+            r.add_field :val51, @informe_de_rendicion.get_total_51
+            r.add_field :val52, @informe_de_rendicion.get_total_52
+            r.add_field :val53, @informe_de_rendicion.get_total_53
+
+            r.add_field :total6, @informe_de_rendicion.get_total_6
+
+            r.add_field :val61, @informe_de_rendicion.get_total_61
+            r.add_field :val62, @informe_de_rendicion.get_total_62
+            r.add_field :val63, @informe_de_rendicion.get_total_63
+
+            r.add_field :total7, @informe_de_rendicion.get_total_7
+
+            r.add_field :val71, @informe_de_rendicion.get_total_71
+
+          end
+
+        archivo = report.generate("lib/tasks/datos/documentos/Reporte de Uso De Fondos #{@informe_de_rendicion.id} - #{@informe_de_rendicion.efector.nombre.gsub("/", "_")}.odt")
+
+        File.chmod(0644, "lib/tasks/datos/documentos/Reporte de Uso De Fondos #{@informe_de_rendicion.id} - #{@informe_de_rendicion.efector.nombre.gsub("/", "_")}.odt")
 
         send_file(archivo)
 
@@ -249,9 +554,17 @@ class InformesDeRendicionController < ApplicationController
       return
     end
 
+    if current_user.in_group? [:administradores]
+      @permiso = "puede_clasificar"
+    else 
+      @permiso = "no_puede_clasificar"
+    end
+
     # Crear los objetos necesarios para la vista
     @operacion = 2
     @informe_de_rendicion = InformeDeRendicion.find(params[:id], :include => [:detalles_informe_de_rendicion => [ :tipo_de_gasto => [:clase_de_gasto] ] ] )
+
+    @efector_local = Efector.find(@informe_de_rendicion.efector_id)
 
     @tipos_de_gasto_por_detalle = get_tipos_de_gasto_por_detalle
 
@@ -397,6 +710,12 @@ class InformesDeRendicionController < ApplicationController
 
     else #EDITAR INFORME
 
+      if current_user.in_group? [:administradores]
+        @permiso = "puede_clasificar"
+      else 
+        @permiso = "no_puede_clasificar"
+      end
+
       #PARAMETROS QUE USO PARA OTRA COSILLA
 
       cantidad_detalles = params[:cantidad_detalles]
@@ -464,6 +783,7 @@ class InformesDeRendicionController < ApplicationController
               detalle_informe_de_rendicion.numero_cheque = params[:numeros_cheque][$i]
               detalle_informe_de_rendicion.tipo_de_importe_id = params[:tipos_de_importe][$i]
               detalle_informe_de_rendicion.importe = params[:importes][$i].to_f
+              detalle_informe_de_rendicion.cuenta = params[:cuentas][$i]
 
               clase_de_gasto = ClaseDeGasto.where(:numero => params[:clases_de_gasto][$i]).first
               tipo_de_gasto = TipoDeGasto.where(:numero => params[:tipos_de_gasto][$i], :clase_de_gasto_id => clase_de_gasto.id).first
@@ -601,6 +921,7 @@ class InformesDeRendicionController < ApplicationController
             detalle_informe_de_rendicion.numero_cheque = params[:numeros_cheque][$i]
             detalle_informe_de_rendicion.tipo_de_importe_id = params[:tipos_de_importe][$i]
             detalle_informe_de_rendicion.importe = params[:importes][$i].to_f
+            detalle_informe_de_rendicion.cuenta = params[:cuentas][$i]
 
             clase_de_gasto = ClaseDeGasto.where(:numero => params[:clases_de_gasto][$i]).first
             tipo_de_gasto = TipoDeGasto.where(:numero => params[:tipos_de_gasto][$i], :clase_de_gasto_id => clase_de_gasto.id).first
