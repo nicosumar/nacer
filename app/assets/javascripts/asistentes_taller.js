@@ -1,11 +1,25 @@
 $(document).ready(function() {
+  
     var cantidadMinima = 10;
     var cantidadMaxima = 20;
+    
+
     var a = $('#asistente')[0].outerHTML;
-    if ($('#asistentes').children('#asistente').length < 2){
-        $('#asistentes').children('#asistente').remove();
-        $('#asistentes').hide();
-    }
+     if ($('#asistentes').children('#asistente').length < 2){
+         $('#asistentes').children('#asistente').remove();
+         $('#asistentes').hide();
+     }
+
+    $('#atributos_reportables').change(
+
+        function(){
+            alert(('#dato_reportable_requerido_61').var());
+
+        }
+
+    );
+    
+
     $(document.body).on('click', '.agregar' ,function(){
         if($('#asistentes').children('#asistente').length < cantidadMaxima){
             if($('#asistentes').children('#asistente').length == 0){
@@ -26,6 +40,7 @@ $(document).ready(function() {
         $(this).datepicker();
     });*/
     $(document.body).on('click', '.quitar' ,function(){
+       
         if($('#asistentes').children('#asistente').length > cantidadMinima){
             $('#prestacion_brindada_datos_reportables_asociados_attributes_1_valor_integer').val(parseInt("10", $('#prestacion_brindada_datos_reportables_asociados_attributes_1_valor_integer').val()) - 1);
             $(this).parent().remove();
@@ -34,10 +49,12 @@ $(document).ready(function() {
         }
     });
     $(document.body).on('click', '.quitarTodos' ,function(){
+  
         $('#prestacion_brindada_datos_reportables_asociados_attributes_1_valor_integer').val(0);
         $('#asistentes').children('#asistente').remove();
     });
     $(document.body).on('change', '.select2' ,function(){
+  
         if($('#prestacion_brindada_datos_reportables_asociados_attributes_1_valor_integer').val() == 0){
             $('#asistentes').show();
             $('#prestacion_brindada_datos_reportables_asociados_attributes_1_valor_integer').val(0);

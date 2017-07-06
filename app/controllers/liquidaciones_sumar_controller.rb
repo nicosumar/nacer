@@ -174,6 +174,18 @@ class LiquidacionesSumarController < ApplicationController
 
 
 
+      begin
+      proceso_de_sistema = ProcesoDeSistema.new 
+      proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
+      if proceso_de_sistema.save 
+         Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
+         respuesta = { :tipo => :ok, :titulo => "El procesamiento de la liquidación se encoló correctamente" }
+      end
+      rescue
+        respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
+        status = :internal_server_error
+      end
+
     end
 
     respond_to do |format|
@@ -199,7 +211,6 @@ class LiquidacionesSumarController < ApplicationController
       
     begin
       unless respuesta.present?
-
         if ProcesoDeSistema.where("entidad_relacionada_id = ? and tipo_proceso_de_sistema_id = ?", @liquidacion_sumar.id, TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR)
             proceso_de_sistema = ProcesoDeSistema.new 
             proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
@@ -215,7 +226,7 @@ class LiquidacionesSumarController < ApplicationController
         else
             respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido encolada para generar las cuasifacturas!." }
             status = :method_not_allowed
-        end     
+        end
       end
     rescue Exception => e
       logger.warn e.inspect

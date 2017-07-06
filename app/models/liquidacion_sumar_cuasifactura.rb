@@ -137,4 +137,31 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
     })
     return cq_detalle
   end
+
+  def get_detalles_with_subdetalles
+    sql_detalle = "select \n " +
+      "pp.id prestacion_id, \n " +
+      "p.prestacion_codigo prestacion_codigo, \n " +
+      "p.prestacion_nombre prestacion_nombre,   \n " +
+      "COALESCE(pld.dato_reportable_id, 0) dato_reportable_id, \n " +
+      "pld.dato_reportable_nombre, \n " +
+      "pld.precio_por_unidad, \n " +
+      "COALESCE(pld.valor_integer, pl.cantidad_de_unidades) cantidad, \n " +
+      "pld.precio_por_unidad * COALESCE(pld.valor_integer, pl.cantidad_de_unidades) subtotal     \n " +
+    "from liquidaciones_sumar_cuasifacturas c \n " +
+      "join liquidaciones_sumar_cuasifacturas_detalles dc on dc.liquidaciones_sumar_cuasifacturas_id = c.id \n " +
+      "join prestaciones_liquidadas_datos pld on pld.prestacion_liquidada_id = dc.prestacion_liquidada_id \n " +
+      "join prestaciones_liquidadas pl on pld.prestacion_liquidada_id = pl.id \n " +
+      "join prestaciones_incluidas p on p.id = dc.prestacion_incluida_id \n " +
+      "join prestaciones pp on pp.id = p.prestacion_id \n " +
+      "join objetos_de_las_prestaciones op on op.id = pp.objeto_de_la_prestacion_id  \n " +
+     "where c.id = ? \n " +
+     "order by pp.id, dato_reportable_id ASC"
+    cq_detalle = CustomQuery.buscar (
+    {
+      sql: sql_detalle,
+      values: [self.id]
+    })
+    return cq_detalle
+  end
 end

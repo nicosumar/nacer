@@ -72,7 +72,7 @@ when 'cuasifactura_bas'
 
 when 'cuasifactura_ppac'
   cabecera = @liquidacion_sumar_cuasifactura.get_cabecera
-  cq_detalle = @liquidacion_sumar_cuasifactura.get_detalles
+  cq_detalle = @liquidacion_sumar_cuasifactura.get_detalles_with_subdetalles
 
   report.use_layout File.join(Rails.root, 'app', 'reports',"#{reporte}.tlf") do |config|
    # configuro la lista (:details)
@@ -120,39 +120,105 @@ when 'cuasifactura_ppac'
                cabecera[:nombre] : nil )
 
            )
+    
+    detalles_cuasifactura = []
+    row_prestacion_id = 0
+    row_prestacion_index = 0
+    indice = 0
+    
+    row_prestacion_detalle_id = ""
+    row_prestacion_detalle_index = 0
+    cq_detalle.each do |det|      
+      
+      if row_prestacion_id != det.prestacion_id && det.dato_reportable_id == "0"
+        row_prestacion_id = det.prestacion_id
+        row_prestacion_index = indice
+        row_prestacion = {
+          root: true,
+          prestacion_id: det.prestacion_id,
+          prestacion_codigo: det.prestacion_codigo,
+          prestacion_nombre: det.prestacion_nombre,
+          cantidad: 0,
+          subtotal: det.subtotal.to_d
+        }         
+        detalles_cuasifactura << row_prestacion
+        indice = indice + 1
 
-    cq_detalle.each do |det|
+        row_prestacion_detalle_id = det.dato_reportable_id
+        row_prestacion_detalle_index = indice
+        detalle = {
+          root: false,
+          prestacion_id: det.prestacion_id,
+          prestacion_codigo: det.prestacion_codigo,
+          prestacion_nombre: det.prestacion_nombre,
+          dato_reportable_id: det.dato_reportable_id,
+          dato_reportable_nombre: det.dato_reportable_nombre,
+          precio_por_unidad: det.precio_por_unidad,
+          cantidad: det.cantidad.to_i,
+          subtotal: det.subtotal.to_d
+        }
+        detalles_cuasifactura << detalle
+        indice = indice + 1
+
+      else
+        # Incremento el subtotal de la prestacion general
+        detalles_cuasifactura[row_prestacion_index][:subtotal] += det.subtotal.to_d
+        if row_prestacion_detalle_id != det.dato_reportable_id
+          row_prestacion_detalle_id = det.dato_reportable_id
+          row_prestacion_detalle_index = indice
+          detalle = {
+            prestacion_id: det.prestacion_id,
+            prestacion_codigo: det.prestacion_codigo,
+            prestacion_nombre: det.prestacion_nombre,
+            dato_reportable_id: det.dato_reportable_id,
+            dato_reportable_nombre: det.dato_reportable_nombre,
+            precio_por_unidad: det.precio_por_unidad,
+            cantidad: det.cantidad.to_i,
+            subtotal: det.subtotal.to_d
+          }
+          detalles_cuasifactura << detalle
+          indice = indice + 1
+        else
+          detalles_cuasifactura[row_prestacion_detalle_index][:cantidad] += det.cantidad.to_i
+          detalles_cuasifactura[row_prestacion_detalle_index][:subtotal] += det.subtotal.to_d
+        end        
+      end      
+    end
+
+    no_row = 0;
+    detalles_cuasifactura.each do |det|
       #agrego la fila a la lista de detalles
-      page.list(:details).add_row do |row|
-        row.values no: det.no,
-                   prestacion_nombre: det.prestacion_nombre,
-                   prestacion_codigo: det.prestacion_codigo,
-                   cant: det.cant,
-                   parcial: nil,
-                   cantidad: "$" + number_with_precision(det.cantidad, precision: 2, delimiter: "")
+      if det[:root]
+        no_row += 1
+        page.list(:details).add_row do |row|
+          row.values no: no_row,
+                     prestacion_nombre: det[:prestacion_nombre],
+                     prestacion_codigo: det[:prestacion_codigo],
+                     cant: "",
+                     parcial: nil,
+                     cantidad: "$" + number_with_precision(det[:subtotal], precision: 2, delimiter: "")
 
-        page.list(:details) do |list|
-          list.store.sub_total += det.cantidad.to_d
-          list.store.total += det.cantidad.to_d
+          page.list(:details) do |list|
+            list.store.sub_total += det[:subtotal].to_d
+            list.store.total += det[:subtotal].to_d
+          end
+        end
+      else
+        page.list(:details).add_row do |row|
+          row.values no: "",
+                     prestacion_nombre: "     -> " + det[:dato_reportable_nombre],
+                     prestacion_codigo: "",
+                     cant: det[:cantidad] + " $" + number_with_precision(det[:precio_por_unidad], precision: 2, delimiter: ""),
+                     parcial: "$" + number_with_precision(det[:subtotal], precision: 2, delimiter: ""),
+                     cantidad: ""
+
+          page.list(:details) do |list|
+            list.store.sub_total += det[:subtotal].to_d
+            list.store.total += det[:subtotal].to_d
+          end
         end
       end
-
-      prestacion_liquidada = PrestacionLiquidada.find det[:prestacion_liquidada_id]
-
-      if prestacion_liquidada.present?
-        prestacion_liquidada.prestaciones_liquidadas_datos.each do |pld|
-          prestacion_nombre = "       --> " + pld.nombre
-          #agrego el detalle de la liquidación
-          page.list(:details).add_row do |row|
-            row.values no: "",
-                       prestacion_nombre: prestacion_nombre,
-                       prestacion_codigo: "",
-                       cant: pld.cantidad,
-                       parcial: "$" + number_with_precision(pld.subtotal, precision: 2, delimiter: ""),
-                       cantidad: nil
-          end        
-        end
-      end
+      
     end
   end
 when 'cuasifactura_img'
