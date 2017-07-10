@@ -9,9 +9,11 @@
     - if @informe_de_rendicion.estado_del_proceso_id == 2
       = link_to 'Editar Informe', informes_de_rendicion_path + "/" + @informe_de_rendicion.id.to_s + "/edit/", :method => :get
       = link_to 'Finalizar Informe', informes_de_rendicion_path + "/" + @informe_de_rendicion.id.to_s + "?operacion=close", :method => :put, :confirm => "¿Está seguro? Recuerde: Una vez finalizado, no podrá editar este informe."
-    - if @informe_de_rendicion.estado_del_proceso_id == 3
+    - if @informe_de_rendicion.estado_del_proceso_id >= 3
       = link_to 'Generar Documento', informe_de_rendicion_path(@informe_de_rendicion, :format => :odt), :method => :get
-      = link_to 'Generar Reporte de Uso De Fondos', informe_de_rendicion_path(@informe_de_rendicion, :format => :odt2), :method => :get
+      - if @permiso.to_s == "puede_clasificar"
+        = link_to 'Editar Informe', informes_de_rendicion_path + "/" + @informe_de_rendicion.id.to_s + "/edit/", :method => :get
+        = link_to 'Generar Reporte de Uso De Fondos', informe_de_rendicion_path(@informe_de_rendicion, :format => :odt2), :method => :get
 
 = render :partial => "shared/info", :locals => { :registro => @informe_de_rendicion }
 

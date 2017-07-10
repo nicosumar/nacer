@@ -109,12 +109,53 @@ class InformesDeRendicionController < ApplicationController
     total_capital = 0
     total_final = 0
 
+    total_clasificado = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
     @informes_de_rendicion_compuesto.each do |informe|
 
       total_servicios += informe.get_total_servicios
       total_obras += informe.get_total_obras
       total_ctes += informe.get_total_ctes
       total_capital += informe.get_total_capital
+
+      total_clasificado[0] += (informe != nil) ? informe.get_total_1 : 0
+      
+      total_clasificado[1] += (informe != nil) ? informe.get_total_11 : 0
+      total_clasificado[2] += (informe != nil) ? informe.get_total_12 : 0
+      total_clasificado[3] += (informe != nil) ? informe.get_total_13 : 0
+      
+      total_clasificado[4] += (informe != nil) ? informe.get_total_2 : 0
+      
+      total_clasificado[5] += (informe != nil) ? informe.get_total_21 : 0
+      total_clasificado[6] += (informe != nil) ? informe.get_total_22 : 0
+      total_clasificado[7] += (informe != nil) ? informe.get_total_23 : 0
+      
+      total_clasificado[8] += (informe != nil) ? informe.get_total_3 : 0
+      
+      total_clasificado[9] += (informe != nil) ? informe.get_total_31 : 0
+      total_clasificado[10] += (informe != nil) ? informe.get_total_32 : 0
+      
+      total_clasificado[11] += (informe != nil) ? informe.get_total_4 : 0
+      
+      total_clasificado[12] += (informe != nil) ? informe.get_total_41 : 0
+      total_clasificado[13] += (informe != nil) ? informe.get_total_42 : 0
+      total_clasificado[14] += (informe != nil) ? informe.get_total_43 : 0
+      
+      total_clasificado[15] += (informe != nil) ? informe.get_total_5 : 0
+      
+      total_clasificado[16] += (informe != nil) ? informe.get_total_51 : 0
+      total_clasificado[17] += (informe != nil) ? informe.get_total_52 : 0
+      total_clasificado[18] += (informe != nil) ? informe.get_total_53 : 0
+      
+      total_clasificado[19] += (informe != nil) ? informe.get_total_6 : 0
+      
+      total_clasificado[20] += (informe != nil) ? informe.get_total_61 : 0
+      total_clasificado[21] += (informe != nil) ? informe.get_total_62 : 0
+      total_clasificado[22] += (informe != nil) ? informe.get_total_63 : 0
+      
+      total_clasificado[23] += (informe != nil) ? informe.get_total_7 : 0
+      
+      total_clasificado[24] += (informe != nil) ? informe.get_total_71 : 0
 
     end
 
@@ -136,7 +177,10 @@ class InformesDeRendicionController < ApplicationController
           
           r.add_field :departamento, @administrador.departamento.nombre
           r.add_field :banco_numero_cuenta, @administrador.numero_de_cuenta_principal
-          r.add_field :banco_numero_cuit, @administrador.cuit
+          
+          r.add_field :banco_numero2_cuenta, (@administrador.numero_de_cuenta_secundaria == nil) ? "-" : @administrador.numero_de_cuenta_secundaria
+
+          r.add_field :banco_numero_cuit, (@administrador.cuit == nil) ? "-" : @administrador.cuit
           
           r.add_field :mes_informe, params[:date][:month].to_s
           r.add_field :anio_informe, params[:date][:year].to_s
@@ -200,17 +244,54 @@ class InformesDeRendicionController < ApplicationController
 
         report = ODFReport::Report.new("lib/tasks/datos/plantillas/Modelo de aplicacion de fondos compuesto.odt") do |r|
 
-          r.add_field :nombre_efector, @administrador.nombre
-          r.add_field :cuie, @administrador.cuie
+          r.add_field :efector_adm, @administrador.nombre
+          r.add_field :cuie_adm, @administrador.cuie
           r.add_field :mes, params[:date][:month].to_s
           r.add_field :anio, params[:date][:year].to_s
 
-          OJO! --> ACA FALTA LO DEL ADMINISTRADOR (que es como un valor global de cada informe especifico) y tambien
-          me falta poner los nombres de los efectores y cuies en los particulares
+          r.add_field :a_total1, total_clasificado[0]
+            
+          r.add_field :a_val11, total_clasificado[1]
+          r.add_field :a_val12, total_clasificado[2]
+          r.add_field :a_val13, total_clasificado[3]
 
-          r.add_table("EfectorAdministrado", @informes_de_rendicion_compuesto, header: false) do |t|
+          r.add_field :a_total2, total_clasificado[4]
 
-            t.add_field :global, :get_total
+          r.add_field :a_val21, total_clasificado[5]
+          r.add_field :a_val22, total_clasificado[6]
+          r.add_field :a_val23, total_clasificado[7]
+
+          r.add_field :a_total3, total_clasificado[8]
+
+          r.add_field :a_val31, total_clasificado[9]
+          r.add_field :a_val32, total_clasificado[10]
+
+          r.add_field :a_total4, total_clasificado[11]
+
+          r.add_field :a_val41, total_clasificado[12]
+          r.add_field :a_val42, total_clasificado[13]
+          r.add_field :a_val43, total_clasificado[14]
+
+          r.add_field :a_total5, total_clasificado[15]
+
+          r.add_field :a_val51, total_clasificado[16]
+          r.add_field :a_val52, total_clasificado[17]
+          r.add_field :a_val53, total_clasificado[18]
+
+          r.add_field :a_total6, total_clasificado[19]
+
+          r.add_field :a_val61, total_clasificado[20]
+          r.add_field :a_val62, total_clasificado[21]
+          r.add_field :a_val63, total_clasificado[22]
+
+          r.add_field :a_total7, total_clasificado[23]
+
+          r.add_field :a_val71, total_clasificado[24]
+
+          r.add_section("EfectorAdministrado", @informes_de_rendicion_compuesto, header: false) do |t|
+
+            t.add_field :nombre_efector, :get_nombre_efector
+            t.add_field :cuie, :get_cuie_efector
 
             t.add_field :total1, :get_total_1
             
@@ -420,7 +501,11 @@ class InformesDeRendicionController < ApplicationController
             r.add_field :fecha_informe, @informe_de_rendicion.fecha_informe.day.to_s + "/" + @informe_de_rendicion.fecha_informe.month.to_s + "/" + @informe_de_rendicion.fecha_informe.year.to_s
             r.add_field :departamento, @informe_de_rendicion.efector.departamento.nombre
             r.add_field :banco_numero_cuenta, @informe_de_rendicion.efector.numero_de_cuenta_principal
-            r.add_field :banco_numero_cuit, @informe_de_rendicion.efector.cuit
+
+            r.add_field :banco_numero2_cuenta, (@informe_de_rendicion.efector.numero_de_cuenta_secundaria == nil) ? "-" : @informe_de_rendicion.efector.numero_de_cuenta_secundaria
+
+            r.add_field :banco_numero_cuit, (@informe_de_rendicion.efector.cuit == nil) ? "-" : @informe_de_rendicion.efector.cuit
+            
             r.add_field :mes_informe, @informe_de_rendicion.fecha_informe.month
             r.add_field :anio_informe, @informe_de_rendicion.fecha_informe.year
 
@@ -774,6 +859,8 @@ class InformesDeRendicionController < ApplicationController
             detalle_informe_de_rendicion.informe_de_rendicion_id = informe_de_rendicion.id
             detalle_informe_de_rendicion.detalle = params[:detalles][$i]
 
+            detalle_informe_de_rendicion.tipo_de_gasto_id = -1 #por defecto le pongo -1. Si tiene algo, se lo edito luego
+
             if con_movimientos
 
               detalle_informe_de_rendicion.numero = params[:numeros][$i]
@@ -912,6 +999,8 @@ class InformesDeRendicionController < ApplicationController
           detalle_informe_de_rendicion.informe_de_rendicion_id = informe_de_rendicion.id
           detalle_informe_de_rendicion.detalle = params[:detalles][$i]
 
+          detalle_informe_de_rendicion.tipo_de_gasto_id = -1 #por defecto le pongo -1. Si tiene algo, se lo edito luego
+
           if con_movimientos
 
             detalle_informe_de_rendicion.numero = params[:numeros][$i]
@@ -984,6 +1073,12 @@ class InformesDeRendicionController < ApplicationController
   private
 
   def get_tipos_de_gasto_por_detalle
+
+    if(@informe_de_rendicion.detalles_informe_de_rendicion[0].tipo_de_gasto_id == -1)
+    
+      return ""
+
+    end
     
     result = @informe_de_rendicion.detalles_informe_de_rendicion.map do |d|
       

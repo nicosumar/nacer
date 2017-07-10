@@ -38,22 +38,24 @@
     %hr
     %br
 
-    %div.field
-      %h2.first-header Generar Reporte General de Uso de Fondos
-      %h3.first-header-with-note Puedes usar esta función para generar un documento con todos los gastos realizados por estos efectores en el mes y año especificados, clasificados según clase y tipo de gasto.
-      %p.note Recuerda que solo se mostrarán los informes del mes y año especificados que se hayan finalizado o cerrado por el administrador.
-      = form_tag(informes_de_rendicion_path(:format => :odt2), :method => :get) do 
-        .field
-          = label_tag "Mes: "
-          = select_month(Date.today, use_month_names: %w(Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre))
-          = label_tag "Año: "
-          = select_year(Date.today)
-          %br
-          %br
-          = button_tag "Generar Documento"
+    - if @permiso.to_s == "puede_confirmar"
 
-    %hr
-    %br
+      %div.field
+        %h2.first-header Generar Reporte General de Uso de Fondos
+        %h3.first-header-with-note Puedes usar esta función para generar un documento con todos los gastos realizados por estos efectores en el mes y año especificados, clasificados según clase y tipo de gasto.
+        %p.note Recuerda que solo se mostrarán los informes del mes y año especificados que se hayan finalizado o cerrado por el administrador.
+        = form_tag(informes_de_rendicion_path(:format => :odt2), :method => :get) do 
+          .field
+            = label_tag "Mes: "
+            = select_month(Date.today, use_month_names: %w(Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre))
+            = label_tag "Año: "
+            = select_year(Date.today)
+            %br
+            %br
+            = button_tag "Generar Documento"
+
+      %hr
+      %br
 
     - @efectores_administrados.each do |efector|
 
