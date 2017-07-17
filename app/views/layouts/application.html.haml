@@ -24,6 +24,7 @@
 
           -# NUEVO MENÚ
           %ul{:id => "newmenu"}
+
             - if can?(:read, NovedadDelAfiliado) && uad_actual.inscripcion
               %li
                 %a.drop{:href => "#"} PADRONES

@@ -23,3 +23,11 @@
 
   %p
     Puede comenzar a trabajar. Seleccione el módulo y operación deseados desde el menú superior.
+
+  - if uad_actual.facturacion?
+    
+    %hr
+    
+    %h2.first-header ADVERTENCIAS
+
+    = render :partial => "notificaciones", :locals => {:notificaciones => @notificaciones}
