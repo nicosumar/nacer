@@ -647,11 +647,11 @@ class PadronesController < ApplicationController
           @log_del_proceso.info("####***Iniciando Actualizacion del padrón***###")
           @log_del_proceso.info("******************************************************")
 
-
+         
 
          anio, mes = anio_y_mes.split("-")
          primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
-         origen = File.new("vendor/data/#{anio_y_mes}.txt.diff#{!params[:multiparte].blank? ? '.part' + params[:multiparte] : ''}", "r")
+         origen = File.new("vendor/data/#{anio_y_mes}.txt.diff", "r")
 
 
     rescue => e
