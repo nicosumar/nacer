@@ -654,10 +654,11 @@ class PadronesController < ApplicationController
          origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff#{!params[:multiparte].blank? ? '.part' + params[:multiparte] : ''}", "r")
 
 
-    rescue
+    rescue => e
      # @errores_presentes = true
       @log_del_proceso.info("La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor.")
-      return
+      raise e
+      #return
     end
 
     origen.each do |linea|
