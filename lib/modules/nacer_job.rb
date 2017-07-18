@@ -187,4 +187,23 @@ module NacerJob
     end 
 
   end
+
+
+    #Actualizacion de las novedades
+  class ActualizacionDelPadronJob < GenericJob
+
+    def tareasDeEncolado
+      @proceso_de_sistema.tipo_proceso_de_sistema_id = TiposProcesosDeSistemas::ACTUALIZACION_DEL_PADRON
+    end
+
+    def tareasDeProcesamiento 
+      if @parametros['anio_y_mes']
+         p = PadronesController.new
+         p.actualizacion_del_padron_X(@parametros['anio_y_mes']);
+      else
+        raise 'Parametros Faltantes o inconsistentes: '+ 'PadronesController.actualizacion_del_padron - (anio_y_mes)'
+      end
+    end 
+
+  end
 end
