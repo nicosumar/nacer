@@ -651,7 +651,7 @@ class PadronesController < ApplicationController
 
          anio, mes = anio_y_mes.split("-")
          primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
-         origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff#{!params[:multiparte].blank? ? '.part' + params[:multiparte] : ''}", "r")
+         origen = File.new("vendor/data/#{anio_y_mes}.txt.diff#{!params[:multiparte].blank? ? '.part' + params[:multiparte] : ''}", "r")
 
 
     rescue => e
