@@ -613,6 +613,52 @@ class PadronesController < ApplicationController
       @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
       return
     end
+    
+    proceso_de_sistema = ProcesoDeSistema.new 
+    proceso_de_sistema.descripcion = params[:anio_y_mes]
+    parametros = Hash.new
+    parametros['anio_y_mes'] =params[:anio_y_mes]  
+    proceso_de_sistema.parametros_dinamicos = parametros.to_json
+      
+    if proceso_de_sistema.save 
+        Delayed::Job.enqueue NacerJob::ActualizacionDelPadronJob.new(proceso_de_sistema.id)
+        @Exito = "La actualización del padron se encoló correctamente con id del proceso #{proceso_de_sistema.id}"
+    else
+        @errores = "Ocurrio un error en la actualización del padron"
+      return
+    end
+
+  end
+
+  def actualizacion_del_padron_X(anio_y_mes)
+
+     begin
+
+          @log_del_proceso = Logger.new("log/ActualizacionDelPadron.log",10, 1024000)
+          @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
+          date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+            if severity == "INFO" or severity == "WARN"
+              "[#{date_format}] #{severity}: #{msg}\n"
+              else        
+              "[#{date_format}] #{severity}: #{msg}\n"
+            end
+          end
+          @log_del_proceso.info("*****************************************************")
+          @log_del_proceso.info("####***Iniciando Actualizacion del padrón***###")
+          @log_del_proceso.info("******************************************************")
+
+
+
+         anio, mes = anio_y_mes.split("-")
+         primero_del_mes = Date.new(anio.to_i, mes.to_i, 1)
+         origen = File.new("vendor/data/#{params[:anio_y_mes]}.txt.diff#{!params[:multiparte].blank? ? '.part' + params[:multiparte] : ''}", "r")
+
+
+    rescue
+      @errores_presentes = true
+      @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
+      return
+    end
 
     origen.each do |linea|
       # Hacemos la actualización dentro de una transacción
@@ -833,9 +879,10 @@ class PadronesController < ApplicationController
         end
       end # Base::connection.transaction
     end
+    @log_del_proceso.info("Actualizacion del padron completada")
     origen.close
-
   end
+
 
   def actualizacion_de_las_novedades
     # Actualización de las novedades del padrón cargadas por las UADS

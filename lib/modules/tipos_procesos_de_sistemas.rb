@@ -11,4 +11,6 @@ module TiposProcesosDeSistemas
   CIERRE_DE_PADRON = 5
   
   ACTUALIZACION_DE_LAS_NOVEDADES = 6
+
+  ACTUALIZACION_DEL_PADRON = 7
 end
