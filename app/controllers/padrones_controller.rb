@@ -656,7 +656,7 @@ class PadronesController < ApplicationController
 
     rescue
      # @errores_presentes = true
-     # @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
+      @log_del_proceso.info("La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor.")
       return
     end
 
