@@ -655,8 +655,8 @@ class PadronesController < ApplicationController
 
 
     rescue
-      @errores_presentes = true
-      @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
+     # @errores_presentes = true
+     # @errores << "La fecha indicada del padrón es incorrecta, o no se subieron los archivos a procesar dentro de la carpeta correcta del servidor."
       return
     end
 
@@ -712,9 +712,9 @@ class PadronesController < ApplicationController
                 })
             end
           else
-            @errores_presentes = true
+            #@errores_presentes = true
             afiliado.errors.full_messages.each do |e|
-              @errores << "Afiliado " + afiliado.afiliado_id.to_s + ": " + e
+              @log_del_proceso.info( "Afiliado " + afiliado.afiliado_id.to_s + ": " + e)
             end
           end
         else
@@ -871,9 +871,9 @@ class PadronesController < ApplicationController
               end
             end
           else
-            @errores_presentes = true
+           # @errores_presentes = true
             afiliado.errors.full_messages.each do |e|
-              @errores << "Afiliado " + afiliado.afiliado_id.to_s + ": " + e
+              @log_del_proceso.info(@errores << "Afiliado " + afiliado.afiliado_id.to_s + ": " + e)
             end
           end
         end
