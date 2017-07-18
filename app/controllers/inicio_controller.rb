@@ -16,7 +16,7 @@ class InicioController < ApplicationController
 
   		else
   			
-        @notificaciones = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL").paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC")
+        @notificaciones = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL").paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC, created_at")
 
   		end
   	end
@@ -75,7 +75,7 @@ class InicioController < ApplicationController
   	@uad_actual.fecha_ultimas_notificaciones = Time.now
   	@uad_actual.save!
 
-  	@notificaciones = Notificacion.where(:unidad_de_alta_de_datos_id => @uad_actual.id).paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC")
+  	@notificaciones = Notificacion.where(:unidad_de_alta_de_datos_id => @uad_actual.id).paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC, created_at")
 
   end
 

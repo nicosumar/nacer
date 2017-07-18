@@ -35,7 +35,7 @@
         %tr
           %td{align: "center", width: "10%"}= a.fecha_evento
           %td{align: "center", width: "70%"}= a.mensaje
-          %td{align: "center"}= button_to 'VER',  a.enlace, :method => :get, :style => 'color:#006e00;'
-          %td{align: "center"}= button_to 'OCULTAR',  notificacion_path(:id => a.id, :page => params[:page]), :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro que desea ocultar esta advertencia?"
+          %td{align: "center"}= link_to 'VER',  a.enlace, :method => :get, :style => 'color:#006e00;'
+          %td{align: "center"}= link_to 'OCULTAR',  notificacion_path(:id => a.id, :page => params[:page]), :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro que desea ocultar esta advertencia?"
 
   = will_paginate @notificaciones, :inner_window => 2, :outer_window => 0
