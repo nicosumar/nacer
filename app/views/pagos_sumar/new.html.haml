@@ -1,0 +1,19 @@
+- content_for :title do
+  Asistente de generación de pagos
+
+- content_for :other_includes do
+  = stylesheet_link_tag 'smartwizard/smart_wizard'
+  = stylesheet_link_tag 'entradas'
+  = javascript_include_tag 'jquery.chained'
+  = javascript_include_tag 'jquery.smartWizard'
+  = javascript_include_tag 'pagos_sumar'
+
+#content-header
+  %h1 Asistente de pagos
+  #action-links
+    = link_to '<< Volver al listado', pagos_sumar_path
+
+#content-body
+  = render :partial => "shared/info", :locals => { :registro => @pago_sumar }
+  = render 'form'
+

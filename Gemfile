@@ -18,7 +18,9 @@ group :development do
   gem 'hirb-unicode'
   gem "better_errors"
   gem "binding_of_caller"
-  gem 'byebug' #Agregado
+  gem 'byebug'
+  gem 'thin'
+  gem 'meta_request' # para rails-panel (chrome)
 end
 
 gem 'jquery-rails'

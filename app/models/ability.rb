@@ -32,6 +32,9 @@ class Ability
       can :manage, LiquidacionInforme
       can :read, ProcesoDeSistema
       can :read, Prestacion
+      can :read, Banco
+      can :read, SucursalBancaria
+      can :manage, PagoSumar
     end
 
     if user.in_group? :liquidacion_ugsp
@@ -39,6 +42,9 @@ class Ability
       can :manage, LiquidacionSumarAnexoAdministrativo
       can :manage, Periodo
       can :manage, ParametroLiquidacionSumar
+      can :read, Banco
+      can :read, SucursalBancaria
+      can :manage, PagoSumar
     end
 
     if user.in_group? :operaciones
@@ -80,6 +86,7 @@ class Ability
       can :manage, Prestacion
       can :manage, PrestacionPrincipal
       can :manage,  SolicitudAddenda
+      can :manage, PagoSumar
     end
 
     if user.in_group? :convenios
@@ -95,6 +102,8 @@ class Ability
       can :update, Efector
       can :read, PrestacionAutorizada
       can :manage,  SolicitudAddenda
+      can :manage, Banco
+      can :manage, SucursalBancaria
     end
 
     if user.in_group? :auditoria_control
@@ -108,7 +117,7 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
-     
+      can :read, PagoSumar
     end
 
     if user.in_group? :coordinacion
@@ -122,6 +131,8 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :read, Banco
+      can :read, SucursalBancaria
     end
 
     if user.in_group? :planificacion
@@ -137,6 +148,8 @@ class Ability
       can :read, PrestacionAutorizada
       can :read, LiquidacionSumar
       can :manage, Prestacion
+      can :read, Banco
+      can :read, SucursalBancaria
     end
 
     if user.in_group? :inscripcion_uad
@@ -173,6 +186,8 @@ class Ability
       can :read, User
       can :read, LiquidacionSumar
       can :read, Prestacion
+      can :read, Banco
+      can :read, SucursalBancaria
     end
 
     if user.in_group? :usuarios_uads_verificacion

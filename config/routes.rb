@@ -15,9 +15,22 @@ Nacer::Application.routes.draw do
   get "prestaciones/autorizadas"
   get "diagnosticos/por_prestacion"
 
+  resources :pagos_sumar do
+    put :notificar, on: :member
+  end
+
+  resources :cuentas_bancarias do
+    get :destino_por_concepto_origen_efector, on: :collection
+  end
+  resources :sucursales_bancarias
+  resources :bancos
+  resources :organismos_gubernamentales
   resources :documentos_generables
-  resources :notas_de_debito
   resources :prestaciones_principales
+  
+  resources :notas_de_debito do
+    get :remanentes_por_efector, on: :collection
+  end
 
   resources :informes_debitos_prestacionales do
     resources :detalles_de_debitos_prestacionales, only: [:index, :create, :destroy]
@@ -28,6 +41,7 @@ Nacer::Application.routes.draw do
 
   resources :expedientes_sumar do
     get 'generar_caratulas_expedientes_por_liquidacion', as: :generar_caratulas_expedientes_por_liquidacion, action: :generar_caratulas_expedientes_por_liquidacion, on: :member
+    get :impagos_por_efector, on: :collection
   end
 
   get "documentos_electronicos/index"
@@ -38,7 +52,8 @@ Nacer::Application.routes.draw do
 
   #Liquidaciones - Sumar
   resources :conceptos_de_facturacion do
-    resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy]
+    resources :documentos_generables_por_conceptos, only: [:index, :create, :destroy] 
+    resources :movimientos_bancarios_autorizados, only: [:index, :create, :destroy]
   end
   resources :periodos
   resources :tipos_periodos

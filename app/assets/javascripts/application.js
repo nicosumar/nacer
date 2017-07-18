@@ -16,7 +16,7 @@
 //= require jquery.ui.effect-highlight
 //= require jquery.ui.all
 //= require chosen-jquery
-//= require wice_grid 
+//= require wice_grid
 //= require bootstrap
 //= require cocoon
 //= require app

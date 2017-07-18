@@ -1,0 +1,71 @@
+- content_for :title do
+  Organismos Gubernamentales
+#content-header
+  %h1 Organismo Gubernamental
+  #action-links
+    = link_to '<< Volver al listado', organismos_gubernamentales_path
+    - if can?(:update, OrganismoGubernamental)
+      = link_to 'Editar', edit_organismo_gubernamental_path(@organismo_gubernamental)
+    - if can? :destroy, OrganismoGubernamental
+      = link_to 'Borrar', @organismo_gubernamental, method: :delete, data: { confirm: '¿Esta Seguro?' }
+     
+= render :partial => "shared/info", :locals => { :registro => @organismo_gubernamental }
+
+#content-body
+  %h2 Organismo Gubernamental
+  %div.field_content
+    %span.field_name Nombre:
+    %span.field_value= @organismo_gubernamental.nombre
+
+  %div.field_content
+    %span.field_name Domicilio:
+    %span.field_value= @organismo_gubernamental.domicilio
+
+  %div.field_content
+    %span.field_name Provincia:
+    %span.field_value= @organismo_gubernamental.provincia.nombre
+
+  %div.field_content
+    %span.field_name Departamento:
+    %span.field_value= @organismo_gubernamental.departamento.nombre
+
+  %div.field_content
+    %span.field_name Distrito:
+    %span.field_value= @organismo_gubernamental.distrito.nombre
+
+  %div.field_content
+    %span.field_name Código postal:
+    %span.field_value= @organismo_gubernamental.codigo_postal
+
+  %div.field_content
+    %span.field_name Teléfonos:
+    %span.field_value= @organismo_gubernamental.telefonos
+
+  %div.field_content
+    %span.field_name Dirección de correo electrónico:
+    %span.field_value= @organismo_gubernamental.email
+  
+  %h3 Listado de Cuentas Bancarias
+  - @organismo_gubernamental.cuentas_bancarias.each do |cuenta_bancaria|
+    %h4= link_to cuenta_bancaria.denominacion + " - " + cuenta_bancaria.banco.nombre, cuenta_bancaria
+    %div.field_content
+      %span.field_name Sucursal bancaria
+      %span.field_value= cuenta_bancaria.sucursal_bancaria.numero
+    %div.field_content
+      %span.field_name Tipo de cuenta
+      %span.field_value= cuenta_bancaria.tipo_de_cuenta_bancaria.nombre
+    %div.field_content
+      %span.field_name Número de cuenta
+      %span.field_value= cuenta_bancaria.numero.present? ? cuenta_bancaria.numero : "Desconocido"
+    %div.field_content
+      %span.field_name CBU
+      %span.field_value= cuenta_bancaria.cbu.present? ? cuenta_bancaria.cbu : "Desconocido"
+
+    
+      
+        
+        
+        
+        
+        
+        

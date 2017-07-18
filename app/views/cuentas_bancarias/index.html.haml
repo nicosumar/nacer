@@ -1,0 +1,31 @@
+#content-header
+  %h1 Cuentas Bancarias
+  #action-links
+    - if can? :create, CuentaBancaria
+      = link_to 'Nueva cuenta bancaria', new_cuenta_bancaria_path
+
+= render :partial => "shared/info"
+
+#content-body
+  %h1 Listado de Cuentas Bancarias
+  %table
+    %tr
+      %th Entidad
+      %th Nombre
+      %th Banco
+      %th Denominación de la cuenta
+      %th Sucursal bancaria
+      %th Tipo de cuenta
+      %th Número de cuenta
+      %th CBU
+    - @cuentas_bancarias.each do |cuenta_bancaria|
+      %tr.clickable{ :onclick => "location.href=\'#{cuenta_bancaria_path(cuenta_bancaria)}\'", :title => "Ver detalles de la cuenta" }
+        %td= cuenta_bancaria.entidad.entidad_type.underscore.humanize
+        %td= cuenta_bancaria.entidad.entidad.nombre
+        %td= cuenta_bancaria.banco.nombre.first(15) + "..."
+        %td= cuenta_bancaria.denominacion.first(7) + "..."
+        %td= cuenta_bancaria.sucursal_bancaria.numero
+        %td= cuenta_bancaria.tipo_de_cuenta_bancaria.nombre_corto
+        %td= cuenta_bancaria.numero.present? ? cuenta_bancaria.numero.first(5) + "..." : "Desconocido"
+        %td= cuenta_bancaria.cbu.present? ? cuenta_bancaria.cbu.first(5) + "..." : "Desconocido"
+  %br/

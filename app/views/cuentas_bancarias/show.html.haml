@@ -1,0 +1,50 @@
+- content_for :title do
+  Cuenta Bancaria
+#content-header
+  %h1 Cuenta Bancaria
+  #action-links
+    = link_to '<< Volver al listado', cuentas_bancarias_path
+    - if can?(:update, CuentaBancaria)
+      = link_to 'Editar', edit_cuenta_bancaria_path(@cuenta_bancaria)
+    - if can? :destroy, CuentaBancaria
+      = link_to 'Borrar',@cuenta_bancaria, method: :delete, data: { confirm: '¿Esta Seguro?' }
+     
+= render :partial => "shared/info", :locals => { :registro => @cuenta_bancaria }
+
+#content-body
+  %h2 Cuenta Bancaria
+  %div.field_content
+    %span.field_name Entidad:
+    %span.field_value= @cuenta_bancaria.entidad.entidad_type.underscore.humanize
+
+  %div.field_content
+    %span.field_name Nombre:
+    %span.field_value= @cuenta_bancaria.entidad.entidad.nombre
+
+  %div.field_content
+    %span.field_name Banco:
+    %span.field_value= @cuenta_bancaria.banco.nombre
+
+  %div.field_content
+    %span.field_name Denominación de la cuenta:
+    %span.field_value= @cuenta_bancaria.denominacion
+
+  %div.field_content
+    %span.field_name Sucursal bancaria:
+    %span.field_value= @cuenta_bancaria.sucursal_bancaria.nombre.present? ? (@cuenta_bancaria.sucursal_bancaria.numero +" - "+ @cuenta_bancaria.sucursal_bancaria.nombre) : @cuenta_bancaria.sucursal_bancaria.numero
+
+  %div.field_content
+    %span.field_name Número de cuenta:
+    %span.field_value= @cuenta_bancaria.numero
+
+  %div.field_content
+    %span.field_name CBU:
+    %span.field_value= @cuenta_bancaria.cbu
+
+  %div.field_content
+    %span.field_name Tipo de Cuenta:
+    %span.field_value= @cuenta_bancaria.tipo_de_cuenta_bancaria.nombre
+
+  %div.field_content
+    %span.field_name Cuenta Contable:
+    %span.field_value= @cuenta_bancaria.cuenta_contable

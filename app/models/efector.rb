@@ -3,6 +3,7 @@ class Efector < ActiveRecord::Base
   # NULLificar los campos de texto en blanco
   nilify_blanks
 
+  after_create :crear_entidad
   # Los atributos siguientes pueden asignarse en forma masiva
   attr_accessible :codigo_de_efector_sissa, :codigo_de_efector_bio, :nombre, :domicilio, :departamento_id, :distrito_id, :provincia_id, :provincia
   attr_accessible :codigo_postal, :latitud, :longitud, :telefonos, :email, :grupo_de_efectores_id, :area_de_prestacion_id
@@ -13,8 +14,6 @@ class Efector < ActiveRecord::Base
   attr_accessible :numero_de_cuenta_secundaria, :denominacion_cuenta_secundaria, :sucursal_cuenta_secundaria, :cuie
   attr_accessible :categorizado_cone
 
-  # Atributos protegidos
-  # attr_protected :cuie
 
   # Asociaciones
   has_one :convenio_de_gestion
@@ -42,12 +41,30 @@ class Efector < ActiveRecord::Base
   has_many :cuasifacturas, class_name: "LiquidacionSumarCuasifactura"
   has_many :consolidados_sumar
   has_one  :unidad_de_alta_de_datos_administrada, class_name: "UnidadDeAltaDeDatos"
+  has_many    :conceptos_facturados, :class_name => "ConceptoDeFacturacion", :finder_sql => Proc.new {
+      %Q{
+        SELECT DISTINCT conceptos_de_facturacion.* 
+        FROM "conceptos_de_facturacion" 
+          JOIN liquidaciones_sumar l on l.concepto_de_facturacion_id = conceptos_de_facturacion.id 
+        WHERE (exists 
+                ( select * 
+                  from prestaciones_liquidadas 
+                  where liquidacion_id = l.id 
+                  and prestaciones_liquidadas.efector_id = #{id}
+                )
+              )
+      }
+  }
+
   #Asociaciones referentes a informes de debitos
   has_many :informes_debitos_prestacionales
   has_many :notas_de_debito
 
   #Solicitudes de addendas
   has_many :solicitud_addenda
+  # Asociaciones referentes a los pagos
+  has_many :pagos_sumar
+
   # En forma predeterminada siempre se filtran los efectores que no figuran como integrantes
   scope :efectores_administrados, joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id")
 
@@ -125,21 +142,30 @@ class Efector < ActiveRecord::Base
 
   # 
   # Devuelve los efectores que administra
+  # @param a_la_fecha = Date.today [Date] [Fecha a la cual devolver los efectores administrados]
   # 
   # @return [Array<Efector>] Array de efectores administrados
-  def efectores_administrados
-    Efector.joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id").where(["administrador_id = ?",self.id])
+  def efectores_administrados(a_la_fecha = Date.today)
+    return nil unless a_la_fecha.is_a? Date
+
+    Efector.joins("JOIN convenios_de_administracion_sumar ca ON ca.efector_id = efectores.id").
+            where(["administrador_id = ?",self.id]).
+            where("
+              (fecha_de_inicio <= ? and fecha_de_finalizacion >= ?)
+                OR
+              (fecha_de_inicio <= ? and fecha_de_finalizacion is null )", a_la_fecha, a_la_fecha, a_la_fecha)
   end
  
   #
   # Devuelve si el efector es administrador. Considera administrador al efector si:
   # Tiene al menos un efector con convenio de administracion asociado a el como administrador
+  # @param a_la_fecha = Date.today [Date] [Fecha a la cual devolver los efectores administrados]
   #
   # @return [boolean] Verdadero si es administrador, falso en caso que no cumpla alguna de las dos condiciones
-  def es_administrador?
+  def es_administrador?(a_la_fecha = Date.today)
+    return nil unless a_la_fecha.is_a? Date
     # Tiene al menos un efector con convenio de administracion asociado a el como administrador
-    return false if self.efectores_administrados.size < 1
-   
+    return false if self.efectores_administrados(a_la_fecha).size < 1   
     return true
   end
 
@@ -466,6 +492,8 @@ class Efector < ActiveRecord::Base
 
   # Devuelve los efectores que administran a otros, o bien que tienen suscrito un convenio de gestión y no son administrados
   # por un tercero.
+  # 
+  # @return [Efector] Array de efectores
   def self.administradores_y_autoadministrados_sumar
     Efector.where("(efectores.integrante = TRUE) AND
           EXISTS (
@@ -550,6 +578,12 @@ class Efector < ActiveRecord::Base
       PrestacionLiquidada.where(liquidacion_id: argLiquidacion.id, efector_id: (efectores.collect {|e| e.id} + [efectores.first.administrador_sumar.id]))
     end
     
+  end
+
+  private
+
+  def crear_entidad
+    Entidad.create({entidad: self}, :without_protection => true)
   end
 
 end

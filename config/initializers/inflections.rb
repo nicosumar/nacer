@@ -34,12 +34,12 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.plural(/·([A-Z]|_| |$)/, '\1')
   inflect.plural(/([acefgikoptuw])([A-Z]|_| |$)/, '\1s\2')
   inflect.plural(/z([A-Z]|_| |$)/, 'ces\1')
-  inflect.plural(/([bdhjlmnrsy])([A-Z]|_| |$)/, '\1es\2')
+  inflect.plural(/([bdhjlnrsy])([A-Z]|_| |$)/, '\1es\2')
 
   inflect.singular(/·([A-Z]|_| |$)/, '\1')
   inflect.singular(/([acefgikoptuw])s([A-Z]|_| |$)/, '\1\2')
   inflect.singular(/ces([A-Z]|_| |$)/, 'z\1')
-  inflect.singular(/([bdhjlmnrsy])es([A-Z]|_| |$)/, '\1\2')
+  inflect.singular(/([bdhjlnrsy])es([A-Z]|_| |$)/, '\1\2')
 
   # Inflexiones en inglés para Authlogic y CanCan
   inflect.irregular("user", "users·")
@@ -570,6 +570,39 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("DatoReportableRequeridoSirge", "Datos·Reportables·Requeridos·Sirge·")
   inflect.irregular("Dato·Reportable·Requerido·Sirge·", "DatosReportablesRequeridosSirge")
 
+  # Tipos de cuenta bancaria
+  inflect.irregular("tipo_de_cuenta_bancaria", "tipos·_de·_cuenta·_bancaria·")
+  inflect.irregular("tipo·_de·_cuenta·_bancaria·", "tipos_de_cuenta_bancaria")
+  inflect.irregular("TipoDeCuentaBancaria", "Tipos·De·Cuenta·Bancaria·")
+  inflect.irregular("Tipo·De·Cuenta·Bancaria·", "TiposDeCuentaBancaria")
+
+  #Informe Para Pago (SUMAR)
+  inflect.irregular("informe_para_pago", "informes·_para·_pagos·")
+  inflect.irregular("informe·_para·_pago·", "informes_para_pagos")
+  inflect.irregular("InformeParaPago", "Informes·Para·Pagos·")
+  inflect.irregular("Informe·Para·Pago·", "InformesParaPagos")
+
+  # Pagos Sumar
+  inflect.irregular("pago_sumar", "pagos·_sumar·")
+  inflect.irregular("pago·_sumar·", "pagos_sumar")
+  inflect.irregular("PagoSumar", "Pagos·Sumar·")
+  inflect.irregular("Pago·Sumar·", "PagosSumar")
+
+  # Aplicacion de notas de debito
+  inflect.irregular("aplicacion_de_nota_de_debito", "aplicaciones·_de·_notas·_de·_debito·")
+  inflect.irregular("aplicacion·_de·_nota·_de·_debito·", "aplicaciones_de_notas_de_debito")
+  inflect.irregular("AplicacionDeNotaDeDebito", "Aplicaciones·De·Notas·De·Debito·")
+  inflect.irregular("Aplicacion·De·Notas·De·Debito·", "AplicacionesDeNotasDeDebito")
+
+  # Aplicacion de notas de debito
+  inflect.irregular("estado_de_aplicacion_de_debito", "estados·_de·_aplicaciones·_de·_debitos·")
+  inflect.irregular("estado·_de·_aplicacion·_de·_debito·", "estados_de_aplicaciones_de_debitos")
+  inflect.irregular("EstadoDeAplicacionDeDebito", "Estados·De·Aplicaciones·De·Debitos")
+  inflect.irregular("Estado·De·Aplicacion·De·Debito·", "EstadosDeAplicacionesDeDebitos")
+
+  inflect.irregular("pago_sumar_informe", "pagos·_sumar·_informes·")
+  inflect.irregular("pago·_sumar·_informe·", "pagos_sumar_informes")
+
   # Plurales para verbos y otros
   inflect.irregular("prohíbe", "prohíben·")
   inflect.irregular("prohíbe·", "prohíben")
@@ -589,9 +622,6 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("solicitud_addenda","solicitudes·_addendas·")
   inflect.irregular("estado_solicitud_addenda","estados·_solicitudes·_addendas·")
   inflect.irregular("solicitud_addenda_prestacion_principal","solicitudes·_addendas·_prestaciones·_principales·")
-
-
-
 
   # Humanización de cadenas
   inflect.human("provincia_bio_id", "código identificador de provincia (Bioestadística)")

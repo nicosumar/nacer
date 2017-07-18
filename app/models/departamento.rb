@@ -4,6 +4,7 @@ class Departamento < ActiveRecord::Base
   #relaciones
   belongs_to :provincia
   has_many :distritos
+  has_many :sucursales_bancarias
 
   #validaciones
   validates_presence_of :nombre, :provincia_id

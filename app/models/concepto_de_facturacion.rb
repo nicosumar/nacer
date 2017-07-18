@@ -8,11 +8,21 @@ class ConceptoDeFacturacion < ActiveRecord::Base
   has_many :documentos_generables_por_conceptos
   has_many :documentos_generables, through: :documentos_generables_por_conceptos
   has_many :liquidaciones_sumar_cuasifacturas
+  has_many :movimientos_bancarios_autorizados
   belongs_to :tipo_de_expediente
   belongs_to :formula
+  
+  # Asociaciones referentes a los pagos
+  has_many :pagos_sumar
 
   attr_accessible :concepto, :descripcion, :prestaciones, :concepto_facturacion_id, :codigo, :formula_id, :dias_de_prestacion
   attr_accessible :tipo_de_expediente, :tipo_de_expediente_id, :formula
+
+  scope :facturados, -> { select("DISTINCT conceptos_de_facturacion.*")
+                          .joins("JOIN liquidaciones_sumar l on l.concepto_de_facturacion_id = conceptos_de_facturacion.id")
+                          .where("exists (select * from prestaciones_liquidadas where liquidacion_id = l.id)")
+                          .order(:concepto)
+                        }
 
   validates :concepto, presence: true
   validates :descripcion, presence: true
@@ -63,6 +73,10 @@ class ConceptoDeFacturacion < ActiveRecord::Base
     rescue Exception => e
       raise e
     end
+  end
+
+  def nombre
+    self.concepto
   end
 
 end

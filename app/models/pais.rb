@@ -2,6 +2,7 @@
 class Pais < ActiveRecord::Base
 
   has_many :provincias
+  has_many :sucursales_bancarias
   attr_accessible :nombre, :nombre_largo, :pais_bio_id
   validates :nombre, :uniqueness => true, :presence => true 
 
