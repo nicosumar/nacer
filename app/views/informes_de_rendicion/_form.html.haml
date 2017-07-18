@@ -10,6 +10,7 @@
   %div.hidden_field{:id => "tipos_de_gasto_por_detalle", :value => @tipos_de_gasto_por_detalle.to_json}
   %div.hidden_field{:id => "clases_de_gasto", :value => @clases_de_gasto.to_json}
   %div.hidden_field{:id => "tipos_de_gasto", :value => @tipos_de_gasto.to_json}
+  %div.hidden_field{:id => "numeros_existentes_cheque", :value => @numeros_existentes_cheque.to_json}
 
   %h2.first-header Datos del Efector
   %div.hidden_field{:id => "id_efector", :value => @efector_local.id}
@@ -178,7 +179,8 @@
 
       %div.field_content
         %span.field_name N° de Cheque
-        %br
+        %h5 Ingrese los últimos 5 dígitos. 
+        %h5 Si hay más de un cheque involucrado en este detalle, por favor, ingrese el mismo detalle nuevamente con cada número de cheque.
         = df.number_field :numero_cheque, :id => 'form-6', :min => '0', :onchange => "showMessage(this, 6, 'int');"
         %span{:id => 'advertencia-6', :style=>'color:#FF0000;'} 
 
@@ -206,7 +208,7 @@
         %br
         %select{:onchange => 'updateClaseSelected();', :id => 'clase_de_gasto_select'}
         %select{:onchange => 'updateTipoSelected();', :id => 'tipo_de_gasto_select'}
-        %p.note{:id => 'descripcion_gasto'} Descripción del tipo de gasto
+        %h5{:id => 'descripcion_gasto'} Descripción del tipo de gasto
 
       %div.field_content
         = button_tag 'Agregar/Actualizar Detalle', :onclick => "updateRow();", :type => 'button', :class => "subBtn"

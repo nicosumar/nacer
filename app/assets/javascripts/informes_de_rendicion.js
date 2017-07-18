@@ -647,6 +647,40 @@ function showMessage(content, advertencia_number, type){
                     document.getElementById("advertencia-" + advertencia_number).innerHTML = "Este campo debe contener sólo números ENTEROS mayores que cero."
 
                 }
+                else {
+
+                    if(advertencia_number == 6)
+                    {
+
+                        if(content.value.length != 5)
+                        {
+
+                            is_valid = false;
+                            document.getElementById("advertencia-" + advertencia_number).innerHTML = "Deben ser ingresados los últimos 5 dígitos del número de cheque."
+
+                        }
+                        else {
+
+                            var numeros_cheque = JSON.parse($('#numeros_existentes_cheque').attr('value'));
+                            
+                            for(i = 0; i < numeros_cheque.length; i++)
+                            {
+
+                                if(content.value == parseInt(numeros_cheque[i])){
+
+                                    is_valid = false;
+                                    document.getElementById("advertencia-" + advertencia_number).innerHTML = "Este número de cheque ha sido utilizado anteriormente. Recuerde que no puede repetirse."
+                                    break;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
 
             }
             else if(type == "text") 

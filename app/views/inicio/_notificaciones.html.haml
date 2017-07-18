@@ -1,11 +1,16 @@
 - if @notificaciones.size == 0
-  
-  No hay advertencias generadas en los ultimos tres (3) meses para visualizar. No se tiene en cuenta el corriente mes.
 
   -if @cantidad_total > 0
+    
+    - if @notificaciones.size == 0
+      %p No hay advertencias generadas en los ultimos tres (3) meses para visualizar.
+
     %p= "Esta unidad de alta de datos tiene " + @cantidad_total.to_s + " advertencias en total."
     %p Las advertencias generadas antes de este periodo se pueden visualizar en el siguiente enlace:
     #action-links= link_to 'Ver todas', prestaciones_brindadas_path(:estado_de_la_prestacion_id => 2, :commit => "Actualizar")
+
+  -else
+    %p No hay ninguna advertencia asociada a esta unidad de alta de datos.
 
 - else
 
@@ -31,6 +36,6 @@
           %td{align: "center", width: "10%"}= a.fecha_evento
           %td{align: "center", width: "70%"}= a.mensaje
           %td{align: "center"}= button_to 'VER',  a.enlace, :method => :get, :style => 'color:#006e00;'
-          %td{align: "center"}= button_to 'OCULTAR',  notificacion_path(:id => a.id), :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro que desea ocultar esta advertencia?"
+          %td{align: "center"}= button_to 'OCULTAR',  notificacion_path(:id => a.id, :page => params[:page]), :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro que desea ocultar esta advertencia?"
 
   = will_paginate @notificaciones, :inner_window => 2, :outer_window => 0

@@ -8,7 +8,7 @@
       %td{align: "center"} 
         $
         = a.total.blank? ? "-" : a.total
-      %td{align: "center"}= a.estado_del_proceso.nombre
+      %td{align: "center"}= (a.rechazado) ? "Rechazado" : a.estado_del_proceso.nombre
       %td{align: "center", width: "10%"} 
         = button_to 'VER', informes_de_rendicion_path + "/" + a.id.to_s, :method => :get
       - if a.estado_del_proceso.id == 2

@@ -6,6 +6,7 @@ class CreateInformesDeRendicion < ActiveRecord::Migration
       t.references :efector
       t.references :estado_del_proceso
       t.string :codigo
+      t.boolean :rechazado
 
       t.timestamps
     end

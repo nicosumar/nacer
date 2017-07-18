@@ -412,6 +412,7 @@ class InformesDeRendicionController < ApplicationController
     end
 
     # Crear los objetos necesarios para la vista
+    @numeros_existentes_cheque = get_previous_numeros_cheque
     @operacion = 0
     @informe_de_rendicion = InformeDeRendicion.new
     @clases_de_gasto = ClaseDeGasto.all
@@ -651,6 +652,8 @@ class InformesDeRendicionController < ApplicationController
 
     @efector_local = Efector.find(@informe_de_rendicion.efector_id)
 
+    @numeros_existentes_cheque = get_previous_numeros_cheque
+
     @tipos_de_gasto_por_detalle = get_tipos_de_gasto_por_detalle
 
     @clases_de_gasto = ClaseDeGasto.all
@@ -776,6 +779,7 @@ class InformesDeRendicionController < ApplicationController
 
         @informe_de_rendicion = InformeDeRendicion.find(params[:id])
         @informe_de_rendicion.estado_del_proceso_id = 2
+        @informe_de_rendicion.rechazado = true
 
         if @informe_de_rendicion.save!
           redirect_to( informes_de_rendicion_path,
@@ -882,9 +886,7 @@ class InformesDeRendicionController < ApplicationController
             if detalle_informe_de_rendicion.save!
               puts("SE ACTUALIZO EL DETALLE N° #$i CORRECTAMENTE")
             else 
-              
               todo_ok = false;
-
             end
 
             $i +=1;
@@ -900,7 +902,7 @@ class InformesDeRendicionController < ApplicationController
           else
 
             url_destino = ""
-            respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Falló al actualizar el informe.\nPor favor, controle los datos modificados e intentelo nuevamente más tarde." }
+            respuesta = { :url => url_destino, :tipo => :ok, :titulo => "Falló al actualizar el informe.\nPor favor, controle los datos modificados e intentelo nuevamente más tarde."}
             status = :ok
 
           end
@@ -1087,6 +1089,36 @@ class InformesDeRendicionController < ApplicationController
     end
     
     return result
+
+  end
+
+  def get_previous_numeros_cheque
+
+    current_id = (params[:id] != nil) ? params[:id] : nil
+
+    other_informes = []
+
+    if current_id != nil
+      other_informes = InformeDeRendicion.where("efector_id = " + @efector_local.id.to_s + " and id != " + current_id.to_s)
+    else 
+      other_informes = InformeDeRendicion.where("efector_id = " + @efector_local.id.to_s)
+    end
+
+    array = []
+    current_index = 0
+
+    other_informes.each do |informe|
+
+      informe.detalles_informe_de_rendicion.each do |detalle|
+
+        array[current_index] = detalle.numero_cheque
+        current_index = current_index + 1
+
+      end
+
+    end
+
+    return array
 
   end
 

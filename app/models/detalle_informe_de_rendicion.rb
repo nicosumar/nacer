@@ -6,8 +6,8 @@ class DetalleInformeDeRendicion < ActiveRecord::Base
 
   attr_accessible :cuenta, :cantidad, :detalle, :fecha_factura, :numero, :numero_cheque, :numero_factura, :importe, :informe_de_rendicion_id, :tipo_de_importe_id, :tipo_de_gasto_id
 
-  validates :detalle, presence: true 
-  
+  validates :detalle, presence: true
+
 	def importe_servicios
 
 	 	return (tipo_de_importe_id == 1) ? importe : 0

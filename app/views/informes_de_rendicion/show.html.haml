@@ -21,7 +21,11 @@
   %h2.first-header-with-note Informe de Rendición y Compras
 
   - if @informe_de_rendicion.estado_del_proceso_id == 2
-    %h3 Estado Actual: EN CURSO
+    -if @informe_de_rendicion.rechazado
+      %h3 Estado Actual: RECHAZADO
+      %p.note Puede ser editado para enviarse nuevamente.
+    -else
+      %h3 Estado Actual: EN CURSO
   - if @informe_de_rendicion.estado_del_proceso_id == 3
     %h3 Estado Actual: FINALIZADO
   - if @informe_de_rendicion.estado_del_proceso_id == 4
