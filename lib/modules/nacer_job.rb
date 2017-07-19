@@ -126,8 +126,9 @@ module NacerJob
     end
 
     def tareasDeProcesamiento 
+      load 'lib/tasks/inscripciones_masivas.rb'
       ins = InscripcionMasiva.new
-      procesar(archivo, part, uad, ci, efe)
+      #ins.procesar(archivo, part, uad, ci, efe)
       if @parametros['archivo'] and @parametros['part'] and @parametros['uad'] and @parametros['ci'] and @parametros['efe']
         ins.procesar( @parametros['archivo'] ,@parametros['part'] , UnidadDeAltaDeDatos.find( @parametros['uad'] ),  CentroDeInscripcion.find(@parametros['ci']), Efector.find( @parametros['efe']) )
       else
@@ -139,9 +140,7 @@ module NacerJob
       1
     end
     
-    def max_run_time
-      2400.minutes
-    end
+ 
   end
 
 
