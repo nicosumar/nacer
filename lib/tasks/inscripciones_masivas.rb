@@ -105,9 +105,9 @@ class InscripcionMasiva
     persistir_inscripciones
     @log_del_proceso.info("Escribir resultados")  
     escribir_resultados
-     @log_del_proceso.info("Eliminar tabla") 
+    @log_del_proceso.info("Eliminar tabla") 
     eliminar_tabla
-     @log_del_proceso.info("Fin del proceso de archivo de beneficiarios") 
+    @log_del_proceso.info("Fin del proceso de archivo de beneficiarios") 
 
   end
 
@@ -471,9 +471,12 @@ class InscripcionMasiva
     ActiveRecord::Base.logger.silence do
       begin
         archivo = File.open(@archivo_a_procesar + "." + @parte, "r")
-      rescue
+      rescue => e
+        @log_del_proceso.error("Ocurrio un error en la carga masiva de beneficiarios: Archivo a procesar " +@archivo_a_procesar + "...@parte= " +@parte)
+        raise e
         return
       end
+      @log_del_proceso.info("Escribir resultados: " + @archivo_a_procesar + "." + @parte) 
 
       archivo.each_with_index do |linea, i|
         if !tiene_etiquetas_de_columnas || i != 0
