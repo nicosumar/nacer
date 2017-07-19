@@ -81,11 +81,33 @@ class InscripcionMasiva
     self.centro_de_inscripcion = ci
     self.efector_de_atencion_habitual = efe
 
+
+    @log_del_proceso = Logger.new("log/RegistroMasivoBeneficiarios",10, 1024000)
+    @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
+    date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
+      if severity == "INFO" or severity == "WARN"
+          "[#{date_format}] #{severity}: #{msg}\n"
+      else
+          "[#{date_format}] #{severity}: #{msg}\n"
+      end
+    end
+
+    
+    @log_del_proceso.info("*****************************************************")
+    @log_del_proceso.info("####***Iniciando procesamiento de archivo de beneficiarios***###")
+    @log_del_proceso.info("******************************************************")
+
+    @log_del_proceso.info("Crear modelo y tabla")
     crear_modelo_y_tabla
+    @log_del_proceso.info("Procesar archivo")
     procesar_archivo
+    @log_del_proceso.info("Procesar persistir inscripciones")
     persistir_inscripciones
+    @log_del_proceso.info("Escribir resultados")  
     escribir_resultados
+     @log_del_proceso.info("Eliminar tabla") 
     eliminar_tabla
+     @log_del_proceso.info("Fin del proceso de archivo de beneficiarios") 
 
   end
 
