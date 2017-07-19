@@ -1,3 +1,4 @@
+= javascript_include_tag "inicio.js"
 - content_for :title do
   Sistema de gestión del seguro provincial / Programa Sumar Mendoza
 
@@ -27,7 +28,17 @@
   - if uad_actual.facturacion?
     
     %hr
-    
+
     %h2.first-header ADVERTENCIAS
 
-    = render :partial => "notificaciones", :locals => {:notificaciones => @notificaciones}
+    %div.actions{:id => "seccion_info_notificaciones", :style => "display: block;"}
+      %p= "En este periodo se han registrado " + @cantidad_notificaciones.to_s + " advertencias."
+      #action-links= link_to "Mostrar", nil, method: :post, remote: true, onclick: "ShowNotificaciones();"
+      %br
+      %br
+
+    %div.actions{:id => "seccion_ocultar_info_notificaciones", :style => "display: none;"}
+      #action-links= link_to "Ocultar", nil, method: :post, remote: true, onclick: "HideNotificaciones();"
+    
+    %div.actions{:id => "seccion_notificaciones", :style => "display: none;"}
+      = render :partial => "notificaciones", :locals => {:notificaciones => @notificaciones}

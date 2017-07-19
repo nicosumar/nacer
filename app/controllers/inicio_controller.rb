@@ -19,9 +19,13 @@ class InicioController < ApplicationController
         @notificaciones = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL").paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC, created_at")
 
   		end
+
+    @cantidad_notificaciones = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL").size
+
   	end
 
     redirect_to(new_user_session_path, :flash => flash) unless user_signed_in?
+
   end
 
   def create_new_notifications

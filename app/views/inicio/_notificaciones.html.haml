@@ -15,9 +15,9 @@
 - else
 
   %p Solo se visualizan en esta pantalla las advertencias generadas en los ultimos tres (3) meses, sin tener en cuenta el corriente mes.
-  %p= "Esta unidad de alta de datos tiene " + @cantidad_total.to_s + " advertencias en total."
+  %p= "Esta unidad de alta de datos tiene " + @cantidad_notificaciones.to_s + " advertencias en este periodo y " + @cantidad_total.to_s + " en total."
   %p Las advertencias generadas antes de este periodo se pueden visualizar en el siguiente enlace:
-  #action-links= link_to 'Ver Advertencias', prestaciones_brindadas_path(:estado_de_la_prestacion_id => 2, :commit => "Actualizar")
+  #action-links= link_to 'Ver Todas', prestaciones_brindadas_path(:estado_de_la_prestacion_id => 2, :commit => "Actualizar")
 
   %br
   %br
