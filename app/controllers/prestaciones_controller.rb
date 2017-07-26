@@ -50,6 +50,7 @@ class PrestacionesController < ApplicationController
   end
 
   def update
+
     if @prestacion.update_attributes params[:prestacion]
       redirect_to (params[:go_to] == "edit_para_asignacion_de_precios") ? edit_para_asignacion_de_precios_prestacion_path(@prestacion) : @prestacion
     else

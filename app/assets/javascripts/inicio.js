@@ -1,26 +1,3 @@
-$(document).ready(function(){
-
-  toggleDisplay(document.getElementById('seccion_notificaciones'), false);
-	
-});
-
-
-function ShowNotificaciones(){
-
-  toggleDisplay(document.getElementById('seccion_ocultar_info_notificaciones'), true);
-  toggleDisplay(document.getElementById('seccion_info_notificaciones'), false);
-  toggleDisplay(document.getElementById('seccion_notificaciones'), true);
-
-}
-
-function HideNotificaciones(){
-
-  toggleDisplay(document.getElementById('seccion_ocultar_info_notificaciones'), false);
-  toggleDisplay(document.getElementById('seccion_info_notificaciones'), true);
-  toggleDisplay(document.getElementById('seccion_notificaciones'), false);
-
-}
-
 function toggleDisplay(element, show) {
 
     if(element){
@@ -32,5 +9,42 @@ function toggleDisplay(element, show) {
         }
 
     }
+}
+
+function ToggleNotificaciones(element, objective_element_id){
+
+  var objective_element = document.getElementById(objective_element_id);
+
+  var current_status = objective_element.style.display;
+
+  if(current_status == 'none')
+  {
+
+    element.innerHTML = "ʌ"
+
+    toggleDisplay(objective_element, true);
+
+    if(objective_element_id == "seccion_notificaciones"){
+
+      toggleDisplay(document.getElementById('seccion_info_notificaciones'), false);
+
+    }
+
+  }
+  else {
+
+    element.innerHTML = "v"
+
+    toggleDisplay(objective_element, false);
+
+    if(objective_element_id == "seccion_notificaciones"){
+
+      toggleDisplay(document.getElementById('seccion_info_notificaciones'), false);
+
+    }
+
+  }
+
+
 }
 

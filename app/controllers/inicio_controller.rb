@@ -16,11 +16,13 @@ class InicioController < ApplicationController
 
   		else
   			
-        @notificaciones = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL").paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC, created_at")
+        @advertencias = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL AND tipo_notificacion_id = 1").paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC, created_at")
 
   		end
 
-    @cantidad_notificaciones = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL").size
+    @cantidad_advertencias = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL AND tipo_notificacion_id = 1").size
+
+    @notificaciones = Notificacion.where("unidad_de_alta_de_datos_id = " + @uad_actual.id.to_s + " AND fecha_lectura IS NULL AND tipo_notificacion_id = 2").paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC, created_at")
 
   	end
 
@@ -30,11 +32,11 @@ class InicioController < ApplicationController
 
   def create_new_notifications
 
-  	notificaciones = Notificacion.where(:unidad_de_alta_de_datos_id => @uad_actual.id)
+  	advertencias = Notificacion.where(:unidad_de_alta_de_datos_id => @uad_actual.id, :tipo_notificacion_id => 1)
   	
-  	notificaciones.each do |notificacion|
+  	advertencias.each do |advertencia|
 
-  		notificacion.destroy
+		  advertencia.destroy
 
   	end
 
@@ -46,31 +48,32 @@ class InicioController < ApplicationController
 		#prestacion_id
 		#fecha_de_la_prestacion
 
-		if prestacion.fecha_de_la_prestacion >= fecha_ref
+		  if prestacion.fecha_de_la_prestacion >= fecha_ref
 
-			notificacion = Notificacion.new
+  			notificacion = Notificacion.new
 
-	  		notificacion.mensaje = "Prestación Brindada (#" + prestacion.id.to_s + ") tiene advertencias.\nRecuerda que estas deben ser corregidas para que se pueda facturar."
+    		notificacion.mensaje = "Prestación Brindada (#" + prestacion.id.to_s + ") tiene advertencias.\nRecuerda que estas deben ser corregidas para que se pueda facturar."
 
-	  		notificacion.fecha_evento = prestacion.fecha_de_la_prestacion
-	  		notificacion.enlace = prestaciones_brindadas_path + "/" + prestacion.id.to_s
-	  		notificacion.unidad_de_alta_de_datos_id = @uad_actual.id
-	  		notificacion.tiene_vista = true
+    		notificacion.fecha_evento = prestacion.fecha_de_la_prestacion
+    		notificacion.enlace = prestaciones_brindadas_path + "/" + prestacion.id.to_s
+    		notificacion.unidad_de_alta_de_datos_id = @uad_actual.id
+        notificacion.tipo_notificacion_id = 1 #ADVERTENCIA
+    		notificacion.tiene_vista = true
 
-	  		if notificacion.save!
-	            
-	        #TODO OKU, ENTONCES SIGO!
+    		if notificacion.save!
+              
+          #TODO OKU, ENTONCES SIGO!
 
-	        else
+        else
 
-	    		redirect_to( root_url,
-			        :flash => {:tipo => :error, :titulo => "Error al crear las notificaciones",
-			          :mensaje => "Ocurrió un error en el proceso de creación de notificaciones. Por favor, recargue la página."
-			        }
-			      )
-		    	return
+    		redirect_to( root_url,
+  	        :flash => {:tipo => :error, :titulo => "Error al crear las notificaciones",
+  	          :mensaje => "Ocurrió un error en el proceso de creación de notificaciones. Por favor, recargue la página."
+  	        }
+  	      )
+      	return
 
-	        end
+        end
 
 	    end
 
@@ -79,7 +82,7 @@ class InicioController < ApplicationController
   	@uad_actual.fecha_ultimas_notificaciones = Time.now
   	@uad_actual.save!
 
-  	@notificaciones = Notificacion.where(:unidad_de_alta_de_datos_id => @uad_actual.id).paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC, created_at")
+  	@advertencias = Notificacion.where(:unidad_de_alta_de_datos_id => @uad_actual.id, :tipo_notificacion_id => 1).paginate(:page => params[:page], :per_page => 20, :order => "fecha_evento DESC, created_at")
 
   end
 

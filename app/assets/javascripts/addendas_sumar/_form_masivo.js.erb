@@ -1,37 +1,48 @@
 function isDefined(value){
   return (value != undefined && value != null && value != "") ? true : false
 }
+
 function removeConvenioNumeroFirmante(convenioDeGestionSumarId){
-  event.preventDefault();
+
+  //event.preventDefault(); --> Esto da error. 'event' not defined o algo asi
+  
   var element = '#convenios_numeros_firmantes_' + convenioDeGestionSumarId;
   $(element).remove();
+  
   var selectorConvenio = "select option[value='" + convenioDeGestionSumarId + "']"
   $(selectorConvenio).prop('disabled',false);
+
 };
+
 $(document).ready(function(){
   //  Función para llenar el popup con prestaciones según el código ingresado
   $("#button-add-convenio-numero-firmante").click(function(event){
+    
     event.preventDefault();
     var convenio_de_gestion_id = $("#addenda_sumar_convenio_de_gestion_sumar_id" ).val();
     var convenio_de_gestion_nombre = $("#addenda_sumar_convenio_de_gestion_sumar_id option:selected" ).text();
     var firmante = document.getElementById("addenda_sumar_firmante").value;
 
     if(isDefined(convenio_de_gestion_id) && isDefined(firmante)){
+      
       $("#convenios_numeros_firmantes").append('<div id="convenios_numeros_firmantes_' + convenio_de_gestion_id + '">' + convenio_de_gestion_nombre + '<a href="#" onclick="removeConvenioNumeroFirmante(' + convenio_de_gestion_id + ')"> Quitar </a>' 
                                               + '<input name="addenda_sumar[convenios_numeros_firmantes][' + convenio_de_gestion_id + '][convenio_de_gestion_sumar_id]" type="hidden" value="' + convenio_de_gestion_id + '">'
                                               + '<input name="addenda_sumar[convenios_numeros_firmantes][' + convenio_de_gestion_id + '][firmante]" type="hidden" value="' + firmante + '">'
                                               + '</div>');
       $("#addenda_sumar_convenio_de_gestion_sumar_id" ).val(undefined)
       $("#addenda_sumar_firmante").val("")
+      
       var selectorConvenio = "#addenda_sumar_convenio_de_gestion_sumar_id > option[value='" + convenio_de_gestion_id + "']"
       $(selectorConvenio).prop('disabled',true);
+
     }
 
   });
 
   $(document).on( "change", ".convenio-de-gestion-sumar-select", function() {
+
     var convenio_de_gestion_sumar_id = this.value;
-    var convenio_de_gestion_sumar_select = this
+    var convenio_de_gestion_sumar_select = this;
 
     // Llamada AJAX para buscar en el servidor
     $.get( "/convenios_de_gestion_sumar/" + convenio_de_gestion_sumar_id + "/firmante.json", function( data ) {

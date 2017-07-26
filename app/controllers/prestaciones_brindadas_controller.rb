@@ -839,26 +839,62 @@ class PrestacionesBrindadasController < ApplicationController
 
     # Buscar la prestación
     @prestacion_brindada = PrestacionBrindada.find(params[:id])
+    
+    if is_liquidacion_procesando == false
 
-    # Verificar que la prestación brindada esté pendiente
-    if !@prestacion_brindada.pendiente?
-      redirect_to( root_url,
-        :flash => { :tipo => :error, :titulo => "La petición no es válida",
-          :mensaje => "Se informará al administrador del sistema sobre este incidente."
+      # Verificar que la prestación brindada esté pendiente
+
+      # Cambiar el estado de la prestación por el que corresponde a la anulación por el usuario
+      @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("U")
+      @prestacion_brindada.save(:validate => false)
+
+      redirect_to( prestacion_brindada_path(@prestacion_brindada),
+        :flash => { :tipo => :advertencia, :titulo => "El registro de la prestación brindada fue anulado",
+          :mensaje => "Esta prestación no podrá ser modificada ni facturada."
         }
       )
-      return
+
+    else
+
+      redirect_to(prestacion_brindada_path(@prestacion_brindada),
+          :flash => {:tipo => :error, :titulo => "No se puede realizar está acción",
+            :mensaje => "La prestación ya se encuentra en proceso de liquidación."
+            }
+        )
+
     end
 
-    # Cambiar el estado de la prestación por el que corresponde a la anulación por el usuario
-    @prestacion_brindada.estado_de_la_prestacion_id = EstadoDeLaPrestacion.id_del_codigo("U")
-    @prestacion_brindada.save(:validate => false)
+  end
 
-    redirect_to( prestacion_brindada_path(@prestacion_brindada),
-      :flash => { :tipo => :advertencia, :titulo => "El registro de la prestación brindada fue anulado",
-        :mensaje => "Esta prestación no podrá ser modificada ni facturada."
-      }
-    )
- end
+  def is_liquidacion_procesando
+
+    # El estado del proceso está asociado a una entidad, que en este caso es la liquidación.
+    # Para saber qué liquidaciones deberia checkear tengo que tomar el efector, dado que
+    # cada liquidación tiene un grupo de efectores asociado. Entonces, como ya estoy logeado 
+    # con un efector (uad-actual) puedo identificar ese grupo.
+    # Una vez que tengo ese grupo, puedo obtener todas las liquidaciones que han sido creadas
+    # para ese grupo.
+    # Finalmente, para cada una de esas liquidaciones puedo obtener el ultimo estado del proceso asociado.
+    # Si está en estado PROCESANDO (id = 2) entonces no voy a dejar que se anule esta prestación.
+    
+    id_grupo = @uad_actual.efector.grupo_de_efectores_liquidacion_id
+
+    @liquidaciones = LiquidacionSumar.where(:grupo_de_efectores_liquidacion_id => id_grupo)
+
+    @liquidaciones.each do |l|
+
+      last_estado_proceso = ProcesoDeSistema.where('entidad_relacionada_id = ? and tipo_proceso_de_sistema_id = ?', l.id,TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR).includes(:estado_proceso_de_sistema).last
+      
+      if last_estado_proceso.id == 2 #PROCESANDO
+
+        return true
+
+      end
+
+    end
+
+    return false
+
+  end
 
 end

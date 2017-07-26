@@ -25,20 +25,22 @@
   %p
     Puede comenzar a trabajar. Seleccione el módulo y operación deseados desde el menú superior.
 
+  / ʌ ᴠ
+
   - if uad_actual.facturacion?
+
+    %div{:style => "padding-top: 10px; padding-bottom: 5px; background-color: #0089cb;"}
+      %h1.first-header{:style => "text-align: center; padding-top: 5px; color: #fff;"} NOVEDADES
+
+    / %div.actions{:id => "seccion_info_notificaciones", :style => "display: block;"}
+    /   %p= "En este periodo se han registrado " + @cantidad_advertencias.to_s + " advertencias."
     
-    %hr
-
-    %h2.first-header ADVERTENCIAS
-
-    %div.actions{:id => "seccion_info_notificaciones", :style => "display: block;"}
-      %p= "En este periodo se han registrado " + @cantidad_notificaciones.to_s + " advertencias."
-      #action-links= link_to "Mostrar", nil, method: :post, remote: true, onclick: "ShowNotificaciones();"
-      %br
-      %br
-
-    %div.actions{:id => "seccion_ocultar_info_notificaciones", :style => "display: none;"}
-      #action-links= link_to "Ocultar", nil, method: :post, remote: true, onclick: "HideNotificaciones();"
-    
-    %div.actions{:id => "seccion_notificaciones", :style => "display: none;"}
+    %div.actions{:id => "seccion_notificaciones", :style => "display: block;"}
       = render :partial => "notificaciones", :locals => {:notificaciones => @notificaciones}
+
+
+    / <div style="margin:0;padding:0;display:inline">
+    / <input name="utf8" type="hidden" value="&#x2713;" />
+    / </div>
+    / <input id="recherche" name="recherche" type="search" />
+    / <input id="submit" type="submit" value="Recherche" />

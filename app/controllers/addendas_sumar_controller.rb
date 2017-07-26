@@ -604,7 +604,7 @@ class AddendasSumarController < ApplicationController
     @success = { :addendas_sumar_creadas => []}
     fecha_actual = Time.now
     @prestaciones_autorizadas_alta_ids = []
-    convenios_de_gestion_con_attributos = params[:addenda_sumar][:convenios_numeros_firmantes]
+    convenios_de_gestion_con_atributos = params[:addenda_sumar][:convenios_numeros_firmantes]
     params[:addenda_sumar][:prestacion_pdss_id].map { |key, val| @prestaciones_autorizadas_alta_ids << val if val.present? }
 
     addenda_base = AddendaSumar.new()
@@ -616,38 +616,44 @@ class AddendasSumarController < ApplicationController
 
 
     # Recorro cada convenio y genero su addenda
-    convenios_de_gestion_con_attributos.map do |key, convenio_con_atributos|
-      convenio_de_gestion_sumar = ConvenioDeGestionSumar.find(convenio_con_atributos['convenio_de_gestion_sumar_id'])
-      if convenio_de_gestion_sumar.present?
-        addenda_sumar = addenda_base.dup
-        addenda_sumar.convenio_de_gestion_sumar_id = convenio_con_atributos['convenio_de_gestion_sumar_id']
-        addenda_sumar.firmante = convenio_con_atributos['firmante']
-        addenda_sumar.numero = convenio_de_gestion_sumar.generar_numero_addenda_sumar_masivo
+    if convenios_de_gestion_con_atributos != nil
+      
+      convenios_de_gestion_con_atributos.map do |key, convenio_con_atributos|
+        convenio_de_gestion_sumar = ConvenioDeGestionSumar.find(convenio_con_atributos['convenio_de_gestion_sumar_id'])
+        if convenio_de_gestion_sumar.present?
+          addenda_sumar = addenda_base.dup
+          addenda_sumar.convenio_de_gestion_sumar_id = convenio_con_atributos['convenio_de_gestion_sumar_id']
+          addenda_sumar.firmante = convenio_con_atributos['firmante']
+          addenda_sumar.numero = convenio_de_gestion_sumar.generar_numero_addenda_sumar_masivo
 
-        if addenda_sumar.save
-          @success[:addendas_sumar_creadas] << "#{convenio_de_gestion_sumar.nombre}"
-          @prestaciones_autorizadas_alta_ids.each do |prestacion_pdss_id|
-            # Si no existe una prestació autorizada la autoriza.
-            if PrestacionPdssAutorizada.se_puede_addendar?(convenio_de_gestion_sumar.efector_id, fecha_actual, prestacion_pdss_id)
-              begin
-                CustomQuery.ejecutar(
-                  {
-                    sql: " 
-                          INSERT INTO prestaciones_pdss_autorizadas
-                          (efector_id, prestacion_pdss_id, fecha_de_inicio, autorizante_al_alta_type, autorizante_al_alta_id)
-                          VALUES
-                          (#{convenio_de_gestion_sumar.efector_id}, #{prestacion_pdss_id}, '#{ addenda_sumar.fecha_de_inicio.strftime('%Y-%m-%d')}', 'AddendaSumar', #{ addenda_sumar.id })",
-     
-                  })
-              rescue
-                @errors[:prestaciones_no_addendadas] << "#{convenio_de_gestion_sumar.nombre} PrestacionPDSS (ID) #{prestacion_pdss_id}"
+          if addenda_sumar.save
+            @success[:addendas_sumar_creadas] << "#{convenio_de_gestion_sumar.nombre}"
+            @prestaciones_autorizadas_alta_ids.each do |prestacion_pdss_id|
+              # Si no existe una prestació autorizada la autoriza.
+              if PrestacionPdssAutorizada.se_puede_addendar?(convenio_de_gestion_sumar.efector_id, fecha_actual, prestacion_pdss_id)
+                begin
+                  CustomQuery.ejecutar(
+                    {
+                      sql: " 
+                            INSERT INTO prestaciones_pdss_autorizadas
+                            (efector_id, prestacion_pdss_id, fecha_de_inicio, autorizante_al_alta_type, autorizante_al_alta_id)
+                            VALUES
+                            (#{convenio_de_gestion_sumar.efector_id}, #{prestacion_pdss_id}, '#{ addenda_sumar.fecha_de_inicio.strftime('%Y-%m-%d')}', 'AddendaSumar', #{ addenda_sumar.id })",
+       
+                    })
+                rescue
+                  @errors[:prestaciones_no_addendadas] << "#{convenio_de_gestion_sumar.nombre} PrestacionPDSS (ID) #{prestacion_pdss_id}"
+                end
               end
             end
+          else
+            @errors[:addendas_sumar_no_creadas] << "#{convenio_de_gestion_sumar.nombre}, verificar si tiene una adenda con fecha de suscripción posterior"
           end
-        else
-          @errors[:addendas_sumar_no_creadas] << "#{convenio_de_gestion_sumar.nombre}, verificar si tiene una adenda con fecha de suscripción posterior"
         end
       end
+      
+    else
+      @errors[:addendas_sumar_no_creadas] << "Debe asignar como mínimo un convenio de gestión a esta adenda masiva para poder continuar."
     end
 
     if @errors[:addendas_sumar_no_creadas].present?

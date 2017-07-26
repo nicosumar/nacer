@@ -129,12 +129,15 @@ class LiquidacionesSumarController < ApplicationController
   end
 
   def procesar_liquidacion
+    
     tiempo_proceso = Time.now
 
     respuesta = {}
     status = :ok
 
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
+
+    #test_procesar_liquidacion
 
     if @liquidacion_sumar.prestaciones_liquidadas.count > 1
       respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." }
@@ -144,22 +147,13 @@ class LiquidacionesSumarController < ApplicationController
       if @liquidacion_sumar.generar_snapshoot_de_liquidacion
         logger.warn "Tiempo para procesar: #{Time.now - tiempo_proceso} segundos"
         respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
+
+        notificar_resultado_liquidacion #ACÁ GENERO LAS NOTIFICACIONES CORRESPONDIENTES
+
       else
         respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
         status = :internal_server_error
       end
-
-      # begin
-      # proceso_de_sistema = ProcesoDeSistema.new 
-      # proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
-      # if proceso_de_sistema.save 
-      #    Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
-      #    respuesta = { :tipo => :ok, :titulo => "El procesamiento de la liquidación se encoló correctamente" }
-      # end
-      # rescue
-      #   respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
-      #   status = :internal_server_error
-      # end
 
     end
 
@@ -167,14 +161,31 @@ class LiquidacionesSumarController < ApplicationController
       format.html { redirect_to @liquidacion_sumar, flash: respuesta }
       format.json { render json: respuesta.to_json, status: status }
     end
+
   end
 
+  # def test_procesar_liquidacion
+
+  #   status = :ok
+  #   respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
+    
+  #   notificar_resultado_liquidacion #ACÁ GENERO LAS NOTIFICACIONES CORRESPONDIENTES
+
+  #   respond_to do |format|
+  #     format.html { redirect_to @liquidacion_sumar, flash: respuesta }
+  #     format.json { render json: respuesta.to_json, status: status }
+  #   end
+
+  # end
 
   def generar_cuasifacturas
+    
     tiempo_proceso = Time.now
     @liquidacion_sumar = LiquidacionSumar.find(params[:id])
     respuesta = {}
     status = :ok
+
+    #test_procesar_cuasifacturas
 
      if @liquidacion_sumar.prestaciones_liquidadas.count == 0
        respuesta = { tipo: :error, titulo: "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
@@ -187,15 +198,12 @@ class LiquidacionesSumarController < ApplicationController
     begin
       unless respuesta.present?
 
-        # proceso_de_sistema = ProcesoDeSistema.new 
-        # if proceso_de_sistema.save 
-        # Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema.id)    
-        # end
-
         @liquidacion_sumar.generar_documentos!
         logger.warn "Tiempo para generar las cuasifacturas: #{Time.now - tiempo_proceso} segundos"
         respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
-        # respuesta = { :tipo => :ok, :titulo => "El procesamiento de la generación de las cuasifacturas se encoló correctamente" }
+
+        notificar_resultado_cuasifactura #ACÁ GENERO LAS NOTIFICACIONES CORRESPONDIENTES
+
       end
     rescue Exception => e
       logger.warn e.inspect
@@ -207,7 +215,22 @@ class LiquidacionesSumarController < ApplicationController
     respond_to do |format|
       format.json { render json: respuesta.to_json, status: status }
     end
+
   end
+
+  # def test_procesar_cuasifacturas
+
+  #   status = :ok
+
+  #   respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente"}
+
+  #   notificar_resultado_cuasifactura #ACÁ GENERO LAS NOTIFICACIONES CORRESPONDIENTES
+
+  #   respond_to do |format|
+  #     format.json { render json: respuesta.to_json, status: status }
+  #   end
+
+  # end
 
   def procesar_liquidaciones
     
@@ -215,42 +238,41 @@ class LiquidacionesSumarController < ApplicationController
     respuesta = {}
     status = :ok
 
-    
     @liquidaciones_sumar = LiquidacionSumar.all
-    
-   
+
     begin  
+
     liquidaciones_encoladas = ""  
     @liquidaciones_sumar.each  do |p|
 
-         @liquidaciones_sumar = LiquidacionSumar.find(p.id)
+     @liquidaciones_sumar = LiquidacionSumar.find(p.id)
 
-         if not @liquidaciones_sumar.prestaciones_liquidadas.count > 1
+     if not @liquidaciones_sumar.prestaciones_liquidadas.count > 1
 
-              #Encolo la tarea de procesado.
-              proceso_de_sistema = ProcesoDeSistema.new 
-              proceso_de_sistema.entidad_relacionada_id = @liquidaciones_sumar.id
+      #Encolo la tarea de procesado.
+      proceso_de_sistema = ProcesoDeSistema.new 
+      proceso_de_sistema.entidad_relacionada_id = @liquidaciones_sumar.id
 
-              proceso_de_sistema_gc = ProcesoDeSistema.new   
-              proceso_de_sistema_gc.entidad_relacionada_id = @liquidaciones_sumar.id
+      proceso_de_sistema_gc = ProcesoDeSistema.new   
+      proceso_de_sistema_gc.entidad_relacionada_id = @liquidaciones_sumar.id
+    
+      if proceso_de_sistema.save! and proceso_de_sistema_gc.save! 
+        liquidaciones_encoladas  << @liquidaciones_sumar.descripcion + "\n"
+        #Encolo la tarea de procesado.
+        Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)
+        #Encolo la tarea de generado de cuasifactura.
+        Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema_gc.id)  
 
-            
-            
-                if proceso_de_sistema.save! and proceso_de_sistema_gc.save! 
-                  liquidaciones_encoladas  << @liquidaciones_sumar.descripcion + "\n"
-                  #Encolo la tarea de procesado.
-                  Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)
-                  #Encolo la tarea de generado de cuasifactura.
-                  Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema_gc.id)  
+      end
+        
+     end
 
-                end
-            
-         end
     end
+
     if liquidaciones_encoladas != ""
-          redirect_to( liquidaciones_sumar_path, :flash => { :tipo => :ok, :titulo => "Se encolaron correctamentelas las liquidaciones.", :mensaje => liquidaciones_encoladas })
+      redirect_to( liquidaciones_sumar_path, :flash => { :tipo => :ok, :titulo => "Se encolaron correctamentelas las liquidaciones.", :mensaje => liquidaciones_encoladas })
     else
-          redirect_to( liquidaciones_sumar_path, :flash => { :tipo => :advertencia, :titulo => "Se encolaron correctamentelas las liquidaciones.", :mensaje => liquidaciones_encoladas })
+      redirect_to( liquidaciones_sumar_path, :flash => { :tipo => :advertencia, :titulo => "Se encolaron correctamente las las liquidaciones.", :mensaje => liquidaciones_encoladas })
     end
 
   #respuesta = { :tipo => :ok, :titulo => "Se encolaron correctamentelas las liquidaciones" }
@@ -262,11 +284,6 @@ class LiquidacionesSumarController < ApplicationController
     end
     
   end
-
-
-
-
-
 
   # GET /liquidaciones_sumar/1/efector/1.pdf
   def detalle_de_prestaciones_liquidadas_por_efector
@@ -345,6 +362,80 @@ class LiquidacionesSumarController < ApplicationController
     pl = ParametroLiquidacionSumar.new
    
     return pl
+  end
+
+  def notificar_resultado_liquidacion
+
+    efectores_a_notificar = Efector.where(:grupo_de_efectores_liquidacion_id => @liquidacion_sumar.grupo_de_efectores_liquidacion_id)
+
+    efectores_a_notificar.each do |efector|
+
+      notificacion = Notificacion.new
+
+      notificacion.mensaje = "Se ha realizado con éxito la liquidación para el periodo " + @liquidacion_sumar.periodo.periodo.to_s + "."
+
+      notificacion.fecha_evento = Time.now
+      notificacion.enlace = nil
+      notificacion.unidad_de_alta_de_datos_id = efector.unidad_de_alta_de_datos_id
+      notificacion.tipo_notificacion_id = 2 #NOTIFICACION
+      notificacion.tiene_vista = true
+
+      if notificacion.save!
+            
+        #TODO OKU, ENTONCES SIGO!
+
+      else
+
+        redirect_to( root_url,
+            :flash => {:tipo => :error, :titulo => "Error al crear las notificaciones",
+              :mensaje => "Ocurrió un error en el proceso de creación de notificaciones."
+            }
+          )
+        return
+
+      end
+
+    end
+
+    return
+
+  end
+
+  def notificar_resultado_cuasifactura
+
+    efectores_a_notificar = Efector.where(:grupo_de_efectores_liquidacion_id => @liquidacion_sumar.grupo_de_efectores_liquidacion_id)
+
+    efectores_a_notificar.each do |efector|
+
+      notificacion = Notificacion.new
+
+      notificacion.mensaje = "Se han generado con éxito la cuasifactura para el periodo " + @liquidacion_sumar.periodo.periodo.to_s + "."
+
+      notificacion.fecha_evento = Time.now
+      notificacion.enlace = documentos_electronicos_index_path
+      notificacion.unidad_de_alta_de_datos_id = efector.unidad_de_alta_de_datos_id
+      notificacion.tipo_notificacion_id = 2 #NOTIFICACION
+      notificacion.tiene_vista = true
+
+      if notificacion.save!
+            
+        #TODO OKU, ENTONCES SIGO!
+
+      else
+
+        redirect_to( root_url,
+            :flash => {:tipo => :error, :titulo => "Error al crear las notificaciones",
+              :mensaje => "Ocurrió un error en el proceso de creación de notificaciones."
+            }
+          )
+        return
+
+      end
+
+    end
+
+    return
+
   end
 
 end
