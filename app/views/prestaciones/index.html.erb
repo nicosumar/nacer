@@ -82,13 +82,15 @@
             <td><%= obtener_listado_de_nombres prestacion.sexos %></td>
             <td><%= prestacion.codigo %></td>
             <td>
+              <div style="max-height: 50px; overflow-y: scroll;">
               <% if prestacion.diagnosticos.count > 0 %>
                 <% prestacion.diagnosticos.each do |diagnostico| %>
                   <%= diagnostico.codigo + ", " %>
                 <% end %>
               <% else %>
                 -------
-              <% end %>          
+              <% end %>  
+              </div>        
             </td>
             <td><%= link_to('Ver', prestacion_path(prestacion)) if can? :read, Prestacion %> <br/> <%= link_to('Editar', edit_prestacion_path(prestacion)) if can? :manage, Prestacion %> <br/> <%= link_to('Asignar precios', edit_para_asignacion_de_precios_prestacion_path(prestacion)) if can? :manage, Prestacion %></td>
           </tr>
@@ -97,6 +99,6 @@
       <% end %>
     <% end %>
   </table>
-  <%= will_paginate @prestaciones, :inner_window => 2, :outer_window => 0 %>
+  <%= will_paginate @prestaciones %>
 </div>
 <%= javascript_include_tag 'prestaciones/_index.js' %>

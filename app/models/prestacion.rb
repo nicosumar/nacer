@@ -93,7 +93,6 @@ class Prestacion < ActiveRecord::Base
   end
 
   def safe_remove
-    byebug
     if self.can_remove?
       self.datos_adicionales.destroy_all
       self.cantidades_de_prestaciones_por_periodo.destroy_all
