@@ -21,12 +21,13 @@ group :development do
   gem 'byebug'
   gem 'thin'
   gem 'meta_request' # para rails-panel (chrome)
+  gem 'railroady'
 end
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'devise'
-gem 'therubyracer', :platform => 'ruby'
+gem 'therubyracer', "0.12.3", :platform => 'ruby'
 gem 'haml'
 gem 'cancan'
 gem 'will_paginate'

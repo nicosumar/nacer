@@ -182,6 +182,7 @@ GEM
     rack-ssl (1.3.4)
     rack-test (0.6.3)
       rack (>= 1.0)
+    railroady (1.5.3)
     rails (3.2.22)
       actionmailer (= 3.2.22)
       actionpack (= 3.2.22)
@@ -287,6 +288,7 @@ DEPENDENCIES
   odf-report
   paperclip (~> 4.1)
   pg
+  railroady
   rails (= 3.2.22)
   rubyzip (< 1.0.0)
   sass-rails
@@ -295,7 +297,7 @@ DEPENDENCIES
   strong_parameters
   test-unit (~> 3.0)
   text
-  therubyracer
+  therubyracer (= 0.12.3)
   thin
   thinreports-rails
   uglifier
