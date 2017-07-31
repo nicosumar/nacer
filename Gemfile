@@ -37,6 +37,8 @@ gem 'nilify_blanks'
 #gem 'unicode_utils'
 gem "paperclip", "~> 4.1"
 
+gem 'aasm'
+
 # Reports gems
 gem 'odf-report'
 gem 'spreadsheet'

@@ -1,0 +1,58 @@
+<style type="text/css">
+  .select2-container{
+    width: 400px;
+  }
+  .select-in-table{
+    width: 150px;
+  }
+</style>
+
+<% content_for :title do %>
+  Asistente de generación de pagos
+<% end %>
+
+<div id="content-header">
+  <h1>Asistente de pagos</h1>
+  <div id="action-links"><%= link_to('Volver al listado', pagos_sumar_path) if can? :read, PagoSumar %> </div>  
+</div>
+
+<div id="content-body">
+  <%= render :partial => "shared/info", :locals => { :registro => @pago_sumar } %>
+  <%= form_for :pago_sumar_params, url: new_pago_sumar_path, method: :get do |f| %>
+    <h4>Liquidación sumar a procesar</h4>
+    <div class="field">
+      <%= collection_select :pago_sumar_params, :liquidacion_sumar_id, @liquidaciones_sumar, :id, :descripcion %>  
+      <button type="submit">Generar pagos provisorios</button>      
+    </div>
+  <% end %>
+  <table>
+    <tr>
+      <th>Efector</th>
+      <th>CUIE</th>
+      <th>Período</th>
+      <th>Cuasifactura</th>
+      <th>Expediente</th>
+      <th>Origen</th>
+      <th>Destino</th>
+      <th>Acciones</th>
+    </tr>
+    <% @pagos_sumar.each do |pago_sumar| %>
+      <tr>
+        <td><%= pago_sumar.efector.nombre %></td>
+        <td><%= pago_sumar.efector.cuie %></td>
+        <td><%= pago_sumar.nombre_periodo %></td>
+        <td><%= pago_sumar.numero_cuasifactura %></td>
+        <td><%= pago_sumar.expediente_sumar.numero %></td>
+        <td><%= collection_select :pago_sumar_params, :cuenta_bancaria_origen_id, @cuentas_bancarias_origen, :id, :numero, {}, {class: "select-in-table"} %> </td>
+        <td><%= collection_select :pago_sumar_params, :cuenta_bancaria_destino_id, pago_sumar.efector.cuentas_bancarias, :id, :numero, {}, {class: "select-in-table"} %> </td>
+        <td>
+          Iniciar
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<script type="text/javascript">
+  $('#pago_sumar_params_liquidacion_sumar_id').select2();
+</script>

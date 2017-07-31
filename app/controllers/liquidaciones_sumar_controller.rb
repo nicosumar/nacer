@@ -6,7 +6,7 @@ class LiquidacionesSumarController < ApplicationController
 
   # GET /liquidaciones_sumar
   def index
-    @liquidaciones_sumar = LiquidacionSumar.all
+    @liquidaciones_sumar = LiquidacionSumar.joins(:periodo).order('periodos.periodo DESC').paginate(page: params[:page], per_page: params[:per])
   end
 
   # GET /liquidaciones_sumar/1

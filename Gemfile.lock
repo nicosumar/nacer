@@ -2,6 +2,8 @@ GEM
   remote: http://rubygems.org/
   specs:
     Ascii85 (1.0.2)
+    aasm (4.12.1)
+      concurrent-ruby (~> 1.0)
     actionmailer (3.2.22)
       actionpack (= 3.2.22)
       mail (~> 2.5.4)
@@ -82,6 +84,7 @@ GEM
       compass (>= 0.12.2)
     composite_primary_keys (5.0.14)
       activerecord (~> 3.2.0, >= 3.2.9)
+    concurrent-ruby (1.0.5)
     daemons (1.2.4)
     debug_inspector (0.0.2)
     delayed-web (0.4.3)
@@ -261,6 +264,7 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
+  aasm
   axlsx
   axlsx_rails
   better_errors

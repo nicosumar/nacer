@@ -1,8 +1,11 @@
 #content-header
-  %h1 Listado de pagos
+  %h1 Módulo de pagos
   #action-links
     - if can? :create, PagoSumar
-      = link_to 'Nuevo proceso de pago', new_pago_sumar_path
+      = link_to '1 - Iniciar proceso de pago', new_pago_sumar_path
+      = link_to '2 - Revisar pagos', new_pago_sumar_path
+      = link_to '3 - Ingresar pago externo', new_pago_sumar_path
+      = link_to '4 - Notificar efectores', new_pago_sumar_path
 
 = render :partial => "shared/info"
 

@@ -1,11 +1,52 @@
 # -*- encoding : utf-8 -*-
 class PagoSumar < ActiveRecord::Base
+  include AASM
+
+  aasm :column => 'state' do
+    state :ingreso, :initial => true
+    state :revision_interna
+    state :revision_externa
+    state :revision_de_pago_externo
+    state :pendiente_de_deposito
+    state :depositado
+    state :notificado
+
+    event :procesar_ingreso do
+      transitions :from => :ingreso, :to => :revision_interna, :guard => [:procesar_ingreso?]
+    end
+
+    event :procesar_revision_interna do
+      transitions :from => :revision_interna, :to => :revision_externa, :guard => [:procesar_revision_interna?]
+    end
+
+    event :procesar_revision_externa do
+      transitions :from => :revision_externa, :to => :revision_de_pago_externo, :guard => [:procesar_revision_externa?]
+    end
+
+    event :procesar_revision_externa do
+      transitions :from => :revision_externa, :to => :revision_de_pago_externo, :guard => [:procesar_revision_externa?]
+    end
+
+    event :procesar_revision_de_pago_externo do
+      transitions :from => :revision_de_pago_externo, :to => :pendiente_de_deposito, :guard => [:procesar_revision_de_pago_externo?]
+    end
+
+    event :procesar_deposito do
+      transitions :from => :pendiente_de_deposito, :to => :depositado, :guard => [:procesar_deposito?]
+    end
+
+    event :procesar_notificacion do
+      transitions :from => :depositado, :to => :notificado, :guard => [:procesar_notificacion?]
+    end
+  end
+  
   belongs_to :efector
   belongs_to :concepto_de_facturacion
   belongs_to :cuenta_bancaria_origen, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_origen_id'
   belongs_to :cuenta_bancaria_destino, class_name: "CuentaBancaria", foreign_key: 'cuenta_bancaria_destino_id'
   belongs_to :estado_del_proceso
-  has_many   :expedientes_sumar
+  has_one    :expediente_sumar
+  has_one    :liquidacion_sumar, through: :expediente_sumar
   has_many   :aplicaciones_de_notas_de_debito
 
   # Atributos a ser inicializados/completados deforma automatica
@@ -22,18 +63,27 @@ class PagoSumar < ActiveRecord::Base
   # Atributos solo actualizable luego de ser creado
   attr_accessible :notificado, :fecha_de_notificacion
 
-  accepts_nested_attributes_for :expedientes_sumar
-  attr_accessible :expedientes_sumar_attributes
-
   accepts_nested_attributes_for :aplicaciones_de_notas_de_debito
   attr_accessible :aplicaciones_de_notas_de_debito_attributes  
 
   after_initialize :init
   before_create :calcular_monto_a_pagar
 
+  def numero_cuasifactura
+    cuasifactura = LiquidacionSumarCuasifactura.where(efector_id: self.efector, liquidacion_sumar_id: self.expediente_sumar.liquidacion_sumar).first
+    cuasifactura.present? ? cuasifactura.numero_cuasifactura : ""
+  end
+
+  def nombre_periodo
+    if self.expediente_sumar.present? and self.expediente_sumar.liquidacion_sumar.present? and self.expediente_sumar.liquidacion_sumar.periodo.present?
+      self.expediente_sumar.liquidacion_sumar.periodo.periodo
+    else
+      ""
+    end
+  end
   # before_validation :validar_nd_y_expedientes
   #validate :nota_de_debito_ids, :nota_de_debitosYExpedientes
-  validate :notas_de_debito_pertenecen_a_efectores_en_los_expedientes, if: "expediente_sumar_ids.present?"
+  #validate :notas_de_debito_pertenecen_a_efectores_en_los_expedientes, if: "expediente_sumar_ids.present?"
 
   # 
   # Metodo llamado por validate.
@@ -42,68 +92,92 @@ class PagoSumar < ActiveRecord::Base
   # se correspondan con los efectores incluidos en los expedientes de pago incluidos en este proceso.
   #  La verificación toma en cuenta el estado de los conveios con los efectores al momento del proceso de pago
   # 
-  def notas_de_debito_pertenecen_a_efectores_en_los_expedientes
-    #si hay ND
-    if nota_de_debito_ids.present?
+  # def notas_de_debito_pertenecen_a_efectores_en_los_expedientes
+  #   #si hay ND
+  #   if nota_de_debito_ids.present?
       
-      nd_no_relacionadas = []
-      nd_relacionadas = []
+  #     nd_no_relacionadas = []
+  #     nd_relacionadas = []
       
-      expedientes_sumar.each do |exp|
-        efectores = []
-        fecha_de_creacion_del_expediente = exp.created_at.to_date
+  #     expedientes_sumar.each do |exp|
+  #       efectores = []
+  #       fecha_de_creacion_del_expediente = exp.created_at.to_date
         
-        # Obtengo los efectores para la fecha en que se liquido ( === fecha de creacion del expediente)
-        if self.efector.es_administrador?(fecha_de_creacion_del_expediente)
-          efectores << pago_sumar.efector
-          efectores << pago_sumar.efector.efectores_administrados(fecha_de_creacion_del_expediente).map { |e| e }
-        else
-          efectores << self.efector
-        end
+  #       # Obtengo los efectores para la fecha en que se liquido ( === fecha de creacion del expediente)
+  #       if self.efector.es_administrador?(fecha_de_creacion_del_expediente)
+  #         efectores << pago_sumar.efector
+  #         efectores << pago_sumar.efector.efectores_administrados(fecha_de_creacion_del_expediente).map { |e| e }
+  #       else
+  #         efectores << self.efector
+  #       end
 
-        # Busco sobre las notas de debito aun no relacioadas
-        (self.notas_de_debito - nd_relacionadas).each do |nd|
-          # Verifico que la ND pertenece a alguno de los efectores
-          if efectores.map { |e| e.id }.include? nd.efector_id
-            # La nota de debito ta OK, Pertenece a algun efector de los expedientes
-            # Ademas, si estaba relacionada a nd_no_relacionadas y aparece -> la borro de la lista
-            nd_relacionadas << nd 
-            nd_no_relacionadas.delete nd
-          else
-            # si la ND no pertenece a estos efectores la marco
-            nd_no_relacionadas << nd 
-          end
-        end # end each nota de debito
+  #       # Busco sobre las notas de debito aun no relacioadas
+  #       (self.notas_de_debito - nd_relacionadas).each do |nd|
+  #         # Verifico que la ND pertenece a alguno de los efectores
+  #         if efectores.map { |e| e.id }.include? nd.efector_id
+  #           # La nota de debito ta OK, Pertenece a algun efector de los expedientes
+  #           # Ademas, si estaba relacionada a nd_no_relacionadas y aparece -> la borro de la lista
+  #           nd_relacionadas << nd 
+  #           nd_no_relacionadas.delete nd
+  #         else
+  #           # si la ND no pertenece a estos efectores la marco
+  #           nd_no_relacionadas << nd 
+  #         end
+  #       end # end each nota de debito
 
-      end #end each expediente
+  #     end #end each expediente
 
-      if nd_no_relacionadas.size > 1
-        errors.add(:nota_de_debito_ids, "Las notas de debito numeros: #{nd_no_relacionadas.join(',')} no estan asociadas a los efectores incluidos en los expedientes #{expedientes_sumar.map { |e| e.numero }.joins(', ')}")
-        false
-      end
-    end
-  end
+  #     if nd_no_relacionadas.size > 1
+  #       errors.add(:nota_de_debito_ids, "Las notas de debito numeros: #{nd_no_relacionadas.join(',')} no estan asociadas a los efectores incluidos en los expedientes #{expedientes_sumar.map { |e| e.numero }.joins(', ')}")
+  #       false
+  #     end
+  #   end
+  # end
   
   def init
     # o el valor de la base, o q busque el estado 2
     self.estado_del_proceso ||= EstadoDelProceso.find(2) # "En Curso"
     self.fecha_de_proceso ||= Date.today
 
-    estados_aceptados = EstadoDeAplicacionDeDebito.where("estados_de_aplicaciones_de_debitos.id != 3 ").
-                                                   map { |e| e.id }
+    # estados_aceptados = EstadoDeAplicacionDeDebito.where("estados_de_aplicaciones_de_debitos.id != 3 ").
+    #                                                map { |e| e.id }
     
-    @nota_de_debito_ids = self.aplicaciones_de_notas_de_debito.
-                               where(estado_de_aplicacion_de_debito_id: estados_aceptados).
-                               map { |e| e.nota_de_debito_id } 
+    # @nota_de_debito_ids = self.aplicaciones_de_notas_de_debito.
+    #                            where(estado_de_aplicacion_de_debito_id: estados_aceptados).
+    #                            map { |e| e.nota_de_debito_id } 
   end
 
+  # Métodos para validar las transiciones de estados
+  def procesar_ingreso?
+    true
+  end
+
+  def procesar_revision_interna?
+    true
+  end
+
+  def procesar_revision_externa?
+    true
+  end
+
+  def procesar_revision_de_pago_externo?
+    true
+  end
+
+  def procesar_deposito?
+    true
+  end
+
+  def procesar_notificacion?
+    true
+  end
+  # Fin de definición de métodos de transicion de estados.
+  
   def calcular_monto_a_pagar
     total_aprobado = 0.0
     total_de_debitos = 0.0
     
-    self.expedientes_sumar.each do |exp|
-      total_aprobado += exp.monto_aprobado
-    end
+    total_aprobado = self.expediente_sumar.monto_aprobado
 
     total_de_debitos = self.aplicaciones_de_notas_de_debito.sum(:monto)
     self.monto = total_aprobado - total_de_debitos
@@ -232,23 +306,23 @@ class PagoSumar < ActiveRecord::Base
   end
 
 
-  def expediente_sumar_ids=(value_ids)
-    unless value_ids.is_a? Array
-      return nil 
-      raise ArgumentError
-    end
+  # def expediente_sumar_ids=(value_ids)
+  #   unless value_ids.is_a? Array
+  #     return nil 
+  #     raise ArgumentError
+  #   end
 
-    value_ids.reject! { |x| !(x.is_a? Fixnum)}
+  #   value_ids.reject! { |x| !(x.is_a? Fixnum)}
    
-    # Borro los seleccionados y agrego nuevamente
-    ActiveRecord::Base.transaction do 
-      self.expedientes_sumar.clear
-      # Verifico que el expediente corresponda al efector de pago
-      e = ExpedienteSumar.find(value_ids)
-      self.expedientes_sumar << e if e.efector_id == self.efector_id
-    end
-    self.expediente_sumar_ids
-  end
+  #   # Borro los seleccionados y agrego nuevamente
+  #   ActiveRecord::Base.transaction do 
+  #     self.expedientes_sumar.clear
+  #     # Verifico que el expediente corresponda al efector de pago
+  #     e = ExpedienteSumar.find(value_ids)
+  #     self.expedientes_sumar << e if e.efector_id == self.efector_id
+  #   end
+  #   self.expediente_sumar_ids
+  # end
 
   def numero_de_proceso
     "%07d" % self.id    

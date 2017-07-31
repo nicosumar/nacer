@@ -19,20 +19,26 @@ class PagosSumarController < ApplicationController
   # GET /pagos_sumar/new
   def new
     @pago_sumar = PagoSumar.new
-    @efectores  = Efector.administradores_y_autoadministrados_sumar.order(:nombre).collect { |e| [e.nombre, e.id ]}
-    
-    @conceptos_de_facturacion = Efector.administradores_y_autoadministrados_sumar.map do |e|
-      e.conceptos_que_facturo.map do |c|
-        [c.nombre, c.id, {class: e.id}]
+    @liquidaciones_sumar = LiquidacionSumar.joins(:periodo).order('periodos.periodo DESC').limit(50)
+    @pagos_sumar = []
+    if params[:pago_sumar_params].present? and params[:pago_sumar_params][:liquidacion_sumar_id].present?
+      liquidacion_sumar = LiquidacionSumar.find(params[:pago_sumar_params][:liquidacion_sumar_id])
+      @efectores  = Efector.administradores_y_autoadministrados_sumar.order(:nombre)
+      @efectores.each do |efector|
+        pago_sumar = PagoSumar.new
+        pago_sumar.efector = efector
+        pago_sumar.concepto_de_facturacion = liquidacion_sumar.concepto_de_facturacion
+        pago_sumar.expediente_sumar = ExpedienteSumar.impagos.where(efector_id: efector, liquidacion_sumar_id: liquidacion_sumar).first      
+        @pagos_sumar << pago_sumar if pago_sumar.expediente_sumar.present?
       end
-    end.flatten!(1).uniq
+    end
 
-    @cuentas_bancarias_origen = OrganismoGubernamental.gestionables.map do |og|
-      og.entidad.cuentas_bancarias.map do |cbo|
-        [cbo.nombre, cbo.id, {class: og.id}]
+    @cuentas_bancarias_origen = []
+    OrganismoGubernamental.gestionables.each do |og|
+      og.entidad.cuentas_bancarias.each do |cbo|
+        @cuentas_bancarias_origen << cbo
       end
-    end.flatten!(1).uniq
-
+    end
 
   end
 

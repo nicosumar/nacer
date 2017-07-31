@@ -27,4 +27,5 @@
         %td= link_to 'Ver', liquidacion_sumar
         %td= link_to 'Editar', edit_liquidacion_sumar_path(liquidacion_sumar)
         %td= link_to 'Borrar', liquidacion_sumar, method: :delete, data: { confirm: '¿Esta Seguro?' }
+  = will_paginate @prestaciones, :inner_window => 2, :outer_window => 0
 

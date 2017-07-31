@@ -177,6 +177,11 @@
                     %ul
                       %li= link_to "Gestionar las UADs", unidades_de_alta_de_datos_url if current_user.in_group? :usuarios_uads_verificacion
                       %li= link_to "Gestionar los CIs", "#", { :title => "En preparación... Aún no disponible." } if current_user.in_group? :administradores
+                    %h3 FACTURACIÓN Y PAGOS
+                    %ul
+                      %li= link_to "Sucursales bancarias", sucursales_bancarias_url if current_user.in_group? [:administradores,:facturacion]
+                      %li= link_to "Cuentas bancarias", cuentas_bancarias_url if current_user.in_group? [:administradores,:facturacion]
+                      %li= link_to "Organismos gubernamentales", organismos_gubernamentales_url if current_user.in_group? [:administradores,:facturacion]
                   %div.col_1
                     - if current_user.in_group? :administradores
                       %h3 TABLAS AUXILIARES

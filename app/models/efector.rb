@@ -24,6 +24,8 @@ class Efector < ActiveRecord::Base
   belongs_to :grupo_de_efectores
   belongs_to :area_de_prestacion
   belongs_to :dependencia_administrativa
+  has_one    :entidad, :as => :entidad
+  has_many :cuentas_bancarias, :through => :entidad
   has_one :convenio_de_administracion
   has_one :convenio_de_administracion_sumar
   has_one :administrador, :through => :convenio_de_administracion

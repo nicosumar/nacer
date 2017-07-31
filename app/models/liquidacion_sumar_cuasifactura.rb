@@ -9,7 +9,7 @@ class LiquidacionSumarCuasifactura < ActiveRecord::Base
 
   scope :para, lambda {|efector, liquidacion| where(efector_id: efector.id, liquidacion_id: liquidacion.id)}
 
-  attr_accessible :monto_total, :numero_cuasifactura, :observaciones, :liquidacion_sumar, :efector, :liquidacion_id, :efector_id
+  attr_accessible :monto_total, :numero_cuasifactura, :observaciones, :liquidacion_sumar, :efector, :liquidacion_id, :efector_id, :liquidacion_sumar_id
   attr_accessible :concepto_de_facturacion, :concepto_de_facturacion_id
   attr_accessible :cuasifactura_escaneada
 

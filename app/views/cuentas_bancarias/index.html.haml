@@ -20,12 +20,12 @@
       %th CBU
     - @cuentas_bancarias.each do |cuenta_bancaria|
       %tr.clickable{ :onclick => "location.href=\'#{cuenta_bancaria_path(cuenta_bancaria)}\'", :title => "Ver detalles de la cuenta" }
-        %td= cuenta_bancaria.entidad.entidad_type.underscore.humanize
-        %td= cuenta_bancaria.entidad.entidad.nombre
-        %td= cuenta_bancaria.banco.nombre.first(15) + "..."
-        %td= cuenta_bancaria.denominacion.first(7) + "..."
+        %td= cuenta_bancaria.entidad.entidad_type.underscore.humanize if cuenta_bancaria.entidad.present?
+        %td= cuenta_bancaria.entidad.entidad.nombre if cuenta_bancaria.entidad.present?
+        %td= cuenta_bancaria.banco.nombre
+        %td= cuenta_bancaria.denominacion
         %td= cuenta_bancaria.sucursal_bancaria.numero
         %td= cuenta_bancaria.tipo_de_cuenta_bancaria.nombre_corto
-        %td= cuenta_bancaria.numero.present? ? cuenta_bancaria.numero.first(5) + "..." : "Desconocido"
-        %td= cuenta_bancaria.cbu.present? ? cuenta_bancaria.cbu.first(5) + "..." : "Desconocido"
+        %td= cuenta_bancaria.numero.present? ? cuenta_bancaria.numero : "Desconocido"
+        %td= cuenta_bancaria.cbu.present? ? cuenta_bancaria.cbu : "Desconocido"
   %br/

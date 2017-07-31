@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170707151634) do
+ActiveRecord::Schema.define(:version => 20170731124511) do
 
   create_table "addendas", :force => true do |t|
     t.integer  "convenio_de_gestion_id", :null => false
@@ -506,15 +506,17 @@ ActiveRecord::Schema.define(:version => 20170707151634) do
   add_index "datos_reportables", ["dato_reportable_sirge_id"], :name => "dato_reportable_sirge_id"
 
   create_table "datos_reportables_requeridos", :force => true do |t|
-    t.integer "prestacion_id"
-    t.integer "dato_reportable_id"
-    t.date    "fecha_de_inicio"
-    t.date    "fecha_de_finalizacion"
-    t.boolean "necesario",                                            :default => false
-    t.boolean "obligatorio",                                          :default => false
-    t.decimal "minimo",                :precision => 15, :scale => 4
-    t.decimal "maximo",                :precision => 15, :scale => 4
-    t.boolean "es_requerido_sirge"
+    t.integer  "prestacion_id"
+    t.integer  "dato_reportable_id"
+    t.date     "fecha_de_inicio"
+    t.date     "fecha_de_finalizacion"
+    t.boolean  "necesario",                                            :default => false
+    t.boolean  "obligatorio",                                          :default => false
+    t.decimal  "minimo",                :precision => 15, :scale => 4
+    t.decimal  "maximo",                :precision => 15, :scale => 4
+    t.boolean  "es_requerido_sirge"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "datos_reportables_requeridos_sirge", :force => true do |t|
@@ -1319,6 +1321,7 @@ ActiveRecord::Schema.define(:version => 20170707151634) do
     t.decimal  "monto",                      :precision => 15, :scale => 4
     t.datetime "created_at",                                                                   :null => false
     t.datetime "updated_at",                                                                   :null => false
+    t.string   "state"
   end
 
   add_index "pagos_sumar", ["concepto_de_facturacion_id"], :name => "index_pagos_sumar_on_concepto_de_facturacion_id"
