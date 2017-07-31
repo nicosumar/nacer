@@ -67,6 +67,7 @@ class PrestacionesController < ApplicationController
       @prestacion.asignaciones_de_precios.destroy_all
       @prestacion.cantidades_de_prestaciones_por_periodo.destroy_all
       @prestacion.prestaciones_autorizadas.destroy_all
+      @prestacion.documentaciones_respaldatorias.destroy_all
       @prestacion.destroy
     end
     redirect_to prestaciones_url

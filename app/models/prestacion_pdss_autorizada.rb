@@ -36,6 +36,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
   # self.efector_y_fecha
   # Devuelve todas las prestaciones del PDSS, serializadas en un Hash con su sección y grupo, subgrupo, e
   # indicando cuáles prestaciones están autorizadas según el objeto pasado como parámetro.
+  #
   def self.efector_y_fecha(efector_id, fecha = Date.today)
     qres = ActiveRecord::Base.connection.exec_query( <<-SQL
         SELECT DISTINCT ON (sp.orden, gp.orden, pp.orden)
@@ -89,6 +90,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
               ppa.autorizante_al_alta_type = 'AddendaSumar' AND
               ppa.autorizante_al_alta_id = ads.id
             )
+          WHERE p.activa = true
           ORDER BY sp.orden, gp.orden, pp.orden;
       SQL
     )

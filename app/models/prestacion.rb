@@ -352,14 +352,23 @@ class Prestacion < ActiveRecord::Base
         ppdss.nombre = self.nombre 
         ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
       }
+
       if new_record? 
+
         self.prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.last_orden_by_grupo_pdss_id(ppdss.grupo_pdss_id) + (i + 1) }
+      
       else
+
+        #le agregué esto acá. Esto le va a hacer asignar el MISMO orden si no se modificó el grupo, o le va a dar un nuevo orden (el ultimo) si se modificó el orden.
+        self.prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.last_orden_by_grupo_pdss_id(ppdss.grupo_pdss_id) + (i + 1) }
+      
         self.prestaciones_pdss.each do |pdss|
           pdss.prestaciones = [self]
           pdss.save
         end
+
       end
+
     end
 
     def validate_unique_asignaciones_de_precios

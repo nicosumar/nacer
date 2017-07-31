@@ -1,5 +1,9 @@
 $(document).ready(function(){
 
+  //Controla si es comunitaria. En caso de serlo, oculta el campo de grupo poblacional y sexo, en caso contrario, lo muestra.
+  //Luego este método vuelve a llamarse cada vez que se modifique el checkbox de "es comunitaria"
+  hideCampos();
+
   // Función para buscar los grupos pdss de una sección pdss
   $(document).on( "change", ".seccion-pdss-select", function() {
     var seccion_pdss_id = this.value;
@@ -131,4 +135,35 @@ $(document).ready(function(){
 
 
 });
+
+function hideCampos(){
+
+  if(document.getElementById("check_comunitaria").checked){
+
+    toggleDisplay(document.getElementById('select_grupo'), false);
+    toggleDisplay(document.getElementById('select_sexo'), false); 
+
+  }
+  else {
+
+    toggleDisplay(document.getElementById('select_grupo'), true);
+    toggleDisplay(document.getElementById('select_sexo'), true); 
+
+  }
+
+}
+
+function toggleDisplay(element, show) {
+
+    if(element){
+
+        if (show) {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+
+    }
+} 
+
 

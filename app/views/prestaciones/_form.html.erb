@@ -35,7 +35,7 @@
   </div>
   <div class="field">
     <%= f.label "¿ Es comunitaria ?" %>
-    <%= f.check_box :comunitaria %>      
+    <%= f.check_box :comunitaria, :id => "check_comunitaria", :onchange => 'hideCampos();'%>      
   </div>
   <div class="field">
     <%= f.label "¿ Requiere historia clínica ?" %>
@@ -80,6 +80,8 @@
     <br>
   </div>
 
+  <div id="select_grupo">
+
   <h4>Grupos poblacionales</h4>
 
     <%= f.collection_select :grupo_poblacional_ids, GrupoPoblacional.all, :id, :nombre, 
@@ -88,6 +90,10 @@
   <br>
   <br>
 
+  </div>
+
+  <div id="select_sexo">
+  
   <h4>Sexos</h4>
 
     <%= f.collection_select :sexo_ids, Sexo.all, :id, :nombre, 
@@ -95,6 +101,8 @@
                             {multiple: true, size: 5, style: 'width: 100%', class:'multi_select'}  %>
   <br>
   <br>
+
+  </div>
 
   <h4>Documentación respaldatoria</h4>
 

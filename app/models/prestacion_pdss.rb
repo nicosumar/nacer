@@ -21,7 +21,26 @@ class PrestacionPdss < ActiveRecord::Base
 
   def self.last_orden_by_grupo_pdss_id grupo_pdss_id
     begin 
-      last_orden = PrestacionPdss.where(grupo_pdss_id: grupo_pdss_id).order("orden DESC").first.orden
+
+      #antes acá solo estaba esto: PrestacionPdss.where(grupo_pdss_id: grupo_pdss_id).order("orden DESC").first.orden
+
+      #ahora lo que hago es recorrer todas las prestaciones del grupo, para saber si no tengo ya
+      #a esta prestacion_pdss ahi adentro. De tal forma de obtener su numerito y asignarle el mismo (y no, erroneamente, uno incrementado)
+      
+      prestaciones_pdss = PrestacionPdss.where(grupo_pdss_id: grupo_pdss_id).order("orden DESC")
+
+      prestaciones_pdss.each do |pre|
+
+        if pre == self
+
+          return pre.orden - 1
+
+        end
+
+      end
+
+      last_orden = prestaciones_pdss.first.orden
+
     rescue => e
       last_orden = 0
     end
@@ -32,4 +51,5 @@ class PrestacionPdss < ActiveRecord::Base
     def set_default_attributes
       self.orden = (PrestacionPdss.last_orden_by_grupo_pdss_id(self.grupo_pdss.id) + 1) if self.orden.blank? and self.grupo_pdss.present?
     end
+
 end
