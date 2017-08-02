@@ -38,7 +38,7 @@ class InscripcionMasiva
     @unidad_de_alta_de_datos = nil
     @centro_de_inscripcion = nil
     @efector_de_atencion_habitual = nil
-    @tiene_etiquetas_de_columna = false
+    @tiene_etiquetas_de_columna = true
     @hash_clases = {}
     @hash_tipos = {}
     @hash_sexos = {}
