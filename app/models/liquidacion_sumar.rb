@@ -478,7 +478,9 @@ class LiquidacionSumar < ActiveRecord::Base
 
       transaction do
         self.concepto_de_facturacion.generar_documentos!(self)
+        @log_del_proceso.info("Generar Documentos OK")
         PrestacionBrindada.marcar_prestaciones_facturadas!(self)
+        @log_del_proceso.info("Marcar Prestaciones Facturadas OK")
       end
 
       @log_del_proceso.info("Finalizó el proceso de Generado de cuasifacturas - Liq #{self.id }")
