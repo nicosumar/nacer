@@ -144,7 +144,9 @@ private
         if autorizada
           asignacion_de_precios = AsignacionDePrecios.where(:nomenclador_id => params[:nomenclador_id], :prestacion_id => prestacion.id).first
           if asignacion_de_precios
+            
             precio_por_unidad = asignacion_de_precios.precio_por_unidad
+            
             adicional_por_prestacion = asignacion_de_precios.adicional_por_prestacion
             subtotal = cantidad * precio_por_unidad + adicional_por_prestacion
           end

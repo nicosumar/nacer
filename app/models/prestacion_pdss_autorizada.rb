@@ -36,6 +36,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
   # self.efector_y_fecha
   # Devuelve todas las prestaciones del PDSS, serializadas en un Hash con su sección y grupo, subgrupo, e
   # indicando cuáles prestaciones están autorizadas según el objeto pasado como parámetro.
+  #
   def self.efector_y_fecha(efector_id, fecha = Date.today)
     qres = ActiveRecord::Base.connection.exec_query( <<-SQL
         SELECT DISTINCT ON (sp.orden, gp.orden, pp.orden)
@@ -47,6 +48,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
             tdp.nombre "tipo_de_prestacion",
             codigo_de_prestacion_con_diagnosticos(pp.id) "codigo_de_prestacion",
             pp.nombre "nombre_de_prestacion",
+            p.activa "prestacion_is_activa",
             CASE WHEN ppa.autorizante_al_alta_type IS NOT NULL THEN 't'::boolean ELSE 'f'::boolean END "autorizada",
             CASE
               WHEN ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar' THEN 'Convenio de gestión'::varchar(255)
@@ -89,6 +91,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
               ppa.autorizante_al_alta_type = 'AddendaSumar' AND
               ppa.autorizante_al_alta_id = ads.id
             )
+          WHERE COALESCE (p.eliminada, false) = false
           ORDER BY sp.orden, gp.orden, pp.orden;
       SQL
     )
@@ -105,6 +108,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
         secciones << s.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == s.id.to_s}))
       end
     end
+
     return secciones
   end
 #-----------------------------------------------------------------------------------------
@@ -202,6 +206,7 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
             tdp.nombre "tipo_de_prestacion",
             codigo_de_prestacion_con_diagnosticos(pp.id) "codigo_de_prestacion",
             pp.nombre "nombre_de_prestacion",
+            p.activa "prestacion_is_activa",
             CASE
               WHEN EXISTS (
                   SELECT * FROM areas_de_prestacion_prestaciones_pdss appp

@@ -515,4 +515,52 @@ class LiquidacionSumar < ActiveRecord::Base
     end 
   end
 
+  def notificar_resultado_liquidacion
+
+    efectores_a_notificar = Efector.where(:grupo_de_efectores_liquidacion_id => self.grupo_de_efectores_liquidacion_id)
+
+    efectores_a_notificar.each do |efector|
+
+      notificacion = Notificacion.new
+
+      notificacion.mensaje = "Se ha realizado con éxito la liquidación para el periodo " + self.periodo.periodo.to_s + "."
+
+      notificacion.fecha_evento = Time.now
+      notificacion.enlace = nil
+      notificacion.unidad_de_alta_de_datos_id = efector.unidad_de_alta_de_datos_id
+      notificacion.tipo_notificacion_id = 2 #NOTIFICACION
+      notificacion.tiene_vista = true
+
+      notificacion.save
+
+    end
+
+    return
+
+  end
+
+  def notificar_resultado_cuasifactura
+
+    efectores_a_notificar = Efector.where(:grupo_de_efectores_liquidacion_id => self.grupo_de_efectores_liquidacion_id)
+
+    efectores_a_notificar.each do |efector|
+
+      notificacion = Notificacion.new
+
+      notificacion.mensaje = "Se han generado con éxito la cuasifactura para el periodo " + self.periodo.periodo.to_s + "."
+
+      notificacion.fecha_evento = Time.now
+      notificacion.enlace = documentos_electronicos_index_path
+      notificacion.unidad_de_alta_de_datos_id = efector.unidad_de_alta_de_datos_id
+      notificacion.tipo_notificacion_id = 2 #NOTIFICACION
+      notificacion.tiene_vista = true
+
+      notificacion.save
+
+    end
+
+    return
+
+  end
+
 end

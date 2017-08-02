@@ -11,6 +11,7 @@ class CreateUnidadesDeAltaDeDatos < ActiveRecord::Migration
       t.timestamps
       t.integer :creator_id
       t.integer :updater_id
+      t.date :fecha_ultimas_notificaciones
     end
 
     add_index :unidades_de_alta_de_datos, :codigo, :unique => true

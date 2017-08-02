@@ -1,0 +1,117 @@
+= javascript_include_tag "informes_de_rendicion.js"
+- content_for :title do
+  Informes de Rendición y Compras
+
+%div.hidden_field{:id => "info_op", :value => @operacion}
+%div.hidden_field{:id => "info-permiso", :value => @permiso.to_s}
+
+#content-header
+  %h1 Informes de Rendición y Compras
+  #action-links
+    - if can? :create, InformeDeRendicion
+      - if @convenios_administracion.empty?
+        = link_to 'Nuevo informe', informes_de_rendicion_path + '/new'
+
+= render :partial => "shared/info"
+
+#content-body
+  %h2.first-header Listado de Informes de Rendición y Compras
+
+  %hr
+
+  - if @convenios_administracion.any?
+
+    %div.field
+      %h2.first-header Generar Informe General de Rendición y Gastos
+      %h3.first-header-with-note Puedes usar esta función para generar un documento con todos los gastos realizados por estos efectores en el mes y año especificados.
+      %p.note Recuerda que solo se mostrarán los informes del mes y año especificados que se hayan finalizado o cerrado por el administrador.
+      = form_tag(informes_de_rendicion_path(:format => :odt), :method => :get) do 
+        .field
+          = label_tag "Mes: "
+          = select_month(Date.today, use_month_names: %w(Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre))
+          = label_tag "Año: "
+          = select_year(Date.today)
+          %br
+          %br
+          = button_tag "Generar Documento"
+
+    %hr
+    %br
+
+    - if @permiso.to_s == "puede_confirmar"
+
+      %div.field
+        %h2.first-header Generar Reporte General de Uso de Fondos
+        %h3.first-header-with-note Puedes usar esta función para generar un documento con todos los gastos realizados por estos efectores en el mes y año especificados, clasificados según clase y tipo de gasto.
+        %p.note Recuerda que solo se mostrarán los informes del mes y año especificados que se hayan finalizado o cerrado por el administrador.
+        = form_tag(informes_de_rendicion_path(:format => :odt2), :method => :get) do 
+          .field
+            = label_tag "Mes: "
+            = select_month(Date.today, use_month_names: %w(Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre))
+            = label_tag "Año: "
+            = select_year(Date.today)
+            %br
+            %br
+            = button_tag "Generar Documento"
+
+      %hr
+      %br
+
+    - @efectores_administrados.each do |efector|
+
+      %div.field_content
+        %span.field_name Efector
+        %span.field_value{:style => "background-color: #e0e0e0;"}= efector.nombre
+
+      %div.field_content
+        %span.field_name CUIE
+        %span.field_value{:style => "background-color: #e0e0e0;"}= efector.cuie
+
+      #action-links
+        - if can? :create, InformeDeRendicion
+          = link_to 'Nuevo informe', informes_de_rendicion_path + '/new?efector=' + efector.id.to_s
+
+      %br
+      %br
+      %br
+
+      - if efector.informes_de_rendicion.any?
+
+        %table{:width => "100%"} 
+          %thead
+            %tr
+              %th #
+              %th Fecha
+              %th Total
+              %th Estado
+              %th{:colspan => 2} Acciones
+              %th{:colspan => 2} Administración
+
+          = render :partial => "indextable", :locals => {:informes => efector.informes_de_rendicion }
+
+      - else
+        No hay ningún informe asociado a este efector. Por favor, ingrese en "Nuevo Informe" para crear uno.
+
+      %br
+      %hr
+      %br
+
+  - else
+
+    - if @informes_de_rendicion.any?
+
+      %table{:width => "100%"} 
+        %thead
+          %tr
+            %th #
+            %th Fecha
+            %th Total
+            %th Estado
+            %th{:colspan => 2} Acciones
+            %th{:colspan => 2} Administración
+
+        = render :partial => "indextable", :locals => {:informes => @informes_de_rendicion }
+
+    - else 
+      No hay ningún informe asociado a este efector. Por favor, ingrese en "Nuevo Informe" para crear uno.
+    

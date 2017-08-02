@@ -80,7 +80,13 @@ class Prestacion < ActiveRecord::Base
 
   after_initialize :add_prestaciones_pdss
 
-  scope :listado_permitido, ->(con_eliminadas=false) { where('eliminada IS NULL OR eliminada = false') unless con_eliminadas }
+  # 1 -> trae todo
+  # 2 -> no trae eliminadas (abarca solo las eliminadas, dado que pueden haber inactivas que NO estén eliminadas)
+  # 3 -> no trae inactivas (abarca inactivas y eliminadas, dado que las eliminadas estan inactivas)}
+
+  scope :sin_inactivas, -> { where('activa = true') }
+  scope :sin_eliminadas, -> { where('eliminada is null or eliminada = false') }
+
   scope :activas, -> { where(activa: true) }
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
   scope :ordenadas_por_prestaciones_pdss, -> { includes(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }
@@ -93,7 +99,6 @@ class Prestacion < ActiveRecord::Base
   end
 
   def safe_remove
-    byebug
     if self.can_remove?
       self.datos_adicionales.destroy_all
       self.cantidades_de_prestaciones_por_periodo.destroy_all
@@ -353,14 +358,23 @@ class Prestacion < ActiveRecord::Base
         ppdss.nombre = self.nombre 
         ppdss.tipo_de_prestacion_id = self.objeto_de_la_prestacion.tipo_de_prestacion_id
       }
+
       if new_record? 
+
         self.prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.last_orden_by_grupo_pdss_id(ppdss.grupo_pdss_id) + (i + 1) }
+      
       else
+
+        #le agregué esto acá. Esto le va a hacer asignar el MISMO orden si no se modificó el grupo, o le va a dar un nuevo orden (el ultimo) si se modificó el orden.
+        self.prestaciones_pdss.each_with_index { |ppdss, i| ppdss.orden = PrestacionPdss.last_orden_by_grupo_pdss_id(ppdss.grupo_pdss_id) + (i + 1) }
+      
         self.prestaciones_pdss.each do |pdss|
           pdss.prestaciones = [self]
           pdss.save
         end
+
       end
+
     end
 
     def validate_unique_asignaciones_de_precios

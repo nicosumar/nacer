@@ -46,7 +46,6 @@
   
   %div.field
   - if @convenio_de_gestion.efector.prestaciones_autorizadas_al_dia(Date.today).any?
-    = Date.today.strftime("%d/%m/%Y")
     - PrestacionPdssAutorizada.efector_y_fecha(@convenio_de_gestion.efector.id, Date.today).each do |seccion|
       %div.seccion_pdss{:id => seccion["nombre"]}
         %h4= (seccion["codigo"].present? ? seccion["codigo"] + ") " : "") + seccion["nombre"]

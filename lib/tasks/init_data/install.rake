@@ -8,6 +8,8 @@ namespace :install do
 	puts "Tipos de documentos deshabilitados"
 	Rake::Task['add_MotivoDeBajas_201705051238:execute'].invoke
 	puts "Motivos de bajas agregados"
+	Rake::Task['add_TipoDeImporte_201706031013:execute'].invoke
+	puts "Tipos de Importes agregados"
 
   end
 end

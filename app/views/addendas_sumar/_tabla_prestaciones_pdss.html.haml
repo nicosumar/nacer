@@ -37,15 +37,21 @@
         - @estado= true
         / - if p["codigo_de_prestacion"] == "ITQ005" 
         -# raise
-   
-        - if p["autorizada"] == "t"
-         
-          %td.centrado 
-            -#%input{ :type=>"checkbox", :checked=>true }
-            = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
-            = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], true, id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
+
+        - if p["prestacion_is_activa"] == "t"
+
+          - if p["autorizada"] == "t"
+           
+            %td.centrado 
+              -#%input{ :type=>"checkbox", :checked=>true }
+              = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
+              = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], true, id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
+          - else 
+            %td.centrado 
+              = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
+              = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], (@prestaciones_autorizadas_alta_ids.present? && @prestaciones_autorizadas_alta_ids.include?(p["prestacion_pdss_id"])), id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
+
         - else 
-          %td.centrado 
-            = hidden_field_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", nil
-            = check_box_tag "addenda_sumar[prestacion_pdss_id][" + p["prestacion_pdss_id"]+"]", p["prestacion_pdss_id"], (@prestaciones_autorizadas_alta_ids.present? && @prestaciones_autorizadas_alta_ids.include?(p["prestacion_pdss_id"])), id: dom_id(PrestacionPdss.find(p["prestacion_pdss_id"]))
+
+          %td.centrado INACTIVA
 
