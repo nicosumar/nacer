@@ -64,7 +64,10 @@ module NacerJob
         raise "¡La liquidacion" + @ls.descripcion + "ya ha sido procesada! Vacie la liquidación si desea reprocesar."
         
       end
+      
       @ls.generar_snapshoot_de_liquidacion
+      @ls.notificar_resultado_liquidacion
+
     end  
   end 
 
@@ -81,7 +84,10 @@ module NacerJob
       elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
         raise  "¡Las cuasifacturas de la liquidación "+  @liquidacion_sumar.descripcion +  "ya han sido generadas."
       end
+      
       @liquidacion_sumar.generar_documentos!
+      @liquidacion_sumar.notificar_resultado_cuasifactura
+      
     end  
 
     #Maxima cantidad de intentos sobrescrita

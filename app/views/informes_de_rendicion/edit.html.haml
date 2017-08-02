@@ -1,0 +1,12 @@
+- content_for :title do
+  Modificación de datos de los Informes De Rendición y Compras
+
+#content-header
+  %h1 Modificación de datos de los Informes De Rendición y Compras
+
+= render :partial => "/shared/info", :locals => { :registro => @informe_de_rendicion }
+
+#content-body
+  %h2.first-header-with-note Formulario de modificación de datos de los Informes De Rendición y Compras
+
+  = render 'form'

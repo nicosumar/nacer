@@ -129,6 +129,7 @@ class LiquidacionesSumarController < ApplicationController
   end
 
   def procesar_liquidacion
+    
     tiempo_proceso = Time.now
 
     respuesta = {}
@@ -136,6 +137,8 @@ class LiquidacionesSumarController < ApplicationController
 
     @liquidacion_sumar = LiquidacionSumar.find(params[:id],:include => :grupo_de_efectores_liquidacion)
 
+
+    #test_procesar_liquidacion
 
     if @liquidacion_sumar.prestaciones_liquidadas.count > 1
       respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido procesada! Vacie la liquidación si desea reprocesar." }
@@ -166,25 +169,11 @@ class LiquidacionesSumarController < ApplicationController
           status = :internal_server_error
         end
       else
-            respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido encolada para ser procesada!." }
+            respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya se esta procesando!." }
             status = :method_not_allowed
 
 
       end  
-
-
-
-      begin
-      proceso_de_sistema = ProcesoDeSistema.new 
-      proceso_de_sistema.entidad_relacionada_id = @liquidacion_sumar.id
-      if proceso_de_sistema.save 
-         Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)    
-         respuesta = { :tipo => :ok, :titulo => "El procesamiento de la liquidación se encoló correctamente" }
-      end
-      rescue
-        respuesta = { :tipo => :error, :titulo => "Hubieron problemas al realizar la liquidacion. Contacte con el departamento de sistemas." }
-        status = :internal_server_error
-      end
 
     end
 
@@ -192,20 +181,37 @@ class LiquidacionesSumarController < ApplicationController
       format.html { redirect_to @liquidacion_sumar, flash: respuesta }
       format.json { render json: respuesta.to_json, status: status }
     end
+
   end
 
+  # def test_procesar_liquidacion
+
+  #   status = :ok
+  #   respuesta = { :tipo => :ok, :titulo => "La liquidacion se realizo correctamente" }
+    
+  #   notificar_resultado_liquidacion #ACÁ GENERO LAS NOTIFICACIONES CORRESPONDIENTES
+
+  #   respond_to do |format|
+  #     format.html { redirect_to @liquidacion_sumar, flash: respuesta }
+  #     format.json { render json: respuesta.to_json, status: status }
+  #   end
+
+  # end
 
   def generar_cuasifacturas
+    
     tiempo_proceso = Time.now
     @liquidacion_sumar = LiquidacionSumar.find(params[:id],:include => :grupo_de_efectores_liquidacion)
     respuesta = {}
     status = :ok
 
+    #test_procesar_cuasifacturas
+
      if @liquidacion_sumar.prestaciones_liquidadas.count == 0
-       respuesta = { tipo: :error, titulo: "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente." }
+       respuesta = { tipo: :error, titulo: "¡La liquidacion esta vacia. Procese  y verifique la liquidacion previamente!." }
        status =  :method_not_allowed
      elsif @liquidacion_sumar.liquidaciones_sumar_cuasifacturas.count > 0
-       respuesta = { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas." }
+       respuesta = { :tipo => :error, :titulo => "¡Las cuasifacturas ya han sido generadas!." }
        status =  :method_not_allowed
      end
       
@@ -224,7 +230,7 @@ class LiquidacionesSumarController < ApplicationController
             #respuesta = { :tipo => :ok, :titulo => "Se generararon las cuasifacturas exitosamente - Tiempo para procesar: #{Time.now - tiempo_proceso} segundos" }
             respuesta = { :tipo => :ok, :titulo => "El procesamiento de la generación de las cuasifacturas se encoló correctamente" }
         else
-            respuesta = { :tipo => :error, :titulo => "¡La liquidacion ya ha sido encolada para generar las cuasifacturas!." }
+            respuesta = { :tipo => :error, :titulo => "¡La cuasifacturas ya estan siendo generadas!." }
             status = :method_not_allowed
         end
       end
@@ -238,7 +244,9 @@ class LiquidacionesSumarController < ApplicationController
     respond_to do |format|
       format.json { render json: respuesta.to_json, status: status }
     end
+
   end
+
   ##Este metodo aun no lo ocupamos hasta definir si vale la pena o no
   def procesar_liquidaciones
     
@@ -246,42 +254,41 @@ class LiquidacionesSumarController < ApplicationController
     respuesta = {}
     status = :ok
 
-    
     @liquidaciones_sumar = LiquidacionSumar.all
-    
-   
+
     begin  
+
     liquidaciones_encoladas = ""  
     @liquidaciones_sumar.each  do |p|
 
-         @liquidaciones_sumar = LiquidacionSumar.find(p.id)
+     @liquidaciones_sumar = LiquidacionSumar.find(p.id)
 
-         if not @liquidaciones_sumar.prestaciones_liquidadas.count > 1
+     if not @liquidaciones_sumar.prestaciones_liquidadas.count > 1
 
-              #Encolo la tarea de procesado.
-              proceso_de_sistema = ProcesoDeSistema.new 
-              proceso_de_sistema.entidad_relacionada_id = @liquidaciones_sumar.id
+      #Encolo la tarea de procesado.
+      proceso_de_sistema = ProcesoDeSistema.new 
+      proceso_de_sistema.entidad_relacionada_id = @liquidaciones_sumar.id
 
-              proceso_de_sistema_gc = ProcesoDeSistema.new   
-              proceso_de_sistema_gc.entidad_relacionada_id = @liquidaciones_sumar.id
+      proceso_de_sistema_gc = ProcesoDeSistema.new   
+      proceso_de_sistema_gc.entidad_relacionada_id = @liquidaciones_sumar.id
+    
+      if proceso_de_sistema.save! and proceso_de_sistema_gc.save! 
+        liquidaciones_encoladas  << @liquidaciones_sumar.descripcion + "\n"
+        #Encolo la tarea de procesado.
+        Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)
+        #Encolo la tarea de generado de cuasifactura.
+        Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema_gc.id)  
 
-            
-            
-                if proceso_de_sistema.save! and proceso_de_sistema_gc.save! 
-                  liquidaciones_encoladas  << @liquidaciones_sumar.descripcion + "\n"
-                  #Encolo la tarea de procesado.
-                  Delayed::Job.enqueue NacerJob::LiquidacionJob.new(proceso_de_sistema.id)
-                  #Encolo la tarea de generado de cuasifactura.
-                  Delayed::Job.enqueue NacerJob::LiquidacionCuasiFacturaJob.new(proceso_de_sistema_gc.id)  
+      end
+        
+     end
 
-                end
-            
-         end
     end
+
     if liquidaciones_encoladas != ""
-          redirect_to( liquidaciones_sumar_path, :flash => { :tipo => :ok, :titulo => "Se encolaron correctamentelas las liquidaciones.", :mensaje => liquidaciones_encoladas })
+      redirect_to( liquidaciones_sumar_path, :flash => { :tipo => :ok, :titulo => "Se encolaron correctamentelas las liquidaciones.", :mensaje => liquidaciones_encoladas })
     else
-          redirect_to( liquidaciones_sumar_path, :flash => { :tipo => :advertencia, :titulo => "Se encolaron correctamentelas las liquidaciones.", :mensaje => liquidaciones_encoladas })
+      redirect_to( liquidaciones_sumar_path, :flash => { :tipo => :advertencia, :titulo => "Se encolaron correctamente las las liquidaciones.", :mensaje => liquidaciones_encoladas })
     end
 
   #respuesta = { :tipo => :ok, :titulo => "Se encolaron correctamentelas las liquidaciones" }
@@ -293,11 +300,6 @@ class LiquidacionesSumarController < ApplicationController
     end
     
   end
-
-
-
-
-
 
   # GET /liquidaciones_sumar/1/efector/1.pdf
   def detalle_de_prestaciones_liquidadas_por_efector

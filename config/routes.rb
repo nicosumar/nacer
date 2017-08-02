@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
-  
+
+  resources :notificaciones
+  put 'notificaciones/:id/edit', to: "notificaciones#update"
+
   scope '/(:locale)', defaults: { locale: 'es' }, constraints: { locale: /es|en/ } do
     authenticated :user, -> user { user.in_group? [:administradores,:facturacion]} do
       mount Delayed::Web::Engine => '/jobs'
@@ -9,11 +12,15 @@ Nacer::Application.routes.draw do
   
   resources :procesos_de_sistemas , :only => [:index,:destroy,:show] 
 
-
-
   get "datos_reportables/show"
   get "prestaciones/autorizadas"
   get "diagnosticos/por_prestacion"
+
+  # Informes de rendicion
+  resources :informes_de_rendicion
+  put 'informes_de_rendicion/:id/edit', to: "informes_de_rendicion#update"
+  post 'informes_de_rendicion/new', to: "informes_de_rendicion#create"
+  get 'informes_de_rendicion/index'
 
   resources :documentos_generables
   resources :notas_de_debito
