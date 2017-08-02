@@ -1,0 +1,244 @@
+= javascript_include_tag "informes_de_rendicion.js"
+= form_for(@informe_de_rendicion) do |f|
+
+  /* Muestro los datos del efector
+
+  %div.hidden_field{:id => "permiso", :value => @permiso}
+  %div.hidden_field{:id => "info_op", :value => @operacion}
+  %div.hidden_field{:id => "informe_de_rendicion", :value => @informe_de_rendicion.to_json}
+  %div.hidden_field{:id => "detalles_informe_de_rendicion", :value => @informe_de_rendicion.detalles_informe_de_rendicion.to_json}
+  %div.hidden_field{:id => "tipos_de_gasto_por_detalle", :value => @tipos_de_gasto_por_detalle.to_json}
+  %div.hidden_field{:id => "clases_de_gasto", :value => @clases_de_gasto.to_json}
+  %div.hidden_field{:id => "tipos_de_gasto", :value => @tipos_de_gasto.to_json}
+  %div.hidden_field{:id => "numeros_existentes_cheque", :value => @numeros_existentes_cheque.to_json}
+
+  %h2.first-header Datos del Efector
+  %div.hidden_field{:id => "id_efector", :value => @efector_local.id}
+
+  %div.field_content
+    %span.field_name Efector
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @efector_local.nombre
+
+  %div.field_content
+    %span.field_name Director/Coordinador
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @efector_local.referente_al_dia.contacto.nombres + " " + @efector_local.referente_al_dia.contacto.apellidos
+
+  %div.field_content
+    %span.field_name Departamento
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @efector_local.departamento.nombre
+
+  /* Muestro los datos bancarios del efector 
+
+  %h2.first-header Datos Bancarios
+
+  %div.field_content
+    %span.field_name CUIT
+    %span.field_value{:style => "background-color: #e0e0e0;"}= (@efector_local.cuit?) ? @efector_local.cuit : "No Registrado"
+
+  %h4 Cuenta Principal
+  %div.field_content
+    %span.field_name Banco
+    %span.field_value{:style => "background-color: #e0e0e0;"}= ((@efector_local.banco_cuenta_principal?) ? @efector_local.banco_cuenta_principal : "No Registrado") + ((@efector_local.sucursal_cuenta_principal?) ? " | Suc. " + @efector_local.sucursal_cuenta_principal : "")
+
+  %div.field_content
+    %span.field_name Número de Cuenta
+    %span.field_value{:style => "background-color: #e0e0e0;"}= (@efector_local.numero_de_cuenta_principal?) ? @efector_local.numero_de_cuenta_principal : "No Registrado"
+
+  %div.field_content
+    %span.field_name Denominación
+    %span.field_value{:style => "background-color: #e0e0e0;"}= (@efector_local.denominacion_cuenta_principal?) ? @efector_local.denominacion_cuenta_principal : "No Registrado"
+
+  -if @efector_local.banco_cuenta_secundaria?
+
+    %h4 Cuenta Secundaria
+    %div.field_content
+    %span.field_name Banco
+    %span.field_value{:style => "background-color: #e0e0e0;"}= ((@efector_local.banco_cuenta_secundaria?) ? @efector_local.banco_cuenta_secundaria : "No Registrado") + ((@efector_local.sucursal_cuenta_secundaria?) ? " | Suc. " + @efector_local.sucursal_cuenta_secundaria : "")
+
+    %div.field_content
+      %span.field_name Número de Cuenta
+      %span.field_value{:style => "background-color: #e0e0e0;"}= (@efector_local.numero_de_cuenta_secundaria?) ? @efector_local.numero_de_cuenta_secundaria : "No Registrado"
+
+    %div.field_content
+      %span.field_name Denominación
+      %span.field_value{:style => "background-color: #e0e0e0;"}= (@efector_local.denominacion_cuenta_secundaria?) ? @efector_local.denominacion_cuenta_secundaria : "No Registrado"
+  
+  /* El usuario debe indicar el mes y el año del gasto. En el informe debe aparecer el ultimo día de ese mes como fecha de informe y el mes como mes en el que se realizó el gasto que se detalla
+  %hr
+  %br
+  %h3.first-header FECHA DEL INFORME
+  %div.field
+    = f.label :fecha_informe
+    = select_month(Date.today, use_month_names: %w(Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre), :id => 'mes_informe')
+    = select_year(Date.today, :id => 'anio_informe')
+
+  /* El usuario deberia ir agregando detalle por detalle con todos los campos que corresponden. En el caso de que no complete ningún campo debe decir con mayuscula en el detalle 'SIN MOVIMIENTOS'
+  %br
+  %hr
+  %br
+  %h2.first-header Detalle del Informe
+  %table#tabla_detalles{:border => "0", :width => "100%"}  
+    %thead#seccion_header
+      %tr
+        %th{:rowspan => 2}#
+        %th{:rowspan => 2}N° de Expediente/Formulario 
+        %th{:colspan => 2}Factura
+        %th{:rowspan => 2, width: "30%"}Detalle
+        %th{:rowspan => 2}Cantidad
+        %th{:rowspan => 2}N° de Cheque
+        %th{:colspan => 4}Importe
+        %th{:rowspan => 2}Cta
+        %th{:rowspan => 2}Acciones
+      %tr
+        - 1.times do
+          %th Fecha
+          %th Número
+        - 1.times do
+          %th Servicios
+          %th Obras
+          %th Bienes Ctes
+          %th Bienes De Capital
+      %tr#seccion_body
+        %td{align: "center"} 1
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"} SIN MOVIMIENTOS
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"} 
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+          = button_tag 'EDITAR', :onclick => "editRow(this);", :type => 'button', :class => "subBtn action_button", :disabled => "true"
+          = button_tag 'ELIMINAR', :onclick => "deleteRow(this);", :type => 'button', :class => "subBtn action_button", :disabled => "true"
+
+  %br
+
+  %table#tabla_totales{:border => "0", :width => "50%", :align => "right"}  
+    %thead#seccion_header
+      %tr
+        %th{:rowspan => 2} Total Servicios
+        %th{:rowspan => 2} Total Obras
+        %th{:rowspan => 2} Total Bienes Ctes
+        %th{:rowspan => 2} Total Bienes de Capital
+        %th{:rowspan => 2} Total
+    %tbody
+      %tr
+        %td 0
+        %td 0
+        %td 0
+        %td 0
+        %td 0
+
+  %div.actions
+
+    = button_tag 'AGREGAR NUEVO DETALLE', :onclick => "addNewRow();", :id => 'new_detalle_button', :type => 'button', :class => "subBtn"
+
+  %br
+
+  %div.actions{:id => "detalle_form", :style => "display: block;"}
+
+    %h3.first-header
+      Datos del Detalle
+    %p.note Todos los campos son obligatorios. En el caso de que no se hayan realizado movimientos, simplemente confirme sin agregar ningún detalle.
+
+    = fields_for DetalleInformeDeRendicion.new do |df|
+
+      %div
+        %span N° de Formulario/Expediente
+        %br
+        = df.number_field :numero, :id => 'form-1', :min => '0', :step => '1', :onblur => "showMessage(this, 1, 'int');"
+        %span{:id => 'advertencia-1', :style=>'color:#FF0000;'} 
+    
+      %div.field_content  
+        %span.field_name Fecha de la Factura
+        %br
+        = df.date_select :fecha_factura, html_options: { id: 'form-2' }
+        %span{:id => 'advertencia-2', :style=>'color:#FF0000;'} 
+
+      %div.field_content
+        %span.field_name Número de la Factura
+        %br
+        = df.number_field :numero_factura, :id => 'form-3', :min => '0', :onchange => "showMessage(this, 3, 'int');"
+        %span{:id => 'advertencia-3', :style=>'color:#FF0000;'} 
+
+      %div.field_content
+        %span.field_name Detalle
+        %br
+        = df.text_field :detalle, :id => 'form-4', :onchange => "showMessage(this, 4, 'text');"
+        %span{:id => 'advertencia-4', :style=>'color:#FF0000;'} 
+
+      %div.field_content
+        %span.field_name Cantidad
+        %br
+        = df.number_field :cantidad, :id => 'form-5', :min => '0', :onchange => "showMessage(this, 5, 'int');"
+        %span{:id => 'advertencia-5', :style=>'color:#FF0000;'} 
+
+      %div.field_content
+        %span.field_name N° de Cheque
+        %h5 Ingrese los últimos 5 dígitos. 
+        %h5 Si hay más de un cheque involucrado en este detalle, por favor, ingrese el mismo detalle nuevamente con cada número de cheque.
+        = df.number_field :numero_cheque, :id => 'form-6', :min => '0', :onchange => "showMessage(this, 6, 'int');"
+        %span{:id => 'advertencia-6', :style=>'color:#FF0000;'} 
+
+      %div.field_content
+        %span.field_name Tipo de Importe
+        %br
+        = select_tag :tipo_importe_id, options_for_select([['Servicios', 'A'], ['Obras', 'B'], ['Bienes Corrientes', 'C'], ['Bienes de Capital', 'D']], params[:tipo_importe_id]), :id => 'form-7'
+        %span{:id => 'advertencia-7', :style=>'color:#FF0000;'} 
+
+      %div.field_content
+        %span.field_name Valor del Importe ($0,0)
+        %br
+        = df.number_field :importe, :id => 'form-8', :min => '0', :step => 'any', :onchange => "showMessage(this, 8, 'float');"
+        %span{:id => 'advertencia-8', :style=>'color:#FF0000;'}
+
+      - if @efector_local.banco_cuenta_secundaria?
+        %div.field_content{:id => 'cuenta'}
+          %span.field_name Cuenta Bancaria asociada a este gasto
+          %br
+          = select_tag :cuenta, options_for_select([['Primaria', '1'], ['Secundaria', '2']], params[:cuenta]), :id => 'form-9'
+          %span{:id => 'advertencia-9', :style=>'color:#FF0000;'} 
+
+      %div.field_content{:id => 'clasificacion_gasto'}
+        %span.field_name Clasificación del gasto
+        %br
+        %select{:onchange => 'updateClaseSelected();', :id => 'clase_de_gasto_select'}
+        %select{:onchange => 'updateTipoSelected();', :id => 'tipo_de_gasto_select'}
+        %h5{:id => 'descripcion_gasto'} Descripción del tipo de gasto
+
+      %div.field_content
+        = button_tag 'Agregar/Actualizar Detalle', :onclick => "updateRow();", :type => 'button', :class => "subBtn"
+      
+  %hr
+
+  %div.actions#end_form
+
+    %h3.first-header 
+      - if @informe_de_rendicion.new_record?
+        Guardar nuevo informe
+      - else
+        Guardar cambios realizados
+    %h4 Por favor, antes de confirmar aseguresé que los datos previsualizados son correctos.
+    %h4{:style => "color:#6e0000;"} Recuerde que los datos consignados en este informe tienen carácter de declaración jurada.
+
+    %br
+
+    %div.field_content
+      - if @informe_de_rendicion.new_record?
+        = button_tag 'GUARDAR', :onclick => "saveInforme(true);", :type => 'button', :class => "subBtn", :confirm => "¿Está seguro?"
+      - else
+        = button_tag 'GUARDAR', :onclick => "saveInforme(false);", :type => 'button', :class => "subBtn", :confirm => "¿Está seguro?"
+
+  %hr
+  %br
+
+  %div.actions
+  %div.field_content#action-links
+    - if @informe_de_rendicion.new_record?
+      = link_to 'CANCELAR', informes_de_rendicion_path
+    - else
+      = link_to 'CANCELAR', informe_de_rendicion_path(@informe_de_rendicion)

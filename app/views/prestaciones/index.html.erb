@@ -16,7 +16,6 @@
     <div class="small-label">Sección PDSS</div>
     <div class="small-label">Grupo PDSS</div>
     <div class="small-label">Concepto de fac.</div>
-    <div class="small-label">¿Con eliminadas?</div>
     <div class="small-label"></div>
   </div>
   <%= form_tag(prestaciones_path, :method => "get") do %>
@@ -31,10 +30,21 @@
       <div class="small-label">
         <%= collection_select(:filter, :concepto_de_facturacion_id, ConceptoDeFacturacion.all, :id, :concepto, {include_blank: 'Seleccione un concepto de facturación'}, {class: "small-input seccion-pdss-select" }) %>  
       </div>
-      <div class="small-label">
-        <%= select(:filter, :incluir_eliminadas, [["Sin eliminadas", false], ["Con eliminadas", true]], {}, {class: "small-input seccion-pdss-select" }) %>  
+
+      <br>
+      <br>
+
+      <div class="small-label">¿Con inactivas y/o eliminadas?
+        <div class="small-label">
+          <%= select(:filter, :incluir_param, [["Sin eliminadas, Sin inactivas", 1], ["Sin eliminadas, Con inactivas", 2], ["Todas", 3]], {}, {class: "small-input seccion-pdss-select" }) %>  
+        </div>
       </div>
+
+      <br>
+      <br>
+
       <div class="small-label"><%= submit_tag("Filtrar") %></div>
+
     </div>
   <% end %> 
   <hr>
@@ -48,6 +58,7 @@
       <th>Sexos</th>
       <th>Código</th>
       <th>Diagnósticos</th>
+      <th>Estado</th>
       <th>Acciones</th>
     </tr>
     <%
@@ -82,13 +93,27 @@
             <td><%= obtener_listado_de_nombres prestacion.sexos %></td>
             <td><%= prestacion.codigo %></td>
             <td>
+              <div style="max-height: 50px; overflow-y: scroll;">
               <% if prestacion.diagnosticos.count > 0 %>
                 <% prestacion.diagnosticos.each do |diagnostico| %>
                   <%= diagnostico.codigo + ", " %>
                 <% end %>
               <% else %>
                 -------
-              <% end %>          
+              <% end %>  
+              </div>        
+            </td>
+            <td>
+              <% if prestacion.eliminada == true
+              %>
+              ELIMINADA
+              <% elsif prestacion.activa == false
+              %>
+              INACTIVA
+              <% else
+              %>
+              ACTIVA
+              <% end %>
             </td>
             <td><%= link_to('Ver', prestacion_path(prestacion)) if can? :read, Prestacion %> <br/> <%= link_to('Editar', edit_prestacion_path(prestacion)) if can? :manage, Prestacion %> <br/> <%= link_to('Asignar precios', edit_para_asignacion_de_precios_prestacion_path(prestacion)) if can? :manage, Prestacion %></td>
           </tr>
@@ -97,6 +122,6 @@
       <% end %>
     <% end %>
   </table>
-  <%= will_paginate @prestaciones, :inner_window => 2, :outer_window => 0 %>
+  <%= will_paginate @prestaciones %>
 </div>
 <%= javascript_include_tag 'prestaciones/_index.js' %>

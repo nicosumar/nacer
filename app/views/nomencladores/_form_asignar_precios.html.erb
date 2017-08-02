@@ -36,14 +36,14 @@
               <td><%= asignacion_de_precio.area_de_prestacion.nombre %></td>
               <td>
                 <%= f.fields_for "asignaciones_de_precios_attributes[#{asignacion_de_precio.id}]", asignacion_de_precio do |adp| %>
-                  <%= adp.number_field :adicional_por_prestacion, step: "0.01" %>           
+                  <%= adp.number_field :adicional_por_prestacion, min: "0.00", step: "0.01" %>           
                 <% end %>                 
                 <%= f.hidden_field("asignaciones_de_precios_attributes[#{asignacion_de_precio.id}][id]", :value => asignacion_de_precio.id) %>
                 <%= f.hidden_field("asignaciones_de_precios_attributes[#{asignacion_de_precio.id}][prestacion_id]", :value => prestacion.id) %>
               </td>
               <td>
                 <%= f.fields_for "asignaciones_de_precios_attributes[#{asignacion_de_precio.id}]", asignacion_de_precio do |adp| %>
-                  <%= adp.number_field :precio_por_unidad, step: "0.01" %>
+                  <%= adp.number_field :precio_por_unidad, min: "0.01", step: "0.01" %>
                 <% end %> 
               </td>
               <td><%= asignacion_de_precio.prestacion.unidad_de_medida.nombre.downcase %></td>

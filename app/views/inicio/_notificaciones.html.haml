@@ -1,0 +1,91 @@
+/ SECCION NOTIFICACIONES
+
+%div
+  
+  %div.row{:style => "margin: 0px; padding-top: 10px; padding-bottom: 5px; background-color: #006699;"}
+    - if @notificaciones.size != 0
+      %div.col-md-1{:style => "width: 0%", :class => "show-more"}
+        #action-links{:style => "line-height: 18px; padding: 6px 0px;"}= link_to "v", nil, method: :post, remote: true, onclick: "ToggleNotificaciones(this, 'notificaciones_table');"
+    %div.col-md-1{:style => "width: 0%"}
+      %h2{:style => "padding-top: 5px; color: #fff;"} NOTIFICACIONES
+  
+  - if @notificaciones.size == 0
+    %p No hay notificaciones nuevas.
+
+  %div#notificaciones_table{:style => "display: none;"}
+    
+    %table{:width => "100%"} 
+      %thead{:style => "background-color: #fff;"}
+        %tr
+          %th Fecha Evento
+          %th Mensaje
+          %th{:colspan => 2} Acciones
+      %tbody
+      - @notificaciones.each do |n|
+        - if n.fecha_lectura == nil
+          %tr
+            %td{align: "center", width: "10%"}= n.fecha_evento
+            %td{align: "center", width: "70%"}= n.mensaje
+            - if n.enlace != nil
+              %td{align: "center"}= link_to 'VER',  n.enlace, :method => :get, :style => 'color:#006e00;'
+            - else
+              %td{align: "center"} -
+            %td{align: "center"}= link_to 'OCULTAR',  notificacion_path(:id => n.id, :page => params[:page]), :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro que desea ocultar esta advertencia?"
+
+    = will_paginate @notificaciones, :inner_window => 2, :outer_window => 0
+
+/ SECCION NOTIFICACIONES
+
+%div{:style => "padding-top: 10px;"}
+  
+  %div.row{:style => "margin: 0px; padding-top: 10px; padding-bottom: 5px; background-color: #006699;"}
+    %div.col-md-1{:style => "width: 0%", :class => "show-more"}
+      #action-links{:style => "line-height: 18px; padding: 6px 0px;"}= link_to "v", nil, method: :post, remote: true, onclick: "ToggleNotificaciones(this, 'advertencias_table');"
+    %div.col-md-1{:style => "width: 0%"}
+      %h2{:style => "padding-top: 5px; color: #fff;"} ADVERTENCIAS
+
+  %div#advertencias_table{:style => "display: none;"}
+
+    %table{:width => "100%"} 
+      %thead
+        %tr
+          %th Fecha Evento
+          %th Mensaje
+          %th{:colspan => 2} Acciones
+      %tbody
+      - @advertencias.each do |a|
+        - if a.fecha_lectura == nil
+          %tr
+            %td{align: "center", width: "10%"}= a.fecha_evento
+            %td{align: "center", width: "70%"}= a.mensaje
+            %td{align: "center"}= link_to 'VER',  a.enlace, :method => :get, :style => 'color:#006e00;'
+            %td{align: "center"}= link_to 'OCULTAR',  notificacion_path(:id => a.id, :page => params[:page]), :method => :put, :style => 'color:#6e0000;', :confirm => "¿Está seguro que desea ocultar esta advertencia?"
+
+    = will_paginate @advertencias, :inner_window => 2, :outer_window => 0
+
+  %div#info_advertencias{:style => "padding-left: 15px; background-color: #cceeff; padding-top: 10px;"}
+
+    - if @advertencias.size == 0
+
+      -if @cantidad_total > 0
+        
+        - if @advertencias.size == 0
+          %p No hay advertencias generadas en los ultimos tres (3) meses para visualizar.
+
+        %p= "Esta unidad de alta de datos tiene " + @cantidad_total.to_s + " advertencias en total."
+        %p Las advertencias generadas antes de este periodo se pueden visualizar en el siguiente enlace:
+        #action-links= link_to 'Ver todas', prestaciones_brindadas_path(:estado_de_la_prestacion_id => 2, :commit => "Actualizar")
+
+      -else
+        %p No hay ninguna advertencia asociada a esta unidad de alta de datos.
+
+    - else
+
+      %p Solo se visualizan en esta pantalla las advertencias generadas en los ultimos tres (3) meses, sin tener en cuenta el corriente mes.
+      %p= "Esta unidad de alta de datos tiene " + @cantidad_advertencias.to_s + " advertencias en este periodo y " + @cantidad_total.to_s + " en total."
+      %p Las advertencias generadas antes de este periodo se pueden visualizar en el siguiente enlace:
+      #action-links{:style => "line-height: 18px; padding: 6px 0px;"}= link_to 'Ver Todas', prestaciones_brindadas_path(:estado_de_la_prestacion_id => 2, :commit => "Actualizar")
+
+  %br
+
+

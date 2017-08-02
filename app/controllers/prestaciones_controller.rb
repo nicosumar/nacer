@@ -14,13 +14,29 @@ class PrestacionesController < ApplicationController
       @prestaciones = @prestaciones.by_seccion_pdss(params[:filter][:seccion_pdss_id]) if params[:filter][:seccion_pdss_id].present?
       @prestaciones = @prestaciones.by_grupo_pdss(params[:filter][:grupo_pdss_id]) if params[:filter][:grupo_pdss_id].present?
       @prestaciones = @prestaciones.where(concepto_de_facturacion_id: params[:filter][:concepto_de_facturacion_id]) if params[:filter][:concepto_de_facturacion_id].present?
-      @prestaciones = @prestaciones.listado_permitido((params[:filter][:incluir_eliminadas] == "true"))
+      
+      # 1 -> trae todo
+      # 2 -> no trae eliminadas (abarca solo las eliminadas, dado que pueden haber inactivas que NO estén eliminadas)
+      # 3 -> no trae inactivas (abarca inactivas y eliminadas, dado que las eliminadas estan inactivas)}
+
+      if params[:filter][:incluir_param] == "1"
+
+        @prestaciones = @prestaciones.sin_inactivas
+
+      elsif params[:filter][:incluir_param] == "2"
+
+        @prestaciones = @prestaciones.sin_eliminadas
+
+      end
+
     else
-      @prestaciones = @prestaciones.listado_permitido
+
+      @prestaciones = @prestaciones.sin_inactivas
+
     end
     respond_to do |format|
       format.html do 
-        @prestaciones = @prestaciones.ordenadas_por_prestaciones_pdss.paginate(page: params[:page], per_page: params[:per])
+        @prestaciones = @prestaciones.paginate(:page => params[:page], :per_page => params[:per])#.ordenadas_por_prestaciones_pdss
         @secciones_pdss = PrestacionService.popular_a_plan_de_salud(@prestaciones)      
       end
       format.json { render json: @prestaciones.order("nombre ASC") }
@@ -50,6 +66,7 @@ class PrestacionesController < ApplicationController
   end
 
   def update
+
     if @prestacion.update_attributes params[:prestacion]
       redirect_to (params[:go_to] == "edit_para_asignacion_de_precios") ? edit_para_asignacion_de_precios_prestacion_path(@prestacion) : @prestacion
     else
@@ -75,6 +92,7 @@ class PrestacionesController < ApplicationController
           @prestacion.asignaciones_de_precios.destroy_all
           @prestacion.cantidades_de_prestaciones_por_periodo.destroy_all
           @prestacion.prestaciones_autorizadas.destroy_all
+          @prestacion.documentaciones_respaldatorias.destroy_all
           @prestacion.destroy
 
           redirect_to(prestaciones_url,
@@ -90,6 +108,7 @@ class PrestacionesController < ApplicationController
           @prestacion.asignaciones_de_precios.destroy_all
           @prestacion.cantidades_de_prestaciones_por_periodo.destroy_all
           @prestacion.prestaciones_autorizadas.destroy_all
+          @prestacion.documentaciones_respaldatorias.destroy_all
           redirect_to(prestaciones_url,
             :flash => {:tipo => :advertencia, :titulo => "La prestación fue eliminada correctamente",
               :mensaje => "Se realizó la eliminación lógica de la prestación."
@@ -107,9 +126,6 @@ class PrestacionesController < ApplicationController
         end
          
      end
-   
-
-
   end
 
   def autorizadas

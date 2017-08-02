@@ -1,0 +1,165 @@
+= javascript_include_tag "informes_de_rendicion.js"
+- content_for :title do
+  Informe de Rendición y Compras
+
+#content-header
+  %h1 Informe de Rendición y Compras
+
+  #action-links
+    - if @informe_de_rendicion.estado_del_proceso_id == 2
+      = link_to 'Editar Informe', informes_de_rendicion_path + "/" + @informe_de_rendicion.id.to_s + "/edit/", :method => :get
+      = link_to 'Finalizar Informe', informes_de_rendicion_path + "/" + @informe_de_rendicion.id.to_s + "?operacion=close", :method => :put, :confirm => "¿Está seguro? Recuerde: Una vez finalizado, no podrá editar este informe."
+    - if @informe_de_rendicion.estado_del_proceso_id >= 3
+      = link_to 'Generar Documento', informe_de_rendicion_path(@informe_de_rendicion, :format => :odt), :method => :get
+      - if @permiso.to_s == "puede_clasificar"
+        = link_to 'Editar Informe', informes_de_rendicion_path + "/" + @informe_de_rendicion.id.to_s + "/edit/", :method => :get
+        = link_to 'Generar Reporte de Uso De Fondos', informe_de_rendicion_path(@informe_de_rendicion, :format => :odt2), :method => :get
+
+= render :partial => "shared/info", :locals => { :registro => @informe_de_rendicion }
+
+#content-body
+  %h2.first-header-with-note Informe de Rendición y Compras
+
+  - if @informe_de_rendicion.estado_del_proceso_id == 2
+    %h3 Estado Actual: EN CURSO
+  - if @informe_de_rendicion.estado_del_proceso_id == 3
+    %h3 Estado Actual: FINALIZADO
+  - if @informe_de_rendicion.estado_del_proceso_id == 4
+    %h3 Estado Actual: CERRADO
+
+  %hr
+
+  %h4 Las opciones que pueden realizarse y que están disponibles en la barra superior dependen del estado en el que se encuentra este informe.
+  %p.note Para poder ser impreso, primero deberá finalizarlo.
+  %p.note Mientras el informe no se haya finalizado este podrá ser editado.
+  %p.note En caso de que necesite editarlo luego de haberlo finalizado, deberá comunicarse con el administrador.
+
+  %hr
+
+  /* Muestro los datos del efector
+  %div.hidden_field{:id => "permiso", :value => @permiso}
+  %div.hidden_field{:id => "info_op", :value => @operacion}
+  %div.hidden_field{:id => "informe_de_rendicion", :value => @informe_de_rendicion.to_json}
+  %div.hidden_field{:id => "detalles_informe_de_rendicion", :value => @informe_de_rendicion.detalles_informe_de_rendicion.to_json}
+  %div.hidden_field{:id => "tipos_de_gasto_por_detalle", :value => @tipos_de_gasto_por_detalle.to_json}
+  
+  %h2.first-header Datos del Efector
+  %div.hidden_field{:id => "id_efector", :value => @informe_de_rendicion.efector.id}
+
+  %div.field_content
+    %span.field_name Efector
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @informe_de_rendicion.efector.nombre
+
+  %div.field_content
+    %span.field_name Director/Coordinador
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @informe_de_rendicion.efector.referente_al_dia.contacto.nombres + " " + @informe_de_rendicion.efector.referente_al_dia.contacto.apellidos
+
+  %div.field_content
+    %span.field_name Departamento
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @informe_de_rendicion.efector.departamento.nombre
+
+  /* Muestro los datos bancarios del efector 
+
+  %h2.first-header Datos Bancarios
+
+  %div.field_content
+    %span.field_name CUIT
+    %span.field_value{:style => "background-color: #e0e0e0;"}= (@informe_de_rendicion.efector.cuit?) ? @informe_de_rendicion.efector.cuit : "No Registrado"
+
+  %h4 Cuenta Principal
+
+  %div.field_content
+    %span.field_name Banco
+    %span.field_value{:style => "background-color: #e0e0e0;"}= ((@informe_de_rendicion.efector.banco_cuenta_principal?) ? @informe_de_rendicion.efector.banco_cuenta_principal : "No Registrado") + ((@informe_de_rendicion.efector.sucursal_cuenta_principal?) ? " | Suc. " + @informe_de_rendicion.efector.sucursal_cuenta_principal : "")
+
+  %div.field_content
+    %span.field_name Número de Cuenta
+    %span.field_value{:style => "background-color: #e0e0e0;"}= (@informe_de_rendicion.efector.numero_de_cuenta_principal?) ? @informe_de_rendicion.efector.numero_de_cuenta_principal : "No Registrado"
+
+  %div.field_content
+    %span.field_name Denominación
+    %span.field_value{:style => "background-color: #e0e0e0;"}= (@informe_de_rendicion.efector.denominacion_cuenta_principal?) ? @informe_de_rendicion.efector.denominacion_cuenta_principal : "No Registrado"
+
+  -if @informe_de_rendicion.efector.banco_cuenta_secundaria?
+
+    %h4 Cuenta Secundaria
+
+    %div.field_content
+      %span.field_name Banco
+      %span.field_value{:style => "background-color: #e0e0e0;"}= ((@informe_de_rendicion.efector.banco_cuenta_secundaria?) ? @informe_de_rendicion.efector.banco_cuenta_secundaria : "No Registrado") + ((@informe_de_rendicion.efector.sucursal_cuenta_secundaria?) ? " | Suc. " + @informe_de_rendicion.efector.sucursal_cuenta_secundaria : "")
+
+    %div.field_content
+      %span.field_name Número de Cuenta
+      %span.field_value{:style => "background-color: #e0e0e0;"}= (@informe_de_rendicion.efector.numero_de_cuenta_secundaria?) ? @informe_de_rendicion.efector.numero_de_cuenta_secundaria : "No Registrado"
+
+    %div.field_content
+      %span.field_name Denominación
+      %span.field_value{:style => "background-color: #e0e0e0;"}= (@informe_de_rendicion.efector.denominacion_cuenta_secundaria?) ? @informe_de_rendicion.efector.denominacion_cuenta_secundaria : "No Registrado"
+  
+  /* El usuario debe indicar el mes y el año del gasto. En el informe debe aparecer el ultimo día de ese mes como fecha de informe y el mes como mes en el que se realizó el gasto que se detalla
+
+  %div.field_content
+    %span.field_name FECHA DEL INFORME
+    %span.field_value{:style => "background-color: #e0e0e0;"}= @informe_de_rendicion.fecha_informe.month.to_s + " / " + @informe_de_rendicion.fecha_informe.year.to_s
+
+  /* El usuario deberia ir agregando detalle por detalle con todos los campos que corresponden. En el caso de que no complete ningún campo debe decir con mayuscula en el detalle 'SIN MOVIMIENTOS'
+
+  %h2.first-header Detalle del Informe
+  %table#tabla_detalles{:border => "0", :width => "100%"}  
+    %thead#seccion_header
+      %tr
+        %th{:rowspan => 2}#
+        %th{:rowspan => 2}N° de Expediente/Formulario 
+        %th{:colspan => 2}Factura
+        %th{:rowspan => 2, width: "30%"}Detalle
+        %th{:rowspan => 2}Cantidad
+        %th{:rowspan => 2}N° de Cheque
+        %th{:colspan => 4}Importe
+        %th{:rowspan => 2}Cta
+      %tr
+        - 1.times do
+          %th Fecha
+          %th Número
+        - 1.times do
+          %th Servicios
+          %th Obras
+          %th Bienes Ctes
+          %th Bienes De Capital
+      %tr#seccion_body
+        %td{align: "center"} 1
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"} SIN MOVIMIENTOS
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"}
+        %td{align: "center"} 
+        %td{align: "center"}
+        %td{align: "center"}
+
+  %br
+
+  %table#tabla_totales{:border => "0", :width => "50%", :align => "right"}  
+    %thead#seccion_header
+      %tr
+        %th{:rowspan => 2} Total Servicios
+        %th{:rowspan => 2} Total Obras
+        %th{:rowspan => 2} Total Bienes Ctes
+        %th{:rowspan => 2} Total Bienes de Capital
+        %th{:rowspan => 2} Total
+    %tbody
+      %tr
+        %td 0
+        %td 0
+        %td 0
+        %td 0
+        %td 0
+
+  %br
+
+  %div.actions
+    %div.field_content#action-links
+      = link_to 'ATRAS', informes_de_rendicion_path
+

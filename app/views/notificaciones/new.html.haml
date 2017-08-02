@@ -1,0 +1,14 @@
+- content_for :title do
+  Creación de nuevo Informe de Rendición y Compras
+
+#content-header
+  %h1 Creación de nuevo Informe de Rendición y Compras
+
+= render :partial => "shared/info", :locals => { :registro => @informe_de_rendicion }
+
+#content-body
+  %h2.first-header-with-note Formulario de creación de un nuevo Informe de Rendición y Compras
+  %p.note
+    Este documento tiene carácter de declaración jurada
+
+  = render 'form'

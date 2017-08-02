@@ -32,6 +32,7 @@ class Ability
       can :manage, LiquidacionInforme
       can :read, ProcesoDeSistema
       can :read, Prestacion
+      can :manage, InformeDeRendicion
     end
 
     if user.in_group? :liquidacion_ugsp
@@ -39,6 +40,7 @@ class Ability
       can :manage, LiquidacionSumarAnexoAdministrativo
       can :manage, Periodo
       can :manage, ParametroLiquidacionSumar
+      can :manage, InformeDeRendicion
     end
 
     if user.in_group? :operaciones
@@ -57,6 +59,7 @@ class Ability
       can :read, VistaGlobalDePrestacionBrindada
       can :manage, User
       can :manage, UnidadDeAltaDeDatos
+      can :read, InformeDeRendicion
     end
 
     if user.in_group? :auditoria_medica
@@ -77,8 +80,8 @@ class Ability
       can :manage, AnexoMedicoPrestacion
       can :read, LiquidacionSumarAnexoAdministrativo
       can :read, AnexoAdministrativoPrestacion
-      can :manage, Prestacion
-      can :manage, PrestacionPrincipal
+      can :read, Prestacion
+      can :read, PrestacionPrincipal
       can :manage,  SolicitudAddenda
     end
 
@@ -108,7 +111,7 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
-     
+      can :read, InformeDeRendicion
     end
 
     if user.in_group? :coordinacion
@@ -122,6 +125,7 @@ class Ability
       can :read, Addenda
       can :read, AddendaSumar
       can :read, PrestacionAutorizada
+      can :read, InformeDeRendicion
     end
 
     if user.in_group? :planificacion
@@ -137,6 +141,7 @@ class Ability
       can :read, PrestacionAutorizada
       can :read, LiquidacionSumar
       can :manage, Prestacion
+      can :read, InformeDeRendicion
     end
 
     if user.in_group? :inscripcion_uad
@@ -153,7 +158,7 @@ class Ability
       can :read, NovedadDelAfiliado
       can :manage, PrestacionBrindada
       can :manage, DatoReportableAsociado
-
+      can :manage, InformeDeRendicion
     end
 
     if user.in_group? :capacitacion
