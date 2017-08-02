@@ -883,11 +883,21 @@ class PrestacionesBrindadasController < ApplicationController
 
     @liquidaciones.each do |l|
 
-      last_estado_proceso = ProcesoDeSistema.where('entidad_relacionada_id = ? and tipo_proceso_de_sistema_id = ?', l.id,TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR).includes(:estado_proceso_de_sistema).last
+      last_liquidacion = ProcesoDeSistema.where('entidad_relacionada_id = ? and tipo_proceso_de_sistema_id in (?, ?)', l.id,TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR, TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR).includes(:estado_proceso_de_sistema).last
       
-      if last_estado_proceso.id == 2 #PROCESANDO
+      last_estado_proceso = (last_liquidacion == nil) ? -1 : last_liquidacion.estado_proceso_de_sistema.id
 
-        return true
+      if last_estado_proceso == 2 #PROCESANDO
+
+        if(@prestacion_brindada.fecha_de_la_prestacion <= l.periodo.fecha_limite_prestaciones)
+
+          return true
+
+        else
+
+          return false
+
+        end
 
       end
 

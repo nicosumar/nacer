@@ -14,9 +14,25 @@ class PrestacionesController < ApplicationController
       @prestaciones = @prestaciones.by_seccion_pdss(params[:filter][:seccion_pdss_id]) if params[:filter][:seccion_pdss_id].present?
       @prestaciones = @prestaciones.by_grupo_pdss(params[:filter][:grupo_pdss_id]) if params[:filter][:grupo_pdss_id].present?
       @prestaciones = @prestaciones.where(concepto_de_facturacion_id: params[:filter][:concepto_de_facturacion_id]) if params[:filter][:concepto_de_facturacion_id].present?
-      @prestaciones = @prestaciones.listado_permitido((params[:filter][:incluir_eliminadas] == "true"))
+      
+      # 1 -> trae todo
+      # 2 -> no trae eliminadas (abarca solo las eliminadas, dado que pueden haber inactivas que NO estén eliminadas)
+      # 3 -> no trae inactivas (abarca inactivas y eliminadas, dado que las eliminadas estan inactivas)}
+
+      if params[:filter][:incluir_param] == "1"
+
+        @prestaciones = @prestaciones.sin_inactivas
+
+      elsif params[:filter][:incluir_param] == "2"
+
+        @prestaciones = @prestaciones.sin_eliminadas
+
+      end
+
     else
-      @prestaciones = @prestaciones.listado_permitido
+
+      @prestaciones = @prestaciones.sin_inactivas
+
     end
     respond_to do |format|
       format.html do 

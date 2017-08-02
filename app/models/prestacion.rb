@@ -80,7 +80,13 @@ class Prestacion < ActiveRecord::Base
 
   after_initialize :add_prestaciones_pdss
 
-  scope :listado_permitido, ->(con_eliminadas=false) { where('eliminada IS NULL OR eliminada = false') unless con_eliminadas }
+  # 1 -> trae todo
+  # 2 -> no trae eliminadas (abarca solo las eliminadas, dado que pueden haber inactivas que NO estén eliminadas)
+  # 3 -> no trae inactivas (abarca inactivas y eliminadas, dado que las eliminadas estan inactivas)}
+
+  scope :sin_inactivas, -> { where('activa = true') }
+  scope :sin_eliminadas, -> { where('eliminada is null or eliminada = false') }
+
   scope :activas, -> { where(activa: true) }
   scope :like_codigo, ->(codigo) { where("prestaciones.codigo LIKE ?", "%#{codigo.upcase}%") if codigo.present? }
   scope :ordenadas_por_prestaciones_pdss, -> { includes(prestaciones_pdss: [:linea_de_cuidado, grupo_pdss: [:seccion_pdss]]).order("secciones_pdss.orden ASC, grupos_pdss.orden ASC, lineas_de_cuidado.nombre ASC, prestaciones.codigo ASC") }

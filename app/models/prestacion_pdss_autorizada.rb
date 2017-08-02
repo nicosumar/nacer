@@ -48,6 +48,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
             tdp.nombre "tipo_de_prestacion",
             codigo_de_prestacion_con_diagnosticos(pp.id) "codigo_de_prestacion",
             pp.nombre "nombre_de_prestacion",
+            p.activa "prestacion_is_activa",
             CASE WHEN ppa.autorizante_al_alta_type IS NOT NULL THEN 't'::boolean ELSE 'f'::boolean END "autorizada",
             CASE
               WHEN ppa.autorizante_al_alta_type = 'ConvenioDeGestionSumar' THEN 'Convenio de gestión'::varchar(255)
@@ -90,7 +91,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
               ppa.autorizante_al_alta_type = 'AddendaSumar' AND
               ppa.autorizante_al_alta_id = ads.id
             )
-          WHERE p.activa = true
+          WHERE COALESCE (p.eliminada, false) = false
           ORDER BY sp.orden, gp.orden, pp.orden;
       SQL
     )
@@ -107,6 +108,7 @@ class PrestacionPdssAutorizada < ActiveRecord::Base
         secciones << s.attributes.merge!(:prestaciones => self.obtener_prestaciones(qres.columns, qres.rows.dup.keep_if{|r| r[0] == s.id.to_s}))
       end
     end
+
     return secciones
   end
 #-----------------------------------------------------------------------------------------
@@ -203,6 +205,7 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
             tdp.nombre "tipo_de_prestacion",
             codigo_de_prestacion_con_diagnosticos(pp.id) "codigo_de_prestacion",
             pp.nombre "nombre_de_prestacion",
+            p.activa "prestacion_is_activa",
             CASE
               WHEN EXISTS (
                   SELECT * FROM areas_de_prestacion_prestaciones_pdss appp
@@ -219,6 +222,7 @@ def self.pres_autorizadas(efector_id, fecha = Date.today, prestacion_id)
             LEFT JOIN lineas_de_cuidado lc ON lc.id = pp.linea_de_cuidado_id
             LEFT JOIN modulos mp ON mp.id = pp.modulo_id
             LEFT JOIN tipos_de_prestaciones tdp ON tdp.id = pp.tipo_de_prestacion_id
+          WHERE COALESCE (p.eliminada, false) = false
           ORDER BY sp.orden, gp.orden, pp.orden;
       SQL
     )
