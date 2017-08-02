@@ -17,8 +17,8 @@ class InscripcionMasiva
   attr_accessor :hash_distritos
 
 # load 'lib/tasks/inscripciones_masivas.rb'
-# ins = InscripcionMasiva.new(UnidadDeAltaDeDatos.where(:codigo => "006").first, CentroDeInscripcion.where("nombre ILIKE '%centro%300%'").first, Efector.where("nombre ILIKE '%centro%300%'").first)
-# ins.archivo_a_procesar = "/home/sbosio/Documentos/Plan Nacer/Operaciones/Inscripciones masivas/Inscripciones masivas CS300.csv"
+# ins = InscripcionMasiva.new
+# ins.encolar_registro_masivo_beneficiarios(“UbicacionArchivo notti/CM/VC”,”0”,uad_id,ci_id, efector_id)
 
   def initialize
     @archivo_a_procesar = nil
@@ -81,33 +81,11 @@ class InscripcionMasiva
     self.centro_de_inscripcion = ci
     self.efector_de_atencion_habitual = efe
 
-
-    @log_del_proceso = Logger.new("log/RegistroMasivoBeneficiarios",10, 1024000)
-    @log_del_proceso.formatter = proc do |severity, datetime, progname, msg|
-    date_format = datetime.strftime("%Y-%m-%d %H:%M:%S")
-      if severity == "INFO" or severity == "WARN"
-          "[#{date_format}] #{severity}: #{msg}\n"
-      else
-          "[#{date_format}] #{severity}: #{msg}\n"
-      end
-    end
-
-    
-    @log_del_proceso.info("*****************************************************")
-    @log_del_proceso.info("####***Iniciando procesamiento de archivo de beneficiarios***###")
-    @log_del_proceso.info("******************************************************")
-
-    @log_del_proceso.info("Crear modelo y tabla")
     crear_modelo_y_tabla
-    @log_del_proceso.info("Procesar archivo")
     procesar_archivo
-    @log_del_proceso.info("Procesar persistir inscripciones")
     persistir_inscripciones
-    @log_del_proceso.info("Escribir resultados")  
     escribir_resultados
-    @log_del_proceso.info("Eliminar tabla") 
     eliminar_tabla
-    @log_del_proceso.info("Fin del proceso de archivo de beneficiarios") 
 
   end
 
@@ -471,15 +449,12 @@ class InscripcionMasiva
     ActiveRecord::Base.logger.silence do
       begin
         archivo = File.open(@archivo_a_procesar + "." + @parte, "r")
-      rescue => e
-        @log_del_proceso.error("Ocurrio un error en la carga masiva de beneficiarios: Archivo a procesar " +@archivo_a_procesar + "...@parte= " +@parte)
-        raise e
+      rescue
         return
       end
-      @log_del_proceso.info("Escribir resultados: " + @archivo_a_procesar + "." + @parte) 
 
       archivo.each_with_index do |linea, i|
-        if !tiene_etiquetas_de_columnas || i != 0
+        if !@tiene_etiquetas_de_columna || i != 0
           novedad = eval("NovedadDelAfiliadoTemp#{@parte.titleize}").new(parsear_linea(linea).merge!(
             :domicilio_numero => "-",
             :observaciones => "Inscripción registrada por importación de datos masivos",
@@ -677,4 +652,6 @@ class InscripcionMasiva
         Delayed::Job.enqueue NacerJob::RegistroMasivoBeneficiariosJob.new(proceso_de_sistema.id)    
       end
   end
+
+
 end
