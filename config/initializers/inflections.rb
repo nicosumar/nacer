@@ -591,6 +591,10 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular("solicitud_addenda_prestacion_principal","solicitudes·_addendas·_prestaciones·_principales·")
 
 
+  #plural para cargas masivas
+  inflect.irregular("carga_masiva", "cargas·_masivas·")
+  inflect.irregular("carga·_masiva·", "cargas_masivas")
+
 
 
   # Humanización de cadenas

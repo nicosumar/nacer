@@ -57,6 +57,8 @@
                         %li= link_to "Registrar una prestación comunitaria", new_prestacion_brindada_path(:comunitaria => true)
                       - if can? :read, PrestacionBrindada
                         %li= link_to "Ver las prestaciones registradas", prestaciones_brindadas_path
+                      - if can? :create, CargaMasiva
+                        %li= link_to "Registro masivo de prestaciones", cargas_masivas_path
 
             - if can? :read, Efector
               %li

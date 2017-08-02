@@ -1,0 +1,70 @@
+<% content_for :title do %>
+  Carga de prestaciones masivas
+<% end %>
+<div>
+<div id="content-header">
+  <h1>Carga masiva de prestaciones</h1>
+  <div id="action-links" ><%= link_to('Nuevo', new_carga_masiva_path) if can? :new, CargaMasiva %> </div>  
+</div>
+
+<div id="content-body" >
+  <h2 class=first-header> Cargas registradas para la UAD:   <%= @uad_actual.nombre %> </h2> 
+   <p class=note> Cambie su Unidad de alta de datos, para cargar en una diferentes.</p> 
+  
+  <div>
+    <h3>Efector: </h3>
+    <p> <%= @uad_actual.efector.nombre%> </p>
+
+    <h3>Unidad de alta de datos: </h3>
+    <p> <%= @uad_actual.nombre %> </p>
+  </div>
+
+  <div>
+    <% if can? :read, CargaMasiva %>
+      <%= form_tag(cargas_masivas_path, :method => "get") do %>
+        <div class="nested-fields-label-container">
+
+          <div class="large-label">
+            <%= label_tag(:estado_del_proceso_id, "Estado del proceso:") %>
+            <%= select_tag :estado_del_proceso_id, options_for_select(@estados_de_los_procesos, @estado_del_proceso_id), 
+            {:include_blank => false}   %>
+            <%= submit_tag("Buscar") %>
+         
+            <p class=note>Puede seleccionar de la lista un estado y presionar 'Actualizar' para que se muestren únicamente los archivos con ese estado.</p>
+
+            </div>
+
+           </div>
+          
+      <% end %> 
+    <% end %> 
+
+    <table>
+
+        <tr>
+          <th> Numero </th> 
+          <th> Archivo </th>
+          <th> Fecha de creación </th>
+          <th> Fecha de modificación </th>
+          <th> Usuario de carga </th>
+          <th> Fecha de proceso </th>
+          <th> Estado del proceso </th>
+          <th> Acciones </th>
+        </tr>
+
+        <% @cargas_masivas.order("numero desc").each do |a| %>
+          <tr> 
+            <td><%= a.numero.blank? ? "-" : a.numero %></td>
+            <td><%= a.archivo.nil? ? "Sin archivo"  : a.archivo_file_name %></td>
+            <td><%= a.created_at.strftime("%d/%m/%Y") %></td>
+            <td><%= a.updated_at.strftime("%d/%m/%Y") %></td>
+            <td><%= a.user.nil? ? "No registrado" : a.user.nombre_completo %></td>
+            <td><%= a.fecha_del_proceso.blank? ? "No asignada" : a.fecha_del_proceso.strftime("%d/%m/%Y") %></td>
+            <td><%= a.estado_del_proceso.nil? ? "No registrado" : a.estado_del_proceso.nombre %></td>
+            <td><%= link_to('Ver', carga_masiva_path(a)) if can? :read, CargaMasiva %> <br/> <%= link_to('Editar', edit_carga_masiva_path(a)) if can? :manage, CargaMasiva %> <br/> </td>
+          </tr>
+        <% end %>
+
+    </table>
+    </div> 
+</div>

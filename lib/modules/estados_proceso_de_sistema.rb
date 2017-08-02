@@ -9,7 +9,5 @@ module EstadosProcesoDeSistema
   ERROR_DURANTE_EL_PROCESAMIENTO = 4
   
   COMPLETADO = 5
-
-
   
 end

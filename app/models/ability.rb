@@ -39,6 +39,7 @@ class Ability
       can :manage, LiquidacionSumarAnexoAdministrativo
       can :manage, Periodo
       can :manage, ParametroLiquidacionSumar
+      can :read, Prestacion
     end
 
     if user.in_group? :operaciones
@@ -137,6 +138,7 @@ class Ability
       can :read, PrestacionAutorizada
       can :read, LiquidacionSumar
       can :manage, Prestacion
+      can :read, Nomenclador
     end
 
     if user.in_group? :inscripcion_uad

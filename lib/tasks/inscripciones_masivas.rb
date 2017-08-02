@@ -17,8 +17,8 @@ class InscripcionMasiva
   attr_accessor :hash_distritos
 
 # load 'lib/tasks/inscripciones_masivas.rb'
-# ins = InscripcionMasiva.new(UnidadDeAltaDeDatos.where(:codigo => "006").first, CentroDeInscripcion.where("nombre ILIKE '%centro%300%'").first, Efector.where("nombre ILIKE '%centro%300%'").first)
-# ins.archivo_a_procesar = "/home/sbosio/Documentos/Plan Nacer/Operaciones/Inscripciones masivas/Inscripciones masivas CS300.csv"
+# ins = InscripcionMasiva.new
+# ins.encolar_registro_masivo_beneficiarios(“UbicacionArchivo notti/CM/VC”,”0”,uad_id,ci_id, efector_id)
 
   def initialize
     @archivo_a_procesar = nil
@@ -38,7 +38,7 @@ class InscripcionMasiva
     @unidad_de_alta_de_datos = nil
     @centro_de_inscripcion = nil
     @efector_de_atencion_habitual = nil
-    @tiene_etiquetas_de_columna = false
+    @tiene_etiquetas_de_columna = true
     @hash_clases = {}
     @hash_tipos = {}
     @hash_sexos = {}
@@ -454,7 +454,7 @@ class InscripcionMasiva
       end
 
       archivo.each_with_index do |linea, i|
-        if !tiene_etiquetas_de_columnas || i != 0
+        if !@tiene_etiquetas_de_columna || i != 0
           novedad = eval("NovedadDelAfiliadoTemp#{@parte.titleize}").new(parsear_linea(linea).merge!(
             :domicilio_numero => "-",
             :observaciones => "Inscripción registrada por importación de datos masivos",
@@ -652,4 +652,6 @@ class InscripcionMasiva
         Delayed::Job.enqueue NacerJob::RegistroMasivoBeneficiariosJob.new(proceso_de_sistema.id)    
       end
   end
+
+
 end

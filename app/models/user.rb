@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   has_many :user_groups, :through => :user_groups_users
   has_many :unidades_de_alta_de_datos_users
   has_many :unidades_de_alta_de_datos, :through => :unidades_de_alta_de_datos_users
+  has_many :cargas_masivas
 
   # No mostrar cuentas de usuario eliminadas -- FUE UNA MALA IDEA, porque se elimina de todas las consultas
   #default_scope where(:cuenta_eliminada => false)

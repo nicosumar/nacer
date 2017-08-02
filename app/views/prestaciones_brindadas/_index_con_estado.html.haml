@@ -11,7 +11,7 @@
   %p.note
     Puede seleccionar de la lista un estado y presionar 'Actualizar' para que se muestren únicamente prestaciones con ese estado.
 
-  = form_tag('/prestaciones_brindadas', :method => 'get') do
+-  = form_tag('/prestaciones_brindadas', :method => 'get') do
     %div.field
       = label_tag(:estado_de_la_prestacion_id, "Mostrar prestaciones:")
       = select_tag :estado_de_la_prestacion_id, options_for_select(@estados_de_las_prestaciones, @estado_de_la_prestacion_id), |

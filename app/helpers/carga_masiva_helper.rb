@@ -1,0 +1,2 @@
+module CargaMasivaHelper
+end

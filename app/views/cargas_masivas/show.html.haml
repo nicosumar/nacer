@@ -1,0 +1,57 @@
+- content_for :title do
+  Información detallada del proceso de carga
+
+#content-header
+  %h1 Información detallada del proceso de carga
+  - if can? :update, CargaMasiva
+    #action-links
+      = link_to "Modificar", edit_carga_masiva_path(params)
+  - if can? :view, CargaMasiva
+    #action-links
+      = link_to "Volver al listado", cargas_masivas_path
+
+= render :partial => "shared/info"
+
+
+
+#content-body
+
+  %h2.first-header Vista de archivo de carga masiva
+  %h3 Datos de la carga efecturada
+  %div.field_content
+    %span.field_name Número de identificación
+    %span.field_value= @carga_masiva.numero.nil? ? "-" : @carga_masiva.numero
+  
+  %div.field_content
+    %span.field_name Usuario de carga
+    %span.field_value=  @carga_masiva.user.nil? ? "-" :  @carga_masiva.user.nombre_completo
+
+  %div.field_content
+    %span.field_name Estado del proceso
+    %span.field_value=  @carga_masiva.estado_del_proceso.nil? ? "-" :  @carga_masiva.estado_del_proceso.nombre
+
+  %div.field_content
+    %span.field_name Fecha de proceso
+    %span.field_value=  @carga_masiva.fecha_del_proceso.nil? ? "-" :  @carga_masiva.fecha_del_proceso
+
+  %div.field_content
+    %span.field_name Archivo Cargado
+    %span.field_value= @carga_masiva.archivo.nil? ? "Sin Archivo" : @carga_masiva.archivo_file_name
+  %h3 Datos del registro
+  %div.field_content
+    %span.field_name Fecha de creación
+    %span.field_value= @carga_masiva.created_at.nil?  ? "-" : @carga_masiva.created_at
+
+  %div.field_content
+    %span.field_name Fecha de ultima modificación
+    %span.field_value= @carga_masiva.updated_at.nil? ? "-" : @carga_masiva.updated_at
+
+  %div.field_content
+    %span.field_name Observaciones
+    %span.field_value=  @carga_masiva.observaciones.nil? ? "-" :  @carga_masiva.observaciones
+
+
+
+
+
+    

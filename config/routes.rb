@@ -1,16 +1,19 @@
 # -*- encoding : utf-8 -*-
 Nacer::Application.routes.draw do
   
+
+
+
   scope '/(:locale)', defaults: { locale: 'es' }, constraints: { locale: /es|en/ } do
     authenticated :user, -> user { user.in_group? [:administradores,:facturacion]} do
       mount Delayed::Web::Engine => '/jobs'
     end
   end
   
-  resources :procesos_de_sistemas , :only => [:index,:destroy,:show] 
-
-
-
+  resources :procesos_de_sistemas , :only => [:index] 
+  resources :cargas_masivas
+  resources :archivos
+   
   get "datos_reportables/show"
   get "prestaciones/autorizadas"
   get "diagnosticos/por_prestacion"
