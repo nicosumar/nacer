@@ -8,6 +8,7 @@ class CreateDetallesInformeDeRendicion < ActiveRecord::Migration
       t.string :cuenta
       t.integer :cantidad
       t.string :numero_cheque
+      t.float :importe
       t.references :informe_de_rendicion
       t.references :tipo_de_importe
       t.references :tipo_de_gasto

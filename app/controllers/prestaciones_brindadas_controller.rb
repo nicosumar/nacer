@@ -840,7 +840,7 @@ class PrestacionesBrindadasController < ApplicationController
     # Buscar la prestación
     @prestacion_brindada = PrestacionBrindada.find(params[:id])
     
-    if is_liquidacion_procesando == false
+    if is_liquidacion_o_cuasifactura_procesando == false
 
       # Verificar que la prestación brindada esté pendiente
 
@@ -866,7 +866,7 @@ class PrestacionesBrindadasController < ApplicationController
 
   end
 
-  def is_liquidacion_procesando
+  def is_liquidacion_o_cuasifactura_procesando
 
     # El estado del proceso está asociado a una entidad, que en este caso es la liquidación.
     # Para saber qué liquidaciones deberia checkear tengo que tomar el efector, dado que
@@ -876,6 +876,12 @@ class PrestacionesBrindadasController < ApplicationController
     # para ese grupo.
     # Finalmente, para cada una de esas liquidaciones puedo obtener el ultimo estado del proceso asociado.
     # Si está en estado PROCESANDO (id = 2) entonces no voy a dejar que se anule esta prestación.
+
+    # Estabamos viendo con Diego que en realidad no debería permitir que se anule desde
+    # el momento que comienza la liquidación.
+
+    cond_liquidacion = false;
+    cond_cuasifactura = false;
     
     id_grupo = @uad_actual.efector.grupo_de_efectores_liquidacion_id
 
@@ -883,19 +889,29 @@ class PrestacionesBrindadasController < ApplicationController
 
     @liquidaciones.each do |l|
 
-      last_liquidacion = ProcesoDeSistema.where('entidad_relacionada_id = ? and tipo_proceso_de_sistema_id in (?, ?)', l.id,TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR, TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR).includes(:estado_proceso_de_sistema).last
-      
-      last_estado_proceso = (last_liquidacion == nil) ? -1 : last_liquidacion.estado_proceso_de_sistema.id
+      if(@prestacion_brindada.fecha_de_la_prestacion <= l.periodo.fecha_limite_prestaciones)
 
-      if last_estado_proceso == 2 #PROCESANDO
+        todos_los_procesos = ProcesoDeSistema.where('entidad_relacionada_id = ? and tipo_proceso_de_sistema_id in (?, ?)', l.id,TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR, TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR).order('tipo_proceso_de_sistema_id').includes(:estado_proceso_de_sistema)
 
-        if(@prestacion_brindada.fecha_de_la_prestacion <= l.periodo.fecha_limite_prestaciones)
+        todos_los_procesos.each do |p|
 
-          return true
+          if p.tipo_proceso_de_sistema_id == TiposProcesosDeSistemas::PROCESAR_LIQUIDACION_SUMAR
 
-        else
+            if (p.estado_proceso_de_sistema.id == 2 || p.estado_proceso_de_sistema.id == 5) #EN PROCESO O COMPLETADA
 
-          return false
+              cond_liquidacion = true
+
+            end
+
+          else #TiposProcesosDeSistemas::GENERAR_CUASIFACTURAS_LIQUIDACION_SUMAR
+
+            if (p.estado_proceso_de_sistema.id != 5) #COMPLETADA
+
+              cond_cuasifactura = true
+
+            end
+
+          end
 
         end
 
@@ -903,7 +919,27 @@ class PrestacionesBrindadasController < ApplicationController
 
     end
 
-    return false
+    return !cond_cuasifactura ? cond_cuasifactura : cond_liquidacion
+    
+    # EN OTRAS PALABRAS...
+
+    # if(cond_cuasifactura)
+
+    #   return true
+
+    # else
+
+    #   if(cond_liquidacion)
+
+    #     return true
+
+    #   else
+
+    #     return false
+
+    #   end
+
+    # end
 
   end
 
